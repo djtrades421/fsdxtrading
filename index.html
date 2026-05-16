@@ -14,38 +14,37 @@
   </style>
 </head>
 
-<body class="text-white bg-black min-h-screen lg:flex">
+<body class="text-white bg-black min-h-screen flex">
 
-  <aside class="w-full lg:w-64 lg:fixed lg:inset-y-0 lg:left-0 bg-zinc-950 border-b lg:border-b-0 lg:border-r border-white/10 flex lg:flex-col justify-between items-center lg:items-start p-6 z-50">
+  <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50">
     
-    <div class="text-2xl font-black tracking-wider">
-      <span class="text-green-400">FSD-X</span>
+    <div>
+      <div class="text-2xl font-black tracking-wider mb-12">
+        <span class="text-green-400">FSD-X</span>
+      </div>
+
+      <nav class="flex flex-col gap-6 w-full">
+        <a href="#hero" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
+        <a href="#suite" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FSD-X Suite</a>
+        <a href="#packages" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Packages</a>
+        <a href="#results" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Results</a>
+        <a href="#faq" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FAQ</a>
+      </nav>
     </div>
 
-    <nav class="hidden lg:flex flex-col gap-4 w-full my-auto">
-      <a href="#hero" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm py-2">Home</a>
-      <a href="#suite" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm py-2">FSD-X Suite</a>
-      <a href="#packages" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm py-2">Packages</a>
-      <a href="#results" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm py-2">Results</a>
-      <a href="#faq" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm py-2">FAQ</a>
-    </nav>
-
-    <button class="lg:hidden text-zinc-400 hover:text-green-400 font-medium text-sm">
-      Menu
-    </button>
-
-    <div class="hidden lg:block w-full pt-4 border-t border-white/5">
+    <div class="w-full pt-4 border-t border-white/5">
       <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">
         Launch Discord &rarr;
       </a>
     </div>
+
   </aside>
 
-  <main class="flex-1 lg:pl-64">
+  <main class="flex-1 pl-64 w-full">
 
-    <section id="hero" class="min-h-screen flex items-center justify-center px-6 border-b border-white/10NAV">
+    <section id="hero" class="min-h-screen flex items-center justify-center px-12 border-b border-white/10">
 
-      <div class="max-w-6xl w-full grid lg:grid-cols-2 gap-12 items-center">
+      <div class="max-w-5xl w-full grid xl:grid-cols-2 gap-12 items-center">
 
         <div>
 
@@ -53,7 +52,7 @@
             Futures Trading Ecosystem
           </div>
 
-          <h1 class="text-5xl lg:text-7xl font-black leading-tight">
+          <h1 class="text-5xl lg:text-6xl font-black leading-tight">
             Build Your Edge With
             <span class="text-green-400">FSD-X</span>
           </h1>
@@ -114,12 +113,12 @@
 
     </section>
 
-    <section id="suite" class="py-24 px-6 border-b border-white/10">
-      <div class="max-w-6xl mx-auto">
+    <section id="suite" class="py-24 px-12 border-b border-white/10">
+      <div class="max-w-5xl mx-auto">
         <div class="text-green-400 uppercase tracking-[0.3em] text-sm mb-4">
           The Workspace
         </div>
-        <h2 class="text-4xl lg:text-6xl font-black">
+        <h2 class="text-4xl lg:text-5xl font-black">
           FSD-X Suite
         </h2>
         <p class="mt-4 text-zinc-400 max-w-xl">
@@ -128,12 +127,12 @@
       </div>
     </section>
 
-    <section id="packages" class="py-24 px-6 border-b border-white/10">
-      <div class="max-w-6xl mx-auto">
+    <section id="packages" class="py-24 px-12 border-b border-white/10">
+      <div class="max-w-5xl mx-auto">
         <div class="text-green-400 uppercase tracking-[0.3em] text-sm mb-4">
           Membership
         </div>
-        <h2 class="text-4xl lg:text-6xl font-black">
+        <h2 class="text-4xl lg:text-5xl font-black">
           Our Packages
         </h2>
         <p class="mt-4 text-zinc-400 max-w-xl">
@@ -142,9 +141,9 @@
       </div>
     </section>
 
-    <section id="results" class="py-24 px-6 border-b border-white/10">
+    <section id="results" class="py-24 px-12 border-b border-white/10">
 
-      <div class="max-w-6xl mx-auto">
+      <div class="max-w-5xl mx-auto">
 
         <div class="mb-12">
 
@@ -152,7 +151,7 @@
             Community Results
           </div>
 
-          <h2 class="text-4xl lg:text-6xl font-black">
+          <h2 class="text-4xl lg:text-5xl font-black">
             Real Traders. Real Results.
           </h2>
 
@@ -172,12 +171,12 @@
 
     </section>
 
-    <section id="faq" class="py-24 px-6 border-b border-white/10">
-      <div class="max-w-6xl mx-auto">
+    <section id="faq" class="py-24 px-12 border-b border-white/10">
+      <div class="max-w-5xl mx-auto">
         <div class="text-green-400 uppercase tracking-[0.3em] text-sm mb-4">
           Information
         </div>
-        <h2 class="text-4xl lg:text-6xl font-black">
+        <h2 class="text-4xl lg:text-5xl font-black">
           FAQ
         </h2>
         <p class="mt-4 text-zinc-400 max-w-xl">
@@ -186,7 +185,7 @@
       </div>
     </section>
 
-    <section class="px-6 py-24">
+    <section class="px-12 py-24">
 
       <div class="max-w-5xl mx-auto rounded-[2rem] border border-green-500/20 bg-green-500/10 p-12 text-center">
 
@@ -194,13 +193,13 @@
           Start Today
         </div>
 
-        <h2 class="text-4xl lg:text-6xl font-black">
+        <h2 class="text-4xl lg:text-5xl font-black">
           Join The FSD-X Ecosystem
         </h2>
 
         <p class="mt-6 text-zinc-300 max-w-2xl mx-auto text-lg">
           Access tools, education, funded trader resources, and the live trading community.
-         </p>
+        </p>
 
         <div class="mt-10">
 
