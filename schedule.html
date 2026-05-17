@@ -3,27 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X — Operational Schedule</title>
-
+  <title>Schedule — FSD-X Trading</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-    body {
-      background-color: #000;
-    }
+    body { background-color: #000; }
   </style>
 </head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
-<body class="text-white bg-black min-h-screen flex flex-row overflow-x-hidden antialiased">
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">
+      FSD-X
+    </div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs font-mono tracking-wider hover:bg-zinc-800 transition">
+      // MENU
+    </button>
+  </header>
 
-  <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto">
-    
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
     <div>
-      <div class="text-4xl font-black tracking-wider mb-8 flex flex-col">
-        <span class="text-green-400">FSD-X</span>
-        <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
+      <div class="flex justify-between items-center mb-8 md:block">
+        <div class="text-4xl font-black tracking-wider flex flex-col">
+          <span class="text-green-400">FSD-X</span>
+          <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-mono font-bold">
+          [ESC]
+        </button>
       </div>
-
+      
       <nav class="flex flex-col gap-4 w-full">
         <div>
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
@@ -47,10 +55,10 @@
         <div class="mt-2">
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Social Channels</div>
           <div class="flex flex-col gap-2.5 pl-1">
-            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block flex items-center gap-1.5">
+            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">
               YouTube <span class="text-[10px] text-zinc-600 font-mono">↗</span>
             </a>
-            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block flex items-center gap-1.5">
+            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">
               Instagram <span class="text-[10px] text-zinc-600 font-mono">↗</span>
             </a>
           </div>
@@ -66,20 +74,19 @@
         </div>
       </nav>
     </div>
-
+    
     <div class="w-full pt-4 border-t border-white/5 mt-8">
-      <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">
+      <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-xs text-zinc-500 hover:text-white transition block">
         Launch Discord &rarr;
       </a>
     </div>
-
   </aside>
 
-  <main class="flex-1 pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
 
     <div class="w-full flex-1">
       
-      <section class="pt-20 pb-12 px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+      <section class="pt-20 pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Operational Timeline</div>
           <h1 class="text-4xl lg:text-5xl font-black tracking-tight">Market Coverage & Briefings</h1>
@@ -89,14 +96,14 @@
         </div>
       </section>
 
-      <section class="py-16 px-12">
+      <section class="py-16 px-6 md:px-12">
         <div class="max-w-5xl mx-auto space-y-12">
 
           <div>
             <div class="text-[11px] font-mono uppercase tracking-widest text-zinc-600 mb-4">// CORE MARKET RUNTIMES</div>
-            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 grid md:grid-cols-3 gap-8 items-center">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-6 md:p-8 grid grid-cols-1 xl:grid-cols-3 gap-8 items-center">
               
-              <div class="md:col-span-2 space-y-4">
+              <div class="xl:col-span-2 space-y-4">
                 <div class="flex items-center gap-3">
                   <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
                   <h3 class="text-2xl font-bold tracking-tight">Daily Live Trading Session</h3>
@@ -131,7 +138,7 @@
             </div>
           </div>
 
-          <div class="grid md:grid-cols-3 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 flex flex-col justify-between hover:border-zinc-800 transition md:col-span-1">
               <div class="space-y-3">
@@ -143,25 +150,25 @@
                   Weekly structural orientation charting session inside Discord. Mapping key historical ranges, liquidity pools, and setup anchors before the opening bell.
                 </p>
               </div>
-              <div class="mt-8 pt-4 border-t border-white/5 font-mono text-xs flex justify-between items-center">
+              <div class="mt-8 pt-4 border-t border-white/5 font-mono text-xs flex justify-between items-center gap-2">
                 <span class="text-zinc-500 uppercase tracking-wider">Mondays</span>
-                <span class="text-white font-bold bg-zinc-900 border border-white/10 px-8 py-1 rounded-lg">8:00 AM CST</span>
+                <span class="text-white font-bold bg-zinc-900 border border-white/10 px-4 py-1 rounded-lg whitespace-nowrap">8:00 AM CST</span>
               </div>
             </div>
 
             <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 flex flex-col justify-between md:col-span-2">
               <div class="w-full space-y-4">
-                <div class="flex justify-between items-center border-b border-white/5 pb-3">
+                <div class="flex justify-between items-center border-b border-white/5 pb-3 gap-2">
                   <div class="space-y-0.5">
                     <span class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest font-bold block">// INFRASTRUCTURE DESK UPDATES</span>
                     <h4 class="text-xl font-bold text-white tracking-tight">Special Events & Walkthroughs</h4>
                   </div>
-                  <span class="text-[11px] font-mono text-zinc-500 italic">Updated Live</span>
+                  <span class="text-[11px] font-mono text-zinc-500 italic whitespace-nowrap">Updated Live</span>
                 </div>
 
                 <div class="space-y-3">
 
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-black border border-white/5 rounded-xl gap-2 font-mono text-xs">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-black border border-white/5 rounded-xl gap-3 font-mono text-xs">
                     <div class="flex items-center gap-3">
                       <span class="text-green-400 text-base">🛠️</span>
                       <div>
@@ -169,13 +176,13 @@
                         <span class="text-[12px] text-zinc-500">Deep dive into FSD-X ORB PRO Settings.</span>
                       </div>
                     </div>
-                    <div class="shrink-0 text-right">
+                    <div class="shrink-0 sm:text-right">
                       <span class="text-zinc-400 font-bold block">TBD</span>
-                      <span class="text-[12px] text-zinc-600 block uppercase">Discord FSDX LIVE STAGE</span>
+                      <span class="text-[12px] text-zinc-600 block uppercase">Discord LIVE STAGE</span>
                     </div>
                   </div>
 
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-black border border-white/5 rounded-xl gap-2 font-mono text-xs">
+                  <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-black border border-white/5 rounded-xl gap-3 font-mono text-xs">
                     <div class="flex items-center gap-3">
                       <span class="text-green-400 text-base">📊</span>
                       <div>
@@ -183,14 +190,14 @@
                         <span class="text-[12px] text-zinc-500">Risk calibration for high-speed evaluation passing.</span>
                       </div>
                     </div>
-                    <div class="shrink-0 text-right">
+                    <div class="shrink-0 sm:text-right">
                       <span class="text-zinc-400 font-bold block">TBD</span>
-                      <span class="text-[12px] text-zinc-600 block uppercase">Discord FSDX LIVE STAGE</span>
+                      <span class="text-[12px] text-zinc-600 block uppercase">Discord LIVE STAGE</span>
                     </div>
                   </div>
 
                 </div>
-                </div>
+              </div>
             </div>
 
           </div>
@@ -200,10 +207,10 @@
 
     </div>
 
-    <footer class="bg-zinc-950 border-t border-white/10 px-12 py-12 w-full mt-auto text-[10px]">
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto text-[10px]">
       <div class="max-w-5xl mx-auto space-y-6">
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
             CFTC Rule 4.41 — Performance Disclosure
           </span>
           <p class="text-zinc-500 leading-relaxed mt-2">
@@ -212,7 +219,7 @@
         </div>
 
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
             Risk Disclosure
           </span>
           <p class="text-zinc-500 leading-relaxed mt-2">
@@ -220,7 +227,7 @@
           </p>
         </div>
 
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-zinc-600 gap-2 font-mono">
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-zinc-600 gap-4 text-center sm:text-left font-mono">
           <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
@@ -228,6 +235,17 @@
     </footer>
 
   </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      if (sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.remove('-translate-x-full');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+      }
+    }
+  </script>
 
 </body>
 </html>
