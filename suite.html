@@ -4,42 +4,54 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X Suite — Architecture & Platform Layout</title>
-
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
     body {
       background-color: #000;
     }
   </style>
 </head>
-
 <body class="text-white bg-black min-h-screen flex flex-row overflow-x-hidden antialiased">
 
-  <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50">
-    
+  <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto">
     <div>
-      <div class="text-2xl font-black tracking-wider mb-12 flex flex-col">
+      <div class="text-2xl font-black tracking-wider mb-8 flex flex-col">
         <span class="text-green-400">FSD-X</span>
         <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
       </div>
-
-      <nav class="flex flex-col gap-6 w-full">
-        <a href="index.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
-        <a href="suite.html" class="text-green-400 font-bold transition text-sm block">FSD-X Suite</a>
-        <a href="memberships.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Memberships</a>
-        <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Results</a>
-        <a href="faq.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FAQ</a>
-        <a href="disclosures.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Disclosures</a>
+      <nav class="flex flex-col gap-4 w-full">
+        <div>
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
+          <div class="flex flex-col gap-2.5 pl-1">
+            <a href="index.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
+            <a href="suite.html" class="text-green-400 font-bold transition text-sm block">FSD-X Suite</a>
+            <a href="memberships.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Memberships</a>
+            <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Results</a>
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Resources</div>
+          <div class="flex flex-col gap-2.5 pl-1">
+            <a href="affiliates.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Affiliates</a>
+            <a href="knowledge.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Knowledge Base</a>
+            <a href="schedule.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Schedule</a>
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// System</div>
+          <div class="flex flex-col gap-2.5 pl-1">
+            <a href="contact.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Contact & Help</a>
+            <a href="faq.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FAQ</a>
+            <a href="disclosures.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Disclosures</a>
+          </div>
+        </div>
       </nav>
     </div>
-
-    <div class="w-full pt-4 border-t border-white/5">
+    <div class="w-full pt-4 border-t border-white/5 mt-8">
       <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">
         Launch Discord &rarr;
       </a>
     </div>
-
   </aside>
 
   <main class="flex-1 pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
@@ -60,7 +72,6 @@
         <div class="max-w-5xl mx-auto space-y-16">
 
           <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
@@ -131,11 +142,9 @@
                 </div>
               </div>
             </div>
-
           </div>
 
           <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
@@ -228,14 +237,12 @@
                 </div>
               </div>
             </div>
-
           </div>
 
           <div class="border border-green-500/10 bg-zinc-950/60 rounded-3xl p-8 hover:border-green-500/20 transition relative overflow-hidden">
             <div class="absolute top-0 right-0 bg-green-500 text-black font-mono font-bold text-[8px] uppercase px-3 py-1 tracking-widest rounded-bl">
               Active Hub
             </div>
-            
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
@@ -244,7 +251,7 @@
                 <h2 class="text-3xl font-black text-white tracking-tight">FSD-X Nexus 2.0</h2>
               </div>
               <div>
-                <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgnjgbimklpmdadcngj" 
+                <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgngbimklpmdadcngj" 
                    target="_blank" rel="noopener noreferrer"
                    class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
                   Add to Chrome
@@ -289,11 +296,9 @@
                 </div>
               </div>
             </div>
-
           </div>
 
           <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
@@ -347,7 +352,6 @@
                 </div>
               </div>
             </div>
-
           </div>
 
         </div>
