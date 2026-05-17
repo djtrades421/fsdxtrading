@@ -189,25 +189,25 @@
         id: "01",
         title: "This ORB Indicator Hit 70%+ Win Rate With One Simple Rule",
         runtime: "08:21",
-        tier: "VIP + 2-Week Trial",
+        tier: "Free Vault Access",
         description: "A data-backed breakdown revealing how applying a single trade management rule pushes the opening range breakout framework from a 58% baseline up to a 70%+ win rate. Verified across a multi-year 1,549-trade Python simulation.",
-        youtubeId: "-H0uNtHg8bM" // Parsed directly from https://youtu.be/-H0uNtHg8bM
+        youtubeId: "-H0uNtHg8bM"
       },
       {
         id: "02",
         title: "The Smartest ORB Indicator Just Got Smarter (V4 Alpha)",
         runtime: "02:13",
-        tier: "VIP + 2-Week Trial",
+        tier: "Free Vault Access",
         description: "A quick review of the core V4 Alpha upgrades. Breaks down moving away from fixed bounds to a rolling 5-day lookback volatility engine, the 7-state progressive trend model, and the lime green visual grading system stamped right onto your breakout candles.",
-        youtubeId: "agmT_ZoP_Eo" // Parsed directly from https://youtu.be/agmT_ZoP_Eo
+        youtubeId: "agmT_ZoP_Eo"
       },
       {
         id: "03",
         title: "FSD-X ORB PRO: Full Walkthrough & Live Setup Guide",
         runtime: "1:01:31",
-        tier: "All Members",
+        tier: "Free Vault Access",
         description: "An extensive masterclass detailing complete setting calibrations for index futures. Explains standard breakout models vs continuations, ATR/structure hybrid stop configurations, win rate metric filtering, and evaluating multi-year 'blind' backtesting logs safely.",
-        youtubeId: "2IJaJctBaxo" // Parsed directly from https://youtu.be/2IJaJctBaxo
+        youtubeId: "2IJaJctBaxo"
       }
     ];
 
@@ -225,9 +225,10 @@
                 
                 <img src="https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg" alt="Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-30 transition duration-300" />
 
-                <span class="text-zinc-400 font-mono text-[10px] uppercase tracking-wider absolute top-4 left-5 z-20 group-hover:text-green-400 transition">// MODULE ${video.id} • RUN PLAYER</span>
-                <div class="w-12 h-12 rounded-full bg-black/60 border border-white/20 flex items-center justify-center absolute z-20 group-hover:bg-green-400 group-hover:border-transparent transition transform group-hover:scale-105 duration-300 shadow-xl">
-                  <span class="text-white group-hover:text-black ml-1 text-xs">&#9658;</span>
+                <div class="w-14 h-14 rounded-full bg-black/70 border border-white/20 flex items-center justify-center absolute z-20 group-hover:bg-green-400 group-hover:border-transparent transition transform group-hover:scale-105 duration-300 shadow-2xl">
+                  <svg class="w-5 h-5 text-white group-hover:text-black ml-1 transition" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
                 </div>
               </div>
               <div class="p-5">
@@ -258,7 +259,6 @@
             allowfullscreen>
           </iframe>
         `;
-        // Strip out cursor pointers once player mounts to preserve native media controls interaction feel
         targetElement.removeAttribute('onclick');
         targetElement.classList.remove('cursor-pointer');
       }
