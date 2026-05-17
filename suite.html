@@ -3,635 +3,162 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X Suite — Architecture & Platform Layout</title>
-
+  <title>FSD-X — System Suite Architecture</title>
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-    body {
-      background-color: #000;
-    }
+    body { background-color: #000; }
   </style>
 </head>
-
 <body class="text-white bg-black min-h-screen flex flex-row overflow-x-hidden antialiased">
 
-  <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50">
-    
+  <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto">
     <div>
-      <div class="text-2xl font-black tracking-wider mb-12 flex flex-col">
+      <div class="text-2xl font-black tracking-wider mb-8 flex flex-col">
         <span class="text-green-400">FSD-X</span>
         <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
       </div>
-
-      <nav class="flex flex-col gap-6 w-full">
-        <a href="index.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
-        <a href="suite.html" class="text-green-400 font-bold transition text-sm block">FSD-X Suite</a>
-        <a href="memberships.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Memberships</a>
-        <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Results</a>
-        <a href="faq.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FAQ</a>
-        <a href="disclosures.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Disclosures</a>
+      <nav class="flex flex-col gap-4 w-full">
+        <div>
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
+          <div class="flex flex-col gap-2.5 pl-1">
+            <a href="index.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
+            <a href="suite.html" class="text-green-400 font-bold transition text-sm block">FSD-X Suite</a>
+            <a href="memberships.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Memberships</a>
+            <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Results</a>
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Resources</div>
+          <div class="flex flex-col gap-2.5 pl-1">
+            <a href="affiliates.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Affiliates</a>
+            <a href="knowledge.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Knowledge Base</a>
+            <a href="schedule.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Schedule</a>
+          </div>
+        </div>
+        <div class="mt-2">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// System</div>
+          <div class="flex flex-col gap-2.5 pl-1">
+            <a href="contact.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Contact & Help</a>
+            <a href="faq.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FAQ</a>
+            <a href="disclosures.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Disclosures</a>
+          </div>
+        </div>
       </nav>
     </div>
-
-    <div class="w-full pt-4 border-t border-white/5">
+    <div class="w-full pt-4 border-t border-white/5 mt-8">
       <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">
         Launch Discord &rarr;
       </a>
     </div>
-
   </aside>
 
   <main class="flex-1 pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
-
     <div class="w-full flex-1">
       
       <section class="pt-20 pb-12 px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Institutional Toolsets</div>
-          <h1 class="text-4xl lg:text-5xl font-black tracking-tight">System Architecture Spec</h1>
+        <div class="max-w-6xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Software Deployment Matrix</div>
+          <h1 class="text-4xl lg:text-5xl font-black tracking-tight">The FSD-X Software Suite</h1>
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
-            A granular dive into our rules-based proprietary framework. Explore individual tool configurations bundled natively inside the unified VIP ecosystem membership.
+            Deploy state-of-the-art algorithmic tooling engineered exclusively to identify, backtest, and track Opening Range Breakout parameters across liquid index contracts.
           </p>
         </div>
       </section>
 
       <section class="py-16 px-12">
-        <div class="max-w-5xl mx-auto space-y-16">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-3 gap-8">
 
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
-            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
-              <div>
-                <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-mono uppercase tracking-wider">TradingView Flagship</span>
-                  <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] font-mono uppercase tracking-wider font-extrabold flex items-center gap-1">
-                    <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
-                  </span>
-                </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">FSD-X ORB PRO v5 Alpha</h2>
-              </div>
-              <div>
-                <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
-                  Unlock via VIP Trial
-                </a>
-              </div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-8 flex flex-col justify-between hover:border-zinc-800 transition">
+            <div class="space-y-4">
+              <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 block">// ALGORITHMIC VISUAL ENGINE</span>
+              <h3 class="text-2xl font-black text-white tracking-tight">FSD-X ORB PRO</h3>
+              <p class="text-zinc-400 text-xs leading-relaxed">
+                Our all-in-one execution overlay for TradingView. Features an adaptive 5-day rolling volatility lookback, a 7-state progressive macro trend scanner, dynamic ATR/Structure stop metrics, and visual breakout grading right on the setup candle.
+              </p>
+              <ul class="space-y-1.5 pt-2 text-[11px] font-mono text-zinc-500">
+                <li>• Invite-Only TradingView Script access</li>
+                <li>• Automated high-contrast color labels</li>
+                <li>• Embedded Fair Value Gap detection</li>
+              </ul>
             </div>
-
-            <div class="grid xl:grid-cols-3 gap-8">
-              <div class="xl:col-span-2 space-y-6">
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Operational Methodology</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    A comprehensive opening range breakout software engine. Calculates multi-timeframe trends, session volume spikes, and structural support/resistance lines to capture high-probability momentum breaks during liquid opening hours. Optimized specifically for <span class="text-white font-semibold">NQ/MNQ on the 5-minute timeframe</span>.
-                  </p>
-                </div>
-
-                <div class="grid sm:grid-cols-2 gap-4">
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white text-xs font-bold mb-1">A+ Through C Automated Grading</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Evaluates entries using higher timeframe dual EMA crossover alignment, volume expansion averages, and optimal open range point balances (70-100 pts by default) to filter out low-quality chops.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white text-xs font-bold mb-1">Confluence Support/Resistance Targets</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Ditches static targets. Scans for real structural execution parameters like Previous Day High/Low, Weekly High/Low, lookback swing levels, and Fair Value Gaps (imbalance zones).</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white text-xs font-bold mb-1">Structure-Based Target Fallbacks</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">When no clear S/R confluences exist at a minimum R:R, the script intelligently deploys realistic math bounds utilizing 0.5x, 1x, or 2x the calculated ORB sizing.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white text-xs font-bold mb-1">Advanced On-Chart P&L Analytics</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Real-time on-screen dashboard displays granular data metrics: dollar-value performance by setup grade, total profit factors, best/worst winning streaks, and maximum tracking period drawdowns.</p>
-                  </div>
-                </div>
-
-                <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl flex items-start gap-3">
-                  <span class="text-green-400 text-sm">📊</span>
-                  <div class="text-xs">
-                    <span class="text-white font-semibold block mb-0.5">Data-Driven Strategy Refinement</span>
-                    <p class="text-zinc-500 leading-relaxed">Includes a Quality-Only dashboard toggle allowing you to view exclusively A+, A, and B+ setup history. If lower-tier grades are showing negative historic metrics, you can quickly filter them out to preserve capital during erratic sessions.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
-                <div>
-                  <div class="text-[10px] font-mono text-green-500 uppercase tracking-widest mb-3">// ACCESS PROVISIONS</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">
-                    Access to this flagship indicator cannot be acquired individually. FSD-X ORB PRO is completely locked as an ecosystem benefit, bundled natively alongside our live trading rooms, companion filters, and live Discord automation channels.
-                  </p>
-                </div>
-                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">TradingView</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Primary Targets</span><span class="text-zinc-300">NQ, MNQ, ES Futures</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Access Mode</span><span class="text-green-400 font-bold">VIP Membership Only</span></div>
-                </div>
-              </div>
+            <div class="mt-8 pt-4 border-t border-white/5">
+              <a href="memberships.html" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 text-white border border-white/10 text-xs font-black uppercase tracking-wider rounded-xl transition font-mono">
+                Unlock Access via Whop &rarr;
+              </a>
             </div>
-
           </div>
 
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
-            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
-              <div>
-                <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] font-mono uppercase tracking-wider">TradingView Companion</span>
-                  <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] font-mono uppercase tracking-wider font-extrabold flex items-center gap-1">
-                    <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
-                  </span>
-                </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">FSD-X // Volume Engine</h2>
-              </div>
-              <div>
-                <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5 whitespace-nowrap">
-                  Unlock via VIP Trial
-                </a>
-              </div>
+          <div class="border border-green-500/10 bg-zinc-950/60 rounded-2xl p-8 flex flex-col justify-between hover:border-green-500/20 transition relative overflow-hidden shadow-lg shadow-green-500/5">
+            <div class="absolute top-0 right-0 bg-green-500 text-black font-mono font-bold text-[8px] uppercase px-3 py-1 tracking-widest rounded-bl">
+              Active Hub
             </div>
-
-            <div class="grid xl:grid-cols-3 gap-8">
-              <div class="xl:col-span-2 space-y-6">
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Ecosystem Integration</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    A specialized companion confirmation tool built natively to mirror the identical algorithmic detection logic of <span class="text-white font-medium">FSD-X ORB PRO v5 Alpha</span>. It automatically highlights the precise breakout execution candle bar within your volume pane to eliminate all discretionary matching guesswork.
-                  </p>
-                </div>
-
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-3">System Color Key Architecture</h4>
-                  <div class="grid sm:grid-cols-2 gap-3 font-mono text-xs">
-                    <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl">
-                      <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/20"></span>
-                      <div>
-                        <span class="text-emerald-400 font-bold block">Bright Green Bar</span>
-                        <span class="text-zinc-500 text-[11px]">Confirmed Bull Breakout</span>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl">
-                      <span class="w-3 h-3 rounded-full bg-rose-600 shadow-sm shadow-rose-600/20"></span>
-                      <div>
-                        <span class="text-rose-400 font-bold block">Bright Red Bar</span>
-                        <span class="text-zinc-500 text-[11px]">Confirmed Bear Breakout</span>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl">
-                      <span class="w-3 h-3 rounded-full bg-amber-400 shadow-sm shadow-amber-400/20"></span>
-                      <div>
-                        <span class="text-amber-400 font-bold block">Yellow Banding</span>
-                        <span class="text-zinc-500 text-[11px]">Active ORB Window (8:30–8:45 AM CT)</span>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl">
-                      <span class="w-3 h-3 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/20"></span>
-                      <div>
-                        <span class="text-cyan-400 font-bold block">Teal (Bright / Faded)</span>
-                        <span class="text-zinc-500 text-[11px]">Above or Below Average Vol Participation</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="grid sm:grid-cols-3 gap-4 text-xs">
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Participation Sync</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Instantly spot if institution order blocks are backing the breakout structural transition or staying sidelined.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Momentum Drainage</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Track if fluid capital volumes sustain expansion all the way to target milestones or dry up prematurely.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Spike Location Tracking</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Pinpoint exactly where severe liquidity imbalances flush throughout standard RTH execution sessions.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
-                <div>
-                  <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-3">// WORKSPACE PROVISION</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">
-                    Deploys beneath your execution price chart as an isolated indicators pane panel. To maintain flawless synchronizations, align your structural ORB Start Time, Duration metrics, and breakout filters exactly with your flagship engine settings.
-                  </p>
-                </div>
-                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Workspace Folder</span><span class="text-zinc-300">Invite-Only (TradingView)</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Execution Scope</span><span class="text-zinc-300">Any Timeframe / Instrument</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Access Mode</span><span class="text-green-400 font-bold">VIP Membership Only</span></div>
-                </div>
-              </div>
+            <div class="space-y-4">
+              <span class="text-[10px] font-mono uppercase tracking-widest text-green-400 block">// RUNTIME ECOSYSTEM UTILITY</span>
+              <h3 class="text-2xl font-black text-white tracking-tight">FSD-X Nexus</h3>
+              <p class="text-zinc-400 text-xs leading-relaxed">
+                The ultimate companion utility built for prop firm futures traders. Features a custom direct trade journal, precise position sizing calculators, macro news scanners, and an AI-driven chart analyzer that runs directly next to your workspace.
+              </p>
+              <ul class="space-y-1.5 pt-2 text-[11px] font-mono text-zinc-500">
+                <li>• Native Chrome Web Store architecture</li>
+                <li>• Multi-market FX & Futures size planners</li>
+                <li>• Live UTC reset AI flow readers</li>
+              </ul>
             </div>
-
+            <div class="mt-8 pt-4 border-t border-white/5">
+              <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgnjgbimklpmdadcngj" 
+                 target="_blank" rel="noopener noreferrer"
+                 class="block w-full text-center py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-black uppercase tracking-wider rounded-xl transition font-mono shadow-md shadow-green-500/10">
+                Get Nexus from Chrome Store &rarr;
+              </a>
+            </div>
           </div>
 
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
-            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
-              <div>
-                <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] font-mono uppercase tracking-wider">TradingView Bias Tool</span>
-                  <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] font-mono uppercase tracking-wider font-extrabold flex items-center gap-1">
-                    <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
-                  </span>
-                </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">FSD-X // STACK V1</h2>
-              </div>
-              <div>
-                <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5 whitespace-nowrap">
-                  Unlock via VIP Trial
-                </a>
-              </div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-8 flex flex-col justify-between hover:border-zinc-800 transition">
+            <div class="space-y-4">
+              <span class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 block">// BACKTESTING AUTOMATION EXTENSION</span>
+              <h3 class="text-2xl font-black text-white tracking-tight">Optimizer Pro</h3>
+              <p class="text-zinc-400 text-xs leading-wider">
+                Accelerate historical data collection. This Chrome automation extension handles the brute-force processing workload by programmatically cycling through variable Pine Script strategy inputs on TradingView in minutes instead of hours.
+              </p>
+              <ul class="space-y-1.5 pt-2 text-[11px] font-mono text-zinc-500">
+                <li>• Single-key hardware security lock</li>
+                <li>• Works over any custom Pine Script code</li>
+                <li>• Complete automated parameter cycling</li>
+              </ul>
             </div>
-
-            <div class="grid xl:grid-cols-3 gap-8">
-              <div class="xl:col-span-2 space-y-6">
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Operational Bias Matrix</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    An advanced multi-timeframe confirmation dashboard engineered to function directly alongside FSD-X ORB Pro, or serve as a foundational trend bias system for intraday futures execution. Tracks, aggregates, and scores technical alignment metrics across up to seven key timeframes concurrently.
-                  </p>
-                </div>
-
-                <div class="grid sm:grid-cols-3 gap-4 text-xs">
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">MTF EMA Trend Engine</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Evaluates fast vs. slow EMA structures on each active timeframe to output explicit Bull, Bear, or Flat data rows. Issues actionable "STACK" triggers when over 60% of timeframes align.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Volume Point of Control</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Plots a precision volume-based POC across dynamic configurable lookback bars. Instantly tracks distribution dominance: price above flags buyer control, price below indicates clear overhead friction.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Multi-Period Pivot Math</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Projects institutional floors and ceilings (PP, R1, R2, S1, S2) derived from the preceding Daily, Weekly, or Monthly macro session periods directly onto your working canvas.</p>
-                  </div>
-                </div>
-
-                <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl flex items-start gap-3">
-                  <span class="text-green-400 text-sm">💡</span>
-                  <div class="text-xs">
-                    <span class="text-white font-semibold block mb-0.5">High-Conviction Setup Filtering</span>
-                    <p class="text-zinc-500 leading-relaxed">Use the aggregated stack score to rigorously confirm or reject opening range breakouts. Ideal execution parameters materialize when a clean 6/7 or 7/7 trend stack perfectly coordinates with price trading comfortably clear of the POC line and pivot floors.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
-                <div>
-                  <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-3">// ARCHITECTURE PARAMETERS</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">
-                    Highly adaptable system infrastructure. Supports fully custom fast/slow EMA parameters, individual timeframe monitoring selections (1m through Daily spans), adjustable flat transition tolerances, and distinct visual toggle parameters for structural levels.
-                  </p>
-                </div>
-                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Workspace Folder</span><span class="text-zinc-300">Invite-Only (TradingView)</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Monitored Horizons</span><span class="text-zinc-300">Up to 7 Timeframes</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-green-400 font-bold">VIP Membership Only</span></div>
-                </div>
-              </div>
+            <div class="mt-8 pt-4 border-t border-white/5">
+              <a href="https://chromewebstore.google.com/detail/fsd-x-strategy-optimizer/gocnolcgijcmjikifnbiahnccbcpgflk" 
+                 target="_blank" rel="noopener noreferrer"
+                 class="block w-full text-center py-3 bg-white hover:bg-zinc-200 text-black text-xs font-black uppercase tracking-wider rounded-xl transition font-mono">
+                Get Optimizer from Chrome Store &rarr;
+              </a>
             </div>
-
           </div>
 
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
-            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
-              <div>
-                <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] font-mono uppercase tracking-wider">TradingView Strategy Engine</span>
-                  <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] font-mono uppercase tracking-wider font-extrabold flex items-center gap-1">
-                    <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
-                  </span>
-                </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">FSD-X ORB PRO v5 Alpha (Backtest Strategy)</h2>
-              </div>
-              <div>
-                <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5 whitespace-nowrap">
-                  Unlock via VIP Trial
-                </a>
-              </div>
-            </div>
-
-            <div class="grid xl:grid-cols-3 gap-8">
-              <div class="xl:col-span-2 space-y-6">
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Algorithmic Validation Architecture</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    A dedicated statistical strategy engine designed to mathematically validate setups and stress-test specific execution models. While the flagship indicator charts real-time grades, this engine translates back-end scripts into definitive performance data logs—allowing members to unlock the exact optimization sweet spot before risking active capital.
-                  </p>
-                </div>
-
-                <div class="grid sm:grid-cols-2 gap-4 text-xs">
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl space-y-2">
-                    <div class="text-white font-bold text-xs uppercase tracking-wider border-b border-white/5 pb-1">// Modular Entry Logic Mode</div>
-                    <ul class="space-y-1.5 text-[11px] text-zinc-500 font-mono">
-                      <li><span class="text-green-400 font-bold">V1 (Standard):</span> Pure momentum breakout execution.</li>
-                      <li><span class="text-green-400 font-bold">V2 (Confirmation):</span> Multi-bar validation to filter false flushes.</li>
-                      <li><span class="text-green-400 font-bold">V3 (Retest):</span> Conservative range boundary validation test.</li>
-                    </ul>
-                  </div>
-                  
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl space-y-2">
-                    <div class="text-white font-bold text-xs uppercase tracking-wider border-b border-white/5 pb-1">// Smart TP Scaling Systems</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">
-                      Evaluate compound exit math structures. Seamlessly transition performance tracks between aggressive full liquidation parameters at TP1 target bounds or granular partial position scaling protocols across advanced TP1 and TP2 spreads.
-                    </p>
-                  </div>
-
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl space-y-2">
-                    <div class="text-white font-bold text-xs uppercase tracking-wider border-b border-white/5 pb-1">// Realistic Trade Tracking</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">
-                      Enforces transparent data integrity. Turning on this restriction locks tracking to a single active trade exposure block at a time, entirely preventing artificial compounding or inflated stats caused by rapid back-to-back alerts.
-                    </p>
-                  </div>
-
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl space-y-2">
-                    <div class="text-white font-bold text-xs uppercase tracking-wider border-b border-white/5 pb-1">// Trade Grading & Session Filters</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">
-                      Applies strict math restrictions to isolate ROI changes based on layout parameters. Dial in specific local trading windows (5m to 60m durations) and apply hard cutoffs based on range points or breakout distance to completely map out the structural costs of "chasing."
-                    </p>
-                  </div>
-                </div>
-
-                <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl flex items-start gap-3">
-                  <span class="text-green-400 text-sm">⚠️</span>
-                  <div class="text-xs">
-                    <span class="text-white font-semibold block mb-0.5">Risk Parameter Calibration Guide</span>
-                    <p class="text-zinc-500 leading-relaxed">Utilizes identical proprietary trend-detection matrices as our primary indicator systems. For highly precise performance logging results, configure explicit risk-per-trade variables and dollar-per-point sizing allocations (MNQ, NQ, or ES specs) inside script input panels to exactly shadow your live funded account thresholds.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
-                <div>
-                  <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-3">// STRATEGY SPECS</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">
-                    Designed as an optimization asset to isolate and elevate backtesting parameters. Completely bundled inside the multi-tool ecosystem pass to keep indicators and strategy parameters under one unified framework.
-                  </p>
-                </div>
-                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Framework Focus</span><span class="text-zinc-300">Optimization / Data Logs</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-300">Session Controls</span><span class="text-zinc-300">Chicago / Adjustable</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-green-400 font-bold">VIP Membership Only</span></div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
-            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
-              <div>
-                <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] font-mono uppercase tracking-wider">Browser Extension Engine</span>
-                  <span class="px-2 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-mono uppercase tracking-wider font-bold">Included in VIP Bundle</span>
-                  <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-300 text-[10px] font-mono uppercase tracking-wider">Standalone Available</span>
-                </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">FSD-X Nexus 2.0</h2>
-              </div>
-              <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-5 py-3 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold border border-white/10 rounded-xl transition text-center">
-                  Get Full VIP Pass
-                </a>
-                <a href="https://whop.com/joined/dj-trades-fsdx/products/fsd-x-nexus/" target="_blank" rel="noopener noreferrer"
-                   class="px-5 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition text-center shadow-lg shadow-green-500/5">
-                  Standalone $7.99/mo &rarr;
-                </a>
-              </div>
-            </div>
-
-            <div class="grid xl:grid-cols-3 gap-8">
-              <div class="xl:col-span-2 space-y-8">
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">All-In-One Workspace Environment</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    An advanced browser-native utility engine built directly into your active viewing layout. Nexus 2.0 lets futures and forex operators optimize strategies, deploy multi-timeframe AI analytical scripts, model account risks, and log trades instantaneously without ever breaking focus or leaving the active screen workspace.
-                  </p>
-                </div>
-
-                <div class="p-4 bg-zinc-900 border border-amber-500/20 text-amber-400 rounded-xl flex items-start gap-3 font-mono text-xs">
-                  <span class="text-sm mt-0.5">🔑</span>
-                  <div>
-                    <span class="text-white font-bold block mb-0.5">EXTENSION LICENSE AUTHENTICATION NOTICE:</span>
-                    Once access is secured via standalone or the unified VIP bundle, you must retrieve your unique authentication software credential. Navigate directly to your Whop dashboard and open the <span class="text-white underline font-semibold">"Software" section</span> to claim your product access key.
-                  </div>
-                </div>
-
-                <div>
-                  <div class="flex items-center gap-2 mb-3">
-                    <span class="h-px bg-white/10 flex-1"></span>
-                    <h3 class="text-[10px] font-mono text-zinc-400 tracking-[0.2em] uppercase font-bold">Unrestricted Core Workspace Features</h3>
-                    <span class="h-px bg-white/10 flex-1"></span>
-                  </div>
-                  <div class="grid sm:grid-cols-2 gap-4 text-xs">
-                    <div class="p-4 bg-zinc-900/20 border border-white/5 rounded-xl">
-                      <span class="text-white font-bold block mb-1">⚡ Strategy Optimizer</span>
-                      <p class="text-zinc-500 text-[11px] leading-relaxed">Automate backtesting permutations natively on TradingView. Scan parameter sets in real time to locate performance nodes without click adjustments.</p>
-                    </div>
-                    <div class="p-4 bg-zinc-900/20 border border-white/5 rounded-xl">
-                      <span class="text-white font-bold block mb-1">🧮 Position Size Calculator</span>
-                      <p class="text-zinc-500 text-[11px] leading-relaxed">Supports complex contracts (NQ, MNQ, ES, MES, CL, GC) and forex sets. Maps out precise contract allocations, absolute dollar exposures, and tiered partial target R:R metrics instantly.</p>
-                    </div>
-                    <div class="p-4 bg-zinc-900/20 border border-white/5 rounded-xl">
-                      <span class="text-white font-bold block mb-1">📊 Risk Planner Spectrum</span>
-                      <p class="text-zinc-500 text-[11px] leading-relaxed">Input drawdown ceilings, sizing models, and win rates to map mathematical performance expectancy scores and threshold breaks for personal or evaluation challenges.</p>
-                    </div>
-                    <div class="p-4 bg-zinc-900/20 border border-white/5 rounded-xl">
-                      <span class="text-white font-bold block mb-1">📅 Economic News Calendar</span>
-                      <p class="text-zinc-500 text-[11px] leading-relaxed">Tracks global high-impact volatility drivers. Converts events automatically to local clocks and isolates upcoming announcements directly within view.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div class="flex items-center gap-2 mb-3">
-                    <span class="h-px bg-green-500/20 flex-1"></span>
-                    <h3 class="text-[10px] font-mono text-green-400 tracking-[0.2em] uppercase font-bold">Premium Nexus Pro Sub-Systems</h3>
-                    <span class="h-px bg-green-500/20 flex-1"></span>
-                  </div>
-                  <div class="grid sm:grid-cols-2 gap-4 text-xs">
-                    <div class="p-4 bg-zinc-900/40 border border-green-500/10 rounded-xl space-y-1">
-                      <span class="text-white font-bold block">📓 Performance Trade Journal</span>
-                      <p class="text-zinc-500 text-[11px] leading-relaxed">Log setups via strict pricing boundaries or manual tracking configurations. Apply simultaneous intersecting filters (e.g., "Grade B+ and Wins") across global history panels to calculate target performance models. Includes custom CSV data mapping interfaces and shareable P&L graphic cards.</p>
-                    </div>
-                    <div class="p-4 bg-zinc-900/40 border border-green-500/10 rounded-xl space-y-1">
-                      <span class="text-white font-bold block">🧪 Historic Backtest Sessions</span>
-                      <p class="text-zinc-500 text-[11px] leading-relaxed">Isolate historical strategy sets without exposure risk. Run complete independent simulations tagged by ticker and timeframe logic to establish performance verification structures before taking trades into funded pipelines.</p>
-                    </div>
-                    <div class="p-4 bg-zinc-900/40 border border-green-500/10 rounded-xl space-y-1">
-                      <span class="text-white font-bold block">👁️ Deep AI Chart Analyzer</span>
-                      <p class="text-zinc-500 text-[11px] leading-relaxed">Upload layout screen grabs for localized processing. The internal model maps dominant structures, near-term liquidity nodes, resistance ceilings, and flags institutional bias coordinates—fully synchronized with FSD-X indicators.</p>
-                    </div>
-                    <div class="p-4 bg-zinc-900/40 border border-green-500/10 rounded-xl space-y-1">
-                      <span class="text-white font-bold block">🎲 AI Prop Firm Sim & Analytics</span>
-                      <p class="text-zinc-500 text-[11px] leading-relaxed">Run extensive automated Monte Carlo model sweeps directly against log history. Simulates performance metrics to estimate raw passing rates for Apex, TopStep, and custom evaluation funding metrics.</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl font-mono text-[11px] text-zinc-500 grid sm:grid-cols-3 gap-3">
-                  <div><span class="text-white font-bold">🔍 News Scanner:</span> Real-time corporate headlines mapped to rapid text sentiment values.</div>
-                  <div><span class="text-white font-bold">🌊 Flow Reader:</span> Paste options tape blocks to parse institutional whale commitments.</div>
-                  <div><span class="text-white font-bold">📋 AI Watchlist:</span> Cross-scan broad tracking assets simultaneously for sentiment drops.</div>
-                </div>
-
-              </div>
-
-              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
-                <div>
-                  <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-3">// ENVIRONMENT ARCHITECTURE</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">
-                    Deploys natively inside standard Chromium interfaces. Fully calibrated to pull and optimize data trends across local TradingView frameworks. Completely included under the VIP pass, or unlocked as a standalone asset.
-                  </p>
-                </div>
-                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Deployment</span><span class="text-zinc-300">Browser Native Extension</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Pro Trial Caps</span><span class="text-zinc-300">3 Sessions (Unlimited on Pass)</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-green-400 font-bold">VIP Pass / Standalone Link</span></div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            
-            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
-              <div>
-                <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] font-mono uppercase tracking-wider">Automation Extension</span>
-                  <span class="px-2 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-mono uppercase tracking-wider font-bold">Included in VIP Bundle</span>
-                  <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-300 text-[10px] font-mono uppercase tracking-wider">Standalone Available</span>
-                </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">FSD-X Strategy Optimizer</h2>
-              </div>
-              <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-5 py-3 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-bold border border-white/10 rounded-xl transition text-center">
-                  Get Full VIP Pass
-                </a>
-                <a href="http://whop.com/joined/dj-trades-fsdx/products/fsd-x-optimizer/" target="_blank" rel="noopener noreferrer"
-                   class="px-5 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition text-center shadow-lg shadow-green-500/5">
-                  Standalone $6.99/mo &rarr;
-                </a>
-              </div>
-            </div>
-
-            <div class="grid xl:grid-cols-3 gap-8">
-              <div class="xl:col-span-2 space-y-6">
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Algorithmic Permutation Engine</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    A high-speed background execution utility built to automate strategy calibration inside the TradingView interface. Instead of forcing manual value edits, this automation engine processes hundreds of script parameter combinations systematically to isolate optimization nodes and performance peaks instantly.
-                  </p>
-                </div>
-
-                <div class="p-4 bg-zinc-900 border border-amber-500/20 text-amber-400 rounded-xl flex items-start gap-3 font-mono text-xs">
-                  <span class="text-sm mt-0.5">🔑</span>
-                  <div>
-                    <span class="text-white font-bold block mb-0.5">EXTENSION LICENSE AUTHENTICATION NOTICE:</span>
-                    Once access is secured via standalone or the unified VIP bundle, you must retrieve your unique authentication software credential. Navigate directly to your Whop dashboard and open the <span class="text-white underline font-semibold">"Software" section</span> to claim your product access key.
-                  </div>
-                </div>
-
-                <div class="grid sm:grid-cols-2 gap-6">
-                  <div class="p-5 bg-zinc-900/20 border border-white/5 rounded-xl space-y-3">
-                    <div class="text-zinc-400 text-xs font-mono uppercase tracking-wider border-b border-white/5 pb-1">// Core Tier Limits</div>
-                    <ul class="space-y-2 text-xs text-zinc-500 font-mono">
-                      <li class="flex justify-between"><span>Parameter Matrix Spans</span><span class="text-zinc-300">Up to 2 Fields</span></li>
-                      <li class="flex justify-between"><span>Max Permutation Blocks</span><span class="text-zinc-300">Up to 50 Outlays</span></li>
-                      <li class="flex justify-between"><span>Execution Priority</span><span class="text-zinc-400">Standard</span></li>
-                    </ul>
-                  </div>
-
-                  <div class="p-5 bg-zinc-900/40 border border-green-500/10 rounded-xl space-y-3">
-                    <div class="text-green-400 text-xs font-mono uppercase tracking-wider border-b border-green-500/10 pb-1">// Premium Pass Features</div>
-                    <ul class="space-y-2 text-xs text-zinc-500 font-mono">
-                      <li class="flex justify-between"><span>Parameter Matrix Spans</span><span class="text-green-400 font-bold">Unlimited Fields</span></li>
-                      <li class="flex justify-between"><span>Max Permutation Blocks</span><span class="text-green-400 font-bold">Unlimited Sweeps</span></li>
-                      <li class="flex justify-between"><span>Data Export Formats</span><span class="text-zinc-300">CSV Data Logs</span></li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div class="grid sm:grid-cols-2 gap-4 text-xs">
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Dynamic Results Sorting</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">Instantly re-index calculations by net profit factors, drawdown levels, or win percentages to highlight optimal script structures.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">State Preservation Architecture</div>
-                    <p class="text-zinc-500 text-[11px] leading-relaxed">The internal tracker continuously saves real-time data calculations if the popup UI layer is minimized or closed during massive runs.</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
-                <div>
-                  <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-3">// INFRASTRUCTURE FOCUS</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">
-                    Calibrated specifically to scan, map, and optimize core settings within the FSD-X ORB Pro ecosystem without requiring deep code modifications.
-                  </p>
-                </div>
-                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Interface Scope</span><span class="text-zinc-300">Chromium Framework</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Core Optimization</span><span class="text-zinc-300">FSD-X ORB Pro Specs</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-green-400 font-bold">VIP Bundle / Standalone</span></div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      <section class="pb-16 px-12">
-        <div class="max-w-5xl mx-auto p-6 bg-zinc-950 border border-white/10 rounded-2xl font-mono text-[11px] text-zinc-500 leading-relaxed">
-          <span class="text-white font-bold block mb-1">⚠️ SYSTEM REGIME OPERATIONAL NOTICE:</span>
-          Performance thresholds naturally change across different market conditions. Consistent algorithmic validation indicates that structured trending environments generate premium signal conversions, while choppy sessions show performance drop-offs. Discretionary grade filtering is strongly recommended before trade deployment.
         </div>
       </section>
 
     </div>
 
-    <footer class="bg-zinc-950 border-t border-white/10 px-12 py-12 w-full mt-auto">
-      <div class="max-w-5xl mx-auto space-y-6">
-        
+    <footer class="bg-zinc-950 border-t border-white/10 px-12 py-12 w-full mt-auto text-[10px]">
+      <div class="max-w-6xl mx-auto space-y-6">
         <div>
-          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-            CFTC Rule 4.41 — Hypothetical Performance Disclosure
+          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+            CFTC Rule 4.41 — Performance Disclosure
           </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+          <p class="text-zinc-500 leading-relaxed mt-2">
             Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
           </p>
         </div>
-
         <div>
-          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-            Futures & Forex Risk Disclosure
+          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+            Risk Disclosure
           </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+          <p class="text-zinc-500 leading-relaxed mt-2">
             Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones’ financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
           </p>
         </div>
-
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-2">
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-zinc-600 gap-2 font-mono">
           <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
