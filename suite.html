@@ -11,14 +11,29 @@
     }
   </style>
 </head>
-<body class="text-white bg-black min-h-screen flex flex-row overflow-x-hidden antialiased">
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
-  <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto">
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">
+      FSD-X
+    </div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs font-mono tracking-wider hover:bg-zinc-800 transition">
+      // MENU
+    </button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
     <div>
-      <div class="text-4xl font-black tracking-wider mb-8 flex flex-col">
-        <span class="text-green-400">FSD-X</span>
-        <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
+      <div class="flex justify-between items-center mb-8 md:block">
+        <div class="text-4xl font-black tracking-wider flex flex-col">
+          <span class="text-green-400">FSD-X</span>
+          <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-mono font-bold">
+          [ESC]
+        </button>
       </div>
+
       <nav class="flex flex-col gap-4 w-full">
         <div>
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
@@ -42,10 +57,10 @@
         <div class="mt-2">
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Social Channels</div>
           <div class="flex flex-col gap-2.5 pl-1">
-            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block flex items-center gap-1.5">
+            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">
               YouTube <span class="text-[10px] text-zinc-600 font-mono">↗</span>
             </a>
-            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block flex items-center gap-1.5">
+            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">
               Instagram <span class="text-[10px] text-zinc-600 font-mono">↗</span>
             </a>
           </div>
@@ -61,18 +76,19 @@
         </div>
       </nav>
     </div>
+
     <div class="w-full pt-4 border-t border-white/5 mt-8">
-      <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">
+      <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-xs text-zinc-500 hover:text-white transition block">
         Launch Discord &rarr;
       </a>
     </div>
   </aside>
 
-  <main class="flex-1 pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
 
     <div class="w-full flex-1">
       
-      <section class="pt-20 pb-12 px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+      <section class="pt-20 pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Institutional Toolsets</div>
           <h1 class="text-4xl lg:text-5xl font-black tracking-tight">System Architecture Spec</h1>
@@ -82,11 +98,10 @@
         </div>
       </section>
 
-      <section class="py-16 px-12">
+      <section class="py-16 px-6 md:px-12">
         <div class="max-w-5xl mx-auto space-y-16">
 
-          <!-- FSD-X ORB PRO -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-6 md:p-8 hover:border-green-500/20 transition">
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
@@ -97,15 +112,15 @@
                 </div>
                 <h2 class="text-3xl font-black text-white tracking-tight">FSD-X ORB PRO</h2>
               </div>
-              <div>
+              <div class="w-full lg:w-auto">
                 <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
+                   class="w-full lg:w-auto text-center px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
                   Unlock via VIP Trial
                 </a>
               </div>
             </div>
 
-            <div class="grid xl:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
               <div class="xl:col-span-2 space-y-6">
                 <div>
                   <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Operational Methodology</h4>
@@ -114,7 +129,7 @@
                   </p>
                 </div>
 
-                <div class="grid sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white text-xs font-bold mb-1">A+ Through C Automated Grading</div>
                     <p class="text-zinc-500 text-[12px] leading-relaxed">Evaluates entries using higher timeframe dual EMA crossover alignment, volume expansion averages, and optimal open range point balances (70-100 pts by default) to filter out low-quality chops.</p>
@@ -134,7 +149,7 @@
                 </div>
 
                 <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl flex items-start gap-3">
-                  <span class="text-green-400 text-sm">📊</span>
+                  <span class="text-green-400 text-sm shrink-0">📊</span>
                   <div class="text-xs">
                     <span class="text-white font-semibold block mb-0.5">Data-Driven Strategy Refinement</span>
                     <p class="text-zinc-500 leading-relaxed">Includes a Quality-Only dashboard toggle allowing you to view exclusively A+, A, and B+ setup history. If lower-tier grades are showing negative historic metrics, you can quickly filter them out to preserve capital during erratic sessions.</p>
@@ -143,7 +158,7 @@
               </div>
 
               <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent pointer-events-none"></div>
                 <div>
                   <div class="text-[10px] font-mono text-green-500 uppercase tracking-widest mb-3">// ACCESS PROVISIONS</div>
                   <p class="text-zinc-400 text-xs leading-relaxed">
@@ -159,8 +174,7 @@
             </div>
           </div>
 
-          <!-- FSD-X ORB PRO V5 ALPHA (BACKTEST STRATEGY) -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-6 md:p-8 hover:border-green-500/20 transition">
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
@@ -171,15 +185,15 @@
                 </div>
                 <h2 class="text-3xl font-black text-white tracking-tight">FSD-X ORB Pro V5 Alpha — Backtest Strategy</h2>
               </div>
-              <div>
+              <div class="w-full lg:w-auto">
                 <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
+                   class="w-full lg:w-auto text-center px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
                   Unlock via VIP Trial
                 </a>
               </div>
             </div>
 
-            <div class="grid xl:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
               <div class="xl:col-span-2 space-y-6">
                 <div>
                   <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Quantitative Performance Validation</h4>
@@ -190,14 +204,14 @@
 
                 <div>
                   <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-3">Core Script Engine Configurations</h4>
-                  <div class="grid sm:grid-cols-2 gap-4 text-xs">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                       <div class="text-white font-bold mb-1">Institutional Data Bounds</div>
                       <p class="text-zinc-500 text-[12px] leading-relaxed">Engineered with a hardcoded 5-year historical backtest matrix, automatically filtering session noise to isolate high-probability breakout execution windows.</p>
                     </div>
                     <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                       <div class="text-white font-bold mb-1">Dynamic Risk & Target Scaling</div>
-                      <p class="text-zinc-500 text-[12x] leading-relaxed">Evaluate distinct exit behaviors inside complex performance parameters. Programmatically test full flat exits right at TP1 horizons, or execute smooth partial contract scaling splits between targeted TP1 and TP2 milestones.</p>
+                      <p class="text-zinc-500 text-[12px] leading-relaxed">Evaluate distinct exit behaviors inside complex performance parameters. Programmatically test full flat exits right at TP1 horizons, or execute smooth partial contract scaling splits between targeted TP1 and TP2 milestones.</p>
                     </div>
                     <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                       <div class="text-white font-bold mb-1">Realistic Metric Sanitation</div>
@@ -211,7 +225,7 @@
                 </div>
 
                 <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl flex items-start gap-3">
-                  <span class="text-amber-500 text-sm">⚠️</span>
+                  <span class="text-amber-500 text-sm shrink-0">⚠️</span>
                   <div class="text-xs">
                     <span class="text-white font-semibold block mb-0.5">Asset Registry Configuration Notice</span>
                     <p class="text-zinc-500 leading-relaxed">This framework shares identical mathematical detection logic with our primary indicator suite. For accurate historical performance mapping, remember to align your localized <code class="text-zinc-300 font-mono">Risk Per Trade</code> and <code class="text-zinc-300 font-mono">$ Per Point</code> script constants exactly with your active vehicle variables (MNQ, NQ, ES) and target funding size rules.</p>
@@ -220,7 +234,7 @@
               </div>
 
               <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-zinc-500/5 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-zinc-500/5 to-transparent pointer-events-none"></div>
                 <div>
                   <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-3">// CALIBRATION SPECS</div>
                   <p class="text-zinc-400 text-xs leading-relaxed">
@@ -236,8 +250,7 @@
             </div>
           </div>
 
-          <!-- FSD-X // VOLUME ENGINE -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-6 md:p-8 hover:border-green-500/20 transition">
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
@@ -248,15 +261,15 @@
                 </div>
                 <h2 class="text-3xl font-black text-white tracking-tight">FSD-X // Volume Engine</h2>
               </div>
-              <div>
+              <div class="w-full lg:w-auto">
                 <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5 whitespace-nowrap">
+                   class="w-full lg:w-auto text-center px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5 whitespace-nowrap">
                   Unlock via VIP Trial
                 </a>
               </div>
             </div>
 
-            <div class="grid xl:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
               <div class="xl:col-span-2 space-y-6">
                 <div>
                   <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Ecosystem Integration</h4>
@@ -267,30 +280,30 @@
 
                 <div>
                   <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-3">System Color Key Architecture</h4>
-                  <div class="grid sm:grid-cols-2 gap-3 font-mono text-xs">
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
                     <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl">
-                      <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/20"></span>
+                      <span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm shadow-emerald-500/20 shrink-0"></span>
                       <div>
                         <span class="text-emerald-400 font-bold block">Bright Green Bar</span>
                         <span class="text-zinc-500 text-[12px]">Confirmed Bull Breakout</span>
                       </div>
                     </div>
                     <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl">
-                      <span class="w-3 h-3 rounded-full bg-rose-600 shadow-sm shadow-rose-600/20"></span>
+                      <span class="w-3 h-3 rounded-full bg-rose-600 shadow-sm shadow-rose-600/20 shrink-0"></span>
                       <div>
                         <span class="text-rose-400 font-bold block">Bright Red Bar</span>
                         <span class="text-zinc-500 text-[12px]">Confirmed Bear Breakout</span>
                       </div>
                     </div>
                     <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl">
-                      <span class="w-3 h-3 rounded-full bg-amber-400 shadow-sm shadow-amber-400/20"></span>
+                      <span class="w-3 h-3 rounded-full bg-amber-400 shadow-sm shadow-amber-400/20 shrink-0"></span>
                       <div>
                         <span class="text-amber-400 font-bold block">Yellow Banding</span>
                         <span class="text-zinc-500 text-[12px]">Active ORB Window (8:30–8:45 AM CT)</span>
                       </div>
                     </div>
                     <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl">
-                      <span class="w-3 h-3 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/20"></span>
+                      <span class="w-3 h-3 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/20 shrink-0"></span>
                       <div>
                         <span class="text-cyan-400 font-bold block">Teal (Bright / Faded)</span>
                         <span class="text-zinc-500 text-[12px]">Above or Below Average Vol Participation</span>
@@ -299,7 +312,7 @@
                   </div>
                 </div>
 
-                <div class="grid sm:grid-cols-3 gap-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white font-bold mb-1">Participation Sync</div>
                     <p class="text-zinc-500 text-[12px] leading-relaxed">Instantly spot if institution order blocks are backing the breakout structural transition or staying sidelined.</p>
@@ -310,13 +323,13 @@
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white font-bold mb-1">Spike Location Tracking</div>
-                    <p class="text-zinc-500 text-[12x] leading-relaxed">Pinpoint exactly where severe liquidity imbalances flush throughout standard RTH execution sessions.</p>
+                    <p class="text-zinc-500 text-[12px] leading-relaxed">Pinpoint exactly where severe liquidity imbalances flush throughout standard RTH execution sessions.</p>
                   </div>
                 </div>
               </div>
 
               <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent pointer-events-none"></div>
                 <div>
                   <div class="text-[10px] font-mono text-green-500 uppercase tracking-widest mb-3">// CONFIGURATION COMPATIBILITY</div>
                   <p class="text-zinc-400 text-xs leading-relaxed">
@@ -332,8 +345,7 @@
             </div>
           </div>
 
-          <!-- FSD-X // STACK V1 -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-6 md:p-8 hover:border-green-500/20 transition">
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
@@ -344,15 +356,15 @@
                 </div>
                 <h2 class="text-3xl font-black text-white tracking-tight">FSD-X // STACK V1</h2>
               </div>
-              <div>
+              <div class="w-full lg:w-auto">
                 <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5 whitespace-nowrap">
+                   class="w-full lg:w-auto text-center px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5 whitespace-nowrap">
                   Unlock via VIP Trial
                 </a>
               </div>
             </div>
 
-            <div class="grid xl:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
               <div class="xl:col-span-2 space-y-6">
                 <div>
                   <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Operational Methodology</h4>
@@ -361,10 +373,10 @@
                   </p>
                 </div>
 
-                <div class="grid sm:grid-cols-3 gap-4 text-xs">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white font-bold mb-1">MTF EMA Matrix Table</div>
-                    <p class="text-zinc-500 text-[12x] leading-relaxed">Tracks trend vectors across up to 7 horizons. Auto-calculates an at-a-glance scoreboard (e.g. 6B / 1Br / 0F) and flashes real-time structural BULL STACK or BEAR STACK alerts on 60%+ alignment.</p>
+                    <p class="text-zinc-500 text-[12px] leading-relaxed">Tracks trend vectors across up to 7 horizons. Auto-calculates an at-a-glance scoreboard (e.g. 6B / 1Br / 0F) and flashes real-time structural BULL STACK or BEAR STACK alerts on 60%+ alignment.</p>
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white font-bold mb-1">Volume Distribution POC</div>
@@ -398,7 +410,7 @@
               </div>
 
               <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px] xl:min-h-auto">
-                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
+                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent pointer-events-none"></div>
                 <div>
                   <div class="text-[10px] font-mono text-green-500 uppercase tracking-widest mb-3">// ARCHITECTURE PARAMETERS</div>
                   <p class="text-zinc-400 text-xs leading-relaxed">
@@ -414,155 +426,27 @@
             </div>
           </div>
 
-          <!-- FSD-X NEXUS 2.0 -->
-          <div class="border border-green-500/10 bg-zinc-950/60 rounded-3xl p-8 hover:border-green-500/20 transition relative overflow-hidden">
+          <div class="border border-green-500/10 bg-zinc-950/60 rounded-3xl p-6 md:p-8 hover:border-green-500/20 transition relative overflow-hidden">
             <div class="absolute top-0 right-0 bg-green-500 text-black font-mono font-bold text-[8px] uppercase px-3 py-1 tracking-widest rounded-bl">
               Active Hub
             </div>
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
               <div>
                 <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] font-mono uppercase tracking-wider">Chrome Utility Extension</span>
-                  <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] font-mono uppercase tracking-wider font-extrabold flex items-center gap-1">
-                    <span class="w-1 h-1 rounded-full bg-green-400"></span> Included in VIP Bundle or Standalone
-                  </span>
+                  <span class="px-2 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-mono uppercase tracking-wider">Ecosystem Nexus</span>
                 </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">FSD-X Nexus 2.0</h2>
+                <h2 class="text-3xl font-black text-white tracking-tight">FSD-X Nexus 2.0 Community</h2>
               </div>
-              <div class="flex flex-wrap gap-3">
-                <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgnjgbimklpmdadcngj" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
-                  Add to Chrome
-                </a>
-                <a href="https://whop.com/joined/dj-trades-fsdx/products/fsd-x-nexus/" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-extrabold rounded-xl transition inline-block border border-white/10">
-                  Buy Standalone — $7.99
+              <div class="w-full lg:w-auto">
+                <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer"
+                   class="w-full lg:w-auto text-center px-6 py-3 bg-zinc-900 border border-white/10 text-white text-xs font-extrabold rounded-xl transition inline-block">
+                  Launch Community Hub
                 </a>
               </div>
             </div>
-
-            <div class="grid xl:grid-cols-3 gap-8">
-              <div class="xl:col-span-2 space-y-6">
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Ecosystem Utility</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    The ultimate companion utility built for prop firm futures traders. Features a custom direct trade journal, precise position sizing calculators, macro news scanners, and an AI-driven chart analyzer that runs directly next to your workspace.
-                  </p>
-                </div>
-                
-                <div class="p-4 bg-green-950/10 border border-green-500/20 rounded-xl flex items-start gap-3">
-                  <span class="text-green-400 text-sm">🔑</span>
-                  <div class="text-xs">
-                    <span class="text-white font-semibold block mb-0.5">Extension Activation Instruction</span>
-                    <p class="text-zinc-400 leading-relaxed">Once your purchase is complete, your unique workspace activation credentials can be instantly claimed inside the "Software" section on your Whop user dashboard. Copy your key directly from there to initialize the extensions.</p>
-                  </div>
-                </div>
-
-                <div class="grid sm:grid-cols-3 gap-4 text-xs">
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Ecosystem Planners</div>
-                    <p class="text-zinc-500 text-[12px] leading-relaxed">Multi-market FX & Futures size planners built straight into your active layout panels.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Flow Analytics</div>
-                    <p class="text-zinc-500 text-[12px] leading-relaxed">Live UTC reset AI flow readers to trace institutional macro direction parameters.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Native Deployment</div>
-                    <p class="text-zinc-500 text-[12px] leading-relaxed">Installs safely through the official safe storage infrastructure of the Google Store.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
-                <div>
-                  <div class="text-[10px] font-mono text-green-500 uppercase tracking-widest mb-3">// LIVE PROVISIONS</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">
-                    Acquire access straight from the official web store dashboard array. Completely standalone workspace assistant pipeline architecture.
-                  </p>
-                </div>
-                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">Google Chrome</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Framework Type</span><span class="text-zinc-300">Browser Extension</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-green-400 font-bold">VIP or Standalone ($7.99)</span></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- STRATEGY OPTIMIZER PRO -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 hover:border-green-500/20 transition">
-            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6">
-              <div>
-                <div class="flex flex-wrap gap-2 mb-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] font-mono uppercase tracking-wider">Backtesting Automation Engine</span>
-                  <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] font-mono uppercase tracking-wider font-extrabold flex items-center gap-1">
-                    <span class="w-1 h-1 rounded-full bg-green-400"></span> Included in VIP Bundle or Standalone
-                  </span>
-                </div>
-                <h2 class="text-3xl font-black text-white tracking-tight">Strategy Optimizer Pro</h2>
-              </div>
-              <div class="flex flex-wrap gap-3">
-                <a href="https://chromewebstore.google.com/detail/fsd-x-strategy-optimizer/gocnolcgijcmjikifnbiahnccbcpgflk" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
-                  Add to Chrome
-                </a>
-                <a href="https://whop.com/joined/dj-trades-fsdx/products/fsd-x-optimizer/" 
-                   target="_blank" rel="noopener noreferrer"
-                   class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-extrabold rounded-xl transition inline-block border border-white/10">
-                  Buy Standalone — $6.99
-                </a>
-              </div>
-            </div>
-
-            <div class="grid xl:grid-cols-3 gap-8">
-              <div class="xl:col-span-2 space-y-6">
-                <div>
-                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">Data Engine Processing</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    Accelerate historical data collection. This Chrome automation extension handles the brute-force processing workload by programmatically cycling through variable Pine Script strategy inputs on TradingView in minutes instead of hours.
-                  </p>
-                </div>
-                
-                <div class="p-4 bg-green-950/10 border border-green-500/20 rounded-xl flex items-start gap-3">
-                  <span class="text-green-400 text-sm">🔑</span>
-                  <div class="text-xs">
-                    <span class="text-white font-semibold block mb-0.5">Extension Activation Instruction</span>
-                    <p class="text-zinc-400 leading-relaxed">Once your purchase is complete, your unique workspace activation credentials can be instantly claimed inside the "Software" section on your Whop user dashboard. Copy your key directly from there to initialize the extensions.</p>
-                  </div>
-                </div>
-
-                <div class="grid sm:grid-cols-3 gap-4 text-xs">
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Universal Optimization</div>
-                    <p class="text-zinc-500 text-[12px] leading-relaxed">Works smoothly over any custom backtesting metrics script code engine layouts.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Security Vault</div>
-                    <p class="text-zinc-500 text-[12px] leading-relaxed">Protected utilization parameters tied safely via hardware identification logic sequences.</p>
-                  </div>
-                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Batch Automation</div>
-                    <p class="text-zinc-500 text-[12px] leading-relaxed">Processes thousands of parameter iterations across structural data paths completely hands-free.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden">
-                <div>
-                  <div class="text-[10px] font-mono text-green-500 uppercase tracking-widest mb-3">// SYSTEM CALIBRATION</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">
-                    Automates script parsing metrics directly across runtime active trading browser frames instantly.
-                  </p>
-                </div>
-                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">Google Chrome</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Framework Type</span><span class="text-zinc-300">Browser Extension</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-green-400 font-bold">VIP or Standalone ($6.99)</span></div>
-                </div>
-              </div>
-            </div>
+            <p class="text-zinc-400 text-sm max-w-3xl leading-relaxed">
+              The neural command center of FSD-X. Connect into real-time live audio voice streams during market open rimes, access dedicated layout script walkthrough historical data channels, trade logs archives, and collaborate straight alongside professional multi-asset funded systems operators.
+            </p>
           </div>
 
         </div>
@@ -570,21 +454,27 @@
 
     </div>
 
-    <footer class="bg-zinc-950 border-t border-white/10 px-12 py-12 w-full mt-auto text-[10px]">
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto text-[10px]">
       <div class="max-w-5xl mx-auto space-y-6">
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">CFTC Rule 4.41 — Performance Disclosure</span>
+          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+            CFTC Rule 4.41 — Performance Disclosure
+          </span>
           <p class="text-zinc-500 leading-relaxed mt-2">
             Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
           </p>
         </div>
+
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Risk Disclosure</span>
+          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+            Risk Disclosure
+          </span>
           <p class="text-zinc-500 leading-relaxed mt-2">
             Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones’ financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
           </p>
         </div>
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-zinc-600 gap-2 font-mono">
+
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-zinc-600 gap-4 text-center sm:text-left font-mono">
           <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
@@ -592,6 +482,17 @@
     </footer>
 
   </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      if (sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.remove('-translate-x-full');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+      }
+    }
+  </script>
 
 </body>
 </html>
