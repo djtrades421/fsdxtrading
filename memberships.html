@@ -11,6 +11,20 @@
     body {
       background-color: #000;
     }
+    /* Smooth custom scrollbar to match the gritty noir aesthetic */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ef4444;
+    }
   </style>
 </head>
 
@@ -19,54 +33,55 @@
   <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto">
     <div>
       <div class="text-4xl font-black tracking-wider mb-8 flex flex-col">
-        <span class="text-green-400">FSD-X</span>
-        <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
+        <span class="text-red-500 drop-shadow-[0_0_8px_rgba(239,68,68,0.2)]">FSD-X</span>
+        <span class="text-[10px] uppercase text-zinc-500 tracking-[0.25em] -mt-1 font-bold">Trading Terminal</span>
       </div>
-      <nav class="flex flex-col gap-4 w-full">
+      <nav class="flex flex-col gap-5 w-full">
         <div>
-          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2.5">// Ecosystem</div>
           <div class="flex flex-col gap-2.5 pl-1">
-            <a href="index.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
-            <a href="suite.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FSD-X Suite</a>
-            <a href="memberships.html" class="text-green-400 hover:text-green-400 font-bold transition text-sm block">Memberships</a>
-            <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">ORB Performance</a>
+            <a href="index.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">Home</a>
+            <a href="suite.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">FSD-X Suite</a>
+            <a href="memberships.html" class="text-red-500 font-bold transition text-sm block">Memberships</a>
+            <a href="results.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">ORB Performance</a>
           </div>
         </div>
 
-        <div class="mt-2">
-          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Resources</div>
+        <div class="mt-1">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2.5">// Resources</div>
           <div class="flex flex-col gap-2.5 pl-1">
-            <a href="affiliates.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Affiliates</a>
-            <a href="knowledge.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Knowledge Base</a>
-            <a href="schedule.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Schedule</a>
+            <a href="affiliates.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">Affiliates</a>
+            <a href="knowledge.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">Knowledge Base</a>
+            <a href="schedule.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">Schedule</a>
           </div>
         </div>
 
-        <div class="mt-2">
-          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Social Channels</div>
+        <div class="mt-1">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2.5">// Social Channels</div>
           <div class="flex flex-col gap-2.5 pl-1">
-            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block flex items-center gap-1.5">
+            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm flex items-center gap-1.5">
               YouTube <span class="text-[10px] text-zinc-600 font-mono">↗</span>
             </a>
-            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block flex items-center gap-1.5">
+            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm flex items-center gap-1.5">
               Instagram <span class="text-[10px] text-zinc-600 font-mono">↗</span>
             </a>
           </div>
         </div>
 
-        <div class="mt-2">
-          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// System</div>
+        <div class="mt-1">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2.5">// System</div>
           <div class="flex flex-col gap-2.5 pl-1">
-            <a href="contact.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Contact & Help</a>
-            <a href="faq.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FAQ</a>
-            <a href="disclosures.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Disclosures</a>
+            <a href="contact.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">Contact & Help</a>
+            <a href="faq.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">FAQ</a>
+            <a href="disclosures.html" class="text-zinc-400 hover:text-red-500 font-medium transition text-sm block">Disclosures</a>
           </div>
         </div>
       </nav>
     </div>
     <div class="w-full pt-4 border-t border-white/5 mt-8">
-      <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">
-        Launch Discord &rarr;
+      <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-zinc-200 flex items-center justify-between transition group">
+        <span>Launch Discord</span>
+        <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
       </a>
     </div>
   </aside>
@@ -75,10 +90,10 @@
 
     <div class="w-full flex-1">
       
-      <section class="pt-20 pb-12 px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+      <section class="pt-24 pb-14 px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 via-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Ecosystem Access</div>
-          <h1 class="text-4xl lg:text-5xl font-black tracking-tight">VIP Membership Tiers</h1>
+          <div class="text-red-500 uppercase tracking-[0.3em] text-xs font-bold mb-3 font-mono">// Ecosystem Access</div>
+          <h1 class="text-4xl lg:text-5xl font-black tracking-tight uppercase">VIP Membership Tiers</h1>
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
             Gain full entry to the FSD-X algorithmic ecosystem. Select a flexible monthly pass with a risk-free trial, or maximize capital efficiency by choosing a Yearly or Lifetime tier during checkout.
           </p>
@@ -88,41 +103,41 @@
       <section class="py-16 px-12">
         <div class="max-w-5xl mx-auto">
           
-          <div class="mb-8 p-5 bg-zinc-900/40 border border-white/5 rounded-2xl flex flex-col gap-4 text-xs font-mono">
+          <div class="mb-10 p-5 bg-zinc-900/30 border border-white/5 rounded-2xl flex flex-col gap-4 text-xs font-mono">
             <div class="flex items-start gap-3">
-              <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-500/10 text-green-400 font-bold font-sans">!</span>
-              <span class="text-zinc-300">
-                The main checkout portal link below defaults to Monthly access. <span class="text-white font-bold underline">Select "Yearly" or "Lifetime" duration options</span> inside the Whop checkout wizard selection matrix to adjust your operational tracking term.
+              <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500/10 text-red-500 font-bold font-sans">!</span>
+              <span class="text-zinc-300 leading-relaxed">
+                The main checkout portal link below defaults to Monthly access. <span class="text-white font-bold underline decoration-red-500/50">Select "Yearly" or "Lifetime" duration options</span> inside the Whop checkout wizard selection matrix to adjust your operational tracking term.
               </span>
             </div>
             <div class="flex items-start gap-3 border-t border-white/5 pt-3">
               <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/10 text-amber-400 font-bold font-sans">🔑</span>
-              <span class="text-zinc-400">
-                <span class="text-amber-400 font-bold">Extension Activation Instruction:</span> Once your purchase is complete, your unique workspace activation credentials can be instantly claimed inside the <span class="text-white underline font-semibold">"Software" section</span> on your Whop user dashboard. Copy your key directly from there to initialize the extensions.
+              <span class="text-zinc-400 leading-relaxed">
+                <span class="text-amber-400 font-bold">Extension Activation Instruction:</span> Once your purchase is complete, your unique workspace activation credentials can be instantly claimed inside the <span class="text-zinc-200 underline font-semibold">"Software" section</span> on your Whop user dashboard. Copy your key directly from there to initialize the extensions.
               </span>
             </div>
           </div>
 
-          <div class="mb-12 border border-white/10 bg-zinc-950 rounded-2xl overflow-hidden">
-            <div class="bg-zinc-900/50 px-5 py-3.5 border-b border-white/10 flex items-center justify-between">
-              <div class="text-[11px] font-mono uppercase tracking-widest text-green-400 font-bold">// SYSTEM ONBOARDING PROTOCOL</div>
-              <div class="text-[10px] text-zinc-500 font-mono">STATUS: AWAITING DEPLOYMENT</div>
+          <div class="mb-14 border border-white/10 bg-zinc-950 rounded-2xl overflow-hidden">
+            <div class="bg-zinc-900/40 px-5 py-3.5 border-b border-white/10 flex items-center justify-between">
+              <div class="text-[11px] font-mono uppercase tracking-widest text-red-500 font-bold tracking-[0.15em]">// SYSTEM ONBOARDING PROTOCOL</div>
+              <div class="text-[10px] text-zinc-500 font-mono tracking-wider">STATUS: AWAITING DEPLOYMENT</div>
             </div>
             <div class="p-6 grid md:grid-cols-3 gap-6 text-xs font-mono">
               
               <div class="space-y-2 border-r border-white/5 pr-4 last:border-none">
                 <div class="flex items-center gap-2">
-                  <span class="text-green-400 font-bold font-sans text-sm">01.</span>
+                  <span class="text-red-500 font-bold font-sans text-sm">01.</span>
                   <h4 class="text-white font-bold tracking-tight uppercase font-sans">Claim Indicators</h4>
                 </div>
                 <p class="text-zinc-400 leading-relaxed text-[11px]">
-                  During checkout, input your exact <span class="text-white font-semibold">TradingView username</span> to claim your access rights. Once approved, the scripts will instantly appear in your <span class="text-green-400 font-semibold">"Invite-Only Scripts"</span> folder inside the TradingView indicators menu.
+                  During checkout, input your exact <span class="text-white font-semibold">TradingView username</span> to claim your access rights. Once approved, the scripts will instantly appear in your <span class="text-red-400 font-semibold">"Invite-Only Scripts"</span> folder inside the TradingView indicators menu.
                 </p>
               </div>
 
               <div class="space-y-2 border-r border-white/5 pr-4 last:border-none">
                 <div class="flex items-center gap-2">
-                  <span class="text-green-400 font-bold font-sans text-sm">02.</span>
+                  <span class="text-red-500 font-bold font-sans text-sm">02.</span>
                   <h4 class="text-white font-bold tracking-tight uppercase font-sans">Sync Discord Roles</h4>
                 </div>
                 <p class="text-zinc-400 leading-relaxed text-[11px]">
@@ -132,7 +147,7 @@
 
               <div class="space-y-2 last:border-none">
                 <div class="flex items-center gap-2">
-                  <span class="text-green-400 font-bold font-sans text-sm">03.</span>
+                  <span class="text-red-500 font-bold font-sans text-sm">03.</span>
                   <h4 class="text-white font-bold tracking-tight uppercase font-sans">Claim Nexus License</h4>
                 </div>
                 <p class="text-zinc-400 leading-relaxed text-[11px]">
@@ -145,15 +160,15 @@
 
           <div class="grid lg:grid-cols-3 gap-8 items-stretch">
             
-            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-zinc-800 transition">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-zinc-800 transition-colors group">
               <div>
                 <div class="text-zinc-500 text-[10px] font-mono uppercase tracking-widest mb-2">// FLEXIBLE PASS</div>
-                <h3 class="text-xl font-bold text-white tracking-tight">Standard Monthly</h3>
+                <h3 class="text-xl font-bold text-white tracking-tight group-hover:text-red-400 transition-colors">Standard Monthly</h3>
                 
                 <div class="my-6">
                   <span class="text-4xl font-black text-white tracking-tight">$12.50</span>
                   <span class="text-zinc-500 text-xs font-mono"> / month</span>
-                  <div class="text-[10px] text-green-400 font-mono mt-1 font-bold">Includes 2 weeks trial • Cancel anytime</div>
+                  <div class="text-[10px] text-red-500 font-mono mt-1 font-bold">Includes 2 weeks trial • Cancel anytime</div>
                 </div>
                 
                 <p class="text-zinc-400 text-xs leading-relaxed mb-6">
@@ -164,15 +179,15 @@
 
                 <ul class="space-y-3 text-xs text-zinc-500 font-mono">
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✔</span>
+                    <span class="text-red-500">✔</span>
                     <span>All TradingView Indicators</span>
                   </li>
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✔</span>
+                    <span class="text-red-500">✔</span>
                     <span>All Browser Extensions (Pro)</span>
                   </li>
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✔</span>
+                    <span class="text-red-500">✔</span>
                     <span>VIP Discord Live Access</span>
                   </li>
                 </ul>
@@ -180,25 +195,25 @@
 
               <div class="mt-8 pt-6 border-t border-white/5">
                 <a href="https://whop.com/joined/dj-trades-fsdx/products/fsd-x-orb-pro-v4-alpha-vip-access/" target="_blank" rel="noopener noreferrer"
-                   class="w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs rounded-xl text-center block transition border border-white/5">
+                   class="w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs rounded-xl text-center block transition border border-white/5 tracking-wider uppercase font-mono">
                   Start Free Trial
                 </a>
               </div>
             </div>
 
-            <div class="border-2 border-green-500/20 bg-zinc-950 rounded-3xl p-8 flex flex-col justify-between hover:border-green-500/40 transition relative shadow-2xl shadow-green-500/5">
-              <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-green-500 text-black text-[9px] font-black uppercase tracking-widest rounded-full font-mono shadow">
+            <div class="border-2 border-red-500/20 bg-zinc-950 rounded-3xl p-8 flex flex-col justify-between hover:border-red-500/40 transition relative shadow-2xl shadow-red-500/5">
+              <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-red-500 text-black text-[9px] font-black uppercase tracking-widest rounded-full font-mono shadow-md">
                 Best Value Option
               </div>
 
               <div>
-                <div class="text-green-400 text-[10px] font-mono uppercase tracking-widest mb-2">// CAPITAL EFFICIENT</div>
+                <div class="text-red-400 text-[10px] font-mono uppercase tracking-widest mb-2">// CAPITAL EFFICIENT</div>
                 <h3 class="text-xl font-bold text-white tracking-tight">Annual Commitment</h3>
                 
                 <div class="my-6">
                   <span class="text-4xl font-black text-white tracking-tight">$119</span>
                   <span class="text-zinc-500 text-xs font-mono"> / year</span>
-                  <div class="text-[10px] text-green-400 font-mono mt-1 font-bold"> Saves ~20% compared to monthly pass</div>
+                  <div class="text-[10px] text-red-400 font-mono mt-1 font-bold"> Saves ~20% compared to monthly pass</div>
                 </div>
                 
                 <p class="text-zinc-400 text-xs leading-relaxed mb-6">
@@ -209,15 +224,15 @@
 
                 <ul class="space-y-3 text-xs text-zinc-300 font-mono font-medium">
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✦</span>
+                    <span class="text-red-500">✦</span>
                     <span>Everything in Monthly Pass</span>
                   </li>
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✦</span>
+                    <span class="text-red-500">✦</span>
                     <span>Priority Beta Script Updates</span>
                   </li>
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✦</span>
+                    <span class="text-red-500">✦</span>
                     <span>Locked-in Rate Protection</span>
                   </li>
                 </ul>
@@ -225,16 +240,16 @@
 
               <div class="mt-8 pt-6 border-t border-white/5">
                 <a href="https://whop.com/joined/dj-trades-fsdx/products/fsd-x-orb-pro-v4-alpha-vip-access/" target="_blank" rel="noopener noreferrer"
-                   class="w-full py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold text-xs rounded-xl text-center block transition shadow-lg shadow-green-500/10">
+                   class="w-full py-3 bg-red-500 hover:bg-red-600 text-black font-extrabold text-xs rounded-xl text-center block transition shadow-lg shadow-red-500/10 tracking-wider uppercase font-mono">
                   Select Yearly Pass
                 </a>
               </div>
             </div>
 
-            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-zinc-800 transition">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-zinc-800 transition-colors group">
               <div>
                 <div class="text-zinc-500 text-[10px] font-mono uppercase tracking-widest mb-2">// SYSTEM ACQUISITION</div>
-                <h3 class="text-xl font-bold text-white tracking-tight">Lifetime Legacy</h3>
+                <h3 class="text-xl font-bold text-white tracking-tight group-hover:text-red-400 transition-colors">Lifetime Legacy</h3>
                 
                 <div class="my-6">
                   <span class="text-4xl font-black text-white tracking-tight">$299</span>
@@ -250,23 +265,23 @@
 
                 <ul class="space-y-3 text-xs text-zinc-500 font-mono">
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✔</span>
+                    <span class="text-red-500">✔</span>
                     <span>Perpetual Script Licenses</span>
                   </li>
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✔</span>
+                    <span class="text-red-500">✔</span>
                     <span>Permanent VIP Community Status</span>
                   </li>
                   <li class="flex items-start gap-2">
-                    <span class="text-green-400">✔</span>
-                    <span>All Future v6+ Ecosystem Updates</span>
+                    <span class="text-red-500">✔</span>
+                    <span>All Future Ecosystem Updates</span>
                   </li>
                 </ul>
               </div>
 
               <div class="mt-8 pt-6 border-t border-white/5">
                 <a href="https://whop.com/joined/dj-trades-fsdx/products/fsd-x-orb-pro-v4-alpha-vip-access/" target="_blank" rel="noopener noreferrer"
-                   class="w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs rounded-xl text-center block transition border border-white/5">
+                   class="w-full py-3 bg-zinc-900 hover:bg-zinc-800 text-white font-bold text-xs rounded-xl text-center block transition border border-white/5 tracking-wider uppercase font-mono">
                   Get Lifetime Access
                 </a>
               </div>
@@ -277,13 +292,17 @@
         </div>
       </section>
 
-      <section class="pb-16 px-12">
+      <section class="pb-20 px-12">
         <div class="max-w-5xl mx-auto">
           <div class="p-8 bg-zinc-950 border border-white/10 rounded-2xl">
-            <h4 class="text-xs uppercase text-zinc-400 font-bold tracking-[0.2em] mb-6 font-mono text-center">Included With All VIP Access Tiers</h4>
+            <h4 class="text-xs uppercase text-zinc-400 font-bold tracking-[0.25em] mb-8 font-mono text-center">// Included With All VIP Access Tiers</h4>
             <div class="grid md:grid-cols-3 gap-10 text-xs">
+              
               <div class="space-y-3">
-                <div class="text-white font-bold border-b border-white/5 pb-2 uppercase tracking-wider">Indicator Suite</div>
+                <div class="text-white font-bold border-b border-white/5 pb-2 uppercase tracking-wider font-sans flex items-center justify-between">
+                  <span>Indicator Suite</span>
+                  <span class="text-[9px] font-mono text-red-500">01</span>
+                </div>
                 <ul class="space-y-2 text-zinc-500 font-mono">
                   <li>• FSD-X ORB PRO v5 Alpha</li>
                   <li>• FSD-X // Volume Engine</li>
@@ -291,8 +310,12 @@
                   <li>• ORB Pro Backtest Strategy</li>
                 </ul>
               </div>
+
               <div class="space-y-3">
-                <div class="text-white font-bold border-b border-white/5 pb-2 uppercase tracking-wider">Utility Suite</div>
+                <div class="text-white font-bold border-b border-white/5 pb-2 uppercase tracking-wider font-sans flex items-center justify-between">
+                  <span>Utility Suite</span>
+                  <span class="text-[9px] font-mono text-red-500">02</span>
+                </div>
                 <ul class="space-y-2 text-zinc-500 font-mono">
                   <li>• FSD-X Nexus 2.0 (Pro Features)</li>
                   <li>• FSD-X Strategy Optimizer (Pro)</li>
@@ -300,8 +323,12 @@
                   <li>• AI Prop Firm Simulator</li>
                 </ul>
               </div>
+
               <div class="space-y-3">
-                <div class="text-white font-bold border-b border-white/5 pb-2 uppercase tracking-wider">VIP Infrastructure</div>
+                <div class="text-white font-bold border-b border-white/5 pb-2 uppercase tracking-wider font-sans flex items-center justify-between">
+                  <span>VIP Infrastructure</span>
+                  <span class="text-[9px] font-mono text-red-500">03</span>
+                </div>
                 <ul class="space-y-2 text-zinc-500 font-mono">
                   <li>• Live Algorithmic Signal Stream</li>
                   <li>• Private Discord Execution Rooms</li>
@@ -309,6 +336,7 @@
                   <li>• Direct Founder & Support Access</li>
                 </ul>
               </div>
+
             </div>
           </div>
         </div>
@@ -319,26 +347,26 @@
     <footer class="bg-zinc-950 border-t border-white/10 px-12 py-12 w-full mt-auto text-[10px]">
       <div class="max-w-5xl mx-auto space-y-6">
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider font-mono">
             CFTC Rule 4.41 — Performance Disclosure
           </span>
-          <p class="text-zinc-500 leading-relaxed mt-2">
+          <p class="text-zinc-500 leading-relaxed mt-2.5">
             Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
           </p>
         </div>
 
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider font-mono">
             Risk Disclosure
           </span>
-          <p class="text-zinc-500 leading-relaxed mt-2">
+          <p class="text-zinc-500 leading-relaxed mt-2.5">
             Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones’ financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
           </p>
         </div>
 
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-zinc-600 gap-2 font-mono">
-          <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
-          <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-zinc-600 gap-4 font-mono">
+          <div class="text-center sm:text-left">FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
+          <div class="text-center sm:text-right">&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
       </div>
     </footer>
