@@ -6,29 +6,43 @@
   <title>FSD-X Suite — Architecture & Platform Layout</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      background-color: #000;
-    }
+    body { background-color: #000; }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
-  <aside class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 hidden md:flex flex-col justify-between p-6 z-50 overflow-y-auto">
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">
+      FSD-X
+    </div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs font-mono tracking-wider hover:bg-zinc-800 transition">
+      // MENU
+    </button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
     <div>
-      <div class="text-2xl font-black tracking-wider mb-8 flex flex-col">
-        <span class="text-green-400">FSD-X</span>
-        <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
+      <div class="flex justify-between items-center mb-8 md:block">
+        <div class="text-4xl font-black tracking-wider flex flex-col">
+          <span class="text-green-400">FSD-X</span>
+          <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
+        </div>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-mono font-bold">
+          [ESC]
+        </button>
       </div>
+      
       <nav class="flex flex-col gap-4 w-full">
         <div>
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
           <div class="flex flex-col gap-2.5 pl-1">
             <a href="index.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
-            <a href="suite.html" class="text-green-400 font-bold transition text-sm block">FSD-X Suite</a>
+            <a href="suite.html" class="text-green-400 hover:text-green-400 font-bold transition text-sm block">FSD-X Suite</a>
             <a href="memberships.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Memberships</a>
-            <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Results</a>
+            <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">ORB Performance</a>
           </div>
         </div>
+
         <div class="mt-2">
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Resources</div>
           <div class="flex flex-col gap-2.5 pl-1">
@@ -37,6 +51,19 @@
             <a href="schedule.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Schedule</a>
           </div>
         </div>
+
+        <div class="mt-2">
+          <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Social Channels</div>
+          <div class="flex flex-col gap-2.5 pl-1">
+            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">
+              YouTube <span class="text-[10px] text-zinc-600 font-mono">↗</span>
+            </a>
+            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">
+              Instagram <span class="text-[10px] text-zinc-600 font-mono">↗</span>
+            </a>
+          </div>
+        </div>
+
         <div class="mt-2">
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// System</div>
           <div class="flex flex-col gap-2.5 pl-1">
@@ -47,29 +74,19 @@
         </div>
       </nav>
     </div>
+    
     <div class="w-full pt-4 border-t border-white/5 mt-8">
-      <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">
+      <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-xs text-zinc-500 hover:text-white transition block">
         Launch Discord &rarr;
       </a>
     </div>
   </aside>
 
-  <header class="w-full bg-zinc-950 border-b border-white/10 p-4 flex justify-between items-center md:hidden z-50">
-    <div class="text-xl font-black tracking-wider flex items-center gap-2">
-      <span class="text-green-400">FSD-X</span>
-      <span class="text-[10px] uppercase text-zinc-500 tracking-widest font-bold">Trading</span>
-    </div>
-    <div class="flex gap-4 text-xs font-mono">
-      <a href="index.html" class="text-zinc-400 hover:text-green-400">Home</a>
-      <a href="memberships.html" class="text-zinc-400 hover:text-green-400">VIP</a>
-    </div>
-  </header>
-
-  <main class="flex-1 pl-0 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
 
     <div class="w-full flex-1">
       
-      <section class="pt-16 pb-12 px-4 sm:px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+      <section class="pt-16 pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Institutional Toolsets</div>
           <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">System Architecture Spec</h1>
@@ -79,7 +96,7 @@
         </div>
       </section>
 
-      <section class="py-12 sm:py-16 px-4 sm:px-6 md:px-12">
+      <section class="py-12 sm:py-16 px-6 md:px-12">
         <div class="max-w-5xl mx-auto space-y-12 sm:space-y-16">
 
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl sm:rounded-3xl p-5 sm:p-8 hover:border-green-500/20 transition">
@@ -314,7 +331,7 @@
                 <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
                   <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">Google Chrome</span></div>
                   <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Framework Type</span><span class="text-zinc-300">Browser Extension</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Access Mode</span><span class="text-green-400 font-bold text-right">VIP / Whop Sub</span></div>
+                  <div class="flex justify-between text-xs font-mono"><span class="text-green-400 font-bold text-right">VIP / Whop Sub</span></div>
                 </div>
               </div>
             </div>
@@ -381,7 +398,7 @@
                 <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
                   <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">Google Chrome</span></div>
                   <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Framework Type</span><span class="text-zinc-300">Browser Extension</span></div>
-                  <div class="flex justify-between text-xs font-mono"><span class="text-zinc-500">Access Mode</span><span class="text-green-400 font-bold text-right">VIP / Whop Sub</span></div>
+                  <div class="flex justify-between text-xs font-mono"><span class="text-green-400 font-bold text-right">VIP / Whop Sub</span></div>
                 </div>
               </div>
             </div>
@@ -392,21 +409,36 @@
 
     </div>
 
-    <footer class="bg-zinc-950 border-t border-white/10 px-4 sm:px-6 md:px-12 py-12 w-full mt-auto text-[10px]">
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
       <div class="max-w-5xl mx-auto space-y-6">
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">CFTC Rule 4.41 — Performance Disclosure</span>
-          <p class="text-zinc-500 leading-relaxed mt-2 text-justify sm:text-left">
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+            CFTC Rule 4.41 — Hypothetical Performance Disclosure
+          </span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
             Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
           </p>
         </div>
+
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Risk Disclosure</span>
-          <p class="text-zinc-500 leading-relaxed mt-2 text-justify sm:text-left">
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+            Futures & Forex Risk Disclosure
+          </span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
             Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones’ financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
           </p>
         </div>
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-zinc-600 gap-4 font-mono text-center md:text-left">
+
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+            Vendor Verification Disclosure
+          </span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+            FSD-X is an independent software provider. Performance metrics, system evaluations, and user results posted within community channels reflect educational tools and should not be construed as investment or financial advice. Not an auto-trading system. No trade signals are provided.
+          </p>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
           <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
@@ -414,6 +446,17 @@
     </footer>
 
   </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      if (sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.remove('-translate-x-full');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+      }
+    }
+  </script>
 
 </body>
 </html>
