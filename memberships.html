@@ -12,12 +12,8 @@
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
   <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
-    <div class="text-2xl font-black tracking-wider text-green-400">
-      FSD-X
-    </div>
-    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs font-mono tracking-wider hover:bg-zinc-800 transition">
-      // MENU
-    </button>
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs font-mono tracking-wider hover:bg-zinc-800 transition">// MENU</button>
   </header>
 
   <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
@@ -27,22 +23,18 @@
           <span class="text-green-400">FSD-X</span>
           <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
         </div>
-        <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-mono font-bold">
-          [ESC]
-        </button>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-mono font-bold">[ESC]</button>
       </div>
-      
       <nav class="flex flex-col gap-4 w-full">
         <div>
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
           <div class="flex flex-col gap-2.5 pl-1">
             <a href="index.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
             <a href="suite.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FSD-X Suite</a>
-            <a href="memberships.html" class="text-green-400 hover:text-green-400 font-bold transition text-sm block">Memberships</a>
+            <a href="memberships.html" class="text-green-400 font-bold transition text-sm block">Memberships</a>
             <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">ORB Performance</a>
           </div>
         </div>
-
         <div class="mt-2">
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Resources</div>
           <div class="flex flex-col gap-2.5 pl-1">
@@ -51,19 +43,13 @@
             <a href="schedule.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Schedule</a>
           </div>
         </div>
-
         <div class="mt-2">
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// Social Channels</div>
           <div class="flex flex-col gap-2.5 pl-1">
-            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">
-              YouTube <span class="text-[10px] text-zinc-600 font-mono">↗</span>
-            </a>
-            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">
-              Instagram <span class="text-[10px] text-zinc-600 font-mono">↗</span>
-            </a>
+            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">YouTube <span class="text-[10px] text-zinc-600 font-mono">↗</span></a>
+            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">Instagram <span class="text-[10px] text-zinc-600 font-mono">↗</span></a>
           </div>
         </div>
-
         <div class="mt-2">
           <div class="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">// System</div>
           <div class="flex flex-col gap-2.5 pl-1">
@@ -74,73 +60,171 @@
         </div>
       </nav>
     </div>
-    
     <div class="w-full pt-4 border-t border-white/5 mt-8">
-      <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-xs text-zinc-500 hover:text-white transition block">
-        Launch Discord &rarr;
-      </a>
+      <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-xs text-zinc-500 hover:text-white transition block">Launch Discord &rarr;</a>
     </div>
   </aside>
 
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
     <div class="w-full flex-1">
-      
-      <section class="py-24 px-6 md:px-12 bg-black">
+
+      <!-- PAGE HEADER -->
+      <section class="pt-12 pb-10 lg:pt-20 lg:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
-          <div class="text-center mb-16">
-            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Transparent Tier Plans</div>
-            <h1 class="text-4xl md:text-5xl font-black">Choose Your Scaling Model</h1>
-            <p class="text-zinc-400 text-sm mt-2 max-w-md mx-auto">Get started instantly. Our monthly flexible pass includes a comprehensive 14-day risk-free trial.</p>
+          <div class="text-green-400 font-mono uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Transparent Tier Plans</div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">Choose Your Scaling Model</h1>
+          <p class="mt-4 text-zinc-400 text-sm max-w-xl leading-relaxed">
+            Every plan includes full access to the FSD-X ecosystem. Start free on Monthly, or lock in the best value with Annual or Lifetime.
+          </p>
+
+          <!-- STAT STRIP -->
+          <div class="mt-8 grid grid-cols-3 gap-4 max-w-2xl">
+            <div class="border-l-2 border-green-500 pl-4">
+              <div class="text-lg font-black text-white">60.7%</div>
+              <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">Win Rate</div>
+            </div>
+            <div class="border-l-2 border-green-500 pl-4">
+              <div class="text-lg font-black text-white">87%</div>
+              <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">Profitable Months</div>
+            </div>
+            <div class="border-l-2 border-green-500 pl-4">
+              <div class="text-lg font-black text-white">6 Years</div>
+              <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">Verified Data</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================== -->
+      <!-- SALE BANNER: update SALE_CODE, SALE_PCT, and PLAN text -->
+      <!-- Remove this block entirely when the sale ends          -->
+      <!-- ====================================================== -->
+      <div class="px-6 md:px-12 pt-8">
+        <div class="max-w-5xl mx-auto">
+          <div class="relative overflow-hidden bg-gradient-to-r from-red-950/60 via-red-900/30 to-red-950/60 border border-red-500/50 rounded-2xl p-4 shadow-xl shadow-red-950/30">
+            <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_8px,rgba(255,255,255,0.015)_8px,rgba(255,255,255,0.015)_16px)]"></div>
+            <div class="relative flex items-start gap-3">
+              <span class="text-xl leading-none mt-0.5 animate-bounce">🔥</span>
+              <div class="text-xs leading-relaxed flex-1">
+                <div class="flex items-center justify-between gap-2 mb-1">
+                  <div class="font-black text-red-400 uppercase tracking-widest text-[11px]">⚡ Flash Sale — Limited Time</div>
+                  <div class="bg-red-500 text-white font-black text-[11px] px-2 py-0.5 rounded-lg tracking-wide animate-pulse">17% OFF</div>
+                </div>
+                <div class="text-zinc-200">
+                  Use code <span class="text-white font-mono font-black bg-zinc-900 border border-red-500/40 px-2 py-0.5 rounded-lg mx-0.5 tracking-wider">MAY17</span> at checkout — applies to <span class="text-white font-semibold">Annual</span> and <span class="text-white font-semibold">Lifetime</span> plans only.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRICING CARDS -->
+      <section class="py-12 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+          <!-- EVERYTHING INCLUDED IN ALL PLANS -->
+          <div class="mb-10 border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+            <div class="text-[10px] font-mono text-zinc-500 uppercase tracking-widest mb-1 font-bold">// Everything included in every plan</div>
+            <p class="text-zinc-600 text-[10px] font-mono mb-5">Full FSD-X Suite access — same tools regardless of which tier you choose.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X ORB PRO</span> — flagship breakout indicator</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X ORB PRO Backtester</span> — strategy engine & validation</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X Stack V1</span> — 7-timeframe MTF trend confirmation</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X // Volume Engine</span> — breakout volume companion</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X Nexus 2.0</span> — Chrome workspace extension</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Strategy Optimizer Pro</span> — automated backtesting engine</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">SCOUT</span> — live Discord alert streams</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Private Discord</span> — community, knowledge base & video library</div></div>
+            </div>
+            <div class="mt-5 pt-4 border-t border-white/5 text-center">
+              <a href="suite.html" class="text-[11px] font-mono text-zinc-500 hover:text-green-400 transition">View full suite breakdown &rarr;</a>
+            </div>
           </div>
 
-          <div class="grid md:grid-cols-3 gap-8 items-stretch pt-6">
+          <div class="grid md:grid-cols-3 gap-8 items-stretch">
+
+            <!-- MONTHLY -->
             <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-white/20 transition">
               <div>
-                <div class="text-zinc-400 text-xs font-bold uppercase tracking-wider mb-2">Flexible Pass</div>
+                <div class="text-zinc-400 text-[10px] font-mono font-bold uppercase tracking-widest mb-2">Flexible Pass</div>
                 <h3 class="text-xl font-black text-white">Monthly Access</h3>
                 <div class="mt-4 flex items-baseline gap-1">
                   <span class="text-4xl font-black text-white">$12.50</span>
                   <span class="text-zinc-500 text-xs font-medium">/ month</span>
                 </div>
-                <p class="text-zinc-500 text-xs mt-4 leading-relaxed">Perfect for testing the system live alongside your current day session rules templates. Includes a 2-week free trial.</p>
+                <p class="text-zinc-500 text-xs mt-5 leading-relaxed">Try the full ecosystem with zero commitment. Includes a 14-day free trial — no charge until day 15. Cancel anytime.</p>
+                <div class="mt-5 border-t border-white/5 pt-5 text-[10px] font-mono text-zinc-600">Best for: Traders who want to test live before committing.</div>
               </div>
-              <div class="mt-8">
+              <div class="mt-8 space-y-2">
                 <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold rounded-xl transition text-sm">Start 14-Day Free Trial</a>
+                <p class="text-center text-[10px] text-zinc-600 font-mono">Instant access · Cancel anytime</p>
               </div>
             </div>
 
-            <div class="border-2 border-green-500/30 bg-zinc-950 rounded-3xl p-8 flex flex-col justify-between hover:border-green-500/50 transition relative shadow-2xl shadow-green-500/5 mt-6 md:mt-0">
+            <!-- ANNUAL (highlighted) -->
+            <div class="border-2 border-green-500/30 bg-zinc-950 rounded-3xl p-8 flex flex-col justify-between hover:border-green-500/50 transition relative shadow-2xl shadow-green-500/5">
               <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-green-500 text-black font-mono font-black text-[12px] uppercase tracking-widest px-3.5 py-1 rounded-xl shadow-md flex flex-col items-center justify-center leading-tight text-center whitespace-nowrap">
                 <div>Most Popular</div>
                 <div class="text-[12px] opacity-80 font-bold border-t border-black/10 w-full mt-0.5 pt-0.5">Save $31</div>
               </div>
-              <div>
-                <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 mt-2">Committed Workspace</div>
+              <div class="mt-2">
+                <div class="text-green-400 text-[10px] font-mono font-bold uppercase tracking-widest mb-2">Committed Workspace</div>
                 <h3 class="text-xl font-black text-white">Annual Membership</h3>
-                <div class="mt-4 flex items-baseline gap-1">
+                <div class="mt-4 flex items-baseline gap-2">
                   <span class="text-4xl font-black text-green-400">$119</span>
-                  <span class="text-zinc-500 text-xs font-medium">/ year</span>
+                  <div class="flex flex-col">
+                    <span class="text-zinc-500 text-xs font-medium">/ year</span>
+                    <span class="text-zinc-600 text-[10px] font-mono">≈ $9.92 / month</span>
+                  </div>
                 </div>
-                <p class="text-zinc-400 text-xs mt-4 leading-relaxed">Complete ecosystem inclusion with total grandfathered locks for upcoming indicator suite versions. Immediate access.</p>
+                <p class="text-zinc-400 text-xs mt-5 leading-relaxed">Full ecosystem access at the lowest recurring rate. Your price is locked in — it won't increase as the suite grows.</p>
+                <div class="mt-5 border-t border-white/5 pt-5 text-[10px] font-mono text-zinc-600">Best for: Active traders who want consistent access at the best rate.</div>
+                <div class="mt-4 bg-green-500/5 border border-green-500/15 rounded-xl px-3 py-2 text-[10px] font-mono text-green-400">
+                  ⚡ Use code MAY17 for 17% off at checkout
+                </div>
               </div>
-              <div class="mt-8">
+              <div class="mt-8 space-y-2">
                 <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-xl transition text-sm shadow-md shadow-green-500/10">Lock Annual Plan</a>
+                <p class="text-center text-[10px] text-zinc-600 font-mono">Instant access · Renews annually</p>
               </div>
             </div>
 
+            <!-- LIFETIME -->
             <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-white/20 transition">
               <div>
-                <div class="text-zinc-400 text-xs font-bold uppercase tracking-wider mb-2">Infinite Run</div>
+                <div class="text-zinc-400 text-[10px] font-mono font-bold uppercase tracking-widest mb-2">Infinite Run</div>
                 <h3 class="text-xl font-black text-white">Lifetime License</h3>
-                <div class="mt-4 flex items-baseline gap-1">
+                <div class="mt-4 flex items-baseline gap-2">
                   <span class="text-4xl font-black text-white">$299</span>
                   <span class="text-zinc-500 text-xs font-medium">/ one-time</span>
                 </div>
-                <p class="text-zinc-500 text-xs mt-4 leading-relaxed">Zero ongoing subscription overhead. Perpetual code access rights across all proprietary extensions. Immediate access.</p>
+                <p class="text-zinc-500 text-xs mt-5 leading-relaxed">Pay once, own it forever. No renewals, no price increases, no subscriptions — ever. Breaks even vs Annual in under 3 years.</p>
+                <div class="mt-5 border-t border-white/5 pt-5 text-[10px] font-mono text-zinc-600">Best for: Long-term traders who want to eliminate overhead for good.</div>
+                <div class="mt-4 bg-zinc-900/60 border border-white/5 rounded-xl px-3 py-2 text-[10px] font-mono text-zinc-400">
+                  ⚡ Use code MAY17 for 17% off at checkout
+                </div>
               </div>
-              <div class="mt-8">
+              <div class="mt-8 space-y-2">
                 <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold rounded-xl transition text-sm">Claim Lifetime</a>
+                <p class="text-center text-[10px] text-zinc-600 font-mono">One-time payment · No renewals ever</p>
               </div>
+            </div>
+
+          </div>
+
+          <!-- BOTTOM TRUST ROW -->
+          <div class="mt-12 border border-white/5 bg-zinc-950/30 rounded-2xl px-6 py-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center text-xs font-mono">
+            <div class="text-zinc-500">
+              <div class="text-white font-bold text-sm mb-1">Instant Access</div>
+              Indicators unlock immediately after checkout via NinjaTrader ecosystem
+            </div>
+            <div class="text-zinc-500 sm:border-x sm:border-white/5 sm:px-4">
+              <div class="text-white font-bold text-sm mb-1">14-Day Free Trial</div>
+              Monthly plan includes a full two-week no-charge trial period
+            </div>
+            <div class="text-zinc-500">
+              <div class="text-white font-bold text-sm mb-1">Grandfathered Pricing</div>
+              Annual & Lifetime members lock today's rate through all future updates
             </div>
           </div>
 
@@ -152,12 +236,8 @@
     <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
       <div class="max-w-5xl mx-auto space-y-6">
         <div>
-          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
-            CFTC Rule 4.41 — Hypothetical Performance Disclosure
-          </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
-            Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading...
-          </p>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">CFTC Rule 4.41 — Hypothetical Performance Disclosure</span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.</p>
         </div>
         <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
           <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
