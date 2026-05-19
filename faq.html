@@ -41,7 +41,6 @@
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
     <div class="w-full flex-1">
 
-      <!-- PAGE HEADER -->
       <section class="pt-12 pb-10 px-6 md:pt-20 md:pb-12 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Frequently Asked Questions</div>
@@ -52,11 +51,9 @@
         </div>
       </section>
 
-      <!-- FAQ GRID -->
       <section class="py-12 md:py-16 px-6 md:px-12">
         <div class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-8 lg:gap-10 items-start">
 
-          <!-- COLUMN 1: Indicators & Tools -->
           <div class="space-y-4">
             <div class="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">// Indicators & Tools</div>
 
@@ -121,10 +118,8 @@
                 <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Yes — the TradingView indicators work in any browser. The Nexus Chrome extension runs on any OS that supports Chrome (Mac, Windows, Linux).</p>
               </div>
             </div>
-
           </div>
 
-          <!-- COLUMN 2: Nexus 2.0 -->
           <div class="space-y-4">
             <div class="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">// Nexus 2.0</div>
 
@@ -190,10 +185,8 @@
                 <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Install directly from the Chrome Web Store — find the link on the <a href="suite.html" class="text-green-400 hover:underline font-semibold">FSD-X Suite page</a>. After installing, enter your license key inside the extension to unlock VIP features. Setup takes under 2 minutes.</p>
               </div>
             </div>
-
           </div>
 
-          <!-- COLUMN 3: Membership & Access -->
           <div class="space-y-4">
             <div class="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">// Membership & Access</div>
 
@@ -256,13 +249,11 @@
                 <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">No — access is tied to one Discord account and one TradingView username per subscription. Sharing, reselling, or transferring access is prohibited and will result in immediate termination without refund.</p>
               </div>
             </div>
-
           </div>
 
         </div>
       </section>
 
-      <!-- BOTTOM CTA -->
       <section class="pb-16 px-6 md:px-12">
         <div class="max-w-5xl mx-auto border border-green-500/20 bg-zinc-950/60 rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div>
@@ -295,7 +286,7 @@
           <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
         </div>
         <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
-          <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
+          <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
       </div>
@@ -308,7 +299,6 @@
       const item = button.parentElement;
       item.classList.toggle('active');
     }
-
     function toggleMobileMenu() {
       const sidebar = document.getElementById('sidebar-panel');
       sidebar.classList.toggle('-translate-x-full');
@@ -316,12 +306,10 @@
   </script>
 
   <script>
-    // Shared nav loader — edit nav.html to update navigation on all pages
     fetch('nav.html')
       .then(r => r.text())
       .then(html => {
         document.getElementById('nav-content').innerHTML = html;
-        // Highlight active page
         const current = window.location.pathname.split('/').pop() || 'index.html';
         document.querySelectorAll('#nav-content .nav-link').forEach(link => {
           const href = link.getAttribute('href');
