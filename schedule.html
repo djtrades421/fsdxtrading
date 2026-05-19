@@ -12,12 +12,8 @@
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
   <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
-    <div class="text-2xl font-black tracking-wider text-green-400">
-      FSD-X
-    </div>
-    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">
-      // MENU
-    </button>
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
   </header>
 
   <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
@@ -25,123 +21,205 @@
   </aside>
 
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
-
     <div class="w-full flex-1">
-      
-      <section class="pt-20 pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+
+      <!-- PAGE HEADER -->
+      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Operational Timeline</div>
-          <h1 class="text-4xl lg:text-5xl font-black tracking-tight">Market Coverage & Briefings</h1>
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Live Sessions & Events</div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">Schedule</h1>
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
-            Live synchronization data maps. Track daily session execution streams, community walkthroughs, and macro strategy orientations across our primary network hubs.
+            We go live every market day at 8:30 AM CT for the ORB session. VIP members get zero-latency access inside Discord — YouTube is available for the public with a standard delay.
           </p>
+          <!-- WHERE TO WATCH -->
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
+              class="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl transition">
+              <span class="w-2 h-2 rounded-full bg-black animate-pulse"></span>
+              Join Live on Discord
+            </a>
+            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer"
+              class="flex items-center gap-2 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs rounded-xl transition">
+              Watch on YouTube ↗
+            </a>
+          </div>
         </div>
       </section>
 
-      <section class="py-16 px-6 md:px-12">
-        <div class="max-w-5xl mx-auto space-y-12">
+      <section class="py-12 md:py-16 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto space-y-10">
 
-          <div>
-            <div class="text-[11px] uppercase tracking-widest text-zinc-600 mb-4">// CORE MARKET RUNTIMES</div>
-            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-6 md:p-8 grid grid-cols-1 xl:grid-cols-3 gap-8 items-center">
-              
-              <div class="xl:col-span-2 space-y-4">
-                <div class="flex items-center gap-3">
-                  <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
-                  <h3 class="text-2xl font-bold tracking-tight">Daily Live Trading Session</h3>
+          <!-- DAILY SESSION -->
+          <div class="border border-green-500/20 bg-zinc-950/60 rounded-2xl overflow-hidden shadow-lg shadow-green-500/5">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">Daily — Monday through Friday</span>
+            </div>
+            <div class="p-6 md:p-8 grid md:grid-cols-3 gap-8 items-start">
+
+              <div class="md:col-span-2 space-y-5">
+                <div>
+                  <h2 class="text-2xl font-black text-white mb-2">Live Trading Session</h2>
+                  <p class="text-zinc-400 text-sm leading-relaxed">
+                    Every market day we go live at the 8:30 AM CT opening bell to trade the Nasdaq ORB setup in real time. We cover pre-market context, grade the breakout live as it forms, and walk through the SL/TP levels together. Sessions run until the setup plays out or the window closes.
+                  </p>
                 </div>
-                <p class="text-zinc-400 text-sm leading-relaxed">
-                  Real-time market analysis focusing heavily on the Nasdaq Opening Range Breakout (ORB) setup. Stream tracks the pre-market development through execution parameters until execution loops wrap up for the session.
-                </p>
-                
-                <div class="grid sm:grid-cols-2 gap-4 pt-2 text-xs">
-                  <div class="border border-green-500/20 bg-green-500/5 rounded-xl p-4">
-                    <span class="text-green-400 font-bold block uppercase tracking-wider mb-1">⚡ Discord Live Feed</span>
-                    <span class="text-zinc-300">Zero latency, direct voice feed, and absolute real-time indicator tracking for VIP Operators.</span>
+
+                <div class="grid sm:grid-cols-2 gap-4 text-xs">
+                  <div class="border border-green-500/20 bg-green-500/5 rounded-xl p-4 space-y-2">
+                    <div class="text-green-400 font-black uppercase tracking-wider">⚡ VIP Discord Feed</div>
+                    <p class="text-zinc-400 leading-relaxed">Zero latency. Live voice, indicator tracking, real-time trade calls, and direct access to ask questions during the session.</p>
+                    <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline font-bold block">Join Discord →</a>
                   </div>
-                  <div class="border border-white/5 bg-zinc-900/20 rounded-xl p-4">
-                    <span class="text-zinc-500 font-bold block uppercase tracking-wider mb-1">📺 YouTube Feed</span>
-                    <span class="text-zinc-400">Standard latency data delay broadcast for non-VIP community monitoring.</span>
+                  <div class="border border-white/5 bg-zinc-900/30 rounded-xl p-4 space-y-2">
+                    <div class="text-zinc-400 font-black uppercase tracking-wider">📺 YouTube Feed</div>
+                    <p class="text-zinc-500 leading-relaxed">Public broadcast with a standard stream delay. Good for watching — join Discord for the live experience.</p>
+                    <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-white hover:underline font-bold block transition">Watch on YouTube →</a>
+                  </div>
+                </div>
+
+                <!-- WHAT WE COVER -->
+                <div>
+                  <div class="text-[10px] text-zinc-600 uppercase tracking-widest mb-3 font-bold">What we cover each session</div>
+                  <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Pre-market context & bias</div>
+                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Live ORB grade as it forms</div>
+                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Entry, SL & TP level walkthrough</div>
+                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> HTF trend & VWAP alignment</div>
+                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Live trade management</div>
+                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Post-trade review & notes</div>
                   </div>
                 </div>
               </div>
 
-              <div class="flex flex-col items-center justify-center p-6 bg-black border border-white/10 rounded-2xl h-full text-center justify-between shadow-inner space-y-4">
-                <div class="space-y-1">
-                  <span class="text-[12px] text-zinc-500 block uppercase tracking-widest font-bold">MON – FRI WINDOW</span>
-                  <span class="text-3xl font-black text-white tracking-tight">8:30 AM</span>
-                  <span class="text-xs text-green-400 block uppercase tracking-widest font-bold">CENTRAL TIME (CST)</span>
+              <!-- TIME BLOCK -->
+              <div class="flex flex-col items-center justify-center p-6 bg-black border border-white/10 rounded-2xl text-center space-y-4">
+                <div>
+                  <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-1">Start Time</div>
+                  <div class="text-4xl font-black text-white">8:30 AM</div>
+                  <div class="text-green-400 text-xs font-bold uppercase tracking-widest mt-1">Central Time (CT)</div>
                 </div>
-                <div class="w-full border-t border-white/5 pt-3">
-                  <span class="text-[11px] text-zinc-400 block">Until Session Adjournment</span>
+                <div class="w-full border-t border-white/5 pt-4 space-y-1.5 text-xs text-zinc-500">
+                  <div class="flex justify-between"><span>Eastern (ET)</span><span class="text-zinc-300">9:30 AM</span></div>
+                  <div class="flex justify-between"><span>Pacific (PT)</span><span class="text-zinc-300">6:30 AM</span></div>
+                  <div class="flex justify-between"><span>London (GMT+1)</span><span class="text-zinc-300">2:30 PM</span></div>
+                  <div class="flex justify-between"><span>Dubai (GST)</span><span class="text-zinc-300">5:30 PM</span></div>
+                </div>
+                <div class="w-full border-t border-white/5 pt-3 text-[10px] text-zinc-600 uppercase tracking-wider">
+                  Until session close
                 </div>
               </div>
 
             </div>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 flex flex-col justify-between hover:border-zinc-800 transition md:col-span-1">
+          <!-- WEEKLY GAMEPLAN -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Weekly — Every Monday</span>
+            </div>
+            <div class="p-6 md:p-8 grid md:grid-cols-3 gap-8 items-start">
+              <div class="md:col-span-2 space-y-4">
+                <div>
+                  <h2 class="text-xl font-black text-white mb-2">Monday Gameplan Session</h2>
+                  <p class="text-zinc-400 text-sm leading-relaxed">
+                    Before the market opens on Monday we run a dedicated structural orientation session inside the Discord. We map out the week ahead — key range levels, liquidity pools, important macro events, and how we're thinking about the setups coming into the week.
+                  </p>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                  <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Weekly high/low & key levels</div>
+                  <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Macro & economic calendar review</div>
+                  <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> HTF bias & trend context</div>
+                  <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Setup scenarios to watch for</div>
+                </div>
+                <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
+                  class="inline-block px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs rounded-xl transition">
+                  Join Discord for Access →
+                </a>
+              </div>
+              <div class="flex flex-col items-center justify-center p-6 bg-black border border-white/10 rounded-2xl text-center space-y-3">
+                <div>
+                  <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-1">Every Monday</div>
+                  <div class="text-3xl font-black text-white">8:00 AM</div>
+                  <div class="text-zinc-400 text-xs font-bold uppercase tracking-widest mt-1">Central Time (CT)</div>
+                </div>
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider border-t border-white/5 pt-3 w-full">
+                  Discord Voice Stage
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SPECIAL EVENTS -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Special Events & Walkthroughs</span>
+              <span class="text-[10px] text-zinc-600 italic">Announced in Discord</span>
+            </div>
+            <div class="p-6 md:p-8 space-y-4">
+              <p class="text-zinc-500 text-sm leading-relaxed max-w-2xl">
+                We run periodic deep-dive sessions on specific topics — indicator walkthroughs, prop firm strategy, backtesting clinics, and Q&A sessions. Dates are announced in Discord first, so make sure you're in the server to catch them.
+              </p>
               <div class="space-y-3">
-                <div class="space-y-1">
-                  <span class="text-[11px] text-green-400 uppercase tracking-widest font-bold block">// WEEKLY ANCHOR</span>
-                  <h4 class="text-xl font-bold text-white tracking-tight">Monday Gameplan</h4>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-black border border-white/5 rounded-xl gap-3 text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="text-lg">🛠️</span>
+                    <div>
+                      <span class="text-white font-bold block">FSD-X ORB PRO Full System Walkthrough</span>
+                      <span class="text-zinc-500">Deep dive into every setting, grading system, and how to read the dashboard.</span>
+                    </div>
+                  </div>
+                  <div class="shrink-0 text-right">
+                    <span class="text-zinc-400 font-bold block">TBD</span>
+                    <span class="text-[10px] text-zinc-600 uppercase">Discord Live Stage</span>
+                  </div>
                 </div>
-                <p class="text-zinc-400 text-xs leading-relaxed">
-                  Weekly structural orientation charting session inside Discord. Mapping key historical ranges, liquidity pools, and setup anchors before the opening bell.
-                </p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-black border border-white/5 rounded-xl gap-3 text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="text-lg">📊</span>
+                    <div>
+                      <span class="text-white font-bold block">Prop Firm Sizing & Scaling Masterclass</span>
+                      <span class="text-zinc-500">Risk calibration and position sizing specifically for passing evaluations.</span>
+                    </div>
+                  </div>
+                  <div class="shrink-0 text-right">
+                    <span class="text-zinc-400 font-bold block">TBD</span>
+                    <span class="text-[10px] text-zinc-600 uppercase">Discord Live Stage</span>
+                  </div>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-black border border-white/5 rounded-xl gap-3 text-xs">
+                  <div class="flex items-center gap-3">
+                    <span class="text-lg">🔍</span>
+                    <div>
+                      <span class="text-white font-bold block">Backtesting Clinic — Using the ORB PRO Backtester</span>
+                      <span class="text-zinc-500">How to find your optimal settings using the strategy engine and Optimizer Pro.</span>
+                    </div>
+                  </div>
+                  <div class="shrink-0 text-right">
+                    <span class="text-zinc-400 font-bold block">TBD</span>
+                    <span class="text-[10px] text-zinc-600 uppercase">Discord Live Stage</span>
+                  </div>
+                </div>
               </div>
-              <div class="mt-8 pt-4 border-t border-white/5 text-xs flex justify-between items-center gap-2">
-                <span class="text-zinc-500 uppercase tracking-wider">Mondays</span>
-                <span class="text-white font-bold bg-zinc-900 border border-white/10 px-4 py-1 rounded-lg whitespace-nowrap">8:00 AM CST</span>
-              </div>
-            </div>
-
-            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 flex flex-col justify-between md:col-span-2">
-              <div class="w-full space-y-4">
-                <div class="flex justify-between items-center border-b border-white/5 pb-3 gap-2">
-                  <div class="space-y-0.5">
-                    <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold block">// INFRASTRUCTURE DESK UPDATES</span>
-                    <h4 class="text-xl font-bold text-white tracking-tight">Special Events & Walkthroughs</h4>
-                  </div>
-                  <span class="text-[11px] text-zinc-500 italic whitespace-nowrap">Updated Live</span>
-                </div>
-
-                <div class="space-y-3">
-
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-black border border-white/5 rounded-xl gap-3 text-xs">
-                    <div class="flex items-center gap-3">
-                      <span class="text-green-400 text-base">🛠️</span>
-                      <div>
-                        <span class="text-white font-bold block">FSD-X ORB PRO System Walkthrough</span>
-                        <span class="text-[12px] text-zinc-500">Deep dive into FSD-X ORB PRO Settings.</span>
-                      </div>
-                    </div>
-                    <div class="shrink-0 sm:text-right">
-                      <span class="text-zinc-400 font-bold block">TBD</span>
-                      <span class="text-[12px] text-zinc-600 block uppercase">Discord LIVE STAGE</span>
-                    </div>
-                  </div>
-
-                  <div class="flex flex-col sm:flex-row sm:items-center justify-between p-3 bg-black border border-white/5 rounded-xl gap-3 text-xs">
-                    <div class="flex items-center gap-3">
-                      <span class="text-green-400 text-base">📊</span>
-                      <div>
-                        <span class="text-white font-bold block">Prop Sizing Scaling Masterclass</span>
-                        <span class="text-[12px] text-zinc-500">Risk calibration for high-speed evaluation passing.</span>
-                      </div>
-                    </div>
-                    <div class="shrink-0 sm:text-right">
-                      <span class="text-zinc-400 font-bold block">TBD</span>
-                      <span class="text-[12px] text-zinc-600 block uppercase">Discord LIVE STAGE</span>
-                    </div>
-                  </div>
-
-                </div>
+              <div class="pt-2">
+                <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
+                  class="inline-block px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl transition">
+                  Join Discord to Get Notified →
+                </a>
               </div>
             </div>
+          </div>
 
+          <!-- BOTTOM CTA -->
+          <div class="border border-white/5 bg-zinc-950/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 class="text-base font-black text-white mb-1">Not a member yet?</h3>
+              <p class="text-zinc-500 text-sm">Join to get live Discord access, SCOUT alerts, and the full FSD-X suite.</p>
+            </div>
+            <a href="memberships.html"
+              class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap shrink-0">
+              View Memberships →
+            </a>
           </div>
 
         </div>
@@ -149,62 +227,45 @@
 
     </div>
 
-    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto text-[10px]">
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
       <div class="max-w-5xl mx-auto space-y-6">
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
-            CFTC Rule 4.41 — Performance Disclosure
-          </span>
-          <p class="text-zinc-500 leading-relaxed mt-2">
-            Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
-          </p>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">CFTC Rule 4.41 — Performance Disclosure</span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.</p>
         </div>
-
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
-            Risk Disclosure
-          </span>
-          <p class="text-zinc-500 leading-relaxed mt-2">
-            Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones’ financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
-          </p>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Risk Disclosure</span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
         </div>
-
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-zinc-600 gap-4 text-center sm:text-left">
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
           <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
       </div>
     </footer>
-
   </main>
 
   <script>
     function toggleMobileMenu() {
       const sidebar = document.getElementById('sidebar-panel');
-      if (sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.remove('-translate-x-full');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-      }
+      sidebar.classList.toggle('-translate-x-full');
     }
   </script>
 
   <script>
-    // Shared nav loader — edit nav.html to update navigation on all pages
     fetch('nav.html')
       .then(r => r.text())
       .then(html => {
         document.getElementById('nav-content').innerHTML = html;
-        // Highlight active page
         const current = window.location.pathname.split('/').pop() || 'index.html';
         document.querySelectorAll('#nav-content .nav-link').forEach(link => {
-          const href = link.getAttribute('href');
-          if (href === current) {
+          if (link.getAttribute('href') === current) {
             link.classList.remove('text-zinc-400');
             link.classList.add('text-green-400', 'font-bold');
           }
         });
       });
   </script>
+
 </body>
 </html>
