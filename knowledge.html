@@ -3,18 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X — Knowledge Base & Intelligence Terminal</title>
+  <title>FSD-X — Knowledge Base</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #000; }
+  </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
   <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
-    <div class="text-2xl font-black tracking-wider text-green-400">
-      FSD-X
-    </div>
-    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">
-      // MENU
-    </button>
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
   </header>
 
   <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
@@ -24,11 +23,8 @@
           <span class="text-green-400">FSD-X</span>
           <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
         </div>
-        <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-bold">
-          [ESC]
-        </button>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-bold">[ESC]</button>
       </div>
-
       <nav class="flex flex-col gap-4 w-full">
         <div>
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
@@ -39,28 +35,21 @@
             <a href="results.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">ORB Performance</a>
           </div>
         </div>
-
         <div class="mt-2">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Resources</div>
           <div class="flex flex-col gap-2.5 pl-1">
             <a href="affiliates.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Affiliates</a>
-            <a href="knowledge.html" class="text-green-400 hover:text-green-400 font-bold transition text-sm block">Knowledge Base</a>
+            <a href="knowledge.html" class="text-green-400 font-bold transition text-sm block">Knowledge Base</a>
             <a href="schedule.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Schedule</a>
           </div>
         </div>
-
         <div class="mt-2">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Social Channels</div>
           <div class="flex flex-col gap-2.5 pl-1">
-            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block flex items-center gap-1.5">
-              YouTube <span class="text-[10px] text-zinc-600">↗</span>
-            </a>
-            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm block flex items-center gap-1.5">
-              Instagram <span class="text-[10px] text-zinc-600">↗</span>
-            </a>
+            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">YouTube <span class="text-[10px] text-zinc-600">↗</span></a>
+            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">Instagram <span class="text-[10px] text-zinc-600">↗</span></a>
           </div>
         </div>
-
         <div class="mt-2">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// System</div>
           <div class="flex flex-col gap-2.5 pl-1">
@@ -71,69 +60,90 @@
         </div>
       </nav>
     </div>
-
     <div class="w-full pt-4 border-t border-white/5 mt-8">
-      <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">
-        Launch Discord &rarr;
-      </a>
+      <a href="https://discord.gg/RePdHESvSx" class="text-xs text-zinc-500 hover:text-white transition block">Launch Discord &rarr;</a>
     </div>
   </aside>
 
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
     <div class="w-full flex-1">
-      
+
+      <!-- PAGE HEADER -->
       <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-6xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Operational Vault</div>
-          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">System Knowledge Base</h1>
-          <p class="mt-4 text-zinc-400 text-xs md:text-sm max-w-2xl leading-relaxed">
-            Access core strategic frameworks, video tutorials, and technical data sheets required to properly run the FSD-X suite across index futures markets.
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Setup & Training</div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">Knowledge Base</h1>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
+            Everything you need to set up, calibrate, and run the FSD-X suite correctly. Start with the videos, then reference the settings table before going live.
           </p>
+          <!-- QUICK LINKS -->
+          <div class="mt-6 flex flex-wrap gap-2">
+            <a href="#videos" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Tutorials & Walkthroughs</a>
+            <a href="#settings" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Default Settings</a>
+            <a href="#downloads" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Downloads & Extensions</a>
+          </div>
         </div>
       </section>
 
-      <section class="py-12 md:py-16 px-6 md:px-12 border-b border-white/5">
-        <div class="max-w-6xl mx-auto">
-          <div class="text-[11px] md:text-[12px] uppercase tracking-widest text-zinc-500 font-bold mb-6 md:mb-8">// VIDEO OPERATION BLUEPRINTS (CLICK TO PLAY)</div>
-          
-          <div id="video-grid-container" class="grid sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+      <!-- VIDEOS -->
+      <section id="videos" class="py-12 md:py-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="mb-6">
+            <h2 class="text-lg font-black text-white">Tutorials & Walkthroughs</h2>
+            <p class="text-zinc-500 text-xs mt-1">Click any video to play inline. These cover setup, calibration, and live usage of FSD-X ORB PRO.</p>
+          </div>
+          <div id="video-grid-container" class="grid sm:grid-cols-2 gap-6"></div>
         </div>
       </section>
 
-      <section class="py-12 md:py-16 px-6 md:px-12 border-b border-white/5">
-        <div class="max-w-6xl mx-auto">
-          <div class="text-[11px] uppercase tracking-widest text-zinc-500 font-bold mb-6">// DEFAULT CALIBRATION VALUES (NQ/MNQ)</div>
-          
-          <div class="border border-white/10 rounded-xl overflow-hidden bg-zinc-950/40">
+      <!-- SETTINGS TABLE -->
+      <section id="settings" class="py-12 md:py-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="mb-6">
+            <h2 class="text-lg font-black text-white">Default Calibration Settings</h2>
+            <p class="text-zinc-500 text-xs mt-1">Recommended baseline settings for NQ/MNQ on the 5-minute timeframe. Find these in the FSD-X ORB PRO indicator settings panel on TradingView.</p>
+          </div>
+
+          <div class="border border-white/10 rounded-2xl overflow-hidden bg-zinc-950/40">
             <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse min-w-[600px]">
+              <table class="w-full text-left border-collapse min-w-[580px]">
                 <thead>
-                  <tr class="border-b border-white/10 bg-zinc-950 text-zinc-400 text-xs uppercase tracking-wider">
-                    <th class="py-4 px-6 font-semibold">Parameter Metric</th>
-                    <th class="py-4 px-6 font-semibold">Base Profile Setting</th>
-                    <th class="py-4 px-6 font-semibold">Operational Strategy Rules</th>
+                  <tr class="border-b border-white/10 bg-zinc-950 text-zinc-500 text-xs uppercase tracking-wider">
+                    <th class="py-4 px-6 font-semibold">Setting</th>
+                    <th class="py-4 px-6 font-semibold">Recommended Value</th>
+                    <th class="py-4 px-6 font-semibold">Why It Matters</th>
                   </tr>
                 </thead>
-                <tbody class="text-xs md:text-sm tracking-tight divide-y divide-white/5">
+                <tbody class="divide-y divide-white/5">
                   <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white">Opening Range Duration</td>
-                    <td class="py-4 px-6 text-green-400">08:30 CST Anchor</td>
-                    <td class="py-4 px-6 text-zinc-400 font-sans text-xs">Hard-anchored to Central Time in the source code. No matter what your local chart time zone is, keeping it at 8:30 ensures flawless execution calculations.</td>
+                    <td class="py-4 px-6 font-bold text-white text-sm">ORB Start Time</td>
+                    <td class="py-4 px-6 text-green-400 text-sm font-bold">8:30 AM CT</td>
+                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">Hard-anchored to Central Time in the source code. Keep this at 8:30 regardless of your local chart timezone — the indicator handles the conversion automatically.</td>
                   </tr>
                   <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white">VWAP Alignment Filter</td>
-                    <td class="py-4 px-6 text-zinc-300">Strict Toggled Filter</td>
-                    <td class="py-4 px-6 text-zinc-400 font-sans text-xs">Core mechanical baseline. Breakout validation entries are completely ignored by the algorithm if price action isn't aligned on the correct side of VWAP.</td>
+                    <td class="py-4 px-6 font-bold text-white text-sm">VWAP Alignment Filter</td>
+                    <td class="py-4 px-6 text-zinc-300 text-sm font-bold">ON (Strict)</td>
+                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">Breakouts are ignored if price isn't on the correct side of VWAP. This is a core quality filter — leaving it on keeps you aligned with session flow.</td>
                   </tr>
                   <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white">Realistic Trade Tracking</td>
-                    <td class="py-4 px-6 text-zinc-300">Boolean Toggle: ON</td>
-                    <td class="py-4 px-6 text-zinc-400 font-sans text-xs">Prevents data inflation. The built-in metrics system locks down tracking and will not record a second trade until the first position hits full TP or SL.</td>
+                    <td class="py-4 px-6 font-bold text-white text-sm">Realistic Trade Tracking</td>
+                    <td class="py-4 px-6 text-zinc-300 text-sm font-bold">ON</td>
+                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">Prevents inflated win rate stats. The dashboard won't log a second trade until the first one resolves at TP or SL — keeps your data honest.</td>
                   </tr>
                   <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white">Stop Loss Range Limits</td>
-                    <td class="py-4 px-6 text-green-400">50 Min / 150 Max Pts</td>
-                    <td class="py-4 px-6 text-zinc-400 font-sans text-xs">A dynamic hybrid risk manager that instantly assigns safety stop bounds based on real-time correlation between structural points and ATR metrics.</td>
+                    <td class="py-4 px-6 font-bold text-white text-sm">Stop Loss Range</td>
+                    <td class="py-4 px-6 text-green-400 text-sm font-bold">50 Min / 150 Max pts</td>
+                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">The hybrid SL engine uses both structure and ATR to size stops. These bounds act as safety rails — stops won't go tighter than 50 pts or wider than 150 pts.</td>
+                  </tr>
+                  <tr class="hover:bg-white/[0.02] transition">
+                    <td class="py-4 px-6 font-bold text-white text-sm">Minimum ORB Filter</td>
+                    <td class="py-4 px-6 text-zinc-300 text-sm font-bold">45 pts</td>
+                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">Skips setups when the opening range is too tight to produce meaningful breakouts. Anything below 45 points on MNQ typically produces false signals.</td>
+                  </tr>
+                  <tr class="hover:bg-white/[0.02] transition">
+                    <td class="py-4 px-6 font-bold text-white text-sm">Min Grade to Trade</td>
+                    <td class="py-4 px-6 text-zinc-300 text-sm font-bold">C or better</td>
+                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">The grading system scores each setup A+ through F. For best results focus on A+/A/B+ trades. C and above is the minimum threshold to consider entering.</td>
                   </tr>
                 </tbody>
               </table>
@@ -142,53 +152,108 @@
         </div>
       </section>
 
-      <section class="py-16 px-6 md:px-12">
-        <div class="max-w-6xl mx-auto">
-          <div class="text-[11px] uppercase tracking-widest text-zinc-500 font-bold mb-6">// DEPLOYMENT FILE TERMINAL</div>
+      <!-- DOWNLOADS -->
+      <section id="downloads" class="py-12 md:py-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="mb-6">
+            <h2 class="text-lg font-black text-white">Downloads & Extensions</h2>
+            <p class="text-zinc-500 text-xs mt-1">Core tools and files to install alongside the FSD-X suite.</p>
+          </div>
           <div class="grid lg:grid-cols-2 gap-4">
-            
-            <div class="border border-white/10 bg-zinc-950/60 p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-zinc-800 transition gap-4">
+
+            <div class="border border-white/10 bg-zinc-950/60 p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-green-500/20 transition gap-4">
               <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center text-green-400 text-xs font-bold shrink-0">CRX</div>
                 <div>
-                  <h4 class="text-sm font-bold text-white">FSD-X Nexus 2.0 (Web Extension)</h4>
-                  <p class="text-xs text-zinc-500 mt-0.5">Chrome Web Store • Includes Optimizer Pro Built-In</p>
+                  <h4 class="text-sm font-bold text-white">FSD-X Nexus 2.0</h4>
+                  <p class="text-xs text-zinc-500 mt-0.5">Chrome extension · Journal, Optimizer, AI Analyzer & more</p>
                 </div>
               </div>
-              <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgngbimklpmdadcngj" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto text-center border border-green-500/30 text-green-400 bg-green-500/5 hover:bg-green-500 hover:text-black text-xs px-3 py-1.5 rounded-lg transition font-bold shrink-0">Add to Chrome ↗</a>
+              <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgngbimklpmdadcngj" target="_blank" rel="noopener noreferrer"
+                class="w-full sm:w-auto text-center border border-green-500/30 text-green-400 bg-green-500/5 hover:bg-green-500 hover:text-black text-xs px-4 py-2 rounded-lg transition font-bold shrink-0">
+                Add to Chrome ↗
+              </a>
             </div>
 
-            <div class="border border-white/10 bg-zinc-950/60 p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-zinc-800 transition gap-4">
+            <div class="border border-white/10 bg-zinc-950/60 p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-white/20 transition gap-4">
               <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400 text-xs font-bold shrink-0">PDF</div>
                 <div>
-                  <h4 class="text-sm font-bold text-white">ORB Playbook Matrix Cheat Sheet</h4>
-                  <p class="text-xs text-zinc-500 mt-0.5">Updated Quarter Blueprint • Execution Rules</p>
+                  <h4 class="text-sm font-bold text-white">ORB Playbook Cheat Sheet</h4>
+                  <p class="text-xs text-zinc-500 mt-0.5">Quick-reference execution rules & grade criteria</p>
                 </div>
               </div>
-              <a href="#" class="w-full sm:w-auto text-center border border-white/10 hover:border-green-400 hover:text-green-400 text-xs px-3 py-1.5 rounded-lg transition shrink-0">Download</a>
+              <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
+                class="w-full sm:w-auto text-center border border-white/10 hover:border-green-400 hover:text-green-400 text-xs px-4 py-2 rounded-lg transition shrink-0 text-zinc-400">
+                Get in Discord ↗
+              </a>
             </div>
+
+            <div class="border border-white/10 bg-zinc-950/60 p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-white/20 transition gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400 text-xs font-bold shrink-0">TV</div>
+                <div>
+                  <h4 class="text-sm font-bold text-white">TradingView Setup Guide</h4>
+                  <p class="text-xs text-zinc-500 mt-0.5">How to add FSD-X indicators to your chart layout</p>
+                </div>
+              </div>
+              <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
+                class="w-full sm:w-auto text-center border border-white/10 hover:border-green-400 hover:text-green-400 text-xs px-4 py-2 rounded-lg transition shrink-0 text-zinc-400">
+                Get in Discord ↗
+              </a>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/60 p-5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-white/20 transition gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-10 h-10 rounded-lg bg-zinc-900 border border-white/10 flex items-center justify-center text-zinc-400 text-xs font-bold shrink-0">FAQ</div>
+                <div>
+                  <h4 class="text-sm font-bold text-white">Frequently Asked Questions</h4>
+                  <p class="text-xs text-zinc-500 mt-0.5">Common setup issues, billing, and access questions</p>
+                </div>
+              </div>
+              <a href="faq.html"
+                class="w-full sm:w-auto text-center border border-white/10 hover:border-green-400 hover:text-green-400 text-xs px-4 py-2 rounded-lg transition shrink-0 text-zinc-400">
+                View FAQ →
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- BOTTOM CTA -->
+      <section class="py-12 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto border border-green-500/20 bg-zinc-950/60 rounded-2xl p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div>
+            <h3 class="text-lg font-black text-white mb-1">Still need help?</h3>
+            <p class="text-zinc-500 text-sm">The Discord is the fastest way to get a real answer — open a ticket and the team will walk you through it.</p>
+          </div>
+          <div class="flex gap-3 shrink-0">
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
+              class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+              Launch Discord &rarr;
+            </a>
+            <a href="contact.html"
+              class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+              Contact Us
+            </a>
           </div>
         </div>
       </section>
 
     </div>
 
-    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto text-[10px]">
-      <div class="max-w-6xl mx-auto space-y-6">
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
+      <div class="max-w-5xl mx-auto space-y-6">
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">CFTC Rule 4.41 — Performance Disclosure</span>
-          <p class="text-zinc-500 leading-relaxed mt-2">
-            Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
-          </p>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">CFTC Rule 4.41 — Performance Disclosure</span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.</p>
         </div>
         <div>
-          <span class="bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Risk Disclosure</span>
-          <p class="text-zinc-500 leading-relaxed mt-2">
-            Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones’ financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
-          </p>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Risk Disclosure</span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
         </div>
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col lg:flex-row justify-between items-center text-zinc-600 gap-4 text-center lg:text-left">
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
           <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
@@ -199,88 +264,63 @@
   <script>
     const videoData = [
       {
-        id: "01",
-        title: "This ORB Indicator Hit 70%+ Win Rate With One Simple Rule",
-        runtime: "08:21",
-        tier: "Free Vault Access",
-        description: "A data-backed breakdown revealing how applying a single trade management rule pushes the opening range breakout framework from a 58% baseline up to a 70%+ win rate. Verified across a multi-year 1,549-trade Python simulation.",
-        youtubeId: "-H0uNtHg8bM"
-      },
-      {
         id: "02",
         title: "The Smartest ORB Indicator Just Got Smarter (V4 Alpha)",
-        runtime: "02:13",
-        tier: "Free Vault Access",
-        description: "A quick review of the core V4 Alpha upgrades. Breaks down moving away from fixed bounds to a rolling 5-day lookback volatility engine, the 7-state progressive trend model, and the lime green visual grading system stamped right onto your breakout candles.",
+        runtime: "2:13",
+        tier: "Free",
+        description: "A quick review of the V4 Alpha upgrades — rolling 5-day lookback volatility engine, 7-state progressive trend model, and the visual grading system stamped onto breakout candles.",
         youtubeId: "agmT_ZoP_Eo"
       },
       {
         id: "03",
         title: "FSD-X ORB PRO: Full Walkthrough & Live Setup Guide",
         runtime: "1:01:31",
-        tier: "Free Vault Access",
-        description: "An extensive masterclass detailing complete setting calibrations for index futures. Explains standard breakout models vs continuations, ATR/structure hybrid stop configurations, win rate metric filtering, and evaluating multi-year 'blind' backtesting logs safely.",
+        tier: "Free",
+        description: "Full masterclass covering complete setting calibrations for NQ/MNQ. Explains breakout models, ATR/structure hybrid stops, win rate filtering, and how to read multi-year backtesting data safely.",
         youtubeId: "2IJaJctBaxo"
       }
     ];
 
-    // Mobile menu show/hide toggler
     function toggleMobileMenu() {
       const sidebar = document.getElementById('sidebar-panel');
-      if (sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.remove('-translate-x-full');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-      }
+      sidebar.classList.toggle('-translate-x-full');
     }
 
     function loadVideos() {
       const container = document.getElementById('video-grid-container');
       container.innerHTML = '';
-
       videoData.forEach(video => {
-        const cardHTML = `
-          <div class="border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-800 transition flex flex-col justify-between">
-            <div>
-              <div id="player-wrapper-${video.id}" class="aspect-video bg-zinc-900 border-b border-white/5 flex items-center justify-center relative group cursor-pointer" onclick="activateInlinePlayer('${video.id}', '${video.youtubeId}')">
-                <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 transition group-hover:from-black/90"></div>
-                <img src="https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg" alt="Cover" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-30 transition duration-300" />
-                
-                <div class="w-14 h-14 rounded-full bg-black/70 border border-white/20 flex items-center justify-center absolute z-20 group-hover:bg-green-400 group-hover:border-transparent transition transform group-hover:scale-105 duration-300 shadow-2xl">
-                  <svg class="w-5 h-5 text-white group-hover:text-black ml-1 transition" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                  </svg>
-                </div>
-              </div>
-              <div class="p-5">
-                <h3 class="text-base font-bold text-white tracking-tight">${video.title}</h3>
-                <p class="mt-2 text-zinc-400 text-xs leading-relaxed">${video.description}</p>
+        container.innerHTML += `
+          <div class="border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition flex flex-col">
+            <div id="player-wrapper-${video.id}" class="aspect-video bg-zinc-900 border-b border-white/5 flex items-center justify-center relative group cursor-pointer" onclick="activateInlinePlayer('${video.id}', '${video.youtubeId}')">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10 group-hover:from-black/90 transition"></div>
+              <img src="https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg" alt="${video.title}" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-30 transition duration-300" />
+              <div class="w-14 h-14 rounded-full bg-black/70 border border-white/20 flex items-center justify-center absolute z-20 group-hover:bg-green-400 group-hover:border-transparent transition transform group-hover:scale-105 duration-300 shadow-2xl">
+                <svg class="w-5 h-5 text-white group-hover:text-black ml-1 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               </div>
             </div>
-            <div class="px-5 pb-5 pt-2">
-              <span class="text-[10px] text-zinc-600 block uppercase">Runtime: ${video.runtime} // Tier: ${video.tier}</span>
+            <div class="p-5 flex flex-col flex-1 justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-white leading-snug mb-2">${video.title}</h3>
+                <p class="text-zinc-500 text-xs leading-relaxed">${video.description}</p>
+              </div>
+              <div class="mt-4 flex items-center gap-3">
+                <span class="text-[10px] text-zinc-600 uppercase tracking-wider">${video.runtime}</span>
+                <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
+                <span class="text-[10px] text-green-400 uppercase tracking-wider font-bold">${video.tier}</span>
+              </div>
             </div>
           </div>
         `;
-        container.innerHTML += cardHTML;
       });
     }
 
     function activateInlinePlayer(wrapperId, youtubeVideoId) {
-      const targetElement = document.getElementById(`player-wrapper-${wrapperId}`);
-      if(targetElement) {
-        targetElement.innerHTML = `
-          <iframe 
-            class="absolute inset-0 w-full h-full z-30" 
-            src="https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0" 
-            title="FSD-X Streaming Pipeline Terminal" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-            allowfullscreen>
-          </iframe>
-        `;
-        targetElement.removeAttribute('onclick');
-        targetElement.classList.remove('cursor-pointer');
+      const el = document.getElementById(`player-wrapper-${wrapperId}`);
+      if (el) {
+        el.innerHTML = `<iframe class="absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0" title="FSD-X Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+        el.removeAttribute('onclick');
+        el.classList.remove('cursor-pointer');
       }
     }
 
