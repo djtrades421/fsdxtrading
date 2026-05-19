@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Getting Started</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #000; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+    <div class="w-full flex-1">
+
+      <!-- PAGE HEADER -->
+      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Onboarding Guide</div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">Getting Started</h1>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
+            Just subscribed? Follow these steps in order to get full access to the FSD-X suite. The whole process takes under 10 minutes.
+          </p>
+          <!-- STEP PILLS -->
+          <div class="mt-6 flex flex-wrap gap-2">
+            <a href="#step-1" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Step 1 — Discord</a>
+            <a href="#step-2" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Step 2 — TradingView Indicators</a>
+            <a href="#step-3" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Step 3 — Nexus Key</a>
+            <a href="#step-4" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Step 4 — You're Live</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEPS -->
+      <section class="py-12 md:py-16 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto space-y-10">
+
+          <!-- STEP 1 -->
+          <div id="step-1" class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-4 p-6 border-b border-white/5 bg-zinc-950/60">
+              <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-black font-black text-lg shrink-0">1</div>
+              <div>
+                <h2 class="text-lg font-black text-white">Claim Your Discord Access</h2>
+                <p class="text-zinc-500 text-xs mt-0.5">Connect your Whop subscription to the FSD-X Discord server</p>
+              </div>
+            </div>
+            <div class="p-6 grid md:grid-cols-2 gap-6 items-start">
+              <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+                <p>After subscribing on Whop, you need to claim your Discord access so you can join the private community and receive SCOUT alerts.</p>
+                <ol class="space-y-3 text-sm">
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">01.</span><span>Log into your <a href="https://whop.com" target="_blank" class="text-green-400 hover:underline">Whop dashboard</a></span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">02.</span><span>Find your FSD-X membership and click <strong class="text-white">Claim</strong> next to the Discord option</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">03.</span><span>Authorize the connection with your Discord account when prompted</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">04.</span><span>You'll automatically be added to the VIP channels in the server</span></li>
+                </ol>
+                <div class="bg-green-500/5 border border-green-500/20 rounded-xl p-3 text-xs text-zinc-400">
+                  <span class="text-green-400 font-bold block mb-1">Already in Discord?</span>
+                  Make sure you're using the same Discord account you want linked. If you need help, open a ticket in the server.
+                </div>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-white/10">
+                <img src="discord whop.png" alt="Claim Discord access on Whop" class="w-full h-auto object-cover" />
+                <div class="px-3 py-2 bg-zinc-900/60 text-[10px] text-zinc-500 uppercase tracking-wider">Whop dashboard → Claim Discord access</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div id="step-2" class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-4 p-6 border-b border-white/5 bg-zinc-950/60">
+              <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-black font-black text-lg shrink-0">2</div>
+              <div>
+                <h2 class="text-lg font-black text-white">Claim the TradingView Indicators</h2>
+                <p class="text-zinc-500 text-xs mt-0.5">Add FSD-X ORB PRO and companion indicators to your TradingView account</p>
+              </div>
+            </div>
+            <div class="p-6 grid md:grid-cols-2 gap-6 items-start">
+              <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+                <p>The TradingView indicators are invite-only and need to be claimed through Whop before they appear in your TradingView scripts library.</p>
+                <ol class="space-y-3 text-sm">
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">01.</span><span>Go back to your Whop dashboard and find the FSD-X membership</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">02.</span><span>Click <strong class="text-white">Claim</strong> next to the TradingView indicator option</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">03.</span><span>Enter your <strong class="text-white">TradingView username</strong> (not email — the username shown on your profile)</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">04.</span><span>Within a few minutes the indicators will appear in your TradingView <strong class="text-white">Invite-Only Scripts</strong> section</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">05.</span><span>Search "FSD-X" in the indicator search bar to add them to your chart</span></li>
+                </ol>
+                <div class="bg-zinc-900/60 border border-white/5 rounded-xl p-3 text-xs text-zinc-400">
+                  <span class="text-white font-bold block mb-1">Don't see them?</span>
+                  It can take up to 5 minutes to appear. Make sure your TradingView username is entered correctly — it's case sensitive.
+                </div>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-white/10">
+                <img src="Tradingview whop.png" alt="Claim TradingView indicators on Whop" class="w-full h-auto object-cover" />
+                <div class="px-3 py-2 bg-zinc-900/60 text-[10px] text-zinc-500 uppercase tracking-wider">Whop dashboard → Claim TradingView indicators</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div id="step-3" class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-4 p-6 border-b border-white/5 bg-zinc-950/60">
+              <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-black font-black text-lg shrink-0">3</div>
+              <div>
+                <h2 class="text-lg font-black text-white">Get Your Nexus & Optimizer Key</h2>
+                <p class="text-zinc-500 text-xs mt-0.5">Find your license key in the Whop Software section to unlock VIP features in Nexus</p>
+              </div>
+            </div>
+            <div class="p-6 grid md:grid-cols-2 gap-6 items-start">
+              <div class="space-y-4 text-sm text-zinc-400 leading-relaxed">
+                <p>FSD-X Nexus 2.0 and Strategy Optimizer Pro require a license key to unlock VIP features. Your key is found in the <strong class="text-white">Software</strong> section of your Whop dashboard.</p>
+                <ol class="space-y-3 text-sm">
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">01.</span><span>In your Whop dashboard, navigate to the <strong class="text-white">Software</strong> tab of your FSD-X membership</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">02.</span><span>Copy your license key</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">03.</span><span>Open Nexus in Chrome and click the <strong class="text-white">KEY</strong> button in the top right of the extension</span></li>
+                  <li class="flex gap-3"><span class="text-green-400 font-black shrink-0">04.</span><span>Paste your key and click <strong class="text-white">Activate</strong> — your tier will update to VIP instantly</span></li>
+                </ol>
+                <div class="bg-zinc-900/60 border border-white/5 rounded-xl p-3 text-xs text-zinc-400">
+                  <span class="text-white font-bold block mb-1">Key locks to your device</span>
+                  Your key activates on the first device you use it on. If you need to transfer to a new device, contact us in Discord or at <span class="text-white">fsdxteam@gmail.com</span>.
+                </div>
+                <div class="bg-green-500/5 border border-green-500/20 rounded-xl p-3 text-xs text-zinc-400">
+                  <span class="text-green-400 font-bold block mb-1">Don't have Nexus installed yet?</span>
+                  <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgngbimklpmdadcngj" target="_blank" class="text-green-400 hover:underline">Add it to Chrome here →</a>
+                </div>
+              </div>
+              <div class="rounded-xl overflow-hidden border border-white/10">
+                <img src="whop key.png" alt="Find license key in Whop Software section" class="w-full h-auto object-cover" />
+                <div class="px-3 py-2 bg-zinc-900/60 text-[10px] text-zinc-500 uppercase tracking-wider">Whop dashboard → Software → Copy your key</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 4 -->
+          <div id="step-4" class="border border-green-500/20 bg-zinc-950/60 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-4 p-6 border-b border-white/5 bg-zinc-950/60">
+              <div class="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-black font-black text-lg shrink-0">✓</div>
+              <div>
+                <h2 class="text-lg font-black text-white">You're All Set</h2>
+                <p class="text-zinc-500 text-xs mt-0.5">Everything is connected — here's where to go next</p>
+              </div>
+            </div>
+            <div class="p-6 grid sm:grid-cols-3 gap-4">
+              <a href="knowledge.html" class="block bg-zinc-900/60 border border-white/10 hover:border-green-500/30 rounded-xl p-5 transition group">
+                <div class="text-green-400 font-black mb-1 group-hover:text-green-300 transition">Knowledge Base</div>
+                <p class="text-zinc-500 text-xs leading-relaxed">Setup guides, calibration settings, and tutorial videos to get running correctly.</p>
+              </a>
+              <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="block bg-zinc-900/60 border border-white/10 hover:border-green-500/30 rounded-xl p-5 transition group">
+                <div class="text-green-400 font-black mb-1 group-hover:text-green-300 transition">Join the Discord</div>
+                <p class="text-zinc-500 text-xs leading-relaxed">Get live help, access SCOUT alerts, and connect with the community.</p>
+              </a>
+              <a href="results.html" class="block bg-zinc-900/60 border border-white/10 hover:border-green-500/30 rounded-xl p-5 transition group">
+                <div class="text-green-400 font-black mb-1 group-hover:text-green-300 transition">ORB Performance</div>
+                <p class="text-zinc-500 text-xs leading-relaxed">Review the verified backtest data so you know what to expect from the system.</p>
+              </a>
+            </div>
+          </div>
+
+          <!-- STILL STUCK -->
+          <div class="border border-white/5 bg-zinc-950/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 class="text-base font-black text-white mb-1">Still stuck?</h3>
+              <p class="text-zinc-500 text-sm">Open a ticket in Discord or send us an email — we'll walk you through it.</p>
+            </div>
+            <div class="flex gap-3 shrink-0">
+              <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
+                class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+                Discord &rarr;
+              </a>
+              <a href="contact.html"
+                class="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+                Contact Us
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">CFTC Rule 4.41 — Performance Disclosure</span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.</p>
+        </div>
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Risk Disclosure</span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
+        </div>
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
+          <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
+          <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      sidebar.classList.toggle('-translate-x-full');
+    }
+  </script>
+
+  <script>
+    // Shared nav loader — edit nav.html to update navigation on all pages
+    fetch('nav.html')
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('nav-content').innerHTML = html;
+        // Highlight active page
+        const current = window.location.pathname.split('/').pop() || 'index.html';
+        document.querySelectorAll('#nav-content .nav-link').forEach(link => {
+          const href = link.getAttribute('href');
+          if (href === current) {
+            link.classList.remove('text-zinc-400');
+            link.classList.add('text-green-400', 'font-bold');
+          }
+        });
+      });
+  </script>
+</body>
+</html>
