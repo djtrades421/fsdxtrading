@@ -68,7 +68,7 @@
             <div class="border border-green-500/30 bg-zinc-950/40 rounded-3xl p-6 md:p-8 hover:border-green-500/50 transition grid md:grid-cols-3 gap-6 md:gap-8 items-center shadow-lg shadow-green-500/5">
               <div class="md:col-span-2 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                  <span class="w-max px-2.5 py-1 rounded bg-green-500 text-black text-[11px] font-black uppercase tracking-wider shadow-lg shadow-green-500/20">Official FSD-X Partner</span>
+                  <span class="w-max px-2.5 py-1 rounded bg-green-500 text-black text-[11px] font-black uppercase tracking-wider shadow-lg shadow-green-500/20">FSD-X Ecosystem Platform</span>
                   <h3 class="text-2xl font-black tracking-tight">NinjaTrader®</h3>
                 </div>
                 <p class="text-zinc-400 text-xs md:text-sm leading-relaxed">
@@ -83,6 +83,9 @@
                 <div class="text-[11px] text-zinc-600 italic">
                   * No promo code needed — clicking the button below automatically routes credit to FSD-X.
                 </div>
+                <p class="text-zinc-600 text-[10px] leading-relaxed mt-2">
+                  NinjaTrader® is a registered trademark of NinjaTrader Group, LLC. No NinjaTrader company has any affiliation with the owner, developer, or provider of the products or services described herein, or any interest, ownership or otherwise, in any such product or service, or endorses, recommends or approves any such product or service.
+                </p>
               </div>
               <div class="flex flex-col items-center justify-between p-6 bg-black border border-green-500/20 rounded-2xl h-full gap-4 shadow-inner w-full">
                 <div class="text-center">
@@ -99,7 +102,7 @@
 
           <!-- PROP FIRMS -->
           <div>
-            <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-4">// Prop Firms & Funding</div>
+            <div class="text-[10px] uppercase tracking-widests text-zinc-600 mb-4">// Prop Firms & Funding</div>
             <div class="space-y-6">
 
               <!-- APEX — FEATURED -->
@@ -335,7 +338,7 @@
           <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
         </div>
         <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
-          <div>FSD-X Trading Ecosystem • NinjaTrader® Vendor Ecosystem Partner</div>
+          <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
       </div>
@@ -363,12 +366,10 @@
   </script>
 
   <script>
-    // Shared nav loader — edit nav.html to update navigation on all pages
     fetch('nav.html')
       .then(r => r.text())
       .then(html => {
         document.getElementById('nav-content').innerHTML = html;
-        // Highlight active page
         const current = window.location.pathname.split('/').pop() || 'index.html';
         document.querySelectorAll('#nav-content .nav-link').forEach(link => {
           const href = link.getAttribute('href');
