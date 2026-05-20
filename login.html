@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Member Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #000; }
+    .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex items-center justify-center min-h-screen px-6 py-16">
+    <div class="w-full max-w-md">
+
+      <!-- LOGO + HEADING -->
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 mb-4">
+          <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+        </div>
+        <h1 class="text-2xl font-black text-white tracking-tight">VIP Member Area</h1>
+        <p class="text-zinc-500 text-sm mt-1">Login or create your account with your Whop key</p>
+      </div>
+
+      <!-- CARD -->
+      <div class="border border-white/10 bg-zinc-950/60 rounded-2xl overflow-hidden">
+
+        <!-- TABS -->
+        <div class="flex border-b border-white/10">
+          <button onclick="switchTab('login')" id="tab-login" class="tab-btn active flex-1 py-3.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent transition text-green-400 border-green-500">
+            Login
+          </button>
+          <button onclick="switchTab('signup')" id="tab-signup" class="tab-btn flex-1 py-3.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent transition text-zinc-500 hover:text-zinc-300">
+            Sign Up
+          </button>
+        </div>
+
+        <div class="p-6 sm:p-8">
+
+          <!-- LOGIN PANEL -->
+          <div id="panel-login" class="tab-panel active space-y-4">
+
+            <div id="login-error" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400"></div>
+            <div id="login-success" class="hidden bg-green-950/40 border border-green-500/30 rounded-xl px-4 py-3 text-xs text-green-400"></div>
+
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Email</label>
+              <input type="email" id="login-email" placeholder="you@email.com"
+                class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Password</label>
+              <input type="password" id="login-password" placeholder="••••••••••"
+                class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+
+            <div class="flex justify-end">
+              <button onclick="switchTab('forgot')" class="text-xs text-zinc-500 hover:text-zinc-300 transition">Forgot password?</button>
+            </div>
+
+            <button onclick="handleLogin()" id="login-btn"
+              class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-green-500/10">
+              Login to Dashboard
+            </button>
+
+            <p class="text-center text-xs text-zinc-600">
+              Don't have an account? <button onclick="switchTab('signup')" class="text-green-400 hover:underline">Sign up →</button>
+            </p>
+          </div>
+
+          <!-- SIGNUP PANEL -->
+          <div id="panel-signup" class="tab-panel space-y-4">
+
+            <div id="signup-error" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400"></div>
+            <div id="signup-success" class="hidden bg-green-950/40 border border-green-500/30 rounded-xl px-4 py-3 text-xs text-green-400"></div>
+
+            <div class="bg-zinc-900/60 border border-white/5 rounded-xl px-4 py-3 text-xs text-zinc-400 leading-relaxed">
+              <span class="text-white font-bold block mb-0.5">You'll need your Whop key</span>
+              Find it in the <span class="text-green-400 font-semibold">Software</span> tab of your Whop dashboard. <a href="setup.html#step-3" class="text-green-400 hover:underline">See guide →</a>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">First Name</label>
+                <input type="text" id="signup-firstname" placeholder="First"
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Last Name</label>
+                <input type="text" id="signup-lastname" placeholder="Last"
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Email</label>
+              <input type="email" id="signup-email" placeholder="you@email.com"
+                class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Password</label>
+              <input type="password" id="signup-password" placeholder="Min 8 characters"
+                class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Whop License Key</label>
+              <input type="text" id="signup-key" placeholder="Paste your key from Whop Software tab"
+                class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 font-mono">
+            </div>
+
+            <button onclick="handleSignup()" id="signup-btn"
+              class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-green-500/10">
+              Create Account
+            </button>
+
+            <p class="text-center text-xs text-zinc-600">
+              Already have an account? <button onclick="switchTab('login')" class="text-green-400 hover:underline">Login →</button>
+            </p>
+          </div>
+
+          <!-- FORGOT PASSWORD PANEL -->
+          <div id="panel-forgot" class="tab-panel space-y-4">
+
+            <div id="forgot-error" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400"></div>
+            <div id="forgot-success" class="hidden bg-green-950/40 border border-green-500/30 rounded-xl px-4 py-3 text-xs text-green-400"></div>
+
+            <p class="text-zinc-400 text-sm leading-relaxed">Enter your email and we'll send you a reset link.</p>
+
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Email</label>
+              <input type="email" id="forgot-email" placeholder="you@email.com"
+                class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+
+            <button onclick="handleForgot()" id="forgot-btn"
+              class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+              Send Reset Link
+            </button>
+
+            <p class="text-center text-xs text-zinc-600">
+              <button onclick="switchTab('login')" class="text-green-400 hover:underline">← Back to login</button>
+            </p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FOOTER NOTE -->
+      <p class="text-center text-xs text-zinc-700 mt-6">
+        Not a member yet? <a href="memberships.html" class="text-zinc-500 hover:text-white transition">View membership plans →</a>
+      </p>
+
+    </div>
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      document.getElementById('sidebar-panel').classList.toggle('-translate-x-full');
+    }
+
+    function switchTab(tab) {
+      ['login','signup','forgot'].forEach(t => {
+        document.getElementById('panel-' + t).classList.remove('active');
+        const btn = document.getElementById('tab-' + t);
+        if (btn) {
+          btn.classList.remove('active', 'text-green-400', 'border-green-500');
+          btn.classList.add('text-zinc-500');
+        }
+      });
+      document.getElementById('panel-' + tab).classList.add('active');
+      const activeBtn = document.getElementById('tab-' + tab);
+      if (activeBtn) {
+        activeBtn.classList.add('active', 'text-green-400', 'border-green-500');
+        activeBtn.classList.remove('text-zinc-500');
+      }
+    }
+
+    function setLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.textContent = loading ? 'Please wait...' : btn.dataset.label || btn.textContent;
+    }
+
+    function showMsg(id, msg, type) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      if (type === 'error') {
+        el.classList.add('bg-red-950/40','border-red-500/30','text-red-400');
+        el.classList.remove('bg-green-950/40','border-green-500/30','text-green-400');
+      } else {
+        el.classList.add('bg-green-950/40','border-green-500/30','text-green-400');
+        el.classList.remove('bg-red-950/40','border-red-500/30','text-red-400');
+      }
+    }
+
+    function hideMsg(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // These functions will call your Cloudflare Worker endpoints when ready.
+    // For now they show a coming soon message.
+
+    async function handleLogin() {
+      hideMsg('login-error');
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      if (!email || !password) return showMsg('login-error', 'Please fill in all fields.', 'error');
+
+      setLoading('login-btn', true);
+
+      // TODO: Replace with your Worker endpoint
+      // const res = await fetch('https://your-worker.workers.dev/auth/login', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ email, password })
+      // });
+      // const data = await res.json();
+      // if (data.success) window.location.href = 'dashboard.html';
+      // else showMsg('login-error', data.message, 'error');
+
+      setTimeout(() => {
+        setLoading('login-btn', false);
+        showMsg('login-error', 'Member dashboard coming soon — backend integration in progress.', 'error');
+      }, 800);
+    }
+
+    async function handleSignup() {
+      hideMsg('signup-error');
+      const firstname = document.getElementById('signup-firstname').value.trim();
+      const lastname = document.getElementById('signup-lastname').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const key = document.getElementById('signup-key').value.trim();
+
+      if (!firstname || !email || !password || !key) return showMsg('signup-error', 'Please fill in all fields.', 'error');
+      if (password.length < 8) return showMsg('signup-error', 'Password must be at least 8 characters.', 'error');
+
+      setLoading('signup-btn', true);
+
+      // TODO: Replace with your Worker endpoint
+      // const res = await fetch('https://your-worker.workers.dev/auth/signup', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ firstname, lastname, email, password, key })
+      // });
+      // const data = await res.json();
+      // if (data.success) window.location.href = 'dashboard.html';
+      // else showMsg('signup-error', data.message, 'error');
+
+      setTimeout(() => {
+        setLoading('signup-btn', false);
+        showMsg('signup-error', 'Member dashboard coming soon — backend integration in progress.', 'error');
+      }, 800);
+    }
+
+    async function handleForgot() {
+      hideMsg('forgot-error');
+      const email = document.getElementById('forgot-email').value.trim();
+      if (!email) return showMsg('forgot-error', 'Please enter your email.', 'error');
+
+      setLoading('forgot-btn', true);
+
+      // TODO: Replace with your Worker endpoint
+      // const res = await fetch('https://your-worker.workers.dev/auth/forgot', { ... });
+
+      setTimeout(() => {
+        setLoading('forgot-btn', false);
+        showMsg('forgot-success', 'Reset link sent — check your inbox.', 'success');
+      }, 800);
+    }
+
+    // Nav loader
+    fetch('nav.html')
+      .then(r => r.text())
+      .then(html => {
+        document.getElementById('nav-content').innerHTML = html;
+        document.querySelectorAll('#nav-content .nav-link').forEach(link => {
+          if (link.getAttribute('href') === 'login.html') {
+            link.classList.remove('text-zinc-400');
+            link.classList.add('text-green-400', 'font-bold');
+          }
+        });
+      });
+  </script>
+
+</body>
+</html>
