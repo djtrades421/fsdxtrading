@@ -6,42 +6,91 @@
     </div>
     <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-bold">[ESC]</button>
   </div>
+
   <nav class="flex flex-col gap-4 w-full">
+
     <div>
       <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
       <div class="flex flex-col gap-2.5 pl-1">
-        <a href="index.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Home</a>
-        <a href="suite.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FSD-X Suite</a>
-        <a href="memberships.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Memberships</a>
-        <a href="results.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Backtest Research Data</a>
+        <a href="index.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75H15.75a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z"/></svg>
+          Home
+        </a>
+        <a href="suite.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+          FSD-X Suite
+        </a>
+        <a href="memberships.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+          Memberships
+        </a>
+        <a href="results.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+          Backtest Research Data
+        </a>
       </div>
     </div>
+
     <div class="mt-2">
-      <div class="text-[10px] uppercase tracking-widests text-zinc-600 mb-2">// Resources</div>
+      <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Resources</div>
       <div class="flex flex-col gap-2.5 pl-1">
-        <a href="setup.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Getting Started</a>
-        <a href="affiliates.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Affiliates</a>
-        <a href="knowledge.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Knowledge Base</a>
-        <a href="schedule.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Schedule</a>
+        <a href="setup.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>
+          Getting Started
+        </a>
+        <a href="affiliates.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+          Affiliates
+        </a>
+        <a href="knowledge.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+          Knowledge Base
+        </a>
+        <a href="schedule.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5"/></svg>
+          Schedule
+        </a>
       </div>
     </div>
+
     <div class="mt-2">
       <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Social Channels</div>
       <div class="flex flex-col gap-2.5 pl-1">
-        <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">YouTube <span class="text-[10px] text-zinc-600">↗</span></a>
-        <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-1.5">Instagram <span class="text-[10px] text-zinc-600">↗</span></a>
+        <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.328l5.603 3.113z"/></svg>
+          YouTube <span class="text-[10px] text-zinc-600 ml-auto">↗</span>
+        </a>
+        <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          Instagram <span class="text-[10px] text-zinc-600 ml-auto">↗</span>
+        </a>
       </div>
     </div>
+
     <div class="mt-2">
       <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// System</div>
       <div class="flex flex-col gap-2.5 pl-1">
-        <a href="contact.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Contact & Help</a>
-        <a href="faq.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">FAQ</a>
-        <a href="disclosures.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm block">Disclosures</a>
+        <a href="contact.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+          Contact & Help
+        </a>
+        <a href="faq.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
+          FAQ
+        </a>
+        <a href="disclosures.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+          Disclosures
+        </a>
       </div>
     </div>
+
   </nav>
 </div>
+
 <div class="w-full pt-4 border-t border-white/5 mt-8">
-  <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-xs text-zinc-500 hover:text-white transition block">Launch Discord &rarr;</a>
+  <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-xs text-zinc-500 hover:text-white transition flex items-center gap-2">
+    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+    Launch Discord &rarr;
+  </a>
 </div>
