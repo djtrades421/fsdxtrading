@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Admin Panel</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="vip-nav.js"></script>
   <style>
     body { background-color: #000; }
     .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
@@ -207,12 +208,8 @@
     }
 
     function handleLogout() {
-      const token = localStorage.getItem('fsdx_token');
-      if (token) fetch(`${API}/api/auth/logout`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }).catch(() => {});
-      localStorage.removeItem('fsdx_token');
-      localStorage.removeItem('fsdx_name');
-      localStorage.removeItem('fsdx_tier');
-      window.location.href = 'login.html';
+      localStorage.removeItem('fsdx_admin');
+      window.location.href = 'admin-login.html';
     }
 
     function showAdminMsg(id, text, type) {
@@ -271,7 +268,7 @@
     }
 
     async function loadData() {
-      const token = localStorage.getItem('fsdx_token');
+      const token = localStorage.getItem('fsdx_token') || '';
       const headers = { 'Authorization': `Bearer ${token}` };
 
       const [membersRes, recapsRes] = await Promise.all([
@@ -375,31 +372,15 @@
       btn.disabled = false; btn.textContent = 'Post Announcement';
     }
 
-    async function init() {
-      const token = localStorage.getItem('fsdx_token');
-      if (!token) { window.location.href = 'login.html'; return; }
-
-      try {
-        const res = await fetch(`${API}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
-        const data = await res.json();
-
-        if (!data.authenticated) { window.location.href = 'login.html'; return; }
-
-        // Check if admin
-        const membersRes = await fetch(`${API}/api/admin/members`, { headers: { 'Authorization': `Bearer ${token}` } });
-        if (membersRes.status === 403) {
-          document.getElementById('loading-screen').classList.add('hidden');
-          document.getElementById('unauth-screen').classList.remove('hidden');
-          return;
-        }
-
-        document.getElementById('loading-screen').classList.add('hidden');
-        document.getElementById('admin-content').classList.remove('hidden');
-
-        await loadData();
-      } catch (err) {
-        window.location.href = 'login.html';
+    function init() {
+      // Simple admin check — localStorage flag set by admin-login.html
+      if (localStorage.getItem('fsdx_admin') !== 'true') {
+        window.location.href = 'admin-login.html';
+        return;
       }
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('admin-content').classList.remove('hidden');
+      loadData();
     }
 
     // Set today's date as default
