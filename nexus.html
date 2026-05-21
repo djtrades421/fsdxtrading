@@ -786,7 +786,7 @@
       try {
         const res = await fetch(JOURNAL_URL, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'get-trades', key: `journal:backtest:${whopKey}:${sessionId}` })
+          body: JSON.stringify({ action: 'get-trades', key: `backtest:${whopKey}:${sessionId}` })
         });
         const data = await res.json();
         const trades = Array.isArray(data.trades) ? data.trades : [];
