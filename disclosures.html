@@ -212,19 +212,7 @@
   </script>
 
   <script>
-    fetch('nav.html')
-      .then(r => r.text())
-      .then(html => {
-        document.getElementById('nav-content').innerHTML = html;
-        const current = window.location.pathname.split('/').pop() || 'index.html';
-        document.querySelectorAll('#nav-content .nav-link').forEach(link => {
-          const href = link.getAttribute('href');
-          if (href === current) {
-            link.classList.remove('text-zinc-400');
-            link.classList.add('text-green-400', 'font-bold');
-          }
-        });
-      });
+});
   </script>
 </body>
 </html>
