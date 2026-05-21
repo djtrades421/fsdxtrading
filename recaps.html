@@ -131,13 +131,16 @@
       const token = localStorage.getItem('fsdx_token');
       if (!token) { window.location.href = 'login.html'; return; }
 
-      const meRes = await fetch(`${API}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
-      const me = await meRes.json();
-      if (!me.authenticated) { window.location.href = 'login.html'; return; }
-
-      const recapsRes = await fetch(`${API}/api/recaps`, { headers: { 'Authorization': `Bearer ${token}` } });
-      const data = await recapsRes.json();
-      allRecaps = data.recaps || [];
+      // Load recaps from admin KV if available, otherwise show empty state
+      try {
+        const recapsRes = await fetch(`${API}/api/recaps`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (recapsRes.ok) {
+          const data = await recapsRes.json();
+          allRecaps = data.recaps || [];
+        }
+      } catch (err) {
+        console.log('Could not load recaps from API, showing empty state');
+      }
 
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
