@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — My Profile</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #000; }
+    input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <!-- Loading -->
+    <div id="loading-screen" class="flex-1 flex items-center justify-center">
+      <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
+    </div>
+
+    <!-- Content -->
+    <div id="page-content" class="hidden flex-1">
+
+      <!-- Header -->
+      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-2xl mx-auto flex items-center gap-5">
+          <div id="profile-avatar-large" class="w-16 h-16 rounded-2xl bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-2xl font-black shrink-0">?</div>
+          <div>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-1">// Account</div>
+            <h1 id="profile-heading" class="text-2xl font-black text-white tracking-tight">My Profile</h1>
+            <p id="profile-email-display" class="text-zinc-500 text-xs mt-0.5"></p>
+          </div>
+        </div>
+      </section>
+
+      <div class="px-6 md:px-12 py-10">
+        <div class="max-w-2xl mx-auto space-y-6">
+
+          <!-- Profile info card -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
+            <h2 class="text-sm font-black text-white mb-5">Personal Information</h2>
+            <div id="profile-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
+
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">First Name</label>
+                  <input type="text" id="profile-firstname" placeholder="First"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Last Name</label>
+                  <input type="text" id="profile-lastname" placeholder="Last"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Email Address</label>
+                <input type="email" id="profile-email" placeholder="you@email.com"
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                <p class="text-[11px] text-zinc-600 mt-1.5">Changing your email will update your login credentials.</p>
+              </div>
+
+              <button onclick="saveProfile()" id="profile-btn"
+                class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-green-500/10">
+                Save Changes
+              </button>
+            </div>
+          </div>
+
+          <!-- Change password card -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
+            <h2 class="text-sm font-black text-white mb-5">Change Password</h2>
+            <div id="password-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Current Password</label>
+                <div class="relative">
+                  <input type="password" id="current-password" placeholder="••••••••••"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                  <button type="button" onclick="toggleVis('current-password','eye-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
+                    <svg id="eye-1" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">New Password</label>
+                <div class="relative">
+                  <input type="password" id="new-password" placeholder="Min 8 characters"
+                    oninput="checkStrength()"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                  <button type="button" onclick="toggleVis('new-password','eye-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
+                    <svg id="eye-2" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  </button>
+                </div>
+                <div class="mt-2 grid grid-cols-2 gap-1">
+                  <div class="flex items-center gap-1.5 text-[11px]" id="r-length"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">8+ characters</span></div>
+                  <div class="flex items-center gap-1.5 text-[11px]" id="r-upper"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Uppercase letter</span></div>
+                  <div class="flex items-center gap-1.5 text-[11px]" id="r-number"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Number</span></div>
+                  <div class="flex items-center gap-1.5 text-[11px]" id="r-special"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Special character</span></div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                <div class="relative">
+                  <input type="password" id="confirm-password" placeholder="Re-enter new password"
+                    oninput="checkMatch()"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                  <button type="button" onclick="toggleVis('confirm-password','eye-3')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
+                    <svg id="eye-3" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  </button>
+                </div>
+                <div id="match-msg" class="hidden mt-1 text-[11px]"></div>
+              </div>
+
+              <button onclick="changePassword()" id="password-btn"
+                class="w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition">
+                Update Password
+              </button>
+            </div>
+          </div>
+
+          <!-- Account info card (read-only) -->
+          <div class="border border-white/5 bg-zinc-950/20 rounded-2xl p-6">
+            <h2 class="text-sm font-black text-white mb-4">Account Details</h2>
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between items-center py-2 border-b border-white/5">
+                <span class="text-zinc-500">Membership Tier</span>
+                <span id="account-tier" class="text-green-400 font-bold uppercase">—</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-white/5">
+                <span class="text-zinc-500">Member Since</span>
+                <span id="account-created" class="text-zinc-300">—</span>
+              </div>
+              <div class="flex justify-between items-center py-2">
+                <span class="text-zinc-500">Whop Key</span>
+                <span id="account-key" class="text-zinc-600 font-mono">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Danger zone -->
+          <div class="border border-white/5 rounded-2xl p-6">
+            <h2 class="text-sm font-black text-white mb-1">Session</h2>
+            <p class="text-zinc-500 text-xs mb-4">Log out of your current session on this device.</p>
+            <button onclick="handleLogout()"
+              class="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
+              Logout
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const API = 'https://nexus-validator.dfuentes4211.workers.dev';
+    let currentUser = null;
+
+    function toggleMobileMenu() {
+      document.getElementById('sidebar-panel').classList.toggle('-translate-x-full');
+    }
+
+    function toggleVis(inputId, eyeId) {
+      const input = document.getElementById(inputId);
+      const eye = document.getElementById(eyeId);
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      eye.innerHTML = isPassword
+        ? '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>'
+        : '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>';
+    }
+
+    function checkStrength() {
+      const pw = document.getElementById('new-password').value;
+      const checks = { 'r-length': pw.length >= 8, 'r-upper': /[A-Z]/.test(pw), 'r-number': /[0-9]/.test(pw), 'r-special': /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw) };
+      Object.entries(checks).forEach(([id, met]) => {
+        const row = document.getElementById(id);
+        const dot = row.querySelector('.req-dot');
+        const label = row.querySelector('span:last-child');
+        dot.classList.toggle('bg-green-500', met);
+        dot.classList.toggle('border-green-500', met);
+        dot.classList.toggle('border-zinc-700', !met);
+        dot.innerHTML = met ? '<svg class="w-1.5 h-1.5 text-black" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>' : '';
+        label.classList.toggle('text-zinc-400', met);
+        label.classList.toggle('text-zinc-600', !met);
+      });
+      checkMatch();
+    }
+
+    function checkMatch() {
+      const pw = document.getElementById('new-password').value;
+      const confirm = document.getElementById('confirm-password').value;
+      const msg = document.getElementById('match-msg');
+      if (!confirm) { msg.classList.add('hidden'); return; }
+      msg.classList.remove('hidden');
+      msg.textContent = pw === confirm ? '✓ Passwords match' : '✗ Passwords do not match';
+      msg.className = `mt-1 text-[11px] ${pw === confirm ? 'text-green-400' : 'text-red-400'}`;
+    }
+
+    function showMsg(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.classList.remove('hidden');
+      el.className = `rounded-xl px-4 py-3 text-xs border ${type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-green-950/40 border-green-500/30 text-green-400'}`;
+    }
+
+    function handleLogout() {
+      const token = localStorage.getItem('fsdx_token');
+      if (token) fetch(`${API}/api/auth/logout`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }).catch(() => {});
+      localStorage.clear();
+      window.location.href = 'login.html';
+    }
+
+    async function saveProfile() {
+      const firstName = document.getElementById('profile-firstname').value.trim();
+      const lastName = document.getElementById('profile-lastname').value.trim();
+      const email = document.getElementById('profile-email').value.trim();
+
+      if (!firstName || !email) return showMsg('profile-msg', 'First name and email are required.', 'error');
+      if (!email.includes('@')) return showMsg('profile-msg', 'Please enter a valid email.', 'error');
+
+      const btn = document.getElementById('profile-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      const token = localStorage.getItem('fsdx_token');
+      try {
+        const res = await fetch(`${API}/api/auth/profile`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ firstName, lastName, email })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showMsg('profile-msg', 'Profile updated successfully!', 'success');
+          localStorage.setItem('fsdx_name', firstName);
+          // Update display
+          document.getElementById('profile-heading').textContent = firstName + (lastName ? ' ' + lastName : '');
+          document.getElementById('profile-email-display').textContent = email;
+          document.getElementById('profile-avatar-large').textContent = firstName.charAt(0).toUpperCase();
+          // If email changed, need to re-login
+          if (email !== currentUser.email) {
+            showMsg('profile-msg', 'Email updated! Please log in again with your new email.', 'success');
+            setTimeout(() => { handleLogout(); }, 2000);
+          }
+        } else {
+          showMsg('profile-msg', data.error || 'Failed to update profile.', 'error');
+        }
+      } catch (err) {
+        showMsg('profile-msg', 'Connection error. Please try again.', 'error');
+      }
+      btn.disabled = false; btn.textContent = 'Save Changes';
+    }
+
+    async function changePassword() {
+      const currentPw = document.getElementById('current-password').value;
+      const newPw = document.getElementById('new-password').value;
+      const confirmPw = document.getElementById('confirm-password').value;
+
+      if (!currentPw || !newPw || !confirmPw) return showMsg('password-msg', 'Please fill in all fields.', 'error');
+      if (newPw !== confirmPw) return showMsg('password-msg', 'New passwords do not match.', 'error');
+      if (newPw.length < 8) return showMsg('password-msg', 'Password must be at least 8 characters.', 'error');
+      if (!/[A-Z]/.test(newPw)) return showMsg('password-msg', 'Password must include an uppercase letter.', 'error');
+      if (!/[0-9]/.test(newPw)) return showMsg('password-msg', 'Password must include a number.', 'error');
+      if (!/[!@#$%^&*]/.test(newPw)) return showMsg('password-msg', 'Password must include a special character.', 'error');
+
+      const btn = document.getElementById('password-btn');
+      btn.disabled = true; btn.textContent = 'Updating...';
+
+      const token = localStorage.getItem('fsdx_token');
+      try {
+        const res = await fetch(`${API}/api/auth/change-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showMsg('password-msg', 'Password updated! Please log in again.', 'success');
+          document.getElementById('current-password').value = '';
+          document.getElementById('new-password').value = '';
+          document.getElementById('confirm-password').value = '';
+          setTimeout(() => { handleLogout(); }, 2000);
+        } else {
+          showMsg('password-msg', data.error || 'Failed to update password.', 'error');
+        }
+      } catch (err) {
+        showMsg('password-msg', 'Connection error. Please try again.', 'error');
+      }
+      btn.disabled = false; btn.textContent = 'Update Password';
+    }
+
+    async function init() {
+      const token = localStorage.getItem('fsdx_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+
+      try {
+        const res = await fetch(`${API}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const session = await res.json();
+        if (!session.authenticated) { window.location.href = 'login.html'; return; }
+
+        // Load full profile
+        const profileRes = await fetch(`${API}/api/auth/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const profileData = await profileRes.json();
+        currentUser = profileData.user || {};
+
+        // Populate fields
+        document.getElementById('profile-firstname').value = currentUser.firstName || '';
+        document.getElementById('profile-lastname').value = currentUser.lastName || '';
+        document.getElementById('profile-email').value = currentUser.email || '';
+        document.getElementById('profile-heading').textContent = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || 'My Profile';
+        document.getElementById('profile-email-display').textContent = currentUser.email || '';
+        document.getElementById('profile-avatar-large').textContent = (currentUser.firstName || 'M').charAt(0).toUpperCase();
+        document.getElementById('account-tier').textContent = currentUser.tier || 'VIP';
+        document.getElementById('account-created').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '—';
+        document.getElementById('account-key').textContent = currentUser.whopKey ? currentUser.whopKey.slice(0, 8) + '••••••••' : '—';
+
+        document.getElementById('loading-screen').classList.add('hidden');
+        document.getElementById('page-content').classList.remove('hidden');
+
+      } catch (err) {
+        window.location.href = 'login.html';
+      }
+
+      // Load nav with VIP section
+      fetch('nav.html').then(r => r.text()).then(html => {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = html;
+        const topDiv = wrapper.querySelector('div:first-child');
+        const vipSection = document.createElement('div');
+        vipSection.className = 'mt-2';
+        vipSection.innerHTML = `
+          <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// VIP Area</div>
+          <div class="flex flex-col gap-2.5 pl-1">
+            <a href="dashboard.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>Dashboard</a>
+            <a href="recaps.html" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>Session Recaps</a>
+            <a href="profile.html" class="text-green-400 font-bold transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>My Profile</a>
+          </div>`;
+        const navEl = topDiv.querySelector('nav');
+        if (navEl) navEl.querySelector('div:first-child').after(vipSection);
+        document.getElementById('nav-content').appendChild(topDiv);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
