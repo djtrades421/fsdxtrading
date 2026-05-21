@@ -79,7 +79,7 @@
       // To generate a new hash: open browser console and run:
       // crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword')).then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
       const ADMIN_EMAIL = 'fsdxteam@gmail.com';
-      const ADMIN_PASS_HASH = 'Z32300zx911!!!!';
+      const ADMIN_PASS_HASH = '9b0eae601a42ce4dc386e88e77fb586dac0ddecca8a8e943f4c6a820465eb009';
 
       if (email === ADMIN_EMAIL && hash === ADMIN_PASS_HASH) {
         localStorage.setItem('fsdx_admin', 'true');
