@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X — Nexus Platform</title>
+  <title>FSD-X — Journal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
   <style>
@@ -36,13 +36,13 @@
     <div id="page-content" class="hidden flex-1 flex flex-col">
 
       <!-- Header + Tabs -->
-      <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-0 sticky top-0 z-10">
+      <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-0">
         <div class="max-w-7xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// VIP Members</div>
           <div class="flex items-end justify-between mb-4">
             <div>
-              <h1 class="text-3xl font-black tracking-tight">Nexus Platform</h1>
-              <p class="text-zinc-500 text-sm mt-1">Trade journal, backtest sessions, and performance analytics</p>
+              <h1 class="text-3xl font-black tracking-tight">Journal</h1>
+              <p class="text-zinc-500 text-sm mt-1">Your live trades, backtest sessions, and performance analytics</p>
             </div>
             <button onclick="openTradeModal()" id="add-trade-btn"
               class="hidden px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
@@ -51,8 +51,6 @@
           </div>
           <div class="flex border-b border-white/10 -mb-px overflow-x-auto">
             <button onclick="switchTab('journal')" id="tab-journal" class="tab-btn active px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 transition mr-1 whitespace-nowrap">Journal</button>
-            <button onclick="switchTab('calendar')" id="tab-calendar" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Calendar</button>
-            <button onclick="switchTab('stats')" id="tab-stats" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Stats</button>
             <button onclick="switchTab('backtest')" id="tab-backtest" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition whitespace-nowrap">Backtest</button>
           </div>
         </div>
@@ -63,151 +61,99 @@
 
           <!-- JOURNAL TAB -->
           <div id="panel-journal" class="tab-panel active">
-            <!-- Filters -->
-            <div class="flex flex-wrap gap-2 mb-5">
-              <select id="filter-result" onchange="applyFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-2 rounded-lg focus:outline-none">
-                <option value="">All Results</option>
-                <option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
-              </select>
-              <select id="filter-grade" onchange="applyFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-2 rounded-lg focus:outline-none">
-                <option value="">All Grades</option>
-                <option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
-              </select>
-              <select id="filter-direction" onchange="applyFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-2 rounded-lg focus:outline-none">
-                <option value="">All Directions</option>
-                <option value="LONG">Long</option><option value="SHORT">Short</option>
-              </select>
-              <select id="filter-account" onchange="applyFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-2 rounded-lg focus:outline-none">
-                <option value="">All Accounts</option>
-                <option value="Funded">Funded</option><option value="Evaluation">Evaluation</option><option value="Personal">Personal</option>
-              </select>
-              <button onclick="clearFilters()" class="px-3 py-2 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs rounded-lg transition">✕ Clear</button>
-              <span id="filter-count" class="ml-auto text-xs text-zinc-600 self-center"></span>
+            <!-- Journal sub-tabs -->
+            <div class="flex border-b border-white/10 mb-6">
+              <button onclick="jSwitchTab('trades')" id="j-tab-trades" class="j-tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 transition mr-1">Trades</button>
+              <button onclick="jSwitchTab('stats')" id="j-tab-stats" class="j-tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1">Stats</button>
+              <button onclick="jSwitchTab('calendar')" id="j-tab-calendar" class="j-tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition">Calendar</button>
             </div>
 
-            <div id="journal-empty" class="hidden text-center py-16">
-              <div class="text-4xl mb-3">📋</div>
-              <h3 class="text-lg font-black text-white mb-2">No trades yet</h3>
-              <p class="text-zinc-500 text-sm mb-6">Log trades from the Nexus Chrome extension or click below.</p>
-              <button onclick="openTradeModal()" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">+ Log Trade</button>
-            </div>
-
-            <div id="journal-table-wrap" class="hidden border border-white/10 rounded-2xl overflow-hidden">
-              <div class="overflow-x-auto">
-                <table class="w-full text-left min-w-[800px]">
-                  <thead>
-                    <tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
-                      <th class="px-4 py-3">Date</th>
-                      <th class="px-4 py-3">Ticker</th>
-                      <th class="px-4 py-3">Dir</th>
-                      <th class="px-4 py-3">Grade</th>
-                      <th class="px-4 py-3">Result</th>
-                      <th class="px-4 py-3">Net P&L</th>
-                      <th class="px-4 py-3">Account</th>
-                      <th class="px-4 py-3">Chart</th>
-                      <th class="px-4 py-3"></th>
-                    </tr>
-                  </thead>
-                  <tbody id="journal-tbody" class="divide-y divide-white/5 text-sm"></tbody>
-                </table>
+            <!-- Trades -->
+            <div id="j-panel-trades">
+              <div class="flex flex-wrap gap-2 mb-5">
+                <select id="filter-result" onchange="applyFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-2 rounded-lg focus:outline-none">
+                  <option value="">All Results</option><option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
+                </select>
+                <select id="filter-grade" onchange="applyFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-2 rounded-lg focus:outline-none">
+                  <option value="">All Grades</option>
+                  <option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                </select>
+                <select id="filter-direction" onchange="applyFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-2 rounded-lg focus:outline-none">
+                  <option value="">All Directions</option><option value="LONG">Long</option><option value="SHORT">Short</option>
+                </select>
+                <select id="filter-account" onchange="applyFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-2 rounded-lg focus:outline-none">
+                  <option value="">All Accounts</option>
+                  <option value="Funded">Funded</option><option value="Evaluation">Evaluation</option><option value="Personal">Personal</option>
+                </select>
+                <button onclick="clearFilters()" class="px-3 py-2 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs rounded-lg transition">✕ Clear</button>
+                <span id="filter-count" class="ml-auto text-xs text-zinc-600 self-center"></span>
+              </div>
+              <div id="journal-empty" class="hidden text-center py-16">
+                <div class="text-4xl mb-3">📋</div>
+                <h3 class="text-lg font-black text-white mb-2">No trades yet</h3>
+                <p class="text-zinc-500 text-sm mb-6">Log trades from the Nexus Chrome extension or click below.</p>
+                <button onclick="openTradeModal()" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">+ Log Trade</button>
+              </div>
+              <div id="journal-table-wrap" class="hidden border border-white/10 rounded-2xl overflow-hidden">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left min-w-[800px]">
+                    <thead>
+                      <tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
+                        <th class="px-4 py-3">Date</th><th class="px-4 py-3">Ticker</th><th class="px-4 py-3">Dir</th>
+                        <th class="px-4 py-3">Grade</th><th class="px-4 py-3">Result</th><th class="px-4 py-3">Net P&L</th>
+                        <th class="px-4 py-3">Account</th><th class="px-4 py-3">Chart</th><th class="px-4 py-3"></th>
+                      </tr>
+                    </thead>
+                    <tbody id="journal-tbody" class="divide-y divide-white/5 text-sm"></tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- CALENDAR TAB -->
-          <div id="panel-calendar" class="tab-panel">
-            <div class="flex items-center justify-between mb-6">
-              <button onclick="calPrev()" class="p-2 hover:bg-white/5 rounded-lg transition">
-                <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-              </button>
-              <h2 id="cal-title" class="text-lg font-black text-white"></h2>
-              <button onclick="calNext()" class="p-2 hover:bg-white/5 rounded-lg transition">
-                <svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-              </button>
+            <!-- Stats -->
+            <div id="j-panel-stats" class="hidden space-y-6">
+              <div id="stats-empty" class="hidden text-center py-16 text-zinc-600 text-sm">No trades to analyze yet.</div>
+              <div id="stats-content" class="hidden space-y-6">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Win Rate</div><div id="stat-winrate" class="text-3xl font-black text-green-400">—</div><div id="stat-trades" class="text-xs text-zinc-600 mt-1"></div></div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Net P&L</div><div id="stat-pnl" class="text-3xl font-black">—</div><div id="stat-pnl-sub" class="text-xs text-zinc-600 mt-1"></div></div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Avg Win</div><div id="stat-avg-win" class="text-3xl font-black text-green-400">—</div><div class="text-xs text-zinc-600 mt-1">per winning trade</div></div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Avg Loss</div><div id="stat-avg-loss" class="text-3xl font-black text-red-400">—</div><div class="text-xs text-zinc-600 mt-1">per losing trade</div></div>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Profit Factor</div><div id="stat-pf" class="text-xl font-black text-white">—</div></div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Best Trade</div><div id="stat-best" class="text-xl font-black text-green-400">—</div></div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Worst Trade</div><div id="stat-worst" class="text-xl font-black text-red-400">—</div></div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Max Consec. Losses</div><div id="stat-consec" class="text-xl font-black text-white">—</div></div>
+                </div>
+                <div><h3 class="text-sm font-black text-white mb-4">Performance by Grade</h3><div id="stats-by-grade" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3"></div></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div><h3 class="text-sm font-black text-white mb-4">Long vs Short</h3><div id="stats-direction" class="grid grid-cols-2 gap-3"></div></div>
+                  <div><h3 class="text-sm font-black text-white mb-4">Day of Week</h3><div id="stats-dow" class="grid grid-cols-5 gap-2"></div></div>
+                </div>
+                <div><h3 class="text-sm font-black text-white mb-4">Last 20 Trades</h3><div id="stats-recent" class="flex gap-1 flex-wrap"></div></div>
+              </div>
             </div>
-            <!-- Month summary -->
-            <div id="cal-summary" class="grid grid-cols-4 gap-3 mb-6"></div>
-            <!-- Calendar grid -->
-            <div class="border border-white/10 rounded-2xl overflow-hidden">
-              <div class="grid grid-cols-7 border-b border-white/10">
-                <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Sun</div>
-                <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Mon</div>
-                <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Tue</div>
-                <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Wed</div>
-                <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Thu</div>
-                <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Fri</div>
-                <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Sat</div>
-              </div>
-              <div id="cal-grid" class="grid grid-cols-7"></div>
-            </div>
-          </div>
 
-          <!-- STATS TAB -->
-          <div id="panel-stats" class="tab-panel space-y-8">
-            <div id="stats-empty" class="hidden text-center py-16 text-zinc-600 text-sm">No trades to analyze yet.</div>
-            <div id="stats-content" class="hidden space-y-8">
-              <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Win Rate</div>
-                  <div id="stat-winrate" class="text-3xl font-black text-green-400">—</div>
-                  <div id="stat-trades" class="text-xs text-zinc-600 mt-1"></div>
-                </div>
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Net P&L</div>
-                  <div id="stat-pnl" class="text-3xl font-black">—</div>
-                  <div id="stat-pnl-sub" class="text-xs text-zinc-600 mt-1"></div>
-                </div>
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Avg Win</div>
-                  <div id="stat-avg-win" class="text-3xl font-black text-green-400">—</div>
-                  <div class="text-xs text-zinc-600 mt-1">per winning trade</div>
-                </div>
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Avg Loss</div>
-                  <div id="stat-avg-loss" class="text-3xl font-black text-red-400">—</div>
-                  <div class="text-xs text-zinc-600 mt-1">per losing trade</div>
-                </div>
+            <!-- Calendar -->
+            <div id="j-panel-calendar" class="hidden">
+              <div class="flex items-center justify-between mb-6">
+                <button onclick="calPrev()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg></button>
+                <h2 id="cal-title" class="text-lg font-black text-white"></h2>
+                <button onclick="calNext()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
               </div>
-
-              <!-- More stats -->
-              <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Profit Factor</div>
-                  <div id="stat-pf" class="text-xl font-black text-white">—</div>
+              <div id="cal-summary" class="grid grid-cols-4 gap-3 mb-6"></div>
+              <div class="border border-white/10 rounded-2xl overflow-hidden">
+                <div class="grid grid-cols-7 border-b border-white/10">
+                  <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Sun</div>
+                  <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Mon</div>
+                  <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Tue</div>
+                  <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Wed</div>
+                  <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Thu</div>
+                  <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Fri</div>
+                  <div class="px-3 py-2 text-[10px] text-zinc-600 uppercase tracking-wider text-center">Sat</div>
                 </div>
-                <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Best Trade</div>
-                  <div id="stat-best" class="text-xl font-black text-green-400">—</div>
-                </div>
-                <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Worst Trade</div>
-                  <div id="stat-worst" class="text-xl font-black text-red-400">—</div>
-                </div>
-                <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Max Consec. Losses</div>
-                  <div id="stat-consec" class="text-xl font-black text-white">—</div>
-                </div>
-              </div>
-
-              <div>
-                <h3 class="text-sm font-black text-white mb-4">Performance by Grade</h3>
-                <div id="stats-by-grade" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3"></div>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <h3 class="text-sm font-black text-white mb-4">Long vs Short</h3>
-                  <div id="stats-direction" class="grid grid-cols-2 gap-3"></div>
-                </div>
-                <div>
-                  <h3 class="text-sm font-black text-white mb-4">Day of Week</h3>
-                  <div id="stats-dow" class="grid grid-cols-5 gap-2"></div>
-                </div>
-              </div>
-
-              <div>
-                <h3 class="text-sm font-black text-white mb-4">Last 20 Trades</h3>
-                <div id="stats-recent" class="flex gap-1 flex-wrap"></div>
+                <div id="cal-grid" class="grid grid-cols-7"></div>
               </div>
             </div>
           </div>
@@ -444,7 +390,7 @@
     function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
 
     function switchTab(tab) {
-      ['journal','calendar','stats','backtest'].forEach(t => {
+      ['journal','backtest'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('tab-' + t);
         btn.classList.remove('active','text-green-400','border-green-500');
@@ -455,8 +401,6 @@
       activeBtn.classList.add('active','text-green-400','border-green-500');
       activeBtn.classList.remove('text-zinc-500','border-transparent');
       document.getElementById('add-trade-btn').classList.toggle('hidden', tab !== 'journal');
-      if (tab === 'stats') renderStats();
-      if (tab === 'calendar') renderCalendar();
       if (tab === 'backtest') loadBtSessions();
     }
 
@@ -464,6 +408,22 @@
     const pnlColor = p => p > 0 ? 'text-green-400' : p < 0 ? 'text-red-400' : 'text-zinc-400';
     const resultBadge = r => r === 'WIN' ? 'bg-green-500/10 text-green-400 border-green-500/20' : r === 'LOSS' ? 'bg-red-950/30 text-red-400 border-red-500/20' : 'bg-zinc-800 text-zinc-400 border-white/10';
     const fmt = n => (n >= 0 ? '+' : '') + '$' + Math.abs(n).toFixed(2);
+
+    // ── Journal sub-tabs ──
+    function jSwitchTab(tab) {
+      ['trades','stats','calendar'].forEach(t => {
+        document.getElementById('j-panel-' + t).classList.add('hidden');
+        const btn = document.getElementById('j-tab-' + t);
+        btn.classList.remove('text-green-400','border-green-500');
+        btn.classList.add('text-zinc-500','border-transparent');
+      });
+      document.getElementById('j-panel-' + tab).classList.remove('hidden');
+      const activeBtn = document.getElementById('j-tab-' + tab);
+      activeBtn.classList.add('text-green-400','border-green-500');
+      activeBtn.classList.remove('text-zinc-500','border-transparent');
+      if (tab === 'stats') renderStats();
+      if (tab === 'calendar') renderCalendar();
+    }
 
     // ── Journal ──
     function renderJournal(trades) {
@@ -732,6 +692,7 @@
       if (dayTrades.length === 1) { showDetail(dayTrades[0].id); return; }
       // Multiple trades — switch to journal filtered by that day
       switchTab('journal');
+      jSwitchTab('trades');
       // Clear filters and show that day's trades
       filteredTrades = dayTrades;
       renderJournal(filteredTrades);
