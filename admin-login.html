@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body { background-color: #000; }</style>
+</head>
+<body class="text-white bg-black min-h-screen flex items-center justify-center px-6">
+  <div class="w-full max-w-sm">
+
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-zinc-900 border border-white/10 mb-4">
+        <svg class="w-7 h-7 text-zinc-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+      </div>
+      <h1 class="text-xl font-black text-white">Admin Access</h1>
+      <p class="text-zinc-600 text-xs mt-1">FSD-X restricted panel</p>
+    </div>
+
+    <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6 space-y-4">
+      <div id="error-msg" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400"></div>
+
+      <div>
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Email</label>
+        <input type="email" id="admin-email" placeholder="your@email.com"
+          onkeydown="if(event.key==='Enter')handleAdminLogin()"
+          class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+      </div>
+
+      <div>
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Password</label>
+        <input type="password" id="admin-password" placeholder="••••••••••"
+          onkeydown="if(event.key==='Enter')handleAdminLogin()"
+          class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+      </div>
+
+      <button onclick="handleAdminLogin()" id="admin-btn"
+        class="w-full py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition">
+        Enter Admin Panel
+      </button>
+    </div>
+
+    <p class="text-center text-xs text-zinc-700 mt-4">
+      <a href="index.html" class="hover:text-zinc-500 transition">← Back to site</a>
+    </p>
+  </div>
+
+  <script>
+    // If already admin, go straight in
+    if (localStorage.getItem('fsdx_admin') === 'true') {
+      window.location.href = 'admin.html';
+    }
+
+    async function handleAdminLogin() {
+      const email = document.getElementById('admin-email').value.trim().toLowerCase();
+      const password = document.getElementById('admin-password').value;
+      const errEl = document.getElementById('error-msg');
+      const btn = document.getElementById('admin-btn');
+
+      errEl.classList.add('hidden');
+      if (!email || !password) {
+        errEl.textContent = 'Please fill in both fields.';
+        errEl.classList.remove('hidden');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+
+      // Hash the password client-side to compare
+      const encoder = new TextEncoder();
+      const data = encoder.encode(password);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+      // Admin credentials — change ADMIN_EMAIL and ADMIN_PASS_HASH below
+      // To generate a new hash: open browser console and run:
+      // crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword')).then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
+      const ADMIN_EMAIL = 'fsdxteam@gmail.com';
+      const ADMIN_PASS_HASH = '9b0eae601a42ce4dc386e88e77fb586dac0ddecca8a8e943f4c6a820465eb009';
+
+      if (email === ADMIN_EMAIL && hash === ADMIN_PASS_HASH) {
+        localStorage.setItem('fsdx_admin', 'true');
+        window.location.href = 'admin.html';
+      } else {
+        errEl.textContent = 'Invalid credentials.';
+        errEl.classList.remove('hidden');
+        btn.disabled = false;
+        btn.textContent = 'Enter Admin Panel';
+      }
+    }
+  </script>
+</body>
+</html>
