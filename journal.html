@@ -59,7 +59,7 @@
           <div class="flex items-end justify-between mb-4">
             <div>
               <h1 class="text-3xl font-black tracking-tight">Journal</h1>
-              <p class="text-zinc-500 text-sm mt-1">Live trade journal, backtest sessions, and performance analytics</p>
+              <p class="text-zinc-500 text-sm mt-1">Live trade journal and performance analytics</p>
             </div>
             <button onclick="openLogModal()" class="px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">+ Log Trade</button>
           </div>
@@ -1868,7 +1868,6 @@
       } catch(err) { console.error(err); }
     }
 
-    // ── Backtest ──
     // ── CSV Export ──
     function exportCSV() {
       if (!allTrades.length) { alert('No trades to export.'); return; }
