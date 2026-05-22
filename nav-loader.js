@@ -24,7 +24,7 @@
       document.getElementById('nav-content').innerHTML = html;
 
       // Highlight active page
-      const fullPath = window.location.pathname;
+      const fullPath = window.location.pathname === '/' ? '/index.html' : window.location.pathname;
       document.querySelectorAll('#nav-content .nav-link').forEach(link => {
         const href = link.getAttribute('href') || '';
         const hrefBase = '/' + href.replace('.html', '');
