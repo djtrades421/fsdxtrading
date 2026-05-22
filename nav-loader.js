@@ -24,7 +24,8 @@
       document.getElementById('nav-content').innerHTML = html;
 
       // Highlight active page
-      const current = window.location.pathname.split('/').pop() || 'index.html';
+      const pathPart = window.location.pathname.split('/').pop() || 'index.html';
+      const current = pathPart.includes('.') ? pathPart : pathPart + '.html';
       document.querySelectorAll('#nav-content .nav-link').forEach(link => {
         if (link.getAttribute('href') === current) {
           link.classList.remove('text-zinc-400');
