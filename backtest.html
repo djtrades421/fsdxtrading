@@ -1929,10 +1929,6 @@
         const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'get-trades',key:'backtest:'+whopKey+':'+id}) });
         const data = await res.json();
         btTrades = Array.isArray(data.trades)?data.trades:[];
-        const wins=btTrades.filter(t=>t.result==='WIN').length;
-        const p=btTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-        const wr=btTrades.length?Math.round(wins/btTrades.length*100):0;
-        document.getElementById('bt-summary').innerHTML=[['Trades',btTrades.length,'text-white'],['Win Rate',wr+'%','text-green-400'],['Net P&L',fmt(p),pnlColor(p)]].map(([l,v,c])=>`<div class="text-right"><div class="text-[10px] text-zinc-600">${l}</div><div class="text-xl font-black ${c}">${v}</div></div>`).join('');
         filteredBtTrades = [...btTrades]; updateBtSummary(); updateBtFilterBadge();
         btStatsTime = 'all'; setBtStatsTime('all');
         renderBtTrades();
@@ -2260,8 +2256,10 @@
 
     function updateBtSummary() {
       const wins = filteredBtTrades.filter(t=>t.result==='WIN').length;
+      const losses = filteredBtTrades.filter(t=>t.result==='LOSS').length;
+      const decided = wins + losses;
       const p = filteredBtTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-      const wr = filteredBtTrades.length ? Math.round(wins/filteredBtTrades.length*100) : 0;
+      const wr = decided ? Math.round(wins/decided*100) : 0;
       const el = document.getElementById('bt-summary');
       if (el) el.innerHTML = [['Trades',filteredBtTrades.length,'text-white'],['Win Rate',wr+'%','text-green-400'],['Net P&L',fmt(p),pnlColor(p)]].map(([l,v,c])=>`<div class="text-right"><div class="text-[10px] text-zinc-600">${l}</div><div class="text-xl font-black ${c}">${v}</div></div>`).join('');
     }
