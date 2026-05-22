@@ -144,6 +144,10 @@
             <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Tags (comma separated, optional)</label>
             <input type="text" id="recap-tags" placeholder="e.g. ORB Long, A+ Setup, Gap Fill" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
           </div>
+          <div class="mt-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Chart URL <span class="text-zinc-700 normal-case">— TradingView screenshot or image link (optional)</span></label>
+            <input type="text" id="recap-chart" placeholder="https://www.tradingview.com/x/..." class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
           <button onclick="postRecap()" id="recap-btn" class="mt-4 px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
             Post Recap
           </button>
@@ -266,19 +270,28 @@
       const container = document.getElementById('recaps-list');
       if (!recaps.length) { container.innerHTML = '<p class="text-zinc-600 text-sm">No recaps posted yet.</p>'; return; }
       container.innerHTML = recaps.map(r => `
-        <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 flex items-start justify-between gap-4">
-          <div class="flex-1">
-            <div class="flex flex-wrap items-center gap-2 mb-1">
-              <span class="text-xs text-zinc-500">${new Date(r.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
-              ${r.grade ? `<span class="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20">${r.grade}</span>` : ''}
-              ${r.result ? `<span class="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-[10px] border border-white/10">${r.result}</span>` : ''}
+        <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs text-zinc-500">${new Date(r.date+'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                ${r.grade ? `<span class="px-2 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20">${r.grade}</span>` : ''}
+                ${r.result ? `<span class="px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 text-[10px] border border-white/10">${r.result}</span>` : ''}
+              </div>
+              <div class="text-sm font-bold text-white">${r.title}</div>
+              <div class="text-xs text-zinc-500 mt-1">${r.summary}</div>
+              ${r.notes ? `<div class="text-xs text-zinc-600 mt-1 italic">${r.notes}</div>` : ''}
+              ${r.chartUrl ? `<a href="${r.chartUrl}" target="_blank" class="inline-block mt-2 text-xs text-green-400 hover:text-green-300 transition">View Chart ↗</a>` : ''}
             </div>
-            <div class="text-sm font-bold text-white">${r.title}</div>
-            <div class="text-xs text-zinc-500 mt-1 line-clamp-2">${r.summary}</div>
+            <button onclick="deleteRecap('${r.id}')" class="text-zinc-600 hover:text-red-400 transition shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+            </button>
           </div>
-          <button onclick="deleteRecap('${r.id}')" class="text-zinc-600 hover:text-red-400 transition shrink-0">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-          </button>
+          ${r.chartUrl ? `
+          <div class="mt-3 rounded-xl overflow-hidden border border-white/10">
+            <img src="${r.chartUrl}" alt="Session chart" class="w-full max-h-48 object-contain bg-zinc-950"
+              onerror="this.style.display='none'"/>
+          </div>` : ''}
         </div>
       `).join('');
     }
@@ -334,6 +347,7 @@
       const result = document.getElementById('recap-result').value;
       const notes = document.getElementById('recap-notes').value.trim();
       const tagsRaw = document.getElementById('recap-tags').value;
+      const chartUrl = document.getElementById('recap-chart').value.trim();
       const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
 
       if (!date || !title || !summary) { showAdminMsg('recap-msg', 'Date, title, and summary are required.', 'error'); return; }
@@ -343,7 +357,7 @@
 
       const recap = {
         id: Date.now().toString(),
-        date, title, summary, grade, result, notes, tags,
+        date, title, summary, grade, result, notes, tags, chartUrl,
         createdAt: new Date().toISOString()
       };
 
@@ -357,7 +371,7 @@
         await fetch(`${API}/api/admin/recap`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ date, title, summary, grade, result, notes, tags })
+          body: JSON.stringify({ date, title, summary, grade, result, notes, tags, chartUrl })
         });
       } catch (err) {
         console.log('Worker save failed, saved locally only');
@@ -366,9 +380,9 @@
       showAdminMsg('recap-msg', 'Recap posted successfully!', 'success');
       renderRecaps(allRecaps);
       document.getElementById('stat-recaps').textContent = allRecaps.length;
-      ['recap-date','recap-title','recap-summary','recap-grade','recap-result','recap-notes','recap-tags'].forEach(id => {
+      ['recap-date','recap-title','recap-summary','recap-grade','recap-result','recap-notes','recap-tags','recap-chart'].forEach(id => {
         const el = document.getElementById(id);
-        el.tagName === 'SELECT' ? (el.selectedIndex = 0) : (el.value = '');
+        if (el) el.tagName === 'SELECT' ? (el.selectedIndex = 0) : (el.value = '');
       });
       document.getElementById('recap-date').value = new Date().toISOString().slice(0, 10);
       btn.disabled = false; btn.textContent = 'Post Recap';
