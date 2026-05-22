@@ -835,6 +835,30 @@
     }
 
     // ── Stats ──
+    function statRow(label, val, valClass='text-white') {
+      return `<div class="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
+        <span class="text-zinc-500">${label}</span>
+        <span class="font-bold ${valClass}">${val}</span>
+      </div>`;
+    }
+
+    function barRow(label, pnl, wr, count, maxAbs) {
+      const pnlCol = pnl >= 0 ? '#22c55e' : '#ef4444';
+      const wrCol = wr >= 50 ? '#22c55e' : wr > 0 ? '#ef4444' : '#71717a';
+      const barW = maxAbs > 0 ? Math.round(Math.abs(pnl) / maxAbs * 100) : 0;
+      const barCol = pnl >= 0 ? '#22c55e' : '#ef4444';
+      const sign = pnl >= 0 ? '+' : '-';
+      return `<div class="grid items-center gap-2 py-2 border-b border-white/5 last:border-0" style="grid-template-columns:3rem 1fr 4rem 3rem 2rem">
+        <span class="text-xs text-zinc-400 font-bold">${label}</span>
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+          <div class="h-full rounded-full" style="width:${barW}%;background:${barCol};opacity:0.75"></div>
+        </div>
+        <span class="text-xs font-black text-right" style="color:${pnlCol}">${sign}$${Math.abs(pnl).toFixed(0)}</span>
+        <span class="text-xs font-bold text-right" style="color:${wrCol}">${wr}%</span>
+        <span class="text-[10px] text-zinc-600 text-right">${count}t</span>
+      </div>`;
+    }
+
     function renderStats() {
       let trades = [...filteredTrades];
 
@@ -1084,26 +1108,32 @@
       }
 
       // ── By Account ──
+      // ── By Account ──
       const acctEl = document.getElementById('stats-accounts');
       if (acctEl) {
-        const types = ['Personal','Evaluation','Funded'];
-        acctEl.innerHTML = types.map(type => {
-          const at = trades.filter(t=>t.accountType===type);
+        // Use saved accounts if available, otherwise fall back to types
+        const accountGroups = journalAccounts.length
+          ? journalAccounts.map(a => ({ label: a.name, filter: t => t.accountName === a.name || t.accountType === a.name }))
+          : ['Funded','Evaluation','Personal'].map(type => ({ label: type, filter: t => t.accountType === type }));
+
+        const cards = accountGroups.map(({ label, filter }) => {
+          const at = trades.filter(filter);
           const ap = at.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
           const aw2 = at.filter(t=>t.result==='WIN').length;
           const ad = aw2 + at.filter(t=>t.result==='LOSS').length;
           const awr = ad ? Math.round(aw2/ad*100) : 0;
           const col = ap>=0?'#22c55e':'#ef4444';
           if (!at.length) return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
-            <div class="text-xs text-zinc-600 mb-1">${type}</div>
+            <div class="text-xs text-zinc-600 mb-1">${label}</div>
             <div class="text-xs text-zinc-700">No trades</div>
           </div>`;
           return `<div class="border border-white/5 bg-zinc-950/40 rounded-xl p-4 text-center">
-            <div class="text-xs text-zinc-500 mb-2">${type}</div>
+            <div class="text-xs text-zinc-500 mb-2">${label}</div>
             <div class="text-xl font-black" style="color:${col}">${ap>=0?'+':'-'}$${Math.abs(ap).toFixed(0)}</div>
             <div class="text-xs text-zinc-500 mt-1">${at.length}t · <span style="color:${awr>=50?'#22c55e':'#ef4444'}">${awr}% WR</span></div>
           </div>`;
-        }).join('');
+        });
+        acctEl.innerHTML = cards.join('');
       }
 
       // ── Drawdown ──
