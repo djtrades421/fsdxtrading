@@ -149,18 +149,8 @@
         const tags = Array.isArray(r.tags) ? r.tags : (r.tags ? r.tags.split(',').map(t=>t.trim()).filter(Boolean) : []);
 
         const chartBlock = r.chartUrl ? `
-          <div class="mt-4 rounded-2xl overflow-hidden border border-white/10 bg-zinc-950 relative group cursor-pointer" onclick="openLightbox('${r.chartUrl}')">
-            <img src="${r.chartUrl}" alt="Session chart"
-              class="chart-img w-full max-h-72 object-contain bg-zinc-950"
-              onerror="this.closest('.chart-wrap').style.display='none'"/>
-            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
-              <div class="opacity-0 group-hover:opacity-100 transition bg-black/70 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
-                🔍 Click to expand
-              </div>
-            </div>
-            <a href="${r.chartUrl}" target="_blank" onclick="event.stopPropagation()" class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition bg-black/70 text-green-400 text-[10px] font-bold px-2 py-1 rounded hover:text-green-300">
-              Open ↗
-            </a>
+          <div class="mt-3 pt-3 border-t border-white/5">
+            <a href="${r.chartUrl}" target="_blank" class="text-green-400 hover:text-green-300 text-xs font-bold transition">View Chart ↗</a>
           </div>` : '';
 
         return `
