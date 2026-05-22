@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Backtest</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="nav-loader.js"></script>
+  <style>
+    body { background-color: #000; }
+    input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
+    .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
+    .cal-day { min-height: 110px; height: 110px; }
+    .cal-day-win  { background: rgba(34,197,94,0.09); border-left: 2px solid rgba(34,197,94,0.45) !important; }
+    .cal-day-loss { background: rgba(239,68,68,0.09); border-left: 2px solid rgba(239,68,68,0.4) !important; }
+    .cal-day:hover .cal-empty-hint { color: rgba(255,255,255,0.3) !important; }
+    .cal-day:not(.cal-day-win):not(.cal-day-loss):hover { background: rgba(255,255,255,0.02); }
+    @media (max-width: 640px) {
+      .cal-day { min-height: 72px; height: 72px; padding: 6px !important; }
+      .cal-day .text-sm { font-size: 11px !important; }
+      .cal-day .text-xs { font-size: 10px !important; }
+      .cal-day .text-\[11px\] { font-size: 9px !important; }
+      .cal-header-stats { flex-wrap: wrap; gap: 8px !important; }
+    }
+    .tag-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); border-radius: 999px; font-size: 11px; color: #22c55e; }
+    .direction-btn { transition: all 0.15s; }
+    .direction-btn.active-long { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #22c55e; font-weight: 700; }
+    .direction-btn.active-short { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #ef4444; font-weight: 700; }
+    .pnl-mode-btn.active { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); color: #22c55e; }
+    #equity-chart-wrap svg, #bt-equity-chart-wrap svg { display: block; overflow: visible; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <!-- Mobile header -->
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-green-400 font-black tracking-wider text-lg">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="text-zinc-400 hover:text-white transition">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+    </button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300"></aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+    <!-- Page header -->
+    <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-6">
+      <div class="max-w-7xl mx-auto flex items-start justify-between">
+        <div>
+          <div class="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-1">// VIP Members</div>
+          <h1 class="text-3xl font-black text-white">Backtest</h1>
+          <p class="text-zinc-500 text-sm mt-1">Backtest sessions and performance analytics</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="flex-1 px-6 md:px-10 py-8">
+      <div class="max-w-7xl mx-auto">
+
+        <!-- Auth gate -->
+        <div id="auth-gate" class="hidden text-center py-20">
+          <div class="text-4xl mb-4">🔒</div>
+          <h2 class="text-xl font-black mb-2">VIP Access Required</h2>
+          <p class="text-zinc-500 text-sm mb-6">Please log in to view your backtest sessions.</p>
+          <a href="login.html" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Member Login</a>
+        </div>
+
+        <!-- Main content (shown when authed) -->
+        <div id="bt-main" class="hidden">
+
+          <!-- Sessions view -->
+          <div id="bt-sessions-view">
+            <div id="bt-empty" class="hidden text-center py-16">
+              <div class="text-4xl mb-3">🧪</div>
+              <h3 class="text-lg font-black mb-2">No sessions yet</h3>
+              <p class="text-zinc-500 text-sm">Create backtest sessions from the FSD-X Nexus Chrome extension.</p>
+            </div>
+            <div id="bt-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+          </div>
+
+          <!-- Session detail -->
+          <div id="bt-detail" class="hidden">
+            <button onclick="closeBt()" class="flex items-center gap-2 text-zinc-500 hover:text-white text-xs mb-5 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>Back to Sessions
+            </button>
+            <div class="flex items-start justify-between mb-5 flex-wrap gap-4">
+              <div><h2 id="bt-title" class="text-xl font-black"></h2><div id="bt-meta" class="text-zinc-500 text-xs mt-1"></div></div>
+              <div class="flex flex-col items-end gap-2">
+                <div id="bt-summary" class="flex gap-6"></div>
+                <div id="bt-filter-badge" class="hidden text-[10px] text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-0.5 font-bold"></div>
+              </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap gap-2 mb-5 pb-4 border-b border-white/5">
+              <select id="bt-f-result" onchange="applyBtFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+                <option value="">All Results</option><option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
+              </select>
+              <select id="bt-f-grade" onchange="applyBtFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+                <option value="">All Grades</option>
+                <option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+              </select>
+              <select id="bt-f-direction" onchange="applyBtFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+                <option value="">All Directions</option><option value="LONG">Long</option><option value="SHORT">Short</option>
+              </select>
+              <button onclick="clearBtFilters()" class="text-xs text-zinc-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition">✕ Clear</button>
+            </div>
+
+            <!-- BT sub tabs -->
+            <div class="flex border-b border-white/10 mb-5">
+              <button onclick="btSub('trades')" id="btsub-trades" class="tab-btn active px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 mr-1">Trades</button>
+              <button onclick="btSub('stats')" id="btsub-stats" class="tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 mr-1">Stats</button>
+              <button onclick="btSub('calendar')" id="btsub-calendar" class="tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300">Calendar</button>
+            </div>
+
+            <!-- TRADES panel -->
+            <div id="bt-panel-trades">
+              <div class="border border-white/10 rounded-2xl overflow-hidden">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left min-w-[700px]">
+                    <thead><tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
+                      <th class="px-4 py-3">Date</th><th class="px-4 py-3">Dir</th><th class="px-4 py-3">Ticker</th>
+                      <th class="px-4 py-3">Grade</th><th class="px-4 py-3">Result</th>
+                      <th class="px-4 py-3">TP1</th><th class="px-4 py-3">TP2</th>
+                      <th class="px-4 py-3">Net P&L</th><th class="px-4 py-3">Tags</th>
+                    </tr></thead>
+                    <tbody id="bt-tbody" class="divide-y divide-white/5 text-sm"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- STATS panel -->
+            <div id="bt-panel-stats" class="hidden space-y-5">
+              <div id="bt-stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
+              <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+                <div class="flex items-start justify-between mb-1">
+                  <div>
+                    <div class="text-xs text-zinc-500 uppercase tracking-[0.2em]">Cumulative P&L</div>
+                    <div id="bt-chart-final-pnl" class="text-2xl font-black mt-1"></div>
+                  </div>
+                  <div id="bt-chart-legend" class="flex gap-4 text-xs text-zinc-500 mt-1"></div>
+                </div>
+                <div id="bt-equity-chart-wrap" class="relative mt-4" style="height:260px"></div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Outcome Breakdown</div>
+                  <div id="bt-stats-outcome" class="space-y-3"></div>
+                </div>
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Runner Stats</div>
+                  <div id="bt-stats-runner" class="space-y-2"></div>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Trade Summary</div>
+                  <div id="bt-stats-summary" class="space-y-2 text-xs"></div>
+                </div>
+                <div class="grid grid-rows-2 gap-4">
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                    <div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Commissions &amp; Fees</div>
+                    <div id="bt-stats-commissions" class="space-y-2 text-xs"></div>
+                  </div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                    <div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Contracts</div>
+                    <div id="bt-stats-contracts" class="space-y-2 text-xs"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">By Grade</div>
+                <div id="bt-stats-grades"></div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Long vs Short</div>
+                  <div id="bt-stats-dir" class="space-y-4"></div>
+                </div>
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Day of Week</div>
+                  <div id="bt-stats-dow" class="space-y-2"></div>
+                </div>
+              </div>
+              <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+                <div class="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-4">Drawdown Metrics</div>
+                <div id="bt-stats-drawdown" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6"></div>
+                <div class="text-xs text-zinc-600 uppercase tracking-wider mb-3">Drawdown From Peak</div>
+                <div id="bt-dd-chart-wrap" class="relative" style="height:190px"></div>
+              </div>
+            </div>
+
+            <!-- CALENDAR panel -->
+            <div id="bt-panel-calendar" class="hidden">
+              <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+                <div class="flex items-center gap-3">
+                  <button onclick="btCalPrev()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg></button>
+                  <h3 id="bt-cal-title" class="text-lg font-black text-white w-44 text-center"></h3>
+                  <button onclick="btCalNext()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
+                </div>
+                <div class="cal-header-stats flex gap-4 text-sm">
+                  <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="bt-cal-monthly" class="font-black">—</span></div>
+                  <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="bt-cal-wr" class="font-black text-green-400">—</span></div>
+                  <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="bt-cal-days" class="font-black text-zinc-400">—</span></div>
+                </div>
+              </div>
+              <div class="border border-white/10 rounded-2xl overflow-hidden">
+                <div class="overflow-x-auto">
+                  <div style="min-width:420px">
+                    <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
+                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
+                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
+                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
+                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
+                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
+                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Weekly</div>
+                    </div>
+                    <div id="bt-cal-grid"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div><!-- /bt-detail -->
+        </div><!-- /bt-main -->
+      </div>
+    </div>
+  </main>
+
+
+  <!-- Log Trade Modal -->
+  <div id="log-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
+    <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6 w-full max-w-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h2 id="log-modal-title" class="text-base font-black">Log Trade</h2>
+        <button onclick="closeLogModal()" class="text-zinc-500 hover:text-white text-lg transition">✕</button>
+      </div>
+      <div id="log-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4 border"></div>
+
+      <!-- Row 1: Date + Entry Time + Exit Time -->
+      <div class="grid grid-cols-3 gap-3 mb-3">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Date</label>
+          <input type="date" id="t-date" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Entry Time</label>
+          <input type="time" id="t-entry-time" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Exit Time</label>
+          <input type="time" id="t-exit-time" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
+      </div>
+
+      <!-- Row 2: Ticker + Account Type -->
+      <div class="grid grid-cols-2 gap-3 mb-1">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Ticker</label>
+          <input type="text" id="t-ticker" placeholder="MNQ" oninput="updateTickerHint()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          <div id="t-ticker-hint" class="text-[11px] text-green-500/70 mt-1 ml-1">MNQ — $0.50/tick</div>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account Type</label>
+          <select id="t-acct-type" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            <option value="">Select...</option>
+            <option value="Funded">Funded</option>
+            <option value="Evaluation">Evaluation</option>
+            <option value="Personal">Personal</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 3: Account Name + # of Accounts -->
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account Name <span class="text-zinc-700 normal-case">— optional</span></label>
+          <input type="text" id="t-acct-name" placeholder="e.g. Apex Funded #1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1"># of Accounts <span class="text-zinc-700 normal-case">— optional</span></label>
+          <input type="number" id="t-num-accounts" value="1" min="1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
+      </div>
+
+      <!-- Direction -->
+      <div class="mb-3">
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Direction</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="setDir('LONG')" id="dir-long" class="direction-btn active-long py-2.5 border border-white/10 rounded-xl text-sm font-bold transition">LONG</button>
+          <button onclick="setDir('SHORT')" id="dir-short" class="direction-btn py-2.5 border border-white/10 rounded-xl text-sm text-zinc-400 transition">SHORT</button>
+        </div>
+      </div>
+
+      <!-- P&L Mode -->
+      <div class="mb-3">
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">P&L Entry Mode</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="setPnlMode('price')" id="pnl-price" class="pnl-mode-btn active py-2 border border-green-500/40 bg-green-500/10 text-green-400 rounded-xl text-xs font-bold transition">By Price</button>
+          <button onclick="setPnlMode('manual')" id="pnl-manual" class="pnl-mode-btn py-2 border border-white/10 text-zinc-400 rounded-xl text-xs font-bold transition">Manual $</button>
+        </div>
+      </div>
+
+      <!-- ── BY PRICE FIELDS ── -->
+      <div id="price-fields" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Contracts</label>
+            <input type="number" id="t-contracts" value="1" min="1" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Entry Price</label>
+            <input type="number" id="t-entry" step="0.25" oninput="calcPnl()" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">SL Price</label>
+            <input type="number" id="t-sl" step="0.25" oninput="calcPnl()" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Commissions</label>
+            <input type="number" id="t-commissions" value="0" step="0.01" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          </div>
+        </div>
+        <!-- TP1 -->
+        <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
+          <div class="text-xs text-green-400 font-black uppercase tracking-wider mb-3">TP1</div>
+          <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-zinc-600 mb-1">Exit Price</label><input type="number" id="t-tp1-exit" step="0.25" oninput="calcPnl()" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-tp1-contracts" value="1" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">P&L</label><div id="t-tp1-pnl" class="px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm text-zinc-500">—</div></div>
+          </div>
+        </div>
+        <!-- TP2 -->
+        <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs text-zinc-400 font-black uppercase tracking-wider">TP2</span>
+            <span class="text-[10px] text-zinc-600 uppercase tracking-wider">— Runner / Optional</span>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-zinc-600 mb-1">Exit Price</label><input type="number" id="t-tp2-exit" step="0.25" oninput="calcPnl()" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-tp2-contracts" value="0" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">P&L</label><div id="t-tp2-pnl" class="px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm text-zinc-500">—</div></div>
+          </div>
+        </div>
+        <!-- Total -->
+        <div class="flex items-center justify-between bg-zinc-900/60 border border-white/5 rounded-xl px-4 py-3">
+          <span class="text-xs text-zinc-500 uppercase tracking-wider">Total P&L</span>
+          <span id="t-total-pnl" class="text-lg font-black text-zinc-400">—</span>
+        </div>
+      </div>
+
+      <!-- ── MANUAL FIELDS ── -->
+      <div id="manual-fields" class="hidden space-y-3">
+        <!-- TP1 manual -->
+        <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
+          <div class="text-xs text-green-400 font-black uppercase tracking-wider mb-3">TP1</div>
+          <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-manual-tp1-contracts" value="0" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">P&L ($)</label><input type="number" id="t-manual-tp1-pnl" step="0.01" placeholder="0.00" oninput="calcManualNet()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700"></div>
+            <div></div>
+          </div>
+        </div>
+        <!-- TP2 manual -->
+        <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs text-zinc-400 font-black uppercase tracking-wider">TP2</span>
+            <span class="text-[10px] text-zinc-600 uppercase tracking-wider">— Runner / Optional</span>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-manual-tp2-contracts" value="0" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">P&L ($)</label><input type="number" id="t-manual-tp2-pnl" step="0.01" placeholder="0.00" oninput="calcManualNet()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700"></div>
+            <div></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Contracts</label>
+            <input type="number" id="t-manual-contracts" value="1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Result</label>
+            <select id="t-result" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+              <option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
+            </select>
+          </div>
+          <div class="col-span-2">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Net P&L ($) <span class="text-zinc-700 normal-case">— auto-calculated from TP1+TP2 or enter manually</span></label>
+            <input type="number" id="t-manual-pnl" step="0.01" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+        </div>
+        <!-- Price Data (optional in manual mode) -->
+        <div class="border border-white/[0.07] bg-black/20 rounded-xl p-4">
+          <div class="text-xs text-zinc-600 uppercase tracking-wider mb-3">Price Data <span class="text-zinc-700">— optional</span></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="block text-xs text-zinc-700 mb-1">Entry Price</label><input type="number" id="t-manual-entry-price" step="0.25" placeholder="0.00" class="w-full bg-black border border-white/10 text-zinc-400 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/30 placeholder-zinc-800"></div>
+            <div><label class="block text-xs text-zinc-700 mb-1">SL Price</label><input type="number" id="t-manual-sl-price" step="0.25" placeholder="0.00" class="w-full bg-black border border-white/10 text-zinc-400 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/30 placeholder-zinc-800"></div>
+            <div><label class="block text-xs text-zinc-700 mb-1">TP1 Price</label><input type="number" id="t-manual-tp1-price" step="0.25" placeholder="0.00" class="w-full bg-black border border-white/10 text-zinc-400 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/30 placeholder-zinc-800"></div>
+            <div><label class="block text-xs text-zinc-700 mb-1">TP2 / Runner Price</label><input type="number" id="t-manual-tp2-price" step="0.25" placeholder="0.00" class="w-full bg-black border border-white/10 text-zinc-400 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/30 placeholder-zinc-800"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BOTTOM FIELDS (always visible) ── -->
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Grade <span class="text-zinc-700 normal-case">— optional</span></label>
+          <select id="t-grade" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            <option value="">Select...</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option><option>F</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Strategy <span class="text-zinc-700 normal-case">— optional</span></label>
+          <input type="text" id="t-strategy" placeholder="FSD-X ORB PRO" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Timeframe <span class="text-zinc-700 normal-case">— optional</span></label>
+          <select id="t-timeframe" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            <option value="5m">5m</option><option value="1m">1m</option><option value="2m">2m</option><option value="3m">3m</option><option value="15m">15m</option><option value="30m">30m</option><option value="1h">1h</option><option value="4h">4h</option><option value="1D">Daily</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Commissions <span class="text-zinc-700 normal-case" id="manual-comm-label">— manual mode</span></label>
+          <input type="number" id="t-commissions-manual" value="0" step="0.01" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div class="mt-4">
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Tags <span class="text-zinc-700 normal-case">— optional</span></label>
+        <div id="tags-container" class="flex flex-wrap gap-1.5 mb-2"></div>
+        <input type="text" id="t-tag-input" placeholder="Type tag + Enter"
+          onkeydown="handleTagInput(event)"
+          class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Chart URL <span class="text-zinc-700 normal-case">— optional</span></label>
+        <input type="text" id="t-chart" placeholder="Paste TradingView screenshot link..." class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+      </div>
+      <div class="mt-4">
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Notes <span class="text-zinc-700 normal-case">— optional</span></label>
+        <textarea id="t-notes" rows="3" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition resize-none placeholder-zinc-700" placeholder="Trade notes, lessons learned..."></textarea>
+      </div>
+
+      <div class="flex gap-3 mt-5">
+        <button onclick="closeLogModal()" class="px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 font-bold text-xs uppercase tracking-wider rounded-xl transition hover:text-white">← Cancel</button>
+        <button onclick="saveTrade()" id="save-btn" class="flex-1 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Trade</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trade Detail Modal -->
+  <div id="detail-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
+    <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-base font-black">Trade Detail</h2>
+        <button onclick="closeDetail()" class="text-zinc-500 hover:text-white text-lg">✕</button>
+      </div>
+      <div id="detail-body"></div>
+      <div class="flex gap-3 mt-5">
+        <button id="detail-edit" onclick="editTrade()" class="flex-1 py-2.5 bg-zinc-900 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">✏️ Edit</button>
+        <button id="detail-delete" onclick="deleteTrade()" class="px-5 py-2.5 bg-red-950/40 border border-red-500/20 text-red-400 font-bold text-xs uppercase tracking-wider rounded-xl transition">Delete</button>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
+    const TICK_SIZE = 0.25, TICK_VALUE = 0.50;
+    let whopKey = null;
+    let btSessions = [], btTrades = [], filteredBtTrades = [];
+    let btCalYear = new Date().getFullYear(), btCalMonth = new Date().getMonth();
+    let editingId = null, detailId = null, currentTags = [];
+    let tradeDir = 'LONG', pnlMode = 'price';
+
+    function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
+
+
+    // ── Helpers ──
+    const pnlColor = p => p > 0 ? 'text-green-400' : p < 0 ? 'text-red-400' : 'text-zinc-400';
+    const pnlColorStyle = p => p > 0 ? '#22c55e' : p < 0 ? '#ef4444' : '#71717a';
+    const resultBadge = r => r === 'WIN' ? 'bg-green-500/10 text-green-400 border-green-500/20' : r === 'LOSS' ? 'bg-red-950/30 text-red-400 border-red-500/20' : 'bg-zinc-800 text-zinc-400 border-white/10';
+    const fmt = n => { const p = parseFloat(n)||0; return (p>=0?'+':'')+' $'+Math.abs(p).toFixed(2); };
+    const fmtShort = n => { const p=parseFloat(n)||0; const abs=Math.abs(p); const sign=p>=0?'+':'-'; if(abs>=1000) return sign+'$'+(abs/1000).toFixed(abs>=10000?0:1)+'K'; return sign+'$'+abs.toFixed(0); };
+    const fmtFull = n => { const p=parseFloat(n)||0; const sign=p>=0?'+':'-'; return sign+'$'+Math.abs(p).toFixed(2); };
+    const statCard = (label, val, color, sub='') => `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">${label}</div><div class="text-2xl font-black" style="color:${color}">${val}</div>${sub?`<div class="text-xs text-zinc-600 mt-1">${sub}</div>`:''}</div>`;
+
+    function renderWinRateCard(wr, decided, wins, losses, bes) {
+      const color = wr >= 50 ? '#22c55e' : '#ef4444';
+      const r = 28, circ = 2 * Math.PI * r;
+      const dash = (wr / 100) * circ, gap = circ - dash;
+      const beSub = bes > 0 ? ` · ${bes} BE` : '';
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Win Rate</div>
+        <div class="relative flex items-center justify-center" style="width:80px;height:80px">
+          <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg);position:absolute;inset:0">
+            <circle cx="40" cy="40" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+            <circle cx="40" cy="40" r="${r}" fill="none" stroke="${color}" stroke-width="8"
+              stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
+              stroke-linecap="round" opacity="0.9"/>
+          </svg>
+          <div style="color:${color}" class="text-lg font-black relative z-10">${wr}%</div>
+        </div>
+        <div class="text-xs text-zinc-600 mt-2">${wins}W · ${losses}L${beSub}</div>
+      </div>`;
+    }
+
+    function renderNetPnlCard(netPnl) {
+      const color = netPnl > 0 ? '#22c55e' : netPnl < 0 ? '#ef4444' : '#71717a';
+      const sign = netPnl >= 0 ? '+' : '-';
+      const formatted = sign + '$' + Math.abs(netPnl).toFixed(2);
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Net P&amp;L</div>
+        <div class="text-2xl font-black" style="color:${color}">${formatted}</div>
+        <div class="text-xs mt-2" style="color:${color};opacity:0.55">${netPnl >= 0 ? '▲ Profitable' : '▼ In drawdown'}</div>
+      </div>`;
+    }
+
+
+    const statCard = (label, val, color, sub='') => `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">${label}</div><div class="text-2xl font-black" style="color:${color}">${val}</div>${sub?`<div class="text-xs text-zinc-600 mt-1">${sub}</div>`:''}</div>`;
+
+    function renderWinRateCard(wr, decided, wins, losses, bes) {
+      const color = wr >= 50 ? '#22c55e' : '#ef4444';
+      const r = 28, circ = 2 * Math.PI * r;
+      const dash = (wr / 100) * circ, gap = circ - dash;
+      const beSub = bes > 0 ? ` · ${bes} BE` : '';
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Win Rate</div>
+        <div class="relative flex items-center justify-center" style="width:80px;height:80px">
+          <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg);position:absolute;inset:0">
+            <circle cx="40" cy="40" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+            <circle cx="40" cy="40" r="${r}" fill="none" stroke="${color}" stroke-width="8"
+              stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
+              stroke-linecap="round" opacity="0.9"/>
+          </svg>
+          <div style="color:${color}" class="text-lg font-black relative z-10">${wr}%</div>
+        </div>
+        <div class="text-xs text-zinc-600 mt-2">${wins}W · ${losses}L${beSub}</div>
+      </div>`;
+    }
+
+    function renderNetPnlCard(netPnl) {
+      const color = netPnl > 0 ? '#22c55e' : netPnl < 0 ? '#ef4444' : '#71717a';
+      const sign = netPnl >= 0 ? '+' : '-';
+      const formatted = sign + '$' + Math.abs(netPnl).toFixed(2);
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Net P&amp;L</div>
+        <div class="text-2xl font-black" style="color:${color}">${formatted}</div>
+        <div class="text-xs mt-2" style="color:${color};opacity:0.55">${netPnl >= 0 ? '▲ Profitable' : '▼ In drawdown'}</div>
+      </div>`;
+    }
+
+    // ── BT Filters (own dropdowns, no global state) ──
+    function applyBtFilters() {
+      const res = document.getElementById('bt-f-result').value;
+      const grade = document.getElementById('bt-f-grade').value;
+      const dir = document.getElementById('bt-f-direction').value;
+      filteredBtTrades = btTrades.filter(t =>
+        (!res   || t.result === res) &&
+        (!grade || t.grade  === grade) &&
+        (!dir   || t.direction === dir)
+      );
+      updateBtFilterBadge();
+      updateBtSummary();
+      const activeSub = [...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','')||'trades';
+      if (activeSub==='trades') renderBtTrades();
+      else if (activeSub==='stats') renderBtStats();
+      else if (activeSub==='calendar') renderBtCal();
+    }
+
+    function clearBtFilters() {
+      ['bt-f-result','bt-f-grade','bt-f-direction'].forEach(id => document.getElementById(id).value = '');
+      filteredBtTrades = [...btTrades];
+      updateBtFilterBadge();
+      updateBtSummary();
+      const activeSub = [...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','')||'trades';
+      if (activeSub==='trades') renderBtTrades();
+      else if (activeSub==='stats') renderBtStats();
+      else if (activeSub==='calendar') renderBtCal();
+    }
+
+    function updateBtSummary() {
+      const wins = filteredBtTrades.filter(t=>t.result==='WIN').length;
+      const p = filteredBtTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const wr = filteredBtTrades.length ? Math.round(wins/filteredBtTrades.length*100) : 0;
+      const sumEl = document.getElementById('bt-summary');
+      if (sumEl) sumEl.innerHTML = [['Trades',filteredBtTrades.length,'text-white'],['Win Rate',wr+'%','text-green-400'],['Net P&L',fmt(p),pnlColor(p)]].map(([l,v,c])=>`<div class="text-right"><div class="text-[10px] text-zinc-600">${l}</div><div class="text-xl font-black ${c}">${v}</div></div>`).join('');
+    }
+
+    function updateBtFilterBadge() {
+      const active = ['bt-f-result','bt-f-grade','bt-f-direction'].filter(id=>document.getElementById(id)?.value!=='').length;
+      const badge = document.getElementById('bt-filter-badge');
+      if (badge) { badge.textContent = active>0 ? active+' filter'+(active>1?'s':'')+' active' : ''; badge.classList.toggle('hidden', active===0); }
+    }
+
+
+    function calcManualNet() {
+      const tp1 = parseFloat(document.getElementById('t-manual-tp1-pnl').value)||0;
+      const tp2 = parseFloat(document.getElementById('t-manual-tp2-pnl').value)||0;
+      const netEl = document.getElementById('t-manual-pnl');
+      // Only auto-fill if user hasn't manually typed a net override
+      if (netEl && (tp1 !== 0 || tp2 !== 0)) {
+        netEl.value = (tp1 + tp2).toFixed(2);
+        // Auto-set result
+        const net = tp1 + tp2;
+        document.getElementById('t-result').value = net > 0 ? 'WIN' : net < 0 ? 'LOSS' : 'BE';
+      }
+    }
+
+    function calcPnl() {
+      if (pnlMode !== 'price') return;
+      const entry = parseFloat(document.getElementById('t-entry').value)||0;
+      const contracts = parseInt(document.getElementById('t-contracts').value)||1;
+      const tp1Exit = parseFloat(document.getElementById('t-tp1-exit').value)||0;
+      const tp1Con = parseInt(document.getElementById('t-tp1-contracts').value)||0;
+      const tp2Exit = parseFloat(document.getElementById('t-tp2-exit').value)||0;
+      const tp2Con = parseInt(document.getElementById('t-tp2-contracts').value)||0;
+      const commissions = parseFloat(document.getElementById('t-commissions').value)||0;
+      const dir = tradeDir === 'LONG' ? 1 : -1;
+
+      let tp1Pnl = 0, tp2Pnl = 0;
+      if (entry && tp1Exit && tp1Con) {
+        const ticks = (tp1Exit - entry) / TICK_SIZE;
+        tp1Pnl = ticks * TICK_VALUE * tp1Con * dir;
+      }
+      if (entry && tp2Exit && tp2Con) {
+        const ticks = (tp2Exit - entry) / TICK_SIZE;
+        tp2Pnl = ticks * TICK_VALUE * tp2Con * dir;
+      }
+      const total = tp1Pnl + tp2Pnl - commissions;
+      const tp1El = document.getElementById('t-tp1-pnl');
+      const tp2El = document.getElementById('t-tp2-pnl');
+      const totEl = document.getElementById('t-total-pnl');
+      tp1El.textContent = tp1Pnl!==0?(tp1Pnl>=0?'+':'')+' $'+Math.abs(tp1Pnl).toFixed(2):'—';
+      tp1El.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp1Pnl>0?'text-green-400':tp1Pnl<0?'text-red-400':'text-zinc-500');
+      tp2El.textContent = tp2Pnl!==0?(tp2Pnl>=0?'+':'')+' $'+Math.abs(tp2Pnl).toFixed(2):'—';
+      tp2El.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp2Pnl>0?'text-green-400':tp2Pnl<0?'text-red-400':'text-zinc-500');
+      totEl.textContent = (tp1Pnl!==0||tp2Pnl!==0)?(total>=0?'+':'')+' $'+Math.abs(total).toFixed(2):'—';
+      totEl.className = 'text-lg font-black ' + (total>0?'text-green-400':total<0?'text-red-400':'text-zinc-400');
+    }
+
+    // ── Tags ──
+    function handleTagInput(e) {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        const val = e.target.value.trim().replace(',','');
+        if (val && !currentTags.includes(val)) { currentTags.push(val); renderTags(); }
+        e.target.value = '';
+      } else if (e.key === 'Backspace' && !e.target.value && currentTags.length) {
+        currentTags.pop(); renderTags();
+      }
+    }
+    function renderTags() {
+      document.getElementById('tags-container').innerHTML = currentTags.map((t,i) =>
+        `<span class="tag-pill">${t}<button onclick="removeTag(${i})" class="ml-1 text-green-600 hover:text-red-400 transition">×</button></span>`
+      ).join('');
+    }
+    function removeTag(i) { currentTags.splice(i,1); renderTags(); }
+
+    // ── Modal ──
+
+
+    async function loadBtSessions() {
+      try {
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'get-trades',key:'backtest_sessions:'+whopKey}) });
+        const data = await res.json();
+        btSessions = Array.isArray(data.trades)?data.trades:[];
+        const grid=document.getElementById('bt-grid'), empty=document.getElementById('bt-empty');
+        if (!btSessions.length) { empty.classList.remove('hidden'); grid.classList.add('hidden'); return; }
+        empty.classList.add('hidden'); grid.classList.remove('hidden');
+        grid.innerHTML = btSessions.map(s=>{
+          const p=parseFloat(s.netPnl)||0;
+          return `<div onclick="openBtSession('${s.id}')" class="border border-white/10 bg-zinc-950/40 hover:border-white/20 rounded-2xl p-5 cursor-pointer transition">
+            <div class="text-sm font-black text-white mb-1 truncate">${s.name}</div>
+            <div class="text-xs text-zinc-500 mb-3">${[s.ticker,s.strategy].filter(Boolean).join(' · ')}</div>
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div><div class="text-[10px] text-zinc-600 mb-0.5">Trades</div><div class="text-sm font-bold text-white">${s.tradeCount||0}</div></div>
+              <div><div class="text-[10px] text-zinc-600 mb-0.5">Win Rate</div><div class="text-sm font-bold text-green-400">${s.winRate||0}%</div></div>
+              <div><div class="text-[10px] text-zinc-600 mb-0.5">Net P&L</div><div class="text-sm font-bold ${pnlColor(p)}">${fmt(p)}</div></div>
+            </div>
+          </div>`;
+        }).join('');
+      } catch(err) { console.error(err); }
+    }
+
+    async function openBtSession(id) {
+      const s = btSessions.find(s=>s.id===id); if(!s) return;
+      document.getElementById('bt-sessions-view').classList.add('hidden');
+      document.getElementById('bt-detail').classList.remove('hidden');
+      document.getElementById('bt-title').textContent = s.name;
+      document.getElementById('bt-meta').textContent = [s.ticker,s.strategy,s.startDate].filter(Boolean).join(' · ');
+      btSub('trades');
+      try {
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'get-trades',key:'backtest:'+whopKey+':'+id}) });
+        const data = await res.json();
+        btTrades = Array.isArray(data.trades)?data.trades:[];
+        // Apply any currently active global filters to BT trades
+        filteredBtTrades = btTrades.filter(t =>
+          (!gfResult || t.result === gfResult) &&
+          (!gfAccount || t.accountType === gfAccount) &&
+          (!gfGrade || t.grade === gfGrade) &&
+          (!gfDirection || t.direction === gfDirection)
+        );
+        updateBtSummary();
+        updateBtFilterBadge();
+        renderBtTrades();
+        if (btTrades[0]?.date) { const d=new Date(btTrades[0].date+'T00:00:00'); btCalYear=d.getFullYear(); btCalMonth=d.getMonth(); }
+      } catch(err) { console.error(err); }
+    }
+
+    function closeBt() { document.getElementById('bt-detail').classList.add('hidden'); document.getElementById('bt-sessions-view').classList.remove('hidden'); }
+
+    function btSub(tab) {
+      ['trades','stats','calendar'].forEach(t=>{
+        document.getElementById('bt-panel-'+t).classList.add('hidden');
+        const b=document.getElementById('btsub-'+t);
+        b.classList.remove('active','text-green-400','border-green-500');
+        b.classList.add('text-zinc-500','border-transparent');
+      });
+      document.getElementById('bt-panel-'+tab).classList.remove('hidden');
+      const ab=document.getElementById('btsub-'+tab);
+      ab.classList.add('active','text-green-400','border-green-500');
+      ab.classList.remove('text-zinc-500','border-transparent');
+      if(tab==='stats') renderBtStats();
+      if(tab==='calendar') renderBtCal();
+    }
+
+    function renderBtTrades() {
+      const tbody = document.getElementById('bt-tbody');
+      if (!filteredBtTrades.length) { tbody.innerHTML=`<tr><td colspan="9" class="px-4 py-8 text-center text-zinc-600">${btTrades.length?'No trades match current filters':'No trades'}</td></tr>`; return; }
+      tbody.innerHTML = filteredBtTrades.map(t => {
+        const tp = parseFloat(t.netPnl)||0;
+        const tp1 = parseFloat(t.tp1Pnl)||0, tp2 = parseFloat(t.tp2Pnl)||0;
+        const tags = Array.isArray(t.tags)&&t.tags.length ? t.tags.map(tg=>`<span class="px-1.5 py-0.5 bg-zinc-800 border border-white/5 rounded text-[10px] text-zinc-500">${tg}</span>`).join('') : '—';
+        const pnlCls = tp > 0 ? 'text-green-400' : tp < 0 ? 'text-red-400' : 'text-zinc-500';
+        const tp1Cls = tp1 > 0 ? 'text-green-400' : tp1 < 0 ? 'text-red-400' : 'text-zinc-600';
+        const tp2Cls = tp2 > 0 ? 'text-green-400' : tp2 < 0 ? 'text-red-400' : 'text-zinc-600';
+        const resBadge = t.result==='WIN' ? 'bg-green-500/10 border-green-500/30 text-green-400' : t.result==='LOSS' ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-zinc-800 border-white/10 text-zinc-400';
+        return `<tr class="hover:bg-white/[0.02] transition cursor-pointer">
+          <td class="px-4 py-3 text-zinc-400 text-xs">${t.date||'—'}</td>
+          <td class="px-4 py-3"><span class="text-xs font-bold ${t.direction==='LONG'?'text-green-400':'text-red-400'}">${t.direction||'—'}</span></td>
+          <td class="px-4 py-3 text-xs text-zinc-300 font-medium">${t.ticker||'MNQ'}</td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-zinc-800 text-zinc-300 border-white/10">${t.grade||'—'}</span></td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resBadge}">${t.result||'—'}</span></td>
+          <td class="px-4 py-3 text-xs font-bold ${tp1Cls}">${tp1 ? (tp1>=0?'+':'-')+'$'+Math.abs(tp1).toFixed(2) : '—'}</td>
+          <td class="px-4 py-3 text-xs font-bold ${tp2Cls}">${tp2 ? (tp2>=0?'+':'-')+'$'+Math.abs(tp2).toFixed(2) : '—'}</td>
+          <td class="px-4 py-3 font-black text-sm ${pnlCls}">${(tp>=0?'+':'-')+'$'+Math.abs(tp).toFixed(2)}</td>
+          <td class="px-4 py-3"><div class="flex gap-1 flex-wrap">${tags}</div></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function renderBtStats() {
+      const trades = filteredBtTrades;
+      if (!trades.length) { document.getElementById('bt-stats-top').innerHTML = '<div class="col-span-4 text-center text-zinc-600 text-sm py-8">No trades match current filters</div>'; return; }
+      const wins = trades.filter(t=>t.result==='WIN');
+      const losses = trades.filter(t=>t.result==='LOSS');
+      const bes = trades.filter(t=>t.result==='BE');
+      const decided = wins.length + losses.length;
+      const wr = decided ? Math.round(wins.length/decided*100) : 0;
+      const netPnl = trades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const grossWin = wins.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const grossLoss = Math.abs(losses.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0));
+      const pf = grossLoss===0 ? (grossWin>0?'∞':'—') : (grossWin/grossLoss).toFixed(2);
+      const avgWin = wins.length ? grossWin/wins.length : 0;
+      const avgLoss = losses.length ? grossLoss/losses.length : 0;
+      const best = wins.length ? wins.reduce((m,t)=>Math.max(m,parseFloat(t.netPnl)||0),-Infinity) : 0;
+      const worst = losses.length ? losses.reduce((m,t)=>Math.min(m,parseFloat(t.netPnl)||0),Infinity) : 0;
+      const totalComm = trades.reduce((s,t)=>s+(parseFloat(t.commissions)||0),0);
+      const totalContracts = trades.reduce((s,t)=>s+(parseInt(t.contracts)||0),0);
+      const avgContracts = trades.length ? (totalContracts/trades.length).toFixed(1) : '—';
+      const avgCW = wins.length ? (wins.reduce((s,t)=>s+(parseInt(t.contracts)||0),0)/wins.length).toFixed(1) : '—';
+      const avgCL = losses.length ? (losses.reduce((s,t)=>s+(parseInt(t.contracts)||0),0)/losses.length).toFixed(1) : '—';
+      const pfColor = pf==='∞'?'#22c55e':pf==='—'?'#71717a':parseFloat(pf)>=1?'#22c55e':'#ef4444';
+
+      // Top cards
+      document.getElementById('bt-stats-top').innerHTML =
+        statCard('Total Trades', trades.length, '#ffffff', `${wins.length}W · ${losses.length}L${bes.length?' · '+bes.length+'BE':''}`) +
+        renderWinRateCard(wr, decided, wins.length, losses.length, bes.length) +
+        renderNetPnlCard(netPnl) +
+        statCard('Profit Factor', pf, pfColor);
+
+      // Equity curve — pass filtered trades
+      drawBtEquityCurve(trades);
+
+      // Outcome Breakdown
+      const obEl = document.getElementById('bt-stats-outcome');
+      if (obEl) {
+        const total = trades.length||1;
+        obEl.innerHTML = `<div class="flex gap-1 mb-3 h-2 rounded-full overflow-hidden">
+          <div style="width:${Math.round(wins.length/total*100)}%;background:#22c55e;opacity:0.85" class="rounded-l-full"></div>
+          <div style="width:${Math.round(losses.length/total*100)}%;background:#ef4444;opacity:0.85"></div>
+          <div style="width:${Math.round(bes.length/total*100)}%;background:#52525b;opacity:0.85" class="rounded-r-full"></div>
+        </div>` +
+        [['WIN',wins.length,'#22c55e','+$'+grossWin.toFixed(2)],
+         ['LOSS',losses.length,'#ef4444','-$'+grossLoss.toFixed(2)],
+         ['BE',bes.length,'#71717a','$0.00']
+        ].map(([label,count,col,pnlStr]) => `
+          <div class="flex items-center gap-3 py-1.5 border-b border-white/5 last:border-0 text-xs">
+            <span class="w-8 text-xs font-black" style="color:${col}">${label}</span>
+            <div class="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+              <div class="h-full rounded-full" style="width:${Math.round(count/total*100)}%;background:${col};opacity:0.8"></div>
+            </div>
+            <span class="text-zinc-400 w-4 text-center">${count}</span>
+            <span class="text-zinc-500 w-8 text-right">${Math.round(count/total*100)}%</span>
+          </div>`).join('');
+      }
+
+      // Runner Stats
+      const rEl = document.getElementById('bt-stats-runner');
+      if (rEl) {
+        const tp1hits = trades.filter(t=>parseFloat(t.tp1Pnl||0)!==0).length;
+        const tp2hits = trades.filter(t=>parseFloat(t.tp2Pnl||0)!==0).length;
+        const tp1Rate = trades.length ? Math.round(tp1hits/trades.length*100) : 0;
+        const tp2Rate = trades.length ? Math.round(tp2hits/trades.length*100) : 0;
+        const avgTp1 = tp1hits ? trades.reduce((s,t)=>s+(parseFloat(t.tp1Pnl)||0),0)/tp1hits : 0;
+        const avgTp2 = tp2hits ? trades.reduce((s,t)=>s+(parseFloat(t.tp2Pnl)||0),0)/tp2hits : 0;
+        const runners = trades.filter(t=>(parseInt(t.tp2Contracts)||0)>0||parseFloat(t.runnerPnl||0)!==0);
+        const rWin=runners.filter(t=>t.result==='WIN').length, rBE=runners.filter(t=>t.result==='BE').length, rLoss=runners.filter(t=>t.result==='LOSS').length;
+        const sl = (label,val,cls='text-zinc-300') => `<div class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0 text-xs"><span class="text-zinc-500">${label}</span><span class="font-bold ${cls}">${val}</span></div>`;
+        rEl.innerHTML =
+          sl('TP1 hit rate', tp1Rate+'%', tp1Rate>=50?'text-green-400':'text-red-400') +
+          sl('TP2 hit rate', tp2Rate+'%', tp2Rate>=50?'text-green-400':'text-red-400') +
+          sl('Runner → Win', rWin, 'text-green-400') +
+          sl('Runner → BE', rBE, 'text-zinc-400') +
+          sl('Runner → Loss', rLoss, 'text-red-400') +
+          sl('Avg TP1 P&L', avgTp1?(avgTp1>=0?'+':'-')+'$'+Math.abs(avgTp1).toFixed(2):'—', avgTp1>=0?'text-green-400':'text-red-400') +
+          sl('Avg TP2 P&L', avgTp2?(avgTp2>=0?'+':'-')+'$'+Math.abs(avgTp2).toFixed(2):'—', avgTp2>=0?'text-green-400':'text-red-400');
+      }
+
+      // Trade Summary
+      const sumEl = document.getElementById('bt-stats-summary');
+      if (sumEl) {
+        const sl = (label,val) => `<div class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0"><span class="text-zinc-500">${label}</span><span class="font-bold">${val}</span></div>`;
+        sumEl.innerHTML =
+          sl('Wins / Losses / BE', `<span class="text-green-400">${wins.length}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${losses.length}</span> <span class="text-zinc-600">/</span> <span class="text-zinc-400">${bes.length}</span>`) +
+          sl('Avg Win / Loss', `<span class="text-green-400">+$${avgWin.toFixed(2)}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">-$${avgLoss.toFixed(2)}</span>`) +
+          sl('Best / Worst', `<span class="text-green-400">${best>0?'+$'+best.toFixed(2):'—'}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${worst<0?'-$'+Math.abs(worst).toFixed(2):'—'}</span>`) +
+          sl('Gross P&L', `<span class="${netPnl>=0?'text-green-400':'text-red-400'}">${netPnl>=0?'+':'-'}$${Math.abs(netPnl).toFixed(2)}</span>`);
+      }
+
+      // Commissions
+      const commEl = document.getElementById('bt-stats-commissions');
+      if (commEl) {
+        const sl = (label,val,cls='text-white') => `<div class="flex justify-between items-center py-1 border-b border-white/5 last:border-0"><span class="text-zinc-500">${label}</span><span class="font-bold ${cls}">${val}</span></div>`;
+        commEl.innerHTML =
+          sl('Total paid', totalComm?'-$'+totalComm.toFixed(2):'—', 'text-red-400') +
+          sl('Avg per trade', '$'+(trades.length?totalComm/trades.length:0).toFixed(2)) +
+          sl('Net after fees', (netPnl-totalComm>=0?'+':'-')+'$'+Math.abs(netPnl-totalComm).toFixed(2), netPnl-totalComm>=0?'text-green-400':'text-red-400');
+      }
+
+      // Contracts
+      const conEl = document.getElementById('bt-stats-contracts');
+      if (conEl) {
+        const sl = (label,val) => `<div class="flex justify-between items-center py-1 border-b border-white/5 last:border-0"><span class="text-zinc-500">${label}</span><span class="font-bold text-white">${val}</span></div>`;
+        conEl.innerHTML = sl('Avg contracts',avgContracts)+sl('Avg on winners',avgCW)+sl('Avg on losers',avgCL)+sl('Total contracts',totalContracts);
+      }
+
+      // By Grade — table
+      const gradeEl = document.getElementById('bt-stats-grades');
+      if (gradeEl) {
+        const grades = ['A+','A','B+','B','C+','C','D','F'];
+        const maxGP = Math.max(...grades.map(g=>{const gt=trades.filter(t=>t.grade===g);return gt.length?Math.abs(gt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)):0;}));
+        const header = `<div class="grid gap-2 py-2 border-b border-white/10 mb-1 text-[10px] text-zinc-600 uppercase tracking-wider" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem">
+          <span>Grade</span><span></span><span class="text-right">Trades</span><span class="text-right">Win %</span><span class="text-right">Net P&L</span><span class="text-right">Avg P&L</span></div>`;
+        gradeEl.innerHTML = header + grades.map(g => {
+          const gt = trades.filter(t=>t.grade===g);
+          if (!gt.length) return `<div class="grid gap-2 py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem"><span class="text-zinc-600 font-bold">${g}</span><div></div><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span></div>`;
+          const gw=gt.filter(t=>t.result==='WIN').length, gd=gw+gt.filter(t=>t.result==='LOSS').length;
+          const gwr=gd?Math.round(gw/gd*100):0, gp=gt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0), gavg=gp/gt.length;
+          const barW=maxGP>0?Math.round(Math.abs(gp)/maxGP*100):0, col=gp>=0?'#22c55e':'#ef4444';
+          return `<div class="grid gap-2 items-center py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem">
+            <span class="font-black" style="color:${col}">${g}</span>
+            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${barW}%;background:${col};opacity:0.75"></div></div>
+            <span class="text-right text-zinc-400">${gt.length}t</span>
+            <span class="text-right font-bold ${gwr>=50?'text-green-400':'text-red-400'}">${gwr}%</span>
+            <span class="text-right font-black" style="color:${col}">${gp>=0?'+':'-'}$${Math.abs(gp).toFixed(2)}</span>
+            <span class="text-right text-zinc-400">${gavg>=0?'+':'-'}$${Math.abs(gavg).toFixed(2)}</span>
+          </div>`;
+        }).join('');
+      }
+
+      // Long vs Short
+      const dirEl = document.getElementById('bt-stats-dir');
+      if (dirEl) {
+        dirEl.innerHTML = [['LONG',trades.filter(t=>t.direction==='LONG'),'#22c55e'],['SHORT',trades.filter(t=>t.direction==='SHORT'),'#ef4444']].map(([label,ts,col]) => {
+          const w=ts.filter(t=>t.result==='WIN').length, l=ts.filter(t=>t.result==='LOSS').length, d=w+l;
+          const wr2=d?Math.round(w/d*100):0, p=ts.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+          const aw=w?ts.filter(t=>t.result==='WIN').reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)/w:0;
+          const al=l?Math.abs(ts.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)/l):0;
+          return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-sm font-black" style="color:${col}">${label}</span>
+              <span class="text-xs text-zinc-500">${ts.length} trades · <span style="color:${wr2>=50?'#22c55e':'#ef4444'}">${wr2}% WR</span></span>
+            </div>
+            <div class="space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="text-zinc-500">Net P&L</span><span class="font-black" style="color:${p>=0?'#22c55e':'#ef4444'}">${p>=0?'+':'-'}$${Math.abs(p).toFixed(2)}</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Avg Win</span><span class="text-green-400 font-bold">+$${aw.toFixed(2)}</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Avg Loss</span><span class="text-red-400 font-bold">-$${al.toFixed(2)}</span></div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      // Day of Week
+      const dowEl = document.getElementById('bt-stats-dow');
+      if (dowEl) {
+        const days = ['Mon','Tue','Wed','Thu','Fri'];
+        const dayData = days.map((day,i) => {
+          const dt = trades.filter(t=>{if(!t.date)return false;const d=new Date(t.date+'T00:00:00');return d.getDay()===i+1;});
+          const p=dt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+          const w=dt.filter(t=>t.result==='WIN').length, d2=w+dt.filter(t=>t.result==='LOSS').length;
+          return { day, dt, p, wr: d2?Math.round(w/d2*100):0 };
+        });
+        const maxAbs = Math.max(...dayData.map(d=>Math.abs(d.p)),1);
+        dowEl.innerHTML = dayData.map(({day,dt,p,wr}) => barRow(day,p,wr,dt.length,maxAbs)).join('');
+      }
+
+      // Drawdown
+      renderBtDrawdown(trades);
+    }
+
+    function drawBtEquityCurve(trades) {
+      const wrap = document.getElementById('bt-equity-chart-wrap');
+      const finalEl = document.getElementById('bt-chart-final-pnl');
+      const legendEl = document.getElementById('bt-chart-legend');
+      if (!wrap) return;
+      // Temporarily swap IDs so drawEquityCurve targets BT elements
+      const origWrap = document.getElementById('equity-chart-wrap');
+      const origFinal = document.getElementById('chart-final-pnl');
+      const origLegend = document.getElementById('chart-legend');
+      wrap.id = 'equity-chart-wrap';
+      if (finalEl) finalEl.id = 'chart-final-pnl';
+      if (legendEl) legendEl.id = 'chart-legend';
+      if (origWrap) origWrap.id = '_eq_wrap_bak';
+      if (origFinal) origFinal.id = '_eq_final_bak';
+      if (origLegend) origLegend.id = '_eq_legend_bak';
+      drawEquityCurve(trades);
+      // Restore IDs
+      wrap.id = 'bt-equity-chart-wrap';
+      if (finalEl) finalEl.id = 'bt-chart-final-pnl';
+      if (legendEl) legendEl.id = 'bt-chart-legend';
+      if (origWrap) origWrap.id = 'equity-chart-wrap';
+      if (origFinal) origFinal.id = 'chart-final-pnl';
+      if (origLegend) origLegend.id = 'chart-legend';
+    }
+
+    function renderBtDrawdown(trades) {
+      const ddWrap = document.getElementById('bt-dd-chart-wrap');
+      const ddStats = document.getElementById('bt-stats-drawdown');
+      if (!ddWrap || !ddStats) return;
+      // Swap IDs to reuse renderDrawdown
+      const origWrap = document.getElementById('dd-chart-wrap');
+      const origStats = document.getElementById('stats-drawdown');
+      ddWrap.id = 'dd-chart-wrap';
+      ddStats.id = 'stats-drawdown';
+      if (origWrap) origWrap.id = '_dd_wrap_bak';
+      if (origStats) origStats.id = '_dd_stats_bak';
+      renderDrawdown(trades);
+      ddWrap.id = 'bt-dd-chart-wrap';
+      ddStats.id = 'bt-stats-drawdown';
+      if (origWrap) origWrap.id = 'dd-chart-wrap';
+      if (origStats) origStats.id = 'stats-drawdown';
+    }
+
+    function renderBtCal() {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('bt-cal-title').textContent = months[btCalMonth]+' '+btCalYear;
+      const byDate = {};
+      filteredBtTrades.forEach(t => { if(!t.date)return; if(!byDate[t.date])byDate[t.date]={pnl:0,count:0}; byDate[t.date].pnl+=parseFloat(t.netPnl)||0; byDate[t.date].count++; });
+
+      const monthKeys = Object.keys(byDate).filter(ds => { const d=new Date(ds+'T00:00:00'); return d.getFullYear()===btCalYear&&d.getMonth()===btCalMonth; });
+      const monthDaysTraded = monthKeys.length;
+      const monthTrades = filteredBtTrades.filter(t => { if(!t.date)return false; const d=new Date(t.date+'T00:00:00'); return d.getFullYear()===btCalYear&&d.getMonth()===btCalMonth; });
+      const mPnl = monthTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const mW = monthTrades.filter(t=>t.result==='WIN').length;
+      const mD = mW + monthTrades.filter(t=>t.result==='LOSS').length;
+      const mWR = mD ? Math.round(mW/mD*100) : null;
+
+      const mEl = document.getElementById('bt-cal-monthly');
+      if (mEl) { mEl.textContent = fmtFull(mPnl); mEl.className = 'font-black ' + (mPnl>=0?'text-green-400':'text-red-400'); }
+      const wrEl = document.getElementById('bt-cal-wr');
+      if (wrEl) { wrEl.textContent = mWR !== null ? mWR+'%' : '—'; wrEl.className = 'font-black ' + (mWR>=50?'text-green-400':'text-red-400'); }
+      const dEl = document.getElementById('bt-cal-days');
+      if (dEl) dEl.textContent = monthDaysTraded + ' day' + (monthDaysTraded!==1?'s':'') + ' traded';
+
+      const daysInMonth = new Date(btCalYear, btCalMonth+1, 0).getDate();
+      const weekdays = []; for(let d=1;d<=daysInMonth;d++){const dow=new Date(btCalYear,btCalMonth,d).getDay();if(dow!==0&&dow!==6)weekdays.push(d);}
+      const firstDow = new Date(btCalYear,btCalMonth,weekdays[0]).getDay()-1;
+      let cells = []; for(let i=0;i<firstDow;i++)cells.push(null); weekdays.forEach(d=>cells.push(d)); while(cells.length%5!==0)cells.push(null);
+
+      const grid = document.getElementById('bt-cal-grid');
+      grid.innerHTML = '';
+      for (let r=0; r<cells.length/5; r++) {
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-6 border-b border-white/[0.06] last:border-0';
+        let rowPnl = 0;
+        for (let c=0; c<5; c++) {
+          const d = cells[r*5+c];
+          const cell = document.createElement('div');
+          cell.className = 'cal-day border-r border-white/[0.06] p-4';
+          if (d) {
+            const ds = btCalYear+'-'+String(btCalMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+            const data = byDate[ds];
+            if (data) rowPnl += data.pnl;
+            if (data) { cell.classList.add(data.pnl>0?'cal-day-win':'cal-day-loss'); cell.style.cursor='pointer'; }
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'text-xs font-bold text-zinc-500 mb-2';
+            dateDiv.textContent = `${btCalMonth+1}/${d}`;
+            cell.appendChild(dateDiv);
+            if (data) {
+              const pnlDiv = document.createElement('div');
+              pnlDiv.className = 'text-sm font-black ' + (data.pnl>=0?'text-green-400':'text-red-400');
+              pnlDiv.textContent = fmtShort(data.pnl);
+              cell.appendChild(pnlDiv);
+              const countDiv = document.createElement('div');
+              countDiv.className = 'text-[11px] text-zinc-500 mt-1';
+              countDiv.textContent = `${data.count} trade${data.count!==1?'s':''}`;
+              cell.appendChild(countDiv);
+            } else {
+              // Empty day — tap/click to log a trade
+              cell.style.cursor = 'pointer';
+              cell.title = 'Log trade for ' + ds;
+              cell.onclick = () => { openLogModal(); document.getElementById('t-date').value = ds; };
+              cell.ontouchend = (e) => { e.preventDefault(); openLogModal(); document.getElementById('t-date').value = ds; };
+              const hint = document.createElement('div');
+              hint.className = 'text-zinc-700 text-xl font-black mt-2 cal-empty-hint';
+              hint.style.pointerEvents = 'none';
+              hint.style.userSelect = 'none';
+              hint.textContent = '+';
+              cell.appendChild(hint);
+            }
+          }
+          row.appendChild(cell);
+        }
+        const wc = document.createElement('div');
+        wc.className = 'cal-day p-4 flex flex-col items-end justify-start bg-zinc-950/30';
+        const wcInner = document.createElement('div');
+        wcInner.className = 'text-sm font-black ' + (rowPnl>=0?'text-green-400':'text-red-400');
+        wcInner.textContent = rowPnl!==0 ? fmtShort(rowPnl) : '—';
+        wc.appendChild(wcInner);
+        row.appendChild(wc);
+        grid.appendChild(row);
+      }
+    }
+    function btCalPrev(){btCalMonth--;if(btCalMonth<0){btCalMonth=11;btCalYear--;}renderBtCal();}
+    function btCalNext(){btCalMonth++;if(btCalMonth>11){btCalMonth=0;btCalYear++;}renderBtCal();}
+
+
+
+    function openLogModal(id=null) {
+      editingId = id; currentTags = [];
+      document.getElementById('log-modal-title').textContent = id ? 'Edit Trade' : 'Log Trade';
+      document.getElementById('log-msg').classList.add('hidden');
+      if (id) {
+        const t = allTrades.find(t=>t.id===id);
+        if (!t) return;
+        document.getElementById('t-date').value = t.date||'';
+        document.getElementById('t-entry-time').value = t.entryTime||'';
+        document.getElementById('t-exit-time').value = t.exitTime||'';
+        document.getElementById('t-ticker').value = t.ticker||'';
+        setDir(t.direction||'LONG');
+        document.getElementById('t-acct-type').value = t.accountType||'';
+        document.getElementById('t-acct-name').value = t.accountName||'';
+        document.getElementById('t-num-accounts').value = t.numAccounts||1;
+        document.getElementById('t-grade').value = t.grade||'';
+        document.getElementById('t-strategy').value = t.strategy||'';
+        document.getElementById('t-timeframe').value = t.timeframe||'5m';
+        document.getElementById('t-chart').value = t.chartUrl||'';
+        document.getElementById('t-notes').value = t.notes||'';
+        currentTags = Array.isArray(t.tags)?[...t.tags]:[];
+        renderTags();
+        updateTickerHint();
+        if (t.pnlMode === 'manual' || !t.entryPrice) {
+          setPnlMode('manual');
+          document.getElementById('t-manual-pnl').value = t.netPnl||'';
+          document.getElementById('t-manual-contracts').value = t.contracts||1;
+          document.getElementById('t-result').value = t.result||'WIN';
+          document.getElementById('t-manual-tp1-contracts').value = t.tp1Contracts||0;
+          document.getElementById('t-manual-tp1-pnl').value = t.tp1Pnl||'';
+          document.getElementById('t-manual-tp2-contracts').value = t.tp2Contracts||0;
+          document.getElementById('t-manual-tp2-pnl').value = t.tp2Pnl||'';
+          document.getElementById('t-manual-entry-price').value = t.entryPrice||t.entry||'';
+          document.getElementById('t-manual-sl-price').value = t.slPrice||t.sl||'';
+          document.getElementById('t-manual-tp1-price').value = t.tp1Price||t.tp1Exit||'';
+          document.getElementById('t-manual-tp2-price').value = t.tp2Price||t.tp2Exit||'';
+        } else {
+          setPnlMode('price');
+          document.getElementById('t-entry').value = t.entryPrice||t.entry||'';
+          document.getElementById('t-sl').value = t.slPrice||t.sl||'';
+          document.getElementById('t-contracts').value = t.contracts||1;
+          document.getElementById('t-tp1-exit').value = t.tp1Price||t.tp1Exit||'';
+          document.getElementById('t-tp1-contracts').value = t.tp1Contracts||1;
+          document.getElementById('t-tp2-exit').value = t.tp2Price||t.tp2Exit||'';
+          document.getElementById('t-tp2-contracts').value = t.tp2Contracts||0;
+          document.getElementById('t-commissions').value = t.commissions||0;
+          calcPnl();
+        }
+      } else {
+        document.getElementById('t-date').value = new Date().toISOString().slice(0,10);
+        document.getElementById('t-ticker').value = 'MNQ';
+        document.getElementById('t-strategy').value = 'FSD-X ORB PRO';
+        document.getElementById('t-timeframe').value = '5m';
+        document.getElementById('t-contracts').value = 1;
+        document.getElementById('t-tp1-contracts').value = 1;
+        document.getElementById('t-tp2-contracts').value = 0;
+        document.getElementById('t-commissions').value = 0;
+        document.getElementById('t-acct-type').value = 'Funded';
+        document.getElementById('t-acct-name').value = '';
+        document.getElementById('t-num-accounts').value = 1;
+        document.getElementById('t-grade').value = '';
+        ['t-entry','t-sl','t-tp1-exit','t-tp2-exit','t-manual-pnl','t-entry-time','t-exit-time',
+         't-chart','t-notes','t-manual-tp1-pnl','t-manual-tp2-pnl',
+         't-manual-entry-price','t-manual-sl-price','t-manual-tp1-price','t-manual-tp2-price'
+        ].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+        document.getElementById('t-manual-contracts').value = 1;
+        document.getElementById('t-manual-tp1-contracts').value = 0;
+        document.getElementById('t-manual-tp2-contracts').value = 0;
+        document.getElementById('t-result').value = 'WIN';
+        setDir('LONG'); setPnlMode('price');
+        document.getElementById('t-tp1-pnl').textContent = '—';
+        document.getElementById('t-tp2-pnl').textContent = '—';
+        document.getElementById('t-total-pnl').textContent = '—';
+        updateTickerHint();
+      }
+      document.getElementById('log-modal').classList.remove('hidden');
+    }
+    function openEditModal(id) { closeDetail(); openLogModal(id); }
+    function closeLogModal() { document.getElementById('log-modal').classList.add('hidden'); editingId = null; }
+
+    async function saveTrade() {
+      let netPnl, tp1Pnl=0, tp2Pnl=0, result, contracts, entryPrice=null, slPrice=null, tp1Price=null, tp2Price=null, tp1Contracts=0, tp2Contracts=0, commissions=0;
+      if (pnlMode === 'price') {
+        entryPrice = parseFloat(document.getElementById('t-entry').value)||null;
+        slPrice = parseFloat(document.getElementById('t-sl').value)||null;
+        contracts = parseInt(document.getElementById('t-contracts').value)||1;
+        tp1Price = parseFloat(document.getElementById('t-tp1-exit').value)||null;
+        tp1Contracts = parseInt(document.getElementById('t-tp1-contracts').value)||0;
+        tp2Price = parseFloat(document.getElementById('t-tp2-exit').value)||null;
+        tp2Contracts = parseInt(document.getElementById('t-tp2-contracts').value)||0;
+        commissions = parseFloat(document.getElementById('t-commissions').value)||0;
+        const dir = tradeDir==='LONG'?1:-1;
+        if (entryPrice && tp1Price && tp1Contracts) tp1Pnl = ((tp1Price-entryPrice)/TICK_SIZE)*TICK_VALUE*tp1Contracts*dir;
+        if (entryPrice && tp2Price && tp2Contracts) tp2Pnl = ((tp2Price-entryPrice)/TICK_SIZE)*TICK_VALUE*tp2Contracts*dir;
+        netPnl = tp1Pnl + tp2Pnl - commissions;
+        result = netPnl > 0 ? 'WIN' : netPnl < 0 ? 'LOSS' : 'BE';
+      } else {
+        // Manual mode — read TP1/TP2 individually, sum for net
+        tp1Pnl = parseFloat(document.getElementById('t-manual-tp1-pnl').value)||0;
+        tp2Pnl = parseFloat(document.getElementById('t-manual-tp2-pnl').value)||0;
+        tp1Contracts = parseInt(document.getElementById('t-manual-tp1-contracts').value)||0;
+        tp2Contracts = parseInt(document.getElementById('t-manual-tp2-contracts').value)||0;
+        contracts = parseInt(document.getElementById('t-manual-contracts').value)||1;
+        result = document.getElementById('t-result').value;
+        // Net P&L: use manual override if filled, else TP1+TP2
+        const manualNet = parseFloat(document.getElementById('t-manual-pnl').value);
+        netPnl = !isNaN(manualNet) && manualNet !== 0 ? manualNet : tp1Pnl + tp2Pnl;
+        // Optional price data from manual mode
+        entryPrice = parseFloat(document.getElementById('t-manual-entry-price').value)||null;
+        slPrice = parseFloat(document.getElementById('t-manual-sl-price').value)||null;
+        tp1Price = parseFloat(document.getElementById('t-manual-tp1-price').value)||null;
+        tp2Price = parseFloat(document.getElementById('t-manual-tp2-price').value)||null;
+      }
+
+      const trade = {
+        date: document.getElementById('t-date').value,
+        entryTime: document.getElementById('t-entry-time').value,
+        exitTime: document.getElementById('t-exit-time').value,
+        ticker: (document.getElementById('t-ticker').value.trim()||'MNQ').toUpperCase(),
+        direction: tradeDir, result, netPnl, tp1Pnl, tp2Pnl,
+        contracts, tp1Contracts, tp2Contracts,
+        entryPrice, entry: entryPrice, slPrice, sl: slPrice,
+        tp1Price, tp1Exit: tp1Price, tp2Price, tp2Exit: tp2Price, commissions,
+        accountType: document.getElementById('t-acct-type').value,
+        accountName: document.getElementById('t-acct-name').value.trim(),
+        numAccounts: parseInt(document.getElementById('t-num-accounts').value)||1,
+        grade: document.getElementById('t-grade').value,
+        strategy: document.getElementById('t-strategy').value.trim(),
+        timeframe: document.getElementById('t-timeframe').value,
+        chartUrl: document.getElementById('t-chart').value.trim(),
+        notes: document.getElementById('t-notes').value.trim(),
+        tags: [...currentTags], pnlMode
+      };
+
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      try {
+        let res, data;
+        if (editingId) {
+          trade.id = editingId;
+          res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'update-trade',key:whopKey,payload:{trade}}) });
+          data = await res.json();
+          if (data.success) { const i=allTrades.findIndex(t=>t.id===editingId); if(i!==-1) allTrades[i]=trade; }
+        } else {
+          res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'save-trade',key:whopKey,payload:{trade}}) });
+          data = await res.json();
+          if (data.success) allTrades.unshift(data.trade||trade);
+        }
+        if (data.success) { filteredTrades=[...allTrades]; applyGlobalFilters(); closeLogModal(); renderCalendar(); }
+        else { document.getElementById('log-msg').textContent=data.error||'Failed to save.'; document.getElementById('log-msg').className='rounded-xl px-4 py-3 text-xs mb-4 border bg-red-950/40 border-red-500/30 text-red-400'; }
+      } catch(err) { console.error(err); }
+      btn.disabled=false; btn.textContent='Save Trade';
+    }
+
+    // ── Detail ──
+    function showDetail(id) {
+      const t = allTrades.find(t=>t.id===id);
+      if (!t) return;
+      detailId = id;
+      const p = parseFloat(t.netPnl)||0;
+      const tags = Array.isArray(t.tags)&&t.tags.length?t.tags.map(tg=>`<span class="tag-pill text-[10px]">${tg}</span>`).join(''):'—';
+      const chartBlock = t.chartUrl ? `
+        <div class="border-t border-white/5 pt-4">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-xs text-zinc-600 uppercase tracking-wider">Chart</div>
+            <a href="${t.chartUrl}" target="_blank" class="text-xs text-green-400 hover:text-green-300 transition">Open full size ↗</a>
+          </div>
+          <div class="rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
+            <img src="${t.chartUrl}" alt="Trade chart"
+              class="w-full max-h-64 object-contain bg-zinc-950"
+              onerror="this.parentElement.innerHTML='<div class=\\'p-4 text-center\\'><a href=\\'${t.chartUrl}\\' target=\\'_blank\\' class=\\'text-green-400 text-xs hover:underline\\'>View Chart ↗</a></div>'"
+            />
+          </div>
+        </div>` : '';
+      document.getElementById('detail-body').innerHTML = `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-2xl font-black ${pnlColor(p)}">${fmt(p)}</span>
+            <div class="flex gap-2">
+              ${t.result?`<span class="px-2 py-0.5 rounded text-xs font-bold border ${resultBadge(t.result)}">${t.result}</span>`:''}
+              ${t.grade?`<span class="px-3 py-1 bg-zinc-800 border border-white/10 rounded-lg text-sm font-black">${t.grade}</span>`:''}
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs border-t border-white/5 pt-3">
+            ${[['Date',t.date],['Ticker',t.ticker],['Direction',t.direction],['Contracts',t.contracts],['Account',t.accountType+(t.accountName?' — '+t.accountName:'')],['Strategy',t.strategy||'—'],['Entry Time',t.entryTime||'—'],['Exit Time',t.exitTime||'—'],['TP1 P&L',t.tp1Pnl?fmt(t.tp1Pnl):'—'],['TP2 P&L',t.tp2Pnl?fmt(t.tp2Pnl):'—'],['Commissions',t.commissions?'-$'+parseFloat(t.commissions).toFixed(2):'—']].map(([k,v])=>`<div><div class="text-zinc-600 mb-0.5">${k}</div><div class="text-white font-medium">${v||'—'}</div></div>`).join('')}
+          </div>
+          ${t.tags&&t.tags.length?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-2">Tags</div><div class="flex flex-wrap gap-1">${tags}</div></div>`:''}
+          ${t.notes?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-1">Notes</div><p class="text-zinc-400 text-xs leading-relaxed">${t.notes}</p></div>`:''}
+          ${chartBlock}
+        </div>`;
+      document.getElementById('detail-modal').classList.remove('hidden');
+    }
+    function closeDetail() { document.getElementById('detail-modal').classList.add('hidden'); detailId=null; }
+    function editTrade() { if(detailId) { closeDetail(); openLogModal(detailId); } }
+    async function deleteTrade() {
+      if (!detailId || !confirm('Delete this trade?')) return;
+      try {
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete-trade',key:whopKey,payload:{tradeId:detailId}}) });
+        const data = await res.json();
+        if (data.success) { allTrades=allTrades.filter(t=>t.id!==detailId); filteredTrades=filteredTrades.filter(t=>t.id!==detailId); closeDetail(); renderHistory(); renderCalendar(); }
+      } catch(err) { console.error(err); }
+    }
+    async function confirmDelete(id) {
+      if (!confirm('Delete this trade?')) return;
+      try {
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'delete-trade',key:whopKey,payload:{tradeId:id}}) });
+        const data = await res.json();
+        if (data.success) { allTrades=allTrades.filter(t=>t.id!==id); filteredTrades=filteredTrades.filter(t=>t.id!==id); renderHistory(); renderCalendar(); }
+      } catch(err) { console.error(err); }
+    }
+
+    // ── Backtest ──
+
+
+    // ── Init ──
+    async function init() {
+      const token = localStorage.getItem('fsdx_token');
+      if (!token) { document.getElementById('auth-gate').classList.remove('hidden'); return; }
+      try {
+        const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const data = await res.json();
+        if (!data.user) { document.getElementById('auth-gate').classList.remove('hidden'); return; }
+        whopKey = data.user.whopKey;
+        document.getElementById('bt-main').classList.remove('hidden');
+        loadBtSessions();
+      } catch(e) {
+        document.getElementById('auth-gate').classList.remove('hidden');
+      }
+    }
+    init();
+  </script>
+</body>
+</html>
