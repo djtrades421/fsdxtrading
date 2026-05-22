@@ -16,7 +16,7 @@
     .cal-day { min-height: 110px; height: 110px; }
     .cal-day-win  { background: rgba(34,197,94,0.09); border-left: 2px solid rgba(34,197,94,0.45) !important; }
     .cal-day-loss { background: rgba(239,68,68,0.09); border-left: 2px solid rgba(239,68,68,0.4) !important; }
-    .cal-day:hover .cal-empty-hint { color: rgba(255,255,255,0.2) !important; }
+    .cal-day:hover .cal-empty-hint { color: rgba(255,255,255,0.3) !important; }
     .cal-day:not(.cal-day-win):not(.cal-day-loss):hover { background: rgba(255,255,255,0.02); }
     @media (max-width: 640px) {
       .cal-day { min-height: 72px; height: 72px; padding: 6px !important; }
@@ -864,13 +864,16 @@
               cell.appendChild(countDiv);
               cell.onclick = () => { filterByDate(ds); switchSub('history'); };
             } else {
-              // Empty day — click to log a trade for this date
+              // Empty day — click/tap to log a trade for this date
               cell.style.cursor = 'pointer';
               cell.title = 'Log trade for ' + ds;
               cell.onclick = () => { openLogModal(); document.getElementById('t-date').value = ds; };
-              // Subtle + hint on hover
+              cell.ontouchend = (e) => { e.preventDefault(); openLogModal(); document.getElementById('t-date').value = ds; };
+              // + hint — always slightly visible, pointer-events:none so it never blocks the tap
               const hint = document.createElement('div');
-              hint.className = 'text-zinc-800 text-lg font-black mt-3 cal-empty-hint';
+              hint.className = 'text-zinc-700 text-xl font-black mt-2 cal-empty-hint';
+              hint.style.pointerEvents = 'none';
+              hint.style.userSelect = 'none';
               hint.textContent = '+';
               cell.appendChild(hint);
             }
@@ -2312,6 +2315,18 @@
               countDiv.className = 'text-[11px] text-zinc-500 mt-1';
               countDiv.textContent = `${data.count} trade${data.count!==1?'s':''}`;
               cell.appendChild(countDiv);
+            } else {
+              // Empty day — tap/click to log a trade
+              cell.style.cursor = 'pointer';
+              cell.title = 'Log trade for ' + ds;
+              cell.onclick = () => { openLogModal(); document.getElementById('t-date').value = ds; };
+              cell.ontouchend = (e) => { e.preventDefault(); openLogModal(); document.getElementById('t-date').value = ds; };
+              const hint = document.createElement('div');
+              hint.className = 'text-zinc-700 text-xl font-black mt-2 cal-empty-hint';
+              hint.style.pointerEvents = 'none';
+              hint.style.userSelect = 'none';
+              hint.textContent = '+';
+              cell.appendChild(hint);
             }
           }
           row.appendChild(cell);
