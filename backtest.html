@@ -294,6 +294,17 @@
                 </div>
               </div>
               <div id="bt-panel-stats" class="hidden space-y-5">
+                <!-- Time filters -->
+                <div class="flex flex-wrap gap-2">
+                  <button onclick="setBtStatsTime('all')" id="bt-st-all" class="bt-stats-time-btn px-3 py-1.5 bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-bold rounded-lg transition">All Time</button>
+                  <button onclick="setBtStatsTime('month')" id="bt-st-month" class="bt-stats-time-btn px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs font-bold rounded-lg transition">This Month</button>
+                  <button onclick="setBtStatsTime('week')" id="bt-st-week" class="bt-stats-time-btn px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs font-bold rounded-lg transition">This Week</button>
+                  <button onclick="setBtStatsTime('custom')" id="bt-st-custom" class="bt-stats-time-btn px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs font-bold rounded-lg transition">Custom</button>
+                  <div id="bt-stats-custom-range" class="hidden flex gap-2">
+                    <input type="date" id="bt-stats-from" onchange="renderBtStats()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+                    <input type="date" id="bt-stats-to" onchange="renderBtStats()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+                  </div>
+                </div>
                 <div id="bt-stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
                 <!-- Equity curve -->
                 <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
@@ -367,6 +378,7 @@
                   </div>
                   <div class="cal-header-stats flex gap-4 text-sm flex-wrap">
                     <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="bt-cal-monthly" class="font-black">—</span></div>
+                    <div><span class="text-zinc-500 text-xs mr-1.5">SESSION</span><span id="bt-cal-yearly" class="font-black">—</span></div>
                     <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="bt-cal-wr" class="font-black text-green-400">—</span></div>
                     <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="bt-cal-days" class="font-black text-zinc-400">—</span></div>
                   </div>
@@ -1921,6 +1933,7 @@
         const wr=btTrades.length?Math.round(wins/btTrades.length*100):0;
         document.getElementById('bt-summary').innerHTML=[['Trades',btTrades.length,'text-white'],['Win Rate',wr+'%','text-green-400'],['Net P&L',fmt(p),pnlColor(p)]].map(([l,v,c])=>`<div class="text-right"><div class="text-[10px] text-zinc-600">${l}</div><div class="text-xl font-black ${c}">${v}</div></div>`).join('');
         filteredBtTrades = [...btTrades]; updateBtSummary(); updateBtFilterBadge();
+        btStatsTime = 'all'; setBtStatsTime('all');
         renderBtTrades();
         if (btTrades[0]?.date) { const d=new Date(btTrades[0].date+'T00:00:00'); btCalYear=d.getFullYear(); btCalMonth=d.getMonth(); }
       } catch(err) { console.error(err); }
@@ -1954,7 +1967,7 @@
     }
 
     function renderBtStats() {
-      const trades = filteredBtTrades;
+      const trades = getBtStatsFilteredTrades();
       if (!trades.length) {
         document.getElementById('bt-stats-top').innerHTML = '<div class="col-span-4 text-center text-zinc-600 text-sm py-8">No trades match current filters</div>';
         return;
@@ -2136,10 +2149,18 @@
       const mPnl=monthTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
       const mW=monthTrades.filter(t=>t.result==='WIN').length, mD=mW+monthTrades.filter(t=>t.result==='LOSS').length;
       const mWR=mD?Math.round(mW/mD*100):null;
+      // Session totals for header
+      const sessionPnl=filteredBtTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const sessionW=filteredBtTrades.filter(t=>t.result==='WIN').length;
+      const sessionD=sessionW+filteredBtTrades.filter(t=>t.result==='LOSS').length;
+      const sessionWR=sessionD?Math.round(sessionW/sessionD*100):null;
+      const yEl=document.getElementById('bt-cal-yearly');
+      if(yEl){yEl.textContent=fmtFull(sessionPnl);yEl.className='font-black '+(sessionPnl>=0?'text-green-400':'text-red-400');}
+      // Use session win rate not monthly
       const mEl=document.getElementById('bt-cal-monthly');
       if(mEl){mEl.textContent=fmtFull(mPnl);mEl.className='font-black '+(mPnl>=0?'text-green-400':'text-red-400');}
       const wrEl=document.getElementById('bt-cal-wr');
-      if(wrEl){wrEl.textContent=mWR!==null?mWR+'%':'—';wrEl.className='font-black '+(mWR>=50?'text-green-400':'text-red-400');}
+      if(wrEl){wrEl.textContent=sessionWR!==null?sessionWR+'%':'—';wrEl.className='font-black '+(sessionWR>=50?'text-green-400':'text-red-400');}
       const dEl=document.getElementById('bt-cal-days');
       if(dEl)dEl.textContent=monthDaysTraded+' day'+(monthDaysTraded!==1?'s':'')+' traded';
       const daysInMonth=new Date(btCalYear,btCalMonth+1,0).getDate();
@@ -2178,6 +2199,36 @@
 
     // ── Backtest filter state ──
     let filteredBtTrades = [];
+    let btStatsTime = 'all';
+
+    function setBtStatsTime(t) {
+      btStatsTime = t;
+      document.querySelectorAll('.bt-stats-time-btn').forEach(b => {
+        b.classList.remove('bg-green-500/10','border-green-500/30','text-green-400');
+        b.classList.add('bg-zinc-900','border-white/10','text-zinc-500');
+      });
+      const active = document.getElementById('bt-st-' + t);
+      if (active) { active.classList.add('bg-green-500/10','border-green-500/30','text-green-400'); active.classList.remove('bg-zinc-900','border-white/10','text-zinc-500'); }
+      const customRange = document.getElementById('bt-stats-custom-range');
+      if (customRange) customRange.classList.toggle('hidden', t !== 'custom');
+      renderBtStats();
+    }
+
+    function getBtStatsFilteredTrades() {
+      const now = new Date();
+      const today = now.toISOString().slice(0,10);
+      const sow = new Date(now.getFullYear(), now.getMonth(), now.getDate()-now.getDay()).toISOString().slice(0,10);
+      let trades = [...filteredBtTrades];
+      if (btStatsTime === 'week') trades = trades.filter(t => t.date >= sow);
+      else if (btStatsTime === 'month') trades = trades.filter(t => { const d=new Date(t.date+'T00:00:00'); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear(); });
+      else if (btStatsTime === 'custom') {
+        const from = document.getElementById('bt-stats-from')?.value;
+        const to = document.getElementById('bt-stats-to')?.value;
+        if (from) trades = trades.filter(t => t.date >= from);
+        if (to) trades = trades.filter(t => t.date <= to);
+      }
+      return trades;
+    }
 
     function applyBtFilters() {
       const res = document.getElementById('bt-f-result')?.value || '';
