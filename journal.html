@@ -66,6 +66,19 @@
 
           <!-- Global Filters -->
           <div class="flex flex-wrap gap-2 mb-4 pb-2 border-b border-white/5">
+            <select id="gf-daterange" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+              <option value="all">All Time</option>
+              <option value="today">Today</option>
+              <option value="week">This Week</option>
+              <option value="month">This Month</option>
+              <option value="year">This Year</option>
+              <option value="custom">Custom Range</option>
+            </select>
+            <div id="gf-custom-range" class="hidden flex gap-2">
+              <input type="date" id="gf-from" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+              <span class="text-zinc-600 self-center text-xs">to</span>
+              <input type="date" id="gf-to" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+            </div>
             <select id="gf-result" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
               <option value="">All Results</option><option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
             </select>
@@ -153,18 +166,6 @@
 
           <!-- STATS -->
           <div id="panel-stats" class="sub-panel">
-            <!-- Time filter -->
-            <div class="flex gap-2 mb-6 flex-wrap">
-              <button onclick="setStatsTime('today')" id="st-today" class="stats-time-btn px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs font-bold rounded-lg transition">Today</button>
-              <button onclick="setStatsTime('week')" id="st-week" class="stats-time-btn px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs font-bold rounded-lg transition">This Week</button>
-              <button onclick="setStatsTime('month')" id="st-month" class="stats-time-btn px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs font-bold rounded-lg transition">This Month</button>
-              <button onclick="setStatsTime('all')" id="st-all" class="stats-time-btn px-3 py-1.5 bg-green-500/10 border border-green-500/30 text-green-400 text-xs font-bold rounded-lg transition">All Time</button>
-              <button onclick="setStatsTime('custom')" id="st-custom" class="stats-time-btn px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs font-bold rounded-lg transition">Custom</button>
-              <div id="custom-range" class="hidden flex gap-2">
-                <input type="date" id="stats-from" onchange="renderStats()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-                <input type="date" id="stats-to" onchange="renderStats()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-              </div>
-            </div>
             <div id="stats-empty" class="hidden text-center py-16 text-zinc-600 text-sm">No trades for this period.</div>
             <div id="stats-content" class="hidden space-y-5">
               <!-- Top 4 KPI cards -->
@@ -500,7 +501,7 @@
     const TICK_SIZE = 0.25, TICK_VALUE = 0.50; // MNQ defaults
     let allTrades = [], filteredTrades = [], whopKey = null;
     let editingId = null, detailId = null, currentTags = [];
-    let tradeDir = 'LONG', pnlMode = 'price', statsTime = 'all';
+    let tradeDir = 'LONG', pnlMode = 'price';
     let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
     let gfResult = '', gfAccount = '', gfGrade = '', gfDirection = '';
 
@@ -547,26 +548,59 @@
     }
 
     // ── Filters ──
+    function getDateRange() {
+      const now = new Date();
+      const today = now.toISOString().slice(0,10);
+      const dr = document.getElementById('gf-daterange')?.value || 'all';
+      const customEl = document.getElementById('gf-custom-range');
+      if (customEl) customEl.classList.toggle('hidden', dr !== 'custom');
+      if (dr === 'today') return { from: today, to: today };
+      if (dr === 'week') {
+        const sow = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + 1).toISOString().slice(0,10);
+        return { from: sow, to: today };
+      }
+      if (dr === 'month') {
+        const som = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+        return { from: som, to: today };
+      }
+      if (dr === 'year') {
+        const soy = new Date(now.getFullYear(), 0, 1).toISOString().slice(0,10);
+        return { from: soy, to: today };
+      }
+      if (dr === 'custom') {
+        return { from: document.getElementById('gf-from')?.value || '', to: document.getElementById('gf-to')?.value || '' };
+      }
+      return { from: '', to: '' };
+    }
+
     function applyGlobalFilters() {
       gfResult = document.getElementById('gf-result').value;
       gfAccount = document.getElementById('gf-account').value;
       gfGrade = document.getElementById('gf-grade').value;
       gfDirection = document.getElementById('gf-direction').value;
+      const { from, to } = getDateRange();
       filteredTrades = allTrades.filter(t =>
-        (!gfResult || t.result === gfResult) &&
-        (!gfAccount || t.accountType === gfAccount) &&
-        (!gfGrade || t.grade === gfGrade) &&
-        (!gfDirection || t.direction === gfDirection)
+        (!gfResult    || t.result === gfResult) &&
+        (!gfAccount   || t.accountType === gfAccount) &&
+        (!gfGrade     || t.grade === gfGrade) &&
+        (!gfDirection || t.direction === gfDirection) &&
+        (!from        || (t.date && t.date >= from)) &&
+        (!to          || (t.date && t.date <= to))
       );
       renderHistory(); renderCalendar(); renderStats();
     }
+
     function clearGlobalFilters() {
       ['gf-result','gf-account','gf-grade','gf-direction'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('gf-daterange').value = 'all';
+      const customEl = document.getElementById('gf-custom-range');
+      if (customEl) customEl.classList.add('hidden');
+      if (document.getElementById('gf-from')) document.getElementById('gf-from').value = '';
+      if (document.getElementById('gf-to')) document.getElementById('gf-to').value = '';
       gfResult = gfAccount = gfGrade = gfDirection = '';
       filteredTrades = [...allTrades];
       renderHistory(); renderCalendar(); renderStats();
     }
-
     // ── Sub tabs ──
     function switchSub(tab) {
       ['calendar','history','stats'].forEach(t => {
@@ -732,56 +766,8 @@
     }
 
     // ── Stats ──
-    function setStatsTime(t) {
-      statsTime = t;
-      document.querySelectorAll('.stats-time-btn').forEach(b => {
-        b.classList.remove('bg-green-500/10','border-green-500/30','text-green-400');
-        b.classList.add('bg-zinc-900','border-white/10','text-zinc-500');
-      });
-      const btn = document.getElementById('st-' + t);
-      if (btn) { btn.classList.add('bg-green-500/10','border-green-500/30','text-green-400'); btn.classList.remove('bg-zinc-900','border-white/10','text-zinc-500'); }
-      document.getElementById('custom-range').classList.toggle('hidden', t !== 'custom');
-      renderStats();
-    }
-
-    function statRow(label, val, valClass='text-white') {
-      return `<div class="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
-        <span class="text-zinc-500">${label}</span>
-        <span class="font-bold ${valClass}">${val}</span>
-      </div>`;
-    }
-
-    function barRow(label, pnl, wr, count, maxAbs) {
-      const pnlCol = pnl >= 0 ? '#22c55e' : '#ef4444';
-      const wrCol = wr >= 50 ? '#22c55e' : wr > 0 ? '#ef4444' : '#71717a';
-      const barW = maxAbs > 0 ? Math.round(Math.abs(pnl) / maxAbs * 100) : 0;
-      const barCol = pnl >= 0 ? '#22c55e' : '#ef4444';
-      const sign = pnl >= 0 ? '+' : '-';
-      return `<div class="grid items-center gap-2 py-2 border-b border-white/5 last:border-0" style="grid-template-columns:3rem 1fr 4rem 3rem 2rem">
-        <span class="text-xs text-zinc-400 font-bold">${label}</span>
-        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
-          <div class="h-full rounded-full" style="width:${barW}%;background:${barCol};opacity:0.75"></div>
-        </div>
-        <span class="text-xs font-black text-right" style="color:${pnlCol}">${sign}$${Math.abs(pnl).toFixed(0)}</span>
-        <span class="text-xs font-bold text-right" style="color:${wrCol}">${wr}%</span>
-        <span class="text-[10px] text-zinc-600 text-right">${count}t</span>
-      </div>`;
-    }
-
     function renderStats() {
-      const now = new Date();
-      const today = now.toISOString().slice(0,10);
-      const sow = new Date(now.getFullYear(), now.getMonth(), now.getDate()-now.getDay()).toISOString().slice(0,10);
       let trades = [...filteredTrades];
-      if (statsTime === 'today') trades = trades.filter(t => t.date === today);
-      else if (statsTime === 'week') trades = trades.filter(t => t.date >= sow);
-      else if (statsTime === 'month') trades = trades.filter(t => { const d=new Date(t.date+'T00:00:00'); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear(); });
-      else if (statsTime === 'custom') {
-        const from = document.getElementById('stats-from')?.value;
-        const to = document.getElementById('stats-to')?.value;
-        if (from) trades = trades.filter(t => t.date >= from);
-        if (to) trades = trades.filter(t => t.date <= to);
-      }
 
       const empty = document.getElementById('stats-empty');
       const content = document.getElementById('stats-content');
