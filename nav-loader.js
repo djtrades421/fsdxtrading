@@ -24,13 +24,12 @@
       document.getElementById('nav-content').innerHTML = html;
 
       // Highlight active page
-      const pathPart = window.location.pathname.split('/').pop() || 'index.html';
-      const current = pathPart.includes('.') ? pathPart : pathPart + '.html';
+      const fullPath = window.location.pathname;
       document.querySelectorAll('#nav-content .nav-link').forEach(link => {
         const href = link.getAttribute('href') || '';
-        const hrefBase = href.replace('.html', '');
-        const currentBase = current.replace('.html', '');
-        if (href === current || hrefBase === currentBase || href === pathPart) {
+        const hrefBase = '/' + href.replace('.html', '');
+        if (fullPath === hrefBase || fullPath === '/' + href || 
+            fullPath.endsWith('/' + href) || fullPath.endsWith(href.replace('.html',''))) {
           link.classList.remove('text-zinc-400');
           link.classList.add('text-green-400', 'font-bold');
         }
