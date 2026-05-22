@@ -408,6 +408,8 @@
     const pnlColorStyle = p => p > 0 ? '#22c55e' : p < 0 ? '#ef4444' : '#71717a';
     const resultBadge = r => r === 'WIN' ? 'bg-green-500/10 text-green-400 border-green-500/20' : r === 'LOSS' ? 'bg-red-950/30 text-red-400 border-red-500/20' : 'bg-zinc-800 text-zinc-400 border-white/10';
     const fmt = n => { const p = parseFloat(n)||0; return (p>=0?'+':'')+' $'+Math.abs(p).toFixed(2); };
+    const fmtShort = n => { const p=parseFloat(n)||0; const abs=Math.abs(p); const sign=p>=0?'+':'-'; if(abs>=1000) return sign+'$'+(abs/1000).toFixed(abs>=10000?0:1)+'K'; return sign+'$'+abs.toFixed(0); };
+    const fmtFull = n => { const p=parseFloat(n)||0; const sign=p>=0?'+':'-'; return sign+'$'+Math.abs(p).toFixed(2); };
     const statCard = (label, val, color, sub='') => `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">${label}</div><div class="text-2xl font-black" style="color:${color}">${val}</div>${sub?`<div class="text-xs text-zinc-600 mt-1">${sub}</div>`:''}</div>`;
 
     // ── Filters ──
@@ -468,10 +470,10 @@
       });
       const wr = decided ? Math.round(wins/decided*100) : null;
       const mEl = document.getElementById('cal-monthly');
-      mEl.textContent = (monthPnl>=0?'+':'')+' $'+Math.abs(monthPnl).toFixed(2);
+      mEl.textContent = fmtFull(monthPnl);
       mEl.className = 'font-black ' + (monthPnl>=0?'text-green-400':'text-red-400');
       const yEl = document.getElementById('cal-yearly');
-      yEl.textContent = (yearPnl>=0?'+':'')+' $'+Math.abs(yearPnl).toFixed(2);
+      yEl.textContent = fmtFull(yearPnl);
       yEl.className = 'font-black ' + (yearPnl>=0?'text-green-400':'text-red-400');
       document.getElementById('cal-wr').textContent = wr !== null ? wr+'%' : '—';
 
@@ -507,7 +509,7 @@
             if (data) cell.classList.add(data.pnl>0?'bg-green-500/5':'bg-red-950/10');
             if (data) cell.style.cursor = 'pointer';
             cell.innerHTML = `<div class="text-xs ${isToday?'text-green-400 font-bold':'text-zinc-600'} mb-1">${calMonth+1}/${d}</div>`+
-              (data?`<div class="text-xs font-bold ${data.pnl>=0?'text-green-400':'text-red-400'}">${(data.pnl>=0?'+':'')}$${Math.abs(data.pnl).toFixed(0)}</div><div class="text-[10px] text-zinc-600">${data.count} trade${data.count!==1?'s':''}</div>`:'');
+              (data?`<div class="text-xs font-bold ${data.pnl>=0?'text-green-400':'text-red-400'}">${fmtShort(data.pnl)}</div><div class="text-[10px] text-zinc-600">${data.count} trade${data.count!==1?'s':''}</div>`:'');
             if (data) cell.onclick = () => { filterByDate(ds); switchSub('history'); };
           }
           row.appendChild(cell);
@@ -515,7 +517,7 @@
         // Weekly total
         const wc = document.createElement('div');
         wc.className = 'cal-day p-3 text-right';
-        wc.innerHTML = `<div class="text-xs font-black ${rowPnl>=0?'text-green-400':'text-red-400'}">${rowPnl!==0?(rowPnl>=0?'+':'')+' $'+Math.abs(rowPnl).toFixed(0):'$0'}</div>`;
+        wc.innerHTML = `<div class="text-xs font-black ${rowPnl>=0?'text-green-400':'text-red-400'}">${rowPnl!==0?fmtShort(rowPnl):'$0'}</div>`;
         row.appendChild(wc);
         grid.appendChild(row);
       }
@@ -1080,7 +1082,7 @@
           if(d){const ds=btCalYear+'-'+String(btCalMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');const data=byDate[ds];if(data)rowPnl+=data.pnl;if(data)cell.classList.add(data.pnl>0?'bg-green-500/5':'bg-red-950/10');cell.innerHTML=`<div class="text-xs text-zinc-600 mb-1">${btCalMonth+1}/${d}</div>`+(data?`<div class="text-xs font-bold ${data.pnl>=0?'text-green-400':'text-red-400'}">${(data.pnl>=0?'+':'')+' $'+Math.abs(data.pnl).toFixed(0)}</div><div class="text-[10px] text-zinc-600">${data.count} trade${data.count!==1?'s':''}</div>`:'');}
           row.appendChild(cell);
         }
-        const wc=document.createElement('div');wc.className='cal-day p-3 text-right';wc.innerHTML=`<div class="text-xs font-black ${rowPnl>=0?'text-green-400':'text-red-400'}">${rowPnl!==0?(rowPnl>=0?'+':'')+' $'+Math.abs(rowPnl).toFixed(0):'$0'}</div>`;row.appendChild(wc);grid.appendChild(row);
+        const wc=document.createElement('div');wc.className='cal-day p-3 text-right';wc.innerHTML=`<div class="text-xs font-black ${rowPnl>=0?'text-green-400':'text-red-400'}">${rowPnl!==0?fmtShort(rowPnl):'$0'}</div>`;row.appendChild(wc);grid.appendChild(row);
       }
     }
     function btCalPrev(){btCalMonth--;if(btCalMonth<0){btCalMonth=11;btCalYear--;}renderBtCal();}
