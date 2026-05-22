@@ -11,6 +11,8 @@
     body { background-color: #000; }
     input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
     .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
+    .sub-panel { display: none; }
+    .sub-panel.active { display: block; }
     .cal-day { min-height: 110px; height: 110px; }
     .cal-day-win  { background: rgba(34,197,94,0.09); border-left: 2px solid rgba(34,197,94,0.45) !important; }
     .cal-day-loss { background: rgba(239,68,68,0.09); border-left: 2px solid rgba(239,68,68,0.4) !important; }
@@ -28,17 +30,15 @@
     .direction-btn.active-long { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #22c55e; font-weight: 700; }
     .direction-btn.active-short { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #ef4444; font-weight: 700; }
     .pnl-mode-btn.active { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); color: #22c55e; }
-    #equity-chart-wrap svg, #bt-equity-chart-wrap svg { display: block; overflow: visible; }
+    canvas { width: 100%; }
+    #equity-chart-wrap svg { display: block; overflow: visible; }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
-  <!-- Mobile header -->
   <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
-    <div class="text-green-400 font-black tracking-wider text-lg">FSD-X</div>
-    <button onclick="toggleMobileMenu()" class="text-zinc-400 hover:text-white transition">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
-    </button>
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider">// MENU</button>
   </header>
 
   <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300">
@@ -46,29 +46,18 @@
   </aside>
 
   <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
-    <!-- Page header -->
-    <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-6">
-      <div class="max-w-7xl mx-auto flex items-start justify-between">
-        <div>
-          <div class="text-[10px] uppercase tracking-widest text-green-400 font-bold mb-1">// VIP Members</div>
-          <h1 class="text-3xl font-black text-white">Backtest</h1>
-          <p class="text-zinc-500 text-sm mt-1">Backtest sessions and performance analytics</p>
-        </div>
+    <div id="loading-screen" class="flex-1 flex items-center justify-center">
+      <div class="text-center">
+        <div class="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+        <p class="text-zinc-600 text-sm">Loading sessions...</p>
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="flex-1 px-6 md:px-10 py-8">
-      <div class="max-w-7xl mx-auto">
+    <div id="page-content" class="flex-1 flex flex-col">
 
-        <!-- Main content (shown when authed) -->
-        <div id="bt-main">
-
-          <!-- Loading -->
-          <div id="bt-loading" class="text-center py-20">
-            <div class="w-6 h-6 border-2 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <p class="text-zinc-600 text-sm">Loading sessions...</p>
-          </div>
+      <!-- Header -->
+      <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-0">
+        <div class="max-w-7xl mx-auto">
 
           <!-- Sessions view -->
           <div id="bt-sessions-view">
@@ -92,7 +81,6 @@
                 <div id="bt-filter-badge" class="hidden text-[10px] text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-0.5 font-bold"></div>
               </div>
             </div>
-
             <!-- Filters -->
             <div class="flex flex-wrap gap-2 mb-5 pb-4 border-b border-white/5">
               <select id="bt-f-result" onchange="applyBtFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
@@ -107,83 +95,51 @@
               </select>
               <button onclick="clearBtFilters()" class="text-xs text-zinc-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition">✕ Clear</button>
             </div>
-
-            <!-- BT sub tabs -->
+            <!-- Sub tabs -->
             <div class="flex border-b border-white/10 mb-5">
               <button onclick="btSub('trades')" id="btsub-trades" class="tab-btn active px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 mr-1">Trades</button>
               <button onclick="btSub('stats')" id="btsub-stats" class="tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 mr-1">Stats</button>
               <button onclick="btSub('calendar')" id="btsub-calendar" class="tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300">Calendar</button>
             </div>
-
-            <!-- TRADES panel -->
+            <!-- TRADES -->
             <div id="bt-panel-trades">
-              <div class="border border-white/10 rounded-2xl overflow-hidden">
-                <div class="overflow-x-auto">
-                  <table class="w-full text-left min-w-[700px]">
-                    <thead><tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
-                      <th class="px-4 py-3">Date</th><th class="px-4 py-3">Dir</th><th class="px-4 py-3">Ticker</th>
-                      <th class="px-4 py-3">Grade</th><th class="px-4 py-3">Result</th>
-                      <th class="px-4 py-3">TP1</th><th class="px-4 py-3">TP2</th>
-                      <th class="px-4 py-3">Net P&L</th><th class="px-4 py-3">Tags</th>
-                    </tr></thead>
-                    <tbody id="bt-tbody" class="divide-y divide-white/5 text-sm"></tbody>
-                  </table>
-                </div>
-              </div>
+              <div class="border border-white/10 rounded-2xl overflow-hidden"><div class="overflow-x-auto">
+                <table class="w-full text-left min-w-[700px]">
+                  <thead><tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
+                    <th class="px-4 py-3">Date</th><th class="px-4 py-3">Dir</th><th class="px-4 py-3">Ticker</th>
+                    <th class="px-4 py-3">Grade</th><th class="px-4 py-3">Result</th>
+                    <th class="px-4 py-3">TP1</th><th class="px-4 py-3">TP2</th>
+                    <th class="px-4 py-3">Net P&L</th><th class="px-4 py-3">Tags</th>
+                  </tr></thead>
+                  <tbody id="bt-tbody" class="divide-y divide-white/5 text-sm"></tbody>
+                </table>
+              </div></div>
             </div>
-
-            <!-- STATS panel -->
+            <!-- STATS -->
             <div id="bt-panel-stats" class="hidden space-y-5">
               <div id="bt-stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
               <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
                 <div class="flex items-start justify-between mb-1">
-                  <div>
-                    <div class="text-xs text-zinc-500 uppercase tracking-[0.2em]">Cumulative P&L</div>
-                    <div id="bt-chart-final-pnl" class="text-2xl font-black mt-1"></div>
-                  </div>
+                  <div><div class="text-xs text-zinc-500 uppercase tracking-[0.2em]">Cumulative P&L</div><div id="bt-chart-final-pnl" class="text-2xl font-black mt-1"></div></div>
                   <div id="bt-chart-legend" class="flex gap-4 text-xs text-zinc-500 mt-1"></div>
                 </div>
                 <div id="bt-equity-chart-wrap" class="relative mt-4" style="height:260px"></div>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Outcome Breakdown</div>
-                  <div id="bt-stats-outcome" class="space-y-3"></div>
-                </div>
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Runner Stats</div>
-                  <div id="bt-stats-runner" class="space-y-2"></div>
-                </div>
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Outcome Breakdown</div><div id="bt-stats-outcome" class="space-y-3"></div></div>
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Runner Stats</div><div id="bt-stats-runner" class="space-y-2"></div></div>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Trade Summary</div>
-                  <div id="bt-stats-summary" class="space-y-2 text-xs"></div>
-                </div>
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Trade Summary</div><div id="bt-stats-summary" class="space-y-2 text-xs"></div></div>
                 <div class="grid grid-rows-2 gap-4">
-                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                    <div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Commissions &amp; Fees</div>
-                    <div id="bt-stats-commissions" class="space-y-2 text-xs"></div>
-                  </div>
-                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                    <div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Contracts</div>
-                    <div id="bt-stats-contracts" class="space-y-2 text-xs"></div>
-                  </div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Commissions &amp; Fees</div><div id="bt-stats-commissions" class="space-y-2 text-xs"></div></div>
+                  <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Contracts</div><div id="bt-stats-contracts" class="space-y-2 text-xs"></div></div>
                 </div>
               </div>
-              <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">By Grade</div>
-                <div id="bt-stats-grades"></div>
-              </div>
+              <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">By Grade</div><div id="bt-stats-grades"></div></div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Long vs Short</div>
-                  <div id="bt-stats-dir" class="space-y-4"></div>
-                </div>
-                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Day of Week</div>
-                  <div id="bt-stats-dow" class="space-y-2"></div>
-                </div>
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Long vs Short</div><div id="bt-stats-dir" class="space-y-4"></div></div>
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Day of Week</div><div id="bt-stats-dow" class="space-y-2"></div></div>
               </div>
               <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
                 <div class="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-4">Drawdown Metrics</div>
@@ -192,8 +148,7 @@
                 <div id="bt-dd-chart-wrap" class="relative" style="height:190px"></div>
               </div>
             </div>
-
-            <!-- CALENDAR panel -->
+            <!-- CALENDAR -->
             <div id="bt-panel-calendar" class="hidden">
               <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
                 <div class="flex items-center gap-3">
@@ -207,28 +162,25 @@
                   <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="bt-cal-days" class="font-black text-zinc-400">—</span></div>
                 </div>
               </div>
-              <div class="border border-white/10 rounded-2xl overflow-hidden">
-                <div class="overflow-x-auto">
-                  <div style="min-width:420px">
-                    <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
-                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
-                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
-                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
-                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
-                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
-                      <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Weekly</div>
-                    </div>
-                    <div id="bt-cal-grid"></div>
-                  </div>
+              <div class="border border-white/10 rounded-2xl overflow-hidden"><div class="overflow-x-auto"><div style="min-width:420px">
+                <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
+                  <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
+                  <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
+                  <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
+                  <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
+                  <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
+                  <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Weekly</div>
                 </div>
-              </div>
+                <div id="bt-cal-grid"></div>
+              </div></div></div>
             </div>
           </div><!-- /bt-detail -->
-        </div><!-- /bt-main -->
+
+        </div>
+        </div>
       </div>
     </div>
   </main>
-
 
   <!-- Log Trade Modal -->
   <div id="log-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
@@ -466,18 +418,16 @@
     </div>
   </div>
 
-
   <script>
     const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
-    const TICK_SIZE = 0.25, TICK_VALUE = 0.50;
-    let whopKey = null;
-    let btSessions = [], btTrades = [], filteredBtTrades = [];
-    let btCalYear = new Date().getFullYear(), btCalMonth = new Date().getMonth();
+    const TICK_SIZE = 0.25, TICK_VALUE = 0.50; // MNQ defaults
+    let allTrades = [], filteredTrades = [], whopKey = null;
     let editingId = null, detailId = null, currentTags = [];
-    let tradeDir = 'LONG', pnlMode = 'price';
+    let tradeDir = 'LONG', pnlMode = 'price', statsTime = 'today';
+    let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
+    let gfResult = '', gfAccount = '', gfGrade = '', gfDirection = '';
 
     function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
-
 
     // ── Helpers ──
     const pnlColor = p => p > 0 ? 'text-green-400' : p < 0 ? 'text-red-400' : 'text-zinc-400';
@@ -519,83 +469,945 @@
       </div>`;
     }
 
-
-    const statCard = (label, val, color, sub='') => `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">${label}</div><div class="text-2xl font-black" style="color:${color}">${val}</div>${sub?`<div class="text-xs text-zinc-600 mt-1">${sub}</div>`:''}</div>`;
-
-    function renderWinRateCard(wr, decided, wins, losses, bes) {
-      const color = wr >= 50 ? '#22c55e' : '#ef4444';
-      const r = 28, circ = 2 * Math.PI * r;
-      const dash = (wr / 100) * circ, gap = circ - dash;
-      const beSub = bes > 0 ? ` · ${bes} BE` : '';
-      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
-        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Win Rate</div>
-        <div class="relative flex items-center justify-center" style="width:80px;height:80px">
-          <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg);position:absolute;inset:0">
-            <circle cx="40" cy="40" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
-            <circle cx="40" cy="40" r="${r}" fill="none" stroke="${color}" stroke-width="8"
-              stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
-              stroke-linecap="round" opacity="0.9"/>
-          </svg>
-          <div style="color:${color}" class="text-lg font-black relative z-10">${wr}%</div>
-        </div>
-        <div class="text-xs text-zinc-600 mt-2">${wins}W · ${losses}L${beSub}</div>
-      </div>`;
-    }
-
-    function renderNetPnlCard(netPnl) {
-      const color = netPnl > 0 ? '#22c55e' : netPnl < 0 ? '#ef4444' : '#71717a';
-      const sign = netPnl >= 0 ? '+' : '-';
-      const formatted = sign + '$' + Math.abs(netPnl).toFixed(2);
-      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
-        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Net P&amp;L</div>
-        <div class="text-2xl font-black" style="color:${color}">${formatted}</div>
-        <div class="text-xs mt-2" style="color:${color};opacity:0.55">${netPnl >= 0 ? '▲ Profitable' : '▼ In drawdown'}</div>
-      </div>`;
-    }
-
-    // ── BT Filters (own dropdowns, no global state) ──
-    function applyBtFilters() {
-      const res = document.getElementById('bt-f-result').value;
-      const grade = document.getElementById('bt-f-grade').value;
-      const dir = document.getElementById('bt-f-direction').value;
-      filteredBtTrades = btTrades.filter(t =>
-        (!res   || t.result === res) &&
-        (!grade || t.grade  === grade) &&
-        (!dir   || t.direction === dir)
+    // ── Filters ──
+    function applyGlobalFilters() {
+      gfResult = document.getElementById('gf-result').value;
+      gfAccount = document.getElementById('gf-account').value;
+      gfGrade = document.getElementById('gf-grade').value;
+      gfDirection = document.getElementById('gf-direction').value;
+      filteredTrades = allTrades.filter(t =>
+        (!gfResult || t.result === gfResult) &&
+        (!gfAccount || t.accountType === gfAccount) &&
+        (!gfGrade || t.grade === gfGrade) &&
+        (!gfDirection || t.direction === gfDirection)
       );
-      updateBtFilterBadge();
-      updateBtSummary();
-      const activeSub = [...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','')||'trades';
-      if (activeSub==='trades') renderBtTrades();
-      else if (activeSub==='stats') renderBtStats();
-      else if (activeSub==='calendar') renderBtCal();
+      renderHistory(); renderCalendar(); renderStats();
+    }
+    function clearGlobalFilters() {
+      ['gf-result','gf-account','gf-grade','gf-direction'].forEach(id => document.getElementById(id).value = '');
+      gfResult = gfAccount = gfGrade = gfDirection = '';
+      filteredTrades = [...allTrades];
+      renderHistory(); renderCalendar(); renderStats();
     }
 
-    function clearBtFilters() {
-      ['bt-f-result','bt-f-grade','bt-f-direction'].forEach(id => document.getElementById(id).value = '');
-      filteredBtTrades = [...btTrades];
-      updateBtFilterBadge();
-      updateBtSummary();
-      const activeSub = [...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','')||'trades';
-      if (activeSub==='trades') renderBtTrades();
-      else if (activeSub==='stats') renderBtStats();
-      else if (activeSub==='calendar') renderBtCal();
+    // ── Sub tabs ──
+    function switchSub(tab) {
+      ['calendar','history','stats'].forEach(t => {
+        document.getElementById('panel-' + t).classList.remove('active');
+        const btn = document.getElementById('sub-' + t);
+        btn.classList.remove('active','text-green-400','border-green-500');
+        btn.classList.add('text-zinc-500','border-transparent');
+      });
+      document.getElementById('panel-' + tab).classList.add('active');
+      document.getElementById('sub-' + tab).classList.add('active','text-green-400','border-green-500');
+      document.getElementById('sub-' + tab).classList.remove('text-zinc-500','border-transparent');
+      if (tab === 'stats') renderStats();
     }
 
-    function updateBtSummary() {
-      const wins = filteredBtTrades.filter(t=>t.result==='WIN').length;
-      const p = filteredBtTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-      const wr = filteredBtTrades.length ? Math.round(wins/filteredBtTrades.length*100) : 0;
-      const sumEl = document.getElementById('bt-summary');
-      if (sumEl) sumEl.innerHTML = [['Trades',filteredBtTrades.length,'text-white'],['Win Rate',wr+'%','text-green-400'],['Net P&L',fmt(p),pnlColor(p)]].map(([l,v,c])=>`<div class="text-right"><div class="text-[10px] text-zinc-600">${l}</div><div class="text-xl font-black ${c}">${v}</div></div>`).join('');
+    // ── Calendar ──
+    function renderCalendar() {
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      document.getElementById('cal-title').textContent = months[calMonth] + ' ' + calYear;
+      const byDate = {};
+      filteredTrades.forEach(t => {
+        if (!t.date) return;
+        if (!byDate[t.date]) byDate[t.date] = { pnl: 0, count: 0 };
+        byDate[t.date].pnl += parseFloat(t.netPnl)||0;
+        byDate[t.date].count++;
+      });
+      let monthPnl = 0, yearPnl = 0, wins = 0, decided = 0;
+      filteredTrades.forEach(t => {
+        if (!t.date) return;
+        const d = new Date(t.date + 'T00:00:00');
+        if (d.getFullYear() === calYear) yearPnl += parseFloat(t.netPnl)||0;
+        if (d.getFullYear() === calYear && d.getMonth() === calMonth) monthPnl += parseFloat(t.netPnl)||0;
+        if (t.result === 'WIN') wins++;
+        if (t.result === 'WIN' || t.result === 'LOSS') decided++;
+      });
+      const monthDayKeys = Object.keys(byDate).filter(ds => {
+        const d = new Date(ds + 'T00:00:00');
+        return d.getFullYear() === calYear && d.getMonth() === calMonth;
+      });
+      const monthDaysTraded = monthDayKeys.length;
+      const wr = decided ? Math.round(wins/decided*100) : null;
+      const mEl = document.getElementById('cal-monthly');
+      mEl.textContent = fmtFull(monthPnl);
+      mEl.className = 'font-black ' + (monthPnl>=0?'text-green-400':'text-red-400');
+      const yEl = document.getElementById('cal-yearly');
+      yEl.textContent = fmtFull(yearPnl);
+      yEl.className = 'font-black ' + (yearPnl>=0?'text-green-400':'text-red-400');
+      document.getElementById('cal-wr').textContent = wr !== null ? wr+'%' : '—';
+      const daysEl = document.getElementById('cal-days-traded');
+      if (daysEl) daysEl.textContent = monthDaysTraded + ' day' + (monthDaysTraded!==1?'s':'') + ' traded';
+
+      const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+      const today = new Date().toISOString().slice(0,10);
+      const weekdays = [];
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dow = new Date(calYear, calMonth, d).getDay();
+        if (dow !== 0 && dow !== 6) weekdays.push(d);
+      }
+      const firstDow = new Date(calYear, calMonth, weekdays[0]).getDay() - 1;
+      let cells = [];
+      for (let i = 0; i < firstDow; i++) cells.push(null);
+      weekdays.forEach(d => cells.push(d));
+      while (cells.length % 5 !== 0) cells.push(null);
+
+      const grid = document.getElementById('cal-grid');
+      grid.innerHTML = '';
+      for (let r = 0; r < cells.length/5; r++) {
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-6 border-b border-white/[0.06] last:border-0';
+        let rowPnl = 0;
+        for (let c = 0; c < 5; c++) {
+          const d = cells[r*5+c];
+          const cell = document.createElement('div');
+          cell.className = 'cal-day border-r border-white/[0.06] p-4';
+          if (d) {
+            const ds = calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+            const data = byDate[ds];
+            if (data) rowPnl += data.pnl;
+            const isToday = ds === today;
+            if (isToday) cell.style.outline = '1px solid rgba(34,197,94,0.3)';
+            if (data) {
+              cell.classList.add(data.pnl > 0 ? 'cal-day-win' : 'cal-day-loss');
+              cell.style.cursor = 'pointer';
+            }
+            // Date number
+            const dateDiv = document.createElement('div');
+            dateDiv.className = isToday ? 'text-xs font-black text-green-400 mb-2' : 'text-xs font-bold text-zinc-500 mb-2';
+            dateDiv.textContent = `${calMonth+1}/${d}`;
+            cell.appendChild(dateDiv);
+            if (data) {
+              // P&L — large and bold
+              const pnlDiv = document.createElement('div');
+              pnlDiv.className = 'text-sm font-black ' + (data.pnl >= 0 ? 'text-green-400' : 'text-red-400');
+              pnlDiv.textContent = fmtShort(data.pnl);
+              cell.appendChild(pnlDiv);
+              // Trade count
+              const countDiv = document.createElement('div');
+              countDiv.className = 'text-[11px] text-zinc-500 mt-1';
+              countDiv.textContent = `${data.count} trade${data.count !== 1 ? 's' : ''}`;
+              cell.appendChild(countDiv);
+              cell.onclick = () => { filterByDate(ds); switchSub('history'); };
+            } else {
+              // Empty day — click/tap to log a trade for this date
+              cell.style.cursor = 'pointer';
+              cell.title = 'Log trade for ' + ds;
+              cell.onclick = () => { openLogModal(); document.getElementById('t-date').value = ds; };
+              cell.ontouchend = (e) => { e.preventDefault(); openLogModal(); document.getElementById('t-date').value = ds; };
+              // + hint — always slightly visible, pointer-events:none so it never blocks the tap
+              const hint = document.createElement('div');
+              hint.className = 'text-zinc-700 text-xl font-black mt-2 cal-empty-hint';
+              hint.style.pointerEvents = 'none';
+              hint.style.userSelect = 'none';
+              hint.textContent = '+';
+              cell.appendChild(hint);
+            }
+          }
+          row.appendChild(cell);
+        }
+        // Weekly total col
+        const wc = document.createElement('div');
+        wc.className = 'cal-day p-4 flex flex-col items-end justify-start bg-zinc-950/30';
+        const wcInner = document.createElement('div');
+        wcInner.className = 'text-sm font-black ' + (rowPnl >= 0 ? 'text-green-400' : 'text-red-400');
+        wcInner.textContent = rowPnl !== 0 ? fmtShort(rowPnl) : '—';
+        wc.appendChild(wcInner);
+        row.appendChild(wc);
+        grid.appendChild(row);
+      }
+    }
+    function calPrev() { calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCalendar(); }
+    function calNext() { calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
+    function filterByDate(ds) { filteredTrades = allTrades.filter(t => t.date===ds); renderHistory(); }
+
+    // ── History ──
+    function renderHistory() {
+      const tbody = document.getElementById('hist-tbody');
+      const empty = document.getElementById('hist-empty');
+      const wrap = document.getElementById('hist-table-wrap');
+      if (!allTrades.length) { empty.classList.remove('hidden'); wrap.classList.add('hidden'); return; }
+      empty.classList.add('hidden'); wrap.classList.remove('hidden');
+      if (!filteredTrades.length) { tbody.innerHTML = '<tr><td colspan="11" class="px-4 py-8 text-center text-zinc-600">No trades match filters</td></tr>'; return; }
+      tbody.innerHTML = filteredTrades.map(t => {
+        const p = parseFloat(t.netPnl)||0;
+        const tp1 = parseFloat(t.tp1Pnl)||0, tp2 = parseFloat(t.tp2Pnl)||0;
+        return `<tr class="hover:bg-white/[0.02] transition cursor-pointer" onclick="showDetail('${t.id}')">
+          <td class="px-4 py-3 text-zinc-400 text-xs">${t.date||'—'}</td>
+          <td class="px-4 py-3 text-white font-bold">${t.ticker||'MNQ'}</td>
+          <td class="px-4 py-3"><span class="text-xs font-bold ${t.direction==='LONG'?'text-green-400':'text-red-400'}">${t.direction||'—'}</span></td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-zinc-800 text-zinc-300 border-white/10">${t.grade||'—'}</span></td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result||'—'}</span></td>
+          <td class="px-4 py-3 text-xs ${pnlColor(tp1)}">${tp1!==0?fmt(tp1):'—'}</td>
+          <td class="px-4 py-3 text-xs ${pnlColor(tp2)}">${tp2!==0?fmt(tp2):'—'}</td>
+          <td class="px-4 py-3 font-bold ${pnlColor(p)}">${fmt(p)}</td>
+          <td class="px-4 py-3 text-zinc-500 text-xs">${t.accountType||'—'}</td>
+          <td class="px-4 py-3">${t.chartUrl?`<a href="${t.chartUrl}" target="_blank" onclick="event.stopPropagation()" class="text-zinc-500 hover:text-green-400 text-xs transition">View ↗</a>`:'<span class="text-zinc-700 text-xs">—</span>'}</td>
+          <td class="px-4 py-3" onclick="event.stopPropagation()">
+            <div class="flex gap-2">
+              <button onclick="openEditModal('${t.id}')" class="text-zinc-600 hover:text-green-400 text-xs">✏️</button>
+              <button onclick="confirmDelete('${t.id}')" class="text-zinc-600 hover:text-red-400 text-xs">🗑️</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
     }
 
-    function updateBtFilterBadge() {
-      const active = ['bt-f-result','bt-f-grade','bt-f-direction'].filter(id=>document.getElementById(id)?.value!=='').length;
-      const badge = document.getElementById('bt-filter-badge');
-      if (badge) { badge.textContent = active>0 ? active+' filter'+(active>1?'s':'')+' active' : ''; badge.classList.toggle('hidden', active===0); }
+    // ── Stats ──
+    function setStatsTime(t) {
+      statsTime = t;
+      document.querySelectorAll('.stats-time-btn').forEach(b => {
+        b.classList.remove('bg-green-500/10','border-green-500/30','text-green-400');
+        b.classList.add('bg-zinc-900','border-white/10','text-zinc-500');
+      });
+      const btn = document.getElementById('st-' + t);
+      if (btn) { btn.classList.add('bg-green-500/10','border-green-500/30','text-green-400'); btn.classList.remove('bg-zinc-900','border-white/10','text-zinc-500'); }
+      document.getElementById('custom-range').classList.toggle('hidden', t !== 'custom');
+      renderStats();
     }
 
+    function statRow(label, val, valClass='text-white') {
+      return `<div class="flex items-center justify-between py-1.5 border-b border-white/5 last:border-0">
+        <span class="text-zinc-500">${label}</span>
+        <span class="font-bold ${valClass}">${val}</span>
+      </div>`;
+    }
+
+    function barRow(label, pnl, wr, count, maxAbs) {
+      const pnlCol = pnl >= 0 ? '#22c55e' : '#ef4444';
+      const wrCol = wr >= 50 ? '#22c55e' : wr > 0 ? '#ef4444' : '#71717a';
+      const barW = maxAbs > 0 ? Math.round(Math.abs(pnl) / maxAbs * 100) : 0;
+      const barCol = pnl >= 0 ? '#22c55e' : '#ef4444';
+      const sign = pnl >= 0 ? '+' : '-';
+      return `<div class="grid items-center gap-2 py-2 border-b border-white/5 last:border-0" style="grid-template-columns:3rem 1fr 4rem 3rem 2rem">
+        <span class="text-xs text-zinc-400 font-bold">${label}</span>
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+          <div class="h-full rounded-full" style="width:${barW}%;background:${barCol};opacity:0.75"></div>
+        </div>
+        <span class="text-xs font-black text-right" style="color:${pnlCol}">${sign}$${Math.abs(pnl).toFixed(0)}</span>
+        <span class="text-xs font-bold text-right" style="color:${wrCol}">${wr}%</span>
+        <span class="text-[10px] text-zinc-600 text-right">${count}t</span>
+      </div>`;
+    }
+
+    function renderStats() {
+      const now = new Date();
+      const today = now.toISOString().slice(0,10);
+      const sow = new Date(now.getFullYear(), now.getMonth(), now.getDate()-now.getDay()).toISOString().slice(0,10);
+      let trades = [...filteredTrades];
+      if (statsTime === 'today') trades = trades.filter(t => t.date === today);
+      else if (statsTime === 'week') trades = trades.filter(t => t.date >= sow);
+      else if (statsTime === 'month') trades = trades.filter(t => { const d=new Date(t.date+'T00:00:00'); return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear(); });
+      else if (statsTime === 'custom') {
+        const from = document.getElementById('stats-from')?.value;
+        const to = document.getElementById('stats-to')?.value;
+        if (from) trades = trades.filter(t => t.date >= from);
+        if (to) trades = trades.filter(t => t.date <= to);
+      }
+
+      const empty = document.getElementById('stats-empty');
+      const content = document.getElementById('stats-content');
+      if (!trades.length) { empty.classList.remove('hidden'); content.classList.add('hidden'); return; }
+      empty.classList.add('hidden'); content.classList.remove('hidden');
+
+      const wins = trades.filter(t => t.result==='WIN');
+      const losses = trades.filter(t => t.result==='LOSS');
+      const bes = trades.filter(t => t.result==='BE');
+      const decided = wins.length + losses.length;
+      const wr = decided ? Math.round(wins.length/decided*100) : 0;
+      const netPnl = trades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const grossWin = wins.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const grossLoss = Math.abs(losses.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0));
+      const pf = grossLoss===0?(grossWin>0?'∞':'—'):(grossWin/grossLoss).toFixed(2);
+      const avgWin = wins.length ? grossWin/wins.length : 0;
+      const avgLoss = losses.length ? grossLoss/losses.length : 0;
+      const best = wins.length ? wins.reduce((m,t)=>Math.max(m,parseFloat(t.netPnl)||0),-Infinity) : 0;
+      const worst = losses.length ? losses.reduce((m,t)=>Math.min(m,parseFloat(t.netPnl)||0),Infinity) : 0;
+      const totalCommissions = trades.reduce((s,t)=>s+(parseFloat(t.commissions)||0),0);
+      const totalContracts = trades.reduce((s,t)=>s+(parseInt(t.contracts)||0),0);
+      const avgContracts = trades.length ? (totalContracts/trades.length).toFixed(1) : '—';
+      const avgContractsWin = wins.length ? (wins.reduce((s,t)=>s+(parseInt(t.contracts)||0),0)/wins.length).toFixed(1) : '—';
+      const avgContractsLoss = losses.length ? (losses.reduce((s,t)=>s+(parseInt(t.contracts)||0),0)/losses.length).toFixed(1) : '—';
+
+      // Avg duration
+      const timed = trades.filter(t=>t.entryTime&&t.exitTime);
+      let avgDur = '—';
+      if (timed.length) {
+        const mins = timed.reduce((s,t)=>{ const [eh,em]=t.entryTime.split(':').map(Number);const[xh,xm]=t.exitTime.split(':').map(Number);return s+Math.abs((xh*60+xm)-(eh*60+em)); },0);
+        const avg = Math.round(mins/timed.length);
+        avgDur = avg>=60?Math.floor(avg/60)+'h '+(avg%60)+'m':avg+'m';
+      }
+
+      // ── Top KPI cards ──
+      const pfColor = pf==='∞'?'#22c55e':pf==='—'?'#71717a':parseFloat(pf)>=1?'#22c55e':'#ef4444';
+      document.getElementById('stats-top').innerHTML =
+        statCard('Total Trades', trades.length, '#ffffff', `${wins.length}W · ${losses.length}L${bes.length?' · '+bes.length+'BE':''}`) +
+        renderWinRateCard(wr, decided, wins.length, losses.length, bes.length) +
+        renderNetPnlCard(netPnl) +
+        statCard('Profit Factor', pf, pfColor);
+
+      // ── Equity curve ──
+      drawEquityCurve(trades);
+
+      // ── Outcome Breakdown ──
+      const obEl = document.getElementById('stats-outcome');
+      if (obEl) {
+        const total = trades.length || 1;
+        const wPnl = grossWin, lPnl = -grossLoss;
+        obEl.innerHTML = `
+          <div class="flex gap-1 mb-3 h-2 rounded-full overflow-hidden">
+            <div style="width:${Math.round(wins.length/total*100)}%;background:#22c55e;opacity:0.85" class="rounded-l-full"></div>
+            <div style="width:${Math.round(losses.length/total*100)}%;background:#ef4444;opacity:0.85"></div>
+            <div style="width:${Math.round(bes.length/total*100)}%;background:#52525b;opacity:0.85" class="rounded-r-full"></div>
+          </div>` +
+          [['WIN',wins.length,'#22c55e','+$'+wPnl.toFixed(2)],
+           ['LOSS',losses.length,'#ef4444','-$'+grossLoss.toFixed(2)],
+           ['BE',bes.length,'#71717a','$0.00']
+          ].map(([label,count,col,pnlStr]) => `
+            <div class="flex items-center gap-3 py-1.5 border-b border-white/5 last:border-0">
+              <span class="w-8 text-xs font-black" style="color:${col}">${label}</span>
+              <div class="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full rounded-full" style="width:${Math.round(count/total*100)}%;background:${col};opacity:0.8"></div>
+              </div>
+              <span class="text-xs text-zinc-400 w-4 text-center">${count}</span>
+              <span class="text-xs text-zinc-500 w-8 text-right">${Math.round(count/total*100)}%</span>
+            </div>`).join('');
+      }
+
+      // ── Runner Stats ──
+      const runnerEl = document.getElementById('stats-runner');
+      if (runnerEl) {
+        const tp1hits = trades.filter(t => parseFloat(t.tp1Pnl||0) !== 0).length;
+        const tp2hits = trades.filter(t => parseFloat(t.tp2Pnl||0) !== 0).length;
+        const tp1Rate = trades.length ? Math.round(tp1hits/trades.length*100) : 0;
+        const tp2Rate = trades.length ? Math.round(tp2hits/trades.length*100) : 0;
+        const avgTp1 = tp1hits ? trades.reduce((s,t)=>s+(parseFloat(t.tp1Pnl)||0),0)/tp1hits : 0;
+        const avgTp2 = tp2hits ? trades.reduce((s,t)=>s+(parseFloat(t.tp2Pnl)||0),0)/tp2hits : 0;
+        // Runner outcomes (trades that went to runner = had tp2 contracts > 0)
+        const runners = trades.filter(t => (parseInt(t.tp2Contracts)||0) > 0 || parseFloat(t.runnerPnl||0) !== 0);
+        const rWin = runners.filter(t=>t.result==='WIN').length;
+        const rBE = runners.filter(t=>t.result==='BE').length;
+        const rLoss = runners.filter(t=>t.result==='LOSS').length;
+        const statLine = (label, val, col='text-zinc-300') =>
+          `<div class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0 text-xs">
+            <span class="text-zinc-500">${label}</span><span class="font-bold ${col}">${val}</span></div>`;
+        runnerEl.innerHTML =
+          statLine('TP1 hit rate', tp1Rate+'%', tp1Rate>=50?'text-green-400':'text-red-400') +
+          statLine('TP2 hit rate', tp2Rate+'%', tp2Rate>=50?'text-green-400':'text-red-400') +
+          statLine('Runner → Win', rWin, 'text-green-400') +
+          statLine('Runner → BE', rBE, 'text-zinc-400') +
+          statLine('Runner → Loss', rLoss, 'text-red-400') +
+          statLine('Avg TP1 P&L', avgTp1 ? (avgTp1>=0?'+':'-')+'$'+Math.abs(avgTp1).toFixed(2) : '—', avgTp1>=0?'text-green-400':'text-red-400') +
+          statLine('Avg TP2 P&L', avgTp2 ? (avgTp2>=0?'+':'-')+'$'+Math.abs(avgTp2).toFixed(2) : '—', avgTp2>=0?'text-green-400':'text-red-400');
+      }
+
+      // ── Trade Summary ──
+      const row2El = document.getElementById('stats-row2');
+      if (row2El) {
+        const sl = (label, val, cls='text-white') =>
+          `<div class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0">
+            <span class="text-zinc-500">${label}</span><span class="font-bold ${cls}">${val}</span></div>`;
+        row2El.innerHTML =
+          sl('Wins / Losses / BE', `<span class="text-green-400">${wins.length}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${losses.length}</span> <span class="text-zinc-600">/</span> <span class="text-zinc-400">${bes.length}</span>`) +
+          sl('Avg Win / Loss', `<span class="text-green-400">+$${avgWin.toFixed(2)}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">-$${avgLoss.toFixed(2)}</span>`) +
+          sl('Best / Worst', `<span class="text-green-400">${best>0?'+$'+best.toFixed(2):'—'}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${worst<0?'-$'+Math.abs(worst).toFixed(2):'—'}</span>`) +
+          sl('Avg Duration', avgDur) +
+          sl('Gross P&L', `<span class="${netPnl>=0?'text-green-400':'text-red-400'}">${netPnl>=0?'+':'-'}$${Math.abs(netPnl).toFixed(2)}</span>`);
+      }
+
+      // ── Commissions ──
+      const commEl = document.getElementById('stats-commissions');
+      if (commEl) {
+        const sl = (label, val, cls='text-white') =>
+          `<div class="flex justify-between items-center py-1 border-b border-white/5 last:border-0">
+            <span class="text-zinc-500">${label}</span><span class="font-bold ${cls}">${val}</span></div>`;
+        const avgComm = trades.length ? totalCommissions/trades.length : 0;
+        commEl.innerHTML =
+          sl('Total paid', totalCommissions ? '-$'+totalCommissions.toFixed(2) : '—', 'text-red-400') +
+          sl('Avg per trade', '$'+avgComm.toFixed(2)) +
+          sl('Net after fees', (netPnl-totalCommissions>=0?'+':'-')+'$'+Math.abs(netPnl-totalCommissions).toFixed(2), netPnl-totalCommissions>=0?'text-green-400':'text-red-400');
+      }
+
+      // ── Contracts ──
+      const conEl = document.getElementById('stats-contracts');
+      if (conEl) {
+        const sl = (label, val) =>
+          `<div class="flex justify-between items-center py-1 border-b border-white/5 last:border-0">
+            <span class="text-zinc-500">${label}</span><span class="font-bold text-white">${val}</span></div>`;
+        conEl.innerHTML =
+          sl('Avg contracts', avgContracts) +
+          sl('Avg on winners', avgContractsWin) +
+          sl('Avg on losers', avgContractsLoss) +
+          sl('Total contracts', totalContracts);
+      }
+
+      // ── By Grade — table style ──
+      const gradeEl = document.getElementById('stats-grades');
+      if (gradeEl) {
+        const grades = ['A+','A','B+','B','C+','C','D','F'];
+        const maxGradePnl = Math.max(...grades.map(g => {
+          const gt = trades.filter(t=>t.grade===g);
+          return gt.length ? Math.abs(gt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)) : 0;
+        }));
+        const header = `<div class="grid gap-2 py-2 border-b border-white/10 mb-1 text-[10px] text-zinc-600 uppercase tracking-wider" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem">
+          <span>Grade</span><span></span><span class="text-right">Trades</span><span class="text-right">Win %</span><span class="text-right">Net P&L</span><span class="text-right">Avg P&L</span>
+        </div>`;
+        const rows = grades.map(g => {
+          const gt = trades.filter(t=>t.grade===g);
+          if (!gt.length) {
+            return `<div class="grid gap-2 py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem">
+              <span class="text-zinc-600 font-bold">${g}</span>
+              <div></div>
+              <span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span>
+              <span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span>
+            </div>`;
+          }
+          const gw = gt.filter(t=>t.result==='WIN').length;
+          const gd = gw + gt.filter(t=>t.result==='LOSS').length;
+          const gwr = gd ? Math.round(gw/gd*100) : 0;
+          const gp = gt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+          const gavg = gp/gt.length;
+          const barW = maxGradePnl>0 ? Math.round(Math.abs(gp)/maxGradePnl*100) : 0;
+          const col = gp>=0?'#22c55e':'#ef4444';
+          const wrCol = gwr>=50?'text-green-400':'text-red-400';
+          return `<div class="grid gap-2 items-center py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem">
+            <span class="font-black" style="color:${col}">${g}</span>
+            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+              <div class="h-full rounded-full" style="width:${barW}%;background:${col};opacity:0.75"></div>
+            </div>
+            <span class="text-right text-zinc-400">${gt.length}t</span>
+            <span class="text-right font-bold ${wrCol}">${gwr}%</span>
+            <span class="text-right font-black" style="color:${col}">${gp>=0?'+':'-'}$${Math.abs(gp).toFixed(2)}</span>
+            <span class="text-right text-zinc-400">${gavg>=0?'+':'-'}$${Math.abs(gavg).toFixed(2)}</span>
+          </div>`;
+        }).join('');
+        gradeEl.innerHTML = header + rows;
+      }
+
+      // ── Long vs Short — detailed ──
+      const dirEl = document.getElementById('stats-direction');
+      if (dirEl) {
+        dirEl.innerHTML = [['LONG',trades.filter(t=>t.direction==='LONG'),'#22c55e'],['SHORT',trades.filter(t=>t.direction==='SHORT'),'#ef4444']].map(([label,ts,col]) => {
+          const w=ts.filter(t=>t.result==='WIN').length, l=ts.filter(t=>t.result==='LOSS').length;
+          const d=w+l, wrate=d?Math.round(w/d*100):0;
+          const p=ts.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+          const aw=w?ts.filter(t=>t.result==='WIN').reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)/w:0;
+          const al=l?Math.abs(ts.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)/l):0;
+          return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
+            <div class="flex justify-between items-center mb-3">
+              <span class="text-sm font-black" style="color:${col}">${label}</span>
+              <span class="text-xs text-zinc-500">${ts.length} trades · <span style="color:${wrate>=50?'#22c55e':'#ef4444'}">${wrate}% WR</span></span>
+            </div>
+            <div class="space-y-1.5 text-xs">
+              <div class="flex justify-between"><span class="text-zinc-500">Net P&L</span><span class="font-black" style="color:${p>=0?'#22c55e':'#ef4444'}">${p>=0?'+':'-'}$${Math.abs(p).toFixed(2)}</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Avg Win</span><span class="text-green-400 font-bold">+$${aw.toFixed(2)}</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Avg Loss</span><span class="text-red-400 font-bold">-$${al.toFixed(2)}</span></div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      // ── Day of Week — bar table ──
+      const dowEl = document.getElementById('stats-dow');
+      if (dowEl) {
+        const days = ['Mon','Tue','Wed','Thu','Fri'];
+        const dayData = days.map((day,i) => {
+          const dt = trades.filter(t=>{if(!t.date)return false;const d=new Date(t.date+'T00:00:00');return d.getDay()===i+1;});
+          const p = dt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+          const w = dt.filter(t=>t.result==='WIN').length;
+          const d2 = w + dt.filter(t=>t.result==='LOSS').length;
+          return { day, dt, p, wr: d2?Math.round(w/d2*100):0 };
+        });
+        const maxAbs = Math.max(...dayData.map(d=>Math.abs(d.p)), 1);
+        dowEl.innerHTML = dayData.map(({day,dt,p,wr}) => barRow(day, p, wr, dt.length, maxAbs)).join('');
+      }
+
+      // ── Time of Day ──
+      const todEl = document.getElementById('stats-tod');
+      if (todEl) {
+        const hourMap = {};
+        trades.forEach(t => {
+          if (!t.entryTime) return;
+          const h = parseInt(t.entryTime.split(':')[0]);
+          if (isNaN(h)) return;
+          if (!hourMap[h]) hourMap[h] = [];
+          hourMap[h].push(t);
+        });
+        const hours = Object.keys(hourMap).map(Number).sort((a,b)=>a-b);
+        const maxAbs = Math.max(...hours.map(h => Math.abs(hourMap[h].reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0))), 1);
+        if (!hours.length) {
+          todEl.innerHTML = '<div class="text-xs text-zinc-600 py-2">No entry times recorded</div>';
+        } else {
+          todEl.innerHTML = hours.map(h => {
+            const ts = hourMap[h];
+            const p = ts.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+            const w = ts.filter(t=>t.result==='WIN').length;
+            const d = w + ts.filter(t=>t.result==='LOSS').length;
+            const hourWr = d ? Math.round(w/d*100) : 0;
+            const ampm = h < 12 ? h+'AM' : h===12?'12PM':(h-12)+'PM';
+            return barRow(ampm, p, hourWr, ts.length, maxAbs);
+          }).join('');
+        }
+      }
+
+      // ── By Account ──
+      const acctEl = document.getElementById('stats-accounts');
+      if (acctEl) {
+        const types = ['Personal','Evaluation','Funded'];
+        acctEl.innerHTML = types.map(type => {
+          const at = trades.filter(t=>t.accountType===type);
+          const ap = at.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+          const aw2 = at.filter(t=>t.result==='WIN').length;
+          const ad = aw2 + at.filter(t=>t.result==='LOSS').length;
+          const awr = ad ? Math.round(aw2/ad*100) : 0;
+          const col = ap>=0?'#22c55e':'#ef4444';
+          if (!at.length) return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
+            <div class="text-xs text-zinc-600 mb-1">${type}</div>
+            <div class="text-xs text-zinc-700">No trades</div>
+          </div>`;
+          return `<div class="border border-white/5 bg-zinc-950/40 rounded-xl p-4 text-center">
+            <div class="text-xs text-zinc-500 mb-2">${type}</div>
+            <div class="text-xl font-black" style="color:${col}">${ap>=0?'+':'-'}$${Math.abs(ap).toFixed(0)}</div>
+            <div class="text-xs text-zinc-500 mt-1">${at.length}t · <span style="color:${awr>=50?'#22c55e':'#ef4444'}">${awr}% WR</span></div>
+          </div>`;
+        }).join('');
+      }
+
+      // ── Drawdown ──
+      renderDrawdown(trades);
+    }
+    function drawEquityCurve(trades) {
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!wrap) return;
+
+      const sorted = [...trades].sort((a,b) =>
+        ((a.date||'')+(a.entryTime||'')) < ((b.date||'')+(b.entryTime||'')) ? -1 : 1
+      );
+
+      // Build cumulative equity points
+      const points = [{ equity: 0, date: null, pnl: 0, result: null, ticker: '', grade: '', time: '' }];
+      sorted.forEach(t => {
+        const pnl = parseFloat(t.netPnl) || 0;
+        points.push({
+          equity: points[points.length-1].equity + pnl,
+          date: t.date, pnl, result: t.result,
+          ticker: t.ticker||'MNQ', grade: t.grade||'', time: t.entryTime||''
+        });
+      });
+
+      const finalPnl = points[points.length-1].equity;
+      const isPos = finalPnl >= 0;
+      const lineCol = isPos ? '#22c55e' : '#ef4444';
+      const fillCol = isPos ? '#22c55e' : '#ef4444';
+      const uid = 'eq' + Date.now();
+
+      // Header
+      const finalEl = document.getElementById('chart-final-pnl');
+      if (finalEl) {
+        finalEl.textContent = (finalPnl >= 0 ? '+' : '-') + '$' + Math.abs(finalPnl).toFixed(2);
+        finalEl.className = 'text-2xl font-black ' + (isPos ? 'text-green-400' : 'text-red-400');
+      }
+
+      // Date range legend
+      const legendEl = document.getElementById('chart-legend');
+      if (legendEl) {
+        const dates = points.filter(p=>p.date).map(p=>p.date).sort();
+        if (dates.length >= 2) {
+          const fmt = d => { const p=d.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+p[2]+', '+p[0]; };
+          legendEl.innerHTML = `<span>${fmt(dates[0])} — ${fmt(dates[dates.length-1])}</span>`;
+        }
+      }
+
+      const W = wrap.clientWidth || 700;
+      const H = 260;
+      const PAD_L = 62, PAD_R = 20, PAD_T = 14, PAD_B = 34;
+      const CW = W - PAD_L - PAD_R;
+      const CH = H - PAD_T - PAD_B;
+
+      const equities = points.map(p=>p.equity);
+      const rawMin = Math.min(...equities), rawMax = Math.max(...equities);
+      const rng = rawMax - rawMin || 1;
+      const dataMin = rawMin - rng * 0.08;
+      const dataMax = rawMax + rng * 0.10;
+      const dataRange = dataMax - dataMin;
+
+      const toX = i => PAD_L + (i / (points.length-1||1)) * CW;
+      const toY = v => PAD_T + CH - ((v - dataMin) / dataRange) * CH;
+
+      // Catmull-Rom → cubic bezier for ultra-smooth curve
+      function catmullRomPath(pts) {
+        if (pts.length < 2) return '';
+        const tension = 0.4;
+        let d = `M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
+        for (let i = 0; i < pts.length - 1; i++) {
+          const p0 = pts[Math.max(0, i-1)];
+          const p1 = pts[i];
+          const p2 = pts[i+1];
+          const p3 = pts[Math.min(pts.length-1, i+2)];
+          const cp1x = p1.x + (p2.x - p0.x) * tension;
+          const cp1y = p1.y + (p2.y - p0.y) * tension;
+          const cp2x = p2.x - (p3.x - p1.x) * tension;
+          const cp2y = p2.y - (p3.y - p1.y) * tension;
+          d += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+        }
+        return d;
+      }
+
+      const xyPts = points.map((p,i) => ({ x: toX(i), y: toY(p.equity) }));
+      const pathD = catmullRomPath(xyPts);
+      const baseY = Math.min(toY(Math.max(0, dataMin)), PAD_T + CH);
+      const fillD = pathD + ` L ${toX(points.length-1).toFixed(2)} ${baseY.toFixed(2)} L ${toX(0).toFixed(2)} ${baseY.toFixed(2)} Z`;
+
+      // Y-axis ticks
+      function niceStep(range, n) {
+        const r = range/n, mag = Math.pow(10, Math.floor(Math.log10(r)));
+        return [1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=r) || mag*10;
+      }
+      const step = niceStep(dataRange, 5);
+      const yTicks = [];
+      for (let v = Math.ceil(dataMin/step)*step; v <= dataMax+step*0.01; v+=step)
+        yTicks.push(parseFloat(v.toFixed(8)));
+
+      // Date X labels
+      const allDates = [...new Set(points.filter(p=>p.date).map(p=>p.date))].sort();
+      const maxXLabels = Math.min(7, allDates.length);
+      const xDates = allDates.length <= maxXLabels ? allDates :
+        Array.from({length:maxXLabels}, (_,i) => allDates[Math.round(i/(maxXLabels-1)*(allDates.length-1))]);
+
+      const fmtY = v => {
+        const a=Math.abs(v), s=v<0?'-':'';
+        return a>=1000 ? s+'$'+(a/1000).toFixed(a>=10000?0:1)+'K' : s+'$'+a.toFixed(0);
+      };
+      const fmtX = d => { if(!d) return ''; const p=d.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+parseInt(p[2]); };
+
+      const gridLines = yTicks.map(v => {
+        const y = toY(v);
+        if (y < PAD_T-2 || y > PAD_T+CH+2) return '';
+        const isZero = Math.abs(v) < step*0.01;
+        return `
+          <line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}"
+            stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
+          <text x="${(PAD_L-10).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end"
+            fill="${isZero?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.18)'}"
+            font-size="10" font-family="ui-monospace,monospace,SFMono-Regular">${fmtY(v)}</text>`;
+      }).join('');
+
+      const xLabels = xDates.map(d => {
+        const idx = points.findIndex(p=>p.date===d);
+        if (idx<0) return '';
+        const x = toX(idx);
+        return `<text x="${x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle"
+          fill="rgba(255,255,255,0.22)" font-size="10" font-family="ui-monospace,monospace,SFMono-Regular">${fmtX(d)}</text>`;
+      }).join('');
+
+      // Hover overlay: invisible vertical slicer
+      const hoverRects = points.slice(1).map((p,i) => {
+        const x = toX(i+1);
+        const prevX = toX(i);
+        const sliceW = Math.max(8, x - prevX);
+        const col = p.result==='WIN'?'#22c55e':p.result==='LOSS'?'#ef4444':'#a1a1aa';
+        const sign = p.pnl>=0?'+':'-';
+        const tip = [
+          p.date||(p.time?'@ '+p.time:''),
+          `${p.ticker}${p.grade?' ['+p.grade+']':''}`,
+          `${sign}$${Math.abs(p.pnl).toFixed(2)} → $${p.equity.toFixed(2)}`
+        ].filter(Boolean).join('·||·');
+        return `<rect x="${(prevX+(x-prevX)*0.1).toFixed(1)}" y="${PAD_T}" width="${sliceW.toFixed(1)}" height="${CH}"
+          fill="transparent"
+          onmouseenter="showChartTooltip(event,'${tip}','${col}',${x.toFixed(1)},${toY(p.equity).toFixed(1)})"
+          onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>`;
+      }).join('');
+
+      // Crosshair dot
+      const crosshairDot = `<circle id="${uid}-dot" cx="0" cy="0" r="5" fill="${lineCol}" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>`;
+      const crosshairLine = `<line id="${uid}-vline" x1="0" y1="${PAD_T}" x2="0" y2="${PAD_T+CH}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>`;
+
+      wrap.innerHTML = `
+        <svg id="${uid}-svg" width="100%" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
+          <defs>
+            <linearGradient id="${uid}-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="${fillCol}" stop-opacity="0.35"/>
+              <stop offset="40%"  stop-color="${fillCol}" stop-opacity="0.18"/>
+              <stop offset="80%"  stop-color="${fillCol}" stop-opacity="0.05"/>
+              <stop offset="100%" stop-color="${fillCol}" stop-opacity="0"/>
+            </linearGradient>
+            <filter id="${uid}-glow" x="-20%" y="-50%" width="140%" height="200%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <clipPath id="${uid}-clip">
+              <rect x="${PAD_L}" y="${PAD_T-2}" width="${CW+1}" height="${CH+4}"/>
+            </clipPath>
+          </defs>
+
+          <!-- Grid -->
+          ${gridLines}
+          <!-- X labels -->
+          ${xLabels}
+
+          <g clip-path="url(#${uid}-clip)">
+            <!-- Rich gradient fill -->
+            <path d="${fillD}" fill="url(#${uid}-fill)"/>
+            <!-- Subtle glow behind line -->
+            <path d="${pathD}" fill="none" stroke="${lineCol}" stroke-width="6"
+              stroke-linejoin="round" stroke-linecap="round" opacity="0.15" filter="url(#${uid}-glow)"/>
+            <!-- Main crisp line -->
+            <path d="${pathD}" fill="none" stroke="${lineCol}" stroke-width="2"
+              stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>
+            <!-- Crosshair -->
+            ${crosshairLine}
+            ${crosshairDot}
+            <!-- Hover slices -->
+            ${hoverRects}
+          </g>
+        </svg>
+        <div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;
+          background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;
+          padding:10px 14px;font-size:11px;white-space:nowrap;
+          font-family:ui-monospace,monospace;color:#e4e4e7;
+          box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>`;
+
+      // Store refs for crosshair
+      wrap._uid = uid;
+    }
+
+    function showChartTooltip(e, rawLabel, color, dotX, dotY) {
+      const tt = document.getElementById('eq-tooltip');
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!tt || !wrap) return;
+
+      const [datePart, tickerPart, pnlPart] = rawLabel.split('·||·');
+
+      tt.innerHTML = `
+        <div style="color:rgba(255,255,255,0.4);font-size:10px;margin-bottom:5px;letter-spacing:0.05em">${datePart||''}</div>
+        <div style="color:#e4e4e7;margin-bottom:4px">${tickerPart||''}</div>
+        <div style="color:${color};font-weight:800;font-size:14px">${pnlPart||''}</div>`;
+      tt.style.borderColor = color + '40';
+      tt.style.display = 'block';
+
+      // Position tooltip
+      const rect = wrap.getBoundingClientRect();
+      const er = e.target.getBoundingClientRect();
+      const tipW = tt.offsetWidth || 170;
+      let left = er.left - rect.left + er.width/2 - tipW/2;
+      if (left + tipW > rect.width - 8) left = rect.width - tipW - 8;
+      if (left < 0) left = 4;
+      let top = (er.top - rect.top) - 80;
+      if (top < 0) top = 8;
+      tt.style.left = left + 'px';
+      tt.style.top = top + 'px';
+
+      // Move crosshair dot
+      const uid = wrap._uid;
+      if (uid) {
+        const dot = document.getElementById(uid+'-dot');
+        const vline = document.getElementById(uid+'-vline');
+        if (dot) { dot.setAttribute('cx', dotX); dot.setAttribute('cy', dotY); dot.style.display = ''; }
+        if (vline) { vline.setAttribute('x1', dotX); vline.setAttribute('x2', dotX); vline.style.display = ''; }
+      }
+    }
+
+    function hideChartTooltip() {
+      const tt = document.getElementById('eq-tooltip');
+      if (tt) tt.style.display = 'none';
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!wrap || !wrap._uid) return;
+      const dot = document.getElementById(wrap._uid+'-dot');
+      const vline = document.getElementById(wrap._uid+'-vline');
+      if (dot) dot.style.display = 'none';
+      if (vline) vline.style.display = 'none';
+    }
+
+    function renderDrawdown(trades) {
+      const sorted = [...trades].sort((a,b)=>(a.date||'')<(b.date||'')?-1:1);
+      let equity=0, peak=0, maxDD=0, curDD=0;
+      let consecL=0, maxConsecL=0;
+      const byDay={};
+      // Build per-trade drawdown series with date info
+      const ddPoints = [{ dd: 0, date: null }];
+      sorted.forEach(t => {
+        equity += (parseFloat(t.netPnl)||0);
+        if (equity > peak) peak = equity;
+        curDD = equity - peak;
+        if (curDD < maxDD) maxDD = curDD;
+        if (t.result==='LOSS') { consecL++; if(consecL>maxConsecL) maxConsecL=consecL; } else consecL=0;
+        if (t.date) byDay[t.date] = (byDay[t.date]||0) + (parseFloat(t.netPnl)||0);
+        ddPoints.push({ dd: curDD, date: t.date||null, pnl: parseFloat(t.netPnl)||0 });
+      });
+      const maxDailyLoss = Object.values(byDay).length ? Math.min(0, Math.min(...Object.values(byDay))) : 0;
+      const rf = maxDD !== 0 ? (equity / maxDD) : null;
+
+      // Stat cards — centered like the rest
+      document.getElementById('stats-drawdown').innerHTML = [
+        ['Max Drawdown', '-$'+Math.abs(maxDD).toFixed(2), '#ef4444', 'peak to trough'],
+        ['Current DD', '-$'+Math.abs(curDD).toFixed(2), '#ef4444', 'from current peak'],
+        ['Max Daily Loss', '-$'+Math.abs(maxDailyLoss).toFixed(2), '#ef4444', 'worst single day'],
+        ['Max Consec. Losses', maxConsecL, '#ffffff', 'in a row'],
+      ].map(([l,v,col,sub]) => `
+        <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 flex flex-col items-center justify-center text-center">
+          <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">${l}</div>
+          <div class="text-xl font-black" style="color:${col}">${v}</div>
+          <div class="text-[10px] text-zinc-600 mt-1">${sub}</div>
+        </div>`).join('');
+
+      // Draw DD chart — same cinematic style but red
+      const wrap = document.getElementById('dd-chart-wrap');
+      if (!wrap || ddPoints.length < 2) return;
+
+      const W = wrap.clientWidth || 700;
+      const H = 190;
+      const PAD_L = 60, PAD_R = 20, PAD_T = 28, PAD_B = 36;
+      const CW = W - PAD_L - PAD_R;
+      const CH = H - PAD_T - PAD_B;
+      const uid = 'dd' + Date.now();
+
+      const ddVals = ddPoints.map(p=>p.dd);
+      const dataMin = Math.min(...ddVals) * 1.18;
+      const dataMax = Math.abs(dataMin) * 0.08;  // always give room above zero
+      const dataRange = dataMax - dataMin || 1;
+      const toX = i => PAD_L + (i / (ddPoints.length-1||1)) * CW;
+      const toY = v => PAD_T + CH - ((v - dataMin) / dataRange) * CH;
+
+      // Catmull-Rom smooth path
+      function catmullPath(pts) {
+        if (pts.length < 2) return '';
+        const t = 0.35;
+        let d = `M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
+        for (let i = 0; i < pts.length-1; i++) {
+          const p0=pts[Math.max(0,i-1)], p1=pts[i], p2=pts[i+1], p3=pts[Math.min(pts.length-1,i+2)];
+          const cp1x=p1.x+(p2.x-p0.x)*t, cp1y=p1.y+(p2.y-p0.y)*t;
+          const cp2x=p2.x-(p3.x-p1.x)*t, cp2y=p2.y-(p3.y-p1.y)*t;
+          d += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+        }
+        return d;
+      }
+
+      const xyPts = ddPoints.map((p,i) => ({ x: toX(i), y: toY(p.dd) }));
+      const pathD = catmullPath(xyPts);
+      const zeroY = toY(0);
+      const lastX = toX(ddPoints.length-1).toFixed(2);
+      const fillD = pathD + ` L ${lastX} ${zeroY.toFixed(2)} L ${toX(0).toFixed(2)} ${zeroY.toFixed(2)} Z`;
+
+      // Y ticks
+      function niceStep(range, n) {
+        const r=range/n, mag=Math.pow(10,Math.floor(Math.log10(Math.abs(r)||1)));
+        return [1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=r)||mag*10;
+      }
+      const step = niceStep(Math.abs(dataMin), 4);
+      const yTicks = [];
+      for (let v = Math.ceil(dataMin/step)*step; v <= dataMax+step*0.01; v+=step)
+        yTicks.push(parseFloat(v.toFixed(8)));
+
+      const fmtY = v => { const a=Math.abs(v),s=v<0?'-':''; return a>=1000?s+'$'+(a/1000).toFixed(1)+'K':s+'$'+a.toFixed(0); };
+
+      const gridLines = yTicks.map(v => {
+        const y=toY(v); if(y<PAD_T-2||y>PAD_T+CH+2) return '';
+        const isZero = Math.abs(v)<step*0.01;
+        return `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}"
+          stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
+          <text x="${(PAD_L-10).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end"
+            fill="${isZero?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.18)'}"
+            font-size="10" font-family="ui-monospace,monospace">${fmtY(v)}</text>`;
+      }).join('');
+
+      // Min DD label
+      const minIdx = ddVals.indexOf(Math.min(...ddVals));
+      const minX = toX(minIdx), minY = toY(ddVals[minIdx]);
+      const minLabel = `-$${Math.abs(ddVals[minIdx]).toFixed(0)}`;
+
+      // Hover slices
+      const hoverRects = ddPoints.slice(1).map((p,i) => {
+        const x=toX(i+1), prevX=toX(i);
+        const sliceW=Math.max(8,x-prevX);
+        const tip = `${p.date||''} · DD: -$${Math.abs(p.dd).toFixed(2)}`;
+        return `<rect x="${prevX.toFixed(1)}" y="${PAD_T}" width="${sliceW.toFixed(1)}" height="${CH}"
+          fill="transparent" style="cursor:crosshair"
+          onmouseenter="showDDTooltip(event,'${tip}',${x.toFixed(1)},${toY(p.dd).toFixed(1)},'${uid}')"
+          onmouseleave="hideDDTooltip('${uid}')"/>`;
+      }).join('');
+
+      wrap.innerHTML = `
+        <svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
+          <defs>
+            <linearGradient id="${uid}-fill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ef4444" stop-opacity="0.04"/>
+              <stop offset="100%" stop-color="#ef4444" stop-opacity="0.30"/>
+            </linearGradient>
+            <filter id="${uid}-glow" x="-20%" y="-50%" width="140%" height="200%">
+              <feGaussianBlur stdDeviation="2.5" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <clipPath id="${uid}-clip">
+              <rect x="${PAD_L}" y="${PAD_T - 12}" width="${CW+1}" height="${CH + 20}"/>
+            </clipPath>
+          </defs>
+          ${gridLines}
+          <g clip-path="url(#${uid}-clip)">
+            <path d="${fillD}" fill="url(#${uid}-fill)"/>
+            <path d="${pathD}" fill="none" stroke="#ef4444" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity="0.12" filter="url(#${uid}-glow)"/>
+            <path d="${pathD}" fill="none" stroke="#ef4444" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.9"/>
+            <!-- Min DD dot + label -->
+            <circle cx="${minX.toFixed(1)}" cy="${minY.toFixed(1)}" r="4" fill="#ef4444" stroke="#09090b" stroke-width="2"/>
+            <text x="${minX.toFixed(1)}" y="${(minY+16).toFixed(1)}" text-anchor="middle"
+              fill="#ef4444" font-size="10" font-family="ui-monospace,monospace" font-weight="700">${minLabel}</text>
+            <!-- Zero line label -->
+            <text x="${PAD_L.toFixed(1)}" y="${(zeroY - 8).toFixed(1)}"
+              fill="rgba(255,255,255,0.25)" font-size="9" font-family="ui-monospace,monospace">at peak</text>
+            <line id="${uid}-vline" x1="0" y1="${PAD_T}" x2="0" y2="${(PAD_T+CH).toFixed(1)}"
+              stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>
+            <circle id="${uid}-dot" cx="0" cy="0" r="4" fill="#ef4444" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>
+            ${hoverRects}
+          </g>
+        </svg>
+        <div id="${uid}-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;
+          background:rgba(9,9,11,0.95);border:1px solid rgba(239,68,68,0.3);border-radius:10px;
+          padding:8px 13px;font-size:11px;white-space:nowrap;font-family:ui-monospace,monospace;
+          color:#e4e4e7;box-shadow:0 8px 32px rgba(0,0,0,0.8)"></div>`;
+    }
+
+    function showDDTooltip(e, label, dotX, dotY, uid) {
+      const tt = document.getElementById(uid+'-tooltip');
+      const wrap = document.getElementById('dd-chart-wrap');
+      if (!tt||!wrap) return;
+      const [datePart, ddPart] = label.split(' · ');
+      tt.innerHTML = `<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-bottom:3px">${datePart}</div><div style="color:#ef4444;font-weight:800">${ddPart}</div>`;
+      tt.style.display = 'block';
+      const rect = wrap.getBoundingClientRect();
+      const er = e.target.getBoundingClientRect();
+      const tipW = tt.offsetWidth||160;
+      let left = er.left-rect.left+er.width/2-tipW/2;
+      if (left+tipW>rect.width-8) left=rect.width-tipW-8;
+      if (left<0) left=4;
+      tt.style.left = left+'px';
+      tt.style.top = (er.top-rect.top-60)+'px';
+      const dot=document.getElementById(uid+'-dot'),vline=document.getElementById(uid+'-vline');
+      if(dot){dot.setAttribute('cx',dotX);dot.setAttribute('cy',dotY);dot.style.display='';}
+      if(vline){vline.setAttribute('x1',dotX);vline.setAttribute('x2',dotX);vline.style.display='';}
+    }
+    function hideDDTooltip(uid) {
+      const tt=document.getElementById(uid+'-tooltip');
+      if(tt) tt.style.display='none';
+      const dot=document.getElementById(uid+'-dot'),vline=document.getElementById(uid+'-vline');
+      if(dot) dot.style.display='none';
+      if(vline) vline.style.display='none';
+    }
+
+    // ── Trade Form ──
+    function setDir(d) {
+      tradeDir = d;
+      document.getElementById('dir-long').className = 'direction-btn ' + (d==='LONG'?'active-long':'') + ' py-2.5 border border-white/10 rounded-xl text-sm font-bold transition';
+      document.getElementById('dir-short').className = 'direction-btn ' + (d==='SHORT'?'active-short':'') + ' py-2.5 border border-white/10 rounded-xl text-sm font-bold transition';
+      calcPnl();
+    }
+
+    function setPnlMode(m) {
+      pnlMode = m;
+      document.getElementById('pnl-price').className = 'pnl-mode-btn ' + (m==='price'?'active':'') + ' py-2 border ' + (m==='price'?'border-green-500/40 bg-green-500/10 text-green-400':'border-white/10 text-zinc-400') + ' rounded-xl text-xs font-bold transition';
+      document.getElementById('pnl-manual').className = 'pnl-mode-btn ' + (m==='manual'?'active':'') + ' py-2 border ' + (m==='manual'?'border-green-500/40 bg-green-500/10 text-green-400':'border-white/10 text-zinc-400') + ' rounded-xl text-xs font-bold transition';
+      document.getElementById('price-fields').classList.toggle('hidden', m==='manual');
+      document.getElementById('manual-fields').classList.toggle('hidden', m==='price');
+    }
 
     function calcManualNet() {
       const tp1 = parseFloat(document.getElementById('t-manual-tp1-pnl').value)||0;
@@ -661,403 +1473,6 @@
     function removeTag(i) { currentTags.splice(i,1); renderTags(); }
 
     // ── Modal ──
-
-
-    async function loadBtSessions() {
-      const loading = document.getElementById('bt-loading');
-      try {
-        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'get-trades',key:'backtest_sessions:'+whopKey}) });
-        const data = await res.json();
-        btSessions = Array.isArray(data.trades)?data.trades:[];
-        if (loading) loading.classList.add('hidden');
-        const grid=document.getElementById('bt-grid'), empty=document.getElementById('bt-empty');
-        if (!btSessions.length) { empty.classList.remove('hidden'); grid.classList.add('hidden'); return; }
-        empty.classList.add('hidden'); grid.classList.remove('hidden');
-        grid.innerHTML = btSessions.map(s=>{
-          const p=parseFloat(s.netPnl)||0;
-          return `<div onclick="openBtSession('${s.id}')" class="border border-white/10 bg-zinc-950/40 hover:border-white/20 rounded-2xl p-5 cursor-pointer transition">
-            <div class="text-sm font-black text-white mb-1 truncate">${s.name}</div>
-            <div class="text-xs text-zinc-500 mb-3">${[s.ticker,s.strategy].filter(Boolean).join(' · ')}</div>
-            <div class="grid grid-cols-3 gap-2 text-center">
-              <div><div class="text-[10px] text-zinc-600 mb-0.5">Trades</div><div class="text-sm font-bold text-white">${s.tradeCount||0}</div></div>
-              <div><div class="text-[10px] text-zinc-600 mb-0.5">Win Rate</div><div class="text-sm font-bold text-green-400">${s.winRate||0}%</div></div>
-              <div><div class="text-[10px] text-zinc-600 mb-0.5">Net P&L</div><div class="text-sm font-bold ${pnlColor(p)}">${fmt(p)}</div></div>
-            </div>
-          </div>`;
-        }).join('');
-      } catch(err) {
-        console.error('loadBtSessions error:', err);
-        if (loading) loading.classList.add('hidden');
-        const empty = document.getElementById('bt-empty');
-        empty.innerHTML = '<div class="text-center py-16"><div class="text-4xl mb-3">⚠️</div><h3 class="text-lg font-black mb-2">Could not load sessions</h3><p class="text-zinc-500 text-sm">Check your connection and try refreshing.</p></div>';
-        empty.classList.remove('hidden');
-      }
-    }
-    async function openBtSession(id) {
-      const s = btSessions.find(s=>s.id===id); if(!s) return;
-      document.getElementById('bt-sessions-view').classList.add('hidden');
-      document.getElementById('bt-detail').classList.remove('hidden');
-      document.getElementById('bt-title').textContent = s.name;
-      document.getElementById('bt-meta').textContent = [s.ticker,s.strategy,s.startDate].filter(Boolean).join(' · ');
-      btSub('trades');
-      try {
-        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'get-trades',key:'backtest:'+whopKey+':'+id}) });
-        const data = await res.json();
-        btTrades = Array.isArray(data.trades)?data.trades:[];
-        // Apply any currently active global filters to BT trades
-        filteredBtTrades = btTrades.filter(t =>
-          (!gfResult || t.result === gfResult) &&
-          (!gfAccount || t.accountType === gfAccount) &&
-          (!gfGrade || t.grade === gfGrade) &&
-          (!gfDirection || t.direction === gfDirection)
-        );
-        updateBtSummary();
-        updateBtFilterBadge();
-        renderBtTrades();
-        if (btTrades[0]?.date) { const d=new Date(btTrades[0].date+'T00:00:00'); btCalYear=d.getFullYear(); btCalMonth=d.getMonth(); }
-      } catch(err) { console.error(err); }
-    }
-
-    function closeBt() { document.getElementById('bt-detail').classList.add('hidden'); document.getElementById('bt-sessions-view').classList.remove('hidden'); }
-
-    function btSub(tab) {
-      ['trades','stats','calendar'].forEach(t=>{
-        document.getElementById('bt-panel-'+t).classList.add('hidden');
-        const b=document.getElementById('btsub-'+t);
-        b.classList.remove('active','text-green-400','border-green-500');
-        b.classList.add('text-zinc-500','border-transparent');
-      });
-      document.getElementById('bt-panel-'+tab).classList.remove('hidden');
-      const ab=document.getElementById('btsub-'+tab);
-      ab.classList.add('active','text-green-400','border-green-500');
-      ab.classList.remove('text-zinc-500','border-transparent');
-      if(tab==='stats') renderBtStats();
-      if(tab==='calendar') renderBtCal();
-    }
-
-    function renderBtTrades() {
-      const tbody = document.getElementById('bt-tbody');
-      if (!filteredBtTrades.length) { tbody.innerHTML=`<tr><td colspan="9" class="px-4 py-8 text-center text-zinc-600">${btTrades.length?'No trades match current filters':'No trades'}</td></tr>`; return; }
-      tbody.innerHTML = filteredBtTrades.map(t => {
-        const tp = parseFloat(t.netPnl)||0;
-        const tp1 = parseFloat(t.tp1Pnl)||0, tp2 = parseFloat(t.tp2Pnl)||0;
-        const tags = Array.isArray(t.tags)&&t.tags.length ? t.tags.map(tg=>`<span class="px-1.5 py-0.5 bg-zinc-800 border border-white/5 rounded text-[10px] text-zinc-500">${tg}</span>`).join('') : '—';
-        const pnlCls = tp > 0 ? 'text-green-400' : tp < 0 ? 'text-red-400' : 'text-zinc-500';
-        const tp1Cls = tp1 > 0 ? 'text-green-400' : tp1 < 0 ? 'text-red-400' : 'text-zinc-600';
-        const tp2Cls = tp2 > 0 ? 'text-green-400' : tp2 < 0 ? 'text-red-400' : 'text-zinc-600';
-        const resBadge = t.result==='WIN' ? 'bg-green-500/10 border-green-500/30 text-green-400' : t.result==='LOSS' ? 'bg-red-500/10 border-red-500/30 text-red-400' : 'bg-zinc-800 border-white/10 text-zinc-400';
-        return `<tr class="hover:bg-white/[0.02] transition cursor-pointer">
-          <td class="px-4 py-3 text-zinc-400 text-xs">${t.date||'—'}</td>
-          <td class="px-4 py-3"><span class="text-xs font-bold ${t.direction==='LONG'?'text-green-400':'text-red-400'}">${t.direction||'—'}</span></td>
-          <td class="px-4 py-3 text-xs text-zinc-300 font-medium">${t.ticker||'MNQ'}</td>
-          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-zinc-800 text-zinc-300 border-white/10">${t.grade||'—'}</span></td>
-          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resBadge}">${t.result||'—'}</span></td>
-          <td class="px-4 py-3 text-xs font-bold ${tp1Cls}">${tp1 ? (tp1>=0?'+':'-')+'$'+Math.abs(tp1).toFixed(2) : '—'}</td>
-          <td class="px-4 py-3 text-xs font-bold ${tp2Cls}">${tp2 ? (tp2>=0?'+':'-')+'$'+Math.abs(tp2).toFixed(2) : '—'}</td>
-          <td class="px-4 py-3 font-black text-sm ${pnlCls}">${(tp>=0?'+':'-')+'$'+Math.abs(tp).toFixed(2)}</td>
-          <td class="px-4 py-3"><div class="flex gap-1 flex-wrap">${tags}</div></td>
-        </tr>`;
-      }).join('');
-    }
-
-    function renderBtStats() {
-      const trades = filteredBtTrades;
-      if (!trades.length) { document.getElementById('bt-stats-top').innerHTML = '<div class="col-span-4 text-center text-zinc-600 text-sm py-8">No trades match current filters</div>'; return; }
-      const wins = trades.filter(t=>t.result==='WIN');
-      const losses = trades.filter(t=>t.result==='LOSS');
-      const bes = trades.filter(t=>t.result==='BE');
-      const decided = wins.length + losses.length;
-      const wr = decided ? Math.round(wins.length/decided*100) : 0;
-      const netPnl = trades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-      const grossWin = wins.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-      const grossLoss = Math.abs(losses.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0));
-      const pf = grossLoss===0 ? (grossWin>0?'∞':'—') : (grossWin/grossLoss).toFixed(2);
-      const avgWin = wins.length ? grossWin/wins.length : 0;
-      const avgLoss = losses.length ? grossLoss/losses.length : 0;
-      const best = wins.length ? wins.reduce((m,t)=>Math.max(m,parseFloat(t.netPnl)||0),-Infinity) : 0;
-      const worst = losses.length ? losses.reduce((m,t)=>Math.min(m,parseFloat(t.netPnl)||0),Infinity) : 0;
-      const totalComm = trades.reduce((s,t)=>s+(parseFloat(t.commissions)||0),0);
-      const totalContracts = trades.reduce((s,t)=>s+(parseInt(t.contracts)||0),0);
-      const avgContracts = trades.length ? (totalContracts/trades.length).toFixed(1) : '—';
-      const avgCW = wins.length ? (wins.reduce((s,t)=>s+(parseInt(t.contracts)||0),0)/wins.length).toFixed(1) : '—';
-      const avgCL = losses.length ? (losses.reduce((s,t)=>s+(parseInt(t.contracts)||0),0)/losses.length).toFixed(1) : '—';
-      const pfColor = pf==='∞'?'#22c55e':pf==='—'?'#71717a':parseFloat(pf)>=1?'#22c55e':'#ef4444';
-
-      // Top cards
-      document.getElementById('bt-stats-top').innerHTML =
-        statCard('Total Trades', trades.length, '#ffffff', `${wins.length}W · ${losses.length}L${bes.length?' · '+bes.length+'BE':''}`) +
-        renderWinRateCard(wr, decided, wins.length, losses.length, bes.length) +
-        renderNetPnlCard(netPnl) +
-        statCard('Profit Factor', pf, pfColor);
-
-      // Equity curve — pass filtered trades
-      drawBtEquityCurve(trades);
-
-      // Outcome Breakdown
-      const obEl = document.getElementById('bt-stats-outcome');
-      if (obEl) {
-        const total = trades.length||1;
-        obEl.innerHTML = `<div class="flex gap-1 mb-3 h-2 rounded-full overflow-hidden">
-          <div style="width:${Math.round(wins.length/total*100)}%;background:#22c55e;opacity:0.85" class="rounded-l-full"></div>
-          <div style="width:${Math.round(losses.length/total*100)}%;background:#ef4444;opacity:0.85"></div>
-          <div style="width:${Math.round(bes.length/total*100)}%;background:#52525b;opacity:0.85" class="rounded-r-full"></div>
-        </div>` +
-        [['WIN',wins.length,'#22c55e','+$'+grossWin.toFixed(2)],
-         ['LOSS',losses.length,'#ef4444','-$'+grossLoss.toFixed(2)],
-         ['BE',bes.length,'#71717a','$0.00']
-        ].map(([label,count,col,pnlStr]) => `
-          <div class="flex items-center gap-3 py-1.5 border-b border-white/5 last:border-0 text-xs">
-            <span class="w-8 text-xs font-black" style="color:${col}">${label}</span>
-            <div class="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
-              <div class="h-full rounded-full" style="width:${Math.round(count/total*100)}%;background:${col};opacity:0.8"></div>
-            </div>
-            <span class="text-zinc-400 w-4 text-center">${count}</span>
-            <span class="text-zinc-500 w-8 text-right">${Math.round(count/total*100)}%</span>
-          </div>`).join('');
-      }
-
-      // Runner Stats
-      const rEl = document.getElementById('bt-stats-runner');
-      if (rEl) {
-        const tp1hits = trades.filter(t=>parseFloat(t.tp1Pnl||0)!==0).length;
-        const tp2hits = trades.filter(t=>parseFloat(t.tp2Pnl||0)!==0).length;
-        const tp1Rate = trades.length ? Math.round(tp1hits/trades.length*100) : 0;
-        const tp2Rate = trades.length ? Math.round(tp2hits/trades.length*100) : 0;
-        const avgTp1 = tp1hits ? trades.reduce((s,t)=>s+(parseFloat(t.tp1Pnl)||0),0)/tp1hits : 0;
-        const avgTp2 = tp2hits ? trades.reduce((s,t)=>s+(parseFloat(t.tp2Pnl)||0),0)/tp2hits : 0;
-        const runners = trades.filter(t=>(parseInt(t.tp2Contracts)||0)>0||parseFloat(t.runnerPnl||0)!==0);
-        const rWin=runners.filter(t=>t.result==='WIN').length, rBE=runners.filter(t=>t.result==='BE').length, rLoss=runners.filter(t=>t.result==='LOSS').length;
-        const sl = (label,val,cls='text-zinc-300') => `<div class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0 text-xs"><span class="text-zinc-500">${label}</span><span class="font-bold ${cls}">${val}</span></div>`;
-        rEl.innerHTML =
-          sl('TP1 hit rate', tp1Rate+'%', tp1Rate>=50?'text-green-400':'text-red-400') +
-          sl('TP2 hit rate', tp2Rate+'%', tp2Rate>=50?'text-green-400':'text-red-400') +
-          sl('Runner → Win', rWin, 'text-green-400') +
-          sl('Runner → BE', rBE, 'text-zinc-400') +
-          sl('Runner → Loss', rLoss, 'text-red-400') +
-          sl('Avg TP1 P&L', avgTp1?(avgTp1>=0?'+':'-')+'$'+Math.abs(avgTp1).toFixed(2):'—', avgTp1>=0?'text-green-400':'text-red-400') +
-          sl('Avg TP2 P&L', avgTp2?(avgTp2>=0?'+':'-')+'$'+Math.abs(avgTp2).toFixed(2):'—', avgTp2>=0?'text-green-400':'text-red-400');
-      }
-
-      // Trade Summary
-      const sumEl = document.getElementById('bt-stats-summary');
-      if (sumEl) {
-        const sl = (label,val) => `<div class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0"><span class="text-zinc-500">${label}</span><span class="font-bold">${val}</span></div>`;
-        sumEl.innerHTML =
-          sl('Wins / Losses / BE', `<span class="text-green-400">${wins.length}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${losses.length}</span> <span class="text-zinc-600">/</span> <span class="text-zinc-400">${bes.length}</span>`) +
-          sl('Avg Win / Loss', `<span class="text-green-400">+$${avgWin.toFixed(2)}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">-$${avgLoss.toFixed(2)}</span>`) +
-          sl('Best / Worst', `<span class="text-green-400">${best>0?'+$'+best.toFixed(2):'—'}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${worst<0?'-$'+Math.abs(worst).toFixed(2):'—'}</span>`) +
-          sl('Gross P&L', `<span class="${netPnl>=0?'text-green-400':'text-red-400'}">${netPnl>=0?'+':'-'}$${Math.abs(netPnl).toFixed(2)}</span>`);
-      }
-
-      // Commissions
-      const commEl = document.getElementById('bt-stats-commissions');
-      if (commEl) {
-        const sl = (label,val,cls='text-white') => `<div class="flex justify-between items-center py-1 border-b border-white/5 last:border-0"><span class="text-zinc-500">${label}</span><span class="font-bold ${cls}">${val}</span></div>`;
-        commEl.innerHTML =
-          sl('Total paid', totalComm?'-$'+totalComm.toFixed(2):'—', 'text-red-400') +
-          sl('Avg per trade', '$'+(trades.length?totalComm/trades.length:0).toFixed(2)) +
-          sl('Net after fees', (netPnl-totalComm>=0?'+':'-')+'$'+Math.abs(netPnl-totalComm).toFixed(2), netPnl-totalComm>=0?'text-green-400':'text-red-400');
-      }
-
-      // Contracts
-      const conEl = document.getElementById('bt-stats-contracts');
-      if (conEl) {
-        const sl = (label,val) => `<div class="flex justify-between items-center py-1 border-b border-white/5 last:border-0"><span class="text-zinc-500">${label}</span><span class="font-bold text-white">${val}</span></div>`;
-        conEl.innerHTML = sl('Avg contracts',avgContracts)+sl('Avg on winners',avgCW)+sl('Avg on losers',avgCL)+sl('Total contracts',totalContracts);
-      }
-
-      // By Grade — table
-      const gradeEl = document.getElementById('bt-stats-grades');
-      if (gradeEl) {
-        const grades = ['A+','A','B+','B','C+','C','D','F'];
-        const maxGP = Math.max(...grades.map(g=>{const gt=trades.filter(t=>t.grade===g);return gt.length?Math.abs(gt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)):0;}));
-        const header = `<div class="grid gap-2 py-2 border-b border-white/10 mb-1 text-[10px] text-zinc-600 uppercase tracking-wider" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem">
-          <span>Grade</span><span></span><span class="text-right">Trades</span><span class="text-right">Win %</span><span class="text-right">Net P&L</span><span class="text-right">Avg P&L</span></div>`;
-        gradeEl.innerHTML = header + grades.map(g => {
-          const gt = trades.filter(t=>t.grade===g);
-          if (!gt.length) return `<div class="grid gap-2 py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem"><span class="text-zinc-600 font-bold">${g}</span><div></div><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span></div>`;
-          const gw=gt.filter(t=>t.result==='WIN').length, gd=gw+gt.filter(t=>t.result==='LOSS').length;
-          const gwr=gd?Math.round(gw/gd*100):0, gp=gt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0), gavg=gp/gt.length;
-          const barW=maxGP>0?Math.round(Math.abs(gp)/maxGP*100):0, col=gp>=0?'#22c55e':'#ef4444';
-          return `<div class="grid gap-2 items-center py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem">
-            <span class="font-black" style="color:${col}">${g}</span>
-            <div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${barW}%;background:${col};opacity:0.75"></div></div>
-            <span class="text-right text-zinc-400">${gt.length}t</span>
-            <span class="text-right font-bold ${gwr>=50?'text-green-400':'text-red-400'}">${gwr}%</span>
-            <span class="text-right font-black" style="color:${col}">${gp>=0?'+':'-'}$${Math.abs(gp).toFixed(2)}</span>
-            <span class="text-right text-zinc-400">${gavg>=0?'+':'-'}$${Math.abs(gavg).toFixed(2)}</span>
-          </div>`;
-        }).join('');
-      }
-
-      // Long vs Short
-      const dirEl = document.getElementById('bt-stats-dir');
-      if (dirEl) {
-        dirEl.innerHTML = [['LONG',trades.filter(t=>t.direction==='LONG'),'#22c55e'],['SHORT',trades.filter(t=>t.direction==='SHORT'),'#ef4444']].map(([label,ts,col]) => {
-          const w=ts.filter(t=>t.result==='WIN').length, l=ts.filter(t=>t.result==='LOSS').length, d=w+l;
-          const wr2=d?Math.round(w/d*100):0, p=ts.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-          const aw=w?ts.filter(t=>t.result==='WIN').reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)/w:0;
-          const al=l?Math.abs(ts.filter(t=>t.result==='LOSS').reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)/l):0;
-          return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
-            <div class="flex justify-between items-center mb-3">
-              <span class="text-sm font-black" style="color:${col}">${label}</span>
-              <span class="text-xs text-zinc-500">${ts.length} trades · <span style="color:${wr2>=50?'#22c55e':'#ef4444'}">${wr2}% WR</span></span>
-            </div>
-            <div class="space-y-1.5 text-xs">
-              <div class="flex justify-between"><span class="text-zinc-500">Net P&L</span><span class="font-black" style="color:${p>=0?'#22c55e':'#ef4444'}">${p>=0?'+':'-'}$${Math.abs(p).toFixed(2)}</span></div>
-              <div class="flex justify-between"><span class="text-zinc-500">Avg Win</span><span class="text-green-400 font-bold">+$${aw.toFixed(2)}</span></div>
-              <div class="flex justify-between"><span class="text-zinc-500">Avg Loss</span><span class="text-red-400 font-bold">-$${al.toFixed(2)}</span></div>
-            </div>
-          </div>`;
-        }).join('');
-      }
-
-      // Day of Week
-      const dowEl = document.getElementById('bt-stats-dow');
-      if (dowEl) {
-        const days = ['Mon','Tue','Wed','Thu','Fri'];
-        const dayData = days.map((day,i) => {
-          const dt = trades.filter(t=>{if(!t.date)return false;const d=new Date(t.date+'T00:00:00');return d.getDay()===i+1;});
-          const p=dt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-          const w=dt.filter(t=>t.result==='WIN').length, d2=w+dt.filter(t=>t.result==='LOSS').length;
-          return { day, dt, p, wr: d2?Math.round(w/d2*100):0 };
-        });
-        const maxAbs = Math.max(...dayData.map(d=>Math.abs(d.p)),1);
-        dowEl.innerHTML = dayData.map(({day,dt,p,wr}) => barRow(day,p,wr,dt.length,maxAbs)).join('');
-      }
-
-      // Drawdown
-      renderBtDrawdown(trades);
-    }
-
-    function drawBtEquityCurve(trades) {
-      const wrap = document.getElementById('bt-equity-chart-wrap');
-      const finalEl = document.getElementById('bt-chart-final-pnl');
-      const legendEl = document.getElementById('bt-chart-legend');
-      if (!wrap) return;
-      // Temporarily swap IDs so drawEquityCurve targets BT elements
-      const origWrap = document.getElementById('equity-chart-wrap');
-      const origFinal = document.getElementById('chart-final-pnl');
-      const origLegend = document.getElementById('chart-legend');
-      wrap.id = 'equity-chart-wrap';
-      if (finalEl) finalEl.id = 'chart-final-pnl';
-      if (legendEl) legendEl.id = 'chart-legend';
-      if (origWrap) origWrap.id = '_eq_wrap_bak';
-      if (origFinal) origFinal.id = '_eq_final_bak';
-      if (origLegend) origLegend.id = '_eq_legend_bak';
-      drawEquityCurve(trades);
-      // Restore IDs
-      wrap.id = 'bt-equity-chart-wrap';
-      if (finalEl) finalEl.id = 'bt-chart-final-pnl';
-      if (legendEl) legendEl.id = 'bt-chart-legend';
-      if (origWrap) origWrap.id = 'equity-chart-wrap';
-      if (origFinal) origFinal.id = 'chart-final-pnl';
-      if (origLegend) origLegend.id = 'chart-legend';
-    }
-
-    function renderBtDrawdown(trades) {
-      const ddWrap = document.getElementById('bt-dd-chart-wrap');
-      const ddStats = document.getElementById('bt-stats-drawdown');
-      if (!ddWrap || !ddStats) return;
-      // Swap IDs to reuse renderDrawdown
-      const origWrap = document.getElementById('dd-chart-wrap');
-      const origStats = document.getElementById('stats-drawdown');
-      ddWrap.id = 'dd-chart-wrap';
-      ddStats.id = 'stats-drawdown';
-      if (origWrap) origWrap.id = '_dd_wrap_bak';
-      if (origStats) origStats.id = '_dd_stats_bak';
-      renderDrawdown(trades);
-      ddWrap.id = 'bt-dd-chart-wrap';
-      ddStats.id = 'bt-stats-drawdown';
-      if (origWrap) origWrap.id = 'dd-chart-wrap';
-      if (origStats) origStats.id = 'stats-drawdown';
-    }
-
-    function renderBtCal() {
-      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      document.getElementById('bt-cal-title').textContent = months[btCalMonth]+' '+btCalYear;
-      const byDate = {};
-      filteredBtTrades.forEach(t => { if(!t.date)return; if(!byDate[t.date])byDate[t.date]={pnl:0,count:0}; byDate[t.date].pnl+=parseFloat(t.netPnl)||0; byDate[t.date].count++; });
-
-      const monthKeys = Object.keys(byDate).filter(ds => { const d=new Date(ds+'T00:00:00'); return d.getFullYear()===btCalYear&&d.getMonth()===btCalMonth; });
-      const monthDaysTraded = monthKeys.length;
-      const monthTrades = filteredBtTrades.filter(t => { if(!t.date)return false; const d=new Date(t.date+'T00:00:00'); return d.getFullYear()===btCalYear&&d.getMonth()===btCalMonth; });
-      const mPnl = monthTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-      const mW = monthTrades.filter(t=>t.result==='WIN').length;
-      const mD = mW + monthTrades.filter(t=>t.result==='LOSS').length;
-      const mWR = mD ? Math.round(mW/mD*100) : null;
-
-      const mEl = document.getElementById('bt-cal-monthly');
-      if (mEl) { mEl.textContent = fmtFull(mPnl); mEl.className = 'font-black ' + (mPnl>=0?'text-green-400':'text-red-400'); }
-      const wrEl = document.getElementById('bt-cal-wr');
-      if (wrEl) { wrEl.textContent = mWR !== null ? mWR+'%' : '—'; wrEl.className = 'font-black ' + (mWR>=50?'text-green-400':'text-red-400'); }
-      const dEl = document.getElementById('bt-cal-days');
-      if (dEl) dEl.textContent = monthDaysTraded + ' day' + (monthDaysTraded!==1?'s':'') + ' traded';
-
-      const daysInMonth = new Date(btCalYear, btCalMonth+1, 0).getDate();
-      const weekdays = []; for(let d=1;d<=daysInMonth;d++){const dow=new Date(btCalYear,btCalMonth,d).getDay();if(dow!==0&&dow!==6)weekdays.push(d);}
-      const firstDow = new Date(btCalYear,btCalMonth,weekdays[0]).getDay()-1;
-      let cells = []; for(let i=0;i<firstDow;i++)cells.push(null); weekdays.forEach(d=>cells.push(d)); while(cells.length%5!==0)cells.push(null);
-
-      const grid = document.getElementById('bt-cal-grid');
-      grid.innerHTML = '';
-      for (let r=0; r<cells.length/5; r++) {
-        const row = document.createElement('div');
-        row.className = 'grid grid-cols-6 border-b border-white/[0.06] last:border-0';
-        let rowPnl = 0;
-        for (let c=0; c<5; c++) {
-          const d = cells[r*5+c];
-          const cell = document.createElement('div');
-          cell.className = 'cal-day border-r border-white/[0.06] p-4';
-          if (d) {
-            const ds = btCalYear+'-'+String(btCalMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
-            const data = byDate[ds];
-            if (data) rowPnl += data.pnl;
-            if (data) { cell.classList.add(data.pnl>0?'cal-day-win':'cal-day-loss'); cell.style.cursor='pointer'; }
-            const dateDiv = document.createElement('div');
-            dateDiv.className = 'text-xs font-bold text-zinc-500 mb-2';
-            dateDiv.textContent = `${btCalMonth+1}/${d}`;
-            cell.appendChild(dateDiv);
-            if (data) {
-              const pnlDiv = document.createElement('div');
-              pnlDiv.className = 'text-sm font-black ' + (data.pnl>=0?'text-green-400':'text-red-400');
-              pnlDiv.textContent = fmtShort(data.pnl);
-              cell.appendChild(pnlDiv);
-              const countDiv = document.createElement('div');
-              countDiv.className = 'text-[11px] text-zinc-500 mt-1';
-              countDiv.textContent = `${data.count} trade${data.count!==1?'s':''}`;
-              cell.appendChild(countDiv);
-            } else {
-              // Empty day — tap/click to log a trade
-              cell.style.cursor = 'pointer';
-              cell.title = 'Log trade for ' + ds;
-              cell.onclick = () => { openLogModal(); document.getElementById('t-date').value = ds; };
-              cell.ontouchend = (e) => { e.preventDefault(); openLogModal(); document.getElementById('t-date').value = ds; };
-              const hint = document.createElement('div');
-              hint.className = 'text-zinc-700 text-xl font-black mt-2 cal-empty-hint';
-              hint.style.pointerEvents = 'none';
-              hint.style.userSelect = 'none';
-              hint.textContent = '+';
-              cell.appendChild(hint);
-            }
-          }
-          row.appendChild(cell);
-        }
-        const wc = document.createElement('div');
-        wc.className = 'cal-day p-4 flex flex-col items-end justify-start bg-zinc-950/30';
-        const wcInner = document.createElement('div');
-        wcInner.className = 'text-sm font-black ' + (rowPnl>=0?'text-green-400':'text-red-400');
-        wcInner.textContent = rowPnl!==0 ? fmtShort(rowPnl) : '—';
-        wc.appendChild(wcInner);
-        row.appendChild(wc);
-        grid.appendChild(row);
-      }
-    }
-    function btCalPrev(){btCalMonth--;if(btCalMonth<0){btCalMonth=11;btCalYear--;}renderBtCal();}
-    function btCalNext(){btCalMonth++;if(btCalMonth>11){btCalMonth=0;btCalYear++;}renderBtCal();}
-
-
-
     function openLogModal(id=null) {
       editingId = id; currentTags = [];
       document.getElementById('log-modal-title').textContent = id ? 'Edit Trade' : 'Log Trade';
@@ -1271,24 +1686,53 @@
 
     // ── Backtest ──
 
+    // ── Backtest state + filters ──
+    let btSessions = [], btTrades = [], filteredBtTrades = [];
+    let btCalYear = new Date().getFullYear(), btCalMonth = new Date().getMonth();
+
+    function applyBtFilters() {
+      const res = document.getElementById('bt-f-result').value;
+      const grade = document.getElementById('bt-f-grade').value;
+      const dir = document.getElementById('bt-f-direction').value;
+      filteredBtTrades = btTrades.filter(t => (!res||t.result===res) && (!grade||t.grade===grade) && (!dir||t.direction===dir));
+      updateBtFilterBadge(); updateBtSummary();
+      const sub = [...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','')||'trades';
+      if (sub==='trades') renderBtTrades(); else if (sub==='stats') renderBtStats(); else if (sub==='calendar') renderBtCal();
+    }
+    function clearBtFilters() {
+      ['bt-f-result','bt-f-grade','bt-f-direction'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+      filteredBtTrades=[...btTrades]; updateBtFilterBadge(); updateBtSummary();
+      const sub=[...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','')||'trades';
+      if (sub==='trades') renderBtTrades(); else if (sub==='stats') renderBtStats(); else if (sub==='calendar') renderBtCal();
+    }
+    function updateBtSummary() {
+      const wins=filteredBtTrades.filter(t=>t.result==='WIN').length;
+      const p=filteredBtTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const wr=filteredBtTrades.length?Math.round(wins/filteredBtTrades.length*100):0;
+      const el=document.getElementById('bt-summary');
+      if (el) el.innerHTML=[['Trades',filteredBtTrades.length,'text-white'],['Win Rate',wr+'%','text-green-400'],['Net P&L',fmt(p),pnlColor(p)]].map(([l,v,c])=>`<div class="text-right"><div class="text-[10px] text-zinc-600">${l}</div><div class="text-xl font-black ${c}">${v}</div></div>`).join('');
+    }
+    function updateBtFilterBadge() {
+      const active=['bt-f-result','bt-f-grade','bt-f-direction'].filter(id=>document.getElementById(id)?.value!=='').length;
+      const badge=document.getElementById('bt-filter-badge');
+      if (badge){badge.textContent=active>0?active+' filter'+(active>1?'s':'')+' active':'';badge.classList.toggle('hidden',active===0);}
+    }
 
     // ── Init ──
     async function init() {
       const token = localStorage.getItem('fsdx_token');
-      if (!token) { window.location.href = 'login.html'; return; }
+      if (!token) { window.location.href='login.html'; return; }
       try {
-        const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', {
-          headers: { 'Authorization': 'Bearer ' + token }
-        });
+        const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', { headers:{'Authorization':'Bearer '+token} });
         const data = await res.json();
         whopKey = data.user?.whopKey;
-      } catch(err) {
-        console.error('Profile fetch error:', err);
-      }
+      } catch(err) { console.error(err); }
       if (!whopKey) {
-        document.getElementById('bt-loading').innerHTML = '<p class="text-zinc-500 text-sm text-center">Could not load your session. <a href=\"login.html\" class=\"text-green-400\">Log out and back in</a>.</p>';
+        document.getElementById('loading-screen').innerHTML='<p class="text-zinc-500 text-sm text-center px-6">Could not load your key. <a href="login.html" class="text-green-400">Log out and back in</a>.</p>';
         return;
       }
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('page-content').classList.remove('hidden');
       loadBtSessions();
     }
     init();
