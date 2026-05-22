@@ -234,7 +234,7 @@
               <!-- Drawdown -->
               <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
                 <div class="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-4">Drawdown Metrics</div>
-                <div id="stats-drawdown" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6"></div>
+                <div id="stats-drawdown" class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6"></div>
                 <div class="text-xs text-zinc-600 uppercase tracking-wider mb-3">Drawdown From Peak</div>
                 <div id="dd-chart-wrap" class="relative" style="height:190px"></div>
               </div>
@@ -365,7 +365,7 @@
                 <!-- Drawdown -->
                 <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
                   <div class="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-4">Drawdown Metrics</div>
-                  <div id="bt-stats-drawdown" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6"></div>
+                  <div id="bt-stats-drawdown" class="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6"></div>
                   <div class="text-xs text-zinc-600 uppercase tracking-wider mb-3">Drawdown From Peak</div>
                   <div id="bt-dd-chart-wrap" class="relative" style="height:190px"></div>
                 </div>
@@ -1487,7 +1487,7 @@
     }
 
     function renderDrawdown(trades) {
-      const sorted = [...trades].sort((a,b)=>(a.date||'')<(b.date||'')?-1:1);
+      const sorted = [...trades].sort((a,b)=>((a.date||'')+(a.entryTime||''))<((b.date||'')+(b.entryTime||''))?-1:1);
       let equity=0, peak=0, maxDD=0, curDD=0;
       let consecL=0, maxConsecL=0;
       const byDay={};
@@ -1503,14 +1503,16 @@
         ddPoints.push({ dd: curDD, date: t.date||null, pnl: parseFloat(t.netPnl)||0 });
       });
       const maxDailyLoss = Object.values(byDay).length ? Math.min(0, Math.min(...Object.values(byDay))) : 0;
-      const rf = maxDD !== 0 ? (equity / maxDD) : null;
+      const rf = maxDD !== 0 ? (equity / Math.abs(maxDD)) : null;
+      const netPnl = equity;
 
-      // Stat cards — centered like the rest
       document.getElementById('stats-drawdown').innerHTML = [
-        ['Max Drawdown', '-$'+Math.abs(maxDD).toFixed(2), '#ef4444', 'peak to trough'],
-        ['Current DD', '-$'+Math.abs(curDD).toFixed(2), '#ef4444', 'from current peak'],
-        ['Max Daily Loss', '-$'+Math.abs(maxDailyLoss).toFixed(2), '#ef4444', 'worst single day'],
+        ['Max Drawdown', maxDD !== 0 ? '-$'+Math.abs(maxDD).toFixed(2) : '$0', '#ef4444', 'peak to trough'],
+        ['Current Drawdown', curDD < 0 ? '-$'+Math.abs(curDD).toFixed(2) : '$0', curDD < 0 ? '#ef4444' : '#71717a', 'from current peak'],
+        ['Max Daily Loss', maxDailyLoss < 0 ? '-$'+Math.abs(maxDailyLoss).toFixed(2) : '$0', '#ef4444', 'worst single day'],
         ['Max Consec. Losses', maxConsecL, '#ffffff', 'in a row'],
+        ['Recovery Factor', rf !== null ? rf.toFixed(2) : '—', rf !== null && rf >= 1 ? '#22c55e' : '#ef4444', 'net P&L ÷ max DD'],
+        ['Net P&L', (netPnl >= 0 ? '+' : '-') + '$' + Math.abs(netPnl).toFixed(2), netPnl >= 0 ? '#22c55e' : '#ef4444', 'filtered period'],
       ].map(([l,v,col,sub]) => `
         <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 flex flex-col items-center justify-center text-center">
           <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">${l}</div>
