@@ -18,6 +18,13 @@
     .cal-day-loss { background: rgba(239,68,68,0.09); border-left: 2px solid rgba(239,68,68,0.4) !important; }
     .cal-day:hover .cal-empty-hint { color: rgba(255,255,255,0.2) !important; }
     .cal-day:not(.cal-day-win):not(.cal-day-loss):hover { background: rgba(255,255,255,0.02); }
+    @media (max-width: 640px) {
+      .cal-day { min-height: 72px; height: 72px; padding: 6px !important; }
+      .cal-day .text-sm { font-size: 11px !important; }
+      .cal-day .text-xs { font-size: 10px !important; }
+      .cal-day .text-\[11px\] { font-size: 9px !important; }
+      .cal-header-stats { flex-wrap: wrap; gap: 8px !important; }
+    }
     .tag-pill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); border-radius: 999px; font-size: 11px; color: #22c55e; }
     .direction-btn { transition: all 0.15s; }
     .direction-btn.active-long { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #22c55e; font-weight: 700; }
@@ -92,29 +99,33 @@
 
           <!-- CALENDAR -->
           <div id="panel-calendar" class="sub-panel active">
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-4">
+            <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+              <div class="flex items-center gap-3">
                 <button onclick="calPrev()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg></button>
-                <h2 id="cal-title" class="text-lg font-black text-white w-40 text-center"></h2>
+                <h2 id="cal-title" class="text-lg font-black text-white w-36 text-center"></h2>
                 <button onclick="calNext()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
               </div>
-              <div class="flex gap-6 text-sm">
-                <div><span class="text-zinc-500 text-xs mr-2">MONTHLY</span><span id="cal-monthly" class="font-black">—</span></div>
-                <div><span class="text-zinc-500 text-xs mr-2">YEARLY</span><span id="cal-yearly" class="font-black">—</span></div>
-                <div><span class="text-zinc-500 text-xs mr-2">WIN RATE</span><span id="cal-wr" class="font-black text-green-400">—</span></div>
-                <div><span class="text-zinc-500 text-xs mr-2">DAYS</span><span id="cal-days-traded" class="font-black text-zinc-400">—</span></div>
+              <div class="cal-header-stats flex gap-4 text-sm flex-wrap">
+                <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="cal-monthly" class="font-black">—</span></div>
+                <div><span class="text-zinc-500 text-xs mr-1.5">YEARLY</span><span id="cal-yearly" class="font-black">—</span></div>
+                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="cal-wr" class="font-black text-green-400">—</span></div>
+                <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="cal-days-traded" class="font-black text-zinc-400">—</span></div>
               </div>
             </div>
             <div class="border border-white/10 rounded-2xl overflow-hidden">
-              <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
-                <div class="px-4 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
-                <div class="px-4 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
-                <div class="px-4 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
-                <div class="px-4 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
-                <div class="px-4 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
-                <div class="px-4 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Weekly</div>
+              <div class="overflow-x-auto">
+                <div style="min-width:420px">
+                  <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
+                    <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
+                    <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
+                    <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
+                    <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
+                    <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
+                    <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Weekly</div>
+                  </div>
+                  <div id="cal-grid"></div>
+                </div>
               </div>
-              <div id="cal-grid"></div>
             </div>
           </div>
 
@@ -1841,6 +1852,19 @@
       detailId = id;
       const p = parseFloat(t.netPnl)||0;
       const tags = Array.isArray(t.tags)&&t.tags.length?t.tags.map(tg=>`<span class="tag-pill text-[10px]">${tg}</span>`).join(''):'—';
+      const chartBlock = t.chartUrl ? `
+        <div class="border-t border-white/5 pt-4">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-xs text-zinc-600 uppercase tracking-wider">Chart</div>
+            <a href="${t.chartUrl}" target="_blank" class="text-xs text-green-400 hover:text-green-300 transition">Open full size ↗</a>
+          </div>
+          <div class="rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
+            <img src="${t.chartUrl}" alt="Trade chart"
+              class="w-full max-h-64 object-contain bg-zinc-950"
+              onerror="this.parentElement.innerHTML='<div class=\\'p-4 text-center\\'><a href=\\'${t.chartUrl}\\' target=\\'_blank\\' class=\\'text-green-400 text-xs hover:underline\\'>View Chart ↗</a></div>'"
+            />
+          </div>
+        </div>` : '';
       document.getElementById('detail-body').innerHTML = `
         <div class="space-y-3">
           <div class="flex items-center justify-between">
@@ -1851,11 +1875,11 @@
             </div>
           </div>
           <div class="grid grid-cols-2 gap-2 text-xs border-t border-white/5 pt-3">
-            ${[['Date',t.date],['Ticker',t.ticker],['Direction',t.direction],['Contracts',t.contracts],['Account',t.accountType],['Strategy',t.strategy||'—'],['Entry Time',t.entryTime||'—'],['Exit Time',t.exitTime||'—'],['TP1 P&L',t.tp1Pnl?fmt(t.tp1Pnl):'—'],['TP2 P&L',t.tp2Pnl?fmt(t.tp2Pnl):'—']].map(([k,v])=>`<div><div class="text-zinc-600 mb-0.5">${k}</div><div class="text-white font-medium">${v||'—'}</div></div>`).join('')}
+            ${[['Date',t.date],['Ticker',t.ticker],['Direction',t.direction],['Contracts',t.contracts],['Account',t.accountType+(t.accountName?' — '+t.accountName:'')],['Strategy',t.strategy||'—'],['Entry Time',t.entryTime||'—'],['Exit Time',t.exitTime||'—'],['TP1 P&L',t.tp1Pnl?fmt(t.tp1Pnl):'—'],['TP2 P&L',t.tp2Pnl?fmt(t.tp2Pnl):'—'],['Commissions',t.commissions?'-$'+parseFloat(t.commissions).toFixed(2):'—']].map(([k,v])=>`<div><div class="text-zinc-600 mb-0.5">${k}</div><div class="text-white font-medium">${v||'—'}</div></div>`).join('')}
           </div>
           ${t.tags&&t.tags.length?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-2">Tags</div><div class="flex flex-wrap gap-1">${tags}</div></div>`:''}
           ${t.notes?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-1">Notes</div><p class="text-zinc-400 text-xs leading-relaxed">${t.notes}</p></div>`:''}
-          ${t.chartUrl?`<div class="border-t border-white/5 pt-3"><a href="${t.chartUrl}" target="_blank" class="text-green-400 hover:text-green-300 text-xs">View Chart ↗</a></div>`:''}
+          ${chartBlock}
         </div>`;
       document.getElementById('detail-modal').classList.remove('hidden');
     }
