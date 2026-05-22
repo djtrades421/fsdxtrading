@@ -144,6 +144,18 @@
 
           <!-- HISTORY -->
           <div id="panel-history" class="sub-panel">
+            <!-- Toolbar -->
+            <div class="flex gap-2 mb-4">
+              <button onclick="exportCSV()" class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-lg transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
+                ↓ CSV
+              </button>
+              <button onclick="document.getElementById('csv-import-input').click()" class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-lg transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 7.5m0 0L7.5 12m4.5-4.5V21"/></svg>
+                ↑ Import
+              </button>
+              <input type="file" id="csv-import-input" accept=".csv" class="hidden">
+            </div>
             <div id="hist-empty" class="hidden text-center py-16">
               <div class="text-4xl mb-3">📋</div>
               <h3 class="text-lg font-black mb-2">No trades yet</h3>
@@ -169,6 +181,13 @@
           <div id="panel-stats" class="sub-panel">
             <div id="stats-empty" class="hidden text-center py-16 text-zinc-600 text-sm">No trades for this period.</div>
             <div id="stats-content" class="hidden space-y-5">
+              <!-- Card button -->
+              <div class="flex justify-end">
+                <button onclick="generateCard()" class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-green-400 hover:border-green-500/30 text-xs font-bold rounded-lg transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+                  ↓ Card
+                </button>
+              </div>
               <!-- Top 4 KPI cards -->
               <div id="stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-4"></div>
 
@@ -1850,6 +1869,139 @@
     }
 
     // ── Backtest ──
+    // ── CSV Export ──
+    function exportCSV() {
+      if (!allTrades.length) { alert('No trades to export.'); return; }
+      const headers = ['Date','Entry Time','Exit Time','Ticker','Account Type','# Accounts','Direction','Contracts','Entry','TP1 Exit','TP1 Contracts','TP1 P&L','TP2 Exit','TP2 Contracts','TP2 P&L','Net P&L','Result','SL','Commissions','Strategy','Timeframe','Grade','Tags','Chart URL','Notes'];
+      const rows = allTrades.map(t => [
+        t.date, t.entryTime, t.exitTime, t.ticker, t.accountType, t.numAccounts||1, t.direction, t.contracts,
+        t.entry||t.entryPrice, t.tp1Exit||t.tp1Price, t.tp1Contracts, t.tp1Pnl,
+        t.tp2Exit||t.tp2Price, t.tp2Contracts, t.tp2Pnl,
+        t.netPnl, t.result, t.sl||t.slPrice, t.commissions, t.strategy, t.timeframe, t.grade,
+        Array.isArray(t.tags) ? t.tags.join(', ') : (t.tags||''), t.chartUrl, t.notes
+      ].map(v => '"' + String(v||'').replace(/"/g,'""') + '"').join(','));
+      const csv = [headers.join(','), ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'fsdx_journal_' + new Date().toISOString().slice(0,10) + '.csv';
+      a.click(); URL.revokeObjectURL(url);
+    }
+
+    // ── CSV Import ──
+    document.getElementById('csv-import-input').addEventListener('change', async (ev) => {
+      const file = ev.target.files[0];
+      if (!file) return;
+      ev.target.value = '';
+      const text = await file.text();
+      const imported = parseJournalCSV(text);
+      if (!imported.length) { alert('No valid trades found. Make sure the CSV has at least a Date and Net P&L column.'); return; }
+      const newTrades = imported.map(t => ({ ...t, id: Date.now().toString() + Math.random().toString(36).slice(2) }));
+      // Save to KV
+      const existingRes = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) });
+      const existingData = await existingRes.json();
+      const existing = Array.isArray(existingData.trades) ? existingData.trades : [];
+      const merged = [...existing, ...newTrades].sort((a,b) => (a.date||'') < (b.date||'') ? 1 : -1);
+      await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key: whopKey, payload:{ trades: merged } }) });
+      allTrades = merged;
+      filteredTrades = [...allTrades];
+      renderCalendar(); renderHistory();
+      alert('✅ Imported ' + newTrades.length + ' trade' + (newTrades.length!==1?'s':'') + ' successfully!');
+    });
+
+    function parseJournalCSV(text) {
+      function parseCSVLine(line) {
+        const result = []; let cur = '', inQuote = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') { inQuote = !inQuote; }
+          else if (ch === ',' && !inQuote) { result.push(cur.trim()); cur = ''; }
+          else { cur += ch; }
+        }
+        result.push(cur.trim()); return result;
+      }
+      text = text.replace(/^\uFEFF/, '');
+      const lines = text.trim().split('\n').filter(l => l.trim());
+      if (lines.length < 2) return [];
+      const headers = parseCSVLine(lines[0]).map(h => h.replace(/"/g,'').toLowerCase().trim());
+      function col(row, ...candidates) { for (const c of candidates) { if (row[c]!==undefined && row[c]!=='') return row[c]; } return ''; }
+      const trades = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVLine(lines[i]);
+        const row = {}; headers.forEach((h,idx) => row[h] = (cols[idx]||'').replace(/"/g,'').trim());
+        const dateRaw = col(row,'date','trade date','day','closed'); if (!dateRaw) continue;
+        let date = dateRaw;
+        if (/\d{1,2}\/\d{1,2}\/\d{4}/.test(date)) { const [m,d,y]=date.split('/'); date=y+'-'+m.padStart(2,'0')+'-'+d.padStart(2,'0'); }
+        else if (/\d{1,2}-\d{1,2}-\d{4}/.test(date)) { const [m,d,y]=date.split('-'); date=y+'-'+m.padStart(2,'0')+'-'+d.padStart(2,'0'); }
+        const pnlRaw = col(row,'net p&l','net pnl','p&l','pnl','profit/loss','profit','gain/loss','gain','pl','realized p&l','realized pnl');
+        const netPnl = isNaN(parseFloat(pnlRaw.replace(/[$,\s]/g,''))) ? 0 : parseFloat(pnlRaw.replace(/[$,\s]/g,''));
+        const dirRaw = col(row,'direction','dir','side','type','long/short').toUpperCase();
+        const direction = dirRaw.includes('SHORT')||dirRaw.includes('SELL') ? 'SHORT' : 'LONG';
+        const resultRaw = col(row,'result','outcome','win/loss','status').toUpperCase();
+        let result;
+        if (resultRaw.includes('WIN')||resultRaw==='W') result='WIN';
+        else if (resultRaw.includes('LOSS')||resultRaw==='L') result='LOSS';
+        else if (resultRaw.includes('BE')||resultRaw.includes('BREAK')) result='BE';
+        else result = netPnl>0?'WIN':netPnl<0?'LOSS':'BE';
+        const entry=parseFloat(col(row,'entry price','entry','open price','open'))||null;
+        const tp1Exit=parseFloat(col(row,'tp1 exit','tp1 price','tp1','exit price','close price','close'))||null;
+        const tp1Pnl=col(row,'tp1 p&l','tp1 pnl')!==''?(parseFloat(col(row,'tp1 p&l','tp1 pnl'))||0):null;
+        const tp1Contracts=parseInt(col(row,'tp1 contracts'))||null;
+        const tp2Exit=parseFloat(col(row,'tp2 exit','tp2 price','tp2'))||null;
+        const tp2PnlRaw=col(row,'tp2 p&l','tp2 pnl');
+        const tp2Pnl=tp2PnlRaw!==''?(parseFloat(tp2PnlRaw)||0):null;
+        const tp2Contracts=parseInt(col(row,'tp2 contracts'))||null;
+        const slPrice=parseFloat(col(row,'sl price','sl','stop loss','stoploss','stop'))||null;
+        const tagsRaw=col(row,'tags','tag','labels','label');
+        trades.push({
+          date, entryTime:col(row,'entry time','time','open time','entrytime'),
+          exitTime:col(row,'exit time','close time','exittime'),
+          ticker:(col(row,'ticker','symbol','instrument','market','contract')||'MNQ').toUpperCase(),
+          accountType:col(row,'account type','account','acct','firm'),
+          numAccounts:parseInt(col(row,'# accounts','num accounts','accounts'))||1,
+          direction, contracts:parseInt(col(row,'contracts','# contracts','qty','quantity','size','volume'))||1,
+          entry, tp1Exit, tp1Contracts, tp1Pnl, tp2Exit, tp2Contracts, tp2Pnl,
+          netPnl, result, sl:slPrice, slPrice,
+          commissions:parseFloat(col(row,'commissions','commission','fees','fee'))||0,
+          strategy:col(row,'strategy','setup','pattern','session'),
+          timeframe:col(row,'timeframe','tf','time frame'),
+          grade:col(row,'grade','rating','score','quality'),
+          tags:tagsRaw ? tagsRaw.split(',').map(t=>t.trim()).filter(Boolean) : [],
+          chartUrl:col(row,'chart url','chart','screenshot','url','link'),
+          notes:col(row,'notes','note','comments','comment','remarks'),
+          pnlMode:(entry&&(slPrice||tp1Exit))?'price':'manual',
+          createdAt:new Date().toISOString(), importedFromCSV:true
+        });
+      }
+      return trades;
+    }
+
+    // ── Generate Card ──
+    function generateCard() {
+      const trades = filteredTrades;
+      if (!trades.length) { alert('No trades to generate card from.'); return; }
+      const wins = trades.filter(t=>t.result==='WIN');
+      const losses = trades.filter(t=>t.result==='LOSS');
+      const decided = wins.length + losses.length;
+      const wr = decided ? Math.round(wins.length/decided*100) : 0;
+      const netPnl = trades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const pnlStr = (netPnl>=0?'+':'')+  '$'+Math.abs(netPnl).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+      const pnlColor = netPnl>=0?'#00c864':'#dc3232';
+      const wrColor = wr>=50?'#00c864':'#dc3232';
+      const now = new Date();
+      const dateStamp = (now.getMonth()+1).toString().padStart(2,'0')+' / '+now.getDate().toString().padStart(2,'0')+' / '+now.getFullYear();
+      // Period label from date range filter
+      const dr = document.getElementById('gf-daterange')?.value||'all';
+      const periodMap = {today:'TODAY',week:'THIS WEEK',month:'THIS MONTH',year:'THIS YEAR',all:'ALL TIME',custom:'CUSTOM'};
+      const periodLabel = periodMap[dr]||'ALL TIME';
+      const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>FSD-X — P&L Card</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#111;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;}.card{background:#000;border:1px solid #1a1a1a;border-radius:14px;padding:40px 44px;width:560px;}.header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:30px;}.logo{font-size:18px;font-weight:700;color:#fff;letter-spacing:.08em;}.logo span{color:#00c864;}.badge{background:#00c864;color:#000;font-size:10px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:3px;}.divider{border:none;border-top:1px solid #1a1a1a;margin:0;}.stats{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:34px 0;}.stat-label{font-size:11px;color:#888;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;font-weight:600;}.stat-val{font-size:52px;font-weight:700;line-height:1;letter-spacing:-.02em;}.footer{display:flex;justify-content:space-between;align-items:center;padding-top:22px;}.filter-label{font-size:11px;color:#555;letter-spacing:.06em;}.date{font-size:11px;color:#555;letter-spacing:.06em;}</style></head>
+<body><div class="card"><div class="header"><div><div class="logo">FSD-X // <span>NEXUS 2.0</span></div><div style="font-size:11px;color:#666;margin-top:6px;letter-spacing:.08em;font-weight:600;">${periodLabel} · ALL ACCOUNTS</div></div><div class="badge">PRO</div></div><hr class="divider"><div class="stats"><div style="border-right:1px solid #1a1a1a;padding-right:36px;"><div class="stat-label">Net P&L</div><div class="stat-val" style="color:${pnlColor}">${pnlStr}</div></div><div style="padding-left:36px;"><div class="stat-label">Win Rate</div><div class="stat-val" style="color:${wrColor}">${wr}%</div><div style="font-size:12px;color:#555;margin-top:10px;"><span style="color:#00c864;">${wins.length}W</span> · <span style="color:#dc3232;">${losses.length}L</span></div></div></div><hr class="divider"><div class="footer"><div class="filter-label">FSD-X Nexus 2.0</div><div class="date">${dateStamp}</div></div></div></body></html>`;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+    }
+
     // ── Accounts & Defaults ──
     let journalAccounts = [], journalDefaults = {}, editingAccountId = null;
 
