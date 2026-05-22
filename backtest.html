@@ -62,7 +62,7 @@
       <div class="max-w-7xl mx-auto">
 
         <!-- Main content (shown when authed) -->
-        <div id="bt-main" class="hidden">
+        <div id="bt-main">
 
           <!-- Loading -->
           <div id="bt-loading" class="text-center py-20">
@@ -1282,14 +1282,13 @@
         });
         const data = await res.json();
         whopKey = data.user?.whopKey;
-      } catch(err) {}
+      } catch(err) {
+        console.error('Profile fetch error:', err);
+      }
       if (!whopKey) {
-        document.getElementById('bt-main').innerHTML = '<p class="text-zinc-500 text-sm text-center py-20">Could not load your key. <a href="login.html" class="text-green-400">Log out and back in</a>.</p>';
-        document.getElementById('bt-main').classList.remove('hidden');
+        document.getElementById('bt-loading').innerHTML = '<p class="text-zinc-500 text-sm text-center">Could not load your session. <a href=\"login.html\" class=\"text-green-400\">Log out and back in</a>.</p>';
         return;
       }
-      document.getElementById('bt-loading').classList.add('hidden');
-      document.getElementById('bt-main').classList.remove('hidden');
       loadBtSessions();
     }
     init();
