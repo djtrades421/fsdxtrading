@@ -313,26 +313,61 @@
 
   <!-- Log Trade Modal -->
   <div id="log-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
-    <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6 w-full max-w-2xl max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-5">
         <h2 id="log-modal-title" class="text-base font-black">Log Trade</h2>
-        <button onclick="closeLogModal()" class="text-zinc-500 hover:text-white text-lg">✕</button>
+        <button onclick="closeLogModal()" class="text-zinc-500 hover:text-white text-lg transition">✕</button>
       </div>
       <div id="log-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4 border"></div>
 
-      <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Date</label>
-          <input type="date" id="t-date" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Ticker</label>
-          <input type="text" id="t-ticker" placeholder="MNQ" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Entry Time</label>
-          <input type="time" id="t-entry-time" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Exit Time</label>
-          <input type="time" id="t-exit-time" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition"></div>
+      <!-- Row 1: Date + Entry Time + Exit Time -->
+      <div class="grid grid-cols-3 gap-3 mb-3">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Date</label>
+          <input type="date" id="t-date" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Entry Time</label>
+          <input type="time" id="t-entry-time" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Exit Time</label>
+          <input type="time" id="t-exit-time" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
+      </div>
+
+      <!-- Row 2: Ticker + Account Type -->
+      <div class="grid grid-cols-2 gap-3 mb-1">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Ticker</label>
+          <input type="text" id="t-ticker" placeholder="MNQ" oninput="updateTickerHint()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          <div id="t-ticker-hint" class="text-[11px] text-green-500/70 mt-1 ml-1">MNQ — $0.50/tick</div>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account Type</label>
+          <select id="t-acct-type" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            <option value="">Select...</option>
+            <option value="Funded">Funded</option>
+            <option value="Evaluation">Evaluation</option>
+            <option value="Personal">Personal</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Row 3: Account Name + # of Accounts -->
+      <div class="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account Name <span class="text-zinc-700 normal-case">— optional</span></label>
+          <input type="text" id="t-acct-name" placeholder="e.g. Apex Funded #1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1"># of Accounts <span class="text-zinc-700 normal-case">— optional</span></label>
+          <input type="number" id="t-num-accounts" value="1" min="1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
       </div>
 
       <!-- Direction -->
-      <div class="mt-3">
+      <div class="mb-3">
         <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Direction</label>
         <div class="grid grid-cols-2 gap-2">
           <button onclick="setDir('LONG')" id="dir-long" class="direction-btn active-long py-2.5 border border-white/10 rounded-xl text-sm font-bold transition">LONG</button>
@@ -341,7 +376,7 @@
       </div>
 
       <!-- P&L Mode -->
-      <div class="mt-3">
+      <div class="mb-3">
         <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">P&L Entry Mode</label>
         <div class="grid grid-cols-2 gap-2">
           <button onclick="setPnlMode('price')" id="pnl-price" class="pnl-mode-btn active py-2 border border-green-500/40 bg-green-500/10 text-green-400 rounded-xl text-xs font-bold transition">By Price</button>
@@ -349,84 +384,150 @@
         </div>
       </div>
 
-      <!-- By Price fields -->
-      <div id="price-fields" class="grid grid-cols-2 gap-3 mt-3">
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Contracts</label>
-          <input type="number" id="t-contracts" value="1" min="1" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Entry Price</label>
-          <input type="number" id="t-entry" step="0.25" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700" placeholder="0.00"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">SL Price</label>
-          <input type="number" id="t-sl" step="0.25" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700" placeholder="0.00"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Commissions</label>
-          <input type="number" id="t-commissions" value="0" step="0.01" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition"></div>
+      <!-- ── BY PRICE FIELDS ── -->
+      <div id="price-fields" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Contracts</label>
+            <input type="number" id="t-contracts" value="1" min="1" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Entry Price</label>
+            <input type="number" id="t-entry" step="0.25" oninput="calcPnl()" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">SL Price</label>
+            <input type="number" id="t-sl" step="0.25" oninput="calcPnl()" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Commissions</label>
+            <input type="number" id="t-commissions" value="0" step="0.01" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          </div>
+        </div>
         <!-- TP1 -->
-        <div class="col-span-2"><div class="text-xs text-green-400 font-bold mb-2">TP1</div>
-          <div class="grid grid-cols-3 gap-2">
-            <div><label class="block text-xs text-zinc-600 mb-1">Exit Price</label><input type="number" id="t-tp1-exit" step="0.25" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50" placeholder="0.00"></div>
-            <div><label class="block text-xs text-zinc-600 mb-1">Contracts</label><input type="number" id="t-tp1-contracts" value="1" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+        <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
+          <div class="text-xs text-green-400 font-black uppercase tracking-wider mb-3">TP1</div>
+          <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-zinc-600 mb-1">Exit Price</label><input type="number" id="t-tp1-exit" step="0.25" oninput="calcPnl()" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-tp1-contracts" value="1" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
             <div><label class="block text-xs text-zinc-600 mb-1">P&L</label><div id="t-tp1-pnl" class="px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm text-zinc-500">—</div></div>
           </div>
         </div>
         <!-- TP2 -->
-        <div class="col-span-2"><div class="text-xs text-zinc-500 font-bold mb-2">TP2 <span class="text-zinc-700 font-normal">optional</span></div>
-          <div class="grid grid-cols-3 gap-2">
-            <div><label class="block text-xs text-zinc-600 mb-1">Exit Price</label><input type="number" id="t-tp2-exit" step="0.25" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50" placeholder="0.00"></div>
-            <div><label class="block text-xs text-zinc-600 mb-1">Contracts</label><input type="number" id="t-tp2-contracts" value="0" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+        <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs text-zinc-400 font-black uppercase tracking-wider">TP2</span>
+            <span class="text-[10px] text-zinc-600 uppercase tracking-wider">— Runner / Optional</span>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-zinc-600 mb-1">Exit Price</label><input type="number" id="t-tp2-exit" step="0.25" oninput="calcPnl()" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-tp2-contracts" value="0" oninput="calcPnl()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
             <div><label class="block text-xs text-zinc-600 mb-1">P&L</label><div id="t-tp2-pnl" class="px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm text-zinc-500">—</div></div>
           </div>
         </div>
-        <div class="col-span-2 flex items-center justify-between bg-zinc-900/60 border border-white/5 rounded-xl px-4 py-3">
-          <span class="text-xs text-zinc-500 uppercase tracking-wider">Total P&L Result</span>
+        <!-- Total -->
+        <div class="flex items-center justify-between bg-zinc-900/60 border border-white/5 rounded-xl px-4 py-3">
+          <span class="text-xs text-zinc-500 uppercase tracking-wider">Total P&L</span>
           <span id="t-total-pnl" class="text-lg font-black text-zinc-400">—</span>
         </div>
       </div>
 
-      <!-- Manual fields -->
-      <div id="manual-fields" class="hidden grid grid-cols-2 gap-3 mt-3">
-        <div class="col-span-2"><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Net P&L ($)</label>
-          <input type="number" id="t-manual-pnl" step="0.01" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Contracts</label>
-          <input type="number" id="t-manual-contracts" value="1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Result</label>
-          <select id="t-result" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-            <option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
-          </select></div>
+      <!-- ── MANUAL FIELDS ── -->
+      <div id="manual-fields" class="hidden space-y-3">
+        <!-- TP1 manual -->
+        <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
+          <div class="text-xs text-green-400 font-black uppercase tracking-wider mb-3">TP1</div>
+          <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-manual-tp1-contracts" value="0" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">P&L ($)</label><input type="number" id="t-manual-tp1-pnl" step="0.01" placeholder="0.00" oninput="calcManualNet()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700"></div>
+            <div></div>
+          </div>
+        </div>
+        <!-- TP2 manual -->
+        <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
+          <div class="flex items-center gap-2 mb-3">
+            <span class="text-xs text-zinc-400 font-black uppercase tracking-wider">TP2</span>
+            <span class="text-[10px] text-zinc-600 uppercase tracking-wider">— Runner / Optional</span>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-manual-tp2-contracts" value="0" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">P&L ($)</label><input type="number" id="t-manual-tp2-pnl" step="0.01" placeholder="0.00" oninput="calcManualNet()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700"></div>
+            <div></div>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Contracts</label>
+            <input type="number" id="t-manual-contracts" value="1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Result</label>
+            <select id="t-result" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+              <option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
+            </select>
+          </div>
+          <div class="col-span-2">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Net P&L ($) <span class="text-zinc-700 normal-case">— auto-calculated from TP1+TP2 or enter manually</span></label>
+            <input type="number" id="t-manual-pnl" step="0.01" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+        </div>
+        <!-- Price Data (optional in manual mode) -->
+        <div class="border border-white/[0.07] bg-black/20 rounded-xl p-4">
+          <div class="text-xs text-zinc-600 uppercase tracking-wider mb-3">Price Data <span class="text-zinc-700">— optional</span></div>
+          <div class="grid grid-cols-2 gap-3">
+            <div><label class="block text-xs text-zinc-700 mb-1">Entry Price</label><input type="number" id="t-manual-entry-price" step="0.25" placeholder="0.00" class="w-full bg-black border border-white/10 text-zinc-400 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/30 placeholder-zinc-800"></div>
+            <div><label class="block text-xs text-zinc-700 mb-1">SL Price</label><input type="number" id="t-manual-sl-price" step="0.25" placeholder="0.00" class="w-full bg-black border border-white/10 text-zinc-400 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/30 placeholder-zinc-800"></div>
+            <div><label class="block text-xs text-zinc-700 mb-1">TP1 Price</label><input type="number" id="t-manual-tp1-price" step="0.25" placeholder="0.00" class="w-full bg-black border border-white/10 text-zinc-400 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/30 placeholder-zinc-800"></div>
+            <div><label class="block text-xs text-zinc-700 mb-1">TP2 / Runner Price</label><input type="number" id="t-manual-tp2-price" step="0.25" placeholder="0.00" class="w-full bg-black border border-white/10 text-zinc-400 text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/30 placeholder-zinc-800"></div>
+          </div>
+        </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 mt-3">
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account Type</label>
-          <select id="t-acct-type" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-            <option value="Funded">Funded</option><option value="Evaluation">Evaluation</option><option value="Personal">Personal</option>
-          </select></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Grade</label>
+      <!-- ── BOTTOM FIELDS (always visible) ── -->
+      <div class="grid grid-cols-2 gap-3 mt-4">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Grade <span class="text-zinc-700 normal-case">— optional</span></label>
           <select id="t-grade" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-            <option value="">No grade</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
-          </select></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Strategy</label>
-          <input type="text" id="t-strategy" placeholder="FSD-X ORB PRO" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
-        <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Timeframe</label>
+            <option value="">Select...</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option><option>F</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Strategy <span class="text-zinc-700 normal-case">— optional</span></label>
+          <input type="text" id="t-strategy" placeholder="FSD-X ORB PRO" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Timeframe <span class="text-zinc-700 normal-case">— optional</span></label>
           <select id="t-timeframe" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-            <option value="5m">5m</option><option value="1m">1m</option><option value="15m">15m</option><option value="1h">1h</option>
-          </select></div>
+            <option value="5m">5m</option><option value="1m">1m</option><option value="2m">2m</option><option value="3m">3m</option><option value="15m">15m</option><option value="30m">30m</option><option value="1h">1h</option><option value="4h">4h</option><option value="1D">Daily</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Commissions <span class="text-zinc-700 normal-case" id="manual-comm-label">— manual mode</span></label>
+          <input type="number" id="t-commissions-manual" value="0" step="0.01" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
       </div>
 
       <!-- Tags -->
-      <div class="mt-3">
-        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Tags</label>
+      <div class="mt-4">
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Tags <span class="text-zinc-700 normal-case">— optional</span></label>
         <div id="tags-container" class="flex flex-wrap gap-1.5 mb-2"></div>
         <input type="text" id="t-tag-input" placeholder="Type tag + Enter"
           onkeydown="handleTagInput(event)"
           class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
       </div>
 
-      <div class="mt-3"><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Chart URL</label>
-        <input type="text" id="t-chart" placeholder="https://tradingview.com/..." class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
-      <div class="mt-3"><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Notes</label>
-        <textarea id="t-notes" rows="3" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition resize-none placeholder-zinc-700" placeholder="Setup notes, lessons learned..."></textarea></div>
+      <div class="mt-4">
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Chart URL <span class="text-zinc-700 normal-case">— optional</span></label>
+        <input type="text" id="t-chart" placeholder="Paste TradingView screenshot link..." class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+      </div>
+      <div class="mt-4">
+        <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Notes <span class="text-zinc-700 normal-case">— optional</span></label>
+        <textarea id="t-notes" rows="3" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition resize-none placeholder-zinc-700" placeholder="Trade notes, lessons learned..."></textarea>
+      </div>
 
       <div class="flex gap-3 mt-5">
+        <button onclick="closeLogModal()" class="px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 font-bold text-xs uppercase tracking-wider rounded-xl transition hover:text-white">← Cancel</button>
         <button onclick="saveTrade()" id="save-btn" class="flex-1 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Trade</button>
-        <button onclick="closeLogModal()" class="px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 font-bold text-xs uppercase tracking-wider rounded-xl transition">Cancel</button>
       </div>
     </div>
   </div>
@@ -1436,6 +1537,19 @@
       document.getElementById('manual-fields').classList.toggle('hidden', m==='price');
     }
 
+    function calcManualNet() {
+      const tp1 = parseFloat(document.getElementById('t-manual-tp1-pnl').value)||0;
+      const tp2 = parseFloat(document.getElementById('t-manual-tp2-pnl').value)||0;
+      const netEl = document.getElementById('t-manual-pnl');
+      // Only auto-fill if user hasn't manually typed a net override
+      if (netEl && (tp1 !== 0 || tp2 !== 0)) {
+        netEl.value = (tp1 + tp2).toFixed(2);
+        // Auto-set result
+        const net = tp1 + tp2;
+        document.getElementById('t-result').value = net > 0 ? 'WIN' : net < 0 ? 'LOSS' : 'BE';
+      }
+    }
+
     function calcPnl() {
       if (pnlMode !== 'price') return;
       const entry = parseFloat(document.getElementById('t-entry').value)||0;
@@ -1499,7 +1613,9 @@
         document.getElementById('t-exit-time').value = t.exitTime||'';
         document.getElementById('t-ticker').value = t.ticker||'';
         setDir(t.direction||'LONG');
-        document.getElementById('t-acct-type').value = t.accountType||'Funded';
+        document.getElementById('t-acct-type').value = t.accountType||'';
+        document.getElementById('t-acct-name').value = t.accountName||'';
+        document.getElementById('t-num-accounts').value = t.numAccounts||1;
         document.getElementById('t-grade').value = t.grade||'';
         document.getElementById('t-strategy').value = t.strategy||'';
         document.getElementById('t-timeframe').value = t.timeframe||'5m';
@@ -1507,11 +1623,20 @@
         document.getElementById('t-notes').value = t.notes||'';
         currentTags = Array.isArray(t.tags)?[...t.tags]:[];
         renderTags();
+        updateTickerHint();
         if (t.pnlMode === 'manual' || !t.entryPrice) {
           setPnlMode('manual');
           document.getElementById('t-manual-pnl').value = t.netPnl||'';
           document.getElementById('t-manual-contracts').value = t.contracts||1;
           document.getElementById('t-result').value = t.result||'WIN';
+          document.getElementById('t-manual-tp1-contracts').value = t.tp1Contracts||0;
+          document.getElementById('t-manual-tp1-pnl').value = t.tp1Pnl||'';
+          document.getElementById('t-manual-tp2-contracts').value = t.tp2Contracts||0;
+          document.getElementById('t-manual-tp2-pnl').value = t.tp2Pnl||'';
+          document.getElementById('t-manual-entry-price').value = t.entryPrice||t.entry||'';
+          document.getElementById('t-manual-sl-price').value = t.slPrice||t.sl||'';
+          document.getElementById('t-manual-tp1-price').value = t.tp1Price||t.tp1Exit||'';
+          document.getElementById('t-manual-tp2-price').value = t.tp2Price||t.tp2Exit||'';
         } else {
           setPnlMode('price');
           document.getElementById('t-entry').value = t.entryPrice||t.entry||'';
@@ -1533,13 +1658,23 @@
         document.getElementById('t-tp1-contracts').value = 1;
         document.getElementById('t-tp2-contracts').value = 0;
         document.getElementById('t-commissions').value = 0;
-        ['t-entry','t-sl','t-tp1-exit','t-tp2-exit','t-manual-pnl','t-entry-time','t-exit-time','t-chart','t-notes'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-        document.getElementById('t-grade').value = '';
         document.getElementById('t-acct-type').value = 'Funded';
+        document.getElementById('t-acct-name').value = '';
+        document.getElementById('t-num-accounts').value = 1;
+        document.getElementById('t-grade').value = '';
+        ['t-entry','t-sl','t-tp1-exit','t-tp2-exit','t-manual-pnl','t-entry-time','t-exit-time',
+         't-chart','t-notes','t-manual-tp1-pnl','t-manual-tp2-pnl',
+         't-manual-entry-price','t-manual-sl-price','t-manual-tp1-price','t-manual-tp2-price'
+        ].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+        document.getElementById('t-manual-contracts').value = 1;
+        document.getElementById('t-manual-tp1-contracts').value = 0;
+        document.getElementById('t-manual-tp2-contracts').value = 0;
+        document.getElementById('t-result').value = 'WIN';
         setDir('LONG'); setPnlMode('price');
         document.getElementById('t-tp1-pnl').textContent = '—';
         document.getElementById('t-tp2-pnl').textContent = '—';
         document.getElementById('t-total-pnl').textContent = '—';
+        updateTickerHint();
       }
       document.getElementById('log-modal').classList.remove('hidden');
     }
@@ -1563,9 +1698,21 @@
         netPnl = tp1Pnl + tp2Pnl - commissions;
         result = netPnl > 0 ? 'WIN' : netPnl < 0 ? 'LOSS' : 'BE';
       } else {
-        netPnl = parseFloat(document.getElementById('t-manual-pnl').value)||0;
+        // Manual mode — read TP1/TP2 individually, sum for net
+        tp1Pnl = parseFloat(document.getElementById('t-manual-tp1-pnl').value)||0;
+        tp2Pnl = parseFloat(document.getElementById('t-manual-tp2-pnl').value)||0;
+        tp1Contracts = parseInt(document.getElementById('t-manual-tp1-contracts').value)||0;
+        tp2Contracts = parseInt(document.getElementById('t-manual-tp2-contracts').value)||0;
         contracts = parseInt(document.getElementById('t-manual-contracts').value)||1;
         result = document.getElementById('t-result').value;
+        // Net P&L: use manual override if filled, else TP1+TP2
+        const manualNet = parseFloat(document.getElementById('t-manual-pnl').value);
+        netPnl = !isNaN(manualNet) && manualNet !== 0 ? manualNet : tp1Pnl + tp2Pnl;
+        // Optional price data from manual mode
+        entryPrice = parseFloat(document.getElementById('t-manual-entry-price').value)||null;
+        slPrice = parseFloat(document.getElementById('t-manual-sl-price').value)||null;
+        tp1Price = parseFloat(document.getElementById('t-manual-tp1-price').value)||null;
+        tp2Price = parseFloat(document.getElementById('t-manual-tp2-price').value)||null;
       }
 
       const trade = {
@@ -1578,12 +1725,14 @@
         entryPrice, entry: entryPrice, slPrice, sl: slPrice,
         tp1Price, tp1Exit: tp1Price, tp2Price, tp2Exit: tp2Price, commissions,
         accountType: document.getElementById('t-acct-type').value,
+        accountName: document.getElementById('t-acct-name').value.trim(),
+        numAccounts: parseInt(document.getElementById('t-num-accounts').value)||1,
         grade: document.getElementById('t-grade').value,
         strategy: document.getElementById('t-strategy').value.trim(),
         timeframe: document.getElementById('t-timeframe').value,
         chartUrl: document.getElementById('t-chart').value.trim(),
         notes: document.getElementById('t-notes').value.trim(),
-        tags: [...currentTags], pnlMode, numAccounts: 1
+        tags: [...currentTags], pnlMode
       };
 
       const btn = document.getElementById('save-btn');
