@@ -150,7 +150,11 @@
 
         const chartBlock = r.chartUrl ? `
           <div class="mt-3 pt-3 border-t border-white/5">
-            <a href="${r.chartUrl}" target="_blank" class="text-xs text-green-400 hover:text-green-300 transition font-bold">View Chart ↗</a>
+            <a href="${r.chartUrl}" target="_blank" class="inline-block mb-2 text-xs text-green-400 hover:text-green-300 transition font-bold">View Chart ↗</a>
+            <div class="rounded-xl overflow-hidden border border-white/10">
+              <img src="${r.chartUrl}" alt="Session chart" class="w-full max-h-48 object-contain bg-zinc-950"
+                onerror="this.style.display='none'"/>
+            </div>
           </div>` : '';
 
         return `
