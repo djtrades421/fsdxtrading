@@ -1382,7 +1382,7 @@
     }
 
     function renderDrawdown(trades) {
-      const sorted = [...trades].sort((a,b)=>(a.date||'')<(b.date||'')?-1:1);
+      const sorted = [...trades].sort((a,b)=>((a.date||'')+(a.entryTime||''))<((b.date||'')+(b.entryTime||''))?-1:1);
       let equity=0, peak=0, maxDD=0, curDD=0;
       let consecL=0, maxConsecL=0;
       const byDay={};
