@@ -290,12 +290,31 @@
         </div>
       </div>
 
-      <!-- ANNOUNCEMENT TAB -->
       <div id="panel-announce" class="tab-panel">
         <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 max-w-xl">
           <h2 class="text-base font-black text-white mb-1">Post Announcement</h2>
           <p class="text-zinc-500 text-xs mb-5">This message will appear at the top of every member's dashboard.</p>
           <div id="announce-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+          <!-- Live announcement display -->
+          <div id="current-announce-display" class="hidden mb-5 rounded-xl p-4 border">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex-1">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1.5">Live Now</div>
+                <p id="current-announce-text" class="text-sm text-white leading-relaxed"></p>
+                <div id="current-announce-type" class="text-[10px] text-zinc-600 mt-1"></div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button onclick="editAnnouncement()" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition" title="Edit">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+                </button>
+                <button onclick="clearAnnouncement()" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition" title="Delete">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div class="space-y-4">
             <div>
               <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Type</label>
@@ -311,18 +330,7 @@
                 class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
             </div>
             <div class="flex gap-3">
-              <button onclick="postAnnouncement()" id="announce-btn"
-                class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-                Post Announcement
-              </button>
-              <button onclick="clearAnnouncement()" id="clear-announce-btn"
-                class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-400 hover:text-red-400 font-bold text-xs uppercase tracking-wider rounded-xl transition">
-                Clear
-              </button>
-            </div>
-            <div id="current-announce-display" class="hidden mt-4 border border-white/5 bg-zinc-900/40 rounded-xl p-4">
-              <div class="text-[10px] text-zinc-600 uppercase tracking-wider mb-2">Current Announcement</div>
-              <p id="current-announce-text" class="text-zinc-400 text-xs"></p>
+              <button onclick="postAnnouncement()" id="announce-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Post Announcement</button>
             </div>
           </div>
         </div>
@@ -680,15 +688,30 @@
     async function loadCurrentAnnouncement() {
       const token = localStorage.getItem('fsdx_token') || '';
       try {
-        const res = await fetch(`${API}/api/announcement`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const res = await fetch(`${API}/api/announcement`, { headers: { 'Authorization': `Bearer ${token}` } });
         const data = await res.json();
+        const display = document.getElementById('current-announce-display');
         if (data.announcement) {
-          document.getElementById('current-announce-display').classList.remove('hidden');
+          const typeColors = {
+            info: 'border-blue-500/20 bg-blue-500/5',
+            success: 'border-green-500/20 bg-green-500/5',
+            warning: 'border-yellow-500/20 bg-yellow-500/5'
+          };
+          const typeLabels = { info: 'Info', success: 'Success', warning: 'Warning' };
+          display.className = `mb-5 rounded-xl p-4 border ${typeColors[data.announcement.type] || typeColors.info}`;
+          display.classList.remove('hidden');
           document.getElementById('current-announce-text').textContent = data.announcement.message;
+          document.getElementById('current-announce-type').textContent = `Type: ${typeLabels[data.announcement.type] || 'Info'}`;
+        } else {
+          display.classList.add('hidden');
         }
       } catch (err) {}
+    }
+
+    function editAnnouncement() {
+      const text = document.getElementById('current-announce-text').textContent;
+      document.getElementById('announce-message').value = text;
+      document.getElementById('announce-message').focus();
     }
 
     async function clearAnnouncement() {
@@ -705,8 +728,7 @@
         if (data.success) {
           showAdminMsg('announce-msg', 'Announcement cleared.', 'success');
           document.getElementById('current-announce-display').classList.add('hidden');
-          document.getElementById('current-announce-text').textContent = '';
-        }
+          document.getElementById('current-announce-text').textContent = '';        }
       } catch (err) {
         showAdminMsg('announce-msg', 'Error clearing announcement.', 'error');
       }
@@ -732,6 +754,7 @@
       if (data.success) {
         showAdminMsg('announce-msg', 'Announcement posted! Members will see it on their dashboard.', 'success');
         document.getElementById('announce-message').value = '';
+        loadCurrentAnnouncement();
       } else {
         showAdminMsg('announce-msg', data.error || 'Failed to post announcement.', 'error');
       }
