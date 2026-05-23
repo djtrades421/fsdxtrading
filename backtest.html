@@ -502,6 +502,10 @@
           <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Ticker</label>
           <input type="text" id="t-ticker" placeholder="MNQ" oninput="updateTickerHint()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
           <div id="t-ticker-hint" class="text-[11px] text-green-500/70 mt-1 ml-1">MNQ — $0.50/tick</div>
+          <div id="t-ppp-row" style="display:none" class="mt-1 flex items-center gap-2">
+            <input type="number" id="t-ppp" step="0.01" placeholder="$ per point" oninput="updateTickerHint()" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            <span class="text-[11px] text-zinc-500 whitespace-nowrap">$ / point</span>
+          </div>
         </div>
         <div>
           <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account Type</label>
@@ -711,25 +715,48 @@
     const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
     const TICK_SIZE = 0.25, TICK_VALUE = 0.50;
     const TICKER_MAP = {
-      MNQ: { tick: 0.25, value: 0.50, label: 'MNQ — $0.50/tick' },
-      NQ:  { tick: 0.25, value: 5.00, label: 'NQ — $5.00/tick' },
-      MES: { tick: 0.25, value: 1.25, label: 'MES — $1.25/tick' },
-      ES:  { tick: 0.25, value: 12.50, label: 'ES — $12.50/tick' },
-      MYM: { tick: 1.00, value: 0.50, label: 'MYM — $0.50/tick' },
-      YM:  { tick: 1.00, value: 5.00, label: 'YM — $5.00/tick' },
-      MCL: { tick: 0.01, value: 1.00, label: 'MCL — $1.00/tick' },
-      CL:  { tick: 0.01, value: 10.00, label: 'CL — $10.00/tick' },
+      'MNQ': { tick: 0.25, value: 0.50,  label: 'MNQ — $0.50/tick' },
+      'NQ':  { tick: 0.25, value: 5.00,  label: 'NQ — $5.00/tick' },
+      'MES': { tick: 0.25, value: 1.25,  label: 'MES — $1.25/tick' },
+      'ES':  { tick: 0.25, value: 12.50, label: 'ES — $12.50/tick' },
+      'MGC': { tick: 0.10, value: 1.00,  label: 'MGC — $1.00/tick' },
+      'GC':  { tick: 0.10, value: 10.00, label: 'GC — $10.00/tick' },
+      'MCL': { tick: 0.01, value: 1.00,  label: 'MCL — $1.00/tick' },
+      'CL':  { tick: 0.01, value: 10.00, label: 'CL — $10.00/tick' },
+      'M2K': { tick: 0.10, value: 0.50,  label: 'M2K — $0.50/tick' },
+      'RTY': { tick: 0.10, value: 5.00,  label: 'RTY — $5.00/tick' },
+      'MYM': { tick: 1.00, value: 0.50,  label: 'MYM — $0.50/tick' },
+      'YM':  { tick: 1.00, value: 5.00,  label: 'YM — $5.00/tick' },
+      'SI':  { tick: 0.005, value: 25.00, label: 'SI — $25.00/tick' },
+      'MSI': { tick: 0.005, value: 2.50,  label: 'MSI — $2.50/tick' },
     };
     let currentTickSize = 0.25, currentTickValue = 0.50;
 
     function updateTickerHint() {
       const ticker = (document.getElementById('t-ticker')?.value || 'MNQ').toUpperCase().trim();
-      const data = TICKER_MAP[ticker] || TICKER_MAP['MNQ'];
-      currentTickSize = data.tick;
-      currentTickValue = data.value;
+      const spec = TICKER_MAP[ticker];
       const hint = document.getElementById('t-ticker-hint');
-      if (hint) hint.textContent = data.label;
+      const pppRow = document.getElementById('t-ppp-row');
+      if (spec) {
+        currentTickSize = spec.tick;
+        currentTickValue = spec.value;
+        if (hint) { hint.textContent = spec.label; hint.style.display = 'block'; }
+        if (pppRow) pppRow.style.display = 'none';
+      } else if (ticker) {
+        // Unknown ticker — show manual $ per point input
+        if (hint) hint.style.display = 'none';
+        if (pppRow) pppRow.style.display = 'flex';
+        const ppp = parseFloat(document.getElementById('t-ppp')?.value) || 0;
+        currentTickSize = 1;
+        currentTickValue = ppp;
+      } else {
+        currentTickSize = 0.25; currentTickValue = 0.50;
+        if (hint) { hint.textContent = 'MNQ — $0.50/tick'; hint.style.display = 'block'; }
+        if (pppRow) pppRow.style.display = 'none';
+      }
+      calcPnl();
     }
+
  // MNQ defaults
     let allTrades = [], filteredTrades = [], whopKey = null, userTier = 'pro';
     let editingId = null, detailId = null, currentTags = [];
@@ -1699,12 +1726,12 @@
 
       let tp1Pnl = 0, tp2Pnl = 0;
       if (entry && tp1Exit && tp1Con) {
-        const ticks = (tp1Exit - entry) / TICK_SIZE;
-        tp1Pnl = ticks * TICK_VALUE * tp1Con * dir;
+        const ticks = (tp1Exit - entry) / currentTickSize;
+        tp1Pnl = ticks * currentTickValue * tp1Con * dir;
       }
       if (entry && tp2Exit && tp2Con) {
-        const ticks = (tp2Exit - entry) / TICK_SIZE;
-        tp2Pnl = ticks * TICK_VALUE * tp2Con * dir;
+        const ticks = (tp2Exit - entry) / currentTickSize;
+        tp2Pnl = ticks * currentTickValue * tp2Con * dir;
       }
       const total = tp1Pnl + tp2Pnl - commissions;
       const tp1El = document.getElementById('t-tp1-pnl');
@@ -1829,8 +1856,8 @@
         tp2Contracts = parseInt(document.getElementById('t-tp2-contracts').value)||0;
         commissions = parseFloat(document.getElementById('t-commissions').value)||0;
         const dir = tradeDir==='LONG'?1:-1;
-        if (entryPrice && tp1Price && tp1Contracts) tp1Pnl = ((tp1Price-entryPrice)/TICK_SIZE)*TICK_VALUE*tp1Contracts*dir;
-        if (entryPrice && tp2Price && tp2Contracts) tp2Pnl = ((tp2Price-entryPrice)/TICK_SIZE)*TICK_VALUE*tp2Contracts*dir;
+        if (entryPrice && tp1Price && tp1Contracts) tp1Pnl = ((tp1Price-entryPrice)/currentTickSize)*currentTickValue*tp1Contracts*dir;
+        if (entryPrice && tp2Price && tp2Contracts) tp2Pnl = ((tp2Price-entryPrice)/currentTickSize)*currentTickValue*tp2Contracts*dir;
         netPnl = tp1Pnl + tp2Pnl - commissions;
         result = netPnl > 0 ? 'WIN' : netPnl < 0 ? 'LOSS' : 'BE';
       } else {
