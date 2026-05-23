@@ -358,6 +358,25 @@
           <button onclick="runMigration()" id="migrate-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Run Migration</button>
           <div id="migrate-log" class="hidden mt-5 border border-white/10 bg-black rounded-xl p-4 space-y-1.5 text-xs font-mono max-h-64 overflow-y-auto"></div>
         </div>
+
+        <!-- KV Key Lookup -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+          <h2 class="text-base font-black text-white mb-1">KV Key Lookup</h2>
+          <p class="text-xs text-zinc-500 mb-5">Search all KV entries that contain a Whop key — confirms what data exists and where it's being used.</p>
+          <div class="flex gap-3 mb-4">
+            <input id="kv-search-input" type="text" placeholder="Paste a Whop key to search…"
+              onkeydown="if(event.key==='Enter')runKvLookup()"
+              class="flex-1 bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700 font-mono">
+            <button onclick="runKvLookup()" id="kv-search-btn"
+              class="px-5 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+              Search KV
+            </button>
+          </div>
+          <div id="kv-search-results" class="hidden">
+            <div id="kv-search-summary" class="text-xs text-zinc-500 mb-3"></div>
+            <div id="kv-search-hits" class="border border-white/10 bg-black rounded-xl divide-y divide-white/5 font-mono text-xs overflow-hidden"></div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -905,6 +924,65 @@
       migrateLog(`Migration complete — ${migrated} key${migrated!==1?'s':''} migrated, ${skipped} skipped.`, '#22c55e');
       showMigrateMsg(`Done! ${migrated} key${migrated!==1?'s':''} migrated successfully.`, 'success');
       btn.disabled = false; btn.textContent = 'Run Migration';
+    }
+
+    // ── KV Key Lookup ──
+    async function runKvLookup() {
+      const term = document.getElementById('kv-search-input').value.trim();
+      if (!term || term.length < 4) return alert('Please enter at least 4 characters.');
+
+      const btn = document.getElementById('kv-search-btn');
+      btn.disabled = true; btn.textContent = 'Searching…';
+
+      const results = document.getElementById('kv-search-results');
+      const summary = document.getElementById('kv-search-summary');
+      const hits = document.getElementById('kv-search-hits');
+      results.classList.add('hidden');
+
+      try {
+        const token = localStorage.getItem('fsdx_token');
+        const res = await fetch(`${API}/api/admin/kv-lookup?q=${encodeURIComponent(term)}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!res.ok) { alert(data.error || 'Lookup failed.'); return; }
+
+        results.classList.remove('hidden');
+
+        if (data.total === 0) {
+          summary.textContent = `No KV entries found containing "${term}"`;
+          hits.innerHTML = '<div class="px-4 py-6 text-center text-zinc-600">No matches — this key has no data in KV.</div>';
+          return;
+        }
+
+        summary.textContent = `Found ${data.total} KV entr${data.total === 1 ? 'y' : 'ies'} containing "${term}"`;
+
+        // Color-code by prefix
+        const colors = {
+          'journal:': '#22c55e',
+          'journal_settings:': '#86efac',
+          'backtest_sessions:': '#3b82f6',
+          'backtest:': '#93c5fd',
+          'key_account:': '#f59e0b',
+          'nexus_fp:': '#a78bfa',
+        };
+
+        hits.innerHTML = data.hits.map(h => {
+          const color = colors[h.prefix] || '#71717a';
+          const label = h.prefix.replace(':', '');
+          const rest = h.key.slice(h.prefix.length);
+          return `<div class="flex items-center gap-3 px-4 py-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border" style="color:${color};border-color:${color}33;background:${color}11">${label}</span>
+            <span class="text-zinc-400 flex-1 truncate">${rest}</span>
+            ${h.value ? `<span class="text-zinc-600 text-[10px]">→ ${h.value}</span>` : ''}
+          </div>`;
+        }).join('');
+
+      } catch {
+        alert('Connection error.');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Search KV';
+      }
     }
 
     function showMigrateMsg(text, type) {
