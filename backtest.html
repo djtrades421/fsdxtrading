@@ -285,8 +285,9 @@
                   <div class="overflow-x-auto">
                     <table class="w-full text-left min-w-[600px]">
                       <thead><tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
-                        <th class="px-4 py-3">Date</th><th class="px-4 py-3">Dir</th><th class="px-4 py-3">Grade</th>
+                        <th class="px-4 py-3">Date</th><th class="px-4 py-3">Ticker</th><th class="px-4 py-3">Dir</th><th class="px-4 py-3">Grade</th>
                         <th class="px-4 py-3">Result</th><th class="px-4 py-3">Net P&L</th><th class="px-4 py-3">Tags</th>
+                        <th class="px-4 py-3">Chart</th><th class="px-4 py-3"></th>
                       </tr></thead>
                       <tbody id="bt-tbody" class="divide-y divide-white/5 text-sm"></tbody>
                     </table>
@@ -377,11 +378,12 @@
                     <h3 id="bt-cal-title" class="text-lg font-black text-white w-44 text-center"></h3>
                     <button onclick="btCalNext()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
                   </div>
-                  <div class="cal-header-stats flex gap-4 text-sm flex-wrap">
+                  <div class="cal-header-stats flex gap-4 text-sm flex-wrap items-center">
                     <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="bt-cal-monthly" class="font-black">—</span></div>
                     <div><span class="text-zinc-500 text-xs mr-1.5">SESSION</span><span id="bt-cal-yearly" class="font-black">—</span></div>
                     <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="bt-cal-wr" class="font-black text-green-400">—</span></div>
                     <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="bt-cal-days" class="font-black text-zinc-400">—</span></div>
+                    <button onclick="openLogModal()" class="ml-2 px-3 py-1.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-lg transition">+ Log Trade</button>
                   </div>
                 </div>
                 <div class="border border-white/10 rounded-2xl overflow-hidden">
@@ -1945,8 +1947,10 @@
       } catch(err) { console.error(err); }
     }
 
+    let currentBtSessionId = null;
     async function openBtSession(id) {
       const s = btSessions.find(s=>s.id===id); if(!s) return;
+      currentBtSessionId = id;
       if (userTier === 'trial' && btSessions.indexOf(s) >= 3) return;
       document.getElementById('bt-sessions-view').classList.add('hidden');
       document.getElementById('bt-detail').classList.remove('hidden');
@@ -1983,11 +1987,28 @@
 
     function renderBtTrades() {
       const tbody=document.getElementById('bt-tbody');
-      if(!btTrades.length){tbody.innerHTML='<tr><td colspan="6" class="px-4 py-8 text-center text-zinc-600">No trades</td></tr>';return;}
-      tbody.innerHTML=btTrades.map(t=>{
+      const trades = filteredBtTrades.length !== btTrades.length ? filteredBtTrades : btTrades;
+      if(!btTrades.length){tbody.innerHTML='<tr><td colspan="9" class="px-4 py-8 text-center text-zinc-600">No trades</td></tr>';return;}
+      if(!trades.length){tbody.innerHTML='<tr><td colspan="9" class="px-4 py-8 text-center text-zinc-600">No trades match filters</td></tr>';return;}
+      tbody.innerHTML=trades.map(t=>{
         const tp=parseFloat(t.netPnl)||0;
         const tags=Array.isArray(t.tags)&&t.tags.length?t.tags.map(tg=>`<span class="px-1.5 py-0.5 bg-zinc-800 border border-white/5 rounded text-[10px] text-zinc-500">${tg}</span>`).join(''):'—';
-        return `<tr class="hover:bg-white/[0.02] transition"><td class="px-4 py-3 text-zinc-400 text-xs">${t.date||'—'}</td><td class="px-4 py-3"><span class="text-xs font-bold ${t.direction==='LONG'?'text-green-400':'text-red-400'}">${t.direction||'—'}</span></td><td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-zinc-800 text-zinc-300 border-white/10">${t.grade||'—'}</span></td><td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result||'—'}</span></td><td class="px-4 py-3 font-bold ${pnlColor(tp)}">${fmt(tp)}</td><td class="px-4 py-3 flex gap-1 flex-wrap">${tags}</td></tr>`;
+        return `<tr class="hover:bg-white/[0.02] transition cursor-pointer" onclick="showBtDetail('${t.id}')">
+          <td class="px-4 py-3 text-zinc-400 text-xs">${t.date||'—'}</td>
+          <td class="px-4 py-3 text-white font-bold text-sm">${t.ticker||'MNQ'}</td>
+          <td class="px-4 py-3"><span class="text-xs font-bold ${t.direction==='LONG'?'text-green-400':'text-red-400'}">${t.direction||'—'}</span></td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-zinc-800 text-zinc-300 border-white/10">${t.grade||'—'}</span></td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result||'—'}</span></td>
+          <td class="px-4 py-3 font-bold ${pnlColor(tp)}">${fmt(tp)}</td>
+          <td class="px-4 py-3"><div class="flex gap-1 flex-wrap">${tags}</div></td>
+          <td class="px-4 py-3">${t.chartUrl?`<a href="${t.chartUrl}" target="_blank" onclick="event.stopPropagation()" class="text-zinc-500 hover:text-green-400 text-xs transition">View ↗</a>`:'<span class="text-zinc-700 text-xs">—</span>'}</td>
+          <td class="px-4 py-3" onclick="event.stopPropagation()">
+            <div class="flex gap-2">
+              <button onclick="openBtTradeEdit('${t.id}')" class="text-zinc-600 hover:text-green-400 text-xs">✏️</button>
+              <button onclick="confirmBtDelete('${t.id}')" class="text-zinc-600 hover:text-red-400 text-xs">🗑️</button>
+            </div>
+          </td>
+        </tr>`;
       }).join('');
     }
 
@@ -2206,11 +2227,13 @@
             if(data){
               const pnlDiv=document.createElement('div');pnlDiv.className='text-sm font-black '+(data.pnl>=0?'text-green-400':'text-red-400');pnlDiv.textContent=fmtShort(data.pnl);cell.appendChild(pnlDiv);
               const countDiv=document.createElement('div');countDiv.className='text-[11px] text-zinc-500 mt-1';countDiv.textContent=`${data.count} trade${data.count!==1?'s':''}`;cell.appendChild(countDiv);
+              cell.onclick=()=>{ filterBtByDate(ds); btSub('trades'); };
+              cell.ontouchend=(e)=>{ e.preventDefault(); filterBtByDate(ds); btSub('trades'); };
             } else {
               cell.style.cursor='pointer';
               const hint=document.createElement('div');hint.className='text-zinc-700 text-xl font-black mt-2';hint.style.pointerEvents='none';hint.textContent='+';cell.appendChild(hint);
-              cell.onclick=()=>{openLogModal();document.getElementById('t-date').value=ds;};
-              cell.ontouchend=(e)=>{e.preventDefault();openLogModal();document.getElementById('t-date').value=ds;};
+              cell.onclick=()=>{ openLogModal(); setTimeout(()=>{ document.getElementById('t-date').value=ds; },10); };
+              cell.ontouchend=(e)=>{ e.preventDefault(); e.stopPropagation(); openLogModal(); setTimeout(()=>{ document.getElementById('t-date').value=ds; },10); };
             }
           }
           row.appendChild(cell);
@@ -2219,6 +2242,132 @@
         const wcI=document.createElement('div');wcI.className='text-sm font-black '+(rowPnl>=0?'text-green-400':'text-red-400');wcI.textContent=rowPnl!==0?fmtShort(rowPnl):'—';wc.appendChild(wcI);row.appendChild(wc);grid.appendChild(row);
       }
     }
+    function filterBtByDate(ds) {
+      filteredBtTrades = btTrades.filter(t => t.date === ds);
+      updateBtFilterBadge();
+      updateBtSummary();
+    }
+
+    function showBtDetail(id) {
+      const t = btTrades.find(t=>t.id===id);
+      if (!t) return;
+      btDetailId = id;
+      const p = parseFloat(t.netPnl)||0;
+      const tags = Array.isArray(t.tags)&&t.tags.length?t.tags.map(tg=>`<span class="tag-pill text-[10px]">${tg}</span>`).join(''):'—';
+      document.getElementById('detail-body').innerHTML = `
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-2xl font-black ${pnlColor(p)}">${fmt(p)}</span>
+            <div class="flex gap-2">
+              ${t.result?`<span class="px-2 py-0.5 rounded text-xs font-bold border ${resultBadge(t.result)}">${t.result}</span>`:''}
+              ${t.grade?`<span class="px-3 py-1 bg-zinc-800 border border-white/10 rounded-lg text-sm font-black">${t.grade}</span>`:''}
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-xs border-t border-white/5 pt-3">
+            ${[['Date',t.date],['Ticker',t.ticker||'MNQ'],['Direction',t.direction],['Contracts',t.contracts],['Strategy',t.strategy||'—'],['Entry Time',t.entryTime||'—'],['Exit Time',t.exitTime||'—'],['TP1 P&L',t.tp1Pnl?fmt(t.tp1Pnl):'—'],['TP2 P&L',t.tp2Pnl?fmt(t.tp2Pnl):'—'],['Commissions',t.commissions?'-$'+parseFloat(t.commissions).toFixed(2):'—']].map(([k,v])=>`<div><div class="text-zinc-600 mb-0.5">${k}</div><div class="text-white font-medium">${v||'—'}</div></div>`).join('')}
+          </div>
+          ${t.tags&&t.tags.length?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-2">Tags</div><div class="flex flex-wrap gap-1">${tags}</div></div>`:''}
+          ${t.notes?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-1">Notes</div><p class="text-zinc-400 text-xs leading-relaxed">${t.notes}</p></div>`:''}
+          ${t.chartUrl?`<div class="border-t border-white/5 pt-3"><div class="flex items-center justify-between mb-2"><div class="text-xs text-zinc-600">Chart</div><a href="${t.chartUrl}" target="_blank" class="text-xs text-green-400 hover:text-green-300">Open full size ↗</a></div><div class="rounded-xl overflow-hidden border border-white/10 bg-zinc-950"><img src="${t.chartUrl}" alt="Trade chart" class="w-full max-h-64 object-contain bg-zinc-950" onerror="this.parentElement.innerHTML='<div class=\'p-4 text-center\'><a href=\'${t.chartUrl}\' target=\'_blank\' class=\'text-green-400 text-xs\'>View Chart ↗</a></div>'"/></div></div>`:''}
+        </div>`;
+      document.getElementById('detail-edit').onclick = () => { closeDetail(); openBtTradeEdit(id); };
+      document.getElementById('detail-delete').onclick = () => { confirmBtDeleteFromDetail(id); };
+      document.getElementById('detail-modal').classList.remove('hidden');
+    }
+
+    let btDetailId = null;
+
+    function openBtTradeEdit(id) {
+      const t = btTrades.find(t=>t.id===id);
+      if (!t) return;
+      editingBtTradeId = id;
+      openLogModal();
+      setTimeout(() => {
+        document.getElementById('t-date').value = t.date||'';
+        document.getElementById('t-entry-time').value = t.entryTime||'';
+        document.getElementById('t-exit-time').value = t.exitTime||'';
+        document.getElementById('t-ticker').value = t.ticker||'MNQ';
+        setDir(t.direction||'LONG');
+        document.getElementById('t-acct-type').value = t.accountType||'';
+        document.getElementById('t-acct-name').value = t.accountName||'';
+        document.getElementById('t-grade').value = t.grade||'';
+        document.getElementById('t-strategy').value = t.strategy||'';
+        document.getElementById('t-timeframe').value = t.timeframe||'5m';
+        document.getElementById('t-chart').value = t.chartUrl||'';
+        document.getElementById('t-notes').value = t.notes||'';
+        currentTags = Array.isArray(t.tags)?[...t.tags]:[];
+        renderTags();
+        updateTickerHint();
+        setPnlMode('manual');
+        document.getElementById('t-manual-pnl').value = t.netPnl||'';
+        document.getElementById('t-manual-contracts').value = t.contracts||1;
+        document.getElementById('t-result').value = t.result||'WIN';
+        document.getElementById('t-manual-tp1-pnl').value = t.tp1Pnl||'';
+        document.getElementById('t-manual-tp2-pnl').value = t.tp2Pnl||'';
+        document.getElementById('t-manual-tp1-contracts').value = t.tp1Contracts||0;
+        document.getElementById('t-manual-tp2-contracts').value = t.tp2Contracts||0;
+        document.getElementById('log-modal-title').textContent = 'Edit BT Trade';
+        document.getElementById('save-btn').onclick = saveBtTradeEdit;
+      }, 50);
+    }
+
+    let editingBtTradeId = null;
+
+    async function saveBtTradeEdit() {
+      const t = btTrades.find(t=>t.id===editingBtTradeId);
+      if (!t) return;
+      const updated = { ...t,
+        date: document.getElementById('t-date').value,
+        entryTime: document.getElementById('t-entry-time').value,
+        exitTime: document.getElementById('t-exit-time').value,
+        ticker: (document.getElementById('t-ticker').value.trim()||'MNQ').toUpperCase(),
+        direction: tradeDir,
+        result: document.getElementById('t-result').value,
+        netPnl: parseFloat(document.getElementById('t-manual-pnl').value)||0,
+        tp1Pnl: parseFloat(document.getElementById('t-manual-tp1-pnl').value)||0,
+        tp2Pnl: parseFloat(document.getElementById('t-manual-tp2-pnl').value)||0,
+        contracts: parseInt(document.getElementById('t-manual-contracts').value)||1,
+        tp1Contracts: parseInt(document.getElementById('t-manual-tp1-contracts').value)||0,
+        tp2Contracts: parseInt(document.getElementById('t-manual-tp2-contracts').value)||0,
+        grade: document.getElementById('t-grade').value,
+        strategy: document.getElementById('t-strategy').value.trim(),
+        timeframe: document.getElementById('t-timeframe').value,
+        chartUrl: document.getElementById('t-chart').value.trim(),
+        notes: document.getElementById('t-notes').value.trim(),
+        tags: [...currentTags],
+      };
+      const idx = btTrades.findIndex(t=>t.id===editingBtTradeId);
+      if (idx !== -1) btTrades[idx] = updated;
+      filteredBtTrades = [...btTrades];
+      const session = btSessions.find(s => btTrades === btTrades); // current session
+      const sessionId = document.getElementById('bt-title').dataset.sessionId;
+      try {
+        await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ action:'save-all', key:'backtest:'+whopKey+':'+currentBtSessionId, payload:{ trades: btTrades } }) });
+      } catch(e) { console.error(e); }
+      closeLogModal();
+      editingBtTradeId = null;
+      document.getElementById('save-btn').onclick = saveTrade;
+      renderBtTrades();
+      updateBtSummary();
+    }
+
+    async function confirmBtDelete(id) {
+      if (!confirm('Delete this trade?')) return;
+      btTrades = btTrades.filter(t=>t.id!==id);
+      filteredBtTrades = filteredBtTrades.filter(t=>t.id!==id);
+      try {
+        await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ action:'save-all', key:'backtest:'+whopKey+':'+currentBtSessionId, payload:{ trades: btTrades } }) });
+      } catch(e) { console.error(e); }
+      renderBtTrades(); updateBtSummary();
+    }
+
+    async function confirmBtDeleteFromDetail(id) {
+      closeDetail();
+      await confirmBtDelete(id);
+    }
+
     function btCalPrev(){btCalMonth--;if(btCalMonth<0){btCalMonth=11;btCalYear--;}renderBtCal();}
     function btCalNext(){btCalMonth++;if(btCalMonth>11){btCalMonth=0;btCalYear++;}renderBtCal();}
 
