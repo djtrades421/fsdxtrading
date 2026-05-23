@@ -171,9 +171,12 @@
               </div>
             </div>
           </div>
+        </div>
 
-        <!-- ECONOMIC CALENDAR - spans both columns -->
-        <div class="md:col-span-2 border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+        <!-- CALENDAR ROW -->
+        <div class="flex">
+        <!-- ECONOMIC CALENDAR - half width matching Quick Access -->
+        <div class="md:w-1/2 border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
           <!-- Widget header -->
           <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-3 flex-wrap">
             <h3 class="text-sm font-black text-white shrink-0">Economic Calendar</h3>
@@ -226,6 +229,7 @@
           <div id="cal-body" class="max-h-80 overflow-y-auto">
             <div class="text-center py-8 text-zinc-600 text-xs">Loading calendar...</div>
           </div>
+        </div>
         </div>
 
       </div>
@@ -571,10 +575,13 @@
     async function loadCalendar(token) {
       try {
         const res = await fetch(`${API}/api/calendar`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!res.ok) throw new Error('Status ' + res.status);
         const xml = await res.text();
+        if (!xml || xml.trim().startsWith('{')) throw new Error('Bad response');
         calEvents = parseFF(xml);
         renderCalendar();
       } catch(e) {
+        console.error('Calendar error:', e);
         const body = document.getElementById('cal-body');
         if (body) body.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">Could not load calendar.</div>';
       }
