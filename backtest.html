@@ -688,7 +688,28 @@
 
   <script>
     const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
-    const TICK_SIZE = 0.25, TICK_VALUE = 0.50; // MNQ defaults
+    const TICK_SIZE = 0.25, TICK_VALUE = 0.50;
+    const TICKER_MAP = {
+      MNQ: { tick: 0.25, value: 0.50, label: 'MNQ — $0.50/tick' },
+      NQ:  { tick: 0.25, value: 5.00, label: 'NQ — $5.00/tick' },
+      MES: { tick: 0.25, value: 1.25, label: 'MES — $1.25/tick' },
+      ES:  { tick: 0.25, value: 12.50, label: 'ES — $12.50/tick' },
+      MYM: { tick: 1.00, value: 0.50, label: 'MYM — $0.50/tick' },
+      YM:  { tick: 1.00, value: 5.00, label: 'YM — $5.00/tick' },
+      MCL: { tick: 0.01, value: 1.00, label: 'MCL — $1.00/tick' },
+      CL:  { tick: 0.01, value: 10.00, label: 'CL — $10.00/tick' },
+    };
+    let currentTickSize = 0.25, currentTickValue = 0.50;
+
+    function updateTickerHint() {
+      const ticker = (document.getElementById('t-ticker')?.value || 'MNQ').toUpperCase().trim();
+      const data = TICKER_MAP[ticker] || TICKER_MAP['MNQ'];
+      currentTickSize = data.tick;
+      currentTickValue = data.value;
+      const hint = document.getElementById('t-ticker-hint');
+      if (hint) hint.textContent = data.label;
+    }
+ // MNQ defaults
     let allTrades = [], filteredTrades = [], whopKey = null, userTier = 'pro';
     let editingId = null, detailId = null, currentTags = [];
     let tradeDir = 'LONG', pnlMode = 'price', statsTime = 'today';
@@ -864,7 +885,8 @@
               // Empty day — click to log a trade for this date
               cell.style.cursor = 'pointer';
               cell.title = 'Log trade for ' + ds;
-              cell.onclick = () => { openLogModal(); document.getElementById('t-date').value = ds; };
+              cell.onclick = () => { openLogModal(); setTimeout(() => { document.getElementById('t-date').value = ds; }, 10); };
+              cell.ontouchend = (e) => { e.preventDefault(); e.stopPropagation(); openLogModal(); setTimeout(() => { document.getElementById('t-date').value = ds; }, 10); };
               // Subtle + hint on hover
               const hint = document.createElement('div');
               hint.className = 'text-zinc-800 text-lg font-black mt-3 cal-empty-hint';
@@ -1252,31 +1274,19 @@
         ((a.date||'')+(a.entryTime||'')) < ((b.date||'')+(b.entryTime||'')) ? -1 : 1
       );
 
-      // Build cumulative equity points
       const points = [{ equity: 0, date: null, pnl: 0, result: null, ticker: '', grade: '', time: '' }];
       sorted.forEach(t => {
         const pnl = parseFloat(t.netPnl) || 0;
-        points.push({
-          equity: points[points.length-1].equity + pnl,
-          date: t.date, pnl, result: t.result,
-          ticker: t.ticker||'MNQ', grade: t.grade||'', time: t.entryTime||''
-        });
+        points.push({ equity: points[points.length-1].equity + pnl, date: t.date, pnl, result: t.result, ticker: t.ticker||'MNQ', grade: t.grade||'', time: t.entryTime||'' });
       });
 
       const finalPnl = points[points.length-1].equity;
       const isPos = finalPnl >= 0;
-      const lineCol = isPos ? '#22c55e' : '#ef4444';
-      const fillCol = isPos ? '#22c55e' : '#ef4444';
       const uid = 'eq' + Date.now();
 
-      // Header
       const finalEl = document.getElementById('chart-final-pnl');
-      if (finalEl) {
-        finalEl.textContent = (finalPnl >= 0 ? '+' : '-') + '$' + Math.abs(finalPnl).toFixed(2);
-        finalEl.className = 'text-2xl font-black ' + (isPos ? 'text-green-400' : 'text-red-400');
-      }
+      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-2xl font-black '+(isPos?'text-green-400':'text-red-400'); }
 
-      // Date range legend
       const legendEl = document.getElementById('chart-legend');
       if (legendEl) {
         const dates = points.filter(p=>p.date).map(p=>p.date).sort();
@@ -1286,154 +1296,118 @@
         }
       }
 
-      const W = wrap.clientWidth || 700;
-      const H = 260;
-      const PAD_L = 62, PAD_R = 20, PAD_T = 14, PAD_B = 34;
-      const CW = W - PAD_L - PAD_R;
-      const CH = H - PAD_T - PAD_B;
-
+      const W = wrap.clientWidth || 700, H = 260;
+      const PAD_L=62, PAD_R=20, PAD_T=14, PAD_B=34, CW=W-PAD_L-PAD_R, CH=H-PAD_T-PAD_B;
       const equities = points.map(p=>p.equity);
-      const rawMin = Math.min(...equities), rawMax = Math.max(...equities);
-      const rng = rawMax - rawMin || 1;
-      const dataMin = rawMin - rng * 0.08;
-      const dataMax = rawMax + rng * 0.10;
-      const dataRange = dataMax - dataMin;
+      const rawMin=Math.min(...equities), rawMax=Math.max(...equities), rng=rawMax-rawMin||1;
+      const dataMin=rawMin-rng*0.15, dataMax=rawMax+rng*0.15, dataRange=dataMax-dataMin;
+      const toX = i => PAD_L+(i/(points.length-1||1))*CW;
+      const toY = v => PAD_T+CH-((v-dataMin)/dataRange)*CH;
 
-      const toX = i => PAD_L + (i / (points.length-1||1)) * CW;
-      const toY = v => PAD_T + CH - ((v - dataMin) / dataRange) * CH;
-
-      // Catmull-Rom → cubic bezier for ultra-smooth curve
       function catmullRomPath(pts) {
-        if (pts.length < 2) return '';
-        const tension = 0.4;
-        let d = `M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
-        for (let i = 0; i < pts.length - 1; i++) {
-          const p0 = pts[Math.max(0, i-1)];
-          const p1 = pts[i];
-          const p2 = pts[i+1];
-          const p3 = pts[Math.min(pts.length-1, i+2)];
-          const cp1x = p1.x + (p2.x - p0.x) * tension;
-          const cp1y = p1.y + (p2.y - p0.y) * tension;
-          const cp2x = p2.x - (p3.x - p1.x) * tension;
-          const cp2y = p2.y - (p3.y - p1.y) * tension;
-          d += ` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
+        if (pts.length<2) return '';
+        const tension=0.4; let d=`M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
+        for (let i=0;i<pts.length-1;i++) {
+          const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];
+          const cp1x=p1.x+(p2.x-p0.x)*tension,cp1y=p1.y+(p2.y-p0.y)*tension;
+          const cp2x=p2.x-(p3.x-p1.x)*tension,cp2y=p2.y-(p3.y-p1.y)*tension;
+          d+=` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
         }
         return d;
       }
 
-      const xyPts = points.map((p,i) => ({ x: toX(i), y: toY(p.equity) }));
-      const pathD = catmullRomPath(xyPts);
-      const baseY = Math.min(toY(Math.max(0, dataMin)), PAD_T + CH);
-      const fillD = pathD + ` L ${toX(points.length-1).toFixed(2)} ${baseY.toFixed(2)} L ${toX(0).toFixed(2)} ${baseY.toFixed(2)} Z`;
+      // Split into green/red segments based on drawdown
+      let peak = 0;
+      const segments = [];
+      let curColor = points[0].equity >= 0 ? 'green' : 'red';
+      let curPts = [{ x: toX(0), y: toY(points[0].equity) }];
+
+      for (let i = 1; i < points.length; i++) {
+        const eq = points[i].equity;
+        const prevEq = points[i-1].equity;
+        if (eq > peak) peak = eq;
+        const inDD = eq < peak && eq < 0;
+        const newColor = inDD ? 'red' : 'green';
+
+        if (newColor !== curColor) {
+          // Interpolate exact zero crossing
+          const denom = Math.abs(prevEq) + Math.abs(eq);
+          const t = denom > 0 ? Math.abs(prevEq) / denom : 0.5;
+          const crossX = toX(i-1) + t * (toX(i) - toX(i-1));
+          const crossY = toY(0);
+          curPts.push({ x: crossX, y: crossY });
+          segments.push({ pts: [...curPts], color: curColor });
+          curPts = [{ x: crossX, y: crossY }];
+          curColor = newColor;
+        }
+        curPts.push({ x: toX(i), y: toY(eq) });
+      }
+      if (curPts.length > 1) segments.push({ pts: curPts, color: curColor });
 
       // Y-axis ticks
-      function niceStep(range, n) {
-        const r = range/n, mag = Math.pow(10, Math.floor(Math.log10(r)));
-        return [1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=r) || mag*10;
-      }
-      const step = niceStep(dataRange, 5);
-      const yTicks = [];
-      for (let v = Math.ceil(dataMin/step)*step; v <= dataMax+step*0.01; v+=step)
-        yTicks.push(parseFloat(v.toFixed(8)));
+      function niceStep(range,n) { const r=range/n,mag=Math.pow(10,Math.floor(Math.log10(r))); return [1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=r)||mag*10; }
+      const step=niceStep(dataRange,5); const yTicks=[];
+      for (let v=Math.ceil(dataMin/step)*step;v<=dataMax+step*0.01;v+=step) yTicks.push(parseFloat(v.toFixed(8)));
 
-      // Date X labels
-      const allDates = [...new Set(points.filter(p=>p.date).map(p=>p.date))].sort();
-      const maxXLabels = Math.min(7, allDates.length);
-      const xDates = allDates.length <= maxXLabels ? allDates :
-        Array.from({length:maxXLabels}, (_,i) => allDates[Math.round(i/(maxXLabels-1)*(allDates.length-1))]);
+      const allDates=[...new Set(points.filter(p=>p.date).map(p=>p.date))].sort();
+      const maxXLabels=Math.min(7,allDates.length);
+      const xDates=allDates.length<=maxXLabels?allDates:Array.from({length:maxXLabels},(_,i)=>allDates[Math.round(i/(maxXLabels-1)*(allDates.length-1))]);
+      const fmtY=v=>{const a=Math.abs(v),s=v<0?'-':'';return a>=1000?s+'$'+(a/1000).toFixed(a>=10000?0:1)+'K':s+'$'+a.toFixed(0);};
+      const fmtX=d=>{if(!d)return '';const p=d.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+parseInt(p[2]);};
 
-      const fmtY = v => {
-        const a=Math.abs(v), s=v<0?'-':'';
-        return a>=1000 ? s+'$'+(a/1000).toFixed(a>=10000?0:1)+'K' : s+'$'+a.toFixed(0);
-      };
-      const fmtX = d => { if(!d) return ''; const p=d.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+parseInt(p[2]); };
+      const gridLines=yTicks.map(v=>{const y=toY(v);if(y<PAD_T-2||y>PAD_T+CH+2)return '';const isZero=Math.abs(v)<step*0.01;
+        return `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
+          <text x="${(PAD_L-10).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.18)'}" font-size="10" font-family="ui-monospace,monospace">${fmtY(v)}</text>`;}).join('');
 
-      const gridLines = yTicks.map(v => {
-        const y = toY(v);
-        if (y < PAD_T-2 || y > PAD_T+CH+2) return '';
-        const isZero = Math.abs(v) < step*0.01;
-        return `
-          <line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}"
-            stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
-          <text x="${(PAD_L-10).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end"
-            fill="${isZero?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.18)'}"
-            font-size="10" font-family="ui-monospace,monospace,SFMono-Regular">${fmtY(v)}</text>`;
+      const xLabels=xDates.map(d=>{const idx=points.findIndex(p=>p.date===d);if(idx<0)return '';const x=toX(idx);
+        return `<text x="${x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.22)" font-size="10" font-family="ui-monospace,monospace">${fmtX(d)}</text>`;}).join('');
+
+      const hoverRects=points.slice(1).map((p,i)=>{const x=toX(i+1),prevX=toX(i),sliceW=Math.max(8,x-prevX);
+        const col=p.result==='WIN'?'#22c55e':p.result==='LOSS'?'#ef4444':'#a1a1aa';
+        const sign=p.pnl>=0?'+':'-';
+        const tip=[p.date||(p.time?'@ '+p.time:''),`${p.ticker}${p.grade?' ['+p.grade+']':''}`,`${sign}$${Math.abs(p.pnl).toFixed(2)} → $${p.equity.toFixed(2)}`].filter(Boolean).join('·||·');
+        return `<rect x="${(prevX+(x-prevX)*0.1).toFixed(1)}" y="${PAD_T}" width="${sliceW.toFixed(1)}" height="${CH}" fill="transparent" onmouseenter="showChartTooltip(event,'${tip}','${col}',${x.toFixed(1)},${toY(p.equity).toFixed(1)})" onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>`;}).join('');
+
+      const lastLineCol = isPos ? '#22c55e' : '#ef4444';
+      const crosshairDot=`<circle id="${uid}-dot" cx="0" cy="0" r="5" fill="${lastLineCol}" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>`;
+      const crosshairLine=`<line id="${uid}-vline" x1="0" y1="${PAD_T}" x2="0" y2="${PAD_T+CH}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>`;
+
+      // Build segment SVG paths
+      const baseY = Math.min(toY(Math.max(0,dataMin)), PAD_T+CH);
+      const segmentSVG = segments.map((seg, si) => {
+        const col = seg.color === 'green' ? '#22c55e' : '#ef4444';
+        const gid = `${uid}-fill-${si}`;
+        const pathD = catmullRomPath(seg.pts);
+        // Fill to the zero line (clamped to chart area)
+        const fillBase = Math.max(Math.min(toY(0), PAD_T + CH), PAD_T);
+        const fillD = pathD + ` L ${seg.pts[seg.pts.length-1].x.toFixed(2)} ${fillBase.toFixed(2)} L ${seg.pts[0].x.toFixed(2)} ${fillBase.toFixed(2)} Z`;
+        return `<defs>
+          <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${col}" stop-opacity="0.35"/>
+            <stop offset="40%" stop-color="${col}" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="${col}" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="${fillD}" fill="url(#${gid})"/>
+        <path d="${pathD}" fill="none" stroke="${col}" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.12"/>
+        <path d="${pathD}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>`;
       }).join('');
 
-      const xLabels = xDates.map(d => {
-        const idx = points.findIndex(p=>p.date===d);
-        if (idx<0) return '';
-        const x = toX(idx);
-        return `<text x="${x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle"
-          fill="rgba(255,255,255,0.22)" font-size="10" font-family="ui-monospace,monospace,SFMono-Regular">${fmtX(d)}</text>`;
-      }).join('');
-
-      // Hover overlay: invisible vertical slicer
-      const hoverRects = points.slice(1).map((p,i) => {
-        const x = toX(i+1);
-        const prevX = toX(i);
-        const sliceW = Math.max(8, x - prevX);
-        const col = p.result==='WIN'?'#22c55e':p.result==='LOSS'?'#ef4444':'#a1a1aa';
-        const sign = p.pnl>=0?'+':'-';
-        const tip = [
-          p.date||(p.time?'@ '+p.time:''),
-          `${p.ticker}${p.grade?' ['+p.grade+']':''}`,
-          `${sign}$${Math.abs(p.pnl).toFixed(2)} → $${p.equity.toFixed(2)}`
-        ].filter(Boolean).join('·||·');
-        return `<rect x="${(prevX+(x-prevX)*0.1).toFixed(1)}" y="${PAD_T}" width="${sliceW.toFixed(1)}" height="${CH}"
-          fill="transparent"
-          onmouseenter="showChartTooltip(event,'${tip}','${col}',${x.toFixed(1)},${toY(p.equity).toFixed(1)})"
-          onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>`;
-      }).join('');
-
-      // Crosshair dot
-      const crosshairDot = `<circle id="${uid}-dot" cx="0" cy="0" r="5" fill="${lineCol}" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>`;
-      const crosshairLine = `<line id="${uid}-vline" x1="0" y1="${PAD_T}" x2="0" y2="${PAD_T+CH}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>`;
-
-      wrap.innerHTML = `
-        <svg id="${uid}-svg" width="100%" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
-          <defs>
-            <linearGradient id="${uid}-fill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stop-color="${fillCol}" stop-opacity="0.35"/>
-              <stop offset="40%"  stop-color="${fillCol}" stop-opacity="0.18"/>
-              <stop offset="80%"  stop-color="${fillCol}" stop-opacity="0.05"/>
-              <stop offset="100%" stop-color="${fillCol}" stop-opacity="0"/>
-            </linearGradient>
-            <filter id="${uid}-glow" x="-20%" y="-50%" width="140%" height="200%">
-              <feGaussianBlur stdDeviation="3" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-            <clipPath id="${uid}-clip">
-              <rect x="${PAD_L}" y="${PAD_T-2}" width="${CW+1}" height="${CH+4}"/>
-            </clipPath>
-          </defs>
-
-          <!-- Grid -->
-          ${gridLines}
-          <!-- X labels -->
-          ${xLabels}
-
-          <g clip-path="url(#${uid}-clip)">
-            <!-- Rich gradient fill -->
-            <path d="${fillD}" fill="url(#${uid}-fill)"/>
-            <!-- Subtle glow behind line -->
-            <path d="${pathD}" fill="none" stroke="${lineCol}" stroke-width="6"
-              stroke-linejoin="round" stroke-linecap="round" opacity="0.15" filter="url(#${uid}-glow)"/>
-            <!-- Main crisp line -->
-            <path d="${pathD}" fill="none" stroke="${lineCol}" stroke-width="2"
-              stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>
-            <!-- Crosshair -->
-            ${crosshairLine}
-            ${crosshairDot}
-            <!-- Hover slices -->
-            ${hoverRects}
-          </g>
-        </svg>
-        <div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;
-          background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;
-          padding:10px 14px;font-size:11px;white-space:nowrap;
-          font-family:ui-monospace,monospace;color:#e4e4e7;
-          box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>`;
+      wrap.innerHTML=`<svg id="${uid}-svg" width="100%" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
+        <defs>
+          <filter id="${uid}-glow" x="-20%" y="-50%" width="140%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <clipPath id="${uid}-clip"><rect x="${PAD_L}" y="${PAD_T-2}" width="${CW+1}" height="${CH+4}"/></clipPath>
+        </defs>
+        ${gridLines}${xLabels}
+        <g clip-path="url(#${uid}-clip)">
+          ${segmentSVG}
+          ${crosshairLine}${crosshairDot}${hoverRects}
+        </g>
+      </svg>
+      <div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:11px;white-space:nowrap;font-family:ui-monospace,monospace;color:#e4e4e7;box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>`;
 
       // Store refs for crosshair
       wrap._uid = uid;
@@ -1978,7 +1952,7 @@
       document.getElementById('bt-detail').classList.remove('hidden');
       document.getElementById('bt-title').textContent = s.name;
       document.getElementById('bt-meta').textContent = [s.ticker,s.strategy,s.startDate].filter(Boolean).join(' · ');
-      btSub('trades');
+      btSub('calendar');
       try {
         const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'get-trades',key:'backtest:'+whopKey+':'+id}) });
         const data = await res.json();
