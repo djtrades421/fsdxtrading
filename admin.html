@@ -936,7 +936,7 @@
       btn.disabled = true; btn.textContent = 'Updating…';
 
       try {
-        const token = localStorage.getItem('fsdx_admin_token');
+        const token = localStorage.getItem('fsdx_token');
         const res = await fetch(`${API}/api/admin/member`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
