@@ -689,7 +689,7 @@
   <script>
     const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
     const TICK_SIZE = 0.25, TICK_VALUE = 0.50; // MNQ defaults
-    let allTrades = [], filteredTrades = [], whopKey = null;
+    let allTrades = [], filteredTrades = [], whopKey = null, userTier = 'pro';
     let editingId = null, detailId = null, currentTags = [];
     let tradeDir = 'LONG', pnlMode = 'price', statsTime = 'today';
     let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
@@ -1973,6 +1973,7 @@
 
     async function openBtSession(id) {
       const s = btSessions.find(s=>s.id===id); if(!s) return;
+      if (userTier === 'trial' && btSessions.indexOf(s) >= 3) return;
       document.getElementById('bt-sessions-view').classList.add('hidden');
       document.getElementById('bt-detail').classList.remove('hidden');
       document.getElementById('bt-title').textContent = s.name;
@@ -2404,6 +2405,7 @@
         const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', { headers:{'Authorization':'Bearer '+token} });
         const data = await res.json();
         whopKey = data.user?.whopKey;
+        userTier = data.user?.tier || 'pro';
       } catch(err) {}
       if (!whopKey) { document.getElementById('loading-screen').innerHTML='<p class="text-zinc-500 text-sm text-center px-6">Could not load your key. <a href="login.html" class="text-green-400">Log out and back in</a>.</p>'; return; }
       try {
