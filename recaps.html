@@ -10,35 +10,20 @@
   <style>
     body { background-color: #000; }
     .filter-btn.active { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.4); color: #22c55e; }
-    .recap-card { transition: border-color 0.15s, transform 0.15s; }
-    .recap-card:hover { border-color: rgba(255,255,255,0.15); }
-    .chart-img { transition: opacity 0.2s; cursor: zoom-in; }
-    .chart-img:hover { opacity: 0.9; }
-    /* Lightbox */
-    #lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.92); z-index:100; align-items:center; justify-content:center; padding:24px; }
-    #lightbox.open { display:flex; }
-    #lightbox img { max-width:100%; max-height:90vh; border-radius:12px; border:1px solid rgba(255,255,255,0.1); }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
   <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
     <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
-    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider">// MENU</button>
   </header>
 
   <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300">
     <div id="nav-content" class="flex flex-col justify-between h-full"></div>
   </aside>
 
-  <!-- Lightbox -->
-  <div id="lightbox" onclick="closeLightbox()">
-    <img id="lightbox-img" src="" alt="Chart">
-    <button onclick="closeLightbox()" style="position:absolute;top:16px;right:20px;color:rgba(255,255,255,0.5);font-size:24px;background:none;border:none;cursor:pointer;">✕</button>
-  </div>
-
   <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
-
     <div id="loading-screen" class="flex-1 flex items-center justify-center">
       <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
     </div>
@@ -50,7 +35,7 @@
         <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// VIP Members</div>
           <h1 class="text-3xl font-black tracking-tight mb-1">Session Recaps</h1>
-          <p class="text-zinc-500 text-sm mb-5">Daily post-session breakdowns — grade, result, key levels, and lessons from each ORB session.</p>
+          <p class="text-zinc-500 text-sm mb-5">Daily post-session breakdowns — setups, grades, results, and lessons.</p>
 
           <!-- Filters -->
           <div class="flex flex-wrap gap-2 pb-5">
@@ -74,7 +59,7 @@
       <div class="flex-1 px-6 md:px-10 py-8">
         <div class="max-w-5xl mx-auto">
           <div id="recaps-count" class="text-xs text-zinc-600 mb-4"></div>
-          <div id="recaps-container" class="space-y-4"></div>
+          <div id="recaps-container" class="space-y-5"></div>
           <div id="empty-state" class="hidden text-center py-20">
             <div class="text-4xl mb-3">📋</div>
             <h3 class="text-lg font-black mb-2">No recaps yet</h3>
@@ -92,17 +77,6 @@
     let activeResultFilter = '';
 
     function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
-
-    function openLightbox(src) {
-      document.getElementById('lightbox-img').src = src;
-      document.getElementById('lightbox').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeLightbox() {
-      document.getElementById('lightbox').classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    document.addEventListener('keydown', e => { if(e.key==='Escape') closeLightbox(); });
 
     const gradeColor = g => {
       if (['A+','A'].includes(g)) return 'bg-green-500/10 text-green-400 border-green-500/25';
@@ -126,8 +100,26 @@
       const rl = r.toLowerCase();
       if (rl.includes('win')) return 'bg-green-500/10 border-green-500/20';
       if (rl.includes('loss')) return 'bg-red-500/10 border-red-500/20';
-      return 'bg-zinc-800 border-white/10';
+      return 'bg-yellow-500/10 border-yellow-500/20';
     };
+
+    const dirColor = d => d === 'LONG' ? 'text-green-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-400';
+
+    function renderSetup(s) {
+      return `
+        <div class="flex flex-wrap items-start gap-3 py-3 border-b border-white/5 last:border-0">
+          <!-- Grade -->
+          ${s.grade ? `<span class="px-2 py-0.5 rounded text-[10px] font-black border ${gradeColor(s.grade)} shrink-0">${s.grade}</span>` : ''}
+          <!-- Direction -->
+          ${s.direction ? `<span class="text-xs font-black ${dirColor(s.direction)} shrink-0">${s.direction}</span>` : ''}
+          <!-- Result -->
+          ${s.result ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${resultBg(s.result)} ${resultColor(s.result)} shrink-0">${s.result}</span>` : ''}
+          <!-- RR -->
+          ${s.rr ? `<span class="text-xs text-zinc-500 shrink-0">RR <span class="text-white font-bold">${s.rr}</span></span>` : ''}
+          <!-- Notes -->
+          ${s.notes ? `<span class="text-xs text-zinc-500 flex-1">${s.notes}</span>` : ''}
+        </div>`;
+    }
 
     function renderRecaps(recaps) {
       const container = document.getElementById('recaps-container');
@@ -146,46 +138,56 @@
 
       container.innerHTML = recaps.map(r => {
         const dateStr = r.date ? new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
+        const setups = Array.isArray(r.setups) ? r.setups : [];
         const tags = Array.isArray(r.tags) ? r.tags : (r.tags ? r.tags.split(',').map(t=>t.trim()).filter(Boolean) : []);
 
-        const chartBlock = r.chartUrl ? `
-          <div class="mt-3 pt-3 border-t border-white/5">
-            <a href="${r.chartUrl}" target="_blank" class="inline-block mb-2 text-xs text-green-400 hover:text-green-300 transition font-bold">View Chart ↗</a>
-            <div class="rounded-xl overflow-hidden border border-white/10">
-              <img src="${r.chartUrl}" alt="Session chart" class="w-full max-h-48 object-contain bg-zinc-950"
-                onerror="this.style.display='none'"/>
-            </div>
-          </div>` : '';
+        // Legacy single-setup support
+        const hasLegacySetup = !setups.length && (r.grade || r.result);
+        const setupsHtml = setups.length
+          ? setups.map(renderSetup).join('')
+          : hasLegacySetup ? renderSetup({ grade: r.grade, direction: '', result: r.result, rr: '', notes: '' })
+          : '';
 
         return `
-        <div class="recap-card border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-          <!-- Card header -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden hover:border-white/15 transition">
+          <!-- Session header -->
           <div class="px-6 pt-5 pb-4">
             <div class="flex items-start justify-between gap-4 mb-3">
-              <div class="flex-1">
-                <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                  <span class="text-xs text-zinc-500 font-medium">${dateStr}</span>
-                  ${r.grade ? `<span class="px-2 py-0.5 rounded text-[10px] font-black border ${gradeColor(r.grade)}">${r.grade}</span>` : ''}
-                  ${r.result ? `<span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${resultBg(r.result)} ${resultColor(r.result)}">${r.result}</span>` : ''}
-                </div>
-                <h3 class="text-base font-black text-white leading-snug">${r.title}</h3>
+              <div>
+                <div class="text-xs text-zinc-500 font-medium mb-1">${dateStr}</div>
+                <h3 class="text-base font-black text-white">${r.title || 'Session Recap'}</h3>
               </div>
+              ${r.chartUrl ? `<a href="${r.chartUrl}" target="_blank" class="shrink-0 text-xs text-green-400 hover:text-green-300 font-bold transition border border-green-500/20 bg-green-500/5 px-3 py-1.5 rounded-lg">View Chart ↗</a>` : ''}
             </div>
 
-            <p class="text-zinc-400 text-sm leading-relaxed">${r.summary}</p>
+            ${r.summary ? `<p class="text-zinc-400 text-sm leading-relaxed mb-4">${r.summary}</p>` : ''}
 
-            ${r.notes ? `
-            <div class="mt-3 border-l-2 border-white/10 pl-3">
-              <div class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1 font-bold">Notes</div>
-              <p class="text-zinc-500 text-xs leading-relaxed italic">${r.notes}</p>
+            <!-- Setups -->
+            ${setupsHtml ? `
+            <div class="border border-white/10 bg-zinc-900/30 rounded-xl px-4 py-1 mb-3">
+              <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold pt-3 pb-2">Setups</div>
+              ${setupsHtml}
             </div>` : ''}
 
+            <!-- Chart image -->
+            ${r.chartUrl ? `
+            <div class="rounded-xl overflow-hidden border border-white/10 mb-3">
+              <img src="${r.chartUrl}" alt="Session chart" class="w-full max-h-64 object-contain bg-zinc-950"
+                onerror="this.style.display='none'"/>
+            </div>` : ''}
+
+            <!-- Notes -->
+            ${r.notes ? `
+            <div class="border-l-2 border-white/10 pl-3 mb-3">
+              <div class="text-[10px] text-zinc-600 uppercase tracking-wider mb-1 font-bold">Notes</div>
+              <p class="text-zinc-500 text-xs leading-relaxed">${r.notes}</p>
+            </div>` : ''}
+
+            <!-- Tags -->
             ${tags.length ? `
-            <div class="flex flex-wrap gap-1.5 mt-3">
+            <div class="flex flex-wrap gap-1.5">
               ${tags.map(t => `<span class="px-2 py-0.5 bg-zinc-900 border border-white/[0.06] rounded-full text-[10px] text-zinc-500">${t}</span>`).join('')}
             </div>` : ''}
-
-            ${chartBlock}
           </div>
         </div>`;
       }).join('');
@@ -194,57 +196,32 @@
     function filterBy(type, val) {
       if (type === 'grade') activeGradeFilter = val;
       if (type === 'result') activeResultFilter = val;
-
-      // Update button states per group
       document.querySelectorAll(`.filter-btn[data-filter="${type}"]`).forEach(btn => {
-        const isActive = btn.dataset.val === val;
-        btn.classList.toggle('active', isActive);
+        btn.classList.toggle('active', btn.dataset.val === val);
       });
-
       const filtered = allRecaps.filter(r => {
-        const gradeOk = !activeGradeFilter || r.grade === activeGradeFilter;
-        const resultOk = !activeResultFilter || (r.result && r.result.toLowerCase().includes(activeResultFilter.toLowerCase()));
+        const setups = Array.isArray(r.setups) ? r.setups : [];
+        const gradeOk = !activeGradeFilter ||
+          r.grade === activeGradeFilter ||
+          setups.some(s => s.grade === activeGradeFilter);
+        const resultOk = !activeResultFilter ||
+          (r.result && r.result.toLowerCase().includes(activeResultFilter.toLowerCase())) ||
+          setups.some(s => s.result && s.result.toLowerCase().includes(activeResultFilter.toLowerCase()));
         return gradeOk && resultOk;
       });
       renderRecaps(filtered);
     }
 
-    const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
-
     async function init() {
       const token = localStorage.getItem('fsdx_token');
       if (!token) { window.location.href = 'login.html'; return; }
-
-      // Get whopKey for admin save-all key lookup
-      let whopKey = null;
-      try {
-        const profileRes = await fetch(`${API}/api/auth/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
-        const profileData = await profileRes.json();
-        whopKey = profileData.user?.whopKey;
-      } catch(e) {}
-
-      // Try primary recaps endpoint first
       try {
         const res = await fetch(`${API}/api/recaps`, { headers: { 'Authorization': `Bearer ${token}` } });
         if (res.ok) {
           const data = await res.json();
           allRecaps = data.recaps || [];
         }
-      } catch (err) {}
-
-      // If no recaps from primary, try the save-all KV key used by admin edit
-      if (!allRecaps.length && whopKey) {
-        try {
-          const res = await fetch(JOURNAL_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'get-trades', key: 'recaps:' + whopKey })
-          });
-          const data = await res.json();
-          if (Array.isArray(data.trades) && data.trades.length) allRecaps = data.trades;
-        } catch(e) {}
-      }
-
+      } catch (err) { console.log('Could not load recaps'); }
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
       renderRecaps(allRecaps);
