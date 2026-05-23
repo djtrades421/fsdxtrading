@@ -172,6 +172,63 @@
             </div>
           </div>
         </div>
+
+        <!-- ECONOMIC CALENDAR WIDGET -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <!-- Widget header -->
+          <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-3 flex-wrap">
+            <h3 class="text-sm font-black text-white shrink-0">Economic Calendar</h3>
+            <div class="flex flex-wrap items-center gap-2">
+              <!-- Date -->
+              <select id="cal-date" onchange="renderCalendar()" class="bg-black border border-white/10 text-white text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40 transition">
+                <option value="today">Today</option>
+                <option value="tomorrow">Tomorrow</option>
+                <option value="week" selected>This Week</option>
+              </select>
+              <!-- Currency -->
+              <select id="cal-currency" onchange="renderCalendar()" class="bg-black border border-white/10 text-white text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40 transition">
+                <option value="">All Currencies</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="GBP">GBP</option>
+                <option value="JPY">JPY</option>
+                <option value="CAD">CAD</option>
+                <option value="AUD">AUD</option>
+                <option value="CHF">CHF</option>
+                <option value="NZD">NZD</option>
+                <option value="CNY">CNY</option>
+              </select>
+              <!-- Timezone -->
+              <select id="cal-tz" onchange="renderCalendar()" class="bg-black border border-white/10 text-white text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40 transition">
+                <option value="America/New_York">ET (New York)</option>
+                <option value="America/Chicago" selected>CT (Chicago)</option>
+                <option value="America/Denver">MT (Denver)</option>
+                <option value="America/Los_Angeles">PT (Los Angeles)</option>
+                <option value="Europe/London">GMT (London)</option>
+                <option value="Europe/Paris">CET (Paris)</option>
+                <option value="Europe/Berlin">CET (Berlin)</option>
+                <option value="Asia/Tokyo">JST (Tokyo)</option>
+                <option value="Australia/Sydney">AEST (Sydney)</option>
+                <option value="Asia/Dubai">GST (Dubai)</option>
+                <option value="Asia/Singapore">SGT (Singapore)</option>
+              </select>
+              <!-- Impact toggles -->
+              <div class="flex gap-1">
+                <button id="imp-H" onclick="toggleImpact('High')" class="px-2 py-1 rounded text-[10px] font-black border border-red-500/40 bg-red-500/10 text-red-400 transition">H</button>
+                <button id="imp-M" onclick="toggleImpact('Medium')" class="px-2 py-1 rounded text-[10px] font-black border border-yellow-500/40 bg-yellow-500/10 text-yellow-400 transition">M</button>
+                <button id="imp-L" onclick="toggleImpact('Low')" class="px-2 py-1 rounded text-[10px] font-black border border-white/10 bg-zinc-900 text-zinc-500 transition">L</button>
+              </div>
+              <!-- FF link -->
+              <a href="https://www.forexfactory.com/calendar" target="_blank"
+                class="px-2 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/30 rounded-lg text-[10px] font-black text-zinc-400 hover:text-green-400 transition">FF ↗</a>
+            </div>
+          </div>
+          <!-- Calendar body -->
+          <div id="cal-body" class="max-h-80 overflow-y-auto">
+            <div class="text-center py-8 text-zinc-600 text-xs">Loading calendar...</div>
+          </div>
+        </div>
+
       </div>
     </div>
   </main>
@@ -370,9 +427,160 @@
       // Load journal stats and announcement
       if (whopKey) loadJournalStats(whopKey);
       loadAnnouncement(token);
+      loadCalendar(token);
     }
 
     initDashboard();
+
+    // ── Economic Calendar ──
+    let calEvents = [];
+    let calImpact = new Set(['High', 'Medium']);
+
+    function toggleImpact(level) {
+      if (calImpact.has(level)) calImpact.delete(level);
+      else calImpact.add(level);
+      const colors = { High: 'text-red-400 border-red-500/40 bg-red-500/10', Medium: 'text-yellow-400 border-yellow-500/40 bg-yellow-500/10', Low: 'text-zinc-500 border-white/10 bg-zinc-900' };
+      const offColors = { High: 'text-zinc-600 border-white/5 bg-transparent', Medium: 'text-zinc-600 border-white/5 bg-transparent', Low: 'text-zinc-600 border-white/5 bg-transparent' };
+      ['High','Medium','Low'].forEach(l => {
+        const btn = document.getElementById('imp-' + l[0]);
+        if (!btn) return;
+        btn.className = `px-2 py-1 rounded text-[10px] font-black border transition ${calImpact.has(l) ? colors[l] : offColors[l]}`;
+      });
+      renderCalendar();
+    }
+
+    function parseFF(xml) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(xml, 'text/xml');
+      const events = [];
+      doc.querySelectorAll('event').forEach(e => {
+        events.push({
+          title:    e.querySelector('title')?.textContent || '',
+          country:  e.querySelector('country')?.textContent || '',
+          date:     e.querySelector('date')?.textContent || '',
+          time:     e.querySelector('time')?.textContent || '',
+          impact:   e.querySelector('impact')?.textContent || 'Low',
+          forecast: e.querySelector('forecast')?.textContent || '',
+          previous: e.querySelector('previous')?.textContent || '',
+          actual:   e.querySelector('actual')?.textContent || '',
+        });
+      });
+      return events;
+    }
+
+    function convertTime(dateStr, timeStr, tz) {
+      if (!dateStr || !timeStr) return timeStr || '';
+      const tl = timeStr.toLowerCase().trim();
+      if (tl === 'all day' || tl === 'tentative') return timeStr;
+      try {
+        const [m, d, y] = dateStr.split('-');
+        let t = tl.replace(/\s/g,'');
+        const ispm = t.includes('pm'), isam = t.includes('am');
+        t = t.replace('am','').replace('pm','');
+        let [h, min] = t.split(':').map(Number);
+        if (ispm && h !== 12) h += 12;
+        if (isam && h === 12) h = 0;
+        const isoStr = parseInt(y) + '-' + m + '-' + d + 'T' + String(h).padStart(2,'0') + ':' + String(min||0).padStart(2,'0') + ':00';
+        const probe = new Date(isoStr + 'Z');
+        const srcMs = new Date(probe.toLocaleString('en-US', {timeZone:'America/Chicago'})) - probe;
+        const tgtMs = new Date(probe.toLocaleString('en-US', {timeZone: tz})) - probe;
+        const adjusted = new Date(probe.getTime() + tgtMs - srcMs);
+        return adjusted.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit', hour12:true, timeZone:'UTC'})
+          .replace(' AM','A').replace(' PM','P');
+      } catch(e) { return timeStr; }
+    }
+
+    function todayInTz(tz) {
+      const parts = new Intl.DateTimeFormat('en-US', { timeZone: tz, month:'2-digit', day:'2-digit', year:'numeric' }).formatToParts(new Date());
+      const p = {};
+      parts.forEach(x => p[x.type] = x.value);
+      return p.month + '-' + p.day + '-' + p.year;
+    }
+
+    function renderCalendar() {
+      const body = document.getElementById('cal-body');
+      if (!body || !calEvents.length) return;
+
+      const tz = document.getElementById('cal-tz')?.value || 'America/Chicago';
+      const dateFilter = document.getElementById('cal-date')?.value || 'week';
+      const currency = document.getElementById('cal-currency')?.value || '';
+
+      const todayStr = todayInTz('America/Chicago');
+      const nowCT = new Date(new Date().toLocaleString('en-US', {timeZone:'America/Chicago'}));
+      const tmrCT = new Date(nowCT); tmrCT.setDate(tmrCT.getDate() + 1);
+      const tmrStr = String(tmrCT.getMonth()+1).padStart(2,'0') + '-' + String(tmrCT.getDate()).padStart(2,'0') + '-' + tmrCT.getFullYear();
+
+      let filtered = calEvents.slice();
+      if (dateFilter === 'today') filtered = filtered.filter(e => e.date === todayStr);
+      else if (dateFilter === 'tomorrow') filtered = filtered.filter(e => e.date === tmrStr);
+
+      filtered = filtered.filter(e => calImpact.has(e.impact));
+      if (currency) filtered = filtered.filter(e => e.country === currency);
+
+      if (!filtered.length) {
+        body.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">No events found.</div>';
+        return;
+      }
+
+      const impactColor = { High: '#ef4444', Medium: '#eab308', Low: '#52525b' };
+      const impactDots = imp => {
+        const c = impactColor[imp] || '#444';
+        const dots = imp === 'High' ? 3 : imp === 'Medium' ? 2 : 1;
+        return Array(3).fill(0).map((_,i) => `<span style="display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:2px;background:${i<dots?c:'#222'}"></span>`).join('');
+      };
+
+      const fmtDate = dateStr => {
+        const [m, d, y] = dateStr.split('-');
+        const dt = new Date(parseInt(y), parseInt(m)-1, parseInt(d));
+        return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getDay()] + ' ' + parseInt(m) + '/' + parseInt(d) + '/' + y;
+      };
+
+      let html = '';
+      let lastDate = null;
+      filtered.forEach((ev, i) => {
+        if (ev.date !== lastDate) {
+          html += `<div class="px-4 py-2 border-l-2 border-green-500 bg-green-500/5 border-b border-white/5">
+            <span class="text-[10px] font-black text-green-400 uppercase tracking-wider">${fmtDate(ev.date)}</span>
+          </div>`;
+          lastDate = ev.date;
+        }
+        const dispTime = convertTime(ev.date, ev.time, tz);
+        const impC = impactColor[ev.impact] || '#444';
+        const rowBg = i % 2 === 0 ? '' : 'background:rgba(255,255,255,0.01)';
+        const titleColor = ev.impact === 'High' ? '#fff' : ev.impact === 'Medium' ? '#d4d4d8' : '#71717a';
+        html += `<div style="display:grid;grid-template-columns:52px 36px 22px 1fr 44px 44px;${rowBg}" class="border-b border-white/[0.04] px-4 py-2 items-center gap-2">
+          <div class="text-[10px] text-zinc-400 whitespace-nowrap font-mono">${dispTime}</div>
+          <div class="text-[10px] font-black" style="color:${impC}">${ev.country}</div>
+          <div class="flex items-center">${impactDots(ev.impact)}</div>
+          <div class="text-[10px] truncate font-medium" style="color:${titleColor}">${ev.title}</div>
+          <div class="text-[10px] text-zinc-600 text-right">${ev.forecast || '—'}</div>
+          <div class="text-[10px] text-zinc-600 text-right">${ev.previous || '—'}</div>
+        </div>`;
+      });
+
+      // Header row
+      body.innerHTML = `<div style="display:grid;grid-template-columns:52px 36px 22px 1fr 44px 44px;position:sticky;top:0;z-index:1;" class="px-4 py-2 border-b border-white/10 bg-zinc-900 gap-2">
+        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold">Time</div>
+        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold">Cur</div>
+        <div></div>
+        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold">Event</div>
+        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold text-right">Fore</div>
+        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold text-right">Prev</div>
+      </div>` + html;
+    }
+
+    async function loadCalendar(token) {
+      try {
+        const res = await fetch(`${API}/api/calendar`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const xml = await res.text();
+        calEvents = parseFF(xml);
+        renderCalendar();
+      } catch(e) {
+        const body = document.getElementById('cal-body');
+        if (body) body.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">Could not load calendar.</div>';
+      }
+    }
+
   </script>
 
   <script src="nav-loader.js"></script>
