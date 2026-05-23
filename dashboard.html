@@ -67,37 +67,34 @@
         <div id="announcement-banner" class="hidden rounded-xl px-4 py-3 text-sm"></div>
 
         <!-- STAT CARDS -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-          <!-- Journal Win Rate -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 hover:border-white/20 transition">
-            <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Journal Win Rate</div>
-            <div id="stat-wr" class="text-2xl font-black text-white">—</div>
-            <div id="stat-wr-sub" class="text-[10px] text-zinc-600 mt-1">Loading...</div>
-          </div>
-
-          <!-- Journal Net P&L -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 hover:border-white/20 transition">
-            <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Journal Net P&L</div>
-            <div id="stat-pnl" class="text-2xl font-black text-white">—</div>
-            <div id="stat-pnl-sub" class="text-[10px] text-zinc-600 mt-1">Loading...</div>
-          </div>
-
-          <!-- Journal Trades -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 hover:border-white/20 transition">
-            <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Total Trades</div>
-            <div id="stat-trades" class="text-2xl font-black text-white">—</div>
-            <div id="stat-trades-sub" class="text-[10px] text-zinc-600 mt-1">All time</div>
-          </div>
-
-          <!-- Status card — changes by tier -->
-          <div id="status-card" class="border border-green-500/20 bg-green-500/5 rounded-2xl p-5 cursor-pointer hover:border-green-500/40 transition" onclick="toggleAccess()">
-            <div class="flex items-center justify-between mb-1">
-              <div class="text-[10px] text-green-400 uppercase tracking-wider">Your Status</div>
-              <svg id="access-chevron" class="w-3.5 h-3.5 text-green-400/60 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        <!-- KPI CARDS + CHART -->
+        <div id="stats-content" class="space-y-4">
+          <!-- Top 4 KPI cards -->
+          <div id="stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Status card always shown -->
+            <div id="status-card" class="border border-green-500/20 bg-green-500/5 rounded-2xl p-5 cursor-pointer hover:border-green-500/40 transition col-span-1" onclick="toggleAccess()">
+              <div class="flex items-center justify-between mb-1">
+                <div class="text-[10px] text-green-400 uppercase tracking-wider">Your Status</div>
+                <svg id="access-chevron" class="w-3.5 h-3.5 text-green-400/60 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+              </div>
+              <div id="status-tier" class="text-2xl font-black text-green-400">VIP</div>
+              <div id="status-sub" class="text-[10px] text-green-400/60 mt-1">Full suite access</div>
             </div>
-            <div id="status-tier" class="text-2xl font-black text-green-400">VIP</div>
-            <div id="status-sub" class="text-[10px] text-green-400/60 mt-1">Full suite access</div>
+          </div>
+
+          <!-- Cumulative P&L chart -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+            <div class="flex items-start justify-between mb-1">
+              <div>
+                <div class="text-xs text-zinc-500 uppercase tracking-[0.2em]">Cumulative P&L</div>
+                <div id="chart-final-pnl" class="text-2xl font-black mt-1 text-zinc-600">—</div>
+              </div>
+              <div id="chart-legend" class="flex gap-4 text-xs text-zinc-500 mt-1"></div>
+            </div>
+            <div id="equity-chart-wrap" class="relative mt-4" style="height:260px">
+              <div class="flex items-center justify-center h-full text-zinc-600 text-xs">Loading chart...</div>
+            </div>
           </div>
         </div>
 
@@ -109,6 +106,7 @@
           </div>
         </div>
 
+        <!-- QUICK ACCESS + COMING SOON -->
         <!-- QUICK ACCESS + COMING SOON -->
         <div class="grid md:grid-cols-2 gap-6">
 
@@ -166,10 +164,16 @@
             </div>
           </div>
 
-            <h3 class="text-sm font-black text-white">Quick Access</h3>
-            <svg id="qa-chevron" class="w-3.5 h-3.5 text-zinc-500 transition-transform rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
-          </button>
-          <div id="qa-content" class="px-6 pb-5 space-y-3">
+        </div>
+
+        <!-- QUICK ACCESS — collapsible, half width -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+            <button onclick="toggleQuickAccess()" class="w-full px-6 py-4 flex items-center justify-between hover:bg-white/[0.02] transition">
+              <h3 class="text-sm font-black text-white">Quick Access</h3>
+              <svg id="qa-chevron" class="w-3.5 h-3.5 text-zinc-500 transition-transform rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+            <div id="qa-content" class="px-6 pb-5 space-y-3">
               <a href="https://www.tradingview.com" target="_blank" class="flex items-center gap-3 p-3 bg-black border border-white/5 hover:border-green-500/30 rounded-xl transition group">
                 <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
                 <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">Open TradingView</div><div class="text-xs text-zinc-500">Launch your charts</div></div>
@@ -189,8 +193,10 @@
                 <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
                 <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">Backtest Research Data</div><div class="text-xs text-zinc-500">Full verified performance breakdown</div></div>
               </a>
+            </div>
           </div>
         </div>
+
       </div>
     </div>
   </main>
@@ -254,33 +260,162 @@
       if (h < 12) return 'Good morning'; if (h < 17) return 'Good afternoon'; return 'Good evening';
     }
 
+    // ── Helpers (matching journal style) ──
+    const statCard = (label, val, color, sub='') => `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center"><div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">${label}</div><div class="text-2xl font-black" style="color:${color}">${val}</div>${sub?`<div class="text-xs text-zinc-600 mt-1">${sub}</div>`:''}</div>`;
+
+    function renderWinRateCard(wr, decided, wins, losses, bes) {
+      const color = wr >= 50 ? '#22c55e' : '#ef4444';
+      const r = 28, circ = 2 * Math.PI * r;
+      const dash = (wr / 100) * circ, gap = circ - dash;
+      const beSub = bes > 0 ? ` · ${bes} BE` : '';
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-3">Win Rate</div>
+        <div class="relative flex items-center justify-center" style="width:80px;height:80px">
+          <svg width="80" height="80" viewBox="0 0 80 80" style="transform:rotate(-90deg);position:absolute;inset:0">
+            <circle cx="40" cy="40" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+            <circle cx="40" cy="40" r="${r}" fill="none" stroke="${color}" stroke-width="8"
+              stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
+              stroke-linecap="round" opacity="0.9"/>
+          </svg>
+          <div style="color:${color}" class="text-lg font-black relative z-10">${wr}%</div>
+        </div>
+        <div class="text-xs text-zinc-600 mt-2">${wins}W · ${losses}L${beSub}</div>
+      </div>`;
+    }
+
+    function renderNetPnlCard(netPnl) {
+      const color = netPnl > 0 ? '#22c55e' : netPnl < 0 ? '#ef4444' : '#71717a';
+      const sign = netPnl >= 0 ? '+' : '-';
+      const formatted = sign + '$' + Math.abs(netPnl).toFixed(2);
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
+        <div class="text-xs text-zinc-500 uppercase tracking-wider mb-2">Net P&L</div>
+        <div class="text-2xl font-black" style="color:${color}">${formatted}</div>
+        <div class="text-xs mt-2" style="color:${color};opacity:0.55">${netPnl >= 0 ? '▲ Profitable' : '▼ In drawdown'}</div>
+      </div>`;
+    }
+
+    function showChartTooltip(e, rawLabel, color, dotX, dotY) {
+      const tt = document.getElementById('eq-tooltip');
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!tt || !wrap) return;
+      const parts = rawLabel.split('·||·');
+      tt.innerHTML = parts.map((p,i) => i===0 ? `<div style="color:#71717a;font-size:10px;margin-bottom:4px">${p}</div>` : i===parts.length-1 ? `<div style="color:${color};font-size:12px;font-weight:700">${p}</div>` : `<div style="color:#e4e4e7;font-size:11px">${p}</div>`).join('');
+      tt.style.display = 'block';
+      const wRect = wrap.getBoundingClientRect();
+      let left = e.clientX - wRect.left + 12;
+      let top = e.clientY - wRect.top - 20;
+      if (left + 180 > wRect.width) left = e.clientX - wRect.left - 180;
+      tt.style.left = left + 'px'; tt.style.top = top + 'px';
+      const svgEl = wrap.querySelector('svg');
+      const uid = wrap._uid;
+      if (uid) {
+        const dot = document.getElementById(uid+'-dot');
+        const vline = document.getElementById(uid+'-vline');
+        if (dot) { dot.setAttribute('cx', dotX); dot.setAttribute('cy', dotY); dot.style.display=''; }
+        if (vline) { vline.setAttribute('x1', dotX); vline.setAttribute('x2', dotX); vline.style.display=''; }
+      }
+    }
+    function hideChartTooltip() {
+      const tt = document.getElementById('eq-tooltip');
+      if (tt) tt.style.display = 'none';
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!wrap || !wrap._uid) return;
+      const uid = wrap._uid;
+      const dot = document.getElementById(uid+'-dot');
+      const vline = document.getElementById(uid+'-vline');
+      if (dot) dot.style.display = 'none';
+      if (vline) vline.style.display = 'none';
+    }
+
+    function drawEquityCurve(trades) {
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!wrap) return;
+      const sorted = [...trades].sort((a,b) => ((a.date||'')+(a.entryTime||'')) < ((b.date||'')+(b.entryTime||'')) ? -1 : 1);
+      const points = [{ equity: 0, date: null, pnl: 0, result: null, ticker: '', grade: '', time: '' }];
+      sorted.forEach(t => { const pnl = parseFloat(t.netPnl)||0; points.push({ equity: points[points.length-1].equity + pnl, date: t.date, pnl, result: t.result, ticker: t.ticker||'MNQ', grade: t.grade||'', time: t.entryTime||'' }); });
+      const finalPnl = points[points.length-1].equity;
+      const isPos = finalPnl >= 0;
+      const lineCol = isPos ? '#22c55e' : '#ef4444';
+      const fillCol = isPos ? '#22c55e' : '#ef4444';
+      const uid = 'eq' + Date.now();
+      const finalEl = document.getElementById('chart-final-pnl');
+      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-2xl font-black '+(isPos?'text-green-400':'text-red-400'); }
+      const legendEl = document.getElementById('chart-legend');
+      if (legendEl) { const dates = points.filter(p=>p.date).map(p=>p.date).sort(); if (dates.length>=2) { const fmt = d => { const p=d.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+p[2]+', '+p[0]; }; legendEl.innerHTML = `<span>${fmt(dates[0])} — ${fmt(dates[dates.length-1])}</span>`; } }
+      const W = wrap.clientWidth || 700, H = 260;
+      const PAD_L=62, PAD_R=20, PAD_T=14, PAD_B=34, CW=W-PAD_L-PAD_R, CH=H-PAD_T-PAD_B;
+      const equities = points.map(p=>p.equity);
+      const rawMin=Math.min(...equities), rawMax=Math.max(...equities), rng=rawMax-rawMin||1;
+      const dataMin=rawMin-rng*0.08, dataMax=rawMax+rng*0.10, dataRange=dataMax-dataMin;
+      const toX = i => PAD_L+(i/(points.length-1||1))*CW;
+      const toY = v => PAD_T+CH-((v-dataMin)/dataRange)*CH;
+      function catmullRomPath(pts) {
+        if (pts.length<2) return '';
+        const tension=0.4; let d=`M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
+        for (let i=0;i<pts.length-1;i++) { const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)]; const cp1x=p1.x+(p2.x-p0.x)*tension,cp1y=p1.y+(p2.y-p0.y)*tension,cp2x=p2.x-(p3.x-p1.x)*tension,cp2y=p2.y-(p3.y-p1.y)*tension; d+=` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`; }
+        return d;
+      }
+      const xyPts = points.map((p,i)=>({x:toX(i),y:toY(p.equity)}));
+      const pathD = catmullRomPath(xyPts);
+      const baseY = Math.min(toY(Math.max(0,dataMin)), PAD_T+CH);
+      const fillD = pathD+` L ${toX(points.length-1).toFixed(2)} ${baseY.toFixed(2)} L ${toX(0).toFixed(2)} ${baseY.toFixed(2)} Z`;
+      function niceStep(range,n) { const r=range/n,mag=Math.pow(10,Math.floor(Math.log10(r))); return [1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=r)||mag*10; }
+      const step=niceStep(dataRange,5); const yTicks=[];
+      for (let v=Math.ceil(dataMin/step)*step;v<=dataMax+step*0.01;v+=step) yTicks.push(parseFloat(v.toFixed(8)));
+      const allDates=[...new Set(points.filter(p=>p.date).map(p=>p.date))].sort();
+      const maxXLabels=Math.min(7,allDates.length);
+      const xDates=allDates.length<=maxXLabels?allDates:Array.from({length:maxXLabels},(_,i)=>allDates[Math.round(i/(maxXLabels-1)*(allDates.length-1))]);
+      const fmtY=v=>{const a=Math.abs(v),s=v<0?'-':'';return a>=1000?s+'$'+(a/1000).toFixed(a>=10000?0:1)+'K':s+'$'+a.toFixed(0);};
+      const fmtX=d=>{if(!d)return '';const p=d.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+parseInt(p[2]);};
+      const gridLines=yTicks.map(v=>{const y=toY(v);if(y<PAD_T-2||y>PAD_T+CH+2)return '';const isZero=Math.abs(v)<step*0.01;return `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/><text x="${(PAD_L-10).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.18)'}" font-size="10" font-family="ui-monospace,monospace">${fmtY(v)}</text>`;}).join('');
+      const xLabels=xDates.map(d=>{const idx=points.findIndex(p=>p.date===d);if(idx<0)return '';const x=toX(idx);return `<text x="${x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.22)" font-size="10" font-family="ui-monospace,monospace">${fmtX(d)}</text>`;}).join('');
+      const hoverRects=points.slice(1).map((p,i)=>{const x=toX(i+1),prevX=toX(i),sliceW=Math.max(8,x-prevX),col=p.result==='WIN'?'#22c55e':p.result==='LOSS'?'#ef4444':'#a1a1aa',sign=p.pnl>=0?'+':'-',tip=[p.date||(p.time?'@ '+p.time:''),`${p.ticker}${p.grade?' ['+p.grade+']':''}`,`${sign}$${Math.abs(p.pnl).toFixed(2)} → $${p.equity.toFixed(2)}`].filter(Boolean).join('·||·');return `<rect x="${(prevX+(x-prevX)*0.1).toFixed(1)}" y="${PAD_T}" width="${sliceW.toFixed(1)}" height="${CH}" fill="transparent" onmouseenter="showChartTooltip(event,'${tip}','${col}',${x.toFixed(1)},${toY(p.equity).toFixed(1)})" onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>`;}).join('');
+      const crosshairDot=`<circle id="${uid}-dot" cx="0" cy="0" r="5" fill="${lineCol}" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>`;
+      const crosshairLine=`<line id="${uid}-vline" x1="0" y1="${PAD_T}" x2="0" y2="${PAD_T+CH}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>`;
+      wrap.innerHTML=`<svg id="${uid}-svg" width="100%" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible"><defs><linearGradient id="${uid}-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${fillCol}" stop-opacity="0.35"/><stop offset="40%" stop-color="${fillCol}" stop-opacity="0.18"/><stop offset="80%" stop-color="${fillCol}" stop-opacity="0.05"/><stop offset="100%" stop-color="${fillCol}" stop-opacity="0"/></linearGradient><filter id="${uid}-glow" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><clipPath id="${uid}-clip"><rect x="${PAD_L}" y="${PAD_T-2}" width="${CW+1}" height="${CH+4}"/></clipPath></defs>${gridLines}${xLabels}<g clip-path="url(#${uid}-clip)"><path d="${fillD}" fill="url(#${uid}-fill)"/><path d="${pathD}" fill="none" stroke="${lineCol}" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.15" filter="url(#${uid}-glow)"/><path d="${pathD}" fill="none" stroke="${lineCol}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>${crosshairLine}${crosshairDot}${hoverRects}</g></svg><div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:11px;white-space:nowrap;font-family:ui-monospace,monospace;color:#e4e4e7;box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>`;
+      wrap._uid = uid;
+    }
+
     async function loadJournalStats(whopKey) {
       try {
         const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) });
         const data = await res.json();
         const trades = Array.isArray(data.trades) ? data.trades : [];
+        const statsTop = document.getElementById('stats-top');
+
         if (!trades.length) {
-          ['stat-wr','stat-pnl','stat-trades'].forEach(id => document.getElementById(id).textContent = '—');
-          ['stat-wr-sub','stat-pnl-sub'].forEach(id => document.getElementById(id).textContent = 'No trades yet');
-          document.getElementById('stat-trades-sub').textContent = 'All time'; return;
+          // Keep status card, add empty placeholders
+          const statusCard = statsTop.querySelector('#status-card').outerHTML;
+          statsTop.innerHTML = statusCard +
+            statCard('Total Trades','—','#71717a','No trades yet') +
+            statCard('Win Rate','—','#71717a') +
+            statCard('Net P&L','—','#71717a');
+          document.getElementById('chart-final-pnl').textContent = '—';
+          return;
         }
-        const wins = trades.filter(t => t.result === 'WIN').length;
-        const losses = trades.filter(t => t.result === 'LOSS').length;
-        const decided = wins + losses;
-        const wr = decided ? Math.round(wins / decided * 100) : 0;
+
+        const wins = trades.filter(t => t.result === 'WIN');
+        const losses = trades.filter(t => t.result === 'LOSS');
+        const bes = trades.filter(t => t.result === 'BE');
+        const decided = wins.length + losses.length;
+        const wr = decided ? Math.round(wins.length / decided * 100) : 0;
         const netPnl = trades.reduce((s,t) => s + (parseFloat(t.netPnl)||0), 0);
-        const wrEl = document.getElementById('stat-wr');
-        wrEl.textContent = wr + '%'; wrEl.className = 'text-2xl font-black ' + (wr >= 50 ? 'text-green-400' : 'text-red-400');
-        document.getElementById('stat-wr-sub').textContent = wins + 'W · ' + losses + 'L';
-        const pnlEl = document.getElementById('stat-pnl');
-        const sign = netPnl >= 0 ? '+' : '-';
-        pnlEl.textContent = sign + '$' + Math.abs(netPnl).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-        pnlEl.className = 'text-2xl font-black ' + (netPnl >= 0 ? 'text-green-400' : 'text-red-400');
-        document.getElementById('stat-pnl-sub').textContent = 'All time';
-        document.getElementById('stat-trades').textContent = trades.length;
-        document.getElementById('stat-trades-sub').textContent = decided + ' decided';
+        const grossWin = wins.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+        const grossLoss = Math.abs(losses.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0));
+        const pf = grossLoss === 0 ? (grossWin > 0 ? '∞' : '—') : (grossWin/grossLoss).toFixed(2);
+        const pfColor = pf==='∞'?'#22c55e':pf==='—'?'#71717a':parseFloat(pf)>=1?'#22c55e':'#ef4444';
+
+        // Get the status card HTML before replacing
+        const statusCard = statsTop.querySelector('#status-card').outerHTML;
+        statsTop.innerHTML = statusCard +
+          statCard('Total Trades', trades.length, '#ffffff', `${wins.length}W · ${losses.length}L${bes.length?' · '+bes.length+'BE':''}`) +
+          renderWinRateCard(wr, decided, wins.length, losses.length, bes.length) +
+          renderNetPnlCard(netPnl) +
+          statCard('Profit Factor', pf, pfColor);
+
+        drawEquityCurve(trades);
       } catch(e) {
-        ['stat-wr','stat-pnl','stat-trades'].forEach(id => document.getElementById(id).textContent = '—');
+        console.error('Journal stats error:', e);
       }
     }
 
