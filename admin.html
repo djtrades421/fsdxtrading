@@ -430,12 +430,12 @@
         const status = m.whopStatus || null;
         const statusCfg = {
           active:     { label: 'Active',     cls: 'bg-green-500/10 text-green-400 border-green-500/20' },
-          trialing:   { label: 'Trial',      cls: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-          canceling:  { label: 'Canceling',  cls: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
-          renewing:   { label: 'Renewing',   cls: 'bg-green-500/10 text-green-400 border-green-500/20' },
+          trialing:   { label: 'Trialing',   cls: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+          past_due:   { label: 'Past Due',   cls: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
           completed:  { label: 'Lifetime',   cls: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
-          inactive:   { label: 'Inactive',   cls: 'bg-red-950/30 text-red-400 border-red-500/20' },
+          canceled:   { label: 'Canceled',   cls: 'bg-red-950/30 text-red-400 border-red-500/20' },
           expired:    { label: 'Expired',    cls: 'bg-red-950/30 text-red-400 border-red-500/20' },
+          inactive:   { label: 'Inactive',   cls: 'bg-red-950/30 text-red-400 border-red-500/20' },
         };
         const sc = statusCfg[status] || { label: status || '—', cls: 'bg-zinc-800 text-zinc-500 border-white/10' };
         const statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${sc.cls}">${sc.label}</span>`;
