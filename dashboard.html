@@ -386,10 +386,11 @@
         if (!trades.length) {
           // Keep status card, add empty placeholders
           const statusCard = statsTop.querySelector('#status-card').outerHTML;
-          statsTop.innerHTML = statusCard +
+          statsTop.innerHTML =
             statCard('Total Trades','—','#71717a','No trades yet') +
             statCard('Win Rate','—','#71717a') +
-            statCard('Net P&L','—','#71717a');
+            statCard('Net P&L','—','#71717a') +
+            statusCard;
           document.getElementById('chart-final-pnl').textContent = '—';
           return;
         }
@@ -407,11 +408,12 @@
 
         // Get the status card HTML before replacing
         const statusCard = statsTop.querySelector('#status-card').outerHTML;
-        statsTop.innerHTML = statusCard +
+        statsTop.innerHTML =
           statCard('Total Trades', trades.length, '#ffffff', `${wins.length}W · ${losses.length}L${bes.length?' · '+bes.length+'BE':''}`) +
           renderWinRateCard(wr, decided, wins.length, losses.length, bes.length) +
           renderNetPnlCard(netPnl) +
-          statCard('Profit Factor', pf, pfColor);
+          statCard('Profit Factor', pf, pfColor) +
+          statusCard;
 
         drawEquityCurve(trades);
       } catch(e) {
