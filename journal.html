@@ -94,6 +94,7 @@
               <option value="">All Directions</option><option value="LONG">Long</option><option value="SHORT">Short</option>
             </select>
             <button onclick="clearGlobalFilters()" class="px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs rounded-lg transition">✕ Clear</button>
+            <div id="gf-filter-badge" class="hidden self-center text-[10px] text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-0.5 font-bold"></div>
           </div>
 
           <!-- Sub tabs -->
@@ -711,6 +712,15 @@
       return { from: '', to: '' };
     }
 
+    function updateFilterBadge() {
+      const dr = document.getElementById('gf-daterange')?.value || 'all';
+      const dateActive = dr !== 'all' ? 1 : 0;
+      const filterActive = ['gf-result','gf-account','gf-grade','gf-direction'].filter(id => document.getElementById(id)?.value !== '').length;
+      const active = dateActive + filterActive;
+      const badge = document.getElementById('gf-filter-badge');
+      if (badge) { badge.textContent = active > 0 ? active + ' filter' + (active > 1 ? 's' : '') + ' active' : ''; badge.classList.toggle('hidden', active === 0); }
+    }
+
     function applyGlobalFilters() {
       gfResult = document.getElementById('gf-result').value;
       gfAccount = document.getElementById('gf-account').value;
@@ -725,6 +735,7 @@
         (!from        || (t.date && t.date >= from)) &&
         (!to          || (t.date && t.date <= to))
       );
+      updateFilterBadge();
       renderHistory(); renderCalendar(); renderStats();
     }
 
@@ -737,6 +748,7 @@
       if (document.getElementById('gf-to')) document.getElementById('gf-to').value = '';
       gfResult = gfAccount = gfGrade = gfDirection = '';
       filteredTrades = [...allTrades];
+      updateFilterBadge();
       renderHistory(); renderCalendar(); renderStats();
     }
     // ── Sub tabs ──
