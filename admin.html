@@ -4,422 +4,1123 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X — My Profile</title>
+  <title>FSD-X — Admin Panel</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="vip-nav.js"></script>
   <style>
     body { background-color: #000; }
-    input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
+    .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
   </style>
 </head>
-<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+<body class="text-white bg-black min-h-screen antialiased">
 
-  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
-    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
-    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
-  </header>
-
-  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
-  </aside>
-
-  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
-
-    <!-- Loading -->
-    <div id="loading-screen" class="flex-1 flex items-center justify-center">
-      <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
+  <!-- Loading -->
+  <div id="loading-screen" class="min-h-screen flex items-center justify-center">
+    <div class="text-center">
+      <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="text-zinc-500 text-sm">Verifying admin access...</p>
     </div>
+  </div>
 
-    <!-- Content -->
-    <div id="page-content" class="hidden flex-1">
-
-      <!-- Header -->
-      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-2xl mx-auto flex items-center gap-5">
-          <div id="profile-avatar-large" class="w-16 h-16 rounded-2xl bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-2xl font-black shrink-0">?</div>
-          <div>
-            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-1">// Account</div>
-            <h1 id="profile-heading" class="text-2xl font-black text-white tracking-tight">My Profile</h1>
-            <p id="profile-email-display" class="text-zinc-500 text-xs mt-0.5"></p>
-          </div>
-        </div>
-      </section>
-
-      <div class="px-6 md:px-12 py-10">
-        <div class="max-w-2xl mx-auto space-y-6">
-
-          <!-- Profile info card -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
-            <h2 class="text-sm font-black text-white mb-5">Personal Information</h2>
-            <div id="profile-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
-
-            <div class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">First Name</label>
-                  <input type="text" id="profile-firstname" placeholder="First"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                </div>
-                <div>
-                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Last Name</label>
-                  <input type="text" id="profile-lastname" placeholder="Last"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Email Address</label>
-                <input type="email" id="profile-email" placeholder="you@email.com"
-                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                <p class="text-[11px] text-zinc-600 mt-1.5">Changing your email will update your login credentials.</p>
-              </div>
-
-              <button onclick="saveProfile()" id="profile-btn"
-                class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-green-500/10">
-                Save Changes
-              </button>
-            </div>
-          </div>
-
-          <!-- Change password card -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
-            <h2 class="text-sm font-black text-white mb-5">Change Password</h2>
-            <div id="password-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
-
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Current Password</label>
-                <div class="relative">
-                  <input type="password" id="current-password" placeholder="••••••••••"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                  <button type="button" onclick="toggleVis('current-password','eye-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
-                    <svg id="eye-1" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">New Password</label>
-                <div class="relative">
-                  <input type="password" id="new-password" placeholder="Min 8 characters"
-                    oninput="checkStrength()"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                  <button type="button" onclick="toggleVis('new-password','eye-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
-                    <svg id="eye-2" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                  </button>
-                </div>
-                <div class="mt-2 grid grid-cols-2 gap-1">
-                  <div class="flex items-center gap-1.5 text-[11px]" id="r-length"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">8+ characters</span></div>
-                  <div class="flex items-center gap-1.5 text-[11px]" id="r-upper"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Uppercase letter</span></div>
-                  <div class="flex items-center gap-1.5 text-[11px]" id="r-number"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Number</span></div>
-                  <div class="flex items-center gap-1.5 text-[11px]" id="r-special"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Special character</span></div>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Confirm New Password</label>
-                <div class="relative">
-                  <input type="password" id="confirm-password" placeholder="Re-enter new password"
-                    oninput="checkMatch()"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                  <button type="button" onclick="toggleVis('confirm-password','eye-3')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
-                    <svg id="eye-3" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                  </button>
-                </div>
-                <div id="match-msg" class="hidden mt-1 text-[11px]"></div>
-              </div>
-
-              <button onclick="changePassword()" id="password-btn"
-                class="w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition">
-                Update Password
-              </button>
-            </div>
-          </div>
-
-          <!-- Account info card (read-only) -->
-          <div class="border border-white/5 bg-zinc-950/20 rounded-2xl p-6">
-            <h2 class="text-sm font-black text-white mb-4">Account Details</h2>
-            <div class="space-y-3 text-xs">
-              <div class="flex justify-between items-center py-2 border-b border-white/5">
-                <span class="text-zinc-500">Membership Tier</span>
-                <span id="account-tier" class="text-green-400 font-bold uppercase">—</span>
-              </div>
-              <div class="flex justify-between items-center py-2 border-b border-white/5">
-                <span class="text-zinc-500">Member Since</span>
-                <span id="account-created" class="text-zinc-300">—</span>
-              </div>
-              <div class="flex justify-between items-center py-2">
-                <span class="text-zinc-500">Whop Key</span>
-                <span id="account-key" class="text-zinc-600 font-mono">—</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Danger zone -->
-          <div class="border border-white/5 rounded-2xl p-6">
-            <h2 class="text-sm font-black text-white mb-1">Session</h2>
-            <p class="text-zinc-500 text-xs mb-4">Log out of your current session on this device.</p>
-            <button onclick="handleLogout()"
-              class="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
-              Logout
-            </button>
-          </div>
-
-          <!-- Delete Account -->
-          <div class="border border-red-500/10 bg-red-950/10 rounded-2xl p-6">
-            <h2 class="text-sm font-black text-red-400 mb-1">Delete Account</h2>
-            <p class="text-zinc-500 text-xs mb-4">Permanently deletes your account and all data including journal trades and backtest sessions. This cannot be undone.</p>
-            <button onclick="openDeleteModal()"
-              class="px-5 py-2.5 bg-transparent hover:bg-red-950/40 border border-red-500/30 text-red-400 hover:text-red-300 font-bold text-xs uppercase tracking-wider rounded-xl transition">
-              Delete My Account
-            </button>
-          </div>
-
-        </div>
-      </div>
+  <!-- Unauthorized -->
+  <div id="unauth-screen" class="hidden min-h-screen flex items-center justify-center px-6">
+    <div class="text-center max-w-sm">
+      <div class="text-5xl mb-4">🔒</div>
+      <h2 class="text-xl font-black text-white mb-2">Access Denied</h2>
+      <p class="text-zinc-500 text-sm mb-6">This page is restricted to admin accounts only.</p>
+      <a href="dashboard.html" class="inline-block px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Back to Dashboard</a>
     </div>
-  </main>
+  </div>
 
-  <script>
-    const API = 'https://nexus-validator.dfuentes4211.workers.dev';
-    let currentUser = null;
+  <!-- Admin content -->
+  <div id="admin-content" class="hidden">
 
-    function toggleMobileMenu() {
-      document.getElementById('sidebar-panel').classList.toggle('-translate-x-full');
-    }
-
-    function toggleVis(inputId, eyeId) {
-      const input = document.getElementById(inputId);
-      const eye = document.getElementById(eyeId);
-      const isPassword = input.type === 'password';
-      input.type = isPassword ? 'text' : 'password';
-      eye.innerHTML = isPassword
-        ? '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>'
-        : '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>';
-    }
-
-    function checkStrength() {
-      const pw = document.getElementById('new-password').value;
-      const checks = { 'r-length': pw.length >= 8, 'r-upper': /[A-Z]/.test(pw), 'r-number': /[0-9]/.test(pw), 'r-special': /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw) };
-      Object.entries(checks).forEach(([id, met]) => {
-        const row = document.getElementById(id);
-        const dot = row.querySelector('.req-dot');
-        const label = row.querySelector('span:last-child');
-        dot.classList.toggle('bg-green-500', met);
-        dot.classList.toggle('border-green-500', met);
-        dot.classList.toggle('border-zinc-700', !met);
-        dot.innerHTML = met ? '<svg class="w-1.5 h-1.5 text-black" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>' : '';
-        label.classList.toggle('text-zinc-400', met);
-        label.classList.toggle('text-zinc-600', !met);
-      });
-      checkMatch();
-    }
-
-    function checkMatch() {
-      const pw = document.getElementById('new-password').value;
-      const confirm = document.getElementById('confirm-password').value;
-      const msg = document.getElementById('match-msg');
-      if (!confirm) { msg.classList.add('hidden'); return; }
-      msg.classList.remove('hidden');
-      msg.textContent = pw === confirm ? '✓ Passwords match' : '✗ Passwords do not match';
-      msg.className = `mt-1 text-[11px] ${pw === confirm ? 'text-green-400' : 'text-red-400'}`;
-    }
-
-    function showMsg(id, text, type) {
-      const el = document.getElementById(id);
-      el.textContent = text;
-      el.classList.remove('hidden');
-      el.className = `rounded-xl px-4 py-3 text-xs border ${type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-green-950/40 border-green-500/30 text-green-400'}`;
-    }
-
-    function handleLogout() {
-      const token = localStorage.getItem('fsdx_token');
-      if (token) fetch(`${API}/api/auth/logout`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }).catch(() => {});
-      localStorage.clear();
-      window.location.href = 'login.html';
-    }
-
-    async function saveProfile() {
-      const firstName = document.getElementById('profile-firstname').value.trim();
-      const lastName = document.getElementById('profile-lastname').value.trim();
-      const email = document.getElementById('profile-email').value.trim();
-
-      if (!firstName || !email) return showMsg('profile-msg', 'First name and email are required.', 'error');
-      if (!email.includes('@')) return showMsg('profile-msg', 'Please enter a valid email.', 'error');
-
-      const btn = document.getElementById('profile-btn');
-      btn.disabled = true; btn.textContent = 'Saving...';
-
-      const token = localStorage.getItem('fsdx_token');
-      try {
-        const res = await fetch(`${API}/api/auth/profile`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ firstName, lastName, email })
-        });
-        const data = await res.json();
-        if (data.success) {
-          localStorage.setItem('fsdx_name', firstName);
-          // If email changed, swap the session token silently — no logout needed
-          if (data.emailChanged && data.newToken) {
-            localStorage.setItem('fsdx_token', data.newToken);
-            currentUser.email = email;
-            showMsg('profile-msg', 'Profile updated — email changed and session refreshed.', 'success');
-          } else {
-            showMsg('profile-msg', 'Profile updated successfully!', 'success');
-          }
-          // Update display
-          document.getElementById('profile-heading').textContent = firstName + (lastName ? ' ' + lastName : '');
-          document.getElementById('profile-email-display').textContent = email;
-          document.getElementById('profile-avatar-large').textContent = firstName.charAt(0).toUpperCase();
-        } else {
-          showMsg('profile-msg', data.error || 'Failed to update profile.', 'error');
-        }
-      } catch (err) {
-        showMsg('profile-msg', 'Connection error. Please try again.', 'error');
-      }
-      btn.disabled = false; btn.textContent = 'Save Changes';
-    }
-
-    async function changePassword() {
-      const currentPw = document.getElementById('current-password').value;
-      const newPw = document.getElementById('new-password').value;
-      const confirmPw = document.getElementById('confirm-password').value;
-
-      if (!currentPw || !newPw || !confirmPw) return showMsg('password-msg', 'Please fill in all fields.', 'error');
-      if (newPw !== confirmPw) return showMsg('password-msg', 'New passwords do not match.', 'error');
-      if (newPw.length < 8) return showMsg('password-msg', 'Password must be at least 8 characters.', 'error');
-      if (!/[A-Z]/.test(newPw)) return showMsg('password-msg', 'Password must include an uppercase letter.', 'error');
-      if (!/[0-9]/.test(newPw)) return showMsg('password-msg', 'Password must include a number.', 'error');
-      if (!/[!@#$%^&*]/.test(newPw)) return showMsg('password-msg', 'Password must include a special character.', 'error');
-
-      const btn = document.getElementById('password-btn');
-      btn.disabled = true; btn.textContent = 'Updating...';
-
-      const token = localStorage.getItem('fsdx_token');
-      try {
-        const res = await fetch(`${API}/api/auth/change-password`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw })
-        });
-        const data = await res.json();
-        if (data.success) {
-          showMsg('password-msg', 'Password updated! Please log in again.', 'success');
-          document.getElementById('current-password').value = '';
-          document.getElementById('new-password').value = '';
-          document.getElementById('confirm-password').value = '';
-          setTimeout(() => { handleLogout(); }, 2000);
-        } else {
-          showMsg('password-msg', data.error || 'Failed to update password.', 'error');
-        }
-      } catch (err) {
-        showMsg('password-msg', 'Connection error. Please try again.', 'error');
-      }
-      btn.disabled = false; btn.textContent = 'Update Password';
-    }
-
-    async function init() {
-      const token = localStorage.getItem('fsdx_token');
-      if (!token) { window.location.href = 'login.html'; return; }
-
-      try {
-        const res = await fetch(`${API}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
-        const session = await res.json();
-        if (!session.authenticated) { window.location.href = 'login.html'; return; }
-
-        // Load full profile
-        const profileRes = await fetch(`${API}/api/auth/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
-        const profileData = await profileRes.json();
-        currentUser = profileData.user || {};
-
-        // Populate fields
-        document.getElementById('profile-firstname').value = currentUser.firstName || '';
-        document.getElementById('profile-lastname').value = currentUser.lastName || '';
-        document.getElementById('profile-email').value = currentUser.email || '';
-        document.getElementById('profile-heading').textContent = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || 'My Profile';
-        document.getElementById('profile-email-display').textContent = currentUser.email || '';
-        document.getElementById('profile-avatar-large').textContent = (currentUser.firstName || 'M').charAt(0).toUpperCase();
-        document.getElementById('account-tier').textContent = currentUser.tier || 'VIP';
-        document.getElementById('account-created').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '—';
-        document.getElementById('account-key').textContent = currentUser.whopKey ? currentUser.whopKey.slice(0, 8) + '••••••••' : '—';
-
-        document.getElementById('loading-screen').classList.add('hidden');
-        document.getElementById('page-content').classList.remove('hidden');
-
-      } catch (err) {
-        window.location.href = 'login.html';
-      }
-    }
-
-    init();
-  </script>
-
-  <!-- Delete Account Modal -->
-  <div id="delete-account-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-    <div class="bg-zinc-900 border border-red-500/20 rounded-2xl p-6 w-full max-w-md shadow-2xl mx-4">
-      <div class="flex items-center gap-3 mb-4">
-        <div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-          <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
-          </svg>
-        </div>
+    <!-- Header -->
+    <div class="bg-zinc-950 border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
+      <div class="flex items-center gap-3">
+        <a href="dashboard.html" class="text-zinc-500 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+        </a>
         <div>
-          <h3 class="text-white font-black text-sm">Delete Account</h3>
-          <p class="text-red-400 text-xs">This action is permanent and cannot be undone</p>
+          <h1 class="text-lg font-black text-white">Admin Panel</h1>
+          <p class="text-[10px] text-zinc-500 uppercase tracking-wider">FSD-X — Restricted Access</p>
         </div>
       </div>
-      <p class="text-zinc-400 text-xs mb-4 leading-relaxed">All your data will be permanently deleted — journal trades, backtest sessions, settings, and your login credentials.</p>
-      <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Enter your password to confirm</label>
-      <input id="delete-confirm-password" type="password" placeholder="Your password"
-        onkeydown="if(event.key==='Enter')submitDeleteAccount()"
-        class="w-full bg-black border border-red-500/20 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-red-500/50 placeholder-zinc-700 mb-3"/>
-      <div id="delete-account-msg" class="hidden rounded-lg px-3 py-2 text-xs border border-red-500/30 bg-red-950/40 text-red-400 mb-3"></div>
-      <div class="flex gap-3">
-        <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl border border-white/10 text-zinc-400 text-xs font-bold hover:bg-white/5 transition">Cancel</button>
-        <button id="delete-account-btn" onclick="submitDeleteAccount()" class="flex-1 py-2.5 rounded-xl bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition">Delete My Account</button>
+      <button onclick="handleLogout()" class="text-xs text-zinc-500 hover:text-white transition flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+        Logout
+      </button>
+    </div>
+
+    <!-- Stats bar -->
+    <div class="bg-zinc-950/60 border-b border-white/5 px-6 py-4">
+      <div class="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div><div class="text-xs text-zinc-500 mb-1">Total Members</div><div id="stat-total" class="text-2xl font-black text-white">—</div></div>
+        <div><div class="text-xs text-zinc-500 mb-1">VIP Members</div><div id="stat-vip" class="text-2xl font-black text-green-400">—</div></div>
+        <div><div class="text-xs text-zinc-500 mb-1">Trial Members</div><div id="stat-trial" class="text-2xl font-black text-white">—</div></div>
+        <div><div class="text-xs text-zinc-500 mb-1">Session Recaps</div><div id="stat-recaps" class="text-2xl font-black text-white">—</div></div>
       </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-6 py-8">
+
+      <!-- Tabs -->
+      <div class="flex border-b border-white/10 mb-8">
+        <button onclick="switchTab('members')" id="tab-members" class="tab-btn active px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 transition mr-2">Members</button>
+        <button onclick="switchTab('recaps')" id="tab-recaps" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-2">Session Recaps</button>
+        <button onclick="switchTab('announce')" id="tab-announce" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition">Announcement</button>
+        <button onclick="switchTab('migrate')" id="tab-migrate" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">Key Migration</button>
+      </div>
+
+      <!-- MEMBERS TAB -->
+      <div id="panel-members" class="tab-panel active">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-black text-white">Member Accounts</h2>
+          <input type="text" id="member-search" placeholder="Search by email or name..."
+            oninput="filterMembers()"
+            class="bg-black border border-white/10 text-white text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-600 w-56">
+        </div>
+        <div class="border border-white/10 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left min-w-[1000px]">
+              <thead>
+                <tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
+                  <th class="px-5 py-3">Name</th>
+                  <th class="px-5 py-3">Email</th>
+                  <th class="px-5 py-3">Whop Key</th>
+                  <th class="px-5 py-3">Tier</th>
+                  <th class="px-5 py-3">Status</th>
+                  <th class="px-5 py-3">Last Login</th>
+                  <th class="px-5 py-3">Joined</th>
+                </tr>
+              </thead>
+              <tbody id="members-table" class="divide-y divide-white/5 text-sm">
+                <tr><td colspan="8" class="px-5 py-8 text-center text-zinc-600">Loading members...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECAPS TAB -->
+      <div id="panel-recaps" class="tab-panel space-y-6">
+        <!-- Add recap form -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+          <h2 id="recap-form-title" class="text-base font-black text-white mb-4">Post New Session Recap</h2>
+          <div id="recap-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+          <!-- Session info -->
+          <div class="grid sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Date</label>
+              <input type="date" id="recap-date" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Title</label>
+              <input type="text" id="recap-title" placeholder="e.g. NQ ORB Session — May 22" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Chart URL <span class="text-zinc-700 normal-case">— one chart for the whole session (optional)</span></label>
+              <input type="text" id="recap-chart" placeholder="https://www.tradingview.com/x/..." class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Session Summary</label>
+            <textarea id="recap-summary" rows="2" placeholder="Overall session context — market conditions, key levels, what happened..."
+              class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
+          </div>
+
+          <!-- Setups — fixed 4 slots -->
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-3 font-bold">Setups <span class="text-zinc-700 normal-case font-normal">— fill in what you need, leave the rest blank</span></label>
+            <div class="space-y-3" id="setups-container">
+              <!-- Setup 1 -->
+              <div class="border border-white/10 bg-zinc-900/50 rounded-xl p-4">
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mb-3">Setup 1</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Grade</label>
+                    <select id="s1-grade" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Direction</label>
+                    <select id="s1-direction" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option value="LONG">LONG</option><option value="SHORT">SHORT</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Result</label>
+                    <select id="s1-result" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">R:R</label>
+                    <input type="text" id="s1-rr" placeholder="e.g. 2:1" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+                  <input type="text" id="s1-notes" placeholder="What happened in this setup?" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                </div>
+              </div>
+              <!-- Setup 2 -->
+              <div class="border border-white/10 bg-zinc-900/50 rounded-xl p-4">
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mb-3">Setup 2</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Grade</label>
+                    <select id="s2-grade" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Direction</label>
+                    <select id="s2-direction" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option value="LONG">LONG</option><option value="SHORT">SHORT</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Result</label>
+                    <select id="s2-result" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">R:R</label>
+                    <input type="text" id="s2-rr" placeholder="e.g. 2:1" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+                  <input type="text" id="s2-notes" placeholder="What happened in this setup?" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                </div>
+              </div>
+              <!-- Setup 3 -->
+              <div class="border border-white/10 bg-zinc-900/50 rounded-xl p-4">
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mb-3">Setup 3</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Grade</label>
+                    <select id="s3-grade" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Direction</label>
+                    <select id="s3-direction" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option value="LONG">LONG</option><option value="SHORT">SHORT</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Result</label>
+                    <select id="s3-result" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">R:R</label>
+                    <input type="text" id="s3-rr" placeholder="e.g. 2:1" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+                  <input type="text" id="s3-notes" placeholder="What happened in this setup?" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                </div>
+              </div>
+              <!-- Setup 4 -->
+              <div class="border border-white/10 bg-zinc-900/50 rounded-xl p-4">
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mb-3">Setup 4</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Grade</label>
+                    <select id="s4-grade" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Direction</label>
+                    <select id="s4-direction" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option value="LONG">LONG</option><option value="SHORT">SHORT</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Result</label>
+                    <select id="s4-result" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">R:R</label>
+                    <input type="text" id="s4-rr" placeholder="e.g. 2:1" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+                  <input type="text" id="s4-notes" placeholder="What happened in this setup?" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Session Notes / Lessons <span class="text-zinc-700 normal-case">— optional</span></label>
+            <textarea id="recap-notes" rows="2" placeholder="Key takeaways, what to watch for next time..."
+              class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Tags <span class="text-zinc-700 normal-case">— comma separated, optional</span></label>
+            <input type="text" id="recap-tags" placeholder="e.g. ORB, Gap Fill, NQ" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+
+          <div class="flex gap-3">
+            <button onclick="postRecap()" id="recap-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Post Recap</button>
+            <button onclick="cancelEditRecap()" id="recap-cancel-btn" class="hidden px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Existing recaps -->
+        <div>
+          <h3 class="text-sm font-black text-white mb-4">Posted Recaps</h3>
+          <div id="recaps-list" class="space-y-3">
+            <p class="text-zinc-600 text-sm">Loading recaps...</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-announce" class="tab-panel">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 max-w-xl">
+          <h2 class="text-base font-black text-white mb-1">Post Announcement</h2>
+          <p class="text-zinc-500 text-xs mb-5">This message will appear at the top of every member's dashboard.</p>
+          <div id="announce-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+          <!-- Live announcement display -->
+          <div id="current-announce-display" class="hidden mb-5 rounded-xl p-4 border">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex-1">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1.5">Live Now</div>
+                <p id="current-announce-text" class="text-sm text-white leading-relaxed"></p>
+                <div id="current-announce-type" class="text-[10px] text-zinc-600 mt-1"></div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button onclick="editAnnouncement()" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition" title="Edit">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+                </button>
+                <button onclick="clearAnnouncement()" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition" title="Delete">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Type</label>
+              <select id="announce-type" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <option value="info">Info (blue)</option>
+                <option value="success">Success (green)</option>
+                <option value="warning">Warning (yellow)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Message</label>
+              <textarea id="announce-message" rows="3" placeholder="e.g. No session tomorrow — holiday. See you Monday!"
+                class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
+            </div>
+            <div class="flex gap-3">
+              <button onclick="postAnnouncement()" id="announce-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Post Announcement</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- KEY MIGRATION -->
+      <div id="panel-migrate" class="tab-panel space-y-6">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+          <h2 class="text-base font-black text-white mb-1">Transfer Member Data</h2>
+          <p class="text-xs text-zinc-500 mb-6">Migrates all KV data (journal, backtest sessions, settings) from one Whop key to another. Use when a member has duplicate accounts.</p>
+          <div id="migrate-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Old Whop Key <span class="text-red-500">*</span></label>
+              <input id="migrate-old" type="text" placeholder="e.g. user_abc123old" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">New Whop Key <span class="text-red-500">*</span></label>
+              <input id="migrate-new" type="text" placeholder="e.g. user_xyz456new" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            </div>
+          </div>
+          <button onclick="runMigration()" id="migrate-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Run Migration</button>
+          <div id="migrate-log" class="hidden mt-5 border border-white/10 bg-black rounded-xl p-4 space-y-1.5 text-xs font-mono max-h-64 overflow-y-auto"></div>
+        </div>
+
+        <!-- KV Key Lookup -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+          <h2 class="text-base font-black text-white mb-1">KV Key Lookup</h2>
+          <p class="text-xs text-zinc-500 mb-5">Search all KV entries that contain a Whop key — confirms what data exists and where it's being used.</p>
+          <div class="flex gap-3 mb-4">
+            <input id="kv-search-input" type="text" placeholder="Paste a Whop key to search…"
+              onkeydown="if(event.key==='Enter')runKvLookup()"
+              class="flex-1 bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700 font-mono">
+            <button onclick="runKvLookup()" id="kv-search-btn"
+              class="px-5 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+              Search KV
+            </button>
+          </div>
+          <div id="kv-search-results" class="hidden">
+            <div id="kv-search-summary" class="text-xs text-zinc-500 mb-3"></div>
+            <div id="kv-search-hits" class="border border-white/10 bg-black rounded-xl divide-y divide-white/5 font-mono text-xs overflow-hidden"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <script>
-    function openDeleteModal() {
-      document.getElementById('delete-confirm-password').value = '';
-      document.getElementById('delete-account-msg').classList.add('hidden');
-      document.getElementById('delete-account-modal').classList.remove('hidden');
-      setTimeout(() => document.getElementById('delete-confirm-password').focus(), 50);
+    const API = 'https://nexus-validator.dfuentes4211.workers.dev';
+    let allMembers = [];
+    let allRecaps = [];
+
+    function switchTab(tab) {
+      ['members','recaps','announce','migrate'].forEach(t => {
+        document.getElementById('panel-' + t).classList.remove('active');
+        const btn = document.getElementById('tab-' + t);
+        btn.classList.remove('active','text-green-400','border-green-500');
+        btn.classList.add('text-zinc-500','border-transparent');
+      });
+      document.getElementById('panel-' + tab).classList.add('active');
+      if (tab === 'announce') loadCurrentAnnouncement();
+      const activeBtn = document.getElementById('tab-' + tab);
+      activeBtn.classList.add('active','text-green-400','border-green-500');
+      activeBtn.classList.remove('text-zinc-500','border-transparent');
     }
-    function closeDeleteModal() {
-      document.getElementById('delete-account-modal').classList.add('hidden');
+
+    function handleLogout() {
+      localStorage.removeItem('fsdx_admin');
+      window.location.href = 'admin-login.html';
     }
-    async function submitDeleteAccount() {
-      const password = document.getElementById('delete-confirm-password').value;
-      if (!password) return;
-      const btn = document.getElementById('delete-account-btn');
-      const msg = document.getElementById('delete-account-msg');
-      btn.disabled = true; btn.textContent = 'Deleting…';
+
+    function showAdminMsg(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = `rounded-xl px-4 py-3 text-xs border ${type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-green-950/40 border-green-500/30 text-green-400'}`;
+    }
+
+    function renderMembers(members) {
+      const tbody = document.getElementById('members-table');
+      if (!members.length) {
+        tbody.innerHTML = '<tr><td colspan="8" class="px-5 py-8 text-center text-zinc-600">No members yet</td></tr>';
+        return;
+      }
+      tbody.innerHTML = members.map(m => {
+        const key = m.whopKey || '';
+        const maskedKey = key.length > 12
+          ? key.slice(0, 8) + '•'.repeat(Math.min(key.length - 12, 8)) + key.slice(-4)
+          : key ? key.slice(0, 4) + '•'.repeat(Math.max(key.length - 4, 0)) : '—';
+
+        // Whop status badge
+        const status = m.whopStatus || null;
+        const statusCfg = {
+          active:     { label: 'Active',     cls: 'bg-green-500/10 text-green-400 border-green-500/20' },
+          trialing:   { label: 'Trial',      cls: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+          canceling:  { label: 'Canceling',  cls: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
+          renewing:   { label: 'Renewing',   cls: 'bg-green-500/10 text-green-400 border-green-500/20' },
+          completed:  { label: 'Lifetime',   cls: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
+          inactive:   { label: 'Inactive',   cls: 'bg-red-950/30 text-red-400 border-red-500/20' },
+          expired:    { label: 'Expired',    cls: 'bg-red-950/30 text-red-400 border-red-500/20' },
+        };
+        const sc = statusCfg[status] || { label: status || '—', cls: 'bg-zinc-800 text-zinc-500 border-white/10' };
+        const statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${sc.cls}">${sc.label}</span>`;
+
+        const lastLogin = m.lastLogin
+          ? new Date(m.lastLogin).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : '—';
+
+        return `
+        <tr class="hover:bg-white/[0.02] transition">
+          <td class="px-5 py-3.5 text-white font-medium">${m.firstName || ''} ${m.lastName || ''}</td>
+          <td class="px-5 py-3.5 text-zinc-400 text-xs">${m.email}</td>
+          <td class="px-5 py-3.5">
+            <div class="flex items-center gap-2 group">
+              <span class="font-mono text-xs text-zinc-400 tracking-wide" title="${key}">${maskedKey}</span>
+              <button onclick="openUpdateKey('${m.email}', '${key}')" title="Update Whop Key"
+                class="opacity-0 group-hover:opacity-100 transition text-zinc-600 hover:text-green-400">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
+                </svg>
+              </button>
+            </div>
+          </td>
+          <td class="px-5 py-3.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${m.tier === 'pro' ? 'bg-green-500/10 text-green-400 border-green-500/20' : m.tier === 'trial' ? 'bg-zinc-800 text-zinc-400 border-white/10' : 'bg-red-950/30 text-red-400 border-red-500/20'}">
+              ${m.tier || 'unknown'}
+            </span>
+          </td>
+          <td class="px-5 py-3.5">${statusBadge}</td>
+          <td class="px-5 py-3.5 text-zinc-500 text-xs">${lastLogin}</td>
+          <td class="px-5 py-3.5 text-zinc-500 text-xs">${new Date(m.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+          <td class="px-5 py-3.5 text-right">
+            <button onclick="deleteMember('${m.email}')" class="text-zinc-600 hover:text-red-400 transition text-xs">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+            </button>
+          </td>
+        </tr>
+      `}).join('');
+    }
+
+    function filterMembers() {
+      const q = document.getElementById('member-search').value.toLowerCase();
+      const filtered = allMembers.filter(m =>
+        m.email.includes(q) || (m.firstName || '').toLowerCase().includes(q) || (m.lastName || '').toLowerCase().includes(q)
+      );
+      renderMembers(filtered);
+    }
+
+    function renderAdminSetups(setups) {
+      if (!setups || !setups.length) return '';
+      return setups.map(s => {
+        const parts = [];
+        if (s.grade) parts.push(`<span class="px-1.5 py-0.5 rounded bg-green-500/10 text-green-400 text-[10px] font-bold border border-green-500/20">${s.grade}</span>`);
+        if (s.direction) parts.push(`<span class="text-[10px] font-bold ${s.direction==='LONG'?'text-green-400':'text-red-400'}">${s.direction}</span>`);
+        if (s.result) parts.push(`<span class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 text-[10px] border border-white/10">${s.result}</span>`);
+        if (s.rr) parts.push(`<span class="text-[10px] text-zinc-500">RR <span class="text-white font-bold">${s.rr}</span></span>`);
+        if (s.notes) parts.push(`<span class="text-[10px] text-zinc-500 italic">${s.notes}</span>`);
+        return `<div class="flex flex-wrap items-center gap-2 py-1 border-b border-white/5 last:border-0">${parts.join('')}</div>`;
+      }).join('');
+    }
+
+    function renderRecaps(recaps) {
+      const container = document.getElementById('recaps-list');
+      if (!recaps.length) { container.innerHTML = '<p class="text-zinc-600 text-sm">No recaps posted yet.</p>'; return; }
+      container.innerHTML = recaps.map(r => {
+        const setups = Array.isArray(r.setups) ? r.setups : [];
+        const setupsHtml = setups.length ? renderAdminSetups(setups) : (r.grade || r.result) ? renderAdminSetups([{grade:r.grade,direction:'',result:r.result,rr:'',notes:''}]) : '';
+        return `
+        <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
+          <div class="flex items-start justify-between gap-4">
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span class="text-xs text-zinc-500">${new Date(r.date+'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+              </div>
+              <div class="text-sm font-bold text-white mb-1">${r.title}</div>
+              ${setupsHtml ? `<div class="mb-2">${setupsHtml}</div>` : ''}
+              <div class="text-xs text-zinc-500">${r.summary}</div>
+              ${r.notes ? `<div class="text-xs text-zinc-600 mt-1 italic">${r.notes}</div>` : ''}
+              ${r.chartUrl ? `<a href="${r.chartUrl}" target="_blank" class="inline-block mt-2 text-xs text-green-400 hover:text-green-300 transition">View Chart ↗</a>` : ''}
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button onclick="editRecap('${r.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition" title="Edit">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+              </button>
+              <button onclick="deleteRecap('${r.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition" title="Delete">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+              </button>
+            </div>
+          </div>
+          ${r.chartUrl ? `
+          <div class="mt-3 rounded-xl overflow-hidden border border-white/10">
+            <img src="${r.chartUrl}" alt="Session chart" class="w-full max-h-48 object-contain bg-zinc-950" onerror="this.style.display='none'"/>
+          </div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    async function loadData() {
+      const token = localStorage.getItem('fsdx_token') || '';
+      // Load recaps from localStorage
+      allRecaps = JSON.parse(localStorage.getItem('fsdx_recaps') || '[]');
+
+      // Show your own account in members
+      const name = localStorage.getItem('fsdx_name') || 'DJ';
+      allMembers = [{
+        email: 'fsdxteam@gmail.com',
+        firstName: name,
+        lastName: '',
+        tier: 'pro',
+        createdAt: new Date().toISOString()
+      }];
+
+      // Try to get real data from Worker but don't block if it fails
       try {
-        const token = localStorage.getItem('fsdx_token');
-        const res = await fetch(`${API}/api/auth/delete-account`, {
-          method: 'POST',
+        const token = localStorage.getItem('fsdx_token') || '';
+        const headers = { 'Authorization': `Bearer ${token}` };
+        const [membersRes, recapsRes] = await Promise.allSettled([
+          fetch(`${API}/api/admin/members`, { headers }),
+          fetch(`${API}/api/recaps`, { headers })
+        ]);
+        if (membersRes.status === 'fulfilled' && membersRes.value.ok) {
+          const d = await membersRes.value.json();
+          if (d.members) allMembers = d.members;
+        }
+        if (recapsRes.status === 'fulfilled' && recapsRes.value.ok) {
+          const d = await recapsRes.value.json();
+          if (d.recaps) allRecaps = d.recaps;
+        }
+      } catch (err) {
+        console.log('Worker unavailable, using local data');
+      }
+
+      document.getElementById('stat-total').textContent = allMembers.length;
+      document.getElementById('stat-vip').textContent = allMembers.filter(m => m.tier === 'pro').length;
+      document.getElementById('stat-trial').textContent = allMembers.filter(m => m.tier === 'trial').length;
+      document.getElementById('stat-recaps').textContent = allRecaps.length;
+
+      renderMembers(allMembers);
+      renderRecaps(allRecaps);
+    }
+
+    let editingRecapId = null;
+
+    function getSetups() {
+      const setups = [];
+      for (let i = 1; i <= 4; i++) {
+        const grade = document.getElementById('s'+i+'-grade')?.value || '';
+        const direction = document.getElementById('s'+i+'-direction')?.value || '';
+        const result = document.getElementById('s'+i+'-result')?.value || '';
+        const rr = document.getElementById('s'+i+'-rr')?.value || '';
+        const notes = document.getElementById('s'+i+'-notes')?.value || '';
+        if (grade || direction || result || rr || notes) {
+          setups.push({ grade, direction, result, rr, notes });
+        }
+      }
+      return setups;
+    }
+
+    function clearSetups() {
+      for (let i = 1; i <= 4; i++) {
+        const grade = document.getElementById('s'+i+'-grade');
+        const direction = document.getElementById('s'+i+'-direction');
+        const result = document.getElementById('s'+i+'-result');
+        const rr = document.getElementById('s'+i+'-rr');
+        const notes = document.getElementById('s'+i+'-notes');
+        if (grade) grade.value = '';
+        if (direction) direction.value = '';
+        if (result) result.value = '';
+        if (rr) rr.value = '';
+        if (notes) notes.value = '';
+      }
+    }
+
+    function loadSetups(setups) {
+      clearSetups();
+      if (!setups || !setups.length) return;
+      setups.forEach((s, idx) => {
+        const i = idx + 1;
+        if (i > 4) return;
+        const grade = document.getElementById('s'+i+'-grade');
+        const direction = document.getElementById('s'+i+'-direction');
+        const result = document.getElementById('s'+i+'-result');
+        const rr = document.getElementById('s'+i+'-rr');
+        const notes = document.getElementById('s'+i+'-notes');
+        if (grade) grade.value = s.grade || '';
+        if (direction) direction.value = s.direction || '';
+        if (result) result.value = s.result || '';
+        if (rr) rr.value = s.rr || '';
+        if (notes) notes.value = s.notes || '';
+      });
+    }
+
+    function editRecap(id) {
+      const r = allRecaps.find(r => r.id === id);
+      if (!r) return;
+      editingRecapId = id;
+      document.getElementById('recap-date').value = r.date || '';
+      document.getElementById('recap-title').value = r.title || '';
+      document.getElementById('recap-summary').value = r.summary || '';
+      document.getElementById('recap-notes').value = r.notes || '';
+      document.getElementById('recap-tags').value = Array.isArray(r.tags) ? r.tags.join(', ') : (r.tags || '');
+      document.getElementById('recap-chart').value = r.chartUrl || '';
+      // Load setups
+      const setups = Array.isArray(r.setups) ? r.setups : [];
+      if (!setups.length && (r.grade || r.result)) {
+        loadSetups([{ grade: r.grade, direction: '', result: r.result, rr: '', notes: '' }]);
+      } else {
+        loadSetups(setups);
+      }
+      document.getElementById('recap-form-title').textContent = 'Edit Session Recap';
+      document.getElementById('recap-btn').textContent = 'Save Changes';
+      document.getElementById('recap-cancel-btn').classList.remove('hidden');
+      document.getElementById('recap-form-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function cancelEditRecap() {
+      editingRecapId = null;
+      document.getElementById('recap-form-title').textContent = 'Post New Session Recap';
+      document.getElementById('recap-btn').textContent = 'Post Recap';
+      document.getElementById('recap-cancel-btn').classList.add('hidden');
+      ['recap-date','recap-title','recap-summary','recap-notes','recap-tags','recap-chart'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('recap-date').value = new Date().toISOString().slice(0, 10);
+      clearSetups();
+    }
+
+    async function postRecap() {
+      const date = document.getElementById('recap-date').value;
+      const title = document.getElementById('recap-title').value.trim();
+      const summary = document.getElementById('recap-summary').value.trim();
+      const notes = document.getElementById('recap-notes').value.trim();
+      const tagsRaw = document.getElementById('recap-tags').value;
+      const chartUrl = document.getElementById('recap-chart').value.trim();
+      const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+      const setups = getSetups();
+      // Legacy fields for backwards compat
+      const grade = setups[0]?.grade || '';
+      const result = setups[0]?.result || '';
+
+      if (!date || !title || !summary) { showAdminMsg('recap-msg', 'Date, title, and summary are required.', 'error'); return; }
+
+      const btn = document.getElementById('recap-btn');
+      btn.disabled = true; btn.textContent = editingRecapId ? 'Saving...' : 'Posting...';
+      const token = localStorage.getItem('fsdx_token') || '';
+
+      if (editingRecapId) {
+        // UPDATE: send id so Worker updates in place
+        const idx = allRecaps.findIndex(r => r.id === editingRecapId);
+        if (idx >= 0) allRecaps[idx] = { ...allRecaps[idx], date, title, summary, grade, result, notes, tags, chartUrl, setups };
+        localStorage.setItem('fsdx_recaps', JSON.stringify(allRecaps));
+        try {
+          await fetch(`${API}/api/admin/recap`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ id: editingRecapId, date, title, summary, grade, result, notes, tags, chartUrl, setups })
+          });
+        } catch(err) {}
+        showAdminMsg('recap-msg', 'Recap updated!', 'success');
+        cancelEditRecap();
+      } else {
+        // CREATE new recap
+        const recap = {
+          id: Date.now().toString(),
+          date, title, summary, grade, result, notes, tags, chartUrl, setups,
+          createdAt: new Date().toISOString()
+        };
+        allRecaps.unshift(recap);
+        localStorage.setItem('fsdx_recaps', JSON.stringify(allRecaps));
+        try {
+          await fetch(`${API}/api/admin/recap`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ date, title, summary, grade, result, notes, tags, chartUrl, setups })
+          });
+        } catch (err) {}
+        showAdminMsg('recap-msg', 'Recap posted successfully!', 'success');
+        ['recap-date','recap-title','recap-summary','recap-notes','recap-tags','recap-chart'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        document.getElementById('recap-date').value = new Date().toISOString().slice(0, 10);
+        clearSetups();
+      }
+
+      renderRecaps(allRecaps);
+      document.getElementById('stat-recaps').textContent = allRecaps.length;
+      btn.disabled = false; btn.textContent = 'Post Recap';
+    }
+
+    async function deleteMember(email) {
+      if (!confirm(`Delete account for ${email}? This cannot be undone.`)) return;
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/member`, {
+          method: 'DELETE',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ password })
+          body: JSON.stringify({ email })
         });
         const data = await res.json();
         if (data.success) {
-          localStorage.clear();
-          window.location.href = 'login.html';
+          allMembers = allMembers.filter(m => m.email !== email);
+          renderMembers(allMembers);
+          document.getElementById('stat-total').textContent = allMembers.length;
+          document.getElementById('stat-vip').textContent = allMembers.filter(m => m.tier === 'pro').length;
+          document.getElementById('stat-trial').textContent = allMembers.filter(m => m.tier === 'trial').length;
         } else {
-          msg.textContent = data.error || 'Deletion failed.';
-          msg.classList.remove('hidden');
-          btn.disabled = false; btn.textContent = 'Delete My Account';
+          alert(data.error || 'Failed to delete member.');
         }
-      } catch {
-        msg.textContent = 'Connection error. Please try again.';
-        msg.classList.remove('hidden');
-        btn.disabled = false; btn.textContent = 'Delete My Account';
+      } catch (err) {
+        alert('Connection error. Please try again.');
       }
     }
+
+    async function deleteRecap(id) {
+      if (!confirm('Delete this recap? This cannot be undone.')) return;
+      allRecaps = allRecaps.filter(r => r.id !== id);
+      localStorage.setItem('fsdx_recaps', JSON.stringify(allRecaps));
+      renderRecaps(allRecaps);
+      document.getElementById('stat-recaps').textContent = allRecaps.length;
+      try {
+        const token = localStorage.getItem('fsdx_token') || '';
+        await fetch(`${API}/api/admin/recap`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ id })
+        });
+      } catch (err) {}
+    }
+
+    async function loadCurrentAnnouncement() {
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/announcement`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        const display = document.getElementById('current-announce-display');
+        if (data.announcement) {
+          const typeColors = {
+            info: 'border-blue-500/20 bg-blue-500/5',
+            success: 'border-green-500/20 bg-green-500/5',
+            warning: 'border-yellow-500/20 bg-yellow-500/5'
+          };
+          const typeLabels = { info: 'Info', success: 'Success', warning: 'Warning' };
+          display.className = `mb-5 rounded-xl p-4 border ${typeColors[data.announcement.type] || typeColors.info}`;
+          display.classList.remove('hidden');
+          document.getElementById('current-announce-text').textContent = data.announcement.message;
+          document.getElementById('current-announce-type').textContent = `Type: ${typeLabels[data.announcement.type] || 'Info'}`;
+        } else {
+          display.classList.add('hidden');
+        }
+      } catch (err) {}
+    }
+
+    function editAnnouncement() {
+      const text = document.getElementById('current-announce-text').textContent;
+      document.getElementById('announce-message').value = text;
+      document.getElementById('announce-message').focus();
+    }
+
+    async function clearAnnouncement() {
+      if (!confirm('Remove the current announcement from all member dashboards?')) return;
+      const token = localStorage.getItem('fsdx_token') || '';
+      const btn = document.getElementById('clear-announce-btn');
+      btn.disabled = true; btn.textContent = 'Clearing...';
+      try {
+        const res = await fetch(`${API}/api/admin/announcement`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          showAdminMsg('announce-msg', 'Announcement cleared.', 'success');
+          document.getElementById('current-announce-display').classList.add('hidden');
+          document.getElementById('current-announce-text').textContent = '';        }
+      } catch (err) {
+        showAdminMsg('announce-msg', 'Error clearing announcement.', 'error');
+      }
+      btn.disabled = false; btn.textContent = 'Clear';
+    }
+
+    async function postAnnouncement() {
+      const message = document.getElementById('announce-message').value.trim();
+      const type = document.getElementById('announce-type').value;
+      if (!message) { showAdminMsg('announce-msg', 'Message is required.', 'error'); return; }
+
+      const btn = document.getElementById('announce-btn');
+      btn.disabled = true; btn.textContent = 'Posting...';
+
+      const token = localStorage.getItem('fsdx_token');
+      const res = await fetch(`${API}/api/admin/announcement`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ message, type })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showAdminMsg('announce-msg', 'Announcement posted! Members will see it on their dashboard.', 'success');
+        document.getElementById('announce-message').value = '';
+        loadCurrentAnnouncement();
+      } else {
+        showAdminMsg('announce-msg', data.error || 'Failed to post announcement.', 'error');
+      }
+      btn.disabled = false; btn.textContent = 'Post Announcement';
+    }
+
+    function init() {
+      // Simple admin check — localStorage flag set by admin-login.html
+      if (localStorage.getItem('fsdx_admin') !== 'true') {
+        window.location.href = 'admin-login.html';
+        return;
+      }
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('admin-content').classList.remove('hidden');
+      loadData();
+    }
+
+    // Set today's date as default
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('recap-date').value = new Date().toISOString().slice(0, 10);
+    });
+
+    init();
+
+    function migrateLog(msg, color='#71717a') {
+      const log = document.getElementById('migrate-log');
+      log.classList.remove('hidden');
+      const line = document.createElement('div');
+      line.style.color = color;
+      line.textContent = msg;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    async function runMigration() {
+      const oldKey = document.getElementById('migrate-old').value.trim();
+      const newKey = document.getElementById('migrate-new').value.trim();
+      const msg = document.getElementById('migrate-msg');
+      const log = document.getElementById('migrate-log');
+      const btn = document.getElementById('migrate-btn');
+
+      if (!oldKey || !newKey) { showMigrateMsg('Both keys are required.', 'error'); return; }
+      if (oldKey === newKey) { showMigrateMsg('Old and new keys are the same.', 'error'); return; }
+      if (!confirm(`Migrate ALL data from:\n${oldKey}\n→ ${newKey}\n\nThis will overwrite any existing data under the new key. Continue?`)) return;
+
+      btn.disabled = true; btn.textContent = 'Migrating...';
+      log.innerHTML = ''; log.classList.remove('hidden');
+      migrateLog('Starting migration...', '#22c55e');
+
+      const JOURNAL_URL = API + '/api/nexus-journal';
+      let migrated = 0, skipped = 0;
+
+      async function copyKey(fromKey, toKey, label) {
+        try {
+          const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ action:'get-trades', key: fromKey }) });
+          const data = await res.json();
+          const trades = Array.isArray(data.trades) ? data.trades : [];
+          if (!trades.length) { migrateLog(`  ⊘ ${label} — no data, skipping`, '#52525b'); skipped++; return null; }
+          await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ action:'save-all', key: toKey, payload: { trades } }) });
+          migrateLog(`  ✓ ${label} — ${trades.length} record${trades.length!==1?'s':''} migrated`, '#22c55e');
+          migrated++;
+          return trades;
+        } catch(e) {
+          migrateLog(`  ✗ ${label} — error: ${e.message}`, '#ef4444');
+          return null;
+        }
+      }
+
+      async function copySettings(fromKey, toKey, label) {
+        try {
+          const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ action:'get-settings', key: fromKey }) });
+          const data = await res.json();
+          if (!data.accounts?.length && !data.defaults) { migrateLog(`  ⊘ ${label} — no data, skipping`, '#52525b'); skipped++; return; }
+          await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ action:'save-settings', key: toKey, payload: { accounts: data.accounts||[], defaults: data.defaults||{} } }) });
+          migrateLog(`  ✓ ${label} — migrated`, '#22c55e');
+          migrated++;
+        } catch(e) {
+          migrateLog(`  ✗ ${label} — error: ${e.message}`, '#ef4444');
+        }
+      }
+
+      // 1. Journal trades
+      migrateLog('— Journal trades');
+      await copyKey(oldKey, newKey, 'journal:' + oldKey);
+
+      // 2. Journal settings
+      migrateLog('— Journal settings');
+      await copySettings(oldKey, newKey, 'journal_settings:' + oldKey);
+
+      // 3. Backtest sessions
+      migrateLog('— Backtest sessions');
+      const sessions = await copyKey('backtest_sessions:' + oldKey, 'backtest_sessions:' + newKey, 'backtest_sessions');
+
+      // 4. Each backtest session's trades
+      if (sessions?.length) {
+        migrateLog(`— Backtest session trades (${sessions.length} sessions)`);
+        for (const s of sessions) {
+          await copyKey('backtest:' + oldKey + ':' + s.id, 'backtest:' + newKey + ':' + s.id, 'backtest:' + s.id + ' (' + (s.name||'unnamed') + ')');
+        }
+      }
+
+      migrateLog('');
+      migrateLog(`Migration complete — ${migrated} key${migrated!==1?'s':''} migrated, ${skipped} skipped.`, '#22c55e');
+      showMigrateMsg(`Done! ${migrated} key${migrated!==1?'s':''} migrated successfully.`, 'success');
+      btn.disabled = false; btn.textContent = 'Run Migration';
+    }
+
+    // ── KV Key Lookup ──
+    async function runKvLookup() {
+      const term = document.getElementById('kv-search-input').value.trim();
+      if (!term || term.length < 4) return alert('Please enter at least 4 characters.');
+
+      const btn = document.getElementById('kv-search-btn');
+      btn.disabled = true; btn.textContent = 'Searching…';
+
+      const results = document.getElementById('kv-search-results');
+      const summary = document.getElementById('kv-search-summary');
+      const hits = document.getElementById('kv-search-hits');
+      results.classList.add('hidden');
+
+      try {
+        const token = localStorage.getItem('fsdx_token');
+        const res = await fetch(`${API}/api/admin/kv-lookup?q=${encodeURIComponent(term)}`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!res.ok) { alert(data.error || 'Lookup failed.'); return; }
+
+        results.classList.remove('hidden');
+
+        if (data.total === 0) {
+          summary.textContent = `No KV entries found containing "${term}"`;
+          hits.innerHTML = '<div class="px-4 py-6 text-center text-zinc-600">No matches — this key has no data in KV.</div>';
+          return;
+        }
+
+        summary.textContent = `Found ${data.total} KV entr${data.total === 1 ? 'y' : 'ies'} containing "${term}"`;
+
+        // Color-code by prefix
+        const colors = {
+          'journal:': '#22c55e',
+          'journal_settings:': '#86efac',
+          'backtest_sessions:': '#3b82f6',
+          'backtest:': '#93c5fd',
+          'key_account:': '#f59e0b',
+          'nexus_fp:': '#a78bfa',
+        };
+
+        hits.innerHTML = data.hits.map(h => {
+          const color = colors[h.prefix] || '#71717a';
+          const label = h.prefix.replace(':', '');
+          const rest = h.key.slice(h.prefix.length);
+          const escapedKey = h.key.replace(/'/g, "\\'");
+          return `<div class="flex items-center gap-3 px-4 py-3" id="kvrow-${btoa(h.key).replace(/=/g,'')}">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border flex-shrink-0" style="color:${color};border-color:${color}33;background:${color}11">${label}</span>
+            <span class="text-zinc-400 flex-1 truncate">${rest}</span>
+            ${h.value ? `<span class="text-zinc-600 text-[10px] flex-shrink-0">→ ${h.value}</span>` : ''}
+            <button onclick="deleteKvKey('${escapedKey}')" title="Delete this KV entry"
+              class="flex-shrink-0 text-zinc-700 hover:text-red-400 transition ml-2">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+              </svg>
+            </button>
+          </div>`;
+        }).join('');
+
+      } catch {
+        alert('Connection error.');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Search KV';
+      }
+    }
+
+    async function deleteKvKey(key) {
+      if (!confirm(`Delete KV entry:\n"${key}"\n\nThis cannot be undone.`)) return;
+      try {
+        const token = localStorage.getItem('fsdx_token');
+        const res = await fetch(`${API}/api/admin/kv-lookup`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ key })
+        });
+        const data = await res.json();
+        if (data.success) {
+          // Remove row from UI instantly
+          const rowId = `kvrow-${btoa(key).replace(/=/g,'')}`;
+          const row = document.getElementById(rowId);
+          if (row) row.remove();
+          // Update summary count
+          const remaining = document.querySelectorAll('#kv-search-hits > div').length;
+          document.getElementById('kv-search-summary').textContent =
+            remaining === 0 ? 'All entries deleted.' : `${remaining} KV entr${remaining === 1 ? 'y' : 'ies'} remaining`;
+        } else {
+          alert(data.error || 'Delete failed.');
+        }
+      } catch {
+        alert('Connection error.');
+      }
+    }
+
+    function showMigrateMsg(text, type) {
+      const el = document.getElementById('migrate-msg');
+      el.textContent = text;
+      el.className = 'rounded-xl px-4 py-3 text-xs mb-5 border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-green-500/10 border-green-500/30 text-green-400');
+      el.classList.remove('hidden');
+    }
+
+    // ── Update Whop Key Modal ──
+    let _updateKeyEmail = '';
+    function openUpdateKey(email, currentKey) {
+      _updateKeyEmail = email;
+      document.getElementById('update-key-email-label').textContent = email;
+      document.getElementById('update-key-input').value = '';
+      document.getElementById('update-key-msg').classList.add('hidden');
+      document.getElementById('update-key-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('update-key-input').focus(), 50);
+    }
+    function closeUpdateKey() {
+      document.getElementById('update-key-modal').classList.add('hidden');
+      _updateKeyEmail = '';
+    }
+    async function submitUpdateKey() {
+      const newKey = document.getElementById('update-key-input').value.trim();
+      if (!newKey) return showUpdateKeyMsg('Please enter the new Whop key.', 'error');
+
+      const btn = document.getElementById('update-key-btn');
+      btn.disabled = true; btn.textContent = 'Updating…';
+
+      try {
+        const token = localStorage.getItem('fsdx_token');
+        const res = await fetch(`${API}/api/admin/member`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ email: _updateKeyEmail, newWhopKey: newKey })
+        });
+        const data = await res.json();
+        if (data.success) {
+          // Update local member list so table refreshes without reload
+          const idx = allMembers.findIndex(m => m.email === _updateKeyEmail);
+          if (idx !== -1) { allMembers[idx].whopKey = newKey; allMembers[idx].tier = data.tier; }
+          renderMembers(allMembers);
+          closeUpdateKey();
+        } else {
+          showUpdateKeyMsg(data.error || 'Update failed.', 'error');
+        }
+      } catch {
+        showUpdateKeyMsg('Connection error.', 'error');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Update Key';
+      }
+    }
+    function showUpdateKeyMsg(text, type) {
+      const el = document.getElementById('update-key-msg');
+      el.textContent = text;
+      el.className = 'rounded-lg px-3 py-2 text-xs border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-green-500/10 border-green-500/30 text-green-400');
+      el.classList.remove('hidden');
+    }
   </script>
-  <script src="nav-loader.js"></script>
-</body>
+
+  <!-- Update Whop Key Modal -->
+  <div id="update-key-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
+    <div class="bg-zinc-900 border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-white font-bold text-sm">Update Whop Key</h3>
+        <button onclick="closeUpdateKey()" class="text-zinc-500 hover:text-white transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <p class="text-zinc-500 text-xs mb-1">Member</p>
+      <p id="update-key-email-label" class="text-zinc-300 text-xs font-mono mb-4"></p>
+      <p class="text-zinc-500 text-xs mb-2">New Whop Key</p>
+      <input id="update-key-input" type="text" placeholder="Paste the correct Whop key…"
+        onkeydown="if(event.key==='Enter')submitUpdateKey()"
+        class="w-full bg-zinc-950 border border-white/10 rounded-xl px-4 py-3 text-sm text-white font-mono placeholder-zinc-700 focus:outline-none focus:border-green-500/50 mb-3"/>
+      <p class="text-zinc-600 text-xs mb-4">The key will be validated against Whop before saving. Journal &amp; backtest data stays as-is — use the Migration tab if you also need to move that data.</p>
+      <div id="update-key-msg" class="hidden mb-3"></div>
+      <div class="flex gap-3">
+        <button onclick="closeUpdateKey()" class="flex-1 py-2.5 rounded-xl border border-white/10 text-zinc-400 text-xs font-bold hover:bg-white/5 transition">Cancel</button>
+        <button id="update-key-btn" onclick="submitUpdateKey()" class="flex-1 py-2.5 rounded-xl bg-green-500 text-black text-xs font-bold hover:bg-green-400 transition">Update Key</button>
+      </div>
+    </div>
+  </div>
 </html>
