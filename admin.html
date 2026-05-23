@@ -84,17 +84,18 @@
         </div>
         <div class="border border-white/10 rounded-2xl overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[600px]">
+            <table class="w-full text-left min-w-[800px]">
               <thead>
                 <tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
                   <th class="px-5 py-3">Name</th>
                   <th class="px-5 py-3">Email</th>
+                  <th class="px-5 py-3">Whop Key</th>
                   <th class="px-5 py-3">Tier</th>
                   <th class="px-5 py-3">Joined</th>
                 </tr>
               </thead>
               <tbody id="members-table" class="divide-y divide-white/5 text-sm">
-                <tr><td colspan="4" class="px-5 py-8 text-center text-zinc-600">Loading members...</td></tr>
+                <tr><td colspan="6" class="px-5 py-8 text-center text-zinc-600">Loading members...</td></tr>
               </tbody>
             </table>
           </div>
@@ -395,13 +396,22 @@
     function renderMembers(members) {
       const tbody = document.getElementById('members-table');
       if (!members.length) {
-        tbody.innerHTML = '<tr><td colspan="4" class="px-5 py-8 text-center text-zinc-600">No members yet</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-8 text-center text-zinc-600">No members yet</td></tr>';
         return;
       }
-      tbody.innerHTML = members.map(m => `
+      tbody.innerHTML = members.map(m => {
+        const key = m.whopKey || '';
+        // Show first 8 chars + dots + last 4 chars (e.g. FSDX-OWN••••••••1234)
+        const maskedKey = key.length > 12
+          ? key.slice(0, 8) + '•'.repeat(Math.min(key.length - 12, 8)) + key.slice(-4)
+          : key ? key.slice(0, 4) + '•'.repeat(Math.max(key.length - 4, 0)) : '—';
+        return `
         <tr class="hover:bg-white/[0.02] transition">
           <td class="px-5 py-3.5 text-white font-medium">${m.firstName || ''} ${m.lastName || ''}</td>
           <td class="px-5 py-3.5 text-zinc-400 text-xs">${m.email}</td>
+          <td class="px-5 py-3.5">
+            <span class="font-mono text-xs text-zinc-400 tracking-wide" title="${key}">${maskedKey}</span>
+          </td>
           <td class="px-5 py-3.5">
             <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${m.tier === 'pro' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : m.tier === 'trial' ? 'bg-zinc-800 text-zinc-400 border border-white/10' : 'bg-red-950/30 text-red-400 border border-red-500/20'}">
               ${m.tier || 'unknown'}
@@ -414,7 +424,7 @@
             </button>
           </td>
         </tr>
-      `).join('');
+      `}).join('');
     }
 
     function filterMembers() {
