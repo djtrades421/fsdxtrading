@@ -1230,27 +1230,33 @@
         return d;
       }
 
-      // Split into green/red segments — find exact zero crossing for smooth transition
+      // Color line green when at/above peak (profitable), red when in drawdown below zero
+      // Simple approach: split full path into colored segments, fill always goes to chart bottom
       let peak = 0;
       const segments = [];
-      let curColor = points[0].equity >= 0 ? 'green' : 'red';
+      let curColor = 'green';
       let curPts = [{ x: toX(0), y: toY(points[0].equity) }];
 
       for (let i = 1; i < points.length; i++) {
         const eq = points[i].equity;
         const prevEq = points[i-1].equity;
         if (eq > peak) peak = eq;
-        const inDD = eq < peak && eq < 0;
-        const newColor = inDD ? 'red' : 'green';
+        // Red = below zero AND below previous peak (in drawdown)
+        const newColor = (eq < 0 && eq < peak) ? 'red' : 'green';
 
-        if (newColor !== curColor) {
-          // Interpolate exact zero crossing point on the curve
-          const t = Math.abs(prevEq) / (Math.abs(prevEq) + Math.abs(eq));
-          const crossX = toX(i-1) + t * (toX(i) - toX(i-1));
-          const crossY = toY(0); // exactly at zero
-          curPts.push({ x: crossX, y: crossY });
-          segments.push({ pts: curPts, color: curColor });
-          curPts = [{ x: crossX, y: crossY }];
+        if (newColor !== curColor && i > 1) {
+          // Find where equity crosses zero for clean handoff
+          if (prevEq !== eq) {
+            const t = Math.abs(prevEq) / (Math.abs(prevEq - eq));
+            const crossX = toX(i-1) + t * (toX(i) - toX(i-1));
+            const crossY = toY(0);
+            curPts.push({ x: crossX, y: crossY });
+            segments.push({ pts: [...curPts], color: curColor });
+            curPts = [{ x: crossX, y: crossY }];
+          } else {
+            segments.push({ pts: [...curPts], color: curColor });
+            curPts = [{ x: toX(i-1), y: toY(prevEq) }];
+          }
           curColor = newColor;
         }
         curPts.push({ x: toX(i), y: toY(eq) });
@@ -1291,9 +1297,8 @@
         const col = seg.color === 'green' ? '#22c55e' : '#ef4444';
         const gid = `${uid}-fill-${si}`;
         const pathD = catmullRomPath(seg.pts);
-        // Fill to zero line (toY(0)) so segments meet cleanly at zero
-        const zeroY = toY(0);
-        const fillBase = Math.min(zeroY, PAD_T + CH);
+        // Fill always goes to chart bottom
+        const fillBase = PAD_T + CH;
         const fillD = pathD + ` L ${seg.pts[seg.pts.length-1].x.toFixed(2)} ${fillBase.toFixed(2)} L ${seg.pts[0].x.toFixed(2)} ${fillBase.toFixed(2)} Z`;
         return `<defs>
           <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
