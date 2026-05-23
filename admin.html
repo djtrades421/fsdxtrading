@@ -106,49 +106,50 @@
         <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
           <h2 id="recap-form-title" class="text-base font-black text-white mb-4">Post New Session Recap</h2>
           <div id="recap-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
-          <div class="grid sm:grid-cols-2 gap-4">
+
+          <!-- Session info -->
+          <div class="grid sm:grid-cols-2 gap-4 mb-4">
             <div>
               <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Date</label>
               <input type="date" id="recap-date" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
             </div>
             <div>
               <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Title</label>
-              <input type="text" id="recap-title" placeholder="e.g. Strong ORB Long Setup — NQ" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              <input type="text" id="recap-title" placeholder="e.g. NQ ORB Session — May 22" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
             </div>
-            <div>
-              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Grade</label>
-              <select id="recap-grade" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-                <option value="">Select grade...</option>
-                <option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>No Setup</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Result</label>
-              <select id="recap-result" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-                <option value="">Select result...</option>
-                <option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
-              </select>
+            <div class="sm:col-span-2">
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Chart URL <span class="text-zinc-700 normal-case">— one chart for the whole session (optional)</span></label>
+              <input type="text" id="recap-chart" placeholder="https://www.tradingview.com/x/..." class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
             </div>
           </div>
-          <div class="mt-4">
-            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Summary</label>
-            <textarea id="recap-summary" rows="3" placeholder="What happened in today's session? Key levels, market context, setup quality..."
+
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Session Summary</label>
+            <textarea id="recap-summary" rows="2" placeholder="Overall session context — market conditions, key levels, what happened..."
               class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
           </div>
-          <div class="mt-4">
-            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Notes / Lessons (optional)</label>
-            <textarea id="recap-notes" rows="2" placeholder="What went well? What to watch for next session?"
+
+          <!-- Setups -->
+          <div class="mb-4">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs text-zinc-500 uppercase tracking-wider font-bold">Setups</label>
+              <button onclick="addSetup()" class="text-xs text-green-400 hover:text-green-300 border border-green-500/20 bg-green-500/5 px-3 py-1 rounded-lg transition font-bold">+ Add Setup</button>
+            </div>
+            <div id="setups-container" class="space-y-3"></div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Session Notes / Lessons <span class="text-zinc-700 normal-case">— optional</span></label>
+            <textarea id="recap-notes" rows="2" placeholder="Key takeaways, what to watch for next time..."
               class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
           </div>
-          <div class="mt-4">
-            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Tags (comma separated, optional)</label>
-            <input type="text" id="recap-tags" placeholder="e.g. ORB Long, A+ Setup, Gap Fill" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Tags <span class="text-zinc-700 normal-case">— comma separated, optional</span></label>
+            <input type="text" id="recap-tags" placeholder="e.g. ORB, Gap Fill, NQ" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
           </div>
-          <div class="mt-4">
-            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Chart URL <span class="text-zinc-700 normal-case">— TradingView screenshot or image link (optional)</span></label>
-            <input type="text" id="recap-chart" placeholder="https://www.tradingview.com/x/..." class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-          </div>
-          <div class="flex gap-3 mt-4">
+
+          <div class="flex gap-3">
             <button onclick="postRecap()" id="recap-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Post Recap</button>
             <button onclick="cancelEditRecap()" id="recap-cancel-btn" class="hidden px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Cancel</button>
           </div>
@@ -346,6 +347,80 @@
     }
 
     let editingRecapId = null;
+    let setupCount = 0;
+
+    function addSetup(data = {}) {
+      setupCount++;
+      const id = 'setup-' + setupCount;
+      const div = document.createElement('div');
+      div.id = id;
+      div.className = 'border border-white/10 bg-zinc-900/50 rounded-xl p-4 relative';
+      div.innerHTML = `
+        <button onclick="removeSetup('${id}')" class="absolute top-3 right-3 text-zinc-600 hover:text-red-400 transition text-xs">✕</button>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div>
+            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Grade</label>
+            <select class="setup-grade w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+              <option value="">—</option>
+              <option ${data.grade==='A+'?'selected':''}>A+</option>
+              <option ${data.grade==='A'?'selected':''}>A</option>
+              <option ${data.grade==='B+'?'selected':''}>B+</option>
+              <option ${data.grade==='B'?'selected':''}>B</option>
+              <option ${data.grade==='C+'?'selected':''}>C+</option>
+              <option ${data.grade==='C'?'selected':''}>C</option>
+              <option ${data.grade==='D'?'selected':''}>D</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Direction</label>
+            <select class="setup-direction w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+              <option value="">—</option>
+              <option ${data.direction==='LONG'?'selected':''} value="LONG">LONG</option>
+              <option ${data.direction==='SHORT'?'selected':''} value="SHORT">SHORT</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Result</label>
+            <select class="setup-result w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+              <option value="">—</option>
+              <option ${data.result==='Win — TP1'?'selected':''}>Win — TP1</option>
+              <option ${data.result==='Win — TP2'?'selected':''}>Win — TP2</option>
+              <option ${data.result==='Win — Full'?'selected':''}>Win — Full</option>
+              <option ${data.result==='Loss — SL'?'selected':''}>Loss — SL</option>
+              <option ${data.result==='Scratch / BE'?'selected':''}>Scratch / BE</option>
+              <option ${data.result==='No Trade'?'selected':''}>No Trade</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">R:R</label>
+            <input type="text" class="setup-rr w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700" placeholder="e.g. 2:1" value="${data.rr||''}">
+          </div>
+          <div class="col-span-2 sm:col-span-4">
+            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Notes</label>
+            <input type="text" class="setup-notes w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700" placeholder="What happened in this setup?" value="${data.notes||''}">
+          </div>
+        </div>`;
+      document.getElementById('setups-container').appendChild(div);
+    }
+
+    function removeSetup(id) {
+      document.getElementById(id)?.remove();
+    }
+
+    function getSetups() {
+      return [...document.querySelectorAll('#setups-container > div')].map(div => ({
+        grade: div.querySelector('.setup-grade')?.value || '',
+        direction: div.querySelector('.setup-direction')?.value || '',
+        result: div.querySelector('.setup-result')?.value || '',
+        rr: div.querySelector('.setup-rr')?.value || '',
+        notes: div.querySelector('.setup-notes')?.value || ''
+      })).filter(s => s.grade || s.result || s.notes);
+    }
+
+    function clearSetups() {
+      document.getElementById('setups-container').innerHTML = '';
+      setupCount = 0;
+    }
 
     function editRecap(id) {
       const r = allRecaps.find(r => r.id === id);
@@ -354,15 +429,17 @@
       document.getElementById('recap-date').value = r.date || '';
       document.getElementById('recap-title').value = r.title || '';
       document.getElementById('recap-summary').value = r.summary || '';
-      document.getElementById('recap-grade').value = r.grade || '';
-      document.getElementById('recap-result').value = r.result || '';
       document.getElementById('recap-notes').value = r.notes || '';
       document.getElementById('recap-tags').value = Array.isArray(r.tags) ? r.tags.join(', ') : (r.tags || '');
       document.getElementById('recap-chart').value = r.chartUrl || '';
+      // Load setups
+      clearSetups();
+      const setups = Array.isArray(r.setups) ? r.setups : [];
+      if (setups.length) { setups.forEach(s => addSetup(s)); }
+      else if (r.grade || r.result) { addSetup({ grade: r.grade, result: r.result }); }
       document.getElementById('recap-form-title').textContent = 'Edit Session Recap';
       document.getElementById('recap-btn').textContent = 'Save Changes';
       document.getElementById('recap-cancel-btn').classList.remove('hidden');
-      // Scroll to form
       document.getElementById('recap-form-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
@@ -371,23 +448,26 @@
       document.getElementById('recap-form-title').textContent = 'Post New Session Recap';
       document.getElementById('recap-btn').textContent = 'Post Recap';
       document.getElementById('recap-cancel-btn').classList.add('hidden');
-      ['recap-date','recap-title','recap-summary','recap-grade','recap-result','recap-notes','recap-tags','recap-chart'].forEach(id => {
+      ['recap-date','recap-title','recap-summary','recap-notes','recap-tags','recap-chart'].forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.tagName === 'SELECT' ? (el.selectedIndex = 0) : (el.value = '');
+        if (el) el.value = '';
       });
       document.getElementById('recap-date').value = new Date().toISOString().slice(0, 10);
+      clearSetups();
     }
 
     async function postRecap() {
       const date = document.getElementById('recap-date').value;
       const title = document.getElementById('recap-title').value.trim();
       const summary = document.getElementById('recap-summary').value.trim();
-      const grade = document.getElementById('recap-grade').value;
-      const result = document.getElementById('recap-result').value;
       const notes = document.getElementById('recap-notes').value.trim();
       const tagsRaw = document.getElementById('recap-tags').value;
       const chartUrl = document.getElementById('recap-chart').value.trim();
       const tags = tagsRaw ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
+      const setups = getSetups();
+      // Legacy fields for backwards compat
+      const grade = setups[0]?.grade || '';
+      const result = setups[0]?.result || '';
 
       if (!date || !title || !summary) { showAdminMsg('recap-msg', 'Date, title, and summary are required.', 'error'); return; }
 
@@ -414,7 +494,7 @@
         } catch(err) {}
         // Update local array
         const idx = allRecaps.findIndex(r => r.id === editingRecapId);
-        if (idx >= 0) allRecaps[idx] = { ...allRecaps[idx], date, title, summary, grade, result, notes, tags, chartUrl };
+        if (idx >= 0) allRecaps[idx] = { ...allRecaps[idx], date, title, summary, grade, result, notes, tags, chartUrl, setups };
         localStorage.setItem('fsdx_recaps', JSON.stringify(allRecaps));
         showAdminMsg('recap-msg', 'Recap updated!', 'success');
         cancelEditRecap();
@@ -431,15 +511,16 @@
           await fetch(`${API}/api/admin/recap`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ date, title, summary, grade, result, notes, tags, chartUrl })
+            body: JSON.stringify({ date, title, summary, grade, result, notes, tags, chartUrl, setups })
           });
         } catch (err) {}
         showAdminMsg('recap-msg', 'Recap posted successfully!', 'success');
-        ['recap-date','recap-title','recap-summary','recap-grade','recap-result','recap-notes','recap-tags','recap-chart'].forEach(id => {
+        ['recap-date','recap-title','recap-summary','recap-notes','recap-tags','recap-chart'].forEach(id => {
           const el = document.getElementById(id);
-          if (el) el.tagName === 'SELECT' ? (el.selectedIndex = 0) : (el.value = '');
+          if (el) el.value = '';
         });
         document.getElementById('recap-date').value = new Date().toISOString().slice(0, 10);
+        clearSetups();
       }
 
       renderRecaps(allRecaps);
