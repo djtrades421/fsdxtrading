@@ -1230,33 +1230,28 @@
         return d;
       }
 
-      // Color line green when at/above peak (profitable), red when in drawdown below zero
-      // Simple approach: split full path into colored segments, fill always goes to chart bottom
+      // Split into green/red segments based on drawdown
       let peak = 0;
       const segments = [];
-      let curColor = 'green';
+      let curColor = points[0].equity >= 0 ? 'green' : 'red';
       let curPts = [{ x: toX(0), y: toY(points[0].equity) }];
 
       for (let i = 1; i < points.length; i++) {
         const eq = points[i].equity;
         const prevEq = points[i-1].equity;
         if (eq > peak) peak = eq;
-        // Red = below zero AND below previous peak (in drawdown)
-        const newColor = (eq < 0 && eq < peak) ? 'red' : 'green';
+        const inDD = eq < peak && eq < 0;
+        const newColor = inDD ? 'red' : 'green';
 
-        if (newColor !== curColor && i > 1) {
-          // Find where equity crosses zero for clean handoff
-          if (prevEq !== eq) {
-            const t = Math.abs(prevEq) / (Math.abs(prevEq - eq));
-            const crossX = toX(i-1) + t * (toX(i) - toX(i-1));
-            const crossY = toY(0);
-            curPts.push({ x: crossX, y: crossY });
-            segments.push({ pts: [...curPts], color: curColor });
-            curPts = [{ x: crossX, y: crossY }];
-          } else {
-            segments.push({ pts: [...curPts], color: curColor });
-            curPts = [{ x: toX(i-1), y: toY(prevEq) }];
-          }
+        if (newColor !== curColor) {
+          // Interpolate exact zero crossing
+          const denom = Math.abs(prevEq) + Math.abs(eq);
+          const t = denom > 0 ? Math.abs(prevEq) / denom : 0.5;
+          const crossX = toX(i-1) + t * (toX(i) - toX(i-1));
+          const crossY = toY(0);
+          curPts.push({ x: crossX, y: crossY });
+          segments.push({ pts: [...curPts], color: curColor });
+          curPts = [{ x: crossX, y: crossY }];
           curColor = newColor;
         }
         curPts.push({ x: toX(i), y: toY(eq) });
@@ -1297,8 +1292,8 @@
         const col = seg.color === 'green' ? '#22c55e' : '#ef4444';
         const gid = `${uid}-fill-${si}`;
         const pathD = catmullRomPath(seg.pts);
-        // Fill always goes to chart bottom
-        const fillBase = PAD_T + CH;
+        // Fill to the zero line (clamped to chart area)
+        const fillBase = Math.max(Math.min(toY(0), PAD_T + CH), PAD_T);
         const fillD = pathD + ` L ${seg.pts[seg.pts.length-1].x.toFixed(2)} ${fillBase.toFixed(2)} L ${seg.pts[0].x.toFixed(2)} ${fillBase.toFixed(2)} Z`;
         return `<defs>
           <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
