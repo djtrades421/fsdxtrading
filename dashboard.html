@@ -155,26 +155,17 @@
             </div>
           </div>
 
-          <!-- COMING SOON -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-sm font-black text-white">VIP Tools — Coming Soon</h3>
-              <span class="text-[10px] text-zinc-600 uppercase tracking-wider">In Development</span>
+          <!-- LATEST SESSION RECAP -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden flex flex-col">
+            <div class="px-6 pt-5 pb-4 border-b border-white/10 flex items-center justify-between">
+              <h3 class="text-sm font-black text-white">Latest Session Recap</h3>
+              <a href="recaps.html" class="text-[10px] text-zinc-500 hover:text-green-400 transition font-bold">All Recaps →</a>
             </div>
-            <div class="space-y-3">
-              <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl opacity-50"><div class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div><div><div class="text-sm font-bold text-zinc-500">Nexus Full Platform</div><div class="text-xs text-zinc-600">Full-page journal, analytics & AI</div></div></div>
-              <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl opacity-50"><div class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div><div class="text-sm font-bold text-zinc-500">Prop Firm Tracker</div><div class="text-xs text-zinc-600">Track evaluations & funded accounts</div></div></div>
-              <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl opacity-50"><div class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg></div><div><div class="text-sm font-bold text-zinc-500">Setup Playbook</div><div class="text-xs text-zinc-600">Documented setups with grades & outcomes</div></div></div>
-              <div class="flex items-center gap-3 p-3 bg-black border border-white/5 rounded-xl opacity-50"><div class="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-zinc-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg></div><div><div class="text-sm font-bold text-zinc-500">Session Recaps Archive</div><div class="text-xs text-zinc-600">Searchable post-session notes</div></div></div>
+            <div id="latest-recap" class="px-6 py-5 flex-1">
+              <div class="text-center py-8 text-zinc-600 text-xs">Loading...</div>
             </div>
           </div>
 
-
-        </div>
-
-        <!-- QUICK ACCESS — collapsible -->
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-          <button onclick="toggleQuickAccess()" class="w-full px-6 py-4 flex items-center justify-between hover:bg-white/[0.02] transition">
             <h3 class="text-sm font-black text-white">Quick Access</h3>
             <svg id="qa-chevron" class="w-3.5 h-3.5 text-zinc-500 transition-transform rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
           </button>
@@ -347,6 +338,7 @@
       document.getElementById('access-grid').innerHTML = renderAccessGrid(tier);
       if (whopKey) loadJournalStats(whopKey);
       loadAnnouncement(token);
+      loadLatestRecap(token);
     }
 
     // ── Economic Calendar ──
@@ -478,6 +470,48 @@
         </div>`;
       });
       body.innerHTML = html;
+    }
+
+    async function loadLatestRecap(token) {
+      const el = document.getElementById('latest-recap');
+      if (!el) return;
+      try {
+        const res = await fetch(`${API}/api/recaps`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        const recaps = data.recaps || [];
+        if (!recaps.length) { el.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">No recaps posted yet.</div>'; return; }
+        const r = recaps[0];
+        const dateStr = r.date ? new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
+        const setups = Array.isArray(r.setups) ? r.setups.filter(s => s.grade || s.result || s.direction) : [];
+        const gColor = g => ['A+','A'].includes(g) ? 'bg-green-500/10 text-green-400 border-green-500/25' : ['B+','B'].includes(g) ? 'bg-blue-500/10 text-blue-400 border-blue-500/25' : ['C+','C'].includes(g) ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/25' : 'bg-zinc-800 text-zinc-400 border-white/10';
+        const rColor = v => v?.toLowerCase().includes('win') ? 'text-green-400' : v?.toLowerCase().includes('loss') ? 'text-red-400' : 'text-yellow-400';
+        const rBg = v => v?.toLowerCase().includes('win') ? 'bg-green-500/10 border-green-500/20' : v?.toLowerCase().includes('loss') ? 'bg-red-500/10 border-red-500/20' : 'bg-yellow-500/10 border-yellow-500/20';
+        const dColor = d => d === 'LONG' ? 'text-green-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-400';
+        const setupsHtml = setups.length ? `<div class="border border-white/10 bg-zinc-900/30 rounded-xl px-4 py-1 mb-3">
+          <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold pt-2 pb-1">Setups</div>
+          ${setups.map((s, i) => `<div class="py-2 border-b border-white/5 last:border-0">
+            <div class="flex flex-wrap items-center gap-2 mb-0.5">
+              <span class="text-[10px] text-zinc-600 font-bold">Setup ${i+1}</span>
+              ${s.grade ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-black border ${gColor(s.grade)}">${s.grade}</span>` : ''}
+              ${s.direction ? `<span class="text-xs font-black ${dColor(s.direction)}">${s.direction}</span>` : ''}
+              ${s.result ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${rBg(s.result)} ${rColor(s.result)}">${s.result}</span>` : ''}
+              ${s.rr ? `<span class="text-xs text-zinc-500">RR <span class="text-white font-bold">${s.rr}</span></span>` : ''}
+            </div>
+            ${s.notes ? `<p class="text-xs text-zinc-500 leading-relaxed">${s.notes}</p>` : ''}
+          </div>`).join('')}
+        </div>` : '';
+        el.innerHTML = `<div class="text-xs text-zinc-500 mb-1">${dateStr}</div>
+          <div class="text-sm font-black text-white mb-2">${r.title || 'Session Recap'}</div>
+          ${r.summary ? `<p class="text-xs text-zinc-400 leading-relaxed mb-3">${r.summary}</p>` : ''}
+          ${setupsHtml}
+          ${r.notes ? `<div class="border-l-2 border-white/10 pl-3 mb-3"><p class="text-xs text-zinc-500">${r.notes}</p></div>` : ''}
+          <div class="flex items-center gap-3 pt-2">
+            ${r.chartUrl ? `<a href="${r.chartUrl}" target="_blank" class="text-xs text-green-400 hover:text-green-300 font-bold transition">View Chart ↗</a>` : ''}
+            <a href="recaps.html" class="text-xs text-zinc-500 hover:text-zinc-300 transition ml-auto">All recaps →</a>
+          </div>`;
+      } catch(e) {
+        el.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">Could not load recap.</div>';
+      }
     }
 
     async function loadCalendar() {
