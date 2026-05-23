@@ -624,7 +624,11 @@
       if (createdAt) joinedEl.textContent = 'Joined: ' + fmtDate(createdAt);
       const renewalTs = whopRenewalEnd || whopExpiresAt;
       if (renewalTs && whopStatus !== 'completed') {
-        renewalEl.textContent = (whopCancelAtPeriodEnd ? 'Access ends: ' : 'Renews: ') + fmtDate(renewalTs);
+        const renewalDate = fmtDate(renewalTs);
+        const msUntil = (typeof renewalTs === 'number' ? renewalTs * 1000 : new Date(renewalTs).getTime()) - Date.now();
+        const daysUntil = Math.ceil(msUntil / (1000 * 60 * 60 * 24));
+        const countdown = daysUntil > 0 ? ` · in ${daysUntil} day${daysUntil === 1 ? '' : 's'}` : ' · today';
+        renewalEl.textContent = (whopCancelAtPeriodEnd ? 'Access ends: ' : 'Renews: ') + renewalDate + countdown;
       } else if (whopStatus === 'completed') {
         renewalEl.textContent = 'Lifetime — no renewal needed';
       }
