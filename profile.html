@@ -164,6 +164,16 @@
             </button>
           </div>
 
+          <!-- Delete Account -->
+          <div class="border border-red-500/10 bg-red-950/10 rounded-2xl p-6">
+            <h2 class="text-sm font-black text-red-400 mb-1">Delete Account</h2>
+            <p class="text-zinc-500 text-xs mb-4">Permanently deletes your account and all data including journal trades and backtest sessions. This cannot be undone.</p>
+            <button onclick="openDeleteModal()"
+              class="px-5 py-2.5 bg-transparent hover:bg-red-950/40 border border-red-500/30 text-red-400 hover:text-red-300 font-bold text-xs uppercase tracking-wider rounded-xl transition">
+              Delete My Account
+            </button>
+          </div>
+
         </div>
       </div>
     </div>
@@ -248,17 +258,19 @@
         });
         const data = await res.json();
         if (data.success) {
-          showMsg('profile-msg', 'Profile updated successfully!', 'success');
           localStorage.setItem('fsdx_name', firstName);
+          // If email changed, swap the session token silently — no logout needed
+          if (data.emailChanged && data.newToken) {
+            localStorage.setItem('fsdx_token', data.newToken);
+            currentUser.email = email;
+            showMsg('profile-msg', 'Profile updated — email changed and session refreshed.', 'success');
+          } else {
+            showMsg('profile-msg', 'Profile updated successfully!', 'success');
+          }
           // Update display
           document.getElementById('profile-heading').textContent = firstName + (lastName ? ' ' + lastName : '');
           document.getElementById('profile-email-display').textContent = email;
           document.getElementById('profile-avatar-large').textContent = firstName.charAt(0).toUpperCase();
-          // If email changed, need to re-login
-          if (email !== currentUser.email) {
-            showMsg('profile-msg', 'Email updated! Please log in again with your new email.', 'success');
-            setTimeout(() => { handleLogout(); }, 2000);
-          }
         } else {
           showMsg('profile-msg', data.error || 'Failed to update profile.', 'error');
         }
@@ -340,6 +352,73 @@
     }
 
     init();
+  </script>
+
+  <!-- Delete Account Modal -->
+  <div id="delete-account-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div class="bg-zinc-900 border border-red-500/20 rounded-2xl p-6 w-full max-w-md shadow-2xl mx-4">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+          </svg>
+        </div>
+        <div>
+          <h3 class="text-white font-black text-sm">Delete Account</h3>
+          <p class="text-red-400 text-xs">This action is permanent and cannot be undone</p>
+        </div>
+      </div>
+      <p class="text-zinc-400 text-xs mb-4 leading-relaxed">All your data will be permanently deleted — journal trades, backtest sessions, settings, and your login credentials.</p>
+      <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Enter your password to confirm</label>
+      <input id="delete-confirm-password" type="password" placeholder="Your password"
+        onkeydown="if(event.key==='Enter')submitDeleteAccount()"
+        class="w-full bg-black border border-red-500/20 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-red-500/50 placeholder-zinc-700 mb-3"/>
+      <div id="delete-account-msg" class="hidden rounded-lg px-3 py-2 text-xs border border-red-500/30 bg-red-950/40 text-red-400 mb-3"></div>
+      <div class="flex gap-3">
+        <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl border border-white/10 text-zinc-400 text-xs font-bold hover:bg-white/5 transition">Cancel</button>
+        <button id="delete-account-btn" onclick="submitDeleteAccount()" class="flex-1 py-2.5 rounded-xl bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition">Delete My Account</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openDeleteModal() {
+      document.getElementById('delete-confirm-password').value = '';
+      document.getElementById('delete-account-msg').classList.add('hidden');
+      document.getElementById('delete-account-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('delete-confirm-password').focus(), 50);
+    }
+    function closeDeleteModal() {
+      document.getElementById('delete-account-modal').classList.add('hidden');
+    }
+    async function submitDeleteAccount() {
+      const password = document.getElementById('delete-confirm-password').value;
+      if (!password) return;
+      const btn = document.getElementById('delete-account-btn');
+      const msg = document.getElementById('delete-account-msg');
+      btn.disabled = true; btn.textContent = 'Deleting…';
+      try {
+        const token = localStorage.getItem('fsdx_token');
+        const res = await fetch(`${API}/api/auth/delete-account`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.clear();
+          window.location.href = 'login.html';
+        } else {
+          msg.textContent = data.error || 'Deletion failed.';
+          msg.classList.remove('hidden');
+          btn.disabled = false; btn.textContent = 'Delete My Account';
+        }
+      } catch {
+        msg.textContent = 'Connection error. Please try again.';
+        msg.classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Delete My Account';
+      }
+    }
   </script>
   <script src="nav-loader.js"></script>
 </body>
