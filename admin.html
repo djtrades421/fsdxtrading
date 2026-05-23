@@ -129,13 +129,139 @@
               class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
           </div>
 
-          <!-- Setups -->
+          <!-- Setups — fixed 4 slots -->
           <div class="mb-4">
-            <div class="flex items-center justify-between mb-2">
-              <label class="text-xs text-zinc-500 uppercase tracking-wider font-bold">Setups</label>
-              <button onclick="addSetup()" class="text-xs text-green-400 hover:text-green-300 border border-green-500/20 bg-green-500/5 px-3 py-1 rounded-lg transition font-bold">+ Add Setup</button>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-3 font-bold">Setups <span class="text-zinc-700 normal-case font-normal">— fill in what you need, leave the rest blank</span></label>
+            <div class="space-y-3" id="setups-container">
+              <!-- Setup 1 -->
+              <div class="border border-white/10 bg-zinc-900/50 rounded-xl p-4">
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mb-3">Setup 1</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Grade</label>
+                    <select id="s1-grade" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Direction</label>
+                    <select id="s1-direction" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option value="LONG">LONG</option><option value="SHORT">SHORT</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Result</label>
+                    <select id="s1-result" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">R:R</label>
+                    <input type="text" id="s1-rr" placeholder="e.g. 2:1" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+                  <input type="text" id="s1-notes" placeholder="What happened in this setup?" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                </div>
+              </div>
+              <!-- Setup 2 -->
+              <div class="border border-white/10 bg-zinc-900/50 rounded-xl p-4">
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mb-3">Setup 2</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Grade</label>
+                    <select id="s2-grade" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Direction</label>
+                    <select id="s2-direction" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option value="LONG">LONG</option><option value="SHORT">SHORT</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Result</label>
+                    <select id="s2-result" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">R:R</label>
+                    <input type="text" id="s2-rr" placeholder="e.g. 2:1" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+                  <input type="text" id="s2-notes" placeholder="What happened in this setup?" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                </div>
+              </div>
+              <!-- Setup 3 -->
+              <div class="border border-white/10 bg-zinc-900/50 rounded-xl p-4">
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mb-3">Setup 3</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Grade</label>
+                    <select id="s3-grade" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Direction</label>
+                    <select id="s3-direction" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option value="LONG">LONG</option><option value="SHORT">SHORT</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Result</label>
+                    <select id="s3-result" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">R:R</label>
+                    <input type="text" id="s3-rr" placeholder="e.g. 2:1" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+                  <input type="text" id="s3-notes" placeholder="What happened in this setup?" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                </div>
+              </div>
+              <!-- Setup 4 -->
+              <div class="border border-white/10 bg-zinc-900/50 rounded-xl p-4">
+                <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mb-3">Setup 4</div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Grade</label>
+                    <select id="s4-grade" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Direction</label>
+                    <select id="s4-direction" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option value="LONG">LONG</option><option value="SHORT">SHORT</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">Result</label>
+                    <select id="s4-result" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">—</option><option>Win — TP1</option><option>Win — TP2</option><option>Win — Full</option><option>Loss — SL</option><option>Scratch / BE</option><option>No Trade</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 mb-1">R:R</label>
+                    <input type="text" id="s4-rr" placeholder="e.g. 2:1" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+                  <input type="text" id="s4-notes" placeholder="What happened in this setup?" class="w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                </div>
+              </div>
             </div>
-            <div id="setups-container" class="space-y-3"></div>
           </div>
 
           <div class="mb-4">
@@ -362,79 +488,54 @@
     }
 
     let editingRecapId = null;
-    let setupCount = 0;
-
-    function addSetup(data = {}) {
-      setupCount++;
-      const id = 'setup-' + setupCount;
-      const div = document.createElement('div');
-      div.id = id;
-      div.className = 'border border-white/10 bg-zinc-900/50 rounded-xl p-4 relative';
-      div.innerHTML = `
-        <button onclick="removeSetup('${id}')" class="absolute top-3 right-3 text-zinc-600 hover:text-red-400 transition text-xs">✕</button>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div>
-            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Grade</label>
-            <select class="setup-grade w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
-              <option value="">—</option>
-              <option ${data.grade==='A+'?'selected':''}>A+</option>
-              <option ${data.grade==='A'?'selected':''}>A</option>
-              <option ${data.grade==='B+'?'selected':''}>B+</option>
-              <option ${data.grade==='B'?'selected':''}>B</option>
-              <option ${data.grade==='C+'?'selected':''}>C+</option>
-              <option ${data.grade==='C'?'selected':''}>C</option>
-              <option ${data.grade==='D'?'selected':''}>D</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Direction</label>
-            <select class="setup-direction w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
-              <option value="">—</option>
-              <option ${data.direction==='LONG'?'selected':''} value="LONG">LONG</option>
-              <option ${data.direction==='SHORT'?'selected':''} value="SHORT">SHORT</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Result</label>
-            <select class="setup-result w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
-              <option value="">—</option>
-              <option ${data.result==='Win — TP1'?'selected':''}>Win — TP1</option>
-              <option ${data.result==='Win — TP2'?'selected':''}>Win — TP2</option>
-              <option ${data.result==='Win — Full'?'selected':''}>Win — Full</option>
-              <option ${data.result==='Loss — SL'?'selected':''}>Loss — SL</option>
-              <option ${data.result==='Scratch / BE'?'selected':''}>Scratch / BE</option>
-              <option ${data.result==='No Trade'?'selected':''}>No Trade</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">R:R</label>
-            <input type="text" class="setup-rr w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700" placeholder="e.g. 2:1" value="${data.rr||''}">
-          </div>
-          <div class="col-span-2 sm:col-span-4">
-            <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Notes</label>
-            <input type="text" class="setup-notes w-full bg-black border border-white/10 text-white text-xs px-2 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700" placeholder="What happened in this setup?" value="${data.notes||''}">
-          </div>
-        </div>`;
-      document.getElementById('setups-container').appendChild(div);
-    }
-
-    function removeSetup(id) {
-      document.getElementById(id)?.remove();
-    }
 
     function getSetups() {
-      return [...document.querySelectorAll('#setups-container > div')].map(div => ({
-        grade: div.querySelector('.setup-grade')?.value || '',
-        direction: div.querySelector('.setup-direction')?.value || '',
-        result: div.querySelector('.setup-result')?.value || '',
-        rr: div.querySelector('.setup-rr')?.value || '',
-        notes: div.querySelector('.setup-notes')?.value || ''
-      })).filter(s => s.grade || s.result || s.notes || s.direction || s.rr);
+      const setups = [];
+      for (let i = 1; i <= 4; i++) {
+        const grade = document.getElementById('s'+i+'-grade')?.value || '';
+        const direction = document.getElementById('s'+i+'-direction')?.value || '';
+        const result = document.getElementById('s'+i+'-result')?.value || '';
+        const rr = document.getElementById('s'+i+'-rr')?.value || '';
+        const notes = document.getElementById('s'+i+'-notes')?.value || '';
+        if (grade || direction || result || rr || notes) {
+          setups.push({ grade, direction, result, rr, notes });
+        }
+      }
+      return setups;
     }
 
     function clearSetups() {
-      document.getElementById('setups-container').innerHTML = '';
-      setupCount = 0;
+      for (let i = 1; i <= 4; i++) {
+        const grade = document.getElementById('s'+i+'-grade');
+        const direction = document.getElementById('s'+i+'-direction');
+        const result = document.getElementById('s'+i+'-result');
+        const rr = document.getElementById('s'+i+'-rr');
+        const notes = document.getElementById('s'+i+'-notes');
+        if (grade) grade.value = '';
+        if (direction) direction.value = '';
+        if (result) result.value = '';
+        if (rr) rr.value = '';
+        if (notes) notes.value = '';
+      }
+    }
+
+    function loadSetups(setups) {
+      clearSetups();
+      if (!setups || !setups.length) return;
+      setups.forEach((s, idx) => {
+        const i = idx + 1;
+        if (i > 4) return;
+        const grade = document.getElementById('s'+i+'-grade');
+        const direction = document.getElementById('s'+i+'-direction');
+        const result = document.getElementById('s'+i+'-result');
+        const rr = document.getElementById('s'+i+'-rr');
+        const notes = document.getElementById('s'+i+'-notes');
+        if (grade) grade.value = s.grade || '';
+        if (direction) direction.value = s.direction || '';
+        if (result) result.value = s.result || '';
+        if (rr) rr.value = s.rr || '';
+        if (notes) notes.value = s.notes || '';
+      });
     }
 
     function editRecap(id) {
@@ -448,10 +549,12 @@
       document.getElementById('recap-tags').value = Array.isArray(r.tags) ? r.tags.join(', ') : (r.tags || '');
       document.getElementById('recap-chart').value = r.chartUrl || '';
       // Load setups
-      clearSetups();
       const setups = Array.isArray(r.setups) ? r.setups : [];
-      if (setups.length) { setups.forEach(s => addSetup(s)); }
-      else if (r.grade || r.result) { addSetup({ grade: r.grade, result: r.result }); }
+      if (!setups.length && (r.grade || r.result)) {
+        loadSetups([{ grade: r.grade, direction: '', result: r.result, rr: '', notes: '' }]);
+      } else {
+        loadSetups(setups);
+      }
       document.getElementById('recap-form-title').textContent = 'Edit Session Recap';
       document.getElementById('recap-btn').textContent = 'Save Changes';
       document.getElementById('recap-cancel-btn').classList.remove('hidden');
