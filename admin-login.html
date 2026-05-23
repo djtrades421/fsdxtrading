@@ -19,27 +19,46 @@
       <p class="text-zinc-600 text-xs mt-1">FSD-X restricted panel</p>
     </div>
 
-    <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6 space-y-4">
-      <div id="error-msg" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400"></div>
-
+    <!-- Step 1: Email + Password -->
+    <div id="step-credentials" class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6 space-y-4">
+      <div id="cred-error" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400"></div>
       <div>
         <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Email</label>
         <input type="email" id="admin-email" placeholder="your@email.com"
-          onkeydown="if(event.key==='Enter')handleAdminLogin()"
+          onkeydown="if(event.key==='Enter')handleCredentials()"
           class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
       </div>
-
       <div>
         <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Password</label>
         <input type="password" id="admin-password" placeholder="••••••••••"
-          onkeydown="if(event.key==='Enter')handleAdminLogin()"
+          onkeydown="if(event.key==='Enter')handleCredentials()"
           class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
       </div>
-
-      <button onclick="handleAdminLogin()" id="admin-btn"
+      <button onclick="handleCredentials()" id="cred-btn"
         class="w-full py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition">
-        Enter Admin Panel
+        Continue
       </button>
+    </div>
+
+    <!-- Step 2: TOTP -->
+    <div id="step-totp" class="hidden border border-white/10 bg-zinc-950/60 rounded-2xl p-6 space-y-4">
+      <div class="text-center mb-2">
+        <div class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 mb-3">
+          <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 8.25h3m-3 3.75h3m-6 3.75H7.5"/></svg>
+        </div>
+        <p class="text-white font-bold text-sm">Two-Factor Authentication</p>
+        <p class="text-zinc-500 text-xs mt-1">Enter the 6-digit code from your authenticator app</p>
+      </div>
+      <div id="totp-error" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400"></div>
+      <input type="text" id="totp-code" placeholder="000000" maxlength="6"
+        onkeydown="if(event.key==='Enter')handleTotp()"
+        oninput="this.value=this.value.replace(/[^0-9]/,'')"
+        class="w-full bg-black border border-white/10 text-white text-2xl font-mono px-4 py-4 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 text-center tracking-[0.5em]">
+      <button onclick="handleTotp()" id="totp-btn"
+        class="w-full py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+        Verify & Enter
+      </button>
+      <button onclick="resetToStep1()" class="w-full text-xs text-zinc-600 hover:text-zinc-400 transition">← Back</button>
     </div>
 
     <p class="text-center text-xs text-zinc-700 mt-4">
@@ -48,48 +67,90 @@
   </div>
 
   <script>
-    // If already admin, go straight in
-    if (localStorage.getItem('fsdx_admin') === 'true') {
-      window.location.href = 'admin.html';
+    const API = 'https://nexus-validator.dfuentes4211.workers.dev';
+    let _preToken = null;
+
+    // Already have a valid admin session — go straight in
+    const existingToken = localStorage.getItem('fsdx_token');
+    if (existingToken) {
+      fetch(`${API}/api/auth/me`, { headers: { 'Authorization': `Bearer ${existingToken}` } })
+        .then(r => r.json())
+        .then(d => { if (d.authenticated && d.email === 'fsdxteam@gmail.com') window.location.href = 'admin.html'; })
+        .catch(() => {});
     }
 
-    async function handleAdminLogin() {
-      const email = document.getElementById('admin-email').value.trim().toLowerCase();
+    async function handleCredentials() {
+      const email = document.getElementById('admin-email').value.trim();
       const password = document.getElementById('admin-password').value;
-      const errEl = document.getElementById('error-msg');
-      const btn = document.getElementById('admin-btn');
-
+      const errEl = document.getElementById('cred-error');
+      const btn = document.getElementById('cred-btn');
       errEl.classList.add('hidden');
-      if (!email || !password) {
-        errEl.textContent = 'Please fill in both fields.';
+      if (!email || !password) { errEl.textContent = 'Please fill in both fields.'; errEl.classList.remove('hidden'); return; }
+
+      btn.disabled = true; btn.textContent = 'Verifying…';
+      try {
+        const res = await fetch(`${API}/api/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (data.success && data.preToken) {
+          _preToken = data.preToken;
+          document.getElementById('step-credentials').classList.add('hidden');
+          document.getElementById('step-totp').classList.remove('hidden');
+          setTimeout(() => document.getElementById('totp-code').focus(), 50);
+        } else {
+          errEl.textContent = data.error || 'Invalid credentials.';
+          errEl.classList.remove('hidden');
+        }
+      } catch {
+        errEl.textContent = 'Connection error. Please try again.';
         errEl.classList.remove('hidden');
-        return;
+      } finally {
+        btn.disabled = false; btn.textContent = 'Continue';
       }
+    }
 
-      btn.disabled = true;
-      btn.textContent = 'Verifying...';
+    async function handleTotp() {
+      const code = document.getElementById('totp-code').value.trim();
+      const errEl = document.getElementById('totp-error');
+      const btn = document.getElementById('totp-btn');
+      errEl.classList.add('hidden');
+      if (!code || code.length !== 6) { errEl.textContent = 'Enter the 6-digit code.'; errEl.classList.remove('hidden'); return; }
 
-      // Hash the password client-side to compare
-      const encoder = new TextEncoder();
-      const data = encoder.encode(password);
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-      const hash = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
-
-      // Admin credentials — change ADMIN_EMAIL and ADMIN_PASS_HASH below
-      // To generate a new hash: open browser console and run:
-      // crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword')).then(b => console.log([...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')))
-      const ADMIN_EMAIL = 'fsdxteam@gmail.com';
-      const ADMIN_PASS_HASH = 'f8e2abf6081e7bbc5c762400105d1c31ac04dc4e9fb65d67d5f5d6774c56aa4f';
-
-      if (email === ADMIN_EMAIL && hash === ADMIN_PASS_HASH) {
-        localStorage.setItem('fsdx_admin', 'true');
-        window.location.href = 'admin.html';
-      } else {
-        errEl.textContent = 'Invalid credentials.';
+      btn.disabled = true; btn.textContent = 'Verifying…';
+      try {
+        const res = await fetch(`${API}/api/admin/verify-totp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ preToken: _preToken, code })
+        });
+        const data = await res.json();
+        if (data.success && data.token) {
+          localStorage.setItem('fsdx_token', data.token);
+          localStorage.setItem('fsdx_admin', 'true');
+          localStorage.setItem('fsdx_name', 'Admin');
+          window.location.href = 'admin.html';
+        } else {
+          errEl.textContent = data.error || 'Invalid code.';
+          errEl.classList.remove('hidden');
+          document.getElementById('totp-code').value = '';
+        }
+      } catch {
+        errEl.textContent = 'Connection error. Please try again.';
         errEl.classList.remove('hidden');
-        btn.disabled = false;
-        btn.textContent = 'Enter Admin Panel';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Verify & Enter';
       }
+    }
+
+    function resetToStep1() {
+      _preToken = null;
+      document.getElementById('totp-code').value = '';
+      document.getElementById('totp-error').classList.add('hidden');
+      document.getElementById('step-totp').classList.add('hidden');
+      document.getElementById('step-credentials').classList.remove('hidden');
     }
   </script>
 </body>
