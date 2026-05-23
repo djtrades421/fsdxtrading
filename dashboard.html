@@ -325,7 +325,33 @@
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('dashboard-content').classList.remove('hidden');
       document.getElementById('welcome-msg').textContent = `${getGreeting()}, ${firstName}`;
-      document.getElementById('session-info').textContent = `${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })} · ORB session at 8:30 AM CT`;
+
+      // Date + next session logic
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+      const dow = now.getDay(); // 0=Sun, 6=Sat
+      const hour = now.getHours();
+      const SESSION_HOUR = 8; // 8:30 AM CT
+
+      function getNextSession() {
+        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+        // If today is a weekday and before session time
+        if (dow >= 1 && dow <= 5 && hour < SESSION_HOUR + 1) {
+          if (hour < SESSION_HOUR || (hour === SESSION_HOUR && now.getMinutes() < 30)) {
+            return 'Today · 8:30 AM CT';
+          }
+        }
+        // Find next weekday
+        let daysAhead = 1;
+        let next = (dow + daysAhead) % 7;
+        while (next === 0 || next === 6) { daysAhead++; next = (dow + daysAhead) % 7; }
+        const nextDate = new Date(now);
+        nextDate.setDate(now.getDate() + daysAhead);
+        const label = daysAhead === 1 ? 'Tomorrow' : days[next] + ', ' + nextDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        return `${label} · 8:30 AM CT`;
+      }
+
+      document.getElementById('session-info').textContent = `${dateStr}  ·  Next Session: ${getNextSession()}`;
 
       // Status card
       if (isTrial) {
