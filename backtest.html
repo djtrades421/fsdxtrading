@@ -2013,11 +2013,13 @@
           updateBtSummary();
           updateBtFilterBadge();
           closeLogModal();
-          // Re-render current BT tab
+          // Re-render current BT tab and always refresh calendar so it stays in sync
           const activeSub = [...document.querySelectorAll('[id^="btsub-"]')].find(b => b.classList.contains('active'))?.id?.replace('btsub-','') || 'trades';
           if (activeSub === 'trades') renderBtTrades();
           else if (activeSub === 'stats') renderBtStats();
           else renderBtCal();
+          // Always refresh calendar grid so it reflects new/edited trades
+          renderBtCal();
         } else {
           document.getElementById('log-msg').textContent = data.error || 'Failed to save.';
           document.getElementById('log-msg').className = 'rounded-xl px-4 py-3 text-xs mb-4 border bg-red-950/40 border-red-500/30 text-red-400';
@@ -2151,11 +2153,7 @@
       ab.classList.remove('text-zinc-500','border-transparent');
       if(tab==='stats') renderBtStats();
       if(tab==='trades') renderBtTrades();
-      // Calendar: only re-render if grid is empty (first open), otherwise keep existing DOM like journal
-      if(tab==='calendar') {
-        const grid = document.getElementById('bt-cal-grid');
-        if (!grid || !grid.children.length) renderBtCal();
-      }
+      if(tab==='calendar') renderBtCal();
     }
 
     function renderBtTrades() {
@@ -2397,10 +2395,10 @@
       const mPnl=monthTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
       const mW=monthTrades.filter(t=>t.result==='WIN').length, mD=mW+monthTrades.filter(t=>t.result==='LOSS').length;
       const mWR=mD?Math.round(mW/mD*100):null;
-      // Session totals for header
-      const sessionPnl=filteredBtTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-      const sessionW=filteredBtTrades.filter(t=>t.result==='WIN').length;
-      const sessionD=sessionW+filteredBtTrades.filter(t=>t.result==='LOSS').length;
+      // Session totals for header — always use full btTrades not filtered
+      const sessionPnl=btTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+      const sessionW=btTrades.filter(t=>t.result==='WIN').length;
+      const sessionD=sessionW+btTrades.filter(t=>t.result==='LOSS').length;
       const sessionWR=sessionD?Math.round(sessionW/sessionD*100):null;
       const yEl=document.getElementById('bt-cal-yearly');
       if(yEl){yEl.textContent=fmtFull(sessionPnl);yEl.className='font-black '+(sessionPnl>=0?'text-green-400':'text-red-400');}
@@ -2412,7 +2410,7 @@
       const dEl=document.getElementById('bt-cal-days');
       if(dEl)dEl.textContent=monthDaysTraded+' day'+(monthDaysTraded!==1?'s':'')+' traded';
       const tEl=document.getElementById('bt-cal-trades');
-      if(tEl)tEl.textContent=filteredBtTrades.length+' trade'+(filteredBtTrades.length!==1?'s':'');
+      if(tEl)tEl.textContent=btTrades.length+' trade'+(btTrades.length!==1?'s':'');
       const daysInMonth=new Date(btCalYear,btCalMonth+1,0).getDate();
       const weekdays=[];for(let d=1;d<=daysInMonth;d++){const dow=new Date(btCalYear,btCalMonth,d).getDay();if(dow!==0&&dow!==6)weekdays.push(d);}
       const firstDow=new Date(btCalYear,btCalMonth,weekdays[0]).getDay()-1;
@@ -2564,7 +2562,7 @@
         await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify({ action:'save-all', key:'backtest:'+whopKey+':'+currentBtSessionId, payload:{ trades: btTrades } }) });
       } catch(e) { console.error(e); }
-      renderBtTrades(); updateBtSummary();
+      renderBtTrades(); updateBtSummary(); renderBtCal();
     }
 
     async function confirmBtDeleteFromDetail(id) {
