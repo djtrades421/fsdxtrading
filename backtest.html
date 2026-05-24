@@ -1002,7 +1002,7 @@
               countDiv.className = 'text-[11px] text-zinc-500 mt-1';
               countDiv.textContent = `${data.count} trade${data.count !== 1 ? 's' : ''}`;
               cell.appendChild(countDiv);
-              cell.onclick = () => { filterByDate(ds); switchSub('history'); };
+              cell.onclick = () => { filterBtByDate(ds); btSub('trades'); };
             } else {
               // Empty day — click to log a trade for this date
               cell.style.cursor = 'pointer';
@@ -2395,6 +2395,7 @@
       filteredBtTrades = btTrades.filter(t => t.date === ds);
       updateBtFilterBadge();
       updateBtSummary();
+      renderBtTrades();
     }
 
     function showBtDetail(id) {
