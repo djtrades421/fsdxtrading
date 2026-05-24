@@ -246,10 +246,22 @@
           <!-- BACKTEST -->
           <div id="panel-backtest" class="sub-panel active">
             <div id="bt-sessions-view">
+              <!-- Sessions header with New Session button -->
+              <div class="flex items-center justify-between mb-5">
+                <div>
+                  <h2 class="text-sm font-black text-white">Backtest Sessions</h2>
+                  <p class="text-xs text-zinc-600 mt-0.5">Create sessions here or from the Nexus extension</p>
+                </div>
+                <button onclick="openNewSession()" class="flex items-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                  New Session
+                </button>
+              </div>
               <div id="bt-empty" class="hidden text-center py-16">
                 <div class="text-4xl mb-3">🧪</div>
                 <h3 class="text-lg font-black mb-2">No sessions yet</h3>
-                <p class="text-zinc-500 text-sm">Create backtest sessions from the FSD-X Nexus Chrome extension.</p>
+                <p class="text-zinc-500 text-sm mb-6">Create your first backtest session to get started.</p>
+                <button onclick="openNewSession()" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">+ New Session</button>
               </div>
               <div id="bt-grid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
             </div>
@@ -477,6 +489,53 @@
       </div>
       <div class="mt-3 pt-3 border-t border-white/5">
         <button onclick="deleteSession()" class="w-full py-2 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/5 rounded-xl transition font-bold">🗑 Delete Session &amp; All Trades</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Session Modal -->
+  <div id="new-session-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
+    <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-md p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-black">New Backtest Session</h2>
+        <button onclick="closeNewSession()" class="text-zinc-500 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Session Name <span class="text-red-500">*</span></label>
+          <input id="ns-name" type="text" placeholder="e.g. FSD-X ORB PRO 2026"
+            onkeydown="if(event.key==='Enter')saveNewSession()"
+            class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Ticker</label>
+            <input id="ns-ticker" type="text" placeholder="MNQ"
+              class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Account Size</label>
+            <input id="ns-size" type="number" placeholder="50000"
+              class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Strategy</label>
+          <input id="ns-strategy" type="text" placeholder="FSD-X ORB PRO"
+            class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+        </div>
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Start Date <span class="text-zinc-600 normal-case">— optional</span></label>
+          <input id="ns-startdate" type="date"
+            class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50">
+        </div>
+        <div id="ns-msg" class="hidden text-xs text-center py-2 rounded-lg"></div>
+      </div>
+      <div class="flex gap-3 mt-6">
+        <button onclick="closeNewSession()" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Cancel</button>
+        <button onclick="saveNewSession()" class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Create Session</button>
       </div>
     </div>
   </div>
@@ -2657,6 +2716,63 @@
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
       loadBtSessions();
+    }
+
+    // ── New Session ──
+    function openNewSession() {
+      document.getElementById('ns-name').value = '';
+      document.getElementById('ns-ticker').value = 'MNQ';
+      document.getElementById('ns-size').value = '';
+      document.getElementById('ns-strategy').value = 'FSD-X ORB PRO';
+      document.getElementById('ns-startdate').value = '';
+      document.getElementById('ns-msg').classList.add('hidden');
+      document.getElementById('new-session-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('ns-name').focus(), 50);
+    }
+
+    function closeNewSession() {
+      document.getElementById('new-session-modal').classList.add('hidden');
+    }
+
+    async function saveNewSession() {
+      const name = document.getElementById('ns-name').value.trim();
+      if (!name) {
+        const msg = document.getElementById('ns-msg');
+        msg.textContent = 'Session name is required.';
+        msg.className = 'text-xs text-center py-2 rounded-lg bg-red-500/10 text-red-400';
+        msg.classList.remove('hidden');
+        return;
+      }
+      const newSession = {
+        id: Date.now().toString() + Math.random().toString(36).slice(2),
+        name,
+        ticker: (document.getElementById('ns-ticker').value.trim() || 'MNQ').toUpperCase(),
+        accountSize: parseFloat(document.getElementById('ns-size').value) || null,
+        strategy: document.getElementById('ns-strategy').value.trim(),
+        startDate: document.getElementById('ns-startdate').value,
+        tradeCount: 0,
+        winRate: 0,
+        netPnl: 0,
+        createdAt: new Date().toISOString()
+      };
+      btSessions.unshift(newSession);
+      try {
+        await fetch(JOURNAL_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'save-all', key: 'backtest_sessions:' + whopKey, payload: { trades: btSessions } })
+        });
+        closeNewSession();
+        // Open the new session immediately
+        await loadBtSessions();
+        openBtSession(newSession.id);
+      } catch(err) {
+        const msg = document.getElementById('ns-msg');
+        msg.textContent = 'Failed to create session. Try again.';
+        msg.className = 'text-xs text-center py-2 rounded-lg bg-red-500/10 text-red-400';
+        msg.classList.remove('hidden');
+        btSessions.shift(); // revert
+      }
     }
 
     // ── Backtest CSV Export ──
