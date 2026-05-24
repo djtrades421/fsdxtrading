@@ -403,6 +403,11 @@
                     <div id="bt-stats-dow" class="space-y-2"></div>
                   </div>
                 </div>
+                <!-- Time of Day -->
+                <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+                  <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">Time of Day</div>
+                  <div id="bt-stats-tod" class="space-y-2"></div>
+                </div>
                 <!-- Drawdown -->
                 <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
                   <div class="text-xs text-zinc-500 uppercase tracking-[0.2em] mb-4">Drawdown Metrics</div>
@@ -2282,6 +2287,34 @@
         });
         const maxAbs=Math.max(...dayData.map(d=>Math.abs(d.p)),1);
         dowEl.innerHTML=dayData.map(({day,dt,p,wr})=>barRow(day,p,wr,dt.length,maxAbs)).join('');
+      }
+
+      // ── Time of Day ──
+      const todEl = document.getElementById('bt-stats-tod');
+      if (todEl) {
+        const hourMap = {};
+        trades.forEach(t => {
+          if (!t.entryTime) return;
+          const h = parseInt(t.entryTime.split(':')[0]);
+          if (isNaN(h)) return;
+          if (!hourMap[h]) hourMap[h] = [];
+          hourMap[h].push(t);
+        });
+        const hours = Object.keys(hourMap).map(Number).sort((a,b) => a-b);
+        const maxAbs = Math.max(...hours.map(h => Math.abs(hourMap[h].reduce((s,t) => s+(parseFloat(t.netPnl)||0), 0))), 1);
+        if (!hours.length) {
+          todEl.innerHTML = '<div class="text-xs text-zinc-600 py-2">No entry times recorded</div>';
+        } else {
+          todEl.innerHTML = hours.map(h => {
+            const ts = hourMap[h];
+            const p = ts.reduce((s,t) => s+(parseFloat(t.netPnl)||0), 0);
+            const w = ts.filter(t => t.result==='WIN').length;
+            const d = w + ts.filter(t => t.result==='LOSS').length;
+            const hourWr = d ? Math.round(w/d*100) : 0;
+            const ampm = h < 12 ? h+'AM' : h===12?'12PM':(h-12)+'PM';
+            return barRow(ampm, p, hourWr, ts.length, maxAbs);
+          }).join('');
+        }
       }
 
       // ── Drawdown (reuse renderDrawdown via ID swap) ──
