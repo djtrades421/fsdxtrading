@@ -151,6 +151,9 @@
           </div>
         </div>
 
+        <!-- Trade count note -->
+        <div id="trade-count-note" class="hidden border border-zinc-700/40 bg-zinc-900/40 rounded-xl px-4 py-3 text-xs text-zinc-500 leading-relaxed"></div>
+
         <!-- Preview table -->
         <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
           <div class="px-5 py-3 border-b border-white/10 flex items-center justify-between">
@@ -432,6 +435,13 @@
       document.getElementById('result-desc').textContent =
         `${trades.length} trades · ${dates[0]} to ${dates[dates.length - 1]} · ${ticker}${detectedMode === 'standard' ? ' · No grades (standard TV export)' : ''}`;
 
+      // Show trade count note if standard mode
+      const noteEl = document.getElementById('trade-count-note');
+      if (noteEl) {
+        noteEl.classList.remove('hidden');
+        noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Trade count may differ by 1 from TradingView</span> — TV sometimes excludes the first trade from its summary if a position was open before the backtest window started. Your converter counts all complete entry+exit pairs in the CSV, which is correct.`;
+      }
+
       const resultBadge = r => r === 'WIN' ? 'text-green-400 bg-green-500/10 border-green-500/20' :
         r === 'LOSS' ? 'text-red-400 bg-red-950/20 border-red-500/20' : 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
       const dirColor = d => d === 'LONG' ? 'text-green-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-500';
@@ -483,6 +493,8 @@
       document.getElementById('results-panel').classList.add('hidden');
       document.getElementById('error-msg').classList.add('hidden');
       document.getElementById('csv-input').value = '';
+      const noteEl = document.getElementById('trade-count-note');
+      if (noteEl) noteEl.classList.add('hidden');
     }
 
     function showError(msg) {
