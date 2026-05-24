@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Backtest Converter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="nav-loader.js"></script>
+  <style>
+    body { background-color: #000; }
+    #drop-zone.drag-over { border-color: rgba(34,197,94,0.6); background: rgba(34,197,94,0.05); }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 py-5">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+        </div>
+        <div>
+          <h1 class="text-base font-black text-white">Backtest Converter</h1>
+          <p class="text-xs text-zinc-500">TradingView FSD-X ORB Pro → Nexus format</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 px-6 md:px-10 py-8 space-y-6 max-w-4xl">
+
+      <!-- How it works -->
+      <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
+        <div class="text-xs font-black text-white uppercase tracking-wider mb-3">How It Works</div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 text-[10px] font-black text-green-400">1</div>
+            <div>
+              <div class="text-xs font-bold text-white mb-0.5">Export from TradingView</div>
+              <div class="text-[11px] text-zinc-500">Run FSD-X ORB Pro backtest → List of Trades → Export CSV</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 text-[10px] font-black text-green-400">2</div>
+            <div>
+              <div class="text-xs font-bold text-white mb-0.5">Upload & Convert</div>
+              <div class="text-[11px] text-zinc-500">Drop the CSV here — it converts instantly in your browser</div>
+            </div>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-6 h-6 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 text-[10px] font-black text-green-400">3</div>
+            <div>
+              <div class="text-xs font-bold text-white mb-0.5">Import to Nexus</div>
+              <div class="text-[11px] text-zinc-500">Download the Nexus CSV and import it into your backtest session</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload zone -->
+      <div id="drop-zone" class="border-2 border-dashed border-white/10 rounded-2xl p-10 text-center cursor-pointer transition-all hover:border-green-500/30 hover:bg-green-500/[0.02]"
+        onclick="document.getElementById('csv-input').click()"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0])">
+        <input type="file" id="csv-input" accept=".csv" class="hidden" onchange="handleFile(this.files[0])">
+        <div id="drop-icon" class="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+        </div>
+        <div class="text-sm font-bold text-zinc-300 mb-1">Drop your TradingView CSV here</div>
+        <div class="text-xs text-zinc-600">or click to browse · FSD-X ORB Pro export only</div>
+      </div>
+
+      <!-- Options -->
+      <div id="options-panel" class="hidden border border-white/10 bg-zinc-950/40 rounded-2xl p-5 space-y-4">
+        <div class="text-xs font-black text-white uppercase tracking-wider">Conversion Options</div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Ticker</label>
+            <input type="text" id="opt-ticker" value="MNQ" placeholder="MNQ"
+              class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            <p class="text-[10px] text-zinc-600 mt-1">Instrument this backtest was run on</p>
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Date From</label>
+            <input type="date" id="opt-from"
+              class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50">
+            <p class="text-[10px] text-zinc-600 mt-1">Leave blank for all dates</p>
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Date To</label>
+            <input type="date" id="opt-to"
+              class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50">
+            <p class="text-[10px] text-zinc-600 mt-1">Leave blank for all dates</p>
+          </div>
+        </div>
+        <button onclick="convert()" id="convert-btn"
+          class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+          Convert
+        </button>
+      </div>
+
+      <!-- Preview + download -->
+      <div id="results-panel" class="hidden space-y-4">
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="result-stats"></div>
+
+        <!-- Download -->
+        <div class="border border-green-500/20 bg-green-500/5 rounded-2xl p-5 flex items-center justify-between gap-4">
+          <div>
+            <div class="text-sm font-black text-white mb-0.5">Ready to Import</div>
+            <div id="result-desc" class="text-xs text-zinc-500"></div>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="downloadCSV()" class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+              Download CSV
+            </button>
+            <button onclick="resetConverter()" class="px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-400 text-xs font-bold rounded-xl transition whitespace-nowrap">
+              New File
+            </button>
+          </div>
+        </div>
+
+        <!-- Preview table -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="px-5 py-3 border-b border-white/10 flex items-center justify-between">
+            <div class="text-xs font-black text-white uppercase tracking-wider">Preview</div>
+            <div class="text-[10px] text-zinc-600">First 10 trades shown</div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left min-w-[700px]">
+              <thead>
+                <tr class="bg-zinc-950 border-b border-white/10 text-[10px] text-zinc-500 uppercase tracking-wider">
+                  <th class="px-4 py-2.5">Date</th>
+                  <th class="px-4 py-2.5">Entry</th>
+                  <th class="px-4 py-2.5">Exit</th>
+                  <th class="px-4 py-2.5">Ticker</th>
+                  <th class="px-4 py-2.5">Direction</th>
+                  <th class="px-4 py-2.5">Grade</th>
+                  <th class="px-4 py-2.5">Result</th>
+                  <th class="px-4 py-2.5">Net P&L</th>
+                  <th class="px-4 py-2.5">Contracts</th>
+                  <th class="px-4 py-2.5">Exit Signal</th>
+                </tr>
+              </thead>
+              <tbody id="preview-body" class="divide-y divide-white/5 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Error -->
+      <div id="error-msg" class="hidden border border-red-500/30 bg-red-950/30 rounded-2xl px-5 py-4 text-xs text-red-400"></div>
+
+    </div>
+  </main>
+
+  <script>
+    function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
+
+    let convertedTrades = [];
+    let rawCSV = '';
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!file.name.endsWith('.csv')) return showError('Please upload a CSV file.');
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        rawCSV = e.target.result;
+        // Quick validation — check for expected TV columns
+        const firstLine = rawCSV.split('\n')[0];
+        if (!firstLine.includes('Trade #') || !firstLine.includes('Net P&L')) {
+          return showError('This doesn\'t look like a TradingView FSD-X ORB Pro export. Make sure you\'re exporting from the List of Trades tab.');
+        }
+        // Show options panel
+        document.getElementById('drop-zone').classList.add('hidden');
+        document.getElementById('options-panel').classList.remove('hidden');
+        document.getElementById('error-msg').classList.add('hidden');
+
+        // Auto-detect date range from CSV
+        const rows = parseCSV(rawCSV);
+        const dates = rows.filter(r => r['Type'] && r['Type'].includes('Entry'))
+          .map(r => r['Date and time'] ? r['Date and time'].split(' ')[0] : null)
+          .filter(Boolean).sort();
+        if (dates.length) {
+          document.getElementById('opt-from').value = dates[0];
+          document.getElementById('opt-to').value = dates[dates.length - 1];
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
+      return lines.slice(1).map(line => {
+        const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = vals[i] || '');
+        return obj;
+      }).filter(r => r['Trade #']);
+    }
+
+    function extractGrade(signal) {
+      // Signal format: "ORB Long A+ (4c) S:98..." or "ORB Short B (3c)..."
+      const match = signal.match(/ORB\s+(?:Long|Short)\s+(A\+|A|B\+|B|C\+|C)/);
+      return match ? match[1] : '';
+    }
+
+    function extractDirection(signal) {
+      if (signal.includes('Long')) return 'LONG';
+      if (signal.includes('Short')) return 'SHORT';
+      return '';
+    }
+
+    function extractContracts(signal) {
+      const match = signal.match(/\((\d+)c\)/);
+      return match ? parseInt(match[1]) : 1;
+    }
+
+    function extractScore(signal) {
+      const match = signal.match(/S:(\d+)/);
+      return match ? match[1] : '';
+    }
+
+    function extractHold(signal) {
+      const match = signal.match(/H:(\d+)/);
+      return match ? match[1] : '';
+    }
+
+    function getResult(pnl, exitSignal) {
+      const p = parseFloat(pnl);
+      if (p > 0) return 'WIN';
+      if (p < 0) return 'LOSS';
+      return 'BE';
+    }
+
+    function formatTime(datetime) {
+      // "2020-01-03 11:00" → "11:00"
+      if (!datetime) return '';
+      const parts = datetime.split(' ');
+      return parts[1] || '';
+    }
+
+    function formatDate(datetime) {
+      if (!datetime) return '';
+      return datetime.split(' ')[0];
+    }
+
+    function convert() {
+      const ticker = (document.getElementById('opt-ticker').value.trim() || 'MNQ').toUpperCase();
+      const fromDate = document.getElementById('opt-from').value;
+      const toDate = document.getElementById('opt-to').value;
+
+      const rows = parseCSV(rawCSV);
+
+      // Group by Trade # — each trade has entry + exit row
+      const tradeMap = {};
+      rows.forEach(r => {
+        const num = r['Trade #'];
+        if (!num) return;
+        if (!tradeMap[num]) tradeMap[num] = {};
+        if (r['Type'] && r['Type'].includes('Entry')) tradeMap[num].entry = r;
+        if (r['Type'] && r['Type'].includes('Exit')) tradeMap[num].exit = r;
+      });
+
+      const trades = [];
+      Object.values(tradeMap).forEach(t => {
+        if (!t.entry || !t.exit) return;
+
+        const date = formatDate(t.entry['Date and time']);
+        if (!date) return;
+        if (fromDate && date < fromDate) return;
+        if (toDate && date > toDate) return;
+
+        const signal = t.entry['Signal'] || '';
+        const exitSignal = t.exit['Signal'] || '';
+        const pnl = parseFloat(t.exit['Net P&L USD']) || 0;
+        const grade = extractGrade(signal);
+        const direction = extractDirection(signal);
+        const contracts = extractContracts(signal);
+        const score = extractScore(signal);
+        const hold = extractHold(signal);
+
+        // Build strategy note from signal
+        const t1match = signal.match(/T1:([^\s]+)/);
+        const t2match = signal.match(/T2:(.+)$/);
+        const strategy = signal.replace(/ORB (Long|Short) (A\+|A|B\+|B|C\+|C) \(\dc\)\s*/,'').trim();
+
+        trades.push({
+          id: Date.now().toString() + Math.random().toString(36).slice(2),
+          date,
+          entryTime: formatTime(t.entry['Date and time']),
+          exitTime: formatTime(t.exit['Date and time']),
+          ticker,
+          direction,
+          grade,
+          result: getResult(pnl, exitSignal),
+          netPnl: pnl.toFixed(2),
+          contracts: contracts.toString(),
+          entryPrice: t.entry['Price USD'] || '',
+          exitPrice: t.exit['Price USD'] || '',
+          exitSignal,
+          score,
+          hold,
+          strategy,
+          notes: signal,
+          pnlMode: 'dollar',
+          source: 'tv_converter'
+        });
+      });
+
+      if (!trades.length) {
+        return showError('No trades found in the selected date range. Try adjusting the dates.');
+      }
+
+      convertedTrades = trades;
+      showResults(trades, ticker);
+    }
+
+    function showResults(trades, ticker) {
+      document.getElementById('options-panel').classList.add('hidden');
+      document.getElementById('results-panel').classList.remove('hidden');
+
+      const wins = trades.filter(t => t.result === 'WIN').length;
+      const losses = trades.filter(t => t.result === 'LOSS').length;
+      const bes = trades.filter(t => t.result === 'BE').length;
+      const netPnl = trades.reduce((s, t) => s + parseFloat(t.netPnl), 0);
+      const wr = wins + losses > 0 ? Math.round(wins / (wins + losses) * 100) : 0;
+
+      const stat = (label, val, color) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
+        <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">${label}</div>
+        <div class="text-lg font-black" style="color:${color}">${val}</div>
+      </div>`;
+
+      document.getElementById('result-stats').innerHTML =
+        stat('Trades', trades.length, '#ffffff') +
+        stat('Win Rate', wr + '%', wr >= 50 ? '#22c55e' : '#ef4444') +
+        stat('Net P&L', (netPnl >= 0 ? '+' : '') + '$' + netPnl.toFixed(2), netPnl >= 0 ? '#22c55e' : '#ef4444') +
+        stat('W / L / BE', `${wins} / ${losses} / ${bes}`, '#71717a');
+
+      const dates = trades.map(t => t.date).sort();
+      document.getElementById('result-desc').textContent =
+        `${trades.length} trades · ${dates[0]} to ${dates[dates.length - 1]} · ${ticker}`;
+
+      // Preview table — first 10
+      const resultBadge = r => r === 'WIN' ? 'text-green-400 bg-green-500/10 border-green-500/20' :
+        r === 'LOSS' ? 'text-red-400 bg-red-950/20 border-red-500/20' : 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
+      const dirColor = d => d === 'LONG' ? 'text-green-400' : 'text-red-400';
+
+      document.getElementById('preview-body').innerHTML = trades.slice(0, 10).map(t => `
+        <tr class="hover:bg-white/[0.02] transition">
+          <td class="px-4 py-2.5 text-zinc-300">${t.date}</td>
+          <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.entryTime}</td>
+          <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.exitTime}</td>
+          <td class="px-4 py-2.5 text-white font-bold">${t.ticker}</td>
+          <td class="px-4 py-2.5 font-black ${dirColor(t.direction)}">${t.direction}</td>
+          <td class="px-4 py-2.5"><span class="px-1.5 py-0.5 rounded text-[10px] font-black border bg-zinc-800 text-zinc-300 border-white/10">${t.grade || '—'}</span></td>
+          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result}</span></td>
+          <td class="px-4 py-2.5 font-mono font-bold ${parseFloat(t.netPnl) >= 0 ? 'text-green-400' : 'text-red-400'}">${parseFloat(t.netPnl) >= 0 ? '+' : ''}$${parseFloat(t.netPnl).toFixed(2)}</td>
+          <td class="px-4 py-2.5 text-zinc-500">${t.contracts}c</td>
+          <td class="px-4 py-2.5 text-zinc-600 text-[10px] max-w-[120px] truncate">${t.exitSignal}</td>
+        </tr>
+      `).join('');
+    }
+
+    function downloadCSV() {
+      if (!convertedTrades.length) return;
+
+      // Output fields that Nexus expects
+      const fields = ['id','date','entryTime','exitTime','ticker','direction','grade','result','netPnl',
+        'contracts','entryPrice','exitPrice','strategy','notes','exitSignal','score','hold','pnlMode','source'];
+
+      const header = fields.join(',');
+      const rows = convertedTrades.map(t =>
+        fields.map(f => {
+          const val = t[f] || '';
+          return val.toString().includes(',') ? `"${val}"` : val;
+        }).join(',')
+      );
+
+      const csv = [header, ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const ticker = convertedTrades[0]?.ticker || 'backtest';
+      const dates = convertedTrades.map(t => t.date).sort();
+      a.download = `fsdx_nexus_${ticker}_${dates[0]}_to_${dates[dates.length-1]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function resetConverter() {
+      convertedTrades = [];
+      rawCSV = '';
+      document.getElementById('drop-zone').classList.remove('hidden');
+      document.getElementById('options-panel').classList.add('hidden');
+      document.getElementById('results-panel').classList.add('hidden');
+      document.getElementById('error-msg').classList.add('hidden');
+      document.getElementById('csv-input').value = '';
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('error-msg');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+    }
+  </script>
+  <script src="nav-loader.js"></script>
+</body>
+</html>
