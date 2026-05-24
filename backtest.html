@@ -2607,14 +2607,22 @@
       return trades;
     }
 
-    function applyBtFilters() {
+    function getActiveBtFilters() {
+      const { from, to } = getBtDateRange();
       const res = document.getElementById('bt-f-result')?.value || '';
       const grade = document.getElementById('bt-f-grade')?.value || '';
       const dir = document.getElementById('bt-f-direction')?.value || '';
+      return { from, to, res, grade, dir };
+    }
+
+    function applyAllBtFilters() {
+      const { from, to, res, grade, dir } = getActiveBtFilters();
       filteredBtTrades = btTrades.filter(t =>
-        (!res || t.result === res) &&
+        (!res   || t.result === res) &&
         (!grade || t.grade === grade) &&
-        (!dir || t.direction === dir)
+        (!dir   || t.direction === dir) &&
+        (!from  || (t.date && t.date >= from)) &&
+        (!to    || (t.date && t.date <= to))
       );
       updateBtFilterBadge(); updateBtSummary();
       const sub = [...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','')||'trades';
@@ -2622,6 +2630,8 @@
       else if (sub==='stats') renderBtStats();
       else if (sub==='calendar') renderBtCal();
     }
+
+    function applyBtFilters() { applyAllBtFilters(); }
 
     function clearBtFilters() {
       ['bt-f-result','bt-f-grade','bt-f-direction'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
@@ -2749,19 +2759,7 @@
     }
 
     function applyBtDateFilter() {
-      const { from, to } = getBtDateRange();
-      // Filter btTrades (inside open session) by date range
-      if (btTrades.length) {
-        filteredBtTrades = btTrades.filter(t =>
-          (!from || (t.date && t.date >= from)) &&
-          (!to   || (t.date && t.date <= to))
-        );
-        updateBtSummary(); updateBtFilterBadge();
-        const activeSub = [...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','') || 'calendar';
-        if (activeSub==='trades') renderBtTrades();
-        else if (activeSub==='stats') renderBtStats();
-        else if (activeSub==='calendar') renderBtCal();
-      }
+      applyAllBtFilters();
     }
 
     function clearBtDateFilter() {
