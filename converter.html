@@ -33,7 +33,7 @@
         </div>
         <div>
           <h1 class="text-base font-black text-white">Backtest Converter</h1>
-          <p class="text-xs text-zinc-500">TradingView FSD-X ORB Pro → Nexus format</p>
+          <p class="text-xs text-zinc-500">Universal TradingView → Nexus format · FSD-X ORB Pro or any strategy</p>
         </div>
       </div>
     </div>
@@ -48,21 +48,21 @@
             <div class="w-6 h-6 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 text-[10px] font-black text-green-400">1</div>
             <div>
               <div class="text-xs font-bold text-white mb-0.5">Export from TradingView</div>
-              <div class="text-[11px] text-zinc-500">Run FSD-X ORB Pro backtest → List of Trades → Export CSV</div>
+              <div class="text-[11px] text-zinc-500">Run any strategy backtest → List of Trades → Export CSV. Works with FSD-X ORB Pro or any TradingView strategy.</div>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <div class="w-6 h-6 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 text-[10px] font-black text-green-400">2</div>
             <div>
-              <div class="text-xs font-bold text-white mb-0.5">Upload & Convert</div>
-              <div class="text-[11px] text-zinc-500">Drop the CSV here — it converts instantly in your browser</div>
+              <div class="text-xs font-bold text-white mb-0.5">Smart Auto-Detect</div>
+              <div class="text-[11px] text-zinc-500">Drop your CSV — it instantly detects FSD-X or standard TV format and converts automatically</div>
             </div>
           </div>
           <div class="flex items-start gap-3">
             <div class="w-6 h-6 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0 text-[10px] font-black text-green-400">3</div>
             <div>
               <div class="text-xs font-bold text-white mb-0.5">Import to Nexus</div>
-              <div class="text-[11px] text-zinc-500">Download the Nexus CSV and import it into your backtest session</div>
+              <div class="text-[11px] text-zinc-500">Download the Nexus CSV and import into any backtest session to see full analytics</div>
             </div>
           </div>
         </div>
@@ -75,16 +75,25 @@
         ondragleave="this.classList.remove('drag-over')"
         ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0])">
         <input type="file" id="csv-input" accept=".csv" class="hidden" onchange="handleFile(this.files[0])">
-        <div id="drop-icon" class="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center mx-auto mb-4">
+        <div class="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center mx-auto mb-4">
           <svg class="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
         </div>
         <div class="text-sm font-bold text-zinc-300 mb-1">Drop your TradingView CSV here</div>
-        <div class="text-xs text-zinc-600">or click to browse · FSD-X ORB Pro export only</div>
+        <div class="text-xs text-zinc-600">or click to browse · FSD-X ORB Pro or any TradingView strategy export</div>
       </div>
 
-      <!-- Options -->
+      <!-- Detected format badge + options -->
       <div id="options-panel" class="hidden border border-white/10 bg-zinc-950/40 rounded-2xl p-5 space-y-4">
-        <div class="text-xs font-black text-white uppercase tracking-wider">Conversion Options</div>
+
+        <!-- Format detection badge -->
+        <div class="flex items-center justify-between flex-wrap gap-3">
+          <div class="text-xs font-black text-white uppercase tracking-wider">Conversion Options</div>
+          <div id="format-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border"></div>
+        </div>
+
+        <!-- Format info block -->
+        <div id="format-info" class="rounded-xl px-4 py-3 text-xs border"></div>
+
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Ticker</label>
@@ -105,20 +114,29 @@
             <p class="text-[10px] text-zinc-600 mt-1">Leave blank for all dates</p>
           </div>
         </div>
-        <button onclick="convert()" id="convert-btn"
-          class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-          Convert
-        </button>
+        <div class="flex gap-3">
+          <button onclick="convert()" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+            Convert
+          </button>
+          <button onclick="resetConverter()" class="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-400 text-xs font-bold rounded-xl transition">
+            ← New File
+          </button>
+        </div>
       </div>
 
       <!-- Preview + download -->
       <div id="results-panel" class="hidden space-y-4">
 
+        <!-- Format badge in results -->
+        <div class="flex items-center gap-3">
+          <div id="result-format-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border"></div>
+        </div>
+
         <!-- Stats -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" id="result-stats"></div>
 
         <!-- Download -->
-        <div class="border border-green-500/20 bg-green-500/5 rounded-2xl p-5 flex items-center justify-between gap-4">
+        <div class="border border-green-500/20 bg-green-500/5 rounded-2xl p-5 flex items-center justify-between gap-4 flex-wrap">
           <div>
             <div class="text-sm font-black text-white mb-0.5">Ready to Import</div>
             <div id="result-desc" class="text-xs text-zinc-500"></div>
@@ -152,14 +170,13 @@
                   <th class="px-4 py-2.5">Result</th>
                   <th class="px-4 py-2.5">Net P&L</th>
                   <th class="px-4 py-2.5">Contracts</th>
-                  <th class="px-4 py-2.5">Exit Signal</th>
+                  <th class="px-4 py-2.5">Signal</th>
                 </tr>
               </thead>
               <tbody id="preview-body" class="divide-y divide-white/5 text-xs"></tbody>
             </table>
           </div>
         </div>
-
       </div>
 
       <!-- Error -->
@@ -173,26 +190,67 @@
 
     let convertedTrades = [];
     let rawCSV = '';
+    let detectedMode = ''; // 'fsdx' or 'standard'
+
+    // ── Format Detection ──
+    function detectFormat(firstLine, rows) {
+      // FSD-X signals always contain "ORB Long" or "ORB Short" with grade pattern
+      const hasFsdxSignal = rows.some(r => {
+        const sig = r['Signal'] || '';
+        return /ORB\s+(Long|Short)\s+(A\+|A|B\+|B|C\+|C)/i.test(sig);
+      });
+      if (hasFsdxSignal) return 'fsdx';
+
+      // Standard TV export has Trade #, Type, Signal, Date and time, Price, Contracts, Profit etc
+      if (firstLine.includes('Trade #') && firstLine.includes('Net P&L')) return 'standard';
+
+      return 'unknown';
+    }
+
+    function showFormatBadge(elId, mode) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      if (mode === 'fsdx') {
+        el.className = 'flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-green-500/10 border-green-500/30 text-green-400';
+        el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> FSD-X ORB Pro Format Detected ✓';
+      } else {
+        el.className = 'flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-blue-500/10 border-blue-500/30 text-blue-400';
+        el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> TradingView Strategy Format Detected ✓';
+      }
+    }
+
+    function showFormatInfo(mode) {
+      const el = document.getElementById('format-info');
+      if (mode === 'fsdx') {
+        el.className = 'rounded-xl px-4 py-3 text-xs border bg-green-500/5 border-green-500/20 text-green-300/80';
+        el.innerHTML = '<span class="font-bold text-green-400">FSD-X Mode</span> — Full conversion with grades (A+/A/B+/B/C+/C), direction, contracts, entry/exit times, and signal data extracted automatically.';
+      } else {
+        el.className = 'rounded-xl px-4 py-3 text-xs border bg-blue-500/5 border-blue-500/20 text-blue-300/80';
+        el.innerHTML = '<span class="font-bold text-blue-400">Standard TV Mode</span> — Universal conversion from any TradingView strategy. Direction, entry/exit prices, P&L, and timestamps mapped automatically. Grade column will be blank — you can filter by result and direction in the backtest session.';
+      }
+    }
 
     function handleFile(file) {
       if (!file) return;
       if (!file.name.endsWith('.csv')) return showError('Please upload a CSV file.');
-
       const reader = new FileReader();
       reader.onload = e => {
         rawCSV = e.target.result;
-        // Quick validation — check for expected TV columns
         const firstLine = rawCSV.split('\n')[0];
         if (!firstLine.includes('Trade #') || !firstLine.includes('Net P&L')) {
-          return showError('This doesn\'t look like a TradingView FSD-X ORB Pro export. Make sure you\'re exporting from the List of Trades tab.');
+          return showError('This doesn\'t look like a TradingView List of Trades export. Make sure you export from the "List of Trades" tab in the Strategy Tester.');
         }
+        const rows = parseCSV(rawCSV);
+        detectedMode = detectFormat(firstLine, rows);
+
         // Show options panel
         document.getElementById('drop-zone').classList.add('hidden');
         document.getElementById('options-panel').classList.remove('hidden');
         document.getElementById('error-msg').classList.add('hidden');
+        showFormatBadge('format-badge', detectedMode);
+        showFormatInfo(detectedMode);
 
-        // Auto-detect date range from CSV
-        const rows = parseCSV(rawCSV);
+        // Auto-detect date range
         const dates = rows.filter(r => r['Type'] && r['Type'].includes('Entry'))
           .map(r => r['Date and time'] ? r['Date and time'].split(' ')[0] : null)
           .filter(Boolean).sort();
@@ -208,67 +266,68 @@
       const lines = text.trim().split('\n');
       const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
       return lines.slice(1).map(line => {
-        const vals = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+        // Handle quoted fields with commas
+        const vals = [];
+        let cur = '', inQ = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') { inQ = !inQ; }
+          else if (ch === ',' && !inQ) { vals.push(cur.trim()); cur = ''; }
+          else { cur += ch; }
+        }
+        vals.push(cur.trim());
         const obj = {};
-        headers.forEach((h, i) => obj[h] = vals[i] || '');
+        headers.forEach((h, i) => obj[h] = (vals[i] || '').replace(/^"|"$/g, ''));
         return obj;
       }).filter(r => r['Trade #']);
     }
 
+    // ── FSD-X helpers ──
     function extractGrade(signal) {
-      // Signal format: "ORB Long A+ (4c) S:98..." or "ORB Short B (3c)..."
       const match = signal.match(/ORB\s+(?:Long|Short)\s+(A\+|A|B\+|B|C\+|C)/);
       return match ? match[1] : '';
     }
-
     function extractDirection(signal) {
-      if (signal.includes('Long')) return 'LONG';
-      if (signal.includes('Short')) return 'SHORT';
+      if (/long/i.test(signal)) return 'LONG';
+      if (/short/i.test(signal)) return 'SHORT';
       return '';
     }
-
     function extractContracts(signal) {
       const match = signal.match(/\((\d+)c\)/);
       return match ? parseInt(match[1]) : 1;
     }
 
-    function extractScore(signal) {
-      const match = signal.match(/S:(\d+)/);
-      return match ? match[1] : '';
+    // ── Standard TV helpers ──
+    function extractDirectionFromType(type) {
+      // Type: "Entry Long", "Exit Long", "Entry Short", "Exit Short"
+      if (/long/i.test(type)) return 'LONG';
+      if (/short/i.test(type)) return 'SHORT';
+      return '';
     }
 
-    function extractHold(signal) {
-      const match = signal.match(/H:(\d+)/);
-      return match ? match[1] : '';
+    function formatTime(datetime) {
+      if (!datetime) return '';
+      const parts = datetime.trim().split(' ');
+      return parts[1] || '';
     }
-
-    function getResult(pnl, exitSignal) {
+    function formatDate(datetime) {
+      if (!datetime) return '';
+      return datetime.trim().split(' ')[0];
+    }
+    function getResult(pnl) {
       const p = parseFloat(pnl);
       if (p > 0) return 'WIN';
       if (p < 0) return 'LOSS';
       return 'BE';
     }
 
-    function formatTime(datetime) {
-      // "2020-01-03 11:00" → "11:00"
-      if (!datetime) return '';
-      const parts = datetime.split(' ');
-      return parts[1] || '';
-    }
-
-    function formatDate(datetime) {
-      if (!datetime) return '';
-      return datetime.split(' ')[0];
-    }
-
     function convert() {
       const ticker = (document.getElementById('opt-ticker').value.trim() || 'MNQ').toUpperCase();
       const fromDate = document.getElementById('opt-from').value;
       const toDate = document.getElementById('opt-to').value;
-
       const rows = parseCSV(rawCSV);
 
-      // Group by Trade # — each trade has entry + exit row
+      // Group entry/exit rows by Trade #
       const tradeMap = {};
       rows.forEach(r => {
         const num = r['Trade #'];
@@ -281,47 +340,62 @@
       const trades = [];
       Object.values(tradeMap).forEach(t => {
         if (!t.entry || !t.exit) return;
-
         const date = formatDate(t.entry['Date and time']);
         if (!date) return;
         if (fromDate && date < fromDate) return;
         if (toDate && date > toDate) return;
 
-        const signal = t.entry['Signal'] || '';
-        const exitSignal = t.exit['Signal'] || '';
-        const pnl = parseFloat(t.exit['Net P&L USD']) || 0;
-        const grade = extractGrade(signal);
-        const direction = extractDirection(signal);
-        const contracts = extractContracts(signal);
-        const score = extractScore(signal);
-        const hold = extractHold(signal);
+        const pnlRaw = t.exit['Net P&L USD'] || t.exit['Profit USD'] || t.exit['Net P&L'] || '0';
+        const pnl = parseFloat(pnlRaw.replace(/[$,]/g,'')) || 0;
+        const entryPrice = t.entry['Price USD'] || t.entry['Price'] || '';
+        const exitPrice = t.exit['Price USD'] || t.exit['Price'] || '';
+        const contractsRaw = parseInt(t.entry['Contracts'] || t.entry['Qty'] || '1') || 1;
 
-        // Build strategy note from signal
-        const t1match = signal.match(/T1:([^\s]+)/);
-        const t2match = signal.match(/T2:(.+)$/);
-        const strategy = signal.replace(/ORB (Long|Short) (A\+|A|B\+|B|C\+|C) \(\dc\)\s*/,'').trim();
-
-        trades.push({
-          id: Date.now().toString() + Math.random().toString(36).slice(2),
-          date,
-          entryTime: formatTime(t.entry['Date and time']),
-          exitTime: formatTime(t.exit['Date and time']),
-          ticker,
-          direction,
-          grade,
-          result: getResult(pnl, exitSignal),
-          netPnl: pnl.toFixed(2),
-          contracts: contracts.toString(),
-          entryPrice: t.entry['Price USD'] || '',
-          exitPrice: t.exit['Price USD'] || '',
-          exitSignal,
-          score,
-          hold,
-          strategy,
-          notes: signal,
-          pnlMode: 'dollar',
-          source: 'tv_converter'
-        });
+        if (detectedMode === 'fsdx') {
+          const signal = t.entry['Signal'] || '';
+          const exitSignal = t.exit['Signal'] || '';
+          trades.push({
+            id: Date.now().toString() + Math.random().toString(36).slice(2),
+            date,
+            entryTime: formatTime(t.entry['Date and time']),
+            exitTime: formatTime(t.exit['Date and time']),
+            ticker,
+            direction: extractDirection(signal),
+            grade: extractGrade(signal),
+            result: getResult(pnl),
+            netPnl: pnl.toFixed(2),
+            contracts: extractContracts(signal).toString(),
+            entryPrice,
+            exitPrice,
+            exitSignal,
+            strategy: 'FSD-X ORB PRO',
+            notes: signal,
+            source: 'fsdx_converter'
+          });
+        } else {
+          // Standard TV — direction from Type field
+          const direction = extractDirectionFromType(t.entry['Type'] || '');
+          const signal = t.entry['Signal'] || '';
+          const exitSignal = t.exit['Signal'] || '';
+          trades.push({
+            id: Date.now().toString() + Math.random().toString(36).slice(2),
+            date,
+            entryTime: formatTime(t.entry['Date and time']),
+            exitTime: formatTime(t.exit['Date and time']),
+            ticker,
+            direction,
+            grade: '', // no grade for standard strategies
+            result: getResult(pnl),
+            netPnl: pnl.toFixed(2),
+            contracts: contractsRaw.toString(),
+            entryPrice,
+            exitPrice,
+            exitSignal,
+            strategy: signal || 'TradingView Strategy',
+            notes: [signal, exitSignal].filter(Boolean).join(' → '),
+            source: 'tv_converter'
+          });
+        }
       });
 
       if (!trades.length) {
@@ -335,6 +409,7 @@
     function showResults(trades, ticker) {
       document.getElementById('options-panel').classList.add('hidden');
       document.getElementById('results-panel').classList.remove('hidden');
+      showFormatBadge('result-format-badge', detectedMode);
 
       const wins = trades.filter(t => t.result === 'WIN').length;
       const losses = trades.filter(t => t.result === 'LOSS').length;
@@ -355,12 +430,11 @@
 
       const dates = trades.map(t => t.date).sort();
       document.getElementById('result-desc').textContent =
-        `${trades.length} trades · ${dates[0]} to ${dates[dates.length - 1]} · ${ticker}`;
+        `${trades.length} trades · ${dates[0]} to ${dates[dates.length - 1]} · ${ticker}${detectedMode === 'standard' ? ' · No grades (standard TV export)' : ''}`;
 
-      // Preview table — first 10
       const resultBadge = r => r === 'WIN' ? 'text-green-400 bg-green-500/10 border-green-500/20' :
         r === 'LOSS' ? 'text-red-400 bg-red-950/20 border-red-500/20' : 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
-      const dirColor = d => d === 'LONG' ? 'text-green-400' : 'text-red-400';
+      const dirColor = d => d === 'LONG' ? 'text-green-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-500';
 
       document.getElementById('preview-body').innerHTML = trades.slice(0, 10).map(t => `
         <tr class="hover:bg-white/[0.02] transition">
@@ -368,46 +442,27 @@
           <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.entryTime}</td>
           <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.exitTime}</td>
           <td class="px-4 py-2.5 text-white font-bold">${t.ticker}</td>
-          <td class="px-4 py-2.5 font-black ${dirColor(t.direction)}">${t.direction}</td>
+          <td class="px-4 py-2.5 font-black ${dirColor(t.direction)}">${t.direction || '—'}</td>
           <td class="px-4 py-2.5"><span class="px-1.5 py-0.5 rounded text-[10px] font-black border bg-zinc-800 text-zinc-300 border-white/10">${t.grade || '—'}</span></td>
           <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result}</span></td>
           <td class="px-4 py-2.5 font-mono font-bold ${parseFloat(t.netPnl) >= 0 ? 'text-green-400' : 'text-red-400'}">${parseFloat(t.netPnl) >= 0 ? '+' : ''}$${parseFloat(t.netPnl).toFixed(2)}</td>
           <td class="px-4 py-2.5 text-zinc-500">${t.contracts}c</td>
-          <td class="px-4 py-2.5 text-zinc-600 text-[10px] max-w-[120px] truncate">${t.exitSignal}</td>
+          <td class="px-4 py-2.5 text-zinc-600 text-[10px] max-w-[140px] truncate">${t.exitSignal || t.strategy || '—'}</td>
         </tr>
       `).join('');
     }
 
     function downloadCSV() {
       if (!convertedTrades.length) return;
-
-      // Headers must match exactly what parseJournalCSV reads on import
       const headers = ['Date','Entry Time','Exit Time','Ticker','Direction','Grade','Result','Net P&L',
         'Contracts','TP1 P&L','TP2 P&L','Entry Price','SL Price','TP1 Price','TP2 Price',
         'Strategy','Notes','Chart URL','Tags'];
-
       const rows = convertedTrades.map(t => [
-        t.date||'',
-        t.entryTime||'',
-        t.exitTime||'',
-        t.ticker||'MNQ',
-        t.direction||'',
-        t.grade||'',
-        t.result||'',
-        t.netPnl||'',
-        t.contracts||'',
-        t.tp1Pnl||'',
-        t.tp2Pnl||'',
-        t.entryPrice||'',
-        '',
-        t.tp1Price||'',
-        t.tp2Price||'',
-        t.strategy||'',
-        t.notes||'',
-        '',
-        ''
+        t.date||'', t.entryTime||'', t.exitTime||'', t.ticker||'MNQ',
+        t.direction||'', t.grade||'', t.result||'', t.netPnl||'',
+        t.contracts||'', '', '', t.entryPrice||'', '', '', '',
+        t.strategy||'', t.notes||'', '', ''
       ].map(v => '"' + String(v||'').replace(/"/g,'""') + '"').join(','));
-
       const csv = [headers.join(','), ...rows].join('\n');
       const blob = new Blob([csv], { type: 'text/csv' });
       const url = URL.createObjectURL(blob);
@@ -415,16 +470,14 @@
       a.href = url;
       const ticker = convertedTrades[0]?.ticker || 'backtest';
       const dates = convertedTrades.map(t => t.date).sort();
-      a.download = `fsdx_nexus_${ticker}_${dates[0]}_to_${dates[dates.length-1]}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const mode = detectedMode === 'fsdx' ? 'fsdx' : 'tv';
+      a.download = `nexus_${mode}_${ticker}_${dates[0]}_to_${dates[dates.length-1]}.csv`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
 
     function resetConverter() {
-      convertedTrades = [];
-      rawCSV = '';
+      convertedTrades = []; rawCSV = ''; detectedMode = '';
       document.getElementById('drop-zone').classList.remove('hidden');
       document.getElementById('options-panel').classList.add('hidden');
       document.getElementById('results-panel').classList.add('hidden');
@@ -434,8 +487,9 @@
 
     function showError(msg) {
       const el = document.getElementById('error-msg');
-      el.textContent = msg;
-      el.classList.remove('hidden');
+      el.textContent = msg; el.classList.remove('hidden');
+      document.getElementById('drop-zone').classList.remove('hidden');
+      document.getElementById('options-panel').classList.add('hidden');
     }
   </script>
   <script src="nav-loader.js"></script>
