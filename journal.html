@@ -30,6 +30,9 @@
     .direction-btn.active-long { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #22c55e; font-weight: 700; }
     .direction-btn.active-short { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #ef4444; font-weight: 700; }
     .pnl-mode-btn.active { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.4); color: #22c55e; }
+    .outcome-btn.active-win { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.5); color: #22c55e; font-weight: 700; }
+    .outcome-btn.active-loss { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.5); color: #ef4444; font-weight: 700; }
+    .outcome-btn.active-be { background: rgba(113,113,122,0.15); border-color: rgba(113,113,122,0.5); color: #a1a1aa; font-weight: 700; }
     canvas { width: 100%; }
     #equity-chart-wrap svg { display: block; overflow: visible; }
   </style>
@@ -387,7 +390,7 @@
         </div>
         <div>
           <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account Type</label>
-          <select id="t-acct-type" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          <select id="t-acct-type" onchange="updateAccountNameSelect()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
             <option value="">Select...</option>
             <option value="Funded">Funded</option>
             <option value="Evaluation">Evaluation</option>
@@ -396,11 +399,13 @@
         </div>
       </div>
 
-      <!-- Row 3: Account Name + # of Accounts -->
+      <!-- Row 3: Account Name (select) + # of Accounts -->
       <div class="grid grid-cols-2 gap-3 mb-3">
         <div>
-          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account Name <span class="text-zinc-700 normal-case">— optional</span></label>
-          <input type="text" id="t-acct-name" placeholder="e.g. Apex Funded #1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Account <span class="text-zinc-700 normal-case">— optional</span></label>
+          <select id="t-acct-name" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            <option value="">Select account...</option>
+          </select>
         </div>
         <div>
           <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1"># of Accounts <span class="text-zinc-700 normal-case">— optional</span></label>
@@ -476,13 +481,18 @@
 
       <!-- ── MANUAL FIELDS ── -->
       <div id="manual-fields" class="hidden space-y-3">
+        <!-- Total Contracts — above TP1 matching Nexus -->
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Contracts</label>
+          <input type="number" id="t-manual-contracts" value="1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+        </div>
         <!-- TP1 manual -->
         <div class="border border-white/[0.07] bg-black/30 rounded-xl p-4">
           <div class="text-xs text-green-400 font-black uppercase tracking-wider mb-3">TP1</div>
           <div class="grid grid-cols-3 gap-3">
-            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-manual-tp1-contracts" value="0" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-manual-tp1-contracts" value="0" oninput="calcManualNet()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
             <div><label class="block text-xs text-zinc-600 mb-1">P&L ($)</label><input type="number" id="t-manual-tp1-pnl" step="0.01" placeholder="0.00" oninput="calcManualNet()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700"></div>
-            <div></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">P&L</label><div id="t-manual-tp1-display" class="px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm text-zinc-500">—</div></div>
           </div>
         </div>
         <!-- TP2 manual -->
@@ -492,26 +502,27 @@
             <span class="text-[10px] text-zinc-600 uppercase tracking-wider">— Runner / Optional</span>
           </div>
           <div class="grid grid-cols-3 gap-3">
-            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-manual-tp2-contracts" value="0" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">Contracts Out</label><input type="number" id="t-manual-tp2-contracts" value="0" oninput="calcManualNet()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50"></div>
             <div><label class="block text-xs text-zinc-600 mb-1">P&L ($)</label><input type="number" id="t-manual-tp2-pnl" step="0.01" placeholder="0.00" oninput="calcManualNet()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700"></div>
-            <div></div>
+            <div><label class="block text-xs text-zinc-600 mb-1">P&L</label><div id="t-manual-tp2-display" class="px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm text-zinc-500">—</div></div>
           </div>
         </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Total Contracts</label>
-            <input type="number" id="t-manual-contracts" value="1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-          </div>
-          <div>
-            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Result</label>
-            <select id="t-result" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-              <option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
-            </select>
-          </div>
-          <div class="col-span-2">
-            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Net P&L ($) <span class="text-zinc-700 normal-case">— auto-calculated from TP1+TP2 or enter manually</span></label>
-            <input type="number" id="t-manual-pnl" step="0.01" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-          </div>
+        <!-- Total P&L Result bar — matching Nexus -->
+        <div id="t-manual-total-row" class="hidden border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
+          <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">Total P&L Result</div>
+          <div id="t-manual-total-net" class="text-xl font-black text-zinc-400">—</div>
+        </div>
+        <!-- Outcome — dropdown, auto-set by calcManualNet -->
+        <div id="t-manual-outcome-row" class="hidden">
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Result</label>
+          <select id="t-result" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            <option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
+          </select>
+        </div>
+        <!-- Net P&L override -->
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1">Net P&L ($) <span class="text-zinc-700 normal-case">— auto-calculated or override</span></label>
+          <input type="number" id="t-manual-pnl" step="0.01" placeholder="0.00" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
         </div>
         <!-- Price Data (optional in manual mode) -->
         <div class="border border-white/[0.07] bg-black/20 rounded-xl p-4">
@@ -1612,14 +1623,71 @@
     function calcManualNet() {
       const tp1 = parseFloat(document.getElementById('t-manual-tp1-pnl').value)||0;
       const tp2 = parseFloat(document.getElementById('t-manual-tp2-pnl').value)||0;
-      const netEl = document.getElementById('t-manual-pnl');
-      // Only auto-fill if user hasn't manually typed a net override
-      if (netEl && (tp1 !== 0 || tp2 !== 0)) {
-        netEl.value = (tp1 + tp2).toFixed(2);
-        // Auto-set result
-        const net = tp1 + tp2;
-        document.getElementById('t-result').value = net > 0 ? 'WIN' : net < 0 ? 'LOSS' : 'BE';
+      // Update TP1 display
+      const tp1Disp = document.getElementById('t-manual-tp1-display');
+      if (tp1Disp) {
+        tp1Disp.textContent = tp1 !== 0 ? (tp1>=0?'+':'')+' $'+Math.abs(tp1).toFixed(2) : '—';
+        tp1Disp.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp1>0?'text-green-400':tp1<0?'text-red-400':'text-zinc-500');
       }
+      // Update TP2 display
+      const tp2Disp = document.getElementById('t-manual-tp2-display');
+      if (tp2Disp) {
+        tp2Disp.textContent = tp2 !== 0 ? (tp2>=0?'+':'')+' $'+Math.abs(tp2).toFixed(2) : '—';
+        tp2Disp.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp2>0?'text-green-400':tp2<0?'text-red-400':'text-zinc-500');
+      }
+      const net = tp1 + tp2;
+      // Show total result bar and outcome buttons when there's data
+      const totalRow = document.getElementById('t-manual-total-row');
+      const outcomeRow = document.getElementById('t-manual-outcome-row');
+      const totalEl = document.getElementById('t-manual-total-net');
+      if (tp1 !== 0 || tp2 !== 0) {
+        if (totalRow) totalRow.classList.remove('hidden');
+        if (outcomeRow) outcomeRow.classList.remove('hidden');
+        if (totalEl) {
+          const autoResult = net > 0 ? 'WIN' : net < 0 ? 'LOSS' : 'BE';
+          const col = net > 0 ? 'text-green-400' : net < 0 ? 'text-red-400' : 'text-zinc-400';
+          totalEl.textContent = (net>=0?'+':'')+' $'+Math.abs(net).toFixed(2) + (net > 0 ? ' ✓ Win' : net < 0 ? ' ✗ Loss' : ' — BE');
+          totalEl.className = 'text-xl font-black ' + col;
+          // Auto-set outcome and net P&L
+          setManualOutcome(autoResult);
+        }
+        const netEl = document.getElementById('t-manual-pnl');
+        if (netEl) netEl.value = net.toFixed(2);
+      } else {
+        if (totalRow) totalRow.classList.add('hidden');
+        if (outcomeRow) outcomeRow.classList.add('hidden');
+      }
+    }
+
+    function setManualOutcome(outcome) {
+      const el = document.getElementById('t-result');
+      if (el) el.value = outcome;
+    }
+
+    function updateAccountNameSelect() {
+      const typeEl = document.getElementById('t-acct-type');
+      const nameEl = document.getElementById('t-acct-name');
+      if (!nameEl) return;
+      const selectedType = typeEl?.value || '';
+      const cur = nameEl.value;
+      nameEl.innerHTML = '<option value="">Select account...</option>';
+      const filtered = selectedType
+        ? journalAccounts.filter(a => !a.accountType || a.accountType === selectedType)
+        : journalAccounts;
+      filtered.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a.name;
+        opt.textContent = a.name + (a.accountType && !selectedType ? ' (' + a.accountType + ')' : '');
+        nameEl.appendChild(opt);
+      });
+      // If no saved accounts, add a free-text fallback
+      if (!journalAccounts.length) {
+        const opt = document.createElement('option');
+        opt.value = '_custom';
+        opt.textContent = 'Type manually below';
+        nameEl.appendChild(opt);
+      }
+      nameEl.value = cur;
     }
 
     function calcPnl() {
@@ -1677,6 +1745,11 @@
       editingId = id; currentTags = [];
       document.getElementById('log-modal-title').textContent = id ? 'Edit Trade' : 'Log Trade';
       document.getElementById('log-msg').classList.add('hidden');
+      // Populate account name select
+      updateAccountNameSelect();
+      // Hide total/outcome rows
+      document.getElementById('t-manual-total-row')?.classList.add('hidden');
+      document.getElementById('t-manual-outcome-row')?.classList.add('hidden');
       if (id) {
         const t = allTrades.find(t=>t.id===id);
         if (!t) return;
@@ -1686,6 +1759,7 @@
         document.getElementById('t-ticker').value = t.ticker||'';
         setDir(t.direction||'LONG');
         document.getElementById('t-acct-type').value = t.accountType||'';
+        updateAccountNameSelect();
         document.getElementById('t-acct-name').value = t.accountName||'';
         document.getElementById('t-num-accounts').value = t.numAccounts||1;
         document.getElementById('t-grade').value = t.grade||'';
@@ -1701,10 +1775,12 @@
           document.getElementById('t-manual-pnl').value = t.netPnl||'';
           document.getElementById('t-manual-contracts').value = t.contracts||1;
           document.getElementById('t-result').value = t.result||'WIN';
+          setManualOutcome(t.result||'WIN');
           document.getElementById('t-manual-tp1-contracts').value = t.tp1Contracts||0;
           document.getElementById('t-manual-tp1-pnl').value = t.tp1Pnl||'';
           document.getElementById('t-manual-tp2-contracts').value = t.tp2Contracts||0;
           document.getElementById('t-manual-tp2-pnl').value = t.tp2Pnl||'';
+          calcManualNet();
           document.getElementById('t-manual-entry-price').value = t.entryPrice||t.entry||'';
           document.getElementById('t-manual-sl-price').value = t.slPrice||t.sl||'';
           document.getElementById('t-manual-tp1-price').value = t.tp1Price||t.tp1Exit||'';
@@ -1731,6 +1807,7 @@
         document.getElementById('t-tp2-contracts').value = 0;
         document.getElementById('t-commissions').value = 0;
         document.getElementById('t-acct-type').value = 'Funded';
+        updateAccountNameSelect();
         document.getElementById('t-acct-name').value = '';
         document.getElementById('t-num-accounts').value = 1;
         document.getElementById('t-grade').value = '';
@@ -1742,6 +1819,8 @@
         document.getElementById('t-manual-tp1-contracts').value = 0;
         document.getElementById('t-manual-tp2-contracts').value = 0;
         document.getElementById('t-result').value = 'WIN';
+        const tp1Disp = document.getElementById('t-manual-tp1-display'); if(tp1Disp) { tp1Disp.textContent='—'; tp1Disp.className='px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm text-zinc-500'; }
+        const tp2Disp = document.getElementById('t-manual-tp2-display'); if(tp2Disp) { tp2Disp.textContent='—'; tp2Disp.className='px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm text-zinc-500'; }
         setDir('LONG'); setPnlMode('price');
         document.getElementById('t-tp1-pnl').textContent = '—';
         document.getElementById('t-tp2-pnl').textContent = '—';
@@ -2077,18 +2156,7 @@
     }
 
     function updateAccountDropdowns() {
-      // Update log trade account name dropdown
-      const acctSel = document.getElementById('t-acct-name-sel');
-      if (!acctSel) return;
-      const cur = acctSel.value;
-      acctSel.innerHTML = '<option value="">Select account...</option>';
-      journalAccounts.forEach(a => {
-        const opt = document.createElement('option');
-        opt.value = a.name;
-        opt.textContent = a.name + (a.accountType ? ' — ' + a.accountType : '');
-        acctSel.appendChild(opt);
-      });
-      acctSel.value = cur;
+      updateAccountNameSelect();
     }
 
     function applyDefaults() {
