@@ -4,14 +4,16 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X — Backtest Converter</title>
+  <title>FSD-X — Trade Converter</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
   <style>
     body { background-color: #000; }
     #drop-zone.drag-over { border-color: rgba(34,197,94,0.6); background: rgba(34,197,94,0.05); }
     .step-pill { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 999px; background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); font-size: 10px; font-weight: 900; color: #22c55e; flex-shrink: 0; }
-    #equity-mini-wrap svg { display: block; overflow: visible; }
+    .dest-btn { transition: all 0.15s; cursor: pointer; }
+    .dest-btn.active-journal { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.4); }
+    .dest-btn.active-backtest { background: rgba(99,102,241,0.1); border-color: rgba(99,102,241,0.4); }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
@@ -34,8 +36,8 @@
           <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
         </div>
         <div>
-          <h1 class="text-base font-black text-white">Backtest Converter</h1>
-          <p class="text-xs text-zinc-500">Universal TradingView → FSD-X format · Auto-detects FSD-X ORB Pro or any strategy</p>
+          <h1 class="text-base font-black text-white">Trade Converter</h1>
+          <p class="text-xs text-zinc-500">Universal importer — TradingView · Tradovate · FSD-X ORB Pro · Auto-detected</p>
         </div>
       </div>
     </div>
@@ -43,43 +45,47 @@
     <div class="flex-1 px-6 md:px-10 py-8">
       <div class="max-w-4xl mx-auto space-y-6">
 
-        <!-- How it works -->
+        <!-- Supported formats -->
         <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
-          <div class="text-xs font-black text-white uppercase tracking-wider mb-3">How It Works</div>
+          <div class="text-xs font-black text-white uppercase tracking-wider mb-3">Supported Formats</div>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="flex items-start gap-3">
-              <span class="step-pill mt-0.5">1</span>
+              <div class="w-7 h-7 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+                <span class="text-green-400 text-[10px] font-black">FX</span>
+              </div>
               <div>
-                <div class="text-xs font-bold text-white mb-0.5">Export from TradingView</div>
-                <div class="text-[11px] text-zinc-500">Run any strategy → List of Trades tab → Export CSV. Works with FSD-X ORB Pro or any TradingView strategy.</div>
+                <div class="text-xs font-bold text-white mb-0.5">FSD-X ORB Pro</div>
+                <div class="text-[11px] text-zinc-500">TradingView strategy export with full grade extraction (A+/A/B+/B/C+/C) and signal data.</div>
               </div>
             </div>
             <div class="flex items-start gap-3">
-              <span class="step-pill mt-0.5">2</span>
+              <div class="w-7 h-7 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
+                <span class="text-blue-400 text-[10px] font-black">TV</span>
+              </div>
               <div>
-                <div class="text-xs font-bold text-white mb-0.5">Drop, Upload, or Paste</div>
-                <div class="text-[11px] text-zinc-500">Drop your CSV file, click to browse, or paste the CSV text directly. Auto-detects FSD-X or standard TV format.</div>
+                <div class="text-xs font-bold text-white mb-0.5">TradingView Strategy</div>
+                <div class="text-[11px] text-zinc-500">Any TradingView strategy backtest export from the List of Trades tab.</div>
               </div>
             </div>
             <div class="flex items-start gap-3">
-              <span class="step-pill mt-0.5">3</span>
+              <div class="w-7 h-7 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center shrink-0">
+                <span class="text-purple-400 text-[10px] font-black">TV</span>
+              </div>
               <div>
-                <div class="text-xs font-bold text-white mb-0.5">Import or Download</div>
-                <div class="text-[11px] text-zinc-500">Send directly to an existing backtest session, create a new session, or download as CSV to share.</div>
+                <div class="text-xs font-bold text-white mb-0.5">Tradovate Live Orders</div>
+                <div class="text-[11px] text-zinc-500">Live trade history from Tradovate. Export from Account Reports → Orders tab.</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- INPUT: Upload + Paste tabs -->
+        <!-- INPUT panel -->
         <div id="input-panel">
-          <!-- Tab switcher -->
           <div class="flex gap-1 mb-3">
             <button onclick="setInputMode('file')" id="tab-file" class="px-4 py-2 text-xs font-bold rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 transition">↑ Upload File</button>
             <button onclick="setInputMode('paste')" id="tab-paste" class="px-4 py-2 text-xs font-bold rounded-lg bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white transition">⌘ Paste CSV</button>
           </div>
 
-          <!-- File upload zone -->
           <div id="file-input-panel">
             <div id="drop-zone" class="border-2 border-dashed border-white/10 rounded-2xl p-10 text-center cursor-pointer transition-all hover:border-green-500/30 hover:bg-green-500/[0.02]"
               onclick="document.getElementById('csv-input').click()"
@@ -90,24 +96,23 @@
               <div class="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center mx-auto mb-4">
                 <svg class="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
               </div>
-              <div class="text-sm font-bold text-zinc-300 mb-1">Drop your TradingView CSV here</div>
-              <div class="text-xs text-zinc-600">or click to browse · FSD-X ORB Pro or any TradingView strategy export</div>
+              <div class="text-sm font-bold text-zinc-300 mb-1">Drop your CSV here</div>
+              <div class="text-xs text-zinc-600">TradingView export · Tradovate Orders · FSD-X ORB Pro — auto-detected</div>
             </div>
           </div>
 
-          <!-- Paste zone -->
           <div id="paste-input-panel" class="hidden">
             <div class="border border-white/10 rounded-2xl overflow-hidden">
               <div class="bg-zinc-950/60 px-4 py-3 border-b border-white/5 flex items-center justify-between">
-                <div class="text-xs font-bold text-zinc-400">Paste CSV text below</div>
-                <div class="text-[10px] text-zinc-600">Copy all rows from TradingView including the header row</div>
+                <div class="text-xs font-bold text-zinc-400">Paste CSV text</div>
+                <div class="text-[10px] text-zinc-600">Include the header row</div>
               </div>
-              <textarea id="csv-paste-area" rows="8" placeholder="Trade #,Type,Signal,Date and time,Price,Contracts,Net P&L&#10;1,Entry Long,ORB Long A+,2026-01-03 09:35,21450.25,2,&#10;1,Exit Long,TP1,2026-01-03 09:52,21478.50,2,487.50&#10;..."
+              <textarea id="csv-paste-area" rows="8" placeholder="Paste your CSV content here including the header row..."
                 class="w-full bg-zinc-950 text-zinc-300 text-xs font-mono px-4 py-3 focus:outline-none resize-none placeholder-zinc-700"
                 style="min-height:180px"></textarea>
               <div class="bg-zinc-950/60 px-4 py-3 border-t border-white/5 flex items-center justify-between">
-                <div class="text-[10px] text-zinc-600">Make sure to include the header row (Trade #, Type, Signal...)</div>
-                <button onclick="handlePaste()" class="px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-lg transition">Parse CSV →</button>
+                <div class="text-[10px] text-zinc-600">Make sure to include the header row</div>
+                <button onclick="handlePaste()" class="px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-lg transition">Parse →</button>
               </div>
             </div>
           </div>
@@ -120,12 +125,13 @@
             <div id="format-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border"></div>
           </div>
           <div id="format-info" class="rounded-xl px-4 py-3 text-xs border"></div>
+
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Ticker</label>
               <input type="text" id="opt-ticker" value="MNQ" placeholder="MNQ"
                 class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-              <p class="text-[10px] text-zinc-600 mt-1">Instrument this backtest was run on</p>
+              <p class="text-[10px] text-zinc-600 mt-1">Override auto-detected ticker</p>
             </div>
             <div>
               <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Date From</label>
@@ -149,9 +155,9 @@
         <!-- Results panel -->
         <div id="results-panel" class="hidden space-y-5">
 
-          <!-- Format badge -->
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 flex-wrap">
             <div id="result-format-badge" class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border"></div>
+            <div id="unmatched-badge" class="hidden flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-yellow-500/10 border-yellow-500/30 text-yellow-400"></div>
           </div>
 
           <!-- Stats -->
@@ -166,90 +172,112 @@
             <div id="equity-mini-wrap" class="relative mt-3" style="height:160px"></div>
           </div>
 
-          <!-- Trade count note -->
-          <div id="trade-count-note" class="hidden border border-zinc-700/40 bg-zinc-900/40 rounded-xl px-4 py-3 text-xs text-zinc-500 leading-relaxed"></div>
-
-          <!-- Import / Download actions -->
+          <!-- Destination picker -->
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 space-y-4">
-            <div class="text-xs font-black text-white uppercase tracking-wider">What would you like to do?</div>
-
-            <!-- Option A: Import to existing session -->
-            <div id="import-existing-panel" class="border border-white/10 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-              <div class="flex items-center gap-2">
-                <span class="step-pill">A</span>
-                <div>
-                  <div class="text-xs font-bold text-white">Import to Existing Session</div>
-                  <div class="text-[10px] text-zinc-500">Add these trades to one of your current backtest sessions</div>
-                </div>
-              </div>
-              <div id="sessions-loading" class="text-xs text-zinc-600 py-2">Loading your sessions...</div>
-              <div id="sessions-empty" class="hidden text-xs text-zinc-600 py-2">No sessions yet — create one below.</div>
-              <div id="sessions-select-wrap" class="hidden">
-                <select id="session-select" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50">
-                  <option value="">Select a session...</option>
-                </select>
-              </div>
-              <button onclick="importToExisting()" id="import-existing-btn" class="hidden w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-                Import to Selected Session →
+            <div class="text-xs font-black text-white uppercase tracking-wider">Where do you want to send this data?</div>
+            <div class="grid grid-cols-2 gap-3">
+              <button onclick="setDestination('journal')" id="dest-journal"
+                class="dest-btn border border-white/10 rounded-xl p-4 text-left transition">
+                <div class="text-sm font-black text-white mb-1">📓 Journal</div>
+                <div class="text-[11px] text-zinc-500">Live trade history — adds to your main trade journal with full stats tracking</div>
               </button>
-              <div id="import-existing-msg" class="hidden text-xs text-center py-2 rounded-lg"></div>
+              <button onclick="setDestination('backtest')" id="dest-backtest"
+                class="dest-btn border border-white/10 rounded-xl p-4 text-left transition">
+                <div class="text-sm font-black text-white mb-1">🧪 Backtest</div>
+                <div class="text-[11px] text-zinc-500">Backtest session — analyze this data as a separate session with its own stats</div>
+              </button>
             </div>
 
-            <!-- Option B: New session -->
-            <div class="border border-white/10 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-              <div class="flex items-center gap-2">
-                <span class="step-pill">B</span>
-                <div>
-                  <div class="text-xs font-bold text-white">Create New Session</div>
-                  <div class="text-[10px] text-zinc-500">Create a new backtest session and import these trades into it</div>
-                </div>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs text-zinc-600 mb-1">Session Name <span class="text-red-500">*</span></label>
-                  <input type="text" id="new-session-name" placeholder="e.g. FSD-X ORB PRO 2020-2026"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                </div>
-                <div>
-                  <label class="block text-xs text-zinc-600 mb-1">Ticker</label>
-                  <input type="text" id="new-session-ticker" placeholder="MNQ"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                </div>
-                <div>
-                  <label class="block text-xs text-zinc-600 mb-1">Strategy</label>
-                  <input type="text" id="new-session-strategy" placeholder="FSD-X ORB PRO"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                </div>
-                <div>
-                  <label class="block text-xs text-zinc-600 mb-1">Start Date <span class="text-zinc-700 normal-case">— optional</span></label>
-                  <input type="date" id="new-session-startdate"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
-                </div>
-              </div>
-              <button onclick="createAndImport()" class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition">
-                Create Session & Import →
+            <!-- Journal import options -->
+            <div id="journal-options" class="hidden space-y-3 pt-2 border-t border-white/5">
+              <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Journal Import</div>
+              <p class="text-[11px] text-zinc-500">These trades will be added to your main journal. You can filter by date on the journal page after import.</p>
+              <button onclick="importToJournal()" class="w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+                Import to Journal →
               </button>
-              <div id="new-session-msg" class="hidden text-xs text-center py-2 rounded-lg"></div>
+              <div id="journal-import-msg" class="hidden text-xs text-center py-2 rounded-lg"></div>
             </div>
 
-            <!-- Option C: Download CSV -->
-            <div class="border border-white/10 bg-zinc-900/40 rounded-xl p-4">
-              <div class="flex items-center justify-between flex-wrap gap-3">
+            <!-- Backtest import options -->
+            <div id="backtest-options" class="hidden space-y-4 pt-2 border-t border-white/5">
+              <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Backtest Import</div>
+
+              <!-- Existing session -->
+              <div class="border border-white/10 bg-zinc-900/40 rounded-xl p-4 space-y-3">
                 <div class="flex items-center gap-2">
-                  <span class="step-pill">C</span>
+                  <span class="step-pill">A</span>
                   <div>
-                    <div class="text-xs font-bold text-white">Download CSV</div>
-                    <div class="text-[10px] text-zinc-500">Save as file — for sharing in Discord or manual import later</div>
+                    <div class="text-xs font-bold text-white">Add to Existing Session</div>
+                    <div class="text-[10px] text-zinc-500">Merge into one of your current backtest sessions</div>
                   </div>
                 </div>
-                <button onclick="downloadCSV()" class="px-5 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
-                  ↓ Download CSV
-                </button>
+                <div id="sessions-loading" class="text-xs text-zinc-600 py-1">Loading sessions...</div>
+                <div id="sessions-empty" class="hidden text-xs text-zinc-600 py-1">No sessions yet — create one below.</div>
+                <div id="sessions-select-wrap" class="hidden space-y-2">
+                  <select id="session-select" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50">
+                    <option value="">Select a session...</option>
+                  </select>
+                  <button onclick="importToExisting()" id="import-existing-btn" class="w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+                    Add to Session →
+                  </button>
+                </div>
+                <div id="import-existing-msg" class="hidden text-xs text-center py-2 rounded-lg"></div>
               </div>
+
+              <!-- New session -->
+              <div class="border border-white/10 bg-zinc-900/40 rounded-xl p-4 space-y-3">
+                <div class="flex items-center gap-2">
+                  <span class="step-pill">B</span>
+                  <div>
+                    <div class="text-xs font-bold text-white">Create New Session</div>
+                    <div class="text-[10px] text-zinc-500">Create a new backtest session and import into it</div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Session Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="new-session-name" placeholder="e.g. MNQ Live Jan 2026"
+                      class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Ticker</label>
+                    <input type="text" id="new-session-ticker" placeholder="MNQ"
+                      class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Strategy</label>
+                    <input type="text" id="new-session-strategy" placeholder="FSD-X ORB PRO"
+                      class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Start Date <span class="text-zinc-700 normal-case">— optional</span></label>
+                    <input type="date" id="new-session-startdate"
+                      class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+                  </div>
+                </div>
+                <button onclick="createAndImport()" class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition">
+                  Create Session & Import →
+                </button>
+                <div id="new-session-msg" class="hidden text-xs text-center py-2 rounded-lg"></div>
+              </div>
+            </div>
+
+            <!-- Download CSV always visible -->
+            <div class="border border-white/5 rounded-xl p-4 flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <div class="text-xs font-bold text-white">↓ Download CSV</div>
+                <div class="text-[10px] text-zinc-500">Save converted file — share in Discord or import manually later</div>
+              </div>
+              <button onclick="downloadCSV()" class="px-5 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+                Download
+              </button>
             </div>
 
             <button onclick="resetConverter()" class="w-full py-2 text-xs text-zinc-600 hover:text-zinc-400 transition">← Convert another file</button>
           </div>
+
+          <!-- Trade count note -->
+          <div id="trade-count-note" class="hidden border border-zinc-700/40 bg-zinc-900/40 rounded-xl px-4 py-3 text-xs text-zinc-500 leading-relaxed"></div>
 
           <!-- Preview table -->
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
@@ -262,21 +290,21 @@
                 <thead>
                   <tr class="bg-zinc-950 border-b border-white/10 text-[10px] text-zinc-500 uppercase tracking-wider">
                     <th class="px-4 py-2.5">Date</th>
-                    <th class="px-4 py-2.5">Entry</th>
-                    <th class="px-4 py-2.5">Exit</th>
+                    <th class="px-4 py-2.5">Entry Time</th>
+                    <th class="px-4 py-2.5">Exit Time</th>
                     <th class="px-4 py-2.5">Ticker</th>
                     <th class="px-4 py-2.5">Direction</th>
                     <th class="px-4 py-2.5">Grade</th>
                     <th class="px-4 py-2.5">Result</th>
                     <th class="px-4 py-2.5">Net P&L</th>
                     <th class="px-4 py-2.5">Contracts</th>
-                    <th class="px-4 py-2.5">Signal</th>
                   </tr>
                 </thead>
                 <tbody id="preview-body" class="divide-y divide-white/5 text-xs"></tbody>
               </table>
             </div>
           </div>
+
         </div>
 
         <!-- Error -->
@@ -292,10 +320,7 @@
       <div class="text-4xl mb-3">✅</div>
       <h2 class="text-lg font-black text-white mb-1" id="success-title">Imported!</h2>
       <p class="text-zinc-500 text-xs mb-5" id="success-desc"></p>
-      <div class="flex gap-3">
-        <a href="backtest.html" class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">View in Backtest →</a>
-        <button onclick="document.getElementById('import-success-modal').classList.add('hidden')" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Stay Here</button>
-      </div>
+      <div class="flex gap-3" id="success-btns"></div>
     </div>
   </div>
 
@@ -306,10 +331,11 @@
 
     let convertedTrades = [];
     let rawCSV = '';
-    let detectedMode = '';
+    let detectedMode = ''; // 'fsdx' | 'tv' | 'tradovate'
     let whopKey = null;
     let btSessions = [];
-    let inputMode = 'file';
+    let destination = ''; // 'journal' | 'backtest'
+    let unmatchedRows = 0;
 
     // ── Auth ──
     async function loadAuth() {
@@ -324,7 +350,6 @@
 
     // ── Input mode ──
     function setInputMode(mode) {
-      inputMode = mode;
       document.getElementById('file-input-panel').classList.toggle('hidden', mode !== 'file');
       document.getElementById('paste-input-panel').classList.toggle('hidden', mode !== 'paste');
       document.getElementById('tab-file').className = 'px-4 py-2 text-xs font-bold rounded-lg transition ' + (mode === 'file' ? 'bg-green-500/10 border border-green-500/30 text-green-400' : 'bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white');
@@ -337,40 +362,6 @@
       processCSVText(text);
     }
 
-    // ── Format Detection ──
-    function detectFormat(firstLine, rows) {
-      const hasFsdxSignal = rows.some(r => {
-        const sig = r['Signal'] || '';
-        return /ORB\s+(Long|Short)\s+(A\+|A|B\+|B|C\+|C)/i.test(sig);
-      });
-      if (hasFsdxSignal) return 'fsdx';
-      if (firstLine.includes('Trade #') && firstLine.includes('Net P&L')) return 'standard';
-      return 'unknown';
-    }
-
-    function showFormatBadge(elId, mode) {
-      const el = document.getElementById(elId);
-      if (!el) return;
-      if (mode === 'fsdx') {
-        el.className = 'flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-green-500/10 border-green-500/30 text-green-400';
-        el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> FSD-X ORB Pro Format Detected ✓';
-      } else {
-        el.className = 'flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-blue-500/10 border-blue-500/30 text-blue-400';
-        el.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> TradingView Strategy Format Detected ✓';
-      }
-    }
-
-    function showFormatInfo(mode) {
-      const el = document.getElementById('format-info');
-      if (mode === 'fsdx') {
-        el.className = 'rounded-xl px-4 py-3 text-xs border bg-green-500/5 border-green-500/20 text-green-300/80';
-        el.innerHTML = '<span class="font-bold text-green-400">FSD-X Mode</span> — Full conversion with grades (A+/A/B+/B/C+/C), direction, contracts, entry/exit times, and signal data extracted automatically.';
-      } else {
-        el.className = 'rounded-xl px-4 py-3 text-xs border bg-blue-500/5 border-blue-500/20 text-blue-300/80';
-        el.innerHTML = '<span class="font-bold text-blue-400">Standard TV Mode</span> — Universal conversion from any TradingView strategy. Direction, entry/exit prices, P&L, and timestamps mapped automatically. Grade column will be blank.';
-      }
-    }
-
     function handleFile(file) {
       if (!file) return;
       if (!file.name.endsWith('.csv')) return showError('Please upload a CSV file.');
@@ -379,39 +370,103 @@
       reader.readAsText(file);
     }
 
+    // ── Format Detection ──
+    function detectFormat(firstLine, rows) {
+      // Tradovate: has B/S column and Fill Time or avgPrice
+      if (firstLine.includes('B/S') || firstLine.includes('Fill Time') || firstLine.includes('avgPrice') || firstLine.includes('filledQty')) {
+        return 'tradovate';
+      }
+      // FSD-X: TradingView export with ORB grade signals
+      if (rows.some(r => /ORB\s+(Long|Short)\s+(A\+|A|B\+|B|C\+|C)/i.test(r['Signal'] || ''))) {
+        return 'fsdx';
+      }
+      // Standard TradingView strategy export
+      if (firstLine.includes('Trade #') && (firstLine.includes('Net P&L') || firstLine.includes('Profit'))) {
+        return 'tv';
+      }
+      return 'unknown';
+    }
+
+    function getFormatBadgeHTML(mode) {
+      const configs = {
+        fsdx: { bg: 'bg-green-500/10 border-green-500/30 text-green-400', dot: 'bg-green-400', label: 'FSD-X ORB Pro Detected ✓' },
+        tv:   { bg: 'bg-blue-500/10 border-blue-500/30 text-blue-400',   dot: 'bg-blue-400',   label: 'TradingView Strategy Detected ✓' },
+        tradovate: { bg: 'bg-purple-500/10 border-purple-500/30 text-purple-400', dot: 'bg-purple-400', label: 'Tradovate Orders Detected ✓' },
+        unknown: { bg: 'bg-zinc-800 border-white/10 text-zinc-400', dot: 'bg-zinc-400', label: 'Unknown Format' },
+      };
+      const c = configs[mode] || configs.unknown;
+      return `<div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border ${c.bg}"><span class="w-1.5 h-1.5 rounded-full ${c.dot}"></span>${c.label}</div>`;
+    }
+
+    function getFormatInfoHTML(mode) {
+      const configs = {
+        fsdx: { bg: 'bg-green-500/5 border-green-500/20 text-green-300/80', label: 'FSD-X Mode', labelColor: 'text-green-400', desc: 'Full conversion with grades (A+/A/B+/B/C+/C), direction, contracts, entry/exit times extracted from signal data automatically.' },
+        tv:   { bg: 'bg-blue-500/5 border-blue-500/20 text-blue-300/80',   label: 'TradingView Mode', labelColor: 'text-blue-400', desc: 'Standard strategy export. Direction, entry/exit prices, P&L and timestamps mapped automatically. Grade column will be blank.' },
+        tradovate: { bg: 'bg-purple-500/5 border-purple-500/20 text-purple-300/80', label: 'Tradovate Mode', labelColor: 'text-purple-400', desc: 'Live order history. Entry/exit fills paired by symbol and time sequence. P&L calculated from fill prices. Grade column will be blank — tag trades manually after import.' },
+        unknown: { bg: 'bg-zinc-900 border-white/10 text-zinc-400', label: 'Unknown Format', labelColor: 'text-zinc-300', desc: 'Could not auto-detect format. Make sure you are exporting from the correct tab in your platform.' },
+      };
+      const c = configs[mode] || configs.unknown;
+      return `<div class="rounded-xl px-4 py-3 text-xs border ${c.bg}"><span class="font-bold ${c.labelColor}">${c.label}</span> — ${c.desc}</div>`;
+    }
+
     function processCSVText(text) {
       rawCSV = text;
       const firstLine = rawCSV.split('\n')[0];
-      if (!firstLine.includes('Trade #') || !firstLine.includes('Net P&L')) {
-        return showError("This doesn't look like a TradingView List of Trades export. Make sure you export from the \"List of Trades\" tab in the Strategy Tester.");
-      }
       const rows = parseCSV(rawCSV);
+      if (!rows.length) return showError('No data found in this file. Make sure the CSV has content.');
+
       detectedMode = detectFormat(firstLine, rows);
+      if (detectedMode === 'unknown') {
+        return showError('Could not detect format. Supported: TradingView List of Trades export, Tradovate Orders export, or FSD-X ORB Pro strategy export.');
+      }
 
       document.getElementById('input-panel').classList.add('hidden');
       document.getElementById('options-panel').classList.remove('hidden');
       document.getElementById('error-msg').classList.add('hidden');
-      showFormatBadge('format-badge', detectedMode);
-      showFormatInfo(detectedMode);
+      document.getElementById('format-badge').innerHTML = getFormatBadgeHTML(detectedMode);
+      document.getElementById('format-badge').className = '';
+      document.getElementById('format-info').outerHTML = `<div id="format-info">${getFormatInfoHTML(detectedMode)}</div>`;
 
       // Auto-detect date range
-      const dates = rows.filter(r => r['Type'] && r['Type'].includes('Entry'))
-        .map(r => r['Date and time'] ? r['Date and time'].split(' ')[0] : null)
-        .filter(Boolean).sort();
+      let dates = [];
+      if (detectedMode === 'tradovate') {
+        dates = rows.filter(r => r['B/S'] === 'B' || r['B/S'] === 'Buy')
+          .map(r => {
+            const ft = r['Fill Time'] || r['Timestamp'] || r['Date'] || '';
+            return ft ? ft.split(' ')[0] : null;
+          }).filter(Boolean).sort();
+      } else {
+        dates = rows.filter(r => r['Type'] && r['Type'].includes('Entry'))
+          .map(r => r['Date and time'] ? r['Date and time'].split(' ')[0] : null)
+          .filter(Boolean).sort();
+      }
+
       if (dates.length) {
         document.getElementById('opt-from').value = dates[0];
         document.getElementById('opt-to').value = dates[dates.length - 1];
       }
 
-      // Auto-fill new session name
-      const ticker = (document.getElementById('opt-ticker').value || 'MNQ').toUpperCase();
+      // Auto-detect ticker for Tradovate
+      if (detectedMode === 'tradovate') {
+        const firstContract = rows[0]?.['Contract'] || rows[0]?.['Product'] || '';
+        if (firstContract) {
+          // Normalize: MNQZ5 → MNQ, NQZ5 → NQ, etc.
+          const tickerMatch = firstContract.match(/^([A-Z]+)/);
+          if (tickerMatch) document.getElementById('opt-ticker').value = tickerMatch[1];
+        }
+      }
+
+      // Auto-fill session name
       if (dates.length >= 2) {
+        const ticker = document.getElementById('opt-ticker').value || 'MNQ';
         document.getElementById('new-session-name').value = `${ticker} ${dates[0].slice(0,4)}–${dates[dates.length-1].slice(0,4)}`;
       }
     }
 
+    // ── CSV Parser ──
     function parseCSV(text) {
-      const lines = text.trim().split('\n');
+      const lines = text.replace(/^\uFEFF/, '').trim().split('\n');
+      if (lines.length < 2) return [];
       const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
       return lines.slice(1).map(line => {
         const vals = [];
@@ -424,93 +479,253 @@
         }
         vals.push(cur.trim());
         const obj = {};
-        headers.forEach((h, i) => obj[h] = (vals[i] || '').replace(/^"|"$/g, ''));
+        headers.forEach((h, i) => obj[h] = (vals[i] || '').replace(/^"|"$/g, '').trim());
         return obj;
-      }).filter(r => r['Trade #']);
+      }).filter(r => Object.values(r).some(v => v !== ''));
     }
 
-    // ── FSD-X helpers ──
+    // ── FSD-X / TV helpers ──
     function extractGrade(signal) { const m = signal.match(/ORB\s+(?:Long|Short)\s+(A\+|A|B\+|B|C\+|C)/); return m ? m[1] : ''; }
-    function extractDirection(signal) { if (/long/i.test(signal)) return 'LONG'; if (/short/i.test(signal)) return 'SHORT'; return ''; }
+    function extractDirectionFromSignal(signal) { if (/long/i.test(signal)) return 'LONG'; if (/short/i.test(signal)) return 'SHORT'; return ''; }
     function extractContracts(signal) { const m = signal.match(/\((\d+)c\)/); return m ? parseInt(m[1]) : 1; }
     function extractDirectionFromType(type) { if (/long/i.test(type)) return 'LONG'; if (/short/i.test(type)) return 'SHORT'; return ''; }
-    function formatTime(dt) { if (!dt) return ''; return dt.trim().split(' ')[1] || ''; }
+    function formatTime(dt) { if (!dt) return ''; const p = dt.trim().split(' '); return p[1] ? p[1].slice(0,5) : ''; }
     function formatDate(dt) { if (!dt) return ''; return dt.trim().split(' ')[0]; }
     function getResult(pnl) { const p = parseFloat(pnl); if (p > 0) return 'WIN'; if (p < 0) return 'LOSS'; return 'BE'; }
+    function cleanPnl(val) { return parseFloat((val||'0').replace(/[$,\s]/g,'')) || 0; }
 
+    // ── Tradovate parser ──
+    function parseTradovate(rows, ticker, fromDate, toDate) {
+      // Tradovate exports individual fills — need to pair buys with sells
+      // Filter to filled orders only
+      const fills = rows.filter(r => {
+        const status = (r['Status'] || '').toLowerCase();
+        return status === 'filled' || status === 'completelyfilled' || r['Avg Fill Price'] || r['avgPrice'];
+      });
+
+      // Group by contract/product
+      const byContract = {};
+      fills.forEach(r => {
+        const contract = r['Contract'] || r['Product'] || ticker;
+        if (!byContract[contract]) byContract[contract] = [];
+        byContract[contract].push(r);
+      });
+
+      const trades = [];
+      unmatchedRows = 0;
+
+      Object.entries(byContract).forEach(([contract, contractFills]) => {
+        // Sort by fill time
+        contractFills.sort((a, b) => {
+          const at = a['Fill Time'] || a['Timestamp'] || a['Date'] || '';
+          const bt = b['Fill Time'] || b['Timestamp'] || b['Date'] || '';
+          return at < bt ? -1 : 1;
+        });
+
+        // Pair buys with sells using a stack
+        const openPositions = [];
+
+        contractFills.forEach(fill => {
+          const side = (fill['B/S'] || fill['Side'] || '').toUpperCase();
+          const qty = parseInt(fill['Filled Qty'] || fill['filledQty'] || fill['Qty'] || fill['Quantity'] || '1') || 1;
+          const price = parseFloat(fill['Avg Fill Price'] || fill['avgPrice'] || fill['Price'] || '0') || 0;
+          const fillTime = fill['Fill Time'] || fill['Timestamp'] || fill['Date'] || '';
+          const date = formatDate(fillTime);
+          const time = formatTime(fillTime);
+
+          if (side === 'B' || side === 'BUY') {
+            openPositions.push({ qty, price, date, time, fill });
+          } else if (side === 'S' || side === 'SELL') {
+            if (openPositions.length) {
+              const entry = openPositions.shift();
+              // Normalize ticker — strip expiry (MNQZ5 → MNQ)
+              const rawContract = contract.replace(/[A-Z]\d+$/, '').replace(/\d+$/, '') || ticker;
+              const tradeDate = entry.date || date;
+
+              // Date filter
+              if (fromDate && tradeDate < fromDate) return;
+              if (toDate && tradeDate > toDate) return;
+
+              // P&L: (exit - entry) * contracts * $ per point
+              // Use raw price diff — let member sort out $ value since we don't know their tick value
+              // Just store raw prices and let them see P&L as price diff × contracts
+              // Actually calculate using TICKER_MAP if we know the ticker
+              const TICK_MAP = {
+                MNQ: { tick: 0.25, value: 0.50 }, NQ: { tick: 0.25, value: 5.00 },
+                MES: { tick: 0.25, value: 1.25 }, ES: { tick: 0.25, value: 12.50 },
+                MGC: { tick: 0.10, value: 1.00 }, GC: { tick: 0.10, value: 10.00 },
+                MCL: { tick: 0.01, value: 1.00 }, CL: { tick: 0.01, value: 10.00 },
+                MYM: { tick: 1.00, value: 0.50 }, YM: { tick: 1.00, value: 5.00 },
+                M2K: { tick: 0.10, value: 0.50 }, RTY: { tick: 0.10, value: 5.00 },
+              };
+              const spec = TICK_MAP[rawContract] || TICK_MAP[ticker] || { tick: 0.25, value: 0.50 };
+              const priceDiff = price - entry.price;
+              const pnl = (priceDiff / spec.tick) * spec.value * Math.min(qty, entry.qty);
+
+              trades.push({
+                id: Date.now().toString() + Math.random().toString(36).slice(2),
+                date: tradeDate,
+                entryTime: entry.time,
+                exitTime: time,
+                ticker: rawContract || ticker,
+                direction: 'LONG', // buy first = long
+                grade: '',
+                result: getResult(pnl),
+                netPnl: pnl.toFixed(2),
+                contracts: Math.min(qty, entry.qty).toString(),
+                entryPrice: entry.price.toString(),
+                exitPrice: price.toString(),
+                strategy: 'Live Trade',
+                notes: `Tradovate · ${contract}`,
+                source: 'tradovate'
+              });
+            } else {
+              // Sell without matching buy = short trade — push as open
+              openPositions.push({ qty, price, date, time, fill, isShort: true });
+            }
+          }
+        });
+
+        // Handle short trades (sells first, buys to close)
+        // Re-run for shorts
+        const shortFills = [...contractFills];
+        const openShorts = [];
+        shortFills.forEach(fill => {
+          const side = (fill['B/S'] || fill['Side'] || '').toUpperCase();
+          const qty = parseInt(fill['Filled Qty'] || fill['filledQty'] || fill['Qty'] || fill['Quantity'] || '1') || 1;
+          const price = parseFloat(fill['Avg Fill Price'] || fill['avgPrice'] || fill['Price'] || '0') || 0;
+          const fillTime = fill['Fill Time'] || fill['Timestamp'] || fill['Date'] || '';
+          const date = formatDate(fillTime);
+          const time = formatTime(fillTime);
+
+          if (side === 'S' || side === 'SELL') {
+            openShorts.push({ qty, price, date, time });
+          } else if ((side === 'B' || side === 'BUY') && openShorts.length) {
+            const entry = openShorts.shift();
+            const rawContract = contract.replace(/[A-Z]\d+$/, '').replace(/\d+$/, '') || ticker;
+            const tradeDate = entry.date || date;
+            if (fromDate && tradeDate < fromDate) return;
+            if (toDate && tradeDate > toDate) return;
+
+            const TICK_MAP = { MNQ:{tick:0.25,value:0.50},NQ:{tick:0.25,value:5.00},MES:{tick:0.25,value:1.25},ES:{tick:0.25,value:12.50} };
+            const spec = TICK_MAP[rawContract] || TICK_MAP[ticker] || { tick: 0.25, value: 0.50 };
+            const priceDiff = entry.price - price; // short: sell high buy low
+            const pnl = (priceDiff / spec.tick) * spec.value * Math.min(qty, entry.qty);
+
+            // Only add if not already added as long
+            const alreadyAdded = trades.some(t => t.date === tradeDate && t.entryTime === entry.time && t.direction === 'SHORT');
+            if (!alreadyAdded) {
+              trades.push({
+                id: Date.now().toString() + Math.random().toString(36).slice(2),
+                date: tradeDate, entryTime: entry.time, exitTime: time,
+                ticker: rawContract || ticker, direction: 'SHORT', grade: '',
+                result: getResult(pnl), netPnl: pnl.toFixed(2),
+                contracts: Math.min(qty, entry.qty).toString(),
+                entryPrice: entry.price.toString(), exitPrice: price.toString(),
+                strategy: 'Live Trade', notes: `Tradovate · ${contract}`, source: 'tradovate'
+              });
+            }
+          }
+        });
+
+        unmatchedRows += openPositions.filter(p => !p.isShort).length;
+      });
+
+      return trades.sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+    }
+
+    // ── Main convert function ──
     function convert() {
       const ticker = (document.getElementById('opt-ticker').value.trim() || 'MNQ').toUpperCase();
       const fromDate = document.getElementById('opt-from').value;
       const toDate = document.getElementById('opt-to').value;
       const rows = parseCSV(rawCSV);
+      let trades = [];
 
-      const tradeMap = {};
-      rows.forEach(r => {
-        const num = r['Trade #'];
-        if (!num) return;
-        if (!tradeMap[num]) tradeMap[num] = {};
-        if (r['Type'] && r['Type'].includes('Entry')) tradeMap[num].entry = r;
-        if (r['Type'] && r['Type'].includes('Exit')) tradeMap[num].exit = r;
-      });
+      if (detectedMode === 'tradovate') {
+        trades = parseTradovate(rows, ticker, fromDate, toDate);
+      } else {
+        // TV / FSD-X
+        const tradeMap = {};
+        rows.forEach(r => {
+          const num = r['Trade #'];
+          if (!num) return;
+          if (!tradeMap[num]) tradeMap[num] = {};
+          if (r['Type'] && r['Type'].includes('Entry')) tradeMap[num].entry = r;
+          if (r['Type'] && r['Type'].includes('Exit')) tradeMap[num].exit = r;
+        });
 
-      const trades = [];
-      Object.values(tradeMap).forEach(t => {
-        if (!t.entry || !t.exit) return;
-        const date = formatDate(t.entry['Date and time']);
-        if (!date) return;
-        if (fromDate && date < fromDate) return;
-        if (toDate && date > toDate) return;
+        Object.values(tradeMap).forEach(t => {
+          if (!t.entry || !t.exit) return;
+          const date = formatDate(t.entry['Date and time']);
+          if (!date) return;
+          if (fromDate && date < fromDate) return;
+          if (toDate && date > toDate) return;
 
-        const pnlRaw = t.exit['Net P&L USD'] || t.exit['Profit USD'] || t.exit['Net P&L'] || '0';
-        const pnl = parseFloat(pnlRaw.replace(/[$,]/g,'')) || 0;
-        const entryPrice = t.entry['Price USD'] || t.entry['Price'] || '';
-        const exitPrice = t.exit['Price USD'] || t.exit['Price'] || '';
-        const contractsRaw = parseInt(t.entry['Contracts'] || t.entry['Qty'] || '1') || 1;
+          const pnl = cleanPnl(t.exit['Net P&L USD'] || t.exit['Profit USD'] || t.exit['Net P&L'] || t.exit['Profit'] || '0');
+          const entryPrice = t.entry['Price USD'] || t.entry['Price'] || '';
+          const exitPrice = t.exit['Price USD'] || t.exit['Price'] || '';
+          const contractsRaw = parseInt(t.entry['Contracts'] || t.entry['Qty'] || '1') || 1;
 
-        if (detectedMode === 'fsdx') {
-          const signal = t.entry['Signal'] || '';
-          const exitSignal = t.exit['Signal'] || '';
-          trades.push({
-            id: Date.now().toString() + Math.random().toString(36).slice(2),
-            date, entryTime: formatTime(t.entry['Date and time']), exitTime: formatTime(t.exit['Date and time']),
-            ticker, direction: extractDirection(signal), grade: extractGrade(signal),
-            result: getResult(pnl), netPnl: pnl.toFixed(2),
-            contracts: extractContracts(signal).toString(),
-            entryPrice, exitPrice, exitSignal,
-            strategy: 'FSD-X ORB PRO', notes: signal, source: 'fsdx_converter'
-          });
-        } else {
-          const signal = t.entry['Signal'] || '';
-          const exitSignal = t.exit['Signal'] || '';
-          trades.push({
-            id: Date.now().toString() + Math.random().toString(36).slice(2),
-            date, entryTime: formatTime(t.entry['Date and time']), exitTime: formatTime(t.exit['Date and time']),
-            ticker, direction: extractDirectionFromType(t.entry['Type'] || ''), grade: '',
-            result: getResult(pnl), netPnl: pnl.toFixed(2),
-            contracts: contractsRaw.toString(),
-            entryPrice, exitPrice, exitSignal,
-            strategy: signal || 'TradingView Strategy',
-            notes: [signal, exitSignal].filter(Boolean).join(' → '), source: 'tv_converter'
-          });
-        }
-      });
+          if (detectedMode === 'fsdx') {
+            const signal = t.entry['Signal'] || '';
+            trades.push({
+              id: Date.now().toString() + Math.random().toString(36).slice(2),
+              date, entryTime: formatTime(t.entry['Date and time']), exitTime: formatTime(t.exit['Date and time']),
+              ticker, direction: extractDirectionFromSignal(signal), grade: extractGrade(signal),
+              result: getResult(pnl), netPnl: pnl.toFixed(2), contracts: extractContracts(signal).toString(),
+              entryPrice, exitPrice, strategy: 'FSD-X ORB PRO', notes: signal, source: 'fsdx_converter'
+            });
+          } else {
+            const signal = t.entry['Signal'] || '';
+            trades.push({
+              id: Date.now().toString() + Math.random().toString(36).slice(2),
+              date, entryTime: formatTime(t.entry['Date and time']), exitTime: formatTime(t.exit['Date and time']),
+              ticker, direction: extractDirectionFromType(t.entry['Type'] || ''), grade: '',
+              result: getResult(pnl), netPnl: pnl.toFixed(2), contracts: contractsRaw.toString(),
+              entryPrice, exitPrice, strategy: signal || 'TradingView Strategy',
+              notes: [signal, t.exit['Signal'] || ''].filter(Boolean).join(' → '), source: 'tv_converter'
+            });
+          }
+        });
+      }
 
-      if (!trades.length) return showError('No trades found in the selected date range. Try adjusting the dates.');
+      if (!trades.length) return showError('No trades found. Check your date range or make sure you exported the right file/tab.');
 
       convertedTrades = trades;
 
-      // Auto-fill new session fields from conversion options
+      // Auto-fill new session fields
       document.getElementById('new-session-ticker').value = ticker;
-      document.getElementById('new-session-strategy').value = detectedMode === 'fsdx' ? 'FSD-X ORB PRO' : 'TradingView Strategy';
+      document.getElementById('new-session-strategy').value = detectedMode === 'fsdx' ? 'FSD-X ORB PRO' : detectedMode === 'tradovate' ? 'Live Trade' : 'TradingView Strategy';
       if (fromDate) document.getElementById('new-session-startdate').value = fromDate;
 
-      showResults(trades, ticker);
+      showResults(trades);
     }
 
-    function showResults(trades, ticker) {
+    function setDestination(dest) {
+      destination = dest;
+      document.getElementById('dest-journal').className = 'dest-btn border rounded-xl p-4 text-left transition border-white/10 ' + (dest === 'journal' ? 'active-journal' : '');
+      document.getElementById('dest-backtest').className = 'dest-btn border rounded-xl p-4 text-left transition border-white/10 ' + (dest === 'backtest' ? 'active-backtest' : '');
+      document.getElementById('journal-options').classList.toggle('hidden', dest !== 'journal');
+      document.getElementById('backtest-options').classList.toggle('hidden', dest !== 'backtest');
+      if (dest === 'backtest' && btSessions.length === 0) loadSessionsForImport();
+    }
+
+    function showResults(trades) {
       document.getElementById('options-panel').classList.add('hidden');
       document.getElementById('results-panel').classList.remove('hidden');
-      showFormatBadge('result-format-badge', detectedMode);
+
+      document.getElementById('result-format-badge').innerHTML = getFormatBadgeHTML(detectedMode);
+      document.getElementById('result-format-badge').className = '';
+
+      // Unmatched warning for Tradovate
+      const unmatchedBadge = document.getElementById('unmatched-badge');
+      if (unmatchedRows > 0) {
+        unmatchedBadge.classList.remove('hidden');
+        unmatchedBadge.innerHTML = `⚠️ ${unmatchedRows} unmatched fill${unmatchedRows > 1 ? 's' : ''} skipped`;
+      } else {
+        unmatchedBadge.classList.add('hidden');
+      }
 
       const wins = trades.filter(t => t.result === 'WIN').length;
       const losses = trades.filter(t => t.result === 'LOSS').length;
@@ -529,35 +744,33 @@
         stat('Net P&L', (netPnl >= 0 ? '+' : '') + '$' + netPnl.toFixed(2), netPnl >= 0 ? '#22c55e' : '#ef4444') +
         stat('W / L / BE', `${wins} / ${losses} / ${bes}`, '#71717a');
 
-      // Mini equity curve
       drawMiniCurve(trades);
 
-      // Trade count note
+      // Note
       const noteEl = document.getElementById('trade-count-note');
-      if (noteEl) {
+      if (detectedMode !== 'tradovate') {
         noteEl.classList.remove('hidden');
-        noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Trade count may differ by 1 from TradingView</span> — TV sometimes excludes the first trade from its summary if a position was open before the backtest window started. Your converter counts all complete entry+exit pairs in the CSV.`;
+        noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Trade count may differ by 1 from TradingView</span> — TV sometimes excludes the first trade from its summary if a position was open before the backtest window. Your converter counts all complete entry+exit pairs.`;
+      } else {
+        noteEl.classList.remove('hidden');
+        noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Tradovate import note</span> — Commissions are not included in Tradovate's Orders CSV. P&L is calculated from fill prices. Grade column will be blank — you can tag trades manually in the journal or backtest.`;
       }
 
-      // Load sessions for import dropdown
-      loadSessionsForImport();
-
-      // Preview table
+      // Preview
       const resultBadge = r => r === 'WIN' ? 'text-green-400 bg-green-500/10 border-green-500/20' : r === 'LOSS' ? 'text-red-400 bg-red-950/20 border-red-500/20' : 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
       const dirColor = d => d === 'LONG' ? 'text-green-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-500';
 
       document.getElementById('preview-body').innerHTML = trades.slice(0, 10).map(t => `
         <tr class="hover:bg-white/[0.02] transition">
           <td class="px-4 py-2.5 text-zinc-300">${t.date}</td>
-          <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.entryTime}</td>
-          <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.exitTime}</td>
+          <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.entryTime || '—'}</td>
+          <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.exitTime || '—'}</td>
           <td class="px-4 py-2.5 text-white font-bold">${t.ticker}</td>
           <td class="px-4 py-2.5 font-black ${dirColor(t.direction)}">${t.direction || '—'}</td>
           <td class="px-4 py-2.5"><span class="px-1.5 py-0.5 rounded text-[10px] font-black border bg-zinc-800 text-zinc-300 border-white/10">${t.grade || '—'}</span></td>
           <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result}</span></td>
           <td class="px-4 py-2.5 font-mono font-bold ${parseFloat(t.netPnl) >= 0 ? 'text-green-400' : 'text-red-400'}">${parseFloat(t.netPnl) >= 0 ? '+' : ''}$${parseFloat(t.netPnl).toFixed(2)}</td>
           <td class="px-4 py-2.5 text-zinc-500">${t.contracts}c</td>
-          <td class="px-4 py-2.5 text-zinc-600 text-[10px] max-w-[140px] truncate">${t.exitSignal || t.strategy || '—'}</td>
         </tr>
       `).join('');
     }
@@ -566,100 +779,46 @@
     function drawMiniCurve(trades) {
       const wrap = document.getElementById('equity-mini-wrap');
       if (!wrap) return;
-
-      const sorted = [...trades].sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+      const sorted = [...trades].sort((a,b) => (a.date+a.entryTime||'') < (b.date+b.entryTime||'') ? -1 : 1);
       const points = [{ equity: 0 }];
       sorted.forEach(t => points.push({ equity: points[points.length-1].equity + (parseFloat(t.netPnl)||0) }));
-
       const finalPnl = points[points.length-1].equity;
       const isPos = finalPnl >= 0;
       const uid = 'mini' + Date.now();
-
       const finalEl = document.getElementById('mini-final-pnl');
-      if (finalEl) {
-        finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2);
-        finalEl.className = 'text-lg font-black ' + (isPos ? 'text-green-400' : 'text-red-400');
-      }
-
+      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-lg font-black '+(isPos?'text-green-400':'text-red-400'); }
       const W = wrap.clientWidth || 700, H = 160;
-      const PAD_L=50, PAD_R=16, PAD_T=12, PAD_B=28, CW=W-PAD_L-PAD_R, CH=H-PAD_T-PAD_B;
-      const equities = points.map(p=>p.equity);
-      const rawMin=Math.min(...equities), rawMax=Math.max(...equities), rng=rawMax-rawMin||1;
-      const dataMin=rawMin-rng*0.12, dataMax=rawMax+rng*0.12, dataRange=dataMax-dataMin;
-      const toX = i => PAD_L+(i/(points.length-1||1))*CW;
-      const toY = v => PAD_T+CH-((v-dataMin)/dataRange)*CH;
-
-      function catPath(pts) {
-        if (pts.length<2) return '';
-        const tension=0.4; let d=`M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;
-        for (let i=0;i<pts.length-1;i++) {
-          const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];
-          const cp1x=p1.x+(p2.x-p0.x)*tension,cp1y=p1.y+(p2.y-p0.y)*tension;
-          const cp2x=p2.x-(p3.x-p1.x)*tension,cp2y=p2.y-(p3.y-p1.y)*tension;
-          d+=` C ${cp1x.toFixed(1)} ${cp1y.toFixed(1)}, ${cp2x.toFixed(1)} ${cp2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
-        }
-        return d;
-      }
-
-      const xyPts = points.map((p,i) => ({ x: toX(i), y: toY(p.equity) }));
-      const pathD = catPath(xyPts);
-      const zeroY = toY(0);
-      const col = isPos ? '#22c55e' : '#ef4444';
-
-      // Y ticks
-      function niceStep(range,n) { const r=range/n,mag=Math.pow(10,Math.floor(Math.log10(r))); return [1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=r)||mag*10; }
-      const step=niceStep(dataRange,4); const yTicks=[];
-      for (let v=Math.ceil(dataMin/step)*step;v<=dataMax+step*0.01;v+=step) yTicks.push(parseFloat(v.toFixed(8)));
+      const PL=50,PR=16,PT=12,PB=28,CW=W-PL-PR,CH=H-PT-PB;
+      const eqs = points.map(p=>p.equity);
+      const rMin=Math.min(...eqs),rMax=Math.max(...eqs),rng=rMax-rMin||1;
+      const dMin=rMin-rng*0.12,dMax=rMax+rng*0.12,dRange=dMax-dMin;
+      const toX=i=>PL+(i/(points.length-1||1))*CW;
+      const toY=v=>PT+CH-((v-dMin)/dRange)*CH;
+      function cat(pts){if(pts.length<2)return '';const t=0.4;let d=`M ${pts[0].x.toFixed(1)} ${pts[0].y.toFixed(1)}`;for(let i=0;i<pts.length-1;i++){const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];const c1x=p1.x+(p2.x-p0.x)*t,c1y=p1.y+(p2.y-p0.y)*t,c2x=p2.x-(p3.x-p1.x)*t,c2y=p2.y-(p3.y-p1.y)*t;d+=` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`}return d;}
+      const xyPts=points.map((p,i)=>({x:toX(i),y:toY(p.equity)}));
+      const pathD=cat(xyPts);
+      const zY=toY(0);
+      const col=isPos?'#22c55e':'#ef4444';
+      function niceStep(range,n){const r=range/n,mag=Math.pow(10,Math.floor(Math.log10(r)));return[1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=r)||mag*10;}
+      const step=niceStep(dRange,4);const yTicks=[];
+      for(let v=Math.ceil(dMin/step)*step;v<=dMax+step*0.01;v+=step)yTicks.push(parseFloat(v.toFixed(8)));
       const fmtY=v=>{const a=Math.abs(v),s=v<0?'-':'';return a>=1000?s+'$'+(a/1000).toFixed(1)+'K':s+'$'+a.toFixed(0);};
-
-      const gridLines=yTicks.map(v=>{const y=toY(v);if(y<PAD_T-2||y>PAD_T+CH+2)return '';const isZero=Math.abs(v)<step*0.01;
-        return `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
-          <text x="${(PAD_L-8).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.25)':'rgba(255,255,255,0.15)'}" font-size="9" font-family="ui-monospace,monospace">${fmtY(v)}</text>`;}).join('');
-
-      const fillBase = Math.max(Math.min(zeroY, PAD_T+CH), PAD_T);
-      const fillD = pathD + ` L ${toX(points.length-1).toFixed(1)} ${fillBase.toFixed(1)} L ${toX(0).toFixed(1)} ${fillBase.toFixed(1)} Z`;
-
-      wrap.innerHTML = `<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
-        <defs>
-          <linearGradient id="${uid}-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="${col}" stop-opacity="0.3"/>
-            <stop offset="100%" stop-color="${col}" stop-opacity="0"/>
-          </linearGradient>
-          <clipPath id="${uid}-clip"><rect x="${PAD_L}" y="${PAD_T-2}" width="${CW+1}" height="${CH+4}"/></clipPath>
-        </defs>
-        ${gridLines}
-        <g clip-path="url(#${uid}-clip)">
-          <path d="${fillD}" fill="url(#${uid}-fill)"/>
-          <path d="${pathD}" fill="none" stroke="${col}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity="0.12"/>
-          <path d="${pathD}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>
-        </g>
-      </svg>`;
+      const gridLines=yTicks.map(v=>{const y=toY(v);if(y<PT-2||y>PT+CH+2)return '';const isZ=Math.abs(v)<step*0.01;return`<line x1="${PL}" y1="${y.toFixed(1)}" x2="${(PL+CW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${isZ?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/><text x="${(PL-8).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZ?'rgba(255,255,255,0.25)':'rgba(255,255,255,0.15)'}" font-size="9" font-family="ui-monospace,monospace">${fmtY(v)}</text>`;}).join('');
+      const fillBase=Math.max(Math.min(zY,PT+CH),PT);
+      const fillD=pathD+` L ${toX(points.length-1).toFixed(1)} ${fillBase.toFixed(1)} L ${toX(0).toFixed(1)} ${fillBase.toFixed(1)} Z`;
+      wrap.innerHTML=`<svg width="100%" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible"><defs><linearGradient id="${uid}-fill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${col}" stop-opacity="0.3"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient><clipPath id="${uid}-clip"><rect x="${PL}" y="${PT-2}" width="${CW+1}" height="${CH+4}"/></clipPath></defs>${gridLines}<g clip-path="url(#${uid}-clip)"><path d="${fillD}" fill="url(#${uid}-fill)"/><path d="${pathD}" fill="none" stroke="${col}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" opacity="0.12"/><path d="${pathD}" fill="none" stroke="${col}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/></g></svg>`;
     }
 
-    // ── Load sessions for import dropdown ──
+    // ── Load sessions ──
     async function loadSessionsForImport() {
-      if (!whopKey) {
-        document.getElementById('sessions-loading').textContent = 'Log in to import directly to a session.';
-        return;
-      }
+      if (!whopKey) { document.getElementById('sessions-loading').textContent = 'Log in to import directly to a session.'; return; }
       try {
-        const res = await fetch(JOURNAL_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'get-trades', key: 'backtest_sessions:' + whopKey })
-        });
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key:'backtest_sessions:'+whopKey }) });
         const data = await res.json();
         btSessions = Array.isArray(data.trades) ? data.trades : [];
-
         document.getElementById('sessions-loading').classList.add('hidden');
-
-        if (!btSessions.length) {
-          document.getElementById('sessions-empty').classList.remove('hidden');
-          return;
-        }
-
+        if (!btSessions.length) { document.getElementById('sessions-empty').classList.remove('hidden'); return; }
         document.getElementById('sessions-select-wrap').classList.remove('hidden');
-        document.getElementById('import-existing-btn').classList.remove('hidden');
-
         const sel = document.getElementById('session-select');
         sel.innerHTML = '<option value="">Select a session...</option>';
         btSessions.forEach(s => {
@@ -668,107 +827,86 @@
           opt.textContent = s.name + (s.ticker ? ' · ' + s.ticker : '') + (s.tradeCount ? ' (' + s.tradeCount + ' trades)' : '');
           sel.appendChild(opt);
         });
-        sel.onchange = () => {
-          document.getElementById('import-existing-btn').disabled = !sel.value;
-        };
-      } catch(e) {
-        document.getElementById('sessions-loading').textContent = 'Could not load sessions.';
-      }
+      } catch(e) { document.getElementById('sessions-loading').textContent = 'Could not load sessions.'; }
+    }
+
+    // ── Import to journal ──
+    async function importToJournal() {
+      if (!whopKey) { showImportMsg('journal-import-msg', 'You must be logged in to import.', 'error'); return; }
+      const btn = document.querySelector('[onclick="importToJournal()"]');
+      if (btn) { btn.disabled = true; btn.textContent = 'Importing...'; }
+      try {
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) });
+        const data = await res.json();
+        const existing = Array.isArray(data.trades) ? data.trades : [];
+        const merged = [...existing, ...convertedTrades].sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+        await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key: whopKey, payload: { trades: merged } }) });
+        document.getElementById('success-title').textContent = 'Added to Journal!';
+        document.getElementById('success-desc').textContent = `${convertedTrades.length} trades imported to your journal.`;
+        document.getElementById('success-btns').innerHTML = `<a href="journal.html" class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition text-center">View Journal →</a><button onclick="document.getElementById('import-success-modal').classList.add('hidden')" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Stay Here</button>`;
+        document.getElementById('import-success-modal').classList.remove('hidden');
+      } catch(e) { showImportMsg('journal-import-msg', 'Import failed. Please try again.', 'error'); }
+      if (btn) { btn.disabled = false; btn.textContent = 'Import to Journal →'; }
     }
 
     // ── Import to existing session ──
     async function importToExisting() {
       const sessionId = document.getElementById('session-select').value;
       if (!sessionId || !whopKey) return;
-
       const btn = document.getElementById('import-existing-btn');
       btn.disabled = true; btn.textContent = 'Importing...';
-
       try {
-        // Get existing trades
-        const existRes = await fetch(JOURNAL_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'get-trades', key: 'backtest:' + whopKey + ':' + sessionId })
-        });
+        const existRes = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key:'backtest:'+whopKey+':'+sessionId }) });
         const existData = await existRes.json();
         const existing = Array.isArray(existData.trades) ? existData.trades : [];
         const merged = [...existing, ...convertedTrades].sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
-
-        // Save merged trades
-        await fetch(JOURNAL_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'save-all', key: 'backtest:' + whopKey + ':' + sessionId, payload: { trades: merged } })
-        });
-
-        // Update session summary
+        await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key:'backtest:'+whopKey+':'+sessionId, payload:{ trades: merged } }) });
         const sessionIdx = btSessions.findIndex(s => s.id === sessionId);
         if (sessionIdx !== -1) {
-          const wins = merged.filter(t => t.result === 'WIN').length;
-          const decided = wins + merged.filter(t => t.result === 'LOSS').length;
+          const wins = merged.filter(t=>t.result==='WIN').length, decided = wins+merged.filter(t=>t.result==='LOSS').length;
           btSessions[sessionIdx].tradeCount = merged.length;
           btSessions[sessionIdx].winRate = decided ? Math.round(wins/decided*100) : 0;
-          btSessions[sessionIdx].netPnl = merged.reduce((s,t) => s+(parseFloat(t.netPnl)||0), 0);
-          await fetch(JOURNAL_URL, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ action: 'save-all', key: 'backtest_sessions:' + whopKey, payload: { trades: btSessions } })
-          });
+          btSessions[sessionIdx].netPnl = merged.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
+          await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key:'backtest_sessions:'+whopKey, payload:{ trades: btSessions } }) });
         }
-
-        const session = btSessions.find(s => s.id === sessionId);
-        document.getElementById('success-title').textContent = 'Imported Successfully!';
+        const session = btSessions.find(s=>s.id===sessionId);
+        document.getElementById('success-title').textContent = 'Imported!';
         document.getElementById('success-desc').textContent = `${convertedTrades.length} trades added to "${session?.name || 'session'}"`;
+        document.getElementById('success-btns').innerHTML = `<a href="backtest.html" class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition text-center">View Backtest →</a><button onclick="document.getElementById('import-success-modal').classList.add('hidden')" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Stay Here</button>`;
         document.getElementById('import-success-modal').classList.remove('hidden');
-
-      } catch(e) {
-        showImportMsg('import-existing-msg', 'Import failed. Please try again.', 'error');
-      }
-      btn.disabled = false; btn.textContent = 'Import to Selected Session →';
+      } catch(e) { showImportMsg('import-existing-msg', 'Import failed. Please try again.', 'error'); }
+      btn.disabled = false; btn.textContent = 'Add to Session →';
     }
 
     // ── Create new session and import ──
     async function createAndImport() {
       const name = document.getElementById('new-session-name').value.trim();
       if (!name) { showImportMsg('new-session-msg', 'Session name is required.', 'error'); return; }
-      if (!whopKey) { showImportMsg('new-session-msg', 'You must be logged in to import directly.', 'error'); return; }
-
+      if (!whopKey) { showImportMsg('new-session-msg', 'You must be logged in to import.', 'error'); return; }
       const btn = document.querySelector('[onclick="createAndImport()"]');
       if (btn) { btn.disabled = true; btn.textContent = 'Creating...'; }
-
       const ticker = (document.getElementById('new-session-ticker').value.trim() || 'MNQ').toUpperCase();
+      const wins = convertedTrades.filter(t=>t.result==='WIN').length;
+      const decided = wins + convertedTrades.filter(t=>t.result==='LOSS').length;
       const newSession = {
         id: Date.now().toString() + Math.random().toString(36).slice(2),
-        name,
-        ticker,
+        name, ticker,
         strategy: document.getElementById('new-session-strategy').value.trim(),
         startDate: document.getElementById('new-session-startdate').value,
         tradeCount: convertedTrades.length,
-        winRate: (() => { const w=convertedTrades.filter(t=>t.result==='WIN').length; const d=w+convertedTrades.filter(t=>t.result==='LOSS').length; return d?Math.round(w/d*100):0; })(),
+        winRate: decided ? Math.round(wins/decided*100) : 0,
         netPnl: convertedTrades.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0),
         createdAt: new Date().toISOString()
       };
-
       try {
-        // Save trades to new session
-        await fetch(JOURNAL_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'save-all', key: 'backtest:' + whopKey + ':' + newSession.id, payload: { trades: convertedTrades } })
-        });
-
-        // Add session to sessions list
+        await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key:'backtest:'+whopKey+':'+newSession.id, payload:{ trades: convertedTrades } }) });
         btSessions.unshift(newSession);
-        await fetch(JOURNAL_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'save-all', key: 'backtest_sessions:' + whopKey, payload: { trades: btSessions } })
-        });
-
+        await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key:'backtest_sessions:'+whopKey, payload:{ trades: btSessions } }) });
         document.getElementById('success-title').textContent = 'Session Created!';
-        document.getElementById('success-desc').textContent = `"${name}" created with ${convertedTrades.length} trades imported.`;
+        document.getElementById('success-desc').textContent = `"${name}" created with ${convertedTrades.length} trades.`;
+        document.getElementById('success-btns').innerHTML = `<a href="backtest.html" class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition text-center">View Backtest →</a><button onclick="document.getElementById('import-success-modal').classList.add('hidden')" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Stay Here</button>`;
         document.getElementById('import-success-modal').classList.remove('hidden');
-
-      } catch(e) {
-        showImportMsg('new-session-msg', 'Failed to create session. Please try again.', 'error');
-      }
-
+      } catch(e) { showImportMsg('new-session-msg', 'Failed to create session.', 'error'); }
       if (btn) { btn.disabled = false; btn.textContent = 'Create Session & Import →'; }
     }
 
@@ -776,7 +914,7 @@
       const el = document.getElementById(elId);
       if (!el) return;
       el.textContent = msg;
-      el.className = 'text-xs text-center py-2 rounded-lg ' + (type === 'error' ? 'bg-red-500/10 text-red-400' : 'bg-green-500/10 text-green-400');
+      el.className = 'text-xs text-center py-2 rounded-lg ' + (type==='error'?'bg-red-500/10 text-red-400':'bg-green-500/10 text-green-400');
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 4000);
     }
@@ -784,48 +922,40 @@
     // ── Download CSV ──
     function downloadCSV() {
       if (!convertedTrades.length) return;
-      const headers = ['Date','Entry Time','Exit Time','Ticker','Direction','Grade','Result','Net P&L',
-        'Contracts','TP1 P&L','TP2 P&L','Entry Price','SL Price','TP1 Price','TP2 Price',
-        'Strategy','Notes','Chart URL','Tags'];
-      const rows = convertedTrades.map(t => [
-        t.date||'', t.entryTime||'', t.exitTime||'', t.ticker||'MNQ',
-        t.direction||'', t.grade||'', t.result||'', t.netPnl||'',
-        t.contracts||'', '', '', t.entryPrice||'', '', '', '',
-        t.strategy||'', t.notes||'', '', ''
-      ].map(v => '"' + String(v||'').replace(/"/g,'""') + '"').join(','));
+      const headers = ['Date','Entry Time','Exit Time','Ticker','Direction','Grade','Result','Net P&L','Contracts','TP1 P&L','TP2 P&L','Entry Price','SL Price','TP1 Price','TP2 Price','Strategy','Notes','Chart URL','Tags'];
+      const rows = convertedTrades.map(t => [t.date||'',t.entryTime||'',t.exitTime||'',t.ticker||'MNQ',t.direction||'',t.grade||'',t.result||'',t.netPnl||'',t.contracts||'','','',t.entryPrice||'','','','',t.strategy||'',t.notes||'','',''].map(v=>'"'+String(v||'').replace(/"/g,'""')+'"').join(','));
       const csv = [headers.join(','), ...rows].join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
+      const blob = new Blob([csv], {type:'text/csv'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      const ticker = convertedTrades[0]?.ticker || 'backtest';
-      const dates = convertedTrades.map(t => t.date).sort();
-      const mode = detectedMode === 'fsdx' ? 'backtest_fsdx' : 'backtest_tv';
-      a.download = `${mode}_${ticker}_${dates[0]}_to_${dates[dates.length-1]}.csv`;
+      const dates = convertedTrades.map(t=>t.date).sort();
+      a.download = `fsdx_${detectedMode}_${convertedTrades[0]?.ticker||'trades'}_${dates[0]}_to_${dates[dates.length-1]}.csv`;
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
       URL.revokeObjectURL(url);
     }
 
     function resetConverter() {
-      convertedTrades = []; rawCSV = ''; detectedMode = '';
+      convertedTrades=[]; rawCSV=''; detectedMode=''; destination=''; unmatchedRows=0;
       document.getElementById('input-panel').classList.remove('hidden');
       document.getElementById('options-panel').classList.add('hidden');
       document.getElementById('results-panel').classList.add('hidden');
       document.getElementById('error-msg').classList.add('hidden');
-      document.getElementById('csv-input').value = '';
-      document.getElementById('csv-paste-area').value = '';
-      const noteEl = document.getElementById('trade-count-note');
-      if (noteEl) noteEl.classList.add('hidden');
+      document.getElementById('csv-input').value='';
+      document.getElementById('csv-paste-area').value='';
+      document.getElementById('trade-count-note').classList.add('hidden');
+      document.getElementById('journal-options').classList.add('hidden');
+      document.getElementById('backtest-options').classList.add('hidden');
+      setDestination('');
     }
 
     function showError(msg) {
-      const el = document.getElementById('error-msg');
-      el.textContent = msg; el.classList.remove('hidden');
+      document.getElementById('error-msg').textContent = msg;
+      document.getElementById('error-msg').classList.remove('hidden');
       document.getElementById('input-panel').classList.remove('hidden');
       document.getElementById('options-panel').classList.add('hidden');
     }
 
-    // Init
     loadAuth();
   </script>
   <script src="nav-loader.js"></script>
