@@ -781,14 +781,15 @@
       const netPnl = trades.reduce((s, t) => s + parseFloat(t.netPnl), 0);
       const wr = wins + losses > 0 ? Math.round(wins / (wins + losses) * 100) : 0;
 
-      const stat = (label, val, color) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
+      const stat = (label, val, color, sub='') => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
         <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">${label}</div>
         <div class="text-lg font-black" style="color:${color}">${val}</div>
+        ${sub ? `<div class="text-[10px] text-zinc-600 mt-1">${sub}</div>` : ''}
       </div>`;
 
       document.getElementById('result-stats').innerHTML =
         stat('Trades', trades.length, '#ffffff') +
-        stat('Win Rate', wr + '%', wr >= 50 ? '#22c55e' : '#ef4444') +
+        stat('Win Rate', wr + '%', wr >= 50 ? '#22c55e' : '#ef4444', 'TV: ' + (Math.round(wins/total*10000)/100).toFixed(2) + '% (incl. BE)') +
         stat('Net P&L', (netPnl >= 0 ? '+' : '') + '$' + netPnl.toFixed(2), netPnl >= 0 ? '#22c55e' : '#ef4444') +
         stat('W / L / BE', `${wins} / ${losses} / ${bes}`, '#71717a');
 
