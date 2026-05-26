@@ -2548,19 +2548,28 @@
       const dismissed = new Set(flagsData.filter(f => f.dismissed).map(f => f.id));
 
       // 🔴 EXACT: cancelled → active/trial same email/discord/TV
+      // Only flag if the active record is TRIALING — legitimate re-subscribes after cancel are fine
+      // Trial abuse = someone who cancelled then started a NEW trial
       cancelled.forEach(c => {
         active.forEach(a => {
           if (c.id === a.id) return;
+          // Skip if same email and active is not trialing — just a normal re-subscribe
+          const sameEmail = c.email && a.email && c.email.toLowerCase() === a.email.toLowerCase();
+          if (sameEmail && a.status !== 'trialing') return;
+
           const matches = [];
-          if (c.email && a.email && c.email.toLowerCase() === a.email.toLowerCase()) matches.push('email');
+          if (sameEmail) matches.push('email');
           if (c.discordName && a.discordName && c.discordName.toLowerCase() === a.discordName.toLowerCase()) matches.push('Discord');
           if (c.tvUsername && a.tvUsername && c.tvUsername.toLowerCase() === a.tvUsername.toLowerCase()) matches.push('TV username');
-          if (matches.length > 0) {
+
+          // Only flag if trialing (potential abuse) or if matched on Discord/TV but different email
+          const shouldFlag = a.status === 'trialing' || (!sameEmail && matches.length > 0);
+          if (matches.length > 0 && shouldFlag) {
             const flagId = 'exact_' + c.id + '_' + a.id;
             if (!dismissed.has(flagId)) {
               newFlags.push({
                 id: flagId, severity: 'red', type: 'Trial Abuse',
-                reason: 'Cancelled member reappeared as active/trial — matched on: ' + matches.join(', '),
+                reason: 'Cancelled member reappeared as trialing — matched on: ' + matches.join(', '),
                 email: a.email, discordName: a.discordName, tvUsername: a.tvUsername,
                 record1: { name: c.name||c.discordName, email: c.email, discord: c.discordName, tv: c.tvUsername, status: c.status, joined: c.joined },
                 record2: { name: a.name||a.discordName, email: a.email, discord: a.discordName, tv: a.tvUsername, status: a.status, joined: a.joined },
