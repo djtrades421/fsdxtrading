@@ -10,6 +10,11 @@
   <style>
     body { background-color: #000; }
     input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
+    .tracker-row { transition: all 0.2s; }
+    .expand-panel { display: none; }
+    .expand-panel.open { display: block; }
+    .expand-arrow { transition: transform 0.2s; }
+    .expand-arrow.open { transform: rotate(180deg); }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
@@ -32,12 +37,12 @@
 
       <!-- Header -->
       <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-6">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// VIP Members</div>
           <div class="flex items-end justify-between">
             <div>
               <h1 class="text-3xl font-black tracking-tight">Account Tracker</h1>
-              <p class="text-zinc-500 text-sm mt-1">Track eval progress, drawdown, and discipline across all your accounts</p>
+              <p class="text-zinc-500 text-sm mt-1">Firm rules, personal discipline, and eval progress — all in one place</p>
             </div>
             <button onclick="openNewCard()" class="flex items-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
@@ -49,25 +54,25 @@
 
       <!-- Content -->
       <div class="flex-1 px-6 md:px-10 py-8">
-        <div class="max-w-7xl mx-auto">
+        <div class="max-w-5xl mx-auto space-y-3">
 
           <!-- Empty state -->
           <div id="tracker-empty" class="hidden text-center py-20">
             <div class="text-5xl mb-4">📊</div>
             <h3 class="text-xl font-black mb-2">No trackers yet</h3>
-            <p class="text-zinc-500 text-sm mb-6 max-w-md mx-auto">Create a tracker for each account or group — eval progress, drawdown status, and discipline score all in one place.</p>
+            <p class="text-zinc-500 text-sm mb-6 max-w-md mx-auto">Set up a tracker for each account — eval progress, firm rules, and your personal discipline all tracked automatically from your journal.</p>
             <button onclick="openNewCard()" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">+ New Tracker</button>
           </div>
 
-          <!-- Tracker cards grid -->
-          <div id="tracker-grid" class="hidden grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-5"></div>
+          <!-- Tracker list -->
+          <div id="tracker-list" class="hidden space-y-3"></div>
 
         </div>
       </div>
     </div>
   </main>
 
-  <!-- New/Edit Tracker Modal -->
+  <!-- New/Edit Modal -->
   <div id="tracker-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
     <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-lg p-6 max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-6">
@@ -78,16 +83,17 @@
       </div>
 
       <div class="space-y-4">
+
         <!-- Label -->
         <div>
-          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Tracker Label <span class="text-red-500">*</span></label>
-          <input id="tc-label" type="text" placeholder="e.g. Apex Eval, Topstep Funded, All Evals"
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Label <span class="text-red-500">*</span></label>
+          <input id="tc-label" type="text" placeholder="e.g. Apex Eval #1, Topstep Funded, All Evals"
             class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
         </div>
 
-        <!-- Filter section -->
+        <!-- Filter -->
         <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-          <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Which trades to track</div>
+          <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Which Trades to Track</div>
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs text-zinc-600 mb-1">Account Type</label>
@@ -110,9 +116,12 @@
           <div class="text-[10px] text-zinc-600">Leave both as "Any" to track all trades. Pick type only, name only, or both.</div>
         </div>
 
-        <!-- Account rules -->
+        <!-- Firm Rules -->
         <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-          <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Account Rules</div>
+          <div>
+            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Firm Rules</div>
+            <div class="text-[10px] text-zinc-600 mt-0.5">Hard limits set by your prop firm — breaching these ends your account</div>
+          </div>
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs text-zinc-600 mb-1">Account Size <span class="text-red-500">*</span></label>
@@ -125,40 +134,76 @@
                 class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
             </div>
             <div>
-              <label class="block text-xs text-zinc-600 mb-1">Daily Loss Limit</label>
-              <input id="tc-daily" type="number" placeholder="1500"
+              <label class="block text-xs text-zinc-600 mb-1">Firm Daily Loss Limit</label>
+              <input id="tc-firm-daily" type="number" placeholder="1000"
                 class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
             </div>
             <div>
-              <label class="block text-xs text-zinc-600 mb-1">Max Drawdown</label>
+              <label class="block text-xs text-zinc-600 mb-1">Max / Trailing DD</label>
               <input id="tc-maxdd" type="number" placeholder="2500"
                 class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
             </div>
           </div>
-          <!-- Drawdown type -->
           <div>
             <label class="block text-xs text-zinc-600 mb-1.5">Drawdown Type</label>
             <div class="grid grid-cols-2 gap-2">
-              <button onclick="setDDType('trailing')" id="dd-trailing"
+              <button type="button" onclick="setDDType('trailing')" id="dd-trailing"
                 class="py-2 border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-bold rounded-xl transition">Trailing</button>
-              <button onclick="setDDType('eod')" id="dd-eod"
+              <button type="button" onclick="setDDType('eod')" id="dd-eod"
                 class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">End of Day</button>
             </div>
           </div>
-          <!-- Min grade -->
+        </div>
+
+        <!-- My Rules -->
+        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
           <div>
-            <label class="block text-xs text-zinc-600 mb-1">Minimum Acceptable Grade <span class="text-zinc-700 normal-case">— optional</span></label>
-            <select id="tc-mingrade"
-              class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
-              <option value="">No minimum (track all grades)</option>
-              <option value="A+">A+ only</option>
-              <option value="A">A+ and A</option>
-              <option value="B+">A+, A, B+</option>
-              <option value="B">A+, A, B+, B</option>
-              <option value="C+">A+, A, B+, B, C+</option>
-              <option value="C">All grades</option>
-            </select>
-            <p class="text-[10px] text-zinc-600 mt-1">Trades below this grade count against your discipline score</p>
+            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">My Rules</div>
+            <div class="text-[10px] text-zinc-600 mt-0.5">Your personal trading rules — breaking these affects your discipline score</div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Personal Daily Loss Limit</label>
+              <input id="tc-personal-daily" type="number" placeholder="500"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+              <p class="text-[10px] text-zinc-700 mt-0.5">Your own limit, not the firm's</p>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Max Trades Per Day</label>
+              <input id="tc-max-trades" type="number" placeholder="3" min="1"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Max Consecutive Losses</label>
+              <input id="tc-max-consec" type="number" placeholder="2" min="1"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+              <p class="text-[10px] text-zinc-700 mt-0.5">Stop trading after this many in a row</p>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Min Acceptable Grade</label>
+              <select id="tc-mingrade"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+                <option value="">Any grade</option>
+                <option value="A+">A+ only</option>
+                <option value="A">A+ / A</option>
+                <option value="B+">A+ / A / B+</option>
+                <option value="B">A+ through B</option>
+                <option value="C+">A+ through C+</option>
+                <option value="C">All grades</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Trade Window Start</label>
+              <input id="tc-window-start" type="time"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Trade Window End</label>
+              <input id="tc-window-end" type="time"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+            </div>
           </div>
         </div>
 
@@ -186,9 +231,9 @@
     let journalAccounts = [];
     let trackerCards = [];
     let editingCardId = null;
-    let ddType = 'trailing';
+    let ddType_modal = 'trailing';
 
-    // ── Auth & Init ──
+    // ── Init ──
     async function init() {
       const token = localStorage.getItem('fsdx_token');
       if (!token) { window.location.href = 'login.html'; return; }
@@ -198,43 +243,38 @@
         whopKey = data.user?.whopKey;
       } catch(e) {}
       if (!whopKey) { document.getElementById('loading-screen').innerHTML = '<p class="text-zinc-500 text-sm text-center px-6">Could not load your key. <a href="login.html" class="text-green-400">Log out and back in</a>.</p>'; return; }
-
       await Promise.all([loadJournalData(), loadTrackerCards()]);
-
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
-      renderTrackerGrid();
+      renderList();
     }
 
     async function loadJournalData() {
       try {
-        // Load trades
-        const [tradesRes, settingsRes] = await Promise.all([
-          fetch(JOURNAL_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'get-trades', key: whopKey }) }),
-          fetch(JOURNAL_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'get-settings', key: whopKey }) })
+        const [tr, sr] = await Promise.all([
+          fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) }),
+          fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-settings', key: whopKey }) })
         ]);
-        const tradesData = await tradesRes.json();
-        const settingsData = await settingsRes.json();
-        journalTrades = Array.isArray(tradesData.trades) ? tradesData.trades : [];
-        journalAccounts = Array.isArray(settingsData.accounts) ? settingsData.accounts : [];
-      } catch(e) { console.error('Failed to load journal data:', e); }
+        const td = await tr.json(); const sd = await sr.json();
+        journalTrades = Array.isArray(td.trades) ? td.trades : [];
+        journalAccounts = Array.isArray(sd.accounts) ? sd.accounts : [];
+      } catch(e) {}
     }
 
     async function loadTrackerCards() {
       try {
-        const res = await fetch(JOURNAL_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'get-trades', key: 'tracker_settings:' + whopKey }) });
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key:'tracker_settings:'+whopKey }) });
         const data = await res.json();
         trackerCards = Array.isArray(data.trades) ? data.trades : [];
       } catch(e) { trackerCards = []; }
     }
 
     async function saveTrackerCards() {
-      await fetch(JOURNAL_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'save-all', key: 'tracker_settings:' + whopKey, payload: { trades: trackerCards } }) });
+      await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ action:'save-all', key:'tracker_settings:'+whopKey, payload:{ trades: trackerCards } }) });
     }
 
-    // ── Filter trades for a card ──
+    // ── Stats calculation ──
     function getCardTrades(card) {
       return journalTrades.filter(t => {
         const typeMatch = !card.filterType || t.accountType === card.filterType;
@@ -243,241 +283,353 @@
       });
     }
 
-    // ── Calculate stats for a card ──
-    function calcCardStats(card) {
+    function calcStats(card) {
       const trades = getCardTrades(card);
       const today = new Date().toISOString().slice(0,10);
-      const numAccounts = card.numAccountsMultiplier || 1;
 
-      // P&L — multiply by numAccounts from each trade
-      const totalPnl = trades.reduce((s, t) => s + (parseFloat(t.netPnl)||0) * (t.numAccounts||1), 0);
+      // P&L with numAccounts multiplier
+      const pnl = t => (parseFloat(t.netPnl)||0) * (t.numAccounts||1);
+      const totalPnl = trades.reduce((s,t) => s+pnl(t), 0);
+      const todayTrades = trades.filter(t => t.date === today);
+      const todayPnl = todayTrades.reduce((s,t) => s+pnl(t), 0);
 
-      // Today's P&L
-      const todayPnl = trades.filter(t => t.date === today)
-        .reduce((s, t) => s + (parseFloat(t.netPnl)||0) * (t.numAccounts||1), 0);
+      // Win stats
+      const wins = trades.filter(t => t.result==='WIN').length;
+      const losses = trades.filter(t => t.result==='LOSS').length;
+      const wr = wins+losses > 0 ? Math.round(wins/(wins+losses)*100) : 0;
+      const tradingDays = new Set(trades.map(t=>t.date).filter(Boolean)).size;
 
-      // Drawdown
-      const sorted = [...trades].sort((a,b) => (a.date+a.entryTime||'') < (b.date+b.entryTime||'') ? -1 : 1);
-      let equity = 0, peak = 0, maxDD = 0, currentDD = 0;
+      // Drawdown (trailing from equity peak)
+      const sorted = [...trades].sort((a,b) => ((a.date||'')+(a.entryTime||'')) < ((b.date||'')+(b.entryTime||'')) ? -1 : 1);
+      let equity=0, peak=0, maxDD=0, currentDD=0, hwm=0;
       sorted.forEach(t => {
-        equity += (parseFloat(t.netPnl)||0) * (t.numAccounts||1);
-        if (equity > peak) peak = equity;
+        equity += pnl(t);
+        if (equity > peak) { peak = equity; hwm = equity; }
         currentDD = equity - peak;
         if (currentDD < maxDD) maxDD = currentDD;
       });
 
-      // Win stats
-      const wins = trades.filter(t => t.result === 'WIN').length;
-      const losses = trades.filter(t => t.result === 'LOSS').length;
-      const wr = wins + losses > 0 ? Math.round(wins/(wins+losses)*100) : 0;
-
-      // Days traded
-      const tradingDays = new Set(trades.map(t => t.date).filter(Boolean)).size;
-
-      // Discipline score — % of trades at or above minimum grade
-      let disciplineScore = 100;
-      if (card.minGrade && trades.length > 0) {
-        const minIdx = GRADE_ORDER.indexOf(card.minGrade);
-        const goodTrades = trades.filter(t => {
-          if (!t.grade) return false;
-          const tIdx = GRADE_ORDER.indexOf(t.grade);
-          return tIdx !== -1 && tIdx <= minIdx;
-        }).length;
-        const gradedTrades = trades.filter(t => t.grade).length;
-        disciplineScore = gradedTrades > 0 ? Math.round(goodTrades/gradedTrades*100) : 100;
+      // Consecutive losses (current streak)
+      let consecLosses = 0;
+      for (let i = sorted.length-1; i >= 0; i--) {
+        if (sorted[i].result === 'LOSS') consecLosses++;
+        else break;
       }
+      // Max ever
+      let maxConsec = 0, cur = 0;
+      sorted.forEach(t => { if(t.result==='LOSS'){cur++;maxConsec=Math.max(maxConsec,cur);}else cur=0; });
 
-      // Off-plan trades (below min grade)
-      const offPlanTrades = card.minGrade ? trades.filter(t => {
-        if (!t.grade) return false;
-        const minIdx = GRADE_ORDER.indexOf(card.minGrade);
-        const tIdx = GRADE_ORDER.indexOf(t.grade);
-        return tIdx > minIdx;
+      // Today's trade count
+      const todayTradeCount = todayTrades.length;
+
+      // Trades outside trading window
+      const windowViolations = (card.windowStart && card.windowEnd) ? trades.filter(t => {
+        if (!t.entryTime) return false;
+        return t.entryTime < card.windowStart || t.entryTime > card.windowEnd;
       }).length : 0;
 
-      // Target progress
+      // Grade discipline
+      const minGradeIdx = card.minGrade ? GRADE_ORDER.indexOf(card.minGrade) : -1;
+      const gradedTrades = trades.filter(t => t.grade);
+      const offGrade = minGradeIdx >= 0 ? gradedTrades.filter(t => {
+        const idx = GRADE_ORDER.indexOf(t.grade);
+        return idx > minGradeIdx;
+      }).length : 0;
+      const gradeScore = gradedTrades.length > 0
+        ? Math.round((gradedTrades.length - offGrade) / gradedTrades.length * 100)
+        : 100;
+
+      // Days where personal daily limit was breached
+      const personalDaily = parseFloat(card.personalDaily) || 0;
+      let dailyLimitBreaches = 0;
+      if (personalDaily > 0) {
+        const byDay = {};
+        trades.forEach(t => { if(t.date) byDay[t.date] = (byDay[t.date]||0) + pnl(t); });
+        dailyLimitBreaches = Object.values(byDay).filter(v => v < -personalDaily).length;
+      }
+
+      // Days where max trades was breached
+      const maxTradesPerDay = parseInt(card.maxTradesPerDay) || 0;
+      let tradeCountBreaches = 0;
+      if (maxTradesPerDay > 0) {
+        const byDay = {};
+        trades.forEach(t => { if(t.date) byDay[t.date] = (byDay[t.date]||0) + 1; });
+        tradeCountBreaches = Object.values(byDay).filter(v => v > maxTradesPerDay).length;
+      }
+
+      // Consecutive loss breaches
+      const maxConsecLimit = parseInt(card.maxConsecLosses) || 0;
+      const consecBreach = maxConsecLimit > 0 && consecLosses >= maxConsecLimit;
+
+      // Overall discipline score — weighted average of all personal rules
+      const scores = [gradeScore];
+      if (personalDaily > 0 && trades.length > 0) {
+        const dayCount = Object.keys((() => { const b={}; trades.forEach(t=>{if(t.date)b[t.date]=1;}); return b; })()).length;
+        scores.push(Math.round((dayCount - dailyLimitBreaches) / dayCount * 100));
+      }
+      if (maxTradesPerDay > 0 && trades.length > 0) {
+        const dayCount = Object.keys((() => { const b={}; trades.forEach(t=>{if(t.date)b[t.date]=1;}); return b; })()).length;
+        scores.push(Math.round((dayCount - tradeCountBreaches) / dayCount * 100));
+      }
+      if (windowViolations > 0 && trades.length > 0) scores.push(Math.round((trades.length - windowViolations) / trades.length * 100));
+      const disciplineScore = Math.round(scores.reduce((s,v)=>s+v,0)/scores.length);
+
+      // Firm rule statuses
+      const firmDaily = parseFloat(card.firmDaily) || 0;
+      const maxDDLimit = parseFloat(card.maxDD) || 0;
       const target = parseFloat(card.profitTarget) || 0;
+      const todayLoss = Math.abs(Math.min(0, todayPnl));
+      const firmDailyPct = firmDaily > 0 ? Math.min(100, Math.round(todayLoss/firmDaily*100)) : null;
+      const personalDailyPct = personalDaily > 0 ? Math.min(100, Math.round(todayLoss/personalDaily*100)) : null;
+      const ddPct = maxDDLimit > 0 ? Math.min(100, Math.round(Math.abs(currentDD)/maxDDLimit*100)) : null;
       const targetPct = target > 0 ? Math.min(100, Math.round(totalPnl/target*100)) : null;
 
-      // Daily loss status
-      const dailyLimit = parseFloat(card.dailyLoss) || 0;
-      const dailyUsedPct = dailyLimit > 0 ? Math.min(100, Math.round(Math.abs(Math.min(0, todayPnl))/dailyLimit*100)) : null;
-
-      // Max DD status
-      const maxDDLimit = parseFloat(card.maxDD) || 0;
-      const ddUsedPct = maxDDLimit > 0 ? Math.min(100, Math.round(Math.abs(currentDD)/maxDDLimit*100)) : null;
+      // Remaining today
+      const firmDailyRemaining = firmDaily > 0 ? Math.max(0, firmDaily - todayLoss) : null;
+      const personalDailyRemaining = personalDaily > 0 ? Math.max(0, personalDaily - todayLoss) : null;
+      const ddRemaining = maxDDLimit > 0 ? Math.max(0, maxDDLimit - Math.abs(currentDD)) : null;
 
       // Overall status
       let status = 'green';
-      if (ddUsedPct >= 80 || dailyUsedPct >= 80) status = 'red';
-      else if (ddUsedPct >= 50 || dailyUsedPct >= 50) status = 'yellow';
       if (targetPct >= 100) status = 'complete';
+      else if ((ddPct||0) >= 80 || (firmDailyPct||0) >= 100) status = 'red';
+      else if ((ddPct||0) >= 50 || (firmDailyPct||0) >= 80 || consecBreach) status = 'yellow';
 
-      return { totalPnl, todayPnl, maxDD, currentDD, wins, losses, wr, tradingDays,
-               disciplineScore, offPlanTrades, targetPct, dailyUsedPct, ddUsedPct,
-               status, trades, target, dailyLimit, maxDDLimit };
+      // Weekly grade breakdown (last 5 weeks)
+      const weeklyGrades = {};
+      trades.forEach(t => {
+        if (!t.date || !t.grade) return;
+        const d = new Date(t.date+'T00:00:00');
+        const week = d.getFullYear() + '-W' + String(Math.ceil((d.getDate() - d.getDay() + 1) / 7 + (new Date(d.getFullYear(),0,1).getDay()-1)/7)).padStart(2,'0');
+        if (!weeklyGrades[week]) weeklyGrades[week] = { good: 0, total: 0 };
+        weeklyGrades[week].total++;
+        if (minGradeIdx >= 0) {
+          if (GRADE_ORDER.indexOf(t.grade) <= minGradeIdx) weeklyGrades[week].good++;
+        } else weeklyGrades[week].good++;
+      });
+
+      return {
+        trades, totalPnl, todayPnl, todayTradeCount, wins, losses, wr, tradingDays,
+        currentDD, maxDD, hwm, consecLosses, maxConsec,
+        gradeScore, offGrade, disciplineScore, windowViolations,
+        dailyLimitBreaches, tradeCountBreaches, consecBreach,
+        firmDailyPct, personalDailyPct, ddPct, targetPct,
+        firmDailyRemaining, personalDailyRemaining, ddRemaining,
+        status, target, firmDaily, personalDaily: parseFloat(card.personalDaily)||0,
+        maxDDLimit, maxConsecLimit
+      };
     }
 
     // ── Render ──
-    function renderTrackerGrid() {
-      const grid = document.getElementById('tracker-grid');
+    function renderList() {
+      const list = document.getElementById('tracker-list');
       const empty = document.getElementById('tracker-empty');
-
-      if (!trackerCards.length) {
-        empty.classList.remove('hidden');
-        grid.classList.add('hidden');
-        return;
-      }
-      empty.classList.add('hidden');
-      grid.classList.remove('hidden');
-      grid.innerHTML = trackerCards.map(card => renderCard(card)).join('');
+      if (!trackerCards.length) { empty.classList.remove('hidden'); list.classList.add('hidden'); return; }
+      empty.classList.add('hidden'); list.classList.remove('hidden');
+      list.innerHTML = trackerCards.map(card => renderRow(card)).join('');
     }
 
-    function renderCard(card) {
-      const s = calcCardStats(card);
-      const pnlColor = s.totalPnl >= 0 ? '#22c55e' : '#ef4444';
-      const todayColor = s.todayPnl >= 0 ? '#22c55e' : '#ef4444';
-
-      const statusColors = {
-        green: 'border-green-500/20 bg-green-500/5',
-        yellow: 'border-yellow-500/20 bg-yellow-500/5',
-        red: 'border-red-500/20 bg-red-500/5',
-        complete: 'border-green-400/40 bg-green-500/10'
-      };
-      const statusDot = {
-        green: 'bg-green-400',
-        yellow: 'bg-yellow-400',
-        red: 'bg-red-400 animate-pulse',
-        complete: 'bg-green-400'
-      };
-      const statusLabel = {
-        green: 'On Track',
-        yellow: 'Caution',
-        red: 'At Risk',
-        complete: '✓ Target Hit'
-      };
-
+    function renderRow(card) {
+      const s = calcStats(card);
       const filterLabel = [card.filterType, card.filterName].filter(Boolean).join(' · ') || 'All Trades';
+      const pnlCol = s.totalPnl >= 0 ? 'text-green-400' : 'text-red-400';
+      const pnlSign = s.totalPnl >= 0 ? '+' : '-';
 
-      const progressBar = (pct, color, label, sub, warn=false) => {
-        const barColor = warn && pct >= 80 ? '#ef4444' : warn && pct >= 50 ? '#f59e0b' : color;
-        return `<div class="mb-3">
-          <div class="flex items-center justify-between mb-1">
-            <span class="text-[10px] text-zinc-500 uppercase tracking-wider">${label}</span>
-            <span class="text-xs font-bold" style="color:${barColor}">${pct}%${sub ? ' <span class="text-zinc-600 font-normal text-[10px]">'+sub+'</span>' : ''}</span>
-          </div>
-          <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
-            <div class="h-full rounded-full transition-all" style="width:${pct}%;background:${barColor}"></div>
-          </div>
+      const statusConfig = {
+        green:    { dot: 'bg-green-400',           badge: 'bg-green-500/10 text-green-400 border-green-500/20',   label: 'On Track' },
+        yellow:   { dot: 'bg-yellow-400',           badge: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20', label: 'Caution' },
+        red:      { dot: 'bg-red-400 animate-pulse', badge: 'bg-red-500/10 text-red-400 border-red-500/20',         label: 'At Risk' },
+        complete: { dot: 'bg-green-400',             badge: 'bg-green-500/20 text-green-300 border-green-400/30',   label: '✓ Target Hit' },
+      };
+      const sc = statusConfig[s.status] || statusConfig.green;
+
+      const discColor = s.disciplineScore >= 80 ? 'text-green-400' : s.disciplineScore >= 60 ? 'text-yellow-400' : 'text-red-400';
+      const wrColor = s.wr >= 55 ? 'text-green-400' : s.wr >= 45 ? 'text-zinc-300' : 'text-red-400';
+
+      // Mini progress bar
+      const miniBar = (pct, warn) => {
+        if (pct === null) return '';
+        const col = warn ? (pct>=80?'#ef4444':pct>=50?'#f59e0b':'#22c55e') : '#22c55e';
+        return `<div class="h-1 bg-white/5 rounded-full overflow-hidden w-16">
+          <div class="h-full rounded-full" style="width:${pct}%;background:${col}"></div>
         </div>`;
       };
 
-      const scoreRing = (score, label) => {
-        const r = 20, circ = 2*Math.PI*r;
-        const dash = (score/100)*circ, gap = circ-dash;
-        const col = score >= 80 ? '#22c55e' : score >= 60 ? '#f59e0b' : '#ef4444';
-        return `<div class="flex flex-col items-center">
-          <div class="relative flex items-center justify-center" style="width:56px;height:56px">
-            <svg width="56" height="56" viewBox="0 0 56 56" style="transform:rotate(-90deg);position:absolute;inset:0">
-              <circle cx="28" cy="28" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
-              <circle cx="28" cy="28" r="${r}" fill="none" stroke="${col}" stroke-width="6"
-                stroke-dasharray="${dash.toFixed(1)} ${gap.toFixed(1)}" stroke-linecap="round" opacity="0.9"/>
-            </svg>
-            <div class="text-sm font-black relative z-10" style="color:${col}">${score}%</div>
-          </div>
-          <div class="text-[10px] text-zinc-500 mt-1 uppercase tracking-wide">${label}</div>
-        </div>`;
-      };
-
-      return `<div class="border ${statusColors[s.status]} rounded-2xl p-5 space-y-4 relative">
-
-        <!-- Card header -->
-        <div class="flex items-start justify-between">
-          <div>
-            <div class="flex items-center gap-2 mb-0.5">
-              <span class="w-2 h-2 rounded-full ${statusDot[s.status]}"></span>
-              <span class="text-sm font-black text-white">${card.label}</span>
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden hover:border-white/20 transition">
+        <!-- Row header — always visible -->
+        <div class="px-5 py-4 cursor-pointer flex items-center gap-4" onclick="toggleExpand('${card.id}')">
+          <!-- Status dot + label -->
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <span class="w-2 h-2 rounded-full ${sc.dot} shrink-0"></span>
+            <div class="min-w-0">
+              <div class="text-sm font-black text-white truncate">${card.label}</div>
+              <div class="text-[10px] text-zinc-600">${filterLabel}</div>
             </div>
-            <div class="text-[10px] text-zinc-600">${filterLabel}</div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${s.status==='red'?'bg-red-500/10 text-red-400':s.status==='yellow'?'bg-yellow-500/10 text-yellow-400':s.status==='complete'?'bg-green-500/20 text-green-300':'bg-green-500/10 text-green-400'}">${statusLabel[s.status]}</span>
-            <button onclick="openEditCard('${card.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition">
+
+          <!-- Status badge -->
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${sc.badge} whitespace-nowrap hidden sm:block">${sc.label}</span>
+
+          <!-- P&L -->
+          <div class="text-right shrink-0">
+            <div class="text-sm font-black ${pnlCol}">${pnlSign}$${Math.abs(s.totalPnl).toFixed(0)}</div>
+            <div class="text-[10px] text-zinc-600">${s.trades.length} trades</div>
+          </div>
+
+          <!-- Progress bars -->
+          <div class="hidden md:flex flex-col gap-1 items-end shrink-0">
+            ${s.targetPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">Target</span>${miniBar(s.targetPct,false)}<span class="text-[10px] font-bold text-zinc-400">${s.targetPct}%</span></div>` : ''}
+            ${s.ddPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">DD</span>${miniBar(s.ddPct,true)}<span class="text-[10px] font-bold text-zinc-400">${s.ddPct}%</span></div>` : ''}
+          </div>
+
+          <!-- Discipline + WR -->
+          <div class="hidden lg:flex gap-4 shrink-0">
+            <div class="text-center">
+              <div class="text-sm font-black ${discColor}">${s.disciplineScore}%</div>
+              <div class="text-[10px] text-zinc-600">Discipline</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm font-black ${wrColor}">${s.wr}%</div>
+              <div class="text-[10px] text-zinc-600">Win Rate</div>
+            </div>
+          </div>
+
+          <!-- Edit + expand -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="event.stopPropagation();openEditCard('${card.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
             </button>
+            <svg class="w-4 h-4 text-zinc-500 expand-arrow" id="arrow-${card.id}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
           </div>
         </div>
 
-        <!-- P&L row -->
-        <div class="grid grid-cols-3 gap-3 text-center">
-          <div class="border border-white/5 bg-zinc-950/40 rounded-xl p-3">
-            <div class="text-[10px] text-zinc-500 mb-1">Total P&L</div>
-            <div class="text-base font-black" style="color:${pnlColor}">${s.totalPnl>=0?'+':'-'}$${Math.abs(s.totalPnl).toFixed(0)}</div>
-          </div>
-          <div class="border border-white/5 bg-zinc-950/40 rounded-xl p-3">
-            <div class="text-[10px] text-zinc-500 mb-1">Today</div>
-            <div class="text-base font-black" style="color:${todayColor}">${s.todayPnl>=0?'+':'-'}$${Math.abs(s.todayPnl).toFixed(0)}</div>
-          </div>
-          <div class="border border-white/5 bg-zinc-950/40 rounded-xl p-3">
-            <div class="text-[10px] text-zinc-500 mb-1">Trades</div>
-            <div class="text-base font-black text-white">${s.trades.length}</div>
+        <!-- Expand panel -->
+        <div class="expand-panel border-t border-white/5" id="expand-${card.id}">
+          <div class="p-5 space-y-5">
+
+            <!-- Top stats row -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              ${statBox('Total P&L', (s.totalPnl>=0?'+':'-')+'$'+Math.abs(s.totalPnl).toFixed(2), s.totalPnl>=0?'#22c55e':'#ef4444')}
+              ${statBox('Today\'s P&L', (s.todayPnl>=0?'+':'-')+'$'+Math.abs(s.todayPnl).toFixed(2), s.todayPnl>=0?'#22c55e':'#ef4444')}
+              ${statBox('Win Rate', s.wr+'%', s.wr>=55?'#22c55e':s.wr>=45?'#e4e4e7':'#ef4444', s.wins+'W / '+s.losses+'L')}
+              ${statBox('Days Traded', s.tradingDays, '#e4e4e7')}
+            </div>
+
+            <!-- Firm Rules section -->
+            <div class="border border-white/5 bg-zinc-900/30 rounded-xl p-4 space-y-3">
+              <div class="text-xs font-black text-zinc-400 uppercase tracking-wider">⚡ Firm Rules</div>
+              <div class="space-y-3">
+                ${s.targetPct !== null ? progressRow('Profit Target', s.targetPct, false, '$'+s.totalPnl.toFixed(0)+' of $'+s.target.toFixed(0), s.targetPct>=100?'Hit ✓':'$'+(s.target-s.totalPnl).toFixed(0)+' to go') : ''}
+                ${s.firmDailyPct !== null ? progressRow('Firm Daily Limit — Today', s.firmDailyPct, true, '$'+Math.abs(Math.min(0,s.todayPnl)).toFixed(0)+' used of $'+s.firmDaily.toFixed(0), s.firmDailyRemaining!==null?'$'+s.firmDailyRemaining.toFixed(0)+' remaining':'') : ''}
+                ${s.ddPct !== null ? progressRow((card.ddType==='eod'?'EOD':'Trailing')+' Drawdown', s.ddPct, true, '$'+Math.abs(s.currentDD).toFixed(0)+' used of $'+s.maxDDLimit.toFixed(0), s.ddRemaining!==null?'$'+s.ddRemaining.toFixed(0)+' remaining':'') : ''}
+                ${s.maxDDLimit > 0 ? `<div class="flex justify-between text-xs py-1 border-b border-white/5"><span class="text-zinc-500">High Water Mark</span><span class="text-white font-bold">${s.hwm>=0?'+':'-'}$${Math.abs(s.hwm).toFixed(2)}</span></div>` : ''}
+                ${s.maxDDLimit > 0 ? `<div class="flex justify-between text-xs py-1"><span class="text-zinc-500">Max Drawdown Reached</span><span class="text-red-400 font-bold">-$${Math.abs(s.maxDD).toFixed(2)}</span></div>` : ''}
+              </div>
+            </div>
+
+            <!-- My Rules section -->
+            <div class="border border-white/5 bg-zinc-900/30 rounded-xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="text-xs font-black text-zinc-400 uppercase tracking-wider">📋 My Rules</div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] text-zinc-500">Discipline Score</span>
+                  <span class="text-sm font-black ${s.disciplineScore>=80?'text-green-400':s.disciplineScore>=60?'text-yellow-400':'text-red-400'}">${s.disciplineScore}%</span>
+                </div>
+              </div>
+              <div class="space-y-2">
+                ${card.personalDaily ? ruleRow('Personal Daily Loss Limit', s.personalDailyPct!==null?s.personalDailyPct+'% used':'—', s.personalDailyRemaining!==null?'$'+s.personalDailyRemaining.toFixed(0)+' remaining today':'', s.personalDailyPct>=100) : ''}
+                ${card.maxTradesPerDay ? ruleRow('Max Trades Today', s.todayTradeCount+' / '+card.maxTradesPerDay, s.todayTradeCount>card.maxTradesPerDay?'⚠ Over limit':'Within limit', s.todayTradeCount>parseInt(card.maxTradesPerDay)) : ''}
+                ${card.maxConsecLosses ? ruleRow('Consecutive Losses', s.consecLosses+' in a row (max '+card.maxConsecLosses+')', s.consecBreach?'⚠ Stop trading':'OK', s.consecBreach) : ''}
+                ${card.minGrade ? ruleRow('Min Grade Adherence', s.gradeScore+'% on plan', s.offGrade+' off-grade trade'+(s.offGrade!==1?'s':''), s.gradeScore<80) : ''}
+                ${card.windowStart && card.windowEnd ? ruleRow('Trading Window', card.windowStart+' – '+card.windowEnd, s.windowViolations+' trade'+(s.windowViolations!==1?'s':'')+' outside window', s.windowViolations>0) : ''}
+                ${!card.personalDaily && !card.maxTradesPerDay && !card.maxConsecLosses && !card.minGrade && !card.windowStart
+                  ? '<div class="text-xs text-zinc-600 py-2">No personal rules set — edit this tracker to add your rules.</div>' : ''}
+              </div>
+              ${s.dailyLimitBreaches > 0 || s.tradeCountBreaches > 0 ? `
+              <div class="border-t border-white/5 pt-3 text-xs text-zinc-500">
+                ${s.dailyLimitBreaches>0?'<span class="text-red-400 font-bold">'+s.dailyLimitBreaches+'</span> day'+(s.dailyLimitBreaches!==1?'s':'')+' breached personal daily limit · ':''}
+                ${s.tradeCountBreaches>0?'<span class="text-red-400 font-bold">'+s.tradeCountBreaches+'</span> day'+(s.tradeCountBreaches!==1?'s':'')+' exceeded max trades':''}
+              </div>` : ''}
+            </div>
+
+            <!-- Streak info -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              ${statBox('Current Loss Streak', s.consecLosses > 0 ? s.consecLosses+' in a row' : 'None', s.consecLosses>=(s.maxConsecLimit||999)?'#ef4444':s.consecLosses>0?'#f59e0b':'#22c55e')}
+              ${statBox('Max Loss Streak', s.maxConsec > 0 ? s.maxConsec+' in a row' : '—', '#71717a')}
+              ${statBox('Today\'s Trades', s.todayTradeCount+(card.maxTradesPerDay?' / '+card.maxTradesPerDay:''), s.todayTradeCount>=(parseInt(card.maxTradesPerDay)||999)?'#ef4444':'#e4e4e7')}
+            </div>
+
           </div>
         </div>
-
-        <!-- Progress bars -->
-        <div>
-          ${s.targetPct !== null ? progressBar(Math.max(0,s.targetPct), '#22c55e', 'Profit Target', `$${s.totalPnl.toFixed(0)} of $${s.target.toFixed(0)}`) : ''}
-          ${s.dailyUsedPct !== null ? progressBar(s.dailyUsedPct, '#22c55e', 'Daily Loss Used', `$${Math.abs(Math.min(0,s.todayPnl)).toFixed(0)} of $${s.dailyLimit.toFixed(0)}`, true) : ''}
-          ${s.ddUsedPct !== null ? progressBar(s.ddUsedPct, '#22c55e', `${card.ddType==='eod'?'EOD':'Trailing'} Drawdown Used`, `$${Math.abs(s.currentDD).toFixed(0)} of $${s.maxDDLimit.toFixed(0)}`, true) : ''}
-        </div>
-
-        <!-- Discipline + Win Rate -->
-        <div class="flex items-center justify-around pt-2 border-t border-white/5">
-          ${scoreRing(s.disciplineScore, 'Discipline')}
-          ${scoreRing(s.wr, 'Win Rate')}
-          <div class="flex flex-col items-center">
-            <div class="text-xl font-black text-white">${s.tradingDays}</div>
-            <div class="text-[10px] text-zinc-500 mt-1 uppercase tracking-wide">Days Traded</div>
-          </div>
-          ${s.offPlanTrades > 0 ? `<div class="flex flex-col items-center">
-            <div class="text-xl font-black text-red-400">${s.offPlanTrades}</div>
-            <div class="text-[10px] text-zinc-500 mt-1 uppercase tracking-wide">Off Plan</div>
-          </div>` : `<div class="flex flex-col items-center">
-            <div class="text-xl font-black text-green-400">✓</div>
-            <div class="text-[10px] text-zinc-500 mt-1 uppercase tracking-wide">On Plan</div>
-          </div>`}
-        </div>
-
-        ${s.trades.length === 0 ? '<div class="text-center text-xs text-zinc-600 py-2">No trades match this filter yet</div>' : ''}
       </div>`;
     }
 
-    // ── Modal ──
-    let ddType_modal = 'trailing';
+    function statBox(label, val, color, sub='') {
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
+        <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">${label}</div>
+        <div class="text-base font-black" style="color:${color}">${val}</div>
+        ${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}
+      </div>`;
+    }
 
+    function progressRow(label, pct, warn, used, remaining) {
+      const col = warn ? (pct>=80?'#ef4444':pct>=50?'#f59e0b':'#22c55e') : '#22c55e';
+      return `<div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-zinc-500">${label}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] text-zinc-600">${used}</span>
+            <span class="text-xs font-bold" style="color:${col}">${pct}%</span>
+          </div>
+        </div>
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden mb-1">
+          <div class="h-full rounded-full transition-all" style="width:${pct}%;background:${col}"></div>
+        </div>
+        ${remaining ? `<div class="text-[10px] text-zinc-600 text-right">${remaining}</div>` : ''}
+      </div>`;
+    }
+
+    function ruleRow(label, val, sub, breach) {
+      return `<div class="flex items-start justify-between py-2 border-b border-white/5 last:border-0">
+        <div>
+          <div class="text-xs text-zinc-400">${label}</div>
+          ${sub ? `<div class="text-[10px] ${breach?'text-red-400':'text-zinc-600'} mt-0.5">${sub}</div>` : ''}
+        </div>
+        <span class="text-xs font-bold ml-4 ${breach?'text-red-400':'text-zinc-300'} whitespace-nowrap">${val}</span>
+      </div>`;
+    }
+
+    function toggleExpand(id) {
+      const panel = document.getElementById('expand-'+id);
+      const arrow = document.getElementById('arrow-'+id);
+      if (!panel || !arrow) return;
+      const isOpen = panel.classList.contains('open');
+      panel.classList.toggle('open', !isOpen);
+      arrow.classList.toggle('open', !isOpen);
+    }
+
+    // ── Modal ──
     function setDDType(type) {
       ddType_modal = type;
       document.getElementById('dd-trailing').className = 'py-2 border text-xs font-bold rounded-xl transition ' +
-        (type === 'trailing' ? 'border-green-500/40 bg-green-500/10 text-green-400' : 'border-white/10 text-zinc-500');
+        (type==='trailing'?'border-green-500/40 bg-green-500/10 text-green-400':'border-white/10 text-zinc-500');
       document.getElementById('dd-eod').className = 'py-2 border text-xs font-bold rounded-xl transition ' +
-        (type === 'eod' ? 'border-green-500/40 bg-green-500/10 text-green-400' : 'border-white/10 text-zinc-500');
+        (type==='eod'?'border-green-500/40 bg-green-500/10 text-green-400':'border-white/10 text-zinc-500');
     }
 
     function updateNameDropdown() {
       const type = document.getElementById('tc-type').value;
       const sel = document.getElementById('tc-name');
-      const current = sel.value;
+      const cur = sel.value;
       sel.innerHTML = '<option value="">Any Account</option>';
-      const filtered = type
-        ? journalAccounts.filter(a => !a.accountType || a.accountType === type)
-        : journalAccounts;
-      filtered.forEach(a => {
-        const opt = document.createElement('option');
-        opt.value = a.name;
-        opt.textContent = a.name + (a.accountType && !type ? ' (' + a.accountType + ')' : '');
-        sel.appendChild(opt);
-      });
-      if (current) sel.value = current;
+      (type ? journalAccounts.filter(a => !a.accountType || a.accountType===type) : journalAccounts)
+        .forEach(a => {
+          const opt = document.createElement('option');
+          opt.value = a.name;
+          opt.textContent = a.name + (a.accountType&&!type?' ('+a.accountType+')':'');
+          sel.appendChild(opt);
+        });
+      if (cur) sel.value = cur;
     }
 
     function openNewCard() {
@@ -485,9 +637,9 @@
       document.getElementById('modal-title').textContent = 'New Tracker';
       document.getElementById('delete-btn-wrap').classList.add('hidden');
       document.getElementById('modal-msg').classList.add('hidden');
-      ['tc-label','tc-size','tc-target','tc-daily','tc-maxdd'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('tc-type').value = '';
-      document.getElementById('tc-mingrade').value = '';
+      ['tc-label','tc-size','tc-target','tc-firm-daily','tc-maxdd','tc-personal-daily','tc-max-trades','tc-max-consec','tc-window-start','tc-window-end'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('tc-type').value='';
+      document.getElementById('tc-mingrade').value='';
       setDDType('trailing');
       updateNameDropdown();
       document.getElementById('tracker-modal').classList.remove('hidden');
@@ -495,74 +647,74 @@
     }
 
     function openEditCard(id) {
-      const card = trackerCards.find(c => c.id === id);
+      const card = trackerCards.find(c=>c.id===id);
       if (!card) return;
       editingCardId = id;
       document.getElementById('modal-title').textContent = 'Edit Tracker';
       document.getElementById('delete-btn-wrap').classList.remove('hidden');
       document.getElementById('modal-msg').classList.add('hidden');
-      document.getElementById('tc-label').value = card.label || '';
-      document.getElementById('tc-type').value = card.filterType || '';
-      document.getElementById('tc-size').value = card.accountSize || '';
-      document.getElementById('tc-target').value = card.profitTarget || '';
-      document.getElementById('tc-daily').value = card.dailyLoss || '';
-      document.getElementById('tc-maxdd').value = card.maxDD || '';
-      document.getElementById('tc-mingrade').value = card.minGrade || '';
-      setDDType(card.ddType || 'trailing');
+      document.getElementById('tc-label').value = card.label||'';
+      document.getElementById('tc-type').value = card.filterType||'';
+      document.getElementById('tc-size').value = card.accountSize||'';
+      document.getElementById('tc-target').value = card.profitTarget||'';
+      document.getElementById('tc-firm-daily').value = card.firmDaily||'';
+      document.getElementById('tc-maxdd').value = card.maxDD||'';
+      document.getElementById('tc-personal-daily').value = card.personalDaily||'';
+      document.getElementById('tc-max-trades').value = card.maxTradesPerDay||'';
+      document.getElementById('tc-max-consec').value = card.maxConsecLosses||'';
+      document.getElementById('tc-mingrade').value = card.minGrade||'';
+      document.getElementById('tc-window-start').value = card.windowStart||'';
+      document.getElementById('tc-window-end').value = card.windowEnd||'';
+      setDDType(card.ddType||'trailing');
       updateNameDropdown();
-      document.getElementById('tc-name').value = card.filterName || '';
+      document.getElementById('tc-name').value = card.filterName||'';
       document.getElementById('tracker-modal').classList.remove('hidden');
     }
 
-    function closeModal() {
-      document.getElementById('tracker-modal').classList.add('hidden');
-      editingCardId = null;
-    }
+    function closeModal() { document.getElementById('tracker-modal').classList.add('hidden'); editingCardId=null; }
 
     async function saveCard() {
       const label = document.getElementById('tc-label').value.trim();
-      if (!label) { showModalMsg('Tracker label is required.', 'error'); return; }
-      const accountSize = parseFloat(document.getElementById('tc-size').value) || null;
-      if (!accountSize) { showModalMsg('Account size is required.', 'error'); return; }
-
+      if (!label) { showModalMsg('Label is required.','error'); return; }
+      const accountSize = parseFloat(document.getElementById('tc-size').value)||null;
+      if (!accountSize) { showModalMsg('Account size is required.','error'); return; }
       const card = {
-        id: editingCardId || (Date.now().toString() + Math.random().toString(36).slice(2)),
+        id: editingCardId||(Date.now().toString()+Math.random().toString(36).slice(2)),
         label,
         filterType: document.getElementById('tc-type').value,
         filterName: document.getElementById('tc-name').value,
         accountSize,
-        profitTarget: parseFloat(document.getElementById('tc-target').value) || null,
-        dailyLoss: parseFloat(document.getElementById('tc-daily').value) || null,
-        maxDD: parseFloat(document.getElementById('tc-maxdd').value) || null,
+        profitTarget: parseFloat(document.getElementById('tc-target').value)||null,
+        firmDaily: parseFloat(document.getElementById('tc-firm-daily').value)||null,
+        maxDD: parseFloat(document.getElementById('tc-maxdd').value)||null,
         ddType: ddType_modal,
+        personalDaily: parseFloat(document.getElementById('tc-personal-daily').value)||null,
+        maxTradesPerDay: parseInt(document.getElementById('tc-max-trades').value)||null,
+        maxConsecLosses: parseInt(document.getElementById('tc-max-consec').value)||null,
         minGrade: document.getElementById('tc-mingrade').value,
+        windowStart: document.getElementById('tc-window-start').value,
+        windowEnd: document.getElementById('tc-window-end').value,
         createdAt: new Date().toISOString()
       };
-
-      if (editingCardId) {
-        const idx = trackerCards.findIndex(c => c.id === editingCardId);
-        if (idx !== -1) trackerCards[idx] = card;
-      } else {
-        trackerCards.unshift(card);
-      }
-
+      if (editingCardId) { const idx=trackerCards.findIndex(c=>c.id===editingCardId); if(idx!==-1) trackerCards[idx]=card; }
+      else trackerCards.unshift(card);
       await saveTrackerCards();
       closeModal();
-      renderTrackerGrid();
+      renderList();
     }
 
     async function deleteCard() {
-      if (!editingCardId || !confirm('Delete this tracker?')) return;
-      trackerCards = trackerCards.filter(c => c.id !== editingCardId);
+      if (!editingCardId||!confirm('Delete this tracker?')) return;
+      trackerCards = trackerCards.filter(c=>c.id!==editingCardId);
       await saveTrackerCards();
       closeModal();
-      renderTrackerGrid();
+      renderList();
     }
 
-    function showModalMsg(msg, type) {
-      const el = document.getElementById('modal-msg');
-      el.textContent = msg;
-      el.className = 'text-xs text-center py-2 rounded-lg ' + (type === 'error' ? 'bg-red-500/10 text-red-400' : 'bg-green-500/10 text-green-400');
+    function showModalMsg(msg,type) {
+      const el=document.getElementById('modal-msg');
+      el.textContent=msg;
+      el.className='text-xs text-center py-2 rounded-lg '+(type==='error'?'bg-red-500/10 text-red-400':'bg-green-500/10 text-green-400');
       el.classList.remove('hidden');
     }
 
