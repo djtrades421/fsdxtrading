@@ -473,7 +473,7 @@
           class="flex items-center justify-between py-1.5 px-3 rounded-lg hover:bg-white/5 transition cursor-pointer group">
           <div class="flex items-center gap-3 text-xs">
             <span class="text-zinc-500 font-mono">${t.date||'—'}</span>
-            <span class="text-zinc-600 font-mono">${t.entryTime||'—'}</span>
+            <span class="text-zinc-600 font-mono">${fmt12(t.entryTime)}</span>
             <span class="text-zinc-300 font-bold">${t.ticker||'MNQ'}</span>
             <span class="${t.direction==='LONG'?'text-green-400':'text-red-400'} font-bold">${t.direction||'—'}</span>
             ${t.grade?`<span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-zinc-800 border border-white/10 text-zinc-300">${t.grade}</span>`:''}
@@ -606,7 +606,7 @@
                 ${card.maxConsecLosses ? ruleRow('Consecutive Losses', s.consecLosses+' in a row (max '+card.maxConsecLosses+')', s.consecBreach?'⚠ Stop trading':'OK', s.consecBreach) : ''}
                 ${card.minGrade ? ruleRow('Min Grade Adherence', s.gradeScore+'% on plan', s.offGrade+' off-grade trade'+(s.offGrade!==1?'s':''), s.gradeScore<80) +
                   (s.offGradeTrades.length ? violationList(s.offGradeTrades, 'Off-grade trades') : '') : ''}
-                ${card.windowStart && card.windowEnd ? ruleRow('Trading Window', card.windowStart+' – '+card.windowEnd, s.windowViolations+' trade'+(s.windowViolations!==1?'s':'')+' outside window', s.windowViolations>0) +
+                ${card.windowStart && card.windowEnd ? ruleRow('Trading Window', fmt12(card.windowStart)+' – '+fmt12(card.windowEnd), s.windowViolations+' trade'+(s.windowViolations!==1?'s':'')+' outside window', s.windowViolations>0) +
                   (s.windowViolationTrades.length ? violationList(s.windowViolationTrades, 'Trades outside window') : '') : ''}
                 ${!card.personalDaily && !card.maxTradesPerDay && !card.maxConsecLosses && !card.minGrade && !card.windowStart
                   ? '<div class="text-xs text-zinc-600 py-2">No personal rules set — edit this tracker to add your rules.</div>' : ''}
@@ -782,6 +782,15 @@
       el.textContent=msg;
       el.className='text-xs text-center py-2 rounded-lg '+(type==='error'?'bg-red-500/10 text-red-400':'bg-green-500/10 text-green-400');
       el.classList.remove('hidden');
+    }
+
+    function fmt12(time) {
+      if (!time) return '—';
+      const [h, m] = time.split(':').map(Number);
+      if (isNaN(h)) return time;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      return h12 + ':' + String(m).padStart(2,'0') + ' ' + ampm;
     }
 
     init();
