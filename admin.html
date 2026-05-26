@@ -1943,7 +1943,7 @@
 
     async function confirmImport() {
       if (!pendingImport) return;
-      const { incoming, diff } = pendingImport;
+      const { incoming, diff, format: importFormat } = pendingImport;
 
       // Merge: update changed, add new
       const emailMap = {}; const discordMap = {}; const tvMap = {};
@@ -1953,8 +1953,8 @@
         if (r.tvUsername) tvMap[r.tvUsername.toLowerCase()] = i;
       });
 
-      const isUsersExport = format === 'whop_users';
-      const isMembershipsExport = format === 'whop_memberships';
+      const isUsersExport = importFormat === 'whop_users';
+      const isMembershipsExport = importFormat === 'whop_memberships';
 
       incoming.forEach(item => {
         const emailKey = item.email?.toLowerCase();
