@@ -408,6 +408,39 @@
         } else weeklyGrades[week].good++;
       });
 
+      // ── Violation trade lists ──
+      const pnl2 = t => (parseFloat(t.netPnl)||0) * (t.numAccounts||1);
+
+      // Off-grade trades
+      const offGradeTrades = minGradeIdx >= 0 ? gradedTrades.filter(t => GRADE_ORDER.indexOf(t.grade) > minGradeIdx) : [];
+
+      // Window violation trades
+      const windowViolationTrades = (card.windowStart && card.windowEnd) ? trades.filter(t => {
+        if (!t.entryTime) return false;
+        return t.entryTime < card.windowStart || t.entryTime > card.windowEnd;
+      }) : [];
+
+      // Personal daily limit breach days + trades
+      const personalDailyBreachTrades = [];
+      if (personalDaily > 0) {
+        const byDay = {};
+        sorted.forEach(t => { if(t.date) { if(!byDay[t.date]) byDay[t.date]=[]; byDay[t.date].push(t); } });
+        Object.entries(byDay).forEach(([date, dayTrades]) => {
+          const dayPnl = dayTrades.reduce((s,t) => s+pnl2(t), 0);
+          if (dayPnl < -personalDaily) personalDailyBreachTrades.push(...dayTrades);
+        });
+      }
+
+      // Over max trades per day
+      const overTradeTrades = [];
+      if (maxTradesPerDay > 0) {
+        const byDay = {};
+        sorted.forEach(t => { if(t.date) { if(!byDay[t.date]) byDay[t.date]=[]; byDay[t.date].push(t); } });
+        Object.entries(byDay).forEach(([date, dayTrades]) => {
+          if (dayTrades.length > maxTradesPerDay) overTradeTrades.push(...dayTrades.slice(maxTradesPerDay));
+        });
+      }
+
       return {
         trades, totalPnl, todayPnl, todayTradeCount, wins, losses, wr, tradingDays,
         currentDD, maxDD, hwm, consecLosses, maxConsec,
@@ -416,7 +449,8 @@
         firmDailyPct, personalDailyPct, ddPct, targetPct,
         firmDailyRemaining, personalDailyRemaining, ddRemaining,
         status, target, firmDaily, personalDaily: parseFloat(card.personalDaily)||0,
-        maxDDLimit, maxConsecLimit
+        maxDDLimit, maxConsecLimit,
+        offGradeTrades, windowViolationTrades, personalDailyBreachTrades, overTradeTrades
       };
     }
 
@@ -427,6 +461,34 @@
       if (!trackerCards.length) { empty.classList.remove('hidden'); list.classList.add('hidden'); return; }
       empty.classList.add('hidden'); list.classList.remove('hidden');
       list.innerHTML = trackerCards.map(card => renderRow(card)).join('');
+    }
+
+    function violationList(trades, label) {
+      if (!trades.length) return '';
+      const rows = trades.slice(0,10).map(t => {
+        const p = parseFloat(t.netPnl)||0;
+        const pCol = p>=0?'text-green-400':'text-red-400';
+        const sign = p>=0?'+':'-';
+        return `<a href="journal.html?date=${t.date}&tab=history" target="_blank"
+          class="flex items-center justify-between py-1.5 px-3 rounded-lg hover:bg-white/5 transition cursor-pointer group">
+          <div class="flex items-center gap-3 text-xs">
+            <span class="text-zinc-500 font-mono">${t.date||'—'}</span>
+            <span class="text-zinc-600 font-mono">${t.entryTime||'—'}</span>
+            <span class="text-zinc-300 font-bold">${t.ticker||'MNQ'}</span>
+            <span class="${t.direction==='LONG'?'text-green-400':'text-red-400'} font-bold">${t.direction||'—'}</span>
+            ${t.grade?`<span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-zinc-800 border border-white/10 text-zinc-300">${t.grade}</span>`:''}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold ${pCol}">${sign}$${Math.abs(p).toFixed(0)}</span>
+            <svg class="w-3 h-3 text-zinc-600 group-hover:text-zinc-400 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+          </div>
+        </a>`;
+      }).join('');
+      const more = trades.length > 10 ? `<div class="text-[10px] text-zinc-600 px-3 pt-1">+${trades.length-10} more — view in journal</div>` : '';
+      return `<div class="mt-2 border border-white/5 bg-zinc-950/60 rounded-xl overflow-hidden">
+        <div class="px-3 py-2 border-b border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">${label}</div>
+        ${rows}${more}
+      </div>`;
     }
 
     function renderRow(card) {
@@ -537,11 +599,15 @@
                 </div>
               </div>
               <div class="space-y-2">
-                ${card.personalDaily ? ruleRow('Personal Daily Loss Limit', s.personalDailyPct!==null?s.personalDailyPct+'% used':'—', s.personalDailyRemaining!==null?'$'+s.personalDailyRemaining.toFixed(0)+' remaining today':'', s.personalDailyPct>=100) : ''}
-                ${card.maxTradesPerDay ? ruleRow('Max Trades Today', s.todayTradeCount+' / '+card.maxTradesPerDay, s.todayTradeCount>card.maxTradesPerDay?'⚠ Over limit':'Within limit', s.todayTradeCount>parseInt(card.maxTradesPerDay)) : ''}
+                ${card.personalDaily ? ruleRow('Personal Daily Loss Limit', s.personalDailyPct!==null?s.personalDailyPct+'% used':'—', s.personalDailyRemaining!==null?'$'+s.personalDailyRemaining.toFixed(0)+' remaining today':'', s.personalDailyPct>=100) +
+                  (s.personalDailyBreachTrades.length ? violationList(s.personalDailyBreachTrades, 'Trades on breach days') : '') : ''}
+                ${card.maxTradesPerDay ? ruleRow('Max Trades Today', s.todayTradeCount+' / '+card.maxTradesPerDay, s.todayTradeCount>card.maxTradesPerDay?'⚠ Over limit':'Within limit', s.todayTradeCount>parseInt(card.maxTradesPerDay)) +
+                  (s.overTradeTrades.length ? violationList(s.overTradeTrades, 'Excess trades today') : '') : ''}
                 ${card.maxConsecLosses ? ruleRow('Consecutive Losses', s.consecLosses+' in a row (max '+card.maxConsecLosses+')', s.consecBreach?'⚠ Stop trading':'OK', s.consecBreach) : ''}
-                ${card.minGrade ? ruleRow('Min Grade Adherence', s.gradeScore+'% on plan', s.offGrade+' off-grade trade'+(s.offGrade!==1?'s':''), s.gradeScore<80) : ''}
-                ${card.windowStart && card.windowEnd ? ruleRow('Trading Window', card.windowStart+' – '+card.windowEnd, s.windowViolations+' trade'+(s.windowViolations!==1?'s':'')+' outside window', s.windowViolations>0) : ''}
+                ${card.minGrade ? ruleRow('Min Grade Adherence', s.gradeScore+'% on plan', s.offGrade+' off-grade trade'+(s.offGrade!==1?'s':''), s.gradeScore<80) +
+                  (s.offGradeTrades.length ? violationList(s.offGradeTrades, 'Off-grade trades') : '') : ''}
+                ${card.windowStart && card.windowEnd ? ruleRow('Trading Window', card.windowStart+' – '+card.windowEnd, s.windowViolations+' trade'+(s.windowViolations!==1?'s':'')+' outside window', s.windowViolations>0) +
+                  (s.windowViolationTrades.length ? violationList(s.windowViolationTrades, 'Trades outside window') : '') : ''}
                 ${!card.personalDaily && !card.maxTradesPerDay && !card.maxConsecLosses && !card.minGrade && !card.windowStart
                   ? '<div class="text-xs text-zinc-600 py-2">No personal rules set — edit this tracker to add your rules.</div>' : ''}
               </div>
