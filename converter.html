@@ -411,7 +411,7 @@
     // ── Format Detection ──
     function detectFormat(firstLine, rows) {
       // Tradovate: has B/S column and Fill Time or avgPrice
-      if (firstLine.includes('B/S') || firstLine.includes('Fill Time') || firstLine.includes('avgPrice') || firstLine.includes('filledQty')) {
+      if (firstLine.includes('B/S') || firstLine.includes('Fill Time') || firstLine.includes('avgPrice') || firstLine.includes('filledQty') || (firstLine.includes('Action') && firstLine.includes('Symbol') && firstLine.includes('Avg Price')) || firstLine.includes('Order ID')) {
         return 'tradovate';
       }
       // FSD-X: TradingView export with ORB grade signals
@@ -468,9 +468,9 @@
       // Auto-detect date range
       let dates = [];
       if (detectedMode === 'tradovate') {
-        dates = rows.filter(r => r['B/S'] === 'B' || r['B/S'] === 'Buy')
+        dates = rows.filter(r => (r['B/S'] === 'B' || r['B/S'] === 'Buy' || r['Action'] === 'Buy'))
           .map(r => {
-            const ft = r['Fill Time'] || r['Timestamp'] || r['Date'] || '';
+            const ft = r['Fill Time'] || r['Date/Time'] || r['Timestamp'] || r['Date'] || '';
             return ft ? ft.split(' ')[0] : null;
           }).filter(Boolean).sort();
       } else {
@@ -486,9 +486,9 @@
 
       // Auto-detect ticker for Tradovate
       if (detectedMode === 'tradovate') {
-        const firstContract = rows[0]?.['Contract'] || rows[0]?.['Product'] || '';
+        const firstContract = rows[0]?.['Contract'] || rows[0]?.['Product'] || rows[0]?.['Symbol'] || '';
         if (firstContract) {
-          // Normalize: MNQZ5 → MNQ, NQZ5 → NQ, etc.
+          // Normalize: MNQZ5 → MNQ, NQZ5 → NQ, ESM6 → ES, NQM6 → NQ
           const tickerMatch = firstContract.match(/^([A-Z]+)/);
           if (tickerMatch) document.getElementById('opt-ticker').value = tickerMatch[1];
         }
@@ -538,13 +538,13 @@
       // Filter to filled orders only
       const fills = rows.filter(r => {
         const status = (r['Status'] || '').toLowerCase();
-        return status === 'filled' || status === 'completelyfilled' || r['Avg Fill Price'] || r['avgPrice'];
+        return status === 'filled' || status === 'completelyfilled' || r['Avg Fill Price'] || r['avgPrice'] || r['Avg Price'];
       });
 
       // Group by contract/product
       const byContract = {};
       fills.forEach(r => {
-        const contract = r['Contract'] || r['Product'] || ticker;
+        const contract = r['Contract'] || r['Product'] || r['Symbol'] || ticker;
         if (!byContract[contract]) byContract[contract] = [];
         byContract[contract].push(r);
       });
@@ -564,10 +564,10 @@
         const openPositions = [];
 
         contractFills.forEach(fill => {
-          const side = (fill['B/S'] || fill['Side'] || '').toUpperCase();
+          const side = (fill['B/S'] || fill['Action'] || fill['Side'] || '').toUpperCase();
           const qty = parseInt(fill['Filled Qty'] || fill['filledQty'] || fill['Qty'] || fill['Quantity'] || '1') || 1;
-          const price = parseFloat(fill['Avg Fill Price'] || fill['avgPrice'] || fill['Price'] || '0') || 0;
-          const fillTime = fill['Fill Time'] || fill['Timestamp'] || fill['Date'] || '';
+          const price = parseFloat(fill['Avg Fill Price'] || fill['Avg Price'] || fill['avgPrice'] || fill['Price'] || '0') || 0;
+          const fillTime = fill['Fill Time'] || fill['Date/Time'] || fill['Timestamp'] || fill['Date'] || '';
           const date = formatDate(fillTime);
           const time = formatTime(fillTime);
 
@@ -577,7 +577,7 @@
             if (openPositions.length) {
               const entry = openPositions.shift();
               // Normalize ticker — strip expiry (MNQZ5 → MNQ)
-              const rawContract = contract.replace(/[A-Z]\d+$/, '').replace(/\d+$/, '') || ticker;
+              const rawContract = contract.replace(/[A-Z]\d+$/, '').replace(/[A-Z]\d\d$/, '').replace(/\d+$/, '') || ticker;
               const tradeDate = entry.date || date;
 
               // Date filter
@@ -631,10 +631,10 @@
         const shortFills = [...contractFills];
         const openShorts = [];
         shortFills.forEach(fill => {
-          const side = (fill['B/S'] || fill['Side'] || '').toUpperCase();
+          const side = (fill['B/S'] || fill['Action'] || fill['Side'] || '').toUpperCase();
           const qty = parseInt(fill['Filled Qty'] || fill['filledQty'] || fill['Qty'] || fill['Quantity'] || '1') || 1;
-          const price = parseFloat(fill['Avg Fill Price'] || fill['avgPrice'] || fill['Price'] || '0') || 0;
-          const fillTime = fill['Fill Time'] || fill['Timestamp'] || fill['Date'] || '';
+          const price = parseFloat(fill['Avg Fill Price'] || fill['Avg Price'] || fill['avgPrice'] || fill['Price'] || '0') || 0;
+          const fillTime = fill['Fill Time'] || fill['Date/Time'] || fill['Timestamp'] || fill['Date'] || '';
           const date = formatDate(fillTime);
           const time = formatTime(fillTime);
 
@@ -642,7 +642,7 @@
             openShorts.push({ qty, price, date, time });
           } else if ((side === 'B' || side === 'BUY') && openShorts.length) {
             const entry = openShorts.shift();
-            const rawContract = contract.replace(/[A-Z]\d+$/, '').replace(/\d+$/, '') || ticker;
+            const rawContract = contract.replace(/[A-Z]\d+$/, '').replace(/[A-Z]\d\d$/, '').replace(/\d+$/, '') || ticker;
             const tradeDate = entry.date || date;
             if (fromDate && tradeDate < fromDate) return;
             if (toDate && tradeDate > toDate) return;
