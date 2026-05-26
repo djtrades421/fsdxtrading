@@ -420,7 +420,7 @@
                 <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
                   <div class="flex items-center gap-3">
                     <button onclick="btCalPrev()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg></button>
-                    <h3 id="bt-cal-title" class="text-lg font-black text-white w-44 text-center"></h3>
+                    <h3 id="bt-cal-title" class="text-lg font-black text-white w-44 text-center cursor-pointer hover:text-green-400 transition" onclick="openCalPicker('bt')" title="Jump to month"></h3>
                     <button onclick="btCalNext()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
                   </div>
                   <div class="cal-header-stats flex gap-4 text-sm flex-wrap items-center">
@@ -2572,6 +2572,47 @@
 
     function btCalPrev(){btCalMonth--;if(btCalMonth<0){btCalMonth=11;btCalYear--;}renderBtCal();}
     function btCalNext(){btCalMonth++;if(btCalMonth>11){btCalMonth=0;btCalYear++;}renderBtCal();}
+
+    function openCalPicker(prefix) {
+      const existing = document.getElementById('cal-picker-modal');
+      if (existing) existing.remove();
+      const now = new Date();
+      const curYear = prefix==='cal' ? calYear : btCalYear;
+      const curMonth = prefix==='cal' ? calMonth : btCalMonth;
+      const years = [];
+      for (let y = 2018; y <= now.getFullYear()+1; y++) years.push(y);
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const modal = document.createElement('div');
+      modal.id = 'cal-picker-modal';
+      modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px';
+      modal.innerHTML = `<div style="background:#09090b;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:20px;width:100%;max-width:320px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+          <div style="font-size:12px;font-weight:900;color:#fff;letter-spacing:0.08em;text-transform:uppercase">Jump to Month</div>
+          <button onclick="document.getElementById('cal-picker-modal').remove()" style="background:none;border:none;color:#71717a;cursor:pointer;font-size:18px;line-height:1">✕</button>
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="display:block;font-size:10px;color:#71717a;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Year</label>
+          <select id="cp-year" style="width:100%;background:#000;border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:13px;padding:8px 12px;border-radius:10px;outline:none">
+            ${years.map(y => `<option value="${y}" ${y===curYear?'selected':''}>${y}</option>`).join('')}
+          </select>
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="display:block;font-size:10px;color:#71717a;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Month</label>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+            ${months.map((m,i) => `<button onclick="selectCalMonth('${prefix}',document.getElementById('cp-year').value,${i})"
+              style="padding:7px 4px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid ${i===curMonth?'rgba(34,197,94,0.4)':'rgba(255,255,255,0.08)'};background:${i===curMonth?'rgba(34,197,94,0.1)':'transparent'};color:${i===curMonth?'#22c55e':'#a1a1aa'};transition:all 0.1s">${m}</button>`).join('')}
+          </div>
+        </div>
+      </div>`;
+      document.body.appendChild(modal);
+      modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+    }
+
+    function selectCalMonth(prefix, year, month) {
+      document.getElementById('cal-picker-modal')?.remove();
+      if (prefix === 'cal') { calYear=parseInt(year); calMonth=month; renderCalendar(); }
+      else { btCalYear=parseInt(year); btCalMonth=month; renderBtCal(); }
+    }
 
     // ── Backtest filter state ──
     let filteredBtTrades = [];
