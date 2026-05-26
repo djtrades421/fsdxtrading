@@ -467,13 +467,7 @@
             <div id="ms-status-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="active" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Active</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="trialing" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Trialing</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="trial_cancelled" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Trial Cancelled</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="canceling" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Cancelling</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="past_due" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Past Due</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="lifetime" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Lifetime</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="yearly" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Yearly</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="legacy" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Legacy</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="inactive" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Inactive</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="cancelled" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Cancelled</span></label>
             </div>
           </div>
@@ -2122,7 +2116,10 @@
 
       const accessFilter = [...document.querySelectorAll('.rf-ms-access:checked')].map(el => el.value);
       let filtered = rosterData.filter(r => {
-        if (statusFilter.length && !statusFilter.includes(r.status)) return false;
+        if (statusFilter.length) {
+          const effectiveStatus = r.status === 'trial_cancelled' ? 'canceling' : r.status;
+          if (!statusFilter.includes(effectiveStatus) && !statusFilter.includes(r.status)) return false;
+        }
         if (sourceFilter.length && !sourceFilter.includes(r.source)) return false;
         if (accessFilter.length && !accessFilter.includes(r.planName||r.accessType)) return false;
         if (search) {
@@ -2142,6 +2139,7 @@
         return;
       }
 
+      const STATUS_DISPLAY = { trial_cancelled: 'Cancelling', canceling: 'Cancelling', past_due: 'Past Due' };
       const statusBadge = status => {
         const cfg = {
           active:    'bg-green-500/10 text-green-400 border-green-500/20',
@@ -2155,7 +2153,7 @@
           yearly:    'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
           inactive:  'bg-zinc-800 text-zinc-500 border-white/10',
         };
-        return `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${cfg[status]||cfg.inactive}">${status}</span>`;
+        return `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${cfg[status]||cfg.inactive}">${STATUS_DISPLAY[status]||status}</span>`;
       };
 
       tbody.innerHTML = filtered.map(r => {
