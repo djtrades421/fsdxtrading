@@ -2037,7 +2037,8 @@
       const headers = Object.keys(rows[0]);
       const format = detectImportFormat(headers);
       if (format !== 'whop_payments') { alert('This does not look like a Whop payments export.'); return; }
-      paymentsData = rows.map(r => ({
+
+      const incoming = rows.map(r => ({
         id: r['ID'] || Math.random().toString(36),
         paidAt: r['Paid at'] || r['Created at'] || '',
         status: r['Status'] || '',
@@ -2052,10 +2053,37 @@
         country: r['Billing address country'] || '',
         receiptNumber: r['Receipt number'] || '',
       }));
+
+      // Smart merge — deduplicate by payment ID
+      const existingIds = new Set(paymentsData.map(p => p.id));
+      const newPayments = incoming.filter(p => !existingIds.has(p.id));
+      const duplicates = incoming.length - newPayments.length;
+
+      // Also check for status updates on existing records (e.g. open → paid)
+      let updated = 0;
+      incoming.forEach(p => {
+        if (existingIds.has(p.id)) {
+          const idx = paymentsData.findIndex(ep => ep.id === p.id);
+          if (idx !== -1 && paymentsData[idx].status !== p.status) {
+            paymentsData[idx] = p; // update with latest status
+            updated++;
+          }
+        }
+      });
+
+      // Merge new payments in
+      paymentsData = [...paymentsData, ...newPayments]
+        .sort((a,b) => (b.paidAt||'') < (a.paidAt||'') ? -1 : 1);
+
       await savePaymentsToKV();
       document.getElementById('payments-import-input').value = '';
       renderPayments();
-      alert('✅ ' + paymentsData.length + ' payments imported.');
+
+      const parts = [];
+      if (newPayments.length) parts.push(newPayments.length + ' new payments added');
+      if (updated) parts.push(updated + ' updated');
+      if (duplicates - updated) parts.push((duplicates - updated) + ' duplicates skipped');
+      alert('✅ ' + (parts.length ? parts.join(' · ') : 'Nothing new to import — all payments already exist.'));
     }
 
     // ── Collapsible sections ──
