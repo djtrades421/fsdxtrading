@@ -1084,7 +1084,14 @@
       }
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('admin-content').classList.remove('hidden');
-      loadData();
+      loadData().then(() => {
+        // Refresh site users set after member data loads
+        siteUsers = new Set();
+        (allMembers || []).forEach(m => {
+          if (m.email) siteUsers.add(m.email.toLowerCase());
+          if (m.whopKey) siteUsers.add(m.whopKey);
+        });
+      });
       // Load roster data
       try {
         const profileRes = await fetch(`${API}/api/auth/profile`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('fsdx_token')}` } });
@@ -1473,7 +1480,7 @@
     let paymentsData = [];      // all payment records
     let flagsData = [];         // detected flags
     let pendingImport = null;   // staged import before confirm
-    let siteUsers = new Set();  // emails that have site accounts
+    let siteUsers = new Set();  // emails AND whop keys that have site accounts
 
     // ── KV storage keys ──
     const rosterKey = () => 'roster_data:' + (window._adminKey || '');
@@ -1492,6 +1499,14 @@
         paymentsData = Array.isArray(pd.trades) ? pd.trades : [];
         flagsData = Array.isArray(fdx.trades) ? fdx.trades : [];
       } catch(e) { console.error('Roster load error:', e); }
+
+      // Load site users from allMembers (already loaded by loadData)
+      // allMembers contains everyone who has created a site account
+      siteUsers = new Set();
+      (typeof allMembers !== 'undefined' ? allMembers : []).forEach(m => {
+        if (m.email) siteUsers.add(m.email.toLowerCase());
+        if (m.whopKey) siteUsers.add(m.whopKey);
+      });
     }
 
     async function saveRosterToKV() {
@@ -1541,6 +1556,7 @@
     function detectImportFormat(headers) {
       const h = headers.join(',').toLowerCase();
       if (h.includes('member id') && h.includes('renewal date')) return 'whop_members';
+      if (h.includes('subscription status') && h.includes('next payment date')) return 'whop_memberships';
       if (h.includes('paid at') && h.includes('billing reason')) return 'whop_payments';
       if (h.includes('access type') && h.includes('discord name') && !h.includes('member id')) return 'discord_csv';
       return 'unknown';
@@ -1592,6 +1608,64 @@
           country: r['Country'] || '',
           notes: '',
           source_detail: 'whop_export',
+        };
+      });
+    }
+
+    // ── Parse Whop memberships (new format with Key field) ──
+    function parseWhopMemberships(rows) {
+      const PLAN_NAMES = {
+        'plan_C6yQOo7Z6tRap': 'VIP Monthly',
+        'plan_WDBtpCQLgdO6K': 'VIP Annual',
+        'plan_yO1Ma62pSUYFu': 'Lifetime',
+        'plan_hbtb1mgoj9BRW': 'VIP+',
+        'plan_aXiLFJZu79HYG': 'ORB Pro',
+        'plan_mhrt4tqPQYjNH': 'Trial',
+      };
+      return rows.map(r => {
+        const subStatus = (r['Subscription status'] || '').toLowerCase();
+        let status = 'active';
+        if (subStatus === 'canceled') status = 'cancelled';
+        else if (subStatus === 'trialing') status = 'trialing';
+        else if (subStatus === 'completed') status = 'lifetime';
+        else if (subStatus === 'paused') status = 'inactive';
+
+        const planId = r['Plan'] || '';
+        const planName = PLAN_NAMES[planId] || planId;
+        let accessType = 'VIP';
+        if (planId === 'plan_yO1Ma62pSUYFu') accessType = 'Lifetime';
+        else if (planId === 'plan_WDBtpCQLgdO6K') accessType = 'Yearly';
+
+        const whopKey = r['Key'] || '';
+        const nextPayment = r['Next payment date'] || '';
+        const churnedDate = r['Churned date'] || '';
+        const joinedAt = r['Joined at'] || '';
+
+        return {
+          id: r['Id'] || (Date.now() + Math.random()).toString(36),
+          name: r['Name'] || '',
+          whopUsername: '',
+          whopKey,
+          email: r['Email'] || r['Imported email'] || '',
+          discordName: r['Discord username'] || '',
+          discordId: r['Discord ID'] || r['Imported Discord ID'] || '',
+          tvUsername: '',
+          status,
+          accessType,
+          planName,
+          planId,
+          source: 'Whop',
+          joined: joinedAt ? joinedAt.split(' ')[0] : '',
+          renewal: nextPayment ? nextPayment.split(' ')[0] : '',
+          tvRenew: nextPayment ? nextPayment.split(' ')[0] : '',
+          tvRemoval: subStatus === 'canceled' ? 'Removed' : 'No',
+          spend: r['Total spend (in USD)'] || '0',
+          mrr: r['MRR (in USD)'] || '0',
+          country: r['Customer country'] || '',
+          cancelReason: r['Cancelation reason'] || '',
+          affiliate: r['Affiliate username'] || '',
+          notes: r['Cancelation reason'] ? 'Cancel reason: ' + r['Cancelation reason'] : '',
+          source_detail: 'whop_memberships',
         };
       });
     }
@@ -1683,6 +1757,7 @@
 
       let incoming = [];
       if (format === 'whop_members') incoming = parseWhopMembers(rows);
+      else if (format === 'whop_memberships') incoming = parseWhopMemberships(rows);
       else if (format === 'discord_csv') incoming = parseDiscordCSV(rows);
 
       const diff = diffImport(incoming, format);
@@ -1838,9 +1913,9 @@
           `<span class="px-1.5 py-0.5 rounded text-[9px] font-black border ${f.severity==='red'?'bg-red-500/10 text-red-400 border-red-500/20':'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'}" title="${f.reason}">${f.severity==='red'?'🔴':'🟡'} ${f.type}</span>`
         ).join(' ');
 
-        // Site onboarded
-        const onboarded = siteUsers.has(r.email?.toLowerCase());
-        const siteDot = r.email ? (onboarded ? '<span class="text-green-400" title="Has site account">✓</span>' : '<span class="text-zinc-600" title="No site account">—</span>') : '—';
+        // Site onboarded — check by whopKey (most reliable) then email
+        const onboarded = (r.whopKey && siteUsers.has(r.whopKey)) || siteUsers.has(r.email?.toLowerCase());
+        const siteDot = (r.email || r.whopKey) ? (onboarded ? '<span class="text-green-400" title="Has site account">✓</span>' : '<span class="text-zinc-600" title="No site account">—</span>') : '—';
 
         // Renewal soon
         const renewalStr = r.renewal || '';
@@ -1861,7 +1936,7 @@
           <td class="px-4 py-3 text-zinc-400">${r.email||'—'}</td>
           <td class="px-4 py-3 text-zinc-400">${r.tvUsername||'—'}</td>
           <td class="px-4 py-3">${statusBadge(r.status)}</td>
-          <td class="px-4 py-3 text-zinc-500">${r.accessType||'—'}</td>
+          <td class="px-4 py-3 text-zinc-500">${r.planName||r.accessType||'—'}</td>
           <td class="px-4 py-3 text-zinc-600">${r.source||'—'}</td>
           <td class="px-4 py-3 text-zinc-500">${r.joined?r.joined.slice(0,10):'—'}</td>
           <td class="px-4 py-3 text-zinc-400">${renewalDisplay}</td>
