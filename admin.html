@@ -474,6 +474,15 @@
             <option value="LaunchPass">LaunchPass</option>
             <option value="Early Acess">Legacy/Early Access</option>
           </select>
+          <select id="rf-access" onchange="renderRoster()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
+            <option value="">All Access Types</option>
+            <option value="VIP Monthly">VIP Monthly</option>
+            <option value="VIP Monthly No Trial">VIP Monthly No Trial</option>
+            <option value="VIP Annual">VIP Annual</option>
+            <option value="Lifetime">Lifetime</option>
+            <option value="VIP Legacy">VIP Legacy</option>
+            <option value="Legacy">Legacy</option>
+          </select>
           <input type="text" id="rf-search" oninput="renderRoster()" placeholder="Search name, email, Discord, TV..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-52">
           <button onclick="document.getElementById('rf-status').value='';document.getElementById('rf-source').value='';document.getElementById('rf-search').value='';renderRoster()" class="text-xs text-zinc-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition">✕ Clear</button>
         </div>
@@ -1647,13 +1656,13 @@
         'plan_C6yQOo7Z6tRap': 'VIP Monthly',
         'plan_WDBtpCQLgdO6K': 'VIP Annual',
         'plan_yO1Ma62pSUYFu': 'Lifetime',
-        'plan_hbtb1mgoj9BRW': 'VIP+',
+        'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
         'plan_aXiLFJZu79HYG': 'VIP Legacy',
         'plan_mhrt4tqPQYjNH': 'Lifetime',
         'plan_gs2owPJ8MtUgk': 'ORB Pro',
         'plan_8IvI1MMosoCf9': 'ORB Pro Trial',
-        'plan_qPUdhXCOGcZsu': 'VIP+',
-        'plan_UrMJmbJlwxUhV': 'VIP+',
+        'plan_qPUdhXCOGcZsu': 'VIP Monthly No Trial',
+        'plan_UrMJmbJlwxUhV': 'VIP Monthly No Trial',
       };
       return rows.map(r => {
         const subStatus = (r['Subscription status'] || '').toLowerCase();
@@ -1671,6 +1680,7 @@
         if (planId === 'plan_yO1Ma62pSUYFu' || planId === 'plan_mhrt4tqPQYjNH') accessType = 'Lifetime';
         else if (planId === 'plan_WDBtpCQLgdO6K') accessType = 'Yearly';
         else if (planId === 'plan_aXiLFJZu79HYG') accessType = 'VIP Legacy';
+        else if (['plan_hbtb1mgoj9BRW','plan_qPUdhXCOGcZsu','plan_UrMJmbJlwxUhV'].includes(planId)) accessType = 'VIP Monthly No Trial';
 
         const whopKey = r['Key'] || '';
         const nextPayment = r['Next payment date'] || '';
@@ -1953,9 +1963,11 @@
         return va < vb ? -sortDir : va > vb ? sortDir : 0;
       });
 
+      const accessFilter = document.getElementById('rf-access')?.value || '';
       let filtered = rosterData.filter(r => {
         if (statusFilter && r.status !== statusFilter) return false;
         if (sourceFilter && r.source !== sourceFilter) return false;
+        if (accessFilter && (r.planName||r.accessType) !== accessFilter) return false;
         if (search) {
           const haystack = [r.name, r.email, r.discordName, r.tvUsername, r.whopUsername, r.notes].join(' ').toLowerCase();
           if (!haystack.includes(search)) return false;
