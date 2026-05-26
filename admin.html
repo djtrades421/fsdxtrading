@@ -1633,7 +1633,7 @@
         else if (canceling) status = 'canceling';
         else if (trialEnd) status = 'trialing';
         else if (expiring) status = 'expiring';
-        else if (!renewal) status = 'inactive';
+        else if (!renewal && status !== 'lifetime') status = 'inactive';
 
         // Determine access type from plan
         let accessType = 'VIP';
@@ -1687,10 +1687,9 @@
         const cancelReason = (r['Cancelation reason'] || '').trim();
         let status = 'active';
         if (subStatus === 'canceled') status = 'cancelled';
+        else if (subStatus === 'completed') status = 'lifetime';
         else if (subStatus === 'trialing' && cancelReason) status = 'trial_cancelled';
         else if (subStatus === 'trialing') status = 'trialing';
-        else if (subStatus === 'completed' && planType === 'one_time') status = 'lifetime';
-        else if (subStatus === 'completed') status = 'lifetime';
         else if (subStatus === 'paused') status = 'inactive';
 
         const planId = r['Plan'] || '';
@@ -1780,7 +1779,10 @@
         else if (trialEnd) status = 'trialing';
         else if (pastDue) status = 'past_due';
         else if (paused) status = 'inactive';
-        else if (!renewal) status = 'inactive';
+        // Only mark inactive if no renewal AND no other explanation
+        // Lifetime/one-time members have no renewal — don't mark them inactive
+        // Check plan type to see if it's a one-time purchase
+        else if (!renewal && planId && !['plan_yO1Ma62pSUYFu','plan_mhrt4tqPQYjNH','plan_aXiLFJZu79HYG'].includes(planId.split(',')[0].trim())) status = 'inactive';
 
         let accessType = 'VIP';
         if (planId === 'plan_yO1Ma62pSUYFu' || planId === 'plan_mhrt4tqPQYjNH') accessType = 'Lifetime';
@@ -1973,7 +1975,10 @@
           rosterData[idx] = {
             ...existing,
             // Status: users export wins (real-time), memberships wins if no users data yet
-            status: isUsersExport ? item.status : (existing.source_detail === 'whop_users' ? existing.status : item.status || existing.status),
+            // Users status wins UNLESS it would downgrade lifetime/cancelled to inactive
+            status: isUsersExport
+              ? (['lifetime','cancelled'].includes(existing.status) && item.status === 'inactive' ? existing.status : item.status)
+              : (existing.source_detail === 'whop_users' ? existing.status : item.status || existing.status),
             renewal: item.renewal || existing.renewal,
             tvRenew: item.tvRenew || existing.tvRenew,
             name: item.name || existing.name,
