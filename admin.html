@@ -1591,7 +1591,9 @@
 
     // ── Parse Whop memberships ──
     function parseWhopMembers(rows) {
-      return rows.map(r => {
+      // Parse all rows first then deduplicate — keep best status per email
+      const STATUS_PRIORITY = { lifetime: 0, active: 1, trialing: 2, canceling: 3, yearly: 4, inactive: 5, cancelled: 6 };
+      const allParsed = rows.map(r => {
         const left = r['Left date'] || '';
         const churned = r['Churned date'] || '';
         const canceling = r['Canceling date'] || '';
@@ -1702,6 +1704,25 @@
           source_detail: 'whop_memberships',
         };
       });
+
+      // Deduplicate by email — keep the record with best (lowest) status priority
+      const emailBest = {};
+      allParsed.forEach(item => {
+        const key = item.email?.toLowerCase();
+        if (!key) return;
+        if (!emailBest[key]) { emailBest[key] = item; return; }
+        const existing = emailBest[key];
+        const existPri = STATUS_PRIORITY[existing.status] ?? 99;
+        const newPri = STATUS_PRIORITY[item.status] ?? 99;
+        if (newPri < existPri) emailBest[key] = item;
+        else {
+          // Keep best status but merge in TV username, discord etc if missing
+          if (!existing.discordName && item.discordName) existing.discordName = item.discordName;
+          if (!existing.tvUsername && item.tvUsername) existing.tvUsername = item.tvUsername;
+          if (!existing.whopKey && item.whopKey) existing.whopKey = item.whopKey;
+        }
+      });
+      return Object.values(emailBest);
     }
 
     // ── Parse Discord CSV ──
