@@ -1205,13 +1205,15 @@
           if (m.whopKey) siteUsers.add(m.whopKey);
         });
       });
-      // Load roster data
+      // Load roster data then re-render members with renewal dates
       try {
         const profileRes = await fetch(`${API}/api/auth/profile`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('fsdx_token')}` } });
         const profileData = await profileRes.json();
         const adminKey = profileData.user?.whopKey || 'FSDX-OWNER';
         await loadRosterOnInit(adminKey);
       } catch(e) { window._adminKey = 'FSDX-OWNER'; await loadRosterFromKV(); }
+      // Re-render members now that roster data is available
+      renderMembers(allMembers);
     }
 
     // ── Updates ──
