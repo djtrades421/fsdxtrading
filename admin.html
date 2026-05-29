@@ -2594,7 +2594,7 @@
       // Build renewal map for this month from roster
       const renewalMap = {};
       rosterData.forEach(r => {
-        if (!r.renewal || r.status === 'cancelled') return;
+        if (!r.renewal || ['cancelled','canceling','trial_cancelled','inactive','lifetime','yearly'].includes(r.status)) return;
         const d = r.renewal.slice(0,10);
         if (!d) return;
         const [y,m] = d.split('-').map(Number);
@@ -2619,18 +2619,17 @@
 
       const today = new Date().toISOString().slice(0,10);
       const daysInMonth = new Date(payCalYear, payCalMonth+1, 0).getDate();
-      const weekdays = [];
-      for (let d=1; d<=daysInMonth; d++) {
-        const dow = new Date(payCalYear, payCalMonth, d).getDay();
-        if (dow !== 0 && dow !== 6) weekdays.push(d);
-      }
-      if (!weekdays.length) { grid.innerHTML = '<div class="text-xs text-zinc-600 py-4 text-center">No weekdays this month.</div>'; return; }
+      const allDays = [];
+      for (let d=1; d<=daysInMonth; d++) allDays.push(d);
+      if (!allDays.length) { grid.innerHTML = '<div class="text-xs text-zinc-600 py-4 text-center">No days this month.</div>'; return; }
 
-      const firstDow = new Date(payCalYear, payCalMonth, weekdays[0]).getDay() - 1;
+      // Get day of week for 1st (0=Sun,1=Mon...6=Sat), convert to Mon-first (0=Mon...6=Sun)
+      const firstDowRaw = new Date(payCalYear, payCalMonth, 1).getDay();
+      const firstDow = firstDowRaw === 0 ? 6 : firstDowRaw - 1;
       let cells = [];
       for (let i=0; i<firstDow; i++) cells.push(null);
-      weekdays.forEach(d => cells.push(d));
-      while (cells.length % 5 !== 0) cells.push(null);
+      allDays.forEach(d => cells.push(d));
+      while (cells.length % 7 !== 0) cells.push(null);
 
       // Header
       let html = '<div class="grid grid-cols-5 border-b border-white/5 mb-1">' +
