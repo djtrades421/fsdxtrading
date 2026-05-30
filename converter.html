@@ -414,19 +414,18 @@
       if (firstLine.includes('B/S') || firstLine.includes('Fill Time') || firstLine.includes('avgPrice') || firstLine.includes('filledQty') || (firstLine.includes('Action') && firstLine.includes('Symbol') && firstLine.includes('Avg Price')) || firstLine.includes('Order ID')) {
         return 'tradovate';
       }
-      // FSD-X: TradingView export with ORB grade signals
-      if (rows.some(r => /ORB\s+(Long|Short)\s+(A\+|A|B\+|B|C\+|C)/i.test(r['Signal'] || ''))) {
-        return 'fsdx';
-      }
-      // Standard TradingView strategy export (old format)
-      if (firstLine.includes('Trade #') && (firstLine.includes('Net P&L') || firstLine.includes('Profit'))) {
-        return 'tv';
-      }
-      // New TradingView export format (2025+): "Trade number", "Net PnL USD", "Size (qty)"
+      // New TradingView export format (2025+): "Trade number", "Net PnL USD"
+      // MUST check column headers BEFORE checking signal content so new format
+      // is never misrouted to the old 'fsdx' branch which expects 'Trade #'
       if (firstLine.includes('Trade number') && firstLine.includes('Net PnL')) {
-        // Check if it's FSD-X ORB Pro signals
         if (rows.some(r => /ORB\s+(Long|Short)/i.test(r['Signal'] || ''))) return 'fsdx_new';
         return 'tv_new';
+      }
+      // Old TradingView format: "Trade #", "Net P&L"
+      if (firstLine.includes('Trade #') || firstLine.includes('Net P&L') || firstLine.includes('Profit')) {
+        // FSD-X ORB Pro signals in old format
+        if (rows.some(r => /ORB\s+(Long|Short)\s+(A\+|A|B\+|B|C\+|C)/i.test(r['Signal'] || ''))) return 'fsdx';
+        return 'tv';
       }
       return 'unknown';
     }
