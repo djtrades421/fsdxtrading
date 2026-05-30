@@ -459,7 +459,7 @@
 
     function processCSVText(text) {
       rawCSV = text;
-      const firstLine = rawCSV.split('\n')[0];
+      const firstLine = rawCSV.replace(/^\uFEFF/, '').split('\n')[0];
       const rows = parseCSV(rawCSV);
       if (!rows.length) return showError('No data found in this file. Make sure the CSV has content.');
 
