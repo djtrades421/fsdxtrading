@@ -9,8 +9,6 @@
   <script src="nav-loader.js"></script>
   <style>
     body { background-color: #000; }
-    #access-details { display: none; }
-    #access-details.open { display: block; }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
@@ -55,10 +53,34 @@
           <h1 id="welcome-msg" class="text-lg font-black text-white">Good morning</h1>
           <p id="session-info" class="text-xs text-zinc-500 mt-0.5"></p>
         </div>
-        <a href="https://discord.gg/RePdHESvSx" target="_blank" class="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-lg text-xs text-green-400 font-bold hover:bg-green-500/20 transition">
-          <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
-          Live in Discord
-        </a>
+        <div class="flex items-center gap-3">
+          <!-- Status pill with dropdown -->
+          <div class="relative">
+            <div id="status-card" class="flex items-center gap-2 px-3 py-1.5 border border-green-500/20 bg-green-500/5 rounded-lg cursor-pointer hover:border-green-500/40 hover:bg-green-500/10 transition" onclick="toggleAccess()">
+              <span class="text-[10px] text-green-400/60 uppercase tracking-wider hidden sm:inline">Status</span>
+              <span id="status-tier" class="text-xs font-black text-green-400">VIP</span>
+              <svg id="access-chevron" class="w-3 h-3 text-green-400/60 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+            </div>
+            <!-- Dropdown panel -->
+            <div id="access-details" class="absolute right-0 top-full mt-2 w-80 border border-white/10 bg-zinc-950 shadow-2xl rounded-2xl overflow-hidden z-50" style="display:none;">
+              <div class="p-5">
+                <div class="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b border-white/5">
+                  <div id="expand-status-badge" class="px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border"></div>
+                  <div class="flex flex-col">
+                    <span id="expand-joined" class="text-[10px] text-zinc-500"></span>
+                    <span id="expand-renewal" class="text-[10px] text-zinc-500"></span>
+                  </div>
+                </div>
+                <div class="text-xs font-black text-white uppercase tracking-wider mb-4">Your Access</div>
+                <div id="access-grid" class="grid grid-cols-1 gap-1"></div>
+              </div>
+            </div>
+          </div>
+          <a href="https://discord.gg/RePdHESvSx" target="_blank" class="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-lg text-xs text-green-400 font-bold hover:bg-green-500/20 transition">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+            Live in Discord
+          </a>
+        </div>
       </div>
 
       <div class="flex-1 px-6 md:px-10 py-8 space-y-6">
@@ -71,17 +93,8 @@
         <!-- KPI CARDS + CHART -->
         <div id="stats-content" class="space-y-4">
 
-          <!-- Status card row -->
+          <!-- Updates card row -->
           <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div id="status-card" class="border border-green-500/20 bg-green-500/5 rounded-2xl p-5 cursor-pointer hover:border-green-500/40 transition col-span-1" onclick="toggleAccess()">
-              <div class="flex items-center justify-between mb-1">
-                <div id="status-label" class="text-[10px] text-green-400 uppercase tracking-wider">Your Status</div>
-                <svg id="access-chevron" class="w-3.5 h-3.5 text-green-400/60 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
-              </div>
-              <div id="status-tier" class="text-2xl font-black text-green-400">VIP</div>
-              <div id="status-sub" class="text-[10px] text-green-400/60 mt-1">Full suite access</div>
-            </div>
-
             <!-- FSD-X Updates card -->
             <div id="updates-card" class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 cursor-pointer hover:border-white/20 transition col-span-1" onclick="toggleUpdates()">
               <div class="flex items-center justify-between mb-1">
@@ -90,21 +103,6 @@
               </div>
               <div id="updates-title-preview" class="text-sm font-black text-white truncate">Loading...</div>
               <div id="updates-count" class="text-[10px] text-zinc-600 mt-1">—</div>
-            </div>
-          </div>
-
-          <!-- Collapsible Access Details -->
-          <div id="access-details" class="border border-white/5 bg-zinc-950/60 rounded-2xl overflow-hidden">
-            <div class="p-5">
-              <div class="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b border-white/5">
-                <div id="expand-status-badge" class="px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border"></div>
-                <div class="flex flex-col">
-                  <span id="expand-joined" class="text-[10px] text-zinc-500"></span>
-                  <span id="expand-renewal" class="text-[10px] text-zinc-500"></span>
-                </div>
-              </div>
-              <div class="text-xs font-black text-white uppercase tracking-wider mb-4">Your Access</div>
-              <div id="access-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
             </div>
           </div>
 
@@ -179,7 +177,7 @@
                 <a href="https://www.forexfactory.com/calendar" target="_blank" class="px-2 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/30 rounded-lg text-[10px] font-black text-zinc-400 hover:text-green-400 transition">FF ↗</a>
               </div>
             </div>
-            <div id="cal-body" class="max-h-80 overflow-y-auto">
+            <div id="cal-body" class="max-h-[480px] overflow-y-auto">
               <div class="text-center py-8 text-zinc-600 text-xs">Loading calendar...</div>
             </div>
           </div>
@@ -300,9 +298,20 @@
     function toggleAccess() {
       const details = document.getElementById('access-details');
       const chevron = document.getElementById('access-chevron');
-      details.classList.toggle('open');
-      chevron.style.transform = details.classList.contains('open') ? 'rotate(180deg)' : '';
+      const isOpen = details.style.display !== 'none' && details.style.display !== '';
+      details.style.display = isOpen ? 'none' : 'block';
+      chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
     }
+    // Close access dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      const card = document.getElementById('status-card');
+      const details = document.getElementById('access-details');
+      if (details && card && !card.contains(e.target) && !details.contains(e.target)) {
+        details.style.display = 'none';
+        const chevron = document.getElementById('access-chevron');
+        if (chevron) chevron.style.transform = '';
+      }
+    });
 
     function renderAccessGrid(tier) {
       const isTrial = tier === 'trial';
@@ -674,15 +683,12 @@
       const sc = statusMap[effectiveStatus] || statusMap['active'];
 
       // Apply to status card
-      document.getElementById('status-card').className = `border ${sc.cardCls} rounded-2xl p-5 cursor-pointer transition col-span-1`;
-      document.getElementById('status-label').className = `text-[10px] text-${sc.color}-400 uppercase tracking-wider`;
+      document.getElementById('status-card').className = `flex items-center gap-2 px-3 py-1.5 border ${sc.cardCls} rounded-lg cursor-pointer transition`;
+      // status-label is now inline in pill
       document.getElementById('status-tier').textContent = sc.label;
-      document.getElementById('status-tier').className = `text-2xl font-black ${sc.textCls}`;
-      // Show plan name if available from roster
-      const planDisplay = rosterPlanName && rosterPlanName !== 'VIP' ? rosterPlanName : null;
-      document.getElementById('status-sub').textContent = planDisplay || sc.sub;
-      document.getElementById('status-sub').className = `text-[10px] ${sc.textCls} opacity-60 mt-1`;
-      document.getElementById('access-chevron').className = `w-3.5 h-3.5 ${sc.textCls} opacity-60 transition-transform`;
+      document.getElementById('status-tier').className = `text-xs font-black ${sc.textCls}`;
+      // status-sub removed (now shown in dropdown badge only)
+      document.getElementById('access-chevron').className = `w-3 h-3 ${sc.textCls} opacity-60 transition-transform`;
 
       // Populate expanded panel header
       const badgeLabels = { active:'Active', trialing:'Trialing', completed:'Lifetime', past_due:'Past Due', canceled:'Canceled', expired:'Expired', inactive:'Inactive', _canceling:'Canceling' };
