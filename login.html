@@ -71,6 +71,24 @@
             <p class="text-center text-xs text-zinc-600">Don't have an account? <button onclick="switchTab('signup')" class="text-green-400 hover:underline">Sign up →</button></p>
           </div>
 
+          <!-- 2FA STEP PANEL -->
+          <div id="panel-2fa" class="tab-panel space-y-4" style="display:none">
+            <div class="text-center mb-2">
+              <div class="text-2xl mb-2">🔐</div>
+              <h3 class="text-sm font-black text-white">Two-Factor Authentication</h3>
+              <p class="text-zinc-500 text-xs mt-1">Enter the 6-digit code from your authenticator app</p>
+            </div>
+            <div id="twofa-login-error" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400"></div>
+            <input type="text" id="twofa-login-code" placeholder="000000" maxlength="6" inputmode="numeric"
+              onkeydown="if(event.key==='Enter')handleTwoFALogin()"
+              class="w-full bg-black border border-white/10 text-white text-center text-2xl font-black tracking-[0.4em] px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            <button onclick="handleTwoFALogin()" id="twofa-login-btn"
+              class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-green-500/10">
+              Verify & Login
+            </button>
+            <button onclick="cancelTwoFALogin()" class="w-full py-2 text-xs text-zinc-600 hover:text-zinc-400 transition">← Back to login</button>
+          </div>
+
           <!-- SIGNUP PANEL -->
           <div id="panel-signup" class="tab-panel space-y-4">
             <div id="signup-msg" class="hidden rounded-xl px-4 py-3 text-xs leading-relaxed"></div>
@@ -306,7 +324,14 @@
           body: JSON.stringify({ email, password })
         });
         const data = await res.json();
-        if (data.success) {
+        if (data.success && data.requires2FA) {
+          // Show 2FA step
+          _twofa_preToken = data.preToken;
+          document.getElementById('panel-login').style.display = 'none';
+          document.getElementById('panel-2fa').style.display = 'block';
+          setTimeout(() => document.getElementById('twofa-login-code').focus(), 50);
+          setLoading('login-btn', false, 'Login to Dashboard');
+        } else if (data.success) {
           localStorage.setItem('fsdx_token', data.token);
           localStorage.setItem('fsdx_name', data.firstName || '');
           localStorage.setItem('fsdx_tier', data.tier || 'pro');
@@ -331,6 +356,46 @@
         showMsg('login-msg', 'Connection error. Please try again.', 'error');
         setLoading('login-btn', false, 'Login to Dashboard');
       }
+    }
+
+    let _twofa_preToken = '';
+
+    async function handleTwoFALogin() {
+      const code = document.getElementById('twofa-login-code').value.trim();
+      const errEl = document.getElementById('twofa-login-error');
+      if (code.length !== 6) { errEl.textContent = 'Enter the 6-digit code from your authenticator app.'; errEl.classList.remove('hidden'); return; }
+      errEl.classList.add('hidden');
+      setLoading('twofa-login-btn', true, 'Verify & Login');
+      try {
+        const res = await fetch(`${API}/api/auth/2fa/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ preToken: _twofa_preToken, code })
+        });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem('fsdx_token', data.token);
+          localStorage.setItem('fsdx_name', data.firstName || '');
+          window.location.href = 'dashboard.html';
+        } else {
+          errEl.textContent = data.error || 'Invalid code. Try again.';
+          errEl.classList.remove('hidden');
+          document.getElementById('twofa-login-code').value = '';
+          document.getElementById('twofa-login-code').focus();
+        }
+      } catch(e) {
+        errEl.textContent = 'Connection error. Please try again.';
+        errEl.classList.remove('hidden');
+      }
+      setLoading('twofa-login-btn', false, 'Verify & Login');
+    }
+
+    function cancelTwoFALogin() {
+      _twofa_preToken = '';
+      document.getElementById('panel-2fa').style.display = 'none';
+      document.getElementById('panel-login').style.display = 'block';
+      document.getElementById('twofa-login-code').value = '';
+      document.getElementById('twofa-login-error').classList.add('hidden');
     }
 
     async function handleSignup() {
