@@ -686,27 +686,69 @@
             <h2 class="text-sm font-black text-white">🎯 Leads</h2>
             <p class="text-xs text-zinc-600 mt-0.5">Whop users who viewed FSD-X but never purchased — auto-populated from your roster import</p>
           </div>
-          <div class="flex items-center gap-3">
-            <input type="text" id="leads-search" oninput="renderLeads()" placeholder="Search name, email, Discord..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-52">
+          <div class="flex gap-2">
             <button onclick="exportLeadsCSV()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">↓ Export</button>
+            <button onclick="clearLeadsData()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-500 font-bold text-xs rounded-xl transition">Clear Data</button>
           </div>
         </div>
 
-        <!-- Stats -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5" id="leads-stats"></div>
+        <!-- Stats — clickable to filter -->
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-4" id="leads-stats"></div>
+
+        <!-- Filters -->
+        <div class="flex gap-2 mb-4 flex-wrap items-center">
+          <!-- Discord filter -->
+          <div class="relative" id="ld-discord-wrap">
+            <button type="button" onclick="toggleLeadsFilter('discord')" id="ld-discord-btn"
+              class="flex items-center gap-1.5 bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg hover:border-white/20 transition min-w-[100px]">
+              <span id="ld-discord-label">Discord</span>
+              <svg class="w-3 h-3 ml-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+            <div id="ld-discord-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[160px]">
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="ld-discord" value="" checked onchange="renderLeads()" class="accent-green-500"><span class="text-xs text-zinc-300">All</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="ld-discord" value="yes" onchange="renderLeads()" class="accent-green-500"><span class="text-xs text-zinc-300">Has Discord</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="ld-discord" value="no" onchange="renderLeads()" class="accent-green-500"><span class="text-xs text-zinc-300">No Discord</span></label>
+            </div>
+          </div>
+          <!-- Type filter -->
+          <div class="relative" id="ld-type-wrap">
+            <button type="button" onclick="toggleLeadsFilter('type')" id="ld-type-btn"
+              class="flex items-center gap-1.5 bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg hover:border-white/20 transition min-w-[100px]">
+              <span id="ld-type-label">Type</span>
+              <svg class="w-3 h-3 ml-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+            <div id="ld-type-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="ld-type" value="" checked onchange="renderLeads()" class="accent-green-500"><span class="text-xs text-zinc-300">All</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="ld-type" value="never" onchange="renderLeads()" class="accent-green-500"><span class="text-xs text-zinc-300">Never purchased</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="ld-type" value="former" onchange="renderLeads()" class="accent-green-500"><span class="text-xs text-yellow-400">Former members</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="ld-type" value="converted" onchange="renderLeads()" class="accent-green-500"><span class="text-xs text-green-400">Converted</span></label>
+            </div>
+          </div>
+          <!-- Joined date range -->
+          <div class="flex items-center gap-1.5">
+            <span class="text-xs text-zinc-600">Joined</span>
+            <input type="date" id="ld-date-from" onchange="renderLeads()" class="bg-zinc-900 border border-white/10 text-zinc-300 text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40">
+            <span class="text-xs text-zinc-600">to</span>
+            <input type="date" id="ld-date-to" onchange="renderLeads()" class="bg-zinc-900 border border-white/10 text-zinc-300 text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40">
+          </div>
+          <!-- Search -->
+          <input type="text" id="leads-search" oninput="renderLeads()" placeholder="Search name, email, Discord, country..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-56">
+          <button onclick="clearLeadsFilters()" class="text-xs text-zinc-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition">✕ Clear</button>
+          <span id="leads-filter-count" class="text-xs text-zinc-500 ml-1"></span>
+        </div>
 
         <!-- Table -->
         <div class="border border-white/10 rounded-2xl overflow-hidden">
           <div class="overflow-x-auto">
-            <table class="w-full text-left min-w-[700px]">
+            <table class="w-full text-left min-w-[800px]">
               <thead><tr class="bg-zinc-950 border-b border-white/10 text-[10px] text-zinc-500 uppercase tracking-wider">
-                <th class="px-4 py-3">Name / Whop Username</th>
+                <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortLeads('name')">Name <span id="lsort-name" class="text-zinc-700">↕</span></th>
                 <th class="px-4 py-3">Email</th>
                 <th class="px-4 py-3">Discord</th>
                 <th class="px-4 py-3">Country</th>
-                <th class="px-4 py-3">Spend</th>
-                <th class="px-4 py-3">Joined Whop</th>
-                <th class="px-4 py-3">Converted</th>
+                <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortLeads('spend')">Spend <span id="lsort-spend" class="text-zinc-700">↕</span></th>
+                <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortLeads('joined')">Joined Whop <span id="lsort-joined" class="text-zinc-400">↓</span></th>
+                <th class="px-4 py-3">Type</th>
               </tr></thead>
               <tbody id="leads-table" class="divide-y divide-white/5 text-xs">
                 <tr><td colspan="7" class="px-4 py-8 text-center text-zinc-600">Import a Whop users CSV to populate leads.</td></tr>
@@ -1726,22 +1768,85 @@
         body: JSON.stringify({ action:'save-all', key: 'roster_leads:' + (window._adminKey||''), payload: { trades: leadsData } }) });
     }
 
+    let leadsSortField = 'joined', leadsSortDir = 'desc';
+
+    function sortLeads(field) {
+      if (leadsSortField === field) leadsSortDir = leadsSortDir === 'asc' ? 'desc' : 'asc';
+      else { leadsSortField = field; leadsSortDir = 'asc'; }
+      ['name','spend','joined'].forEach(f => {
+        const el = document.getElementById('lsort-'+f);
+        if (el) el.textContent = f === leadsSortField ? (leadsSortDir === 'asc' ? '↑' : '↓') : '↕';
+      });
+      renderLeads();
+    }
+
+    function toggleLeadsFilter(type) {
+      ['discord','type'].forEach(t => {
+        if (t !== type) document.getElementById('ld-'+t+'-menu')?.classList.add('hidden');
+      });
+      document.getElementById('ld-'+type+'-menu')?.classList.toggle('hidden');
+    }
+
+    // Close leads filter dropdowns on outside click
+    document.addEventListener('click', function(e) {
+      ['discord','type'].forEach(type => {
+        const wrap = document.getElementById('ld-'+type+'-wrap');
+        const menu = document.getElementById('ld-'+type+'-menu');
+        if (menu && wrap && !wrap.contains(e.target)) menu.classList.add('hidden');
+      });
+    });
+
+    function clearLeadsFilters() {
+      document.querySelectorAll('input[name="ld-discord"]')[0].checked = true;
+      document.querySelectorAll('input[name="ld-type"]')[0].checked = true;
+      document.getElementById('ld-date-from').value = '';
+      document.getElementById('ld-date-to').value = '';
+      document.getElementById('leads-search').value = '';
+      document.getElementById('ld-discord-label').textContent = 'Discord';
+      document.getElementById('ld-type-label').textContent = 'Type';
+      document.getElementById('ld-discord-btn').classList.remove('border-green-500/40','text-green-400');
+      document.getElementById('ld-type-btn').classList.remove('border-green-500/40','text-green-400');
+      renderLeads();
+    }
+
+    async function clearLeadsData() {
+      if (!confirm('Clear all leads data? This cannot be undone.')) return;
+      leadsData = [];
+      await saveLeadsToKV();
+      renderLeads();
+    }
+
     function renderLeads() {
       const search = (document.getElementById('leads-search')?.value || '').toLowerCase();
+      const discordFilter = document.querySelector('input[name="ld-discord"]:checked')?.value || '';
+      const typeFilter = document.querySelector('input[name="ld-type"]:checked')?.value || '';
+      const dateFrom = document.getElementById('ld-date-from')?.value || '';
+      const dateTo = document.getElementById('ld-date-to')?.value || '';
+
+      // Update filter button labels
+      const discordLabel = document.getElementById('ld-discord-label');
+      const typeLabel = document.getElementById('ld-type-label');
+      if (discordLabel) discordLabel.textContent = discordFilter === 'yes' ? 'Has Discord' : discordFilter === 'no' ? 'No Discord' : 'Discord';
+      if (typeLabel) typeLabel.textContent = typeFilter === 'former' ? 'Former Members' : typeFilter === 'converted' ? 'Converted' : typeFilter === 'never' ? 'Never Purchased' : 'Type';
+      document.getElementById('ld-discord-btn')?.classList.toggle('border-green-500/40', !!discordFilter);
+      document.getElementById('ld-discord-btn')?.classList.toggle('text-green-400', !!discordFilter);
+      document.getElementById('ld-type-btn')?.classList.toggle('border-green-500/40', !!typeFilter);
+      document.getElementById('ld-type-btn')?.classList.toggle('text-green-400', !!typeFilter);
 
       // Stats
       const statsEl = document.getElementById('leads-stats');
       if (statsEl) {
         const hasDiscord = leadsData.filter(r => r.discordName).length;
         const countries = [...new Set(leadsData.map(r => r.country).filter(Boolean))].length;
-        const withSpend = leadsData.filter(r => parseFloat(r.spend||0) > 0).length;
+        const former = leadsData.filter(r => r.leftDate).length;
         const converted = leadsData.filter(r => r.converted).length;
         statsEl.innerHTML = [
-          ['Total Leads', leadsData.length, '#fff'],
-          ['Have Discord', hasDiscord, '#818cf8'],
-          ['Countries', countries, '#22c55e'],
-          ['Converted', converted, '#f59e0b'],
-        ].map(([l,v,c]) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center">
+          ['Total Leads', leadsData.length, '#fff', ''],
+          ['Have Discord', hasDiscord, '#818cf8', 'discord_yes'],
+          ['Countries', countries, '#22c55e', ''],
+          ['Former Members', former, '#f59e0b', 'former'],
+          ['Converted', converted, '#22c55e', 'converted'],
+        ].map(([l,v,c,filterVal]) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center ${filterVal?'cursor-pointer hover:border-white/30 transition':''}" ${filterVal?`onclick="quickFilterLeads('${filterVal}')"`:''}">
           <div class="text-[10px] text-zinc-500 mb-1">${l}</div>
           <div class="text-xl font-black" style="color:${c}">${v}</div>
         </div>`).join('');
@@ -1753,41 +1858,90 @@
         return;
       }
 
-      let filtered = leadsData;
-      if (search) {
-        filtered = leadsData.filter(r => {
-          const hay = [r.name, r.whopUsername, r.email, r.discordName, r.country].join(' ').toLowerCase();
-          return hay.includes(search);
-        });
+      // Sort
+      const sDir = leadsSortDir === 'asc' ? 1 : -1;
+      let sorted = [...leadsData].sort((a, b) => {
+        let va = '', vb = '';
+        if (leadsSortField === 'name') { va = (a.name||a.whopUsername||'').toLowerCase(); vb = (b.name||b.whopUsername||'').toLowerCase(); }
+        else if (leadsSortField === 'spend') { return (parseFloat(a.spend||0) - parseFloat(b.spend||0)) * sDir; }
+        else if (leadsSortField === 'joined') { va = a.joined||''; vb = b.joined||''; }
+        return va < vb ? -sDir : va > vb ? sDir : 0;
+      });
+
+      // Filter
+      let filtered = sorted.filter(r => {
+        if (discordFilter === 'yes' && !r.discordName) return false;
+        if (discordFilter === 'no' && r.discordName) return false;
+        if (typeFilter === 'former' && !r.leftDate) return false;
+        if (typeFilter === 'never' && r.leftDate) return false;
+        if (typeFilter === 'converted' && !r.converted) return false;
+        if (dateFrom && r.joined && r.joined < dateFrom) return false;
+        if (dateTo && r.joined && r.joined > dateTo) return false;
+        if (search) {
+          const hay = [r.name, r.whopUsername, r.email, r.discordName, r.country, r.city, r.state].join(' ').toLowerCase();
+          if (!hay.includes(search)) return false;
+        }
+        return true;
+      });
+
+      const hasFilters = discordFilter || typeFilter || dateFrom || dateTo || search;
+      const filterCount = document.getElementById('leads-filter-count');
+      if (filterCount) filterCount.textContent = hasFilters ? filtered.length + ' shown' : '';
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-zinc-600">No leads match filters.</td></tr>';
+        return;
       }
 
-      const countryNames = { US:'🇺🇸 US', CA:'🇨🇦 CA', IN:'🇮🇳 IN', GB:'🇬🇧 UK', AU:'🇦🇺 AU', DE:'🇩🇪 DE', FR:'🇫🇷 FR', IT:'🇮🇹 IT', PK:'🇵🇰 PK', CL:'🇨🇱 CL', ZW:'🇿🇼 ZW' };
+      const countryFlag = { US:'🇺🇸', CA:'🇨🇦', IN:'🇮🇳', GB:'🇬🇧', AU:'🇦🇺', DE:'🇩🇪', FR:'🇫🇷', IT:'🇮🇹', PK:'🇵🇰', CL:'🇨🇱', ZW:'🇿🇼', NG:'🇳🇬', MA:'🇲🇦', UZ:'🇺🇿', AZ:'🇦🇿', KH:'🇰🇭', CZ:'🇨🇿', SK:'🇸🇰', PY:'🇵🇾' };
 
       tbody.innerHTML = filtered.map(r => {
         const spend = parseFloat(r.spend||0);
-        const convertedBadge = r.converted
-          ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-green-500/10 text-green-400 border-green-500/20">✓ Member</span>'
-          : '<span class="text-zinc-700">—</span>';
+        const flag = countryFlag[r.country] || '';
+        const location = [r.city, r.country].filter(Boolean).join(', ');
+
+        // Type badge
+        let typeBadge;
+        if (r.converted) {
+          typeBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-green-500/10 text-green-400 border-green-500/20">✓ Member</span>';
+        } else if (r.leftDate) {
+          typeBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-yellow-500/10 text-yellow-400 border-yellow-500/20" title="Left ${fmtDate(r.leftDate)}">Former · Left ${fmtDate(r.leftDate)}</span>`;
+        } else {
+          typeBadge = '<span class="text-zinc-700 text-[10px]">Prospect</span>';
+        }
+
         return `<tr class="hover:bg-white/[0.02] transition">
           <td class="px-4 py-3">
             <div class="text-white font-bold">${r.name || r.whopUsername || '—'}</div>
             <div class="text-zinc-600 text-[10px]">@${r.whopUsername||'—'}</div>
           </td>
           <td class="px-4 py-3 text-zinc-400">${r.email||'—'}</td>
-          <td class="px-4 py-3 text-zinc-400">${r.discordName ? '<span class="text-indigo-400">'+r.discordName+'</span>' : '<span class="text-zinc-700">—</span>'}</td>
-          <td class="px-4 py-3 text-zinc-500">${countryNames[r.country] || r.country || '—'}</td>
+          <td class="px-4 py-3">${r.discordName ? `<span class="text-indigo-400">${r.discordName}</span>` : '<span class="text-zinc-700">—</span>'}</td>
+          <td class="px-4 py-3 text-zinc-500">${flag} ${location||'—'}</td>
           <td class="px-4 py-3 ${spend>0?'text-green-400 font-bold':'text-zinc-700'}">$${spend.toFixed(2)}</td>
           <td class="px-4 py-3 text-zinc-500">${r.joined ? fmtDate(r.joined) : '—'}</td>
-          <td class="px-4 py-3">${convertedBadge}</td>
+          <td class="px-4 py-3">${typeBadge}</td>
         </tr>`;
       }).join('');
     }
 
+    function quickFilterLeads(val) {
+      if (val === 'discord_yes') {
+        document.querySelector('input[name="ld-discord"][value="yes"]').checked = true;
+      } else if (val === 'former' || val === 'converted') {
+        document.querySelector(`input[name="ld-type"][value="${val}"]`).checked = true;
+      }
+      renderLeads();
+    }
+
     function exportLeadsCSV() {
       if (!leadsData.length) { alert('No leads to export.'); return; }
-      const headers = ['Name','Whop Username','Email','Discord','Country','Spend','Joined','Converted'];
-      const rows = leadsData.map(r => [r.name,r.whopUsername,r.email,r.discordName,r.country,r.spend,r.joined,r.converted?'Yes':'No']
-        .map(v => '"'+String(v||'').replace(/"/g,'""')+'"').join(','));
+      const headers = ['Name','Whop Username','Email','Discord','City','Country','Spend','Joined','Left Date','Type'];
+      const rows = leadsData.map(r => {
+        const type = r.converted ? 'Converted' : r.leftDate ? 'Former Member' : 'Prospect';
+        return [r.name,r.whopUsername,r.email,r.discordName,r.city||'',r.country,r.spend,r.joined,r.leftDate||'',type]
+          .map(v => '"'+String(v||'').replace(/"/g,'""')+'"').join(',');
+      });
       const csv = [headers.join(','),...rows].join('\n');
       const blob = new Blob([csv],{type:'text/csv'});
       const url = URL.createObjectURL(blob);
@@ -2291,9 +2445,12 @@
           email: r['Email'] || '',
           discordName: r['Discord username'] || '',
           discordId: r['Discord ID'] || '',
+          city: r['City'] || '',
+          state: r['State'] || '',
           country: r['Country'] || '',
           spend: r['Platform spend (USD)'] || '0',
           joined: r['Joined date'] ? r['Joined date'].split(' ')[0] : '',
+          leftDate: r['Left date'] ? r['Left date'].split(' ')[0] : '',
           converted: rosterEmails.has(r['Email']?.toLowerCase()),
           source: 'whop_import',
         }));
