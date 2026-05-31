@@ -377,6 +377,41 @@
           </div>
 
   <!-- Log Trade Modal -->
+  <!-- Overlap warning modal -->
+  <div id="journal-overlap-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
+    <div class="bg-zinc-950 border border-yellow-500/20 rounded-2xl w-full max-w-md p-6">
+      <div class="text-3xl mb-3 text-center">⚠️</div>
+      <h2 class="text-base font-black text-white mb-1 text-center">Date Overlap Detected</h2>
+      <p class="text-zinc-500 text-xs mb-5 text-center">Your import overlaps with existing trades in your journal.</p>
+      <div class="space-y-3 mb-5">
+        <div class="border border-white/10 bg-zinc-900/60 rounded-xl p-4 grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <div class="text-zinc-600 uppercase tracking-wider text-[10px] mb-1">Already in journal</div>
+            <div class="text-white font-bold" id="jol-existing-range">—</div>
+            <div class="text-zinc-500 mt-1" id="jol-existing-times">—</div>
+          </div>
+          <div>
+            <div class="text-zinc-600 uppercase tracking-wider text-[10px] mb-1">Your import</div>
+            <div class="text-white font-bold" id="jol-import-range">—</div>
+            <div class="text-zinc-500 mt-1" id="jol-import-times">—</div>
+          </div>
+        </div>
+        <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-xl px-4 py-3 text-xs text-yellow-300/80" id="jol-detail"></div>
+      </div>
+      <div class="space-y-2">
+        <button onclick="executeJournalCSVImport('skip')" class="w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+          Skip Overlapping Dates — Import New Only
+        </button>
+        <button onclick="executeJournalCSVImport('all')" class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
+          Import Everything Anyway
+        </button>
+        <button onclick="document.getElementById('journal-overlap-modal').classList.add('hidden')" class="w-full py-2 text-xs text-zinc-600 hover:text-zinc-400 transition">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div id="log-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
     <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6 w-full max-w-2xl max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-5">
@@ -2062,6 +2097,9 @@
     }
 
     // ── CSV Import ──
+    let _csvPendingTrades = [];
+    let _csvExistingTrades = [];
+
     document.getElementById('csv-import-input').addEventListener('change', async (ev) => {
       const file = ev.target.files[0];
       if (!file) return;
@@ -2069,18 +2107,62 @@
       const text = await file.text();
       const imported = parseJournalCSV(text);
       if (!imported.length) { alert('No valid trades found. Make sure the CSV has at least a Date and Net P&L column.'); return; }
-      const newTrades = imported.map(t => ({ ...t, id: Date.now().toString() + Math.random().toString(36).slice(2) }));
-      // Save to KV
+      _csvPendingTrades = imported.map(t => ({ ...t, id: Date.now().toString() + Math.random().toString(36).slice(2) }));
+
+      // Fetch existing trades for overlap check
       const existingRes = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) });
       const existingData = await existingRes.json();
-      const existing = Array.isArray(existingData.trades) ? existingData.trades : [];
-      const merged = [...existing, ...newTrades].sort((a,b) => (a.date||'') < (b.date||'') ? 1 : -1);
+      _csvExistingTrades = Array.isArray(existingData.trades) ? existingData.trades : [];
+
+      if (_csvExistingTrades.length > 0) {
+        const existDates = _csvExistingTrades.map(t=>t.date).filter(Boolean).sort();
+        const importDates = _csvPendingTrades.map(t=>t.date).filter(Boolean).sort();
+        const existMin = existDates[0], existMax = existDates[existDates.length-1];
+        const importMin = importDates[0], importMax = importDates[importDates.length-1];
+        const hasOverlap = importMin <= existMax && importMax >= existMin;
+
+        if (hasOverlap) {
+          const existDateSet = new Set(existDates);
+          const overlapDates = importDates.filter(d => existDateSet.has(d));
+          const overlapTrades = _csvPendingTrades.filter(t => existDateSet.has(t.date));
+          const existTimes = _csvExistingTrades.map(t=>t.entryTime).filter(Boolean).sort();
+          const importTimes = _csvPendingTrades.map(t=>t.entryTime).filter(Boolean).sort();
+          const existTimeRange = existTimes.length ? existTimes[0].slice(0,5) + ' – ' + existTimes[existTimes.length-1].slice(0,5) : 'No times recorded';
+          const importTimeRange = importTimes.length ? importTimes[0].slice(0,5) + ' – ' + importTimes[importTimes.length-1].slice(0,5) : 'No times recorded';
+          document.getElementById('jol-existing-range').textContent = existMin + ' to ' + existMax;
+          document.getElementById('jol-existing-times').textContent = 'Entry times: ' + existTimeRange;
+          document.getElementById('jol-import-range').textContent = importMin + ' to ' + importMax;
+          document.getElementById('jol-import-times').textContent = 'Entry times: ' + importTimeRange;
+          document.getElementById('jol-detail').innerHTML =
+            `<span class="font-bold text-yellow-400">${overlapDates.length} overlapping date${overlapDates.length!==1?'s':''}</span> — ${overlapTrades.length} trade${overlapTrades.length!==1?'s':''} in your import land on dates already in your journal.<br><br>
+            <span class="text-zinc-400">If these are different sessions (e.g. London vs NY), choose <span class="text-white font-bold">Import Everything</span>. If you accidentally included dates you already have, choose <span class="text-white font-bold">Skip Overlapping</span>.</span>`;
+          document.getElementById('journal-overlap-modal').classList.remove('hidden');
+          return;
+        }
+      }
+
+      // No overlap — import directly
+      await executeJournalCSVImport('all');
+    });
+
+    async function executeJournalCSVImport(mode) {
+      document.getElementById('journal-overlap-modal').classList.add('hidden');
+      let tradesToAdd = _csvPendingTrades;
+      if (mode === 'skip') {
+        const existDateSet = new Set(_csvExistingTrades.map(t=>t.date).filter(Boolean));
+        tradesToAdd = _csvPendingTrades.filter(t => !existDateSet.has(t.date));
+      }
+      const skipped = _csvPendingTrades.length - tradesToAdd.length;
+      const merged = [..._csvExistingTrades, ...tradesToAdd].sort((a,b) => (a.date||'') < (b.date||'') ? 1 : -1);
       await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key: whopKey, payload:{ trades: merged } }) });
       allTrades = merged;
       filteredTrades = [...allTrades];
-      renderCalendar(); renderHistory();
-      alert('✅ Imported ' + newTrades.length + ' trade' + (newTrades.length!==1?'s':'') + ' successfully!');
-    });
+      applyGlobalFilters();
+      renderCalendar(); renderHistory(); renderStats();
+      const msg = '✅ Imported ' + tradesToAdd.length + ' trade' + (tradesToAdd.length!==1?'s':'') + ' successfully!' +
+        (skipped > 0 ? ' (' + skipped + ' overlapping date' + (skipped!==1?'s':'') + ' skipped)' : '');
+      alert(msg);
+    }
 
     function parseJournalCSV(text) {
       function parseCSVLine(line) {
