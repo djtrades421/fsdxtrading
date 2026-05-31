@@ -496,8 +496,7 @@
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="active" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Active</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="trialing" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Trialing</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="canceling" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Cancelling</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="cancelled" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Churned / Cancelled</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="trial_leaver" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-yellow-400">Trial Leavers only</span></label>
+
             </div>
           </div>
           <!-- Source -->
@@ -2396,15 +2395,11 @@
         const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const monthLabel = months[thisMonth] + ' ' + thisYear;
 
-        const churnedCount = statusCounts['cancelled'] || 0;
-        const trialLeaverCount = rosterData.filter(r => r.trialLeaver).length;
-
         statsEl.innerHTML = [
           ['Total Members', total, '#fff', '', ''],
           ['Active', activeCount, '#22c55e', '', 'active'],
           ['Trialing', trialingCount, '#60a5fa', '', 'trialing'],
           ['Cancelling', cancelingCount, '#f59e0b', '', 'canceling'],
-          ['Churned', churnedCount + (trialLeaverCount ? ` <span style="font-size:10px;color:#71717a">(${trialLeaverCount} trial)</span>` : ''), '#ef4444', '', 'cancelled'],
           ['🚩 Flags', flags, flags>0?'#f59e0b':'#71717a', '', 'flags'],
         ].map(([l,v,c,sub,filterVal]) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center ${filterVal?'cursor-pointer hover:border-white/30 hover:bg-zinc-900/60':''} transition" ${filterVal?`onclick="quickFilterRoster('${filterVal}')"`:''}">
           <div class="text-[10px] text-zinc-500 mb-1">${l}</div>
