@@ -465,10 +465,10 @@
         <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div>
             <h2 class="text-sm font-black text-white">Member Roster</h2>
-            <p class="text-xs text-zinc-600 mt-0.5">Whop exports + Legacy/Discord CSV — smart import detects changes</p>
+            <p class="text-xs text-zinc-600 mt-0.5">Select multiple CSVs at once — users, memberships, payments all detected automatically</p>
           </div>
           <div class="flex gap-2 flex-wrap">
-            <input type="file" id="roster-import-input" accept=".csv" class="hidden" onchange="handleRosterImport(this.files[0])">
+            <input type="file" id="roster-import-input" accept=".csv" class="hidden" multiple onchange="handleMultiImport(this.files)">
             <button onclick="document.getElementById('roster-import-input').click()" class="flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
               ↑ Import CSV
             </button>
@@ -2318,6 +2318,49 @@
     }
 
     // ── Handle import ──
+    // ── Multi-file import — detects format for each file automatically ──
+    let _multiImportQueue = [];  // queue of non-roster files to process after roster confirms
+
+    async function handleMultiImport(files) {
+      if (!files || !files.length) return;
+      document.getElementById('roster-import-input').value = '';
+
+      const FORMAT_ORDER = { whop_users: 0, whop_members: 1, discord_csv: 2, whop_memberships: 3, whop_payments: 4, unknown: 5 };
+      const fileList = Array.from(files);
+
+      // Read and detect all files
+      const parsed = [];
+      for (const file of fileList) {
+        const text = await file.text();
+        const rows = parseAdminCSV(text);
+        if (!rows.length) continue;
+        const format = detectImportFormat(Object.keys(rows[0]));
+        parsed.push({ file, rows, format });
+      }
+      parsed.sort((a, b) => (FORMAT_ORDER[a.format]??5) - (FORMAT_ORDER[b.format]??5));
+
+      // Separate payments (instant) from roster-type (needs diff preview)
+      const payments = parsed.filter(p => p.format === 'whop_payments');
+      const rosterFiles = parsed.filter(p => p.format !== 'whop_payments' && p.format !== 'unknown');
+      const unknown = parsed.filter(p => p.format === 'unknown');
+
+      if (unknown.length) {
+        console.warn('Unrecognised files skipped:', unknown.map(p => p.file.name).join(', '));
+      }
+
+      // Process payments immediately — no preview needed
+      for (const { file } of payments) {
+        await handlePaymentsImport(file);
+      }
+
+      // Queue roster files — each one shows a diff preview, user confirms one at a time
+      _multiImportQueue = rosterFiles.slice(1); // save the rest for after first confirm
+      if (rosterFiles.length > 0) {
+        await handleRosterImport(rosterFiles[0].file);
+        // _multiImportQueue gets processed in confirmImport after each confirm
+      }
+    }
+
     async function handleRosterImport(file) {
       if (!file) return;
       const text = await file.text();
@@ -2514,12 +2557,24 @@
         cancelImport();
         renderRoster();
         renderFlags();
-        alert('✅ Import complete — ' + diff.newItems.length + ' added, ' + diff.changed.length + ' updated.' + (newLeadCount > 0 ? ' ' + newLeadCount + ' new history records saved.' : ''));
+        // Process next queued file if any
+        if (_multiImportQueue.length > 0) {
+          const next = _multiImportQueue.shift();
+          setTimeout(() => handleRosterImport(next.file), 100);
+        } else {
+          alert('✅ Import complete — ' + diff.newItems.length + ' added, ' + diff.changed.length + ' updated.' + (newLeadCount > 0 ? ' ' + newLeadCount + ' new history records saved.' : ''));
+        }
       } else {
         cancelImport();
         renderRoster();
         renderFlags();
-        alert('✅ Import complete — ' + diff.newItems.length + ' added, ' + diff.changed.length + ' updated.');
+        // Process next queued file if any
+        if (_multiImportQueue.length > 0) {
+          const next = _multiImportQueue.shift();
+          setTimeout(() => handleRosterImport(next.file), 100);
+        } else {
+          alert('✅ Import complete — ' + diff.newItems.length + ' added, ' + diff.changed.length + ' updated.');
+        }
       }
     }
 
