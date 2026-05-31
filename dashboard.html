@@ -9,6 +9,12 @@
   <script src="nav-loader.js"></script>
   <style>
     body { background-color: #000; }
+    .mini-cal-day { min-height: 72px; height: 72px; }
+    .mini-cal-day-win  { background: rgba(34,197,94,0.09); border-left: 2px solid rgba(34,197,94,0.45) !important; }
+    .mini-cal-day-loss { background: rgba(239,68,68,0.09); border-left: 2px solid rgba(239,68,68,0.4) !important; }
+    .mini-cal-day:hover { background: rgba(255,255,255,0.03); }
+    .mini-cal-day-win:hover  { background: rgba(34,197,94,0.14) !important; }
+    .mini-cal-day-loss:hover { background: rgba(239,68,68,0.14) !important; }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
@@ -142,34 +148,33 @@
 
           <!-- MINI TRADE CALENDAR -->
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-            <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+            <!-- Header -->
+            <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between flex-wrap gap-3">
               <div class="flex items-center gap-3">
-                <h3 class="text-sm font-black text-white">Trade Calendar</h3>
-                <a href="journal.html" class="text-[10px] text-zinc-500 hover:text-green-400 transition font-bold">Open Journal →</a>
+                <button onclick="miniCalPrev()" class="p-1.5 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg></button>
+                <span id="mini-cal-title" class="text-sm font-black text-white w-32 text-center"></span>
+                <button onclick="miniCalNext()" class="p-1.5 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
               </div>
-              <div class="flex items-center gap-2">
-                <button onclick="miniCalPrev()" class="w-6 h-6 flex items-center justify-center rounded hover:bg-white/10 transition text-zinc-400 hover:text-white">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-                </button>
-                <span id="mini-cal-title" class="text-xs font-black text-white w-28 text-center"></span>
-                <button onclick="miniCalNext()" class="w-6 h-6 flex items-center justify-center rounded hover:bg-white/10 transition text-zinc-400 hover:text-white">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-                </button>
+              <div class="flex items-center gap-4 text-xs flex-wrap">
+                <div><span class="text-zinc-500 mr-1">MONTHLY</span><span id="mini-cal-monthly" class="font-black">—</span></div>
+                <div><span class="text-zinc-500 mr-1">DAYS</span><span id="mini-cal-days" class="font-black text-zinc-400">—</span></div>
+                <a href="journal.html" class="text-[10px] text-zinc-500 hover:text-green-400 transition font-bold ml-2">Open Journal →</a>
               </div>
             </div>
-            <!-- Day headers -->
-            <div class="grid grid-cols-5 border-b border-white/[0.06] px-3 pt-2 pb-1">
-              <div class="text-[9px] text-zinc-600 uppercase tracking-wider text-center font-bold">Mon</div>
-              <div class="text-[9px] text-zinc-600 uppercase tracking-wider text-center font-bold">Tue</div>
-              <div class="text-[9px] text-zinc-600 uppercase tracking-wider text-center font-bold">Wed</div>
-              <div class="text-[9px] text-zinc-600 uppercase tracking-wider text-center font-bold">Thu</div>
-              <div class="text-[9px] text-zinc-600 uppercase tracking-wider text-center font-bold">Fri</div>
+            <!-- Grid -->
+            <div class="overflow-x-auto">
+              <div style="min-width:380px">
+                <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
+                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
+                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
+                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
+                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
+                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
+                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Week</div>
+                </div>
+                <div id="mini-cal-grid"></div>
+              </div>
             </div>
-            <div id="mini-cal-grid" class="px-3 pb-3 pt-1 space-y-1">
-              <div class="text-center py-6 text-zinc-600 text-xs">Loading...</div>
-            </div>
-            <!-- Monthly summary -->
-            <div id="mini-cal-summary" class="px-5 py-3 border-t border-white/[0.06] flex items-center gap-4 text-[10px] text-zinc-500"></div>
           </div>
 
           <!-- ECONOMIC CALENDAR -->
@@ -965,22 +970,31 @@
     }
 
 
-    // ── MINI TRADE CALENDAR ──
+    // ── MINI TRADE CALENDAR (mirrors journal renderCalendar) ──
     let miniCalYear = new Date().getFullYear();
     let miniCalMonth = new Date().getMonth();
-    let miniCalTrades = {}; // { 'YYYY-MM-DD': { pnl, count } }
+    let miniByDate = {}; // { 'YYYY-MM-DD': { pnl, count } }
+
+    function fmtMiniShort(v) {
+      const a = Math.abs(v), s = v < 0 ? '-' : '+';
+      return a >= 1000 ? s + '$' + (a/1000).toFixed(1) + 'K' : s + '$' + a.toFixed(0);
+    }
+    function fmtMiniFull(v) {
+      const s = v < 0 ? '-' : '+';
+      return s + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
 
     async function loadMiniCalTrades(token) {
       try {
         const res = await fetch(JOURNAL_URL, { headers: { 'Authorization': `Bearer ${token}` } });
         const data = await res.json();
         const trades = data.trades || [];
-        miniCalTrades = {};
+        miniByDate = {};
         trades.forEach(t => {
           if (!t.date) return;
-          if (!miniCalTrades[t.date]) miniCalTrades[t.date] = { pnl: 0, count: 0 };
-          miniCalTrades[t.date].pnl += parseFloat(t.netPnl) || 0;
-          miniCalTrades[t.date].count++;
+          if (!miniByDate[t.date]) miniByDate[t.date] = { pnl: 0, count: 0 };
+          miniByDate[t.date].pnl += parseFloat(t.netPnl) || 0;
+          miniByDate[t.date].count++;
         });
         renderMiniCal();
       } catch(e) {
@@ -993,97 +1007,99 @@
       const titleEl = document.getElementById('mini-cal-title');
       if (titleEl) titleEl.textContent = months[miniCalMonth] + ' ' + miniCalYear;
 
+      // Monthly stats
+      let monthPnl = 0, monthDays = 0;
+      Object.keys(miniByDate).forEach(ds => {
+        const d = new Date(ds + 'T00:00:00');
+        if (d.getFullYear() === miniCalYear && d.getMonth() === miniCalMonth) {
+          monthPnl += miniByDate[ds].pnl;
+          monthDays++;
+        }
+      });
+      const mEl = document.getElementById('mini-cal-monthly');
+      if (mEl) { mEl.textContent = fmtMiniFull(monthPnl); mEl.className = 'font-black ' + (monthPnl >= 0 ? 'text-green-400' : 'text-red-400'); }
+      const dEl = document.getElementById('mini-cal-days');
+      if (dEl) { dEl.textContent = monthDays + ' day' + (monthDays !== 1 ? 's' : '') + ' traded'; }
+
       const grid = document.getElementById('mini-cal-grid');
       if (!grid) return;
 
-      const today = new Date().toISOString().slice(0, 10);
       const daysInMonth = new Date(miniCalYear, miniCalMonth + 1, 0).getDate();
+      const today = new Date().toISOString().slice(0, 10);
 
-      // Weekdays only (Mon–Fri)
+      // Weekdays only (Mon–Fri), same as journal
       const weekdays = [];
       for (let d = 1; d <= daysInMonth; d++) {
         const dow = new Date(miniCalYear, miniCalMonth, d).getDay();
         if (dow !== 0 && dow !== 6) weekdays.push(d);
       }
-
-      // Offset so first day aligns to correct Mon–Fri column (0=Mon … 4=Fri)
-      const firstDow = new Date(miniCalYear, miniCalMonth, weekdays[0]).getDay(); // 1=Mon … 5=Fri
-      const offset = firstDow - 1; // 0–4
+      const firstDow = new Date(miniCalYear, miniCalMonth, weekdays[0]).getDay() - 1; // 0=Mon … 4=Fri
       let cells = [];
-      for (let i = 0; i < offset; i++) cells.push(null);
+      for (let i = 0; i < firstDow; i++) cells.push(null);
       weekdays.forEach(d => cells.push(d));
       while (cells.length % 5 !== 0) cells.push(null);
 
-      // Monthly summary
-      let monthPnl = 0, tradedDays = 0, wins = 0, total = 0;
-      Object.keys(miniCalTrades).forEach(ds => {
-        const d = new Date(ds + 'T00:00:00');
-        if (d.getFullYear() === miniCalYear && d.getMonth() === miniCalMonth) {
-          monthPnl += miniCalTrades[ds].pnl;
-          tradedDays++;
-          total += miniCalTrades[ds].count;
-        }
-      });
-      const summaryEl = document.getElementById('mini-cal-summary');
-      if (summaryEl) {
-        const pnlColor = monthPnl >= 0 ? '#22c55e' : '#ef4444';
-        const pnlStr = (monthPnl >= 0 ? '+' : '-') + '$' + Math.abs(monthPnl).toFixed(2);
-        summaryEl.innerHTML = `
-          <span>Month P&L: <span style="color:${pnlColor};font-weight:700">${pnlStr}</span></span>
-          <span class="text-zinc-600">·</span>
-          <span>${tradedDays} day${tradedDays !== 1 ? 's' : ''} traded</span>
-          <span class="text-zinc-600">·</span>
-          <span>${total} trade${total !== 1 ? 's' : ''}</span>
-        `;
-      }
-
-      // Build rows
-      let html = '';
+      grid.innerHTML = '';
       for (let r = 0; r < cells.length / 5; r++) {
-        html += '<div class="grid grid-cols-5 gap-1">';
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-6 border-b border-white/[0.06] last:border-0';
+        let rowPnl = 0;
+
         for (let c = 0; c < 5; c++) {
           const d = cells[r * 5 + c];
-          if (!d) {
-            html += '<div></div>';
-            continue;
-          }
-          const ds = miniCalYear + '-' + String(miniCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-          const data = miniCalTrades[ds];
-          const isToday = ds === today;
+          const cell = document.createElement('div');
+          cell.className = 'mini-cal-day border-r border-white/[0.06] p-3';
 
-          if (data) {
-            const isWin = data.pnl >= 0;
-            const pnlStr = (isWin ? '+' : '-') + '$' + Math.abs(data.pnl).toFixed(0);
-            const bg = isWin ? 'background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.2)' : 'background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2)';
-            const pnlColor = isWin ? '#22c55e' : '#ef4444';
-            const todayRing = isToday ? ';outline:1px solid rgba(34,197,94,0.5)' : '';
-            html += `<div style="${bg}${todayRing};border-radius:8px;cursor:pointer;padding:5px 4px" onclick="window.location.href='journal.html?date=${ds}&tab=history'" title="View ${ds} in journal">
-              <div style="font-size:9px;color:#71717a;font-weight:600;margin-bottom:2px">${miniCalMonth + 1}/${d}</div>
-              <div style="font-size:11px;font-weight:800;color:${pnlColor};line-height:1">${pnlStr}</div>
-              <div style="font-size:9px;color:#52525b;margin-top:1px">${data.count}t</div>
-            </div>`;
-          } else {
-            const todayRing = isToday ? 'outline:1px solid rgba(34,197,94,0.3);' : '';
-            html += `<div style="${todayRing}border:1px solid rgba(255,255,255,0.04);border-radius:8px;padding:5px 4px">
-              <div style="font-size:9px;color:#3f3f46;font-weight:600">${miniCalMonth + 1}/${d}</div>
-            </div>`;
+          if (d) {
+            const ds = miniCalYear + '-' + String(miniCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+            const data = miniByDate[ds];
+            const isToday = ds === today;
+
+            if (data) rowPnl += data.pnl;
+            if (isToday) cell.style.outline = '1px solid rgba(34,197,94,0.3)';
+
+            if (data) {
+              cell.classList.add(data.pnl > 0 ? 'mini-cal-day-win' : 'mini-cal-day-loss');
+              cell.style.cursor = 'pointer';
+              cell.title = 'View ' + ds + ' in journal';
+              cell.onclick = () => { window.location.href = 'journal.html?date=' + ds + '&tab=history'; };
+            }
+
+            // Date number
+            const dateDiv = document.createElement('div');
+            dateDiv.className = isToday ? 'text-xs font-black text-green-400 mb-1' : 'text-xs font-bold text-zinc-500 mb-1';
+            dateDiv.textContent = (miniCalMonth + 1) + '/' + d;
+            cell.appendChild(dateDiv);
+
+            if (data) {
+              const pnlDiv = document.createElement('div');
+              pnlDiv.className = 'text-sm font-black ' + (data.pnl >= 0 ? 'text-green-400' : 'text-red-400');
+              pnlDiv.textContent = fmtMiniShort(data.pnl);
+              cell.appendChild(pnlDiv);
+
+              const countDiv = document.createElement('div');
+              countDiv.className = 'text-[10px] text-zinc-500 mt-0.5';
+              countDiv.textContent = data.count + ' trade' + (data.count !== 1 ? 's' : '');
+              cell.appendChild(countDiv);
+            }
           }
+          row.appendChild(cell);
         }
-        html += '</div>';
+
+        // Weekly total col (matches journal)
+        const wc = document.createElement('div');
+        wc.className = 'mini-cal-day p-3 flex flex-col items-end justify-start bg-zinc-950/30';
+        const wcInner = document.createElement('div');
+        wcInner.className = 'text-sm font-black ' + (rowPnl >= 0 ? 'text-green-400' : 'text-red-400');
+        wcInner.textContent = rowPnl !== 0 ? fmtMiniShort(rowPnl) : '—';
+        wc.appendChild(wcInner);
+        row.appendChild(wc);
+        grid.appendChild(row);
       }
-      grid.innerHTML = html;
     }
 
-    function miniCalPrev() {
-      miniCalMonth--;
-      if (miniCalMonth < 0) { miniCalMonth = 11; miniCalYear--; }
-      renderMiniCal();
-    }
-    function miniCalNext() {
-      miniCalMonth++;
-      if (miniCalMonth > 11) { miniCalMonth = 0; miniCalYear++; }
-      renderMiniCal();
-    }
+    function miniCalPrev() { miniCalMonth--; if (miniCalMonth < 0) { miniCalMonth = 11; miniCalYear--; } renderMiniCal(); }
+    function miniCalNext() { miniCalMonth++; if (miniCalMonth > 11) { miniCalMonth = 0; miniCalYear++; } renderMiniCal(); }
 
     loadCalendar();
     initDashboard();
