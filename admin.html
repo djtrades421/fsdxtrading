@@ -77,6 +77,7 @@
         <button onclick="switchTab('payments')" id="tab-payments" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">Payments</button>
         <button onclick="switchTab('flags')" id="tab-flags" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">🚩 Flags</button>
         <button onclick="switchTab('analytics')" id="tab-analytics" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">📊 Analytics</button>
+        <button onclick="switchTab('leads')" id="tab-leads" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">🎯 Leads</button>
       </div>
 
       <!-- MEMBERS TAB -->
@@ -678,6 +679,43 @@
         <div id="analytics-churn" class="mb-5"></div>
       </div>
 
+      <!-- LEADS TAB -->
+      <div id="panel-leads" class="tab-panel">
+        <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+          <div>
+            <h2 class="text-sm font-black text-white">🎯 Leads</h2>
+            <p class="text-xs text-zinc-600 mt-0.5">Whop users who viewed FSD-X but never purchased — auto-populated from your roster import</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <input type="text" id="leads-search" oninput="renderLeads()" placeholder="Search name, email, Discord..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-52">
+            <button onclick="exportLeadsCSV()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">↓ Export</button>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5" id="leads-stats"></div>
+
+        <!-- Table -->
+        <div class="border border-white/10 rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left min-w-[700px]">
+              <thead><tr class="bg-zinc-950 border-b border-white/10 text-[10px] text-zinc-500 uppercase tracking-wider">
+                <th class="px-4 py-3">Name / Whop Username</th>
+                <th class="px-4 py-3">Email</th>
+                <th class="px-4 py-3">Discord</th>
+                <th class="px-4 py-3">Country</th>
+                <th class="px-4 py-3">Spend</th>
+                <th class="px-4 py-3">Joined Whop</th>
+                <th class="px-4 py-3">Converted</th>
+              </tr></thead>
+              <tbody id="leads-table" class="divide-y divide-white/5 text-xs">
+                <tr><td colspan="7" class="px-4 py-8 text-center text-zinc-600">Import a Whop users CSV to populate leads.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
   <!-- Day detail modal -->
   <div id="day-detail-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-end sm:items-center justify-center px-0 sm:px-4">
     <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] flex flex-col">
@@ -700,7 +738,7 @@
     let allRecaps = [];
 
     function switchTab(tab) {
-      ['members','recaps','announce','updates','migrate','roster','payments','flags','analytics'].forEach(t => {
+      ['members','recaps','announce','updates','migrate','roster','payments','flags','analytics','leads'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('tab-' + t);
         btn.classList.remove('active','text-green-400','border-green-500');
@@ -713,6 +751,7 @@
       if (tab === 'payments') renderPayments();
       if (tab === 'flags') renderFlags();
       if (tab === 'analytics') renderAnalytics();
+      if (tab === 'leads') renderLeads();
       const activeBtn = document.getElementById('tab-' + tab);
       activeBtn.classList.add('active','text-green-400','border-green-500');
       activeBtn.classList.remove('text-zinc-500','border-transparent');
@@ -1634,6 +1673,7 @@
     // ═══════════════════════════════════════════
     const JOURNAL_URL_ADMIN = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
     let rosterData = [];        // all roster records
+    let leadsData = [];          // Whop users who never purchased
     let paymentsData = [];      // all payment records
     let flagsData = [];         // detected flags
     let pendingImport = null;   // staged import before confirm
@@ -1658,15 +1698,17 @@
 
     async function loadRosterFromKV() {
       try {
-        const [rr, pr, fr] = await Promise.all([
+        const [rr, pr, fr, lr] = await Promise.all([
           fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: rosterKey() }) }),
           fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: paymentsKey() }) }),
           fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: flagsKey() }) }),
+          fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: 'roster_leads:' + (window._adminKey||'') }) }),
         ]);
-        const [rd, pd, fdx] = await Promise.all([rr.json(), pr.json(), fr.json()]);
+        const [rd, pd, fdx, ld] = await Promise.all([rr.json(), pr.json(), fr.json(), lr.json()]);
         rosterData = Array.isArray(rd.trades) ? rd.trades : [];
         paymentsData = Array.isArray(pd.trades) ? pd.trades : [];
         flagsData = Array.isArray(fdx.trades) ? fdx.trades : [];
+        leadsData = Array.isArray(ld.trades) ? ld.trades : [];
       } catch(e) { console.error('Roster load error:', e); }
 
       // Load site users from allMembers (already loaded by loadData)
@@ -1676,6 +1718,83 @@
         if (m.email) siteUsers.add(m.email.toLowerCase());
         if (m.whopKey) siteUsers.add(m.whopKey);
       });
+    }
+
+    // ── LEADS ──
+    async function saveLeadsToKV() {
+      await fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ action:'save-all', key: 'roster_leads:' + (window._adminKey||''), payload: { trades: leadsData } }) });
+    }
+
+    function renderLeads() {
+      const search = (document.getElementById('leads-search')?.value || '').toLowerCase();
+
+      // Stats
+      const statsEl = document.getElementById('leads-stats');
+      if (statsEl) {
+        const hasDiscord = leadsData.filter(r => r.discordName).length;
+        const countries = [...new Set(leadsData.map(r => r.country).filter(Boolean))].length;
+        const withSpend = leadsData.filter(r => parseFloat(r.spend||0) > 0).length;
+        const converted = leadsData.filter(r => r.converted).length;
+        statsEl.innerHTML = [
+          ['Total Leads', leadsData.length, '#fff'],
+          ['Have Discord', hasDiscord, '#818cf8'],
+          ['Countries', countries, '#22c55e'],
+          ['Converted', converted, '#f59e0b'],
+        ].map(([l,v,c]) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center">
+          <div class="text-[10px] text-zinc-500 mb-1">${l}</div>
+          <div class="text-xl font-black" style="color:${c}">${v}</div>
+        </div>`).join('');
+      }
+
+      const tbody = document.getElementById('leads-table');
+      if (!leadsData.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-zinc-600">No leads yet — import a Whop users CSV to populate.</td></tr>';
+        return;
+      }
+
+      let filtered = leadsData;
+      if (search) {
+        filtered = leadsData.filter(r => {
+          const hay = [r.name, r.whopUsername, r.email, r.discordName, r.country].join(' ').toLowerCase();
+          return hay.includes(search);
+        });
+      }
+
+      const countryNames = { US:'🇺🇸 US', CA:'🇨🇦 CA', IN:'🇮🇳 IN', GB:'🇬🇧 UK', AU:'🇦🇺 AU', DE:'🇩🇪 DE', FR:'🇫🇷 FR', IT:'🇮🇹 IT', PK:'🇵🇰 PK', CL:'🇨🇱 CL', ZW:'🇿🇼 ZW' };
+
+      tbody.innerHTML = filtered.map(r => {
+        const spend = parseFloat(r.spend||0);
+        const convertedBadge = r.converted
+          ? '<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-green-500/10 text-green-400 border-green-500/20">✓ Member</span>'
+          : '<span class="text-zinc-700">—</span>';
+        return `<tr class="hover:bg-white/[0.02] transition">
+          <td class="px-4 py-3">
+            <div class="text-white font-bold">${r.name || r.whopUsername || '—'}</div>
+            <div class="text-zinc-600 text-[10px]">@${r.whopUsername||'—'}</div>
+          </td>
+          <td class="px-4 py-3 text-zinc-400">${r.email||'—'}</td>
+          <td class="px-4 py-3 text-zinc-400">${r.discordName ? '<span class="text-indigo-400">'+r.discordName+'</span>' : '<span class="text-zinc-700">—</span>'}</td>
+          <td class="px-4 py-3 text-zinc-500">${countryNames[r.country] || r.country || '—'}</td>
+          <td class="px-4 py-3 ${spend>0?'text-green-400 font-bold':'text-zinc-700'}">$${spend.toFixed(2)}</td>
+          <td class="px-4 py-3 text-zinc-500">${r.joined ? fmtDate(r.joined) : '—'}</td>
+          <td class="px-4 py-3">${convertedBadge}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function exportLeadsCSV() {
+      if (!leadsData.length) { alert('No leads to export.'); return; }
+      const headers = ['Name','Whop Username','Email','Discord','Country','Spend','Joined','Converted'];
+      const rows = leadsData.map(r => [r.name,r.whopUsername,r.email,r.discordName,r.country,r.spend,r.joined,r.converted?'Yes':'No']
+        .map(v => '"'+String(v||'').replace(/"/g,'""')+'"').join(','));
+      const csv = [headers.join(','),...rows].join('\n');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href=url; a.download='fsdx_leads_'+new Date().toISOString().slice(0,10)+'.csv';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
 
     async function saveRosterToKV() {
@@ -2059,7 +2178,7 @@
       else if (format === 'discord_csv') incoming = parseDiscordCSV(rows);
 
       const diff = diffImport(incoming, format);
-      pendingImport = { incoming, diff, format };
+      pendingImport = { incoming, diff, format, _allRows: rows };
       showImportDiff(diff);
       document.getElementById('roster-import-input').value = '';
     }
@@ -2156,10 +2275,58 @@
       await saveRosterToKV();
       runFlagDetection();
       await saveFlagsToKV();
-      cancelImport();
-      renderRoster();
-      renderFlags();
-      alert('✅ Import complete — ' + diff.newItems.length + ' added, ' + diff.changed.length + ' updated.');
+
+      // Extract ghost accounts (no plan/membership data) as leads
+      // Cross-ref against roster emails to mark converted ones
+      const rosterEmails = new Set(rosterData.map(r => r.email?.toLowerCase()).filter(Boolean));
+      // pendingImport.allRows contains the raw rows — we need to re-parse ghosts
+      if (pendingImport._allRows) {
+        const ghosts = pendingImport._allRows.filter(r =>
+          !r['Membership IDs']?.trim() && !r['Plan IDs']?.trim() && !r['Product IDs']?.trim()
+        );
+        const newLeads = ghosts.map(r => ({
+          id: r['Member ID'] || (Date.now() + Math.random()).toString(36),
+          name: r['Name'] || '',
+          whopUsername: r['Username'] || '',
+          email: r['Email'] || '',
+          discordName: r['Discord username'] || '',
+          discordId: r['Discord ID'] || '',
+          country: r['Country'] || '',
+          spend: r['Platform spend (USD)'] || '0',
+          joined: r['Joined date'] ? r['Joined date'].split(' ')[0] : '',
+          converted: rosterEmails.has(r['Email']?.toLowerCase()),
+          source: 'whop_import',
+        }));
+
+        // Merge with existing leads — deduplicate by email
+        const existingLeadEmails = new Set(leadsData.map(l => l.email?.toLowerCase()).filter(Boolean));
+        let newLeadCount = 0;
+        newLeads.forEach(lead => {
+          const emailKey = lead.email?.toLowerCase();
+          if (!emailKey) return;
+          // Check if converted status changed
+          const existIdx = leadsData.findIndex(l => l.email?.toLowerCase() === emailKey);
+          if (existIdx >= 0) {
+            // Update converted status if they joined roster
+            if (lead.converted && !leadsData[existIdx].converted) {
+              leadsData[existIdx].converted = true;
+            }
+          } else {
+            leadsData.push(lead);
+            newLeadCount++;
+          }
+        });
+        await saveLeadsToKV();
+        cancelImport();
+        renderRoster();
+        renderFlags();
+        alert('✅ Import complete — ' + diff.newItems.length + ' added, ' + diff.changed.length + ' updated.' + (newLeadCount > 0 ? ' ' + newLeadCount + ' new leads saved.' : ''));
+      } else {
+        cancelImport();
+        renderRoster();
+        renderFlags();
+        alert('✅ Import complete — ' + diff.newItems.length + ' added, ' + diff.changed.length + ' updated.');
+      }
     }
 
     function cancelImport() {
