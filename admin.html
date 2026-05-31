@@ -2556,7 +2556,9 @@
 
     // ── Analytics tab ──
     function renderAnalytics() {
-      if (!rosterData.length) {
+      // Combine roster (active members) + history (former/cancelled) for full picture
+      const allData = [...rosterData, ...historyData];
+      if (!allData.length) {
         document.getElementById('analytics-monthly').innerHTML = '<div class="col-span-3 text-center py-12 text-zinc-600 text-sm">Import roster data to see analytics.</div>';
         document.getElementById('analytics-churn').innerHTML = '';
         document.getElementById('analytics-growth').innerHTML = '';
@@ -2568,14 +2570,18 @@
       const thisMonth = now.getMonth();
       const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-      // Monthly metrics
+      // Monthly metrics — gained from roster (new joins), lost from history (left date)
       const gained = rosterData.filter(r => {
         if (!r.joined) return false;
         try { const d = new Date(r.joined); return d.getFullYear()===thisYear && d.getMonth()===thisMonth; } catch(e){ return false; }
       }).length;
-      const lost = rosterData.filter(r => {
-        if (r.status !== 'cancelled' || !r.cancelingDate) return false;
-        try { const d = new Date(r.cancelingDate); return d.getFullYear()===thisYear && d.getMonth()===thisMonth; } catch(e){ return false; }
+      const lost = historyData.filter(r => {
+        const dateStr = r.leftDate || r.cancelReason ? r.joined : '';
+        if (!dateStr) return false;
+        // Use leftDate if available, otherwise just count history members who joined this month (approximate)
+        const checkDate = r.leftDate || '';
+        if (!checkDate) return false;
+        try { const d = new Date(checkDate); return d.getFullYear()===thisYear && d.getMonth()===thisMonth; } catch(e){ return false; }
       }).length;
       const trialed = rosterData.filter(r => {
         if (!['trialing','trial_cancelled'].includes(r.status) || !r.joined) return false;
@@ -2601,14 +2607,19 @@
         const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
         monthlyData[key] = { gained: 0, lost: 0, label: months[d.getMonth()]+' '+d.getFullYear() };
       }
+      // Gained = new roster members by join date
       rosterData.forEach(r => {
         if (r.joined) {
           const d = new Date(r.joined);
           const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
           if (monthlyData[key]) monthlyData[key].gained++;
         }
-        if (r.status === 'cancelled' && r.cancelingDate) {
-          const d = new Date(r.cancelingDate);
+      });
+      // Lost = history members by left date (most accurate churn date)
+      historyData.forEach(r => {
+        const dateStr = r.leftDate || '';
+        if (dateStr) {
+          const d = new Date(dateStr);
           const key = d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
           if (monthlyData[key]) monthlyData[key].lost++;
         }
@@ -2647,8 +2658,9 @@
     function renderCancelReasons(targetId) {
       const section = document.getElementById(targetId || 'cancel-reasons-section');
       if (!section) return;
-      const cancelled = rosterData.filter(r => r.status === 'cancelled' && r.cancelReason);
-      if (!cancelled.length) { if (section) section.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">No cancel reasons yet — import the memberships export to add reasons.</div>'; return; }
+      // Cancel reasons live in history (former members from memberships import)
+      const cancelled = historyData.filter(r => r.cancelReason);
+      if (!cancelled.length) { if (section) section.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">No cancel reasons yet — import the memberships CSV to populate.</div>'; return; }
 
       // Group by reason
       const reasons = {};
@@ -2742,9 +2754,8 @@
           if (!r.joined) return false;
           try { const d = new Date(r.joined); return d.getFullYear()===thisYear && d.getMonth()===thisMonth; } catch(e){ return false; }
         }).length;
-        const lost = rosterData.filter(r => {
-          if (r.status !== 'cancelled') return false;
-          const dateStr = r.leftDate || r.churnedDate || r.cancelingDate || '';
+        const lost = historyData.filter(r => {
+          const dateStr = r.leftDate || '';
           if (!dateStr) return false;
           try { const d = new Date(dateStr); return d.getFullYear()===thisYear && d.getMonth()===thisMonth; } catch(e){ return false; }
         }).length;
@@ -3327,7 +3338,11 @@
 
     function runFlagDetection() {
       const newFlags = [];
-      const cancelled = rosterData.filter(r => r.status === 'cancelled');
+      // Cancelled records now live in history — use that as the churn archive
+      const cancelled = [
+        ...rosterData.filter(r => r.status === 'cancelled'),
+        ...historyData.filter(r => r.leftDate || r.cancelReason)
+      ];
       const active = rosterData.filter(r => ['active','trialing','canceling'].includes(r.status));
       const dismissed = new Set(flagsData.filter(f => f.dismissed).map(f => f.id));
 
