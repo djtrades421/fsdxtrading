@@ -370,6 +370,32 @@
             </div>
           </div>
           <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Visibility</label>
+            <div class="flex gap-2">
+              <label class="flex-1 flex items-center gap-2.5 px-4 py-3 bg-black border border-white/10 rounded-xl cursor-pointer hover:border-white/20 transition has-[:checked]:border-green-500/40 has-[:checked]:bg-green-500/5">
+                <input type="radio" name="update-visibility" id="vis-all" value="all" checked class="accent-green-500">
+                <div>
+                  <div class="text-xs font-bold text-white">Everyone</div>
+                  <div class="text-[10px] text-zinc-500">All members see this</div>
+                </div>
+              </label>
+              <label class="flex-1 flex items-center gap-2.5 px-4 py-3 bg-black border border-white/10 rounded-xl cursor-pointer hover:border-white/20 transition has-[:checked]:border-green-500/40 has-[:checked]:bg-green-500/5">
+                <input type="radio" name="update-visibility" id="vis-annual" value="annual" class="accent-green-500">
+                <div>
+                  <div class="text-xs font-bold text-white">Annual + Lifetime</div>
+                  <div class="text-[10px] text-zinc-500">Early access</div>
+                </div>
+              </label>
+              <label class="flex-1 flex items-center gap-2.5 px-4 py-3 bg-black border border-white/10 rounded-xl cursor-pointer hover:border-white/20 transition has-[:checked]:border-green-500/40 has-[:checked]:bg-green-500/5">
+                <input type="radio" name="update-visibility" id="vis-lifetime" value="lifetime" class="accent-green-500">
+                <div>
+                  <div class="text-xs font-bold text-white">Lifetime Only</div>
+                  <div class="text-[10px] text-zinc-500">Exclusive preview</div>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="mb-4">
             <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Details <span class="text-zinc-700 normal-case">— optional</span></label>
             <textarea id="update-body" rows="3" placeholder="More detail about what changed, what was fixed, or what to expect..."
               class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
@@ -1245,11 +1271,18 @@
       container.innerHTML = allUpdates.map(u => {
         const tc = typeConfig[u.type] || typeConfig.update;
         const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
+        const visConfig = {
+          all:      { label: '🌐 Everyone',         cls: 'bg-zinc-800 text-zinc-400 border-white/10' },
+          annual:   { label: '⚡ Annual + Lifetime', cls: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+          lifetime: { label: '👑 Lifetime Only',     cls: 'bg-purple-500/10 text-purple-400 border-purple-500/20' },
+        };
+        const vc = visConfig[u.visibility || 'all'];
         return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
           <div class="flex items-start justify-between gap-4">
             <div class="flex-1">
               <div class="flex flex-wrap items-center gap-2 mb-1.5">
                 <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${tc.cls}">${tc.label}</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${vc.cls}">${vc.label}</span>
                 <span class="text-[10px] text-zinc-600">${dateStr}</span>
               </div>
               <div class="text-sm font-bold text-white mb-1">${u.title}</div>
@@ -1275,6 +1308,9 @@
       document.getElementById('update-type').value = u.type || 'update';
       document.getElementById('update-title').value = u.title || '';
       document.getElementById('update-body').value = u.body || '';
+      const vis = u.visibility || 'all';
+      const visRadio = document.querySelector(`input[name="update-visibility"][value="${vis}"]`);
+      if (visRadio) visRadio.checked = true;
       document.getElementById('update-form-title').textContent = 'Edit Update';
       document.getElementById('update-btn').textContent = 'Save Changes';
       document.getElementById('update-cancel-btn').classList.remove('hidden');
@@ -1289,6 +1325,7 @@
       document.getElementById('update-title').value = '';
       document.getElementById('update-body').value = '';
       document.getElementById('update-type').value = 'feature';
+      document.getElementById('vis-all').checked = true;
       document.getElementById('update-msg').classList.add('hidden');
     }
 
@@ -1301,9 +1338,10 @@
       btn.disabled = true; btn.textContent = editingUpdateId ? 'Saving...' : 'Posting...';
       const token = localStorage.getItem('fsdx_token') || '';
       try {
+        const visibility = document.querySelector('input[name="update-visibility"]:checked')?.value || 'all';
         const payload = editingUpdateId
-          ? { id: editingUpdateId, type, title, body }
-          : { type, title, body };
+          ? { id: editingUpdateId, type, title, body, visibility }
+          : { type, title, body, visibility };
         const res = await fetch(`${API}/api/admin/update`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
