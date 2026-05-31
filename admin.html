@@ -1838,7 +1838,7 @@
       if (statsEl) {
         const hasDiscord = leadsData.filter(r => r.discordName).length;
         const countries = [...new Set(leadsData.map(r => r.country).filter(Boolean))].length;
-        const former = leadsData.filter(r => r.leftDate).length;
+        const former = leadsData.filter(r => r.leftDate || r.cancelReason).length;
         const converted = leadsData.filter(r => r.converted).length;
         statsEl.innerHTML = [
           ['Total Leads', leadsData.length, '#fff', ''],
@@ -1872,7 +1872,7 @@
       let filtered = sorted.filter(r => {
         if (discordFilter === 'yes' && !r.discordName) return false;
         if (discordFilter === 'no' && r.discordName) return false;
-        if (typeFilter === 'former' && !r.leftDate) return false;
+        if (typeFilter === 'former' && !r.leftDate && !r.cancelReason) return false;
         if (typeFilter === 'never' && r.leftDate) return false;
         if (typeFilter === 'converted' && !r.converted) return false;
         if (dateFrom && r.joined && r.joined < dateFrom) return false;
@@ -1904,8 +1904,11 @@
         let typeBadge;
         if (r.converted) {
           typeBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-green-500/10 text-green-400 border-green-500/20">✓ Member</span>';
-        } else if (r.leftDate) {
-          typeBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-yellow-500/10 text-yellow-400 border-yellow-500/20" title="Left ${fmtDate(r.leftDate)}">Former · Left ${fmtDate(r.leftDate)}</span>`;
+        } else if (r.leftDate || r.cancelReason) {
+          const leftStr = r.leftDate ? ` · Left ${fmtDate(r.leftDate)}` : '';
+          const reasonStr = r.cancelReason ? `<div class="text-[9px] text-zinc-500 mt-0.5 max-w-[200px] truncate" title="${r.cancelReason}">✗ ${r.cancelReason}</div>` : '';
+          const planStr = r.planName ? `<div class="text-[9px] text-zinc-600">${r.planName}</div>` : '';
+          typeBadge = `<div><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-yellow-500/10 text-yellow-400 border-yellow-500/20">Former${leftStr}</span>${planStr}${reasonStr}</div>`;
         } else {
           typeBadge = '<span class="text-zinc-700 text-[10px]">Prospect</span>';
         }
@@ -1936,10 +1939,10 @@
 
     function exportLeadsCSV() {
       if (!leadsData.length) { alert('No leads to export.'); return; }
-      const headers = ['Name','Whop Username','Email','Discord','City','Country','Spend','Joined','Left Date','Type'];
+      const headers = ['Name','Whop Username','Email','Discord','City','Country','Spend','Joined','Left Date','Plan','Cancel Reason','Type'];
       const rows = leadsData.map(r => {
-        const type = r.converted ? 'Converted' : r.leftDate ? 'Former Member' : 'Prospect';
-        return [r.name,r.whopUsername,r.email,r.discordName,r.city||'',r.country,r.spend,r.joined,r.leftDate||'',type]
+        const type = r.converted ? 'Converted' : (r.leftDate || r.cancelReason) ? 'Former Member' : 'Prospect';
+        return [r.name,r.whopUsername,r.email,r.discordName,r.city||'',r.country,r.spend,r.joined,r.leftDate||'',r.planName||'',r.cancelReason||'',type]
           .map(v => '"'+String(v||'').replace(/"/g,'""')+'"').join(',');
       });
       const csv = [headers.join(','),...rows].join('\n');
@@ -2425,6 +2428,50 @@
           rosterData.push(item);
         }
       });
+
+      // Pull cancelled records from memberships import into leads (they have cancel reasons)
+      if (isMembershipsExport) {
+        const cancelledFromMemberships = incoming.filter(item => item.status === 'cancelled' && item.email);
+        const rosterEmails2 = new Set(rosterData.map(r => r.email?.toLowerCase()).filter(Boolean));
+        cancelledFromMemberships.forEach(item => {
+          const emailKey = item.email?.toLowerCase();
+          const existIdx = leadsData.findIndex(l => l.email?.toLowerCase() === emailKey);
+          const leadRecord = {
+            id: item.id || (Date.now() + Math.random()).toString(36),
+            name: item.name || '',
+            whopUsername: item.whopUsername || '',
+            whopKey: item.whopKey || '',
+            email: item.email || '',
+            discordName: item.discordName || '',
+            discordId: item.discordId || '',
+            city: '',
+            state: '',
+            country: item.country || '',
+            spend: item.spend || '0',
+            joined: item.joined || '',
+            leftDate: item.renewal || '', // for memberships, renewal date = when access ended
+            cancelReason: item.cancelReason || '',
+            planName: item.planName || item.accessType || '',
+            converted: false,
+            source: 'whop_memberships',
+          };
+          if (existIdx >= 0) {
+            // Update cancel reason if we now have it
+            if (leadRecord.cancelReason && !leadsData[existIdx].cancelReason) {
+              leadsData[existIdx].cancelReason = leadRecord.cancelReason;
+            }
+            if (leadRecord.planName && !leadsData[existIdx].planName) {
+              leadsData[existIdx].planName = leadRecord.planName;
+            }
+          } else {
+            leadsData.push(leadRecord);
+          }
+          // Remove from rosterData — cancelled members shouldn't be in roster
+          const rosterIdx = rosterData.findIndex(r => r.email?.toLowerCase() === emailKey);
+          if (rosterIdx >= 0) rosterData.splice(rosterIdx, 1);
+        });
+        await saveLeadsToKV();
+      }
 
       await saveRosterToKV();
       runFlagDetection();
