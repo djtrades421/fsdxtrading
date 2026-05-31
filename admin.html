@@ -1782,16 +1782,16 @@
 
     function toggleHistoryFilter(type) {
       ['discord','type'].forEach(t => {
-        if (t !== type) document.getElementById('ld-'+t+'-menu')?.classList.add('hidden');
+        if (t !== type) document.getElementById('hs-'+t+'-menu')?.classList.add('hidden');
       });
-      document.getElementById('ld-'+type+'-menu')?.classList.toggle('hidden');
+      document.getElementById('hs-'+type+'-menu')?.classList.toggle('hidden');
     }
 
-    // Close leads filter dropdowns on outside click
+    // Close history filter dropdowns on outside click
     document.addEventListener('click', function(e) {
       ['discord','type'].forEach(type => {
-        const wrap = document.getElementById('ld-'+type+'-wrap');
-        const menu = document.getElementById('ld-'+type+'-menu');
+        const wrap = document.getElementById('hs-'+type+'-wrap');
+        const menu = document.getElementById('hs-'+type+'-menu');
         if (menu && wrap && !wrap.contains(e.target)) menu.classList.add('hidden');
       });
     });
