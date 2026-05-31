@@ -576,8 +576,7 @@
             <p class="text-xs text-zinc-600 mt-0.5">From Whop payments export</p>
           </div>
           <div class="flex gap-2">
-            <input type="file" id="payments-import-input" accept=".csv" class="hidden" onchange="handlePaymentsImport(this.files[0])">
-            <button onclick="document.getElementById('payments-import-input').click()" class="px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">↑ Import Payments CSV</button>
+
             <button onclick="exportPaymentsCSV()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">↓ Export</button>
             <button onclick="clearPaymentsData()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-500 font-bold text-xs rounded-xl transition">Clear Data</button>
           </div>
@@ -2996,7 +2995,7 @@
         .sort((a,b) => (b.paidAt||'') < (a.paidAt||'') ? -1 : 1);
 
       await savePaymentsToKV();
-      document.getElementById('payments-import-input').value = '';
+      // payments import input removed — use roster Import CSV button
       renderPayments();
 
       const parts = [];
