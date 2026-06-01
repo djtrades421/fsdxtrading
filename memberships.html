@@ -59,7 +59,8 @@
         </div>
       </section>
 
-      <div class="px-6 md:px-12 pt-8">
+      <!-- DYNAMIC SALE BANNER (memberships.html) -->
+      <div id="sale-section-mem" class="hidden px-6 md:px-12 pt-8">
         <div class="max-w-5xl mx-auto">
           <div class="relative overflow-hidden bg-gradient-to-r from-red-950/60 via-red-900/30 to-red-950/60 border border-red-500/50 rounded-2xl p-4 shadow-xl shadow-red-950/30">
             <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_8px,rgba(255,255,255,0.015)_8px,rgba(255,255,255,0.015)_16px)]"></div>
@@ -67,17 +68,38 @@
               <span class="text-xl leading-none mt-0.5 animate-bounce">🔥</span>
               <div class="text-xs leading-relaxed flex-1">
                 <div class="flex items-center justify-between gap-2 mb-1">
-                  <div class="font-black text-red-400 uppercase tracking-widest text-[11px]">⚡ Flash Sale — Limited Time</div>
-                  <div class="bg-red-500 text-white font-black text-[11px] px-2 py-0.5 rounded-lg tracking-wide animate-pulse">17% OFF</div>
+                  <div id="sale-label-mem" class="font-black text-red-400 uppercase tracking-widest text-[11px]">⚡ Flash Sale — Limited Time</div>
+                  <div id="sale-discount-mem" class="bg-red-500 text-white font-black text-[11px] px-2 py-0.5 rounded-lg tracking-wide animate-pulse">17% OFF</div>
                 </div>
                 <div class="text-zinc-200">
-                  Use code <span class="text-white font-black bg-zinc-900 border border-red-500/40 px-2 py-0.5 rounded-lg mx-0.5 tracking-wider">MAY17</span> at checkout — applies to <span class="text-white font-semibold">Annual</span> and <span class="text-white font-semibold">Lifetime</span> plans only.
+                  Use code <span id="sale-code-mem" class="text-white font-black bg-zinc-900 border border-red-500/40 px-2 py-0.5 rounded-lg mx-0.5 tracking-wider">—</span> at checkout — <span id="sale-applies-mem">applies to Annual and Lifetime plans only.</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <script>
+        (async function() {
+          try {
+            const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/sale');
+            const data = await res.json();
+            if (data.sale) {
+              const s = data.sale;
+              document.getElementById('sale-label-mem').textContent = '⚡ ' + s.label;
+              document.getElementById('sale-discount-mem').textContent = s.discount;
+              document.getElementById('sale-code-mem').textContent = s.code;
+              if (s.applies) document.getElementById('sale-applies-mem').textContent = s.applies;
+              document.getElementById('sale-section-mem').classList.remove('hidden');
+              // Show inline card badges too
+              document.querySelectorAll('.sale-card-badge').forEach(el => {
+                el.textContent = '⚡ Use code ' + s.code + ' for ' + s.discount + ' at checkout';
+                el.classList.remove('hidden');
+              });
+            }
+          } catch(e) { /* no sale — banners stay hidden */ }
+        })();
+      </script>
 
       <!-- PRICING CARDS -->
       <section class="py-12 px-6 md:px-12">
@@ -138,8 +160,8 @@
                 </div>
                 <p class="text-zinc-400 text-xs mt-5 leading-relaxed">Full ecosystem access at the lowest recurring rate. Your price is locked in — it won't increase as the suite grows.</p>
                 <div class="mt-5 border-t border-white/5 pt-5 text-[10px] text-zinc-600">Best for: Active traders who want consistent access at the best rate.</div>
-                <div class="mt-4 bg-green-500/5 border border-green-500/15 rounded-xl px-3 py-2 text-[10px] text-green-400">
-                  ⚡ Use code MAY17 for 17% off at checkout
+                <div class="mt-4 bg-green-500/5 border border-green-500/15 rounded-xl px-3 py-2 text-[10px] text-green-400 sale-card-badge hidden">
+                  ⚡ Use code — for — at checkout
                 </div>
               </div>
               <div class="mt-8 space-y-2">
@@ -159,8 +181,8 @@
                 </div>
                 <p class="text-zinc-500 text-xs mt-5 leading-relaxed">Pay once, own it forever. No renewals, no price increases, no subscriptions — ever. Breaks even vs Annual in under 3 years.</p>
                 <div class="mt-5 border-t border-white/5 pt-5 text-[10px] text-zinc-600">Best for: Long-term traders who want to eliminate overhead for good.</div>
-                <div class="mt-4 bg-zinc-900/60 border border-white/5 rounded-xl px-3 py-2 text-[10px] text-zinc-400">
-                  ⚡ Use code MAY17 for 17% off at checkout
+                <div class="mt-4 bg-zinc-900/60 border border-white/5 rounded-xl px-3 py-2 text-[10px] text-zinc-400 sale-card-badge hidden">
+                  ⚡ Use code — for — at checkout
                 </div>
               </div>
               <div class="mt-8 space-y-2">
