@@ -9,9 +9,9 @@
   <script src="vip-nav.js"></script>
   <style>
     body { background-color: #000; }
-    .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
+    .nav-btn.active-nav { color: #22c55e !important; background: rgba(34,197,94,0.08); }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen antialiased">
@@ -64,21 +64,81 @@
       </div>
     </div>
 
-    <div class="max-w-6xl mx-auto px-6 py-8">
+    <!-- Sidebar + Content layout -->
+    <div class="flex min-h-[calc(100vh-137px)]">
 
-      <!-- Tabs -->
-      <div class="flex border-b border-white/10 mb-8">
-        <button onclick="switchTab('members')" id="tab-members" class="tab-btn active px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 transition mr-2">Members</button>
-        <button onclick="switchTab('recaps')" id="tab-recaps" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-2">Session Recaps</button>
-        <button onclick="switchTab('announce')" id="tab-announce" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition">Announcement</button>
-        <button onclick="switchTab('updates')" id="tab-updates" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">Updates</button>
-        <button onclick="switchTab('migrate')" id="tab-migrate" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">Key Migration</button>
-        <button onclick="switchTab('roster')" id="tab-roster" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">Roster</button>
-        <button onclick="switchTab('payments')" id="tab-payments" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">Payments</button>
-        <button onclick="switchTab('flags')" id="tab-flags" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">🚩 Flags</button>
-        <button onclick="switchTab('analytics')" id="tab-analytics" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">📊 Analytics</button>
-        <button onclick="switchTab('history')" id="tab-history" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition ml-2">📋 History</button>
-      </div>
+      <!-- Left Sidebar Nav -->
+      <aside class="w-52 shrink-0 border-r border-white/10 bg-zinc-950/60 sticky top-[137px] h-[calc(100vh-137px)] overflow-y-auto flex flex-col">
+        <nav class="flex-1 py-6 px-3 space-y-0.5">
+
+          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-1">// Members</div>
+          <button onclick="switchTab('members')" id="tab-members"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left active-nav">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
+            Members
+          </button>
+          <button onclick="switchTab('roster')" id="tab-roster"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
+            Roster
+          </button>
+          <button onclick="switchTab('flags')" id="tab-flags"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"/></svg>
+            Flags
+          </button>
+
+          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Content</div>
+          <button onclick="switchTab('recaps')" id="tab-recaps"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+            Session Recaps
+          </button>
+          <button onclick="switchTab('updates')" id="tab-updates"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"/></svg>
+            Updates
+          </button>
+          <button onclick="switchTab('announce')" id="tab-announce"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.848 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"/></svg>
+            Announcement
+          </button>
+
+          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Sales & Finance</div>
+          <button onclick="switchTab('sales')" id="tab-sales"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185z"/></svg>
+            Sales
+          </button>
+          <button onclick="switchTab('payments')" id="tab-payments"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+            Payments
+          </button>
+
+          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Data</div>
+          <button onclick="switchTab('analytics')" id="tab-analytics"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+            Analytics
+          </button>
+          <button onclick="switchTab('history')" id="tab-history"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
+            History
+          </button>
+          <button onclick="switchTab('migrate')" id="tab-migrate"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+            Key Migration
+          </button>
+
+        </nav>
+      </aside>
+
+      <!-- Main content area -->
+      <main class="flex-1 min-w-0 px-8 py-8">
 
       <!-- MEMBERS TAB -->
       <div id="panel-members" class="tab-panel active">
@@ -298,6 +358,95 @@
           <div id="recaps-list" class="space-y-3">
             <p class="text-zinc-600 text-sm">Loading recaps...</p>
           </div>
+        </div>
+      </div>
+
+      <!-- SALES TAB -->
+      <div id="panel-sales" class="tab-panel">
+        <div class="grid gap-6 max-w-2xl">
+
+          <!-- Live Sale Display -->
+          <div id="current-sale-display" class="hidden border rounded-2xl p-5">
+            <div class="flex items-start justify-between gap-3 mb-4">
+              <div>
+                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1">🔴 Live Sale</div>
+                <div id="current-sale-label" class="text-white font-black text-sm"></div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button onclick="editSale()" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition" title="Edit">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+                </button>
+                <button onclick="clearSale()" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition" title="End Sale">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 text-xs">
+              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5">
+                <div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Code</div>
+                <div id="current-sale-code" class="text-white font-black tracking-wider"></div>
+              </div>
+              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5">
+                <div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Discount</div>
+                <div id="current-sale-discount" class="text-red-400 font-black"></div>
+              </div>
+              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5">
+                <div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Expires</div>
+                <div id="current-sale-expires" class="text-zinc-300 font-medium"></div>
+              </div>
+            </div>
+            <div id="current-sale-applies" class="text-zinc-500 text-[11px] mt-3"></div>
+          </div>
+
+          <!-- No sale state -->
+          <div id="no-sale-display" class="border border-dashed border-white/10 rounded-2xl px-6 py-8 text-center">
+            <div class="text-2xl mb-2">🏷️</div>
+            <div class="text-zinc-400 font-bold text-sm mb-1">No Active Sale</div>
+            <div class="text-zinc-600 text-xs">Set up a sale below and it will appear on the index and memberships pages automatically.</div>
+          </div>
+
+          <!-- Form -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+            <h2 id="sale-form-title" class="text-base font-black text-white mb-1">Start a Sale</h2>
+            <p class="text-zinc-500 text-xs mb-5">The banner will appear on the homepage and memberships page. Leave Expires blank for an indefinite sale.</p>
+            <div id="sale-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Sale Label</label>
+                <input type="text" id="sale-label-input" placeholder="e.g. Flash Sale — Limited Time"
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              </div>
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Promo Code</label>
+                  <input type="text" id="sale-code-input" placeholder="e.g. MAY17"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 uppercase">
+                </div>
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Discount Label</label>
+                  <input type="text" id="sale-discount-input" placeholder="e.g. 17% OFF"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Applies To (optional)</label>
+                <input type="text" id="sale-applies-input" placeholder="e.g. Annual and Lifetime plans only."
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Expiry Date &amp; Time (optional)</label>
+                <input type="datetime-local" id="sale-expires-input"
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <p class="text-zinc-600 text-[11px] mt-1">If set, the banner will disappear automatically when this time passes.</p>
+              </div>
+              <div class="flex gap-3 pt-1">
+                <button onclick="postSale()" id="sale-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Launch Sale</button>
+                <button onclick="cancelEditSale()" id="sale-cancel-btn" class="hidden px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Cancel</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -757,6 +906,9 @@
         </div>
       </div>
 
+    </main>
+    </div><!-- end sidebar+content flex -->
+
   <!-- Day detail modal -->
   <div id="day-detail-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-end sm:items-center justify-center px-0 sm:px-4">
     <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] flex flex-col">
@@ -779,23 +931,22 @@
     let allRecaps = [];
 
     function switchTab(tab) {
-      ['members','recaps','announce','updates','migrate','roster','payments','flags','analytics','history'].forEach(t => {
+      ['members','recaps','announce','sales','updates','migrate','roster','payments','flags','analytics','history'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('tab-' + t);
-        btn.classList.remove('active','text-green-400','border-green-500');
-        btn.classList.add('text-zinc-500','border-transparent');
+        if (btn) btn.classList.remove('active-nav');
       });
       document.getElementById('panel-' + tab).classList.add('active');
+      const activeBtn = document.getElementById('tab-' + tab);
+      if (activeBtn) activeBtn.classList.add('active-nav');
       if (tab === 'announce') loadCurrentAnnouncement();
+      if (tab === 'sales') loadCurrentSale();
       if (tab === 'updates') loadAdminUpdates();
       if (tab === 'roster') renderRoster();
       if (tab === 'payments') renderPayments();
       if (tab === 'flags') renderFlags();
       if (tab === 'analytics') renderAnalytics();
       if (tab === 'history') renderHistory2();
-      const activeBtn = document.getElementById('tab-' + tab);
-      activeBtn.classList.add('active','text-green-400','border-green-500');
-      activeBtn.classList.remove('text-zinc-500','border-transparent');
     }
 
     async function handleLogout() {
@@ -1287,6 +1438,110 @@
         showAdminMsg('announce-msg', data.error || 'Failed to post announcement.', 'error');
       }
       btn.disabled = false; btn.textContent = 'Post Announcement';
+    }
+
+    async function loadCurrentSale() {
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/sale`);
+        const data = await res.json();
+        const display = document.getElementById('current-sale-display');
+        const noSale = document.getElementById('no-sale-display');
+        if (data.sale) {
+          const s = data.sale;
+          document.getElementById('current-sale-label').textContent = s.label;
+          document.getElementById('current-sale-code').textContent = s.code;
+          document.getElementById('current-sale-discount').textContent = s.discount;
+          document.getElementById('current-sale-expires').textContent = s.expiresAt ? new Date(s.expiresAt).toLocaleString() : 'No expiry';
+          document.getElementById('current-sale-applies').textContent = s.applies ? 'Applies to: ' + s.applies : '';
+          display.className = 'border border-red-500/40 bg-red-950/20 rounded-2xl p-5';
+          display.classList.remove('hidden');
+          noSale.classList.add('hidden');
+        } else {
+          display.classList.add('hidden');
+          noSale.classList.remove('hidden');
+        }
+      } catch(e) {}
+    }
+
+    function editSale() {
+      const label = document.getElementById('current-sale-label').textContent;
+      const code = document.getElementById('current-sale-code').textContent;
+      const discount = document.getElementById('current-sale-discount').textContent;
+      const applies = document.getElementById('current-sale-applies').textContent.replace('Applies to: ', '');
+      document.getElementById('sale-label-input').value = label;
+      document.getElementById('sale-code-input').value = code;
+      document.getElementById('sale-discount-input').value = discount;
+      document.getElementById('sale-applies-input').value = applies;
+      document.getElementById('sale-form-title').textContent = 'Edit Sale';
+      document.getElementById('sale-btn').textContent = 'Update Sale';
+      document.getElementById('sale-cancel-btn').classList.remove('hidden');
+      document.getElementById('sale-label-input').focus();
+    }
+
+    function cancelEditSale() {
+      document.getElementById('sale-label-input').value = '';
+      document.getElementById('sale-code-input').value = '';
+      document.getElementById('sale-discount-input').value = '';
+      document.getElementById('sale-applies-input').value = '';
+      document.getElementById('sale-expires-input').value = '';
+      document.getElementById('sale-form-title').textContent = 'Start a Sale';
+      document.getElementById('sale-btn').textContent = 'Launch Sale';
+      document.getElementById('sale-cancel-btn').classList.add('hidden');
+    }
+
+    async function clearSale() {
+      if (!confirm('End the current sale? The banner will disappear from the site immediately.')) return;
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/sale`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          showAdminMsg('sale-msg', 'Sale ended. Banner removed from site.', 'success');
+          loadCurrentSale();
+          cancelEditSale();
+        }
+      } catch(e) {
+        showAdminMsg('sale-msg', 'Error ending sale.', 'error');
+      }
+    }
+
+    async function postSale() {
+      const label = document.getElementById('sale-label-input').value.trim();
+      const code = document.getElementById('sale-code-input').value.trim().toUpperCase();
+      const discount = document.getElementById('sale-discount-input').value.trim();
+      const applies = document.getElementById('sale-applies-input').value.trim();
+      const expiresAt = document.getElementById('sale-expires-input').value;
+
+      if (!label) { showAdminMsg('sale-msg', 'Sale label is required.', 'error'); return; }
+      if (!code) { showAdminMsg('sale-msg', 'Promo code is required.', 'error'); return; }
+      if (!discount) { showAdminMsg('sale-msg', 'Discount label is required.', 'error'); return; }
+
+      const btn = document.getElementById('sale-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/sale`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ label, code, discount, applies, expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showAdminMsg('sale-msg', 'Sale is live! Banner is now showing on the site.', 'success');
+          cancelEditSale();
+          loadCurrentSale();
+        } else {
+          showAdminMsg('sale-msg', data.error || 'Failed to launch sale.', 'error');
+        }
+      } catch(e) {
+        showAdminMsg('sale-msg', 'Network error.', 'error');
+      }
+      btn.disabled = false; btn.textContent = 'Launch Sale';
     }
 
     async function init() {
