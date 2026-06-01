@@ -3038,7 +3038,19 @@
         if (!currentBtSessionId) { alert('Please open a session first.'); return; }
         const text = await file.text();
         const imported = parseJournalCSV(text);
-        if (!imported.length) { alert('No valid trades found. Make sure this is a Nexus-format CSV.'); return; }
+
+        // Detect if this looks like a raw TradingView/backtest CSV (wrong format)
+        const firstLine = text.replace(/^\uFEFF/, '').split('\n')[0].toLowerCase();
+        const isTVFormat = firstLine.includes('trade number') || firstLine.includes('date and time') || firstLine.includes('net pnl usd') || firstLine.includes('entry long') || firstLine.includes('exit long');
+
+        if (!imported.length) {
+          if (isTVFormat) {
+            alert('This looks like a raw TradingView backtest CSV.\n\nUse the BT Converter to process this file.');
+          } else {
+            alert('No valid trades found. Make sure this is a Nexus-format CSV. If you have a raw TradingView export, use the BT Converter first.');
+          }
+          return;
+        }
         _btCsvPending = imported.map(t => ({ ...t, id: Date.now().toString() + Math.random().toString(36).slice(2) }));
 
         // Check for overlap with current session trades (btTrades already loaded)
