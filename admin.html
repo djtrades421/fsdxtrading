@@ -979,7 +979,7 @@
             <input type="date" id="hs-date-to" onchange="renderHistory2()" class="bg-zinc-900 border border-white/10 text-zinc-300 text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40">
           </div>
           <!-- Search -->
-          <input type="text" id="history-search" oninput="renderHistory2()" placeholder="Search name, email, Discord, country..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-56">
+          <input type="text" id="history-search" oninput="renderHistory2()" placeholder="Search name, email, Discord, key..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-56">
           <button onclick="clearHistoryFilters()" class="text-xs text-zinc-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition">✕ Clear</button>
           <span id="history-filter-count" class="text-xs text-zinc-500 ml-1"></span>
         </div>
@@ -2858,20 +2858,24 @@
     const rosterKey = () => 'roster_data:' + (window._adminKey || '');
     const paymentsKey = () => 'roster_payments:' + (window._adminKey || '');
     const flagsKey = () => 'roster_flags:' + (window._adminKey || '');
+    const rawMembershipsKey = () => 'roster_raw_memberships:' + (window._adminKey || '');
 
     async function loadRosterFromKV() {
       try {
-        const [rr, pr, fr, lr] = await Promise.all([
+        const [rr, pr, fr, lr, mr] = await Promise.all([
           fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: rosterKey() }) }),
           fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: paymentsKey() }) }),
           fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: flagsKey() }) }),
           fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: 'roster_history:' + (window._adminKey||'') }) }),
+          fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: rawMembershipsKey() }) }),
         ]);
-        const [rd, pd, fdx, ld] = await Promise.all([rr.json(), pr.json(), fr.json(), lr.json()]);
+        const [rd, pd, fdx, ld, mrd] = await Promise.all([rr.json(), pr.json(), fr.json(), lr.json(), mr.json()]);
         rosterData = Array.isArray(rd.trades) ? rd.trades : [];
         paymentsData = Array.isArray(pd.trades) ? pd.trades : [];
         flagsData = Array.isArray(fdx.trades) ? fdx.trades : [];
         historyData = Array.isArray(ld.trades) ? ld.trades : [];
+        rawMembershipRows = Array.isArray(mrd.trades) ? mrd.trades : [];
+        rawPaymentRows = paymentsData; // payments double as raw payment rows
       } catch(e) { console.error('Roster load error:', e); }
 
       // Load site users from allMembers (already loaded by loadData)
@@ -2887,6 +2891,11 @@
     async function saveHistoryToKV() {
       await fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ action:'save-all', key: 'roster_history:' + (window._adminKey||''), payload: { trades: historyData } }) });
+    }
+
+    async function saveRawMembershipsToKV() {
+      await fetch(JOURNAL_URL_ADMIN, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ action:'save-all', key: rawMembershipsKey(), payload: { trades: rawMembershipRows } }) });
     }
 
     let historySortField = 'joined', historySortDir = 'desc';
@@ -3063,7 +3072,7 @@
         if (dateFrom && r.joined && r.joined < dateFrom) return false;
         if (dateTo && r.joined && r.joined > dateTo) return false;
         if (search) {
-          const hay = [r.name, r.whopUsername, r.email, r.discordName, r.country, r.city, r.state].join(' ').toLowerCase();
+          const hay = [r.name, r.whopUsername, r.whopKey, r.email, r.discordName, r.country, r.city, r.state].join(' ').toLowerCase();
           if (!hay.includes(search)) return false;
         }
         return true;
@@ -3863,7 +3872,10 @@
       const isMembershipsExport = importFormat === 'whop_memberships';
 
       // Store raw rows for the expand view
-      if (isMembershipsExport) rawMembershipRows = pendingImport._allRows || [];
+      if (isMembershipsExport) {
+        rawMembershipRows = pendingImport._allRows || [];
+        saveRawMembershipsToKV();
+      }
 
       incoming.forEach(item => {
         const emailKey = item.email?.toLowerCase();
