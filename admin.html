@@ -3458,6 +3458,40 @@
       if (!pendingImport) return;
       const { incoming, diff, format: importFormat } = pendingImport;
 
+      // ── Resurrect from history ──
+      // If an incoming member is now active/trialing/lifetime and they exist in history
+      // (cancelled/archived), pull them back to the active roster and remove from history.
+      const ACTIVE_STATUSES = new Set(['active', 'trialing', 'lifetime', 'yearly', 'canceling']);
+      incoming.forEach(item => {
+        if (!ACTIVE_STATUSES.has(item.status)) return;
+        const emailKey = item.email?.toLowerCase();
+        const whopKey = item.whopKey;
+        const histIdx = historyData.findIndex(h =>
+          (emailKey && h.email?.toLowerCase() === emailKey) ||
+          (whopKey && h.whopKey && h.whopKey === whopKey)
+        );
+        if (histIdx === -1) return;
+        // They're back — remove from history, merge into item and push to roster
+        const histEntry = historyData[histIdx];
+        historyData.splice(histIdx, 1);
+        // Don't add if already in roster (will be updated in main merge loop below)
+        const alreadyInRoster = rosterData.some(r =>
+          (emailKey && r.email?.toLowerCase() === emailKey) ||
+          (whopKey && r.whopKey && r.whopKey === whopKey)
+        );
+        if (!alreadyInRoster) {
+          rosterData.push({
+            ...histEntry,
+            ...item,
+            leftDate: '',
+            churnedDate: '',
+            archivedAt: '',
+            notes: [histEntry.notes, 'Reactivated after lapse'].filter(Boolean).join(' · '),
+          });
+        }
+      });
+      await saveHistoryToKV();
+
       // Merge: update changed, add new
       const emailMap = {}; const discordMap = {}; const tvMap = {};
       rosterData.forEach((r, i) => {
