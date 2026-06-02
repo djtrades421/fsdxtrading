@@ -3772,8 +3772,9 @@
             if (item.discordName && !h.discordName) h.discordName = item.discordName;
             if (item.discordId && !h.discordId) h.discordId = item.discordId;
             if (item.country && !h.country) h.country = item.country;
-            // Keep leftDate — use churnedDate from memberships if leftDate not already set
-            if (!h.leftDate && (item.churnedDate || item.leftDate)) h.leftDate = item.churnedDate || item.leftDate;
+            // Always update leftDate from memberships churn — it's the authoritative source
+            const incomingLeft = item.churnedDate || item.leftDate || '';
+            if (incomingLeft && (!h.leftDate || incomingLeft > h.leftDate)) h.leftDate = incomingLeft;
             // Keep earliest joined date
             if (item.joined && (!h.joined || item.joined < h.joined)) h.joined = item.joined;
           } else {
