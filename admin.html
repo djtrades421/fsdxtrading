@@ -2850,7 +2850,7 @@
           // Accumulate spend
           const existSpend = parseFloat(existing.spend || '0') || 0;
           const newSpend = parseFloat(h.spend || '0') || 0;
-          existing.spend = String((existSpend + newSpend).toFixed(2));
+          existing.spend = String(Math.max(existSpend, newSpend).toFixed(2));
           // Plan history
           if (h.planName && h.planName !== existing.planName) {
             const plans = new Set([existing.planName, h.planName].filter(Boolean));
@@ -3747,10 +3747,10 @@
 
           const existIdx = historyData.findIndex(l => l.email?.toLowerCase() === emailKey);
           if (existIdx >= 0) {
-            // Merge into existing history entry — accumulate spend, keep best/most recent data
+            // Merge into existing history entry — keep highest spend value
             const h = historyData[existIdx];
             const existSpend = parseFloat(h.spend || '0') || 0;
-            h.spend = String((existSpend + itemSpend).toFixed(2));
+            h.spend = String(Math.max(existSpend, itemSpend).toFixed(2));
             // Keep most recent cancel reason
             if (item.cancelReason && !h.cancelReason) h.cancelReason = item.cancelReason;
             // Build plan history — track all plans they had
