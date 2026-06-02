@@ -54,174 +54,17 @@
       </section>
 
       <section class="py-12 md:py-16 px-6 md:px-12">
-        <div class="max-w-5xl mx-auto space-y-10">
-
-          <div class="border border-green-500/20 bg-zinc-950/60 rounded-2xl overflow-hidden shadow-lg shadow-green-500/5">
-            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>
-              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">Daily — Monday through Friday</span>
-            </div>
-            <div class="p-6 md:p-8 grid md:grid-cols-3 gap-8 items-start">
-              <div class="md:col-span-2 space-y-5">
-                <div>
-                  <h2 class="text-2xl font-black text-white mb-2">Live Trading Session</h2>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    Every market day we go live at the 8:30 AM CT opening bell to trade the Nasdaq ORB setup in real time. We cover pre-market context, grade the breakout live as it forms, and walk through the SL/TP levels together. Sessions run until the setup plays out or the window closes.
-                  </p>
-                </div>
-                <div class="grid sm:grid-cols-2 gap-4 text-xs">
-                  <div class="border border-green-500/20 bg-green-500/5 rounded-xl p-4 space-y-2">
-                    <div class="text-green-400 font-black uppercase tracking-wider">⚡ VIP Discord Feed</div>
-                    <p class="text-zinc-400 leading-relaxed">Zero latency. Live voice, indicator tracking, real-time trade calls, and direct access to ask questions during the session.</p>
-                    <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline font-bold block">Join Discord →</a>
-                  </div>
-                  <div class="border border-white/5 bg-zinc-900/30 rounded-xl p-4 space-y-2">
-                    <div class="text-zinc-400 font-black uppercase tracking-wider">📺 YouTube Feed</div>
-                    <p class="text-zinc-500 leading-relaxed">Public broadcast with a standard stream delay. Good for watching — join Discord for the live experience.</p>
-                    <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-white hover:underline font-bold block transition">Watch on YouTube →</a>
-                  </div>
-                </div>
-                <div>
-                  <div class="text-[10px] text-zinc-600 uppercase tracking-widest mb-3 font-bold">What we cover each session</div>
-                  <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
-                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Pre-market context & bias</div>
-                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Live ORB grade as it forms</div>
-                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Entry, SL & TP level walkthrough</div>
-                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> HTF trend & VWAP alignment</div>
-                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Live trade management</div>
-                    <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Post-trade review & notes</div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex flex-col items-center justify-center p-6 bg-black border border-white/10 rounded-2xl text-center space-y-4">
-                <div>
-                  <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-1">Start Time</div>
-                  <div class="text-4xl font-black text-white">8:30 AM</div>
-                  <div class="text-green-400 text-xs font-bold uppercase tracking-widest mt-1">Central Time (CT)</div>
-                </div>
-                <div class="w-full border-t border-white/5 pt-4 space-y-1.5 text-xs text-zinc-500">
-                  <div class="flex justify-between"><span>Eastern (ET)</span><span class="text-zinc-300">9:30 AM</span></div>
-                  <div class="flex justify-between"><span>Pacific (PT)</span><span class="text-zinc-300">6:30 AM</span></div>
-                  <div class="flex justify-between"><span>London (GMT+1)</span><span class="text-zinc-300">2:30 PM</span></div>
-                  <div class="flex justify-between"><span>Dubai (GST)</span><span class="text-zinc-300">5:30 PM</span></div>
-                </div>
-                <div class="w-full border-t border-white/5 pt-3 text-[10px] text-zinc-600 uppercase tracking-wider">
-                  Until session close
-                </div>
-              </div>
-            </div>
+        <div id="schedule-events-container" class="max-w-5xl mx-auto space-y-10">
+          <!-- Events loaded dynamically below; fallback static content shown while loading -->
+          <div id="schedule-loading" class="flex items-center justify-center py-16">
+            <div class="w-6 h-6 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
           </div>
-
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Weekly — Every Monday</span>
-            </div>
-            <div class="p-6 md:p-8 grid md:grid-cols-3 gap-8 items-start">
-              <div class="md:col-span-2 space-y-4">
-                <div>
-                  <h2 class="text-xl font-black text-white mb-2">Monday Gameplan Session</h2>
-                  <p class="text-zinc-400 text-sm leading-relaxed">
-                    Before the market opens on Monday we run a dedicated structural orientation session inside the Discord. We map out the week ahead — key range levels, liquidity pools, important macro events, and how we're thinking about the setups coming into the week.
-                  </p>
-                </div>
-                <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
-                  <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Weekly high/low & key levels</div>
-                  <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Macro & economic calendar review</div>
-                  <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> HTF bias & trend context</div>
-                  <div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> Setup scenarios to watch for</div>
-                </div>
-                <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
-                  class="inline-block px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs rounded-xl transition">
-                  Join Discord for Access →
-                </a>
-              </div>
-              <div class="flex flex-col items-center justify-center p-6 bg-black border border-white/10 rounded-2xl text-center space-y-3">
-                <div>
-                  <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-1">Every Monday</div>
-                  <div class="text-3xl font-black text-white">8:00 AM</div>
-                  <div class="text-zinc-400 text-xs font-bold uppercase tracking-widest mt-1">Central Time (CT)</div>
-                </div>
-                <div class="text-[10px] text-zinc-600 uppercase tracking-wider border-t border-white/5 pt-3 w-full">
-                  Discord Voice Stage
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-            <div class="flex items-center justify-between px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Special Events & Walkthroughs</span>
-              <span class="text-[10px] text-zinc-600 italic">Announced in Discord</span>
-            </div>
-            <div class="p-6 md:p-8 space-y-4">
-              <p class="text-zinc-500 text-sm leading-relaxed max-w-2xl">
-                We run periodic deep-dive sessions on specific topics — indicator walkthroughs, prop firm strategy, backtesting clinics, and Q&A sessions. Dates are announced in Discord first, so make sure you're in the server to catch them.
-              </p>
-              <div class="space-y-3">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-black border border-white/5 rounded-xl gap-3 text-xs">
-                  <div class="flex items-center gap-3">
-                    <span class="text-lg">🛠️</span>
-                    <div>
-                      <span class="text-white font-bold block">FSD-X ORB PRO Full System Walkthrough</span>
-                      <span class="text-zinc-500">Deep dive into every setting, grading system, and how to read the dashboard.</span>
-                    </div>
-                  </div>
-                  <div class="shrink-0 text-right">
-                    <span class="text-zinc-400 font-bold block">TBD</span>
-                    <span class="text-[10px] text-zinc-600 uppercase">Discord Live Stage</span>
-                  </div>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-black border border-white/5 rounded-xl gap-3 text-xs">
-                  <div class="flex items-center gap-3">
-                    <span class="text-lg">📊</span>
-                    <div>
-                      <span class="text-white font-bold block">Prop Firm Sizing & Scaling Masterclass</span>
-                      <span class="text-zinc-500">Risk calibration and position sizing specifically for passing evaluations.</span>
-                    </div>
-                  </div>
-                  <div class="shrink-0 text-right">
-                    <span class="text-zinc-400 font-bold block">TBD</span>
-                    <span class="text-[10px] text-zinc-600 uppercase">Discord Live Stage</span>
-                  </div>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-black border border-white/5 rounded-xl gap-3 text-xs">
-                  <div class="flex items-center gap-3">
-                    <span class="text-lg">🔍</span>
-                    <div>
-                      <span class="text-white font-bold block">Backtesting Clinic — Using the ORB PRO Backtester</span>
-                      <span class="text-zinc-500">How to find your optimal settings using the strategy engine and Optimizer Pro.</span>
-                    </div>
-                  </div>
-                  <div class="shrink-0 text-right">
-                    <span class="text-zinc-400 font-bold block">TBD</span>
-                    <span class="text-[10px] text-zinc-600 uppercase">Discord Live Stage</span>
-                  </div>
-                </div>
-              </div>
-              <div class="pt-2">
-                <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
-                  class="inline-block px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl transition">
-                  Join Discord to Get Notified →
-                </a>
-              </div>
-            </div>
-          </div>
-
-          <div class="border border-white/5 bg-zinc-950/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div>
-              <h3 class="text-base font-black text-white mb-1">Not a member yet?</h3>
-              <p class="text-zinc-500 text-sm">Join to get live Discord access, SCOUT alerts, and the full FSD-X suite.</p>
-            </div>
-            <a href="memberships.html"
-              class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap shrink-0">
-              View Memberships →
-            </a>
-          </div>
-
         </div>
       </section>
 
     </div>
+
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
 
     <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
       <div class="max-w-5xl mx-auto space-y-6">
@@ -250,6 +93,89 @@
       const sidebar = document.getElementById('sidebar-panel');
       sidebar.classList.toggle('-translate-x-full');
     }
+
+    const SCHEDULE_API = 'https://nexus-validator.dfuentes4211.workers.dev';
+
+    function renderScheduleEvent(ev) {
+      const isDaily = ev.type === 'daily';
+      const isWeekly = ev.type === 'weekly';
+      const borderColor = isDaily ? 'border-green-500/20' : 'border-white/10';
+      const bgColor = isDaily ? 'bg-zinc-950/60 shadow-lg shadow-green-500/5' : 'bg-zinc-950/40';
+      const headerDot = isDaily
+        ? `<span class="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse shrink-0"></span>`
+        : '';
+      const subtitleColor = isDaily ? 'text-green-400' : 'text-zinc-500';
+      const titleSize = isDaily ? 'text-2xl' : 'text-xl';
+      const timeSize = isDaily ? 'text-4xl' : 'text-3xl';
+      const timeColor = isDaily ? 'text-white' : 'text-white';
+      const tzColor = isDaily ? 'text-green-400' : 'text-zinc-400';
+
+      const bulletsHTML = ev.bullets && ev.bullets.length
+        ? `<div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400 mt-3">${ev.bullets.map(b => `<div class="flex items-center gap-2"><span class="text-green-400 shrink-0">✓</span> ${b}</div>`).join('')}</div>`
+        : '';
+
+      const linkHTML = ev.link
+        ? `<a href="${ev.link}" target="_blank" rel="noopener noreferrer" class="inline-block mt-3 px-5 py-2.5 ${isDaily ? 'bg-green-500 hover:bg-green-400 text-black font-black' : 'bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold'} text-xs rounded-xl transition">${ev.linkLabel || 'Learn More →'}</a>`
+        : '';
+
+      const timeBlock = ev.time
+        ? `<div class="flex flex-col items-center justify-center p-6 bg-black border border-white/10 rounded-2xl text-center space-y-3">
+            <div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-1">${ev.subtitle || ''}</div>
+              <div class="${timeSize} font-black ${timeColor}">${ev.time}</div>
+              <div class="${tzColor} text-xs font-bold uppercase tracking-widest mt-1">${ev.timezone || ''}</div>
+            </div>
+          </div>`
+        : '';
+
+      return `
+        <div class="border ${borderColor} ${bgColor} rounded-2xl overflow-hidden">
+          <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+            ${headerDot}
+            <span class="text-xs font-bold ${subtitleColor} uppercase tracking-widest">${ev.subtitle || ev.type}</span>
+          </div>
+          <div class="p-6 md:p-8 ${timeBlock ? 'grid md:grid-cols-3 gap-8 items-start' : ''}">
+            <div class="${timeBlock ? 'md:col-span-2 ' : ''}space-y-4">
+              <div>
+                <h2 class="${titleSize} font-black text-white mb-2">${ev.title}</h2>
+                ${ev.description ? `<p class="text-zinc-400 text-sm leading-relaxed">${ev.description}</p>` : ''}
+              </div>
+              ${bulletsHTML}
+              ${linkHTML}
+            </div>
+            ${timeBlock}
+          </div>
+        </div>`;
+    }
+
+    async function loadSchedule() {
+      const container = document.getElementById('schedule-events-container');
+      const loading = document.getElementById('schedule-loading');
+      try {
+        const res = await fetch(`${SCHEDULE_API}/api/schedule`);
+        const data = await res.json();
+        const events = data.events || [];
+        loading.remove();
+        if (!events.length) {
+          container.innerHTML = '<p class="text-zinc-500 text-sm text-center py-12">No events scheduled right now. Check back soon.</p>';
+          return;
+        }
+        container.innerHTML = events.map(renderScheduleEvent).join('');
+        // Always append the CTA at the bottom
+        container.innerHTML += `
+          <div class="border border-white/5 bg-zinc-950/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 class="text-base font-black text-white mb-1">Not a member yet?</h3>
+              <p class="text-zinc-500 text-sm">Join to get live Discord access, SCOUT alerts, and the full FSD-X suite.</p>
+            </div>
+            <a href="memberships.html" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap shrink-0">View Memberships →</a>
+          </div>`;
+      } catch(e) {
+        loading.innerHTML = '<p class="text-zinc-500 text-sm text-center py-12">Could not load schedule. Please try again later.</p>';
+      }
+    }
+
+    loadSchedule();
   </script>
 
 
