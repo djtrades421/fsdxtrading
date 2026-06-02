@@ -753,6 +753,7 @@
             </button>
             <div id="ms-source-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-source accent-green-500" value="Whop" onchange="updateMultiSelectLabel('source');renderRoster()"><span class="text-xs text-zinc-300">Whop</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-source accent-green-500" value="Manual" onchange="updateMultiSelectLabel('source');renderRoster()"><span class="text-xs text-zinc-300">Manual</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-source accent-green-500" value="LaunchPass" onchange="updateMultiSelectLabel('source');renderRoster()"><span class="text-xs text-zinc-300">LaunchPass</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-source accent-green-500" value="Early Acess" onchange="updateMultiSelectLabel('source');renderRoster()"><span class="text-xs text-zinc-300">Legacy / Early Access</span></label>
             </div>
@@ -4341,7 +4342,7 @@
         if (sourceFilter.length && !sourceFilter.includes(r.source)) return false;
         if (accessFilter.length && !accessFilter.includes(r.planName||r.accessType)) return false;
         if (search) {
-          const haystack = [r.name, r.email, r.discordName, r.tvUsername, r.whopUsername, r.notes].join(' ').toLowerCase();
+          const haystack = [r.name, r.email, r.discordName, r.tvUsername, r.whopUsername, r.whopKey, r.notes].join(' ').toLowerCase();
           if (!haystack.includes(search)) return false;
         }
         return true;
