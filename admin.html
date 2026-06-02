@@ -104,6 +104,11 @@
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.848 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"/></svg>
             Announcement
           </button>
+          <button onclick="switchTab('schedule')" id="tab-schedule"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+            Schedule
+          </button>
 
           <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Sales & Finance</div>
           <button onclick="switchTab('sales')" id="tab-sales"
@@ -492,6 +497,87 @@
             <div class="flex gap-3">
               <button onclick="postAnnouncement()" id="announce-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Post Announcement</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- SCHEDULE TAB -->
+      <div id="panel-schedule" class="tab-panel space-y-6">
+        <!-- Add/Edit Event form -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+          <h2 id="schedule-form-title" class="text-base font-black text-white mb-1">Add Schedule Event</h2>
+          <p class="text-xs text-zinc-500 mb-5">Manage the events shown on the public Schedule page.</p>
+          <div id="schedule-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+          <div class="grid sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Event Type</label>
+              <select id="sched-type" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <option value="daily">Daily (recurring)</option>
+                <option value="weekly">Weekly (recurring)</option>
+                <option value="special">Special / One-off</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Status</label>
+              <select id="sched-status" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <option value="active">Active (visible)</option>
+                <option value="hidden">Hidden</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Title</label>
+              <input type="text" id="sched-title" placeholder="e.g. Live Trading Session" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Subtitle / Frequency label</label>
+              <input type="text" id="sched-subtitle" placeholder="e.g. Daily — Monday through Friday" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Time</label>
+              <input type="text" id="sched-time" placeholder="e.g. 8:30 AM" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Timezone</label>
+              <input type="text" id="sched-timezone" placeholder="e.g. Central Time (CT)" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Description</label>
+            <textarea id="sched-description" rows="2" placeholder="Short description of what happens during this event..."
+              class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
+          </div>
+
+          <div class="mb-4">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Bullet Points <span class="text-zinc-700 normal-case font-normal">— one per line, shown as ✓ checklist</span></label>
+            <textarea id="sched-bullets" rows="4" placeholder="Pre-market context & bias&#10;Live ORB grade as it forms&#10;Entry, SL & TP level walkthrough&#10;Post-trade review & notes"
+              class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none font-mono text-xs"></textarea>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4 mb-5">
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Link URL <span class="text-zinc-700 normal-case font-normal">— optional</span></label>
+              <input type="text" id="sched-link" placeholder="https://discord.gg/..." class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Link Label</label>
+              <input type="text" id="sched-link-label" placeholder="Join Discord →" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+          </div>
+
+          <div class="flex gap-3">
+            <button onclick="saveScheduleEvent()" id="sched-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Add Event</button>
+            <button onclick="cancelEditSchedule()" id="sched-cancel-btn" class="hidden px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Events list -->
+        <div>
+          <h3 class="text-sm font-black text-white mb-4">Current Schedule Events</h3>
+          <div id="schedule-admin-list" class="space-y-3">
+            <p class="text-zinc-600 text-sm">Loading events...</p>
           </div>
         </div>
       </div>
@@ -939,6 +1025,7 @@
       if (tab === 'announce') loadCurrentAnnouncement();
       if (tab === 'sales') loadCurrentSale();
       if (tab === 'updates') loadAdminUpdates();
+      if (tab === 'schedule') loadAdminSchedule();
       if (tab === 'roster') renderRoster();
       if (tab === 'payments') renderPayments();
       if (tab === 'flags') renderFlags();
@@ -1712,6 +1799,163 @@
       const el = document.getElementById('update-msg');
       el.textContent = text;
       el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-green-500/10 border-green-500/30 text-green-400');
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 3000);
+    }
+
+    // ── SCHEDULE ADMIN ──
+    let editingScheduleId = null;
+    let allScheduleEvents = [];
+
+    async function loadAdminSchedule() {
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/schedule`);
+        const data = await res.json();
+        allScheduleEvents = data.events || [];
+        renderAdminSchedule();
+      } catch(e) {
+        document.getElementById('schedule-admin-list').innerHTML = '<p class="text-red-400 text-sm">Failed to load events.</p>';
+      }
+    }
+
+    function renderAdminSchedule() {
+      const container = document.getElementById('schedule-admin-list');
+      if (!allScheduleEvents.length) {
+        container.innerHTML = '<p class="text-zinc-600 text-sm">No schedule events yet. Add one above.</p>';
+        return;
+      }
+      container.innerHTML = allScheduleEvents.map((ev, idx) => `
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border ${ev.type === 'daily' ? 'text-green-400 border-green-500/30 bg-green-500/10' : ev.type === 'weekly' ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'}">${ev.type}</span>
+              ${ev.status === 'hidden' ? '<span class="text-[10px] text-zinc-600 uppercase tracking-wider">hidden</span>' : ''}
+            </div>
+            <div class="text-sm font-black text-white">${ev.title}</div>
+            ${ev.subtitle ? `<div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">${ev.subtitle}</div>` : ''}
+            ${ev.time ? `<div class="text-xs text-zinc-400 mt-1">⏰ ${ev.time} ${ev.timezone || ''}</div>` : ''}
+            ${ev.description ? `<div class="text-xs text-zinc-500 mt-1 truncate max-w-lg">${ev.description}</div>` : ''}
+            <div class="flex items-center gap-2 mt-2">
+              <button onclick="editScheduleEvent(${idx})" class="text-[10px] text-zinc-400 hover:text-white transition font-bold uppercase tracking-wider">Edit</button>
+              <span class="text-zinc-700">·</span>
+              <button onclick="deleteScheduleEvent('${ev.id}')" class="text-[10px] text-red-500/70 hover:text-red-400 transition font-bold uppercase tracking-wider">Delete</button>
+              ${idx > 0 ? `<span class="text-zinc-700">·</span><button onclick="moveScheduleEvent(${idx}, -1)" class="text-[10px] text-zinc-500 hover:text-white transition">↑ Move Up</button>` : ''}
+              ${idx < allScheduleEvents.length - 1 ? `<span class="text-zinc-700">·</span><button onclick="moveScheduleEvent(${idx}, 1)" class="text-[10px] text-zinc-500 hover:text-white transition">↓ Move Down</button>` : ''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function editScheduleEvent(idx) {
+      const ev = allScheduleEvents[idx];
+      editingScheduleId = ev.id;
+      document.getElementById('sched-type').value = ev.type || 'daily';
+      document.getElementById('sched-status').value = ev.status || 'active';
+      document.getElementById('sched-title').value = ev.title || '';
+      document.getElementById('sched-subtitle').value = ev.subtitle || '';
+      document.getElementById('sched-time').value = ev.time || '';
+      document.getElementById('sched-timezone').value = ev.timezone || '';
+      document.getElementById('sched-description').value = ev.description || '';
+      document.getElementById('sched-bullets').value = (ev.bullets || []).join('\n');
+      document.getElementById('sched-link').value = ev.link || '';
+      document.getElementById('sched-link-label').value = ev.linkLabel || '';
+      document.getElementById('schedule-form-title').textContent = 'Edit Schedule Event';
+      document.getElementById('sched-btn').textContent = 'Save Changes';
+      document.getElementById('sched-cancel-btn').classList.remove('hidden');
+      document.getElementById('sched-title').focus();
+      document.getElementById('panel-schedule').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function cancelEditSchedule() {
+      editingScheduleId = null;
+      ['sched-type', 'sched-status', 'sched-title', 'sched-subtitle', 'sched-time', 'sched-timezone', 'sched-description', 'sched-bullets', 'sched-link', 'sched-link-label'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el.tagName === 'SELECT') el.selectedIndex = 0;
+        else el.value = '';
+      });
+      document.getElementById('schedule-form-title').textContent = 'Add Schedule Event';
+      document.getElementById('sched-btn').textContent = 'Add Event';
+      document.getElementById('sched-cancel-btn').classList.add('hidden');
+    }
+
+    async function saveScheduleEvent() {
+      const title = document.getElementById('sched-title').value.trim();
+      if (!title) { showScheduleMsg('Title is required.', 'error'); return; }
+      const token = localStorage.getItem('fsdx_token') || '';
+      const btn = document.getElementById('sched-btn');
+      btn.disabled = true; btn.textContent = editingScheduleId ? 'Saving...' : 'Adding...';
+      const bulletsRaw = document.getElementById('sched-bullets').value;
+      const bullets = bulletsRaw.split('\n').map(b => b.trim()).filter(Boolean);
+      const payload = {
+        id: editingScheduleId || undefined,
+        type: document.getElementById('sched-type').value,
+        status: document.getElementById('sched-status').value,
+        title,
+        subtitle: document.getElementById('sched-subtitle').value.trim(),
+        time: document.getElementById('sched-time').value.trim(),
+        timezone: document.getElementById('sched-timezone').value.trim(),
+        description: document.getElementById('sched-description').value.trim(),
+        bullets,
+        link: document.getElementById('sched-link').value.trim(),
+        linkLabel: document.getElementById('sched-link-label').value.trim(),
+      };
+      try {
+        const res = await fetch(`${API}/api/admin/schedule`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success) {
+          showScheduleMsg(editingScheduleId ? 'Event updated!' : 'Event added!', 'success');
+          cancelEditSchedule();
+          await loadAdminSchedule();
+        } else {
+          showScheduleMsg(data.error || 'Failed to save.', 'error');
+        }
+      } catch(e) {
+        showScheduleMsg('Connection error.', 'error');
+      }
+      btn.disabled = false; btn.textContent = editingScheduleId ? 'Save Changes' : 'Add Event';
+    }
+
+    async function deleteScheduleEvent(id) {
+      if (!confirm('Delete this schedule event? This cannot be undone.')) return;
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/schedule`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        if (data.success) {
+          allScheduleEvents = allScheduleEvents.filter(e => e.id !== id);
+          renderAdminSchedule();
+        } else {
+          alert(data.error || 'Delete failed.');
+        }
+      } catch(e) { alert('Connection error.'); }
+    }
+
+    async function moveScheduleEvent(idx, dir) {
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= allScheduleEvents.length) return;
+      [allScheduleEvents[idx], allScheduleEvents[newIdx]] = [allScheduleEvents[newIdx], allScheduleEvents[idx]];
+      // Save new order by re-saving all (simplest approach — save each in order)
+      // We re-use a lightweight approach: save each event's id in the new array
+      // For now just re-render locally (order preserved until page reload unless we persist it)
+      renderAdminSchedule();
+      // NOTE: order is local only — events are stored by append order in KV.
+      // To persist order we'd need a separate order array; for now this is a visual convenience.
+    }
+
+    function showScheduleMsg(text, type) {
+      const el = document.getElementById('schedule-msg');
+      el.textContent = text;
+      el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-green-500/10 border-green-500/30 text-green-400');
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 3000);
     }
