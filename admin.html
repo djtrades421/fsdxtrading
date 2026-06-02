@@ -995,9 +995,10 @@
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('spend')">Spend <span id="hsort-spend" class="text-zinc-700">↕</span></th>
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('joined')">Joined Whop <span id="hsort-joined" class="text-zinc-400">↓</span></th>
                 <th class="px-4 py-3">Type</th>
+                <th class="px-4 py-3"></th>
               </tr></thead>
               <tbody id="history-table" class="divide-y divide-white/5 text-xs">
-                <tr><td colspan="7" class="px-4 py-8 text-center text-zinc-600">Import a Whop users CSV to populate leads.</td></tr>
+                <tr><td colspan="8" class="px-4 py-8 text-center text-zinc-600">Import a Whop users CSV to populate leads.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1134,6 +1135,67 @@
     </div>
   </div>
   <div id="day-detail-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-end sm:items-center justify-center px-0 sm:px-4">
+
+  <!-- ── Edit History Modal ── -->
+  <div id="history-edit-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4 py-8 overflow-y-auto">
+    <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-lg shadow-2xl my-auto">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+        <div class="text-sm font-black text-white">Edit History Entry</div>
+        <button onclick="closeHistoryModal()" class="text-zinc-500 hover:text-white transition p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div id="history-modal-msg" class="hidden rounded-xl px-4 py-3 text-xs border"></div>
+        <div class="grid sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Name</label>
+            <input type="text" id="hm-name" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Whop Username</label>
+            <input type="text" id="hm-whop-un" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Email</label>
+            <input type="text" id="hm-email" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Discord</label>
+            <input type="text" id="hm-discord" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Country</label>
+            <input type="text" id="hm-country" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Total Spend ($)</label>
+            <input type="number" id="hm-spend" step="0.01" min="0" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Joined Date</label>
+            <input type="date" id="hm-joined" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Left Date</label>
+            <input type="date" id="hm-left" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Plan</label>
+            <input type="text" id="hm-plan" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+          <div>
+            <label class="block text-[10px] text-zinc-600 mb-1">Cancel Reason</label>
+            <input type="text" id="hm-cancel-reason" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+          </div>
+        </div>
+        <div class="flex gap-3 pt-1">
+          <button onclick="saveHistoryEdit()" class="px-6 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save</button>
+          <button onclick="closeHistoryModal()" class="px-5 py-2.5 border border-white/10 text-zinc-500 hover:text-white font-bold text-xs rounded-xl transition">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
     <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] flex flex-col">
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10 shrink-0">
         <div>
@@ -2832,7 +2894,7 @@
 
       const tbody = document.getElementById('history-table');
       if (!historyData.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-zinc-600">No history yet — import a Whop users CSV to populate.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-zinc-600">No history yet — import a Whop users CSV to populate.</td></tr>';
         return;
       }
 
@@ -2867,7 +2929,7 @@
       if (filterCount) filterCount.textContent = hasFilters ? filtered.length + ' shown' : '';
 
       if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="px-4 py-8 text-center text-zinc-600">No leads match filters.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-zinc-600">No leads match filters.</td></tr>';
         return;
       }
 
@@ -2902,9 +2964,73 @@
           <td class="px-4 py-3 ${spend>0?'text-green-400 font-bold':'text-zinc-700'}">$${spend.toFixed(2)}</td>
           <td class="px-4 py-3 text-zinc-500">${r.joined ? fmtDate(r.joined) : '—'}</td>
           <td class="px-4 py-3">${typeBadge}</td>
+          <td class="px-4 py-3 whitespace-nowrap">
+            <button onclick="openEditHistoryModal('${r.id}')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 hover:border-white/30 px-2.5 py-1 rounded-lg transition font-bold mr-1">Edit</button>
+            <button onclick="deleteHistoryEntry('${r.id}')" class="text-[10px] text-zinc-600 hover:text-red-400 border border-white/10 hover:border-red-500/30 px-2.5 py-1 rounded-lg transition font-bold">Del</button>
+          </td>
         </tr>`;
       }).join('');
     }
+
+    let _editingHistoryId = null;
+
+    function openEditHistoryModal(id) {
+      const entry = historyData.find(h => h.id === id);
+      if (!entry) return;
+      _editingHistoryId = id;
+      document.getElementById('hm-name').value = entry.name || '';
+      document.getElementById('hm-whop-un').value = entry.whopUsername || '';
+      document.getElementById('hm-email').value = entry.email || '';
+      document.getElementById('hm-discord').value = entry.discordName || '';
+      document.getElementById('hm-country').value = entry.country || '';
+      document.getElementById('hm-spend').value = entry.spend || '';
+      document.getElementById('hm-joined').value = entry.joined || '';
+      document.getElementById('hm-left').value = entry.leftDate || '';
+      document.getElementById('hm-plan').value = entry.planName || '';
+      document.getElementById('hm-cancel-reason').value = entry.cancelReason || '';
+      document.getElementById('history-modal-msg').classList.add('hidden');
+      document.getElementById('history-edit-modal').classList.remove('hidden');
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('history-edit-modal').classList.add('hidden');
+      _editingHistoryId = null;
+    }
+
+    async function saveHistoryEdit() {
+      if (!_editingHistoryId) return;
+      const idx = historyData.findIndex(h => h.id === _editingHistoryId);
+      if (idx === -1) { closeHistoryModal(); return; }
+      historyData[idx] = {
+        ...historyData[idx],
+        name: document.getElementById('hm-name').value.trim(),
+        whopUsername: document.getElementById('hm-whop-un').value.trim(),
+        email: document.getElementById('hm-email').value.trim(),
+        discordName: document.getElementById('hm-discord').value.trim(),
+        country: document.getElementById('hm-country').value.trim(),
+        spend: document.getElementById('hm-spend').value.trim(),
+        joined: document.getElementById('hm-joined').value,
+        leftDate: document.getElementById('hm-left').value,
+        planName: document.getElementById('hm-plan').value.trim(),
+        cancelReason: document.getElementById('hm-cancel-reason').value.trim(),
+      };
+      await saveHistoryToKV();
+      renderHistory2();
+      closeHistoryModal();
+    }
+
+    async function deleteHistoryEntry(id) {
+      if (!confirm('Delete this history entry? This cannot be undone.')) return;
+      historyData = historyData.filter(h => h.id !== id);
+      await saveHistoryToKV();
+      renderHistory2();
+    }
+
+    // Close history modal on backdrop click
+    document.addEventListener('click', e => {
+      const modal = document.getElementById('history-edit-modal');
+      if (modal && e.target === modal) closeHistoryModal();
+    });
 
     function quickFilterHistory(val) {
       if (val === 'discord_yes') {
