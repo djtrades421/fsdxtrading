@@ -55,14 +55,8 @@
     </div>
 
     <!-- Stats bar -->
-    <div class="bg-zinc-950/60 border-b border-white/5 px-6 py-4">
-      <div class="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div onclick="switchTab('members')" class="cursor-pointer hover:bg-white/5 rounded-xl px-3 py-2 -mx-3 -my-2 transition"><div class="text-xs text-zinc-500 mb-1">Total Members</div><div id="stat-total" class="text-2xl font-black text-white">—</div></div>
-        <div onclick="switchTab('members')" class="cursor-pointer hover:bg-white/5 rounded-xl px-3 py-2 -mx-3 -my-2 transition"><div class="text-xs text-zinc-500 mb-1">VIP Members</div><div id="stat-vip" class="text-2xl font-black text-green-400">—</div></div>
-        <div onclick="switchTab('members')" class="cursor-pointer hover:bg-white/5 rounded-xl px-3 py-2 -mx-3 -my-2 transition"><div class="text-xs text-zinc-500 mb-1">Trial Members</div><div id="stat-trial" class="text-2xl font-black text-white">—</div></div>
-        <div onclick="switchTab('recaps')" class="cursor-pointer hover:bg-white/5 rounded-xl px-3 py-2 -mx-3 -my-2 transition"><div class="text-xs text-zinc-500 mb-1">Session Recaps</div><div id="stat-recaps" class="text-2xl font-black text-white">—</div></div>
-      </div>
-    </div>
+
+
 
     <!-- Sidebar + Content layout -->
     <div class="flex min-h-[calc(100vh-137px)]">
@@ -148,7 +142,14 @@
       <!-- MEMBERS TAB -->
       <div id="panel-members" class="tab-panel active">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-black text-white">Member Accounts</h2>
+          <div class="flex items-center gap-6">
+            <h2 class="text-lg font-black text-white">Member Accounts</h2>
+            <div class="flex items-center gap-4">
+              <div><div class="text-[10px] text-zinc-500 uppercase tracking-wider">Total</div><div id="stat-total" class="text-xl font-black text-white">—</div></div>
+              <div><div class="text-[10px] text-zinc-500 uppercase tracking-wider">VIP</div><div id="stat-vip" class="text-xl font-black text-green-400">—</div></div>
+              <div><div class="text-[10px] text-zinc-500 uppercase tracking-wider">Trialing</div><div id="stat-trial" class="text-xl font-black text-white">—</div></div>
+            </div>
+          </div>
           <input type="text" id="member-search" placeholder="Search by email or name..."
             oninput="filterMembers()"
             class="bg-black border border-white/10 text-white text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-600 w-56">
@@ -359,7 +360,7 @@
 
         <!-- Existing recaps -->
         <div>
-          <h3 class="text-sm font-black text-white mb-4">Posted Recaps</h3>
+          <h3 class="text-sm font-black text-white mb-4">Posted Recaps <span id="stat-recaps" class="ml-2 text-zinc-500 font-normal text-xs">—</span></h3>
           <div id="recaps-list" class="space-y-3">
             <p class="text-zinc-600 text-sm">Loading recaps...</p>
           </div>
@@ -1457,7 +1458,7 @@
       document.getElementById('stat-total').textContent = allMembers.length;
       document.getElementById('stat-vip').textContent = allMembers.filter(m => m.tier === 'pro').length;
       document.getElementById('stat-trial').textContent = allMembers.filter(m => m.tier === 'trial').length;
-      document.getElementById('stat-recaps').textContent = allRecaps.length;
+      document.getElementById('stat-recaps').textContent = '(' + allRecaps.length + ')';
 
       renderMembers(allMembers);
       renderRecaps(allRecaps);
@@ -1609,7 +1610,7 @@
       }
 
       renderRecaps(allRecaps);
-      document.getElementById('stat-recaps').textContent = allRecaps.length;
+      document.getElementById('stat-recaps').textContent = '(' + allRecaps.length + ')';
       btn.disabled = false; btn.textContent = 'Post Recap';
     }
 
@@ -1642,7 +1643,7 @@
       allRecaps = allRecaps.filter(r => r.id !== id);
       localStorage.setItem('fsdx_recaps', JSON.stringify(allRecaps));
       renderRecaps(allRecaps);
-      document.getElementById('stat-recaps').textContent = allRecaps.length;
+      document.getElementById('stat-recaps').textContent = '(' + allRecaps.length + ')';
       try {
         const token = localStorage.getItem('fsdx_token') || '';
         await fetch(`${API}/api/admin/recap`, {
