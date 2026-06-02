@@ -704,6 +704,9 @@
             <button onclick="document.getElementById('roster-import-input').click()" class="flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
               ↑ Import CSV
             </button>
+            <button onclick="openAddMemberModal()" class="flex items-center gap-1.5 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-bold text-xs rounded-xl transition">
+              + Add Member
+            </button>
             <button onclick="exportRosterCSV()" class="flex items-center gap-1.5 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">
               ↓ Export
             </button>
@@ -793,6 +796,7 @@
                 <th class="px-4 py-3">Site</th>
                 <th class="px-4 py-3">Flags</th>
                 <th class="px-4 py-3">Notes</th>
+                <th class="px-4 py-3"></th>
               </tr></thead>
               <tbody id="roster-table" class="divide-y divide-white/5 text-xs"></tbody>
             </table>
@@ -992,7 +996,132 @@
     </main>
     </div><!-- end sidebar+content flex -->
 
-  <!-- Day detail modal -->
+  <!-- ── Add / Edit Member Modal ── -->
+  <div id="member-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4 py-8 overflow-y-auto">
+    <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-2xl shadow-2xl my-auto">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+        <div>
+          <div id="member-modal-title" class="text-sm font-black text-white">Add Member</div>
+          <div class="text-[10px] text-zinc-500 mt-0.5">Manual roster entry</div>
+        </div>
+        <button onclick="closeMemberModal()" class="text-zinc-500 hover:text-white transition p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-5">
+        <div id="member-modal-msg" class="hidden rounded-xl px-4 py-3 text-xs border"></div>
+
+        <!-- Identity -->
+        <div>
+          <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-3">Identity</div>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Name / Whop Username</label>
+              <input type="text" id="mm-name" placeholder="Display name or Whop UN" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Discord Name</label>
+              <input type="text" id="mm-discord" placeholder="e.g. GoldenMOOSE1" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Email</label>
+              <input type="text" id="mm-email" placeholder="member@example.com" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">TradingView Username</label>
+              <input type="text" id="mm-tv" placeholder="e.g. matthewkirkp" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Whop Key</label>
+              <input type="text" id="mm-key" placeholder="FSDX-XXXX-XXXX-XXXX" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 font-mono">
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Whop Username</label>
+              <input type="text" id="mm-whop-un" placeholder="whop username" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+          </div>
+        </div>
+
+        <!-- Membership -->
+        <div>
+          <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-3">Membership</div>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Access Type</label>
+              <select id="mm-access" onchange="updateModalRenewalLogic()" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <option value="VIP">VIP Monthly</option>
+                <option value="VIP Annual">VIP Annual</option>
+                <option value="Lifetime">Lifetime</option>
+                <option value="VIP Legacy">VIP Legacy</option>
+                <option value="Legacy">Legacy</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Status</label>
+              <select id="mm-status" onchange="updateModalRenewalLogic()" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <option value="active">Active</option>
+                <option value="trialing">Trialing</option>
+                <option value="canceling">Canceling — runs to renewal then archives</option>
+                <option value="lifetime">Lifetime</option>
+                <option value="legacy">Legacy</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Source</label>
+              <select id="mm-source" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <option value="Whop">Whop</option>
+                <option value="Manual">Manual</option>
+                <option value="Early Access">Early Access</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Joined Date</label>
+              <input type="date" id="mm-joined" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing / Renewal -->
+        <div id="mm-billing-section">
+          <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-3">Billing & Renewal</div>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Billing Cycle</label>
+              <select id="mm-billing-cycle" onchange="updateModalRenewalLogic()" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <option value="none">None / Lifetime</option>
+                <option value="monthly">Monthly</option>
+                <option value="annual">Annual</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Monthly Amount ($)</label>
+              <input type="number" id="mm-amount" placeholder="0.00" step="0.01" min="0" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-[10px] text-zinc-600 mb-1">Next Renewal Date</label>
+              <input type="date" id="mm-renewal" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+            </div>
+          </div>
+          <p id="mm-renewal-hint" class="text-[10px] text-zinc-600 mt-2 leading-relaxed"></p>
+        </div>
+
+        <!-- Notes -->
+        <div>
+          <label class="block text-[10px] text-zinc-600 mb-1">Notes</label>
+          <textarea id="mm-notes" rows="2" placeholder="Anything to track about this member..." class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 resize-none"></textarea>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex gap-3 pt-1">
+          <button onclick="saveMemberModal()" id="mm-save-btn" class="px-6 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Member</button>
+          <button id="mm-archive-btn" class="hidden px-5 py-2.5 bg-zinc-900 hover:bg-red-500/20 border border-white/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 font-bold text-xs rounded-xl transition" onclick="archiveMemberFromModal()">Move to History</button>
+          <button onclick="closeMemberModal()" class="px-5 py-2.5 border border-white/10 text-zinc-500 hover:text-white font-bold text-xs rounded-xl transition">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
   <div id="day-detail-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-end sm:items-center justify-center px-0 sm:px-4">
     <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] flex flex-col">
       <div class="flex items-center justify-between px-5 py-4 border-b border-white/10 shrink-0">
@@ -1663,6 +1792,8 @@
       } catch(e) { window._adminKey = 'FSDX-OWNER'; await loadRosterFromKV(); }
       // Re-render members now that roster data is available
       renderMembers(allMembers);
+      // Auto-archive any canceling members whose renewal date has passed
+      checkCancelingMembers();
     }
 
     // ── Updates ──
@@ -1959,6 +2090,237 @@
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 3000);
     }
+
+    // ── ADD / EDIT MEMBER MODAL ──
+    let _editingMemberId = null;
+
+    function openAddMemberModal() {
+      _editingMemberId = null;
+      document.getElementById('member-modal-title').textContent = 'Add Member';
+      document.getElementById('mm-save-btn').textContent = 'Add to Roster';
+      document.getElementById('mm-archive-btn').classList.add('hidden');
+      // Clear all fields
+      ['mm-name','mm-discord','mm-email','mm-tv','mm-key','mm-whop-un','mm-notes','mm-amount'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+      document.getElementById('mm-access').value = 'VIP';
+      document.getElementById('mm-status').value = 'active';
+      document.getElementById('mm-source').value = 'Whop';
+      document.getElementById('mm-billing-cycle').value = 'monthly';
+      document.getElementById('mm-joined').value = new Date().toISOString().slice(0,10);
+      // Auto-set renewal to 1 month from today
+      const renewal = new Date();
+      renewal.setMonth(renewal.getMonth() + 1);
+      document.getElementById('mm-renewal').value = renewal.toISOString().slice(0,10);
+      document.getElementById('member-modal-msg').classList.add('hidden');
+      updateModalRenewalLogic();
+      document.getElementById('member-modal').classList.remove('hidden');
+    }
+
+    function openEditMemberModal(id) {
+      const member = rosterData.find(r => r.id === id);
+      if (!member) return;
+      _editingMemberId = id;
+      document.getElementById('member-modal-title').textContent = 'Edit Member';
+      document.getElementById('mm-save-btn').textContent = 'Save Changes';
+      document.getElementById('mm-archive-btn').classList.remove('hidden');
+      document.getElementById('mm-name').value = member.name || '';
+      document.getElementById('mm-discord').value = member.discordName || '';
+      document.getElementById('mm-email').value = member.email || '';
+      document.getElementById('mm-tv').value = member.tvUsername || '';
+      document.getElementById('mm-key').value = member.whopKey || '';
+      document.getElementById('mm-whop-un').value = member.whopUsername || '';
+      document.getElementById('mm-notes').value = member.notes || '';
+      document.getElementById('mm-amount').value = member.billingAmount || '';
+      // Access type
+      const access = member.planName || member.accessType || 'VIP';
+      const accessEl = document.getElementById('mm-access');
+      [...accessEl.options].forEach(o => { if (o.value === access) accessEl.value = access; });
+      // Status
+      document.getElementById('mm-status').value = member.status || 'active';
+      document.getElementById('mm-source').value = member.source || 'Whop';
+      document.getElementById('mm-joined').value = member.joined || '';
+      document.getElementById('mm-renewal').value = member.renewal || '';
+      // Billing cycle
+      const cycle = member.billingCycle || 'none';
+      document.getElementById('mm-billing-cycle').value = cycle;
+      document.getElementById('member-modal-msg').classList.add('hidden');
+      updateModalRenewalLogic();
+      document.getElementById('member-modal').classList.remove('hidden');
+    }
+
+    function closeMemberModal() {
+      document.getElementById('member-modal').classList.add('hidden');
+      _editingMemberId = null;
+    }
+
+    function updateModalRenewalLogic() {
+      const access = document.getElementById('mm-access').value;
+      const status = document.getElementById('mm-status').value;
+      const cycle = document.getElementById('mm-billing-cycle').value;
+      const hint = document.getElementById('mm-renewal-hint');
+      const billingSection = document.getElementById('mm-billing-section');
+      const isLifetime = ['Lifetime','Legacy','VIP Legacy'].includes(access) || ['lifetime','legacy'].includes(status);
+
+      // Auto-set billing cycle based on access type
+      if (isLifetime) {
+        document.getElementById('mm-billing-cycle').value = 'none';
+        document.getElementById('mm-renewal').value = '';
+        billingSection.style.opacity = '0.4';
+        hint.textContent = 'Lifetime / Legacy members have no renewal date.';
+      } else {
+        billingSection.style.opacity = '1';
+        if (access === 'VIP Annual') {
+          document.getElementById('mm-billing-cycle').value = 'annual';
+        } else if (access === 'VIP') {
+          document.getElementById('mm-billing-cycle').value = 'monthly';
+        }
+        if (status === 'canceling') {
+          hint.textContent = 'Status set to Canceling — member will be moved to History automatically when their renewal date passes.';
+        } else if (cycle === 'monthly') {
+          hint.textContent = 'Renewal date will auto-advance by 1 month each time a payment is logged.';
+        } else if (cycle === 'annual') {
+          hint.textContent = 'Renewal date will auto-advance by 12 months each time a payment is logged.';
+        } else {
+          hint.textContent = '';
+        }
+      }
+    }
+
+    function calcNextRenewal(currentRenewal, cycle) {
+      if (!currentRenewal || cycle === 'none') return currentRenewal;
+      try {
+        const d = new Date(currentRenewal);
+        if (cycle === 'monthly') d.setMonth(d.getMonth() + 1);
+        else if (cycle === 'annual') d.setFullYear(d.getFullYear() + 1);
+        return d.toISOString().slice(0,10);
+      } catch(e) { return currentRenewal; }
+    }
+
+    function checkCancelingMembers() {
+      // Move any canceling members whose renewal date has passed to history
+      const today = new Date().toISOString().slice(0,10);
+      const toArchive = rosterData.filter(r => r.status === 'canceling' && r.renewal && r.renewal <= today);
+      if (!toArchive.length) return;
+      toArchive.forEach(r => {
+        const archivedMember = { ...r, leftDate: r.renewal, status: 'cancelled', archivedAt: new Date().toISOString() };
+        historyData.unshift(archivedMember);
+        rosterData = rosterData.filter(m => m.id !== r.id);
+      });
+      saveRosterToKV();
+      saveHistoryToKV();
+      if (toArchive.length) renderRoster();
+    }
+
+    async function saveMemberModal() {
+      const name = document.getElementById('mm-name').value.trim();
+      const discord = document.getElementById('mm-discord').value.trim();
+      if (!name && !discord) {
+        showMemberModalMsg('Name or Discord name is required.', 'error'); return;
+      }
+      const btn = document.getElementById('mm-save-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+
+      const access = document.getElementById('mm-access').value;
+      const status = document.getElementById('mm-status').value;
+      const cycle = document.getElementById('mm-billing-cycle').value;
+      const amountVal = document.getElementById('mm-amount').value.trim();
+      const renewal = document.getElementById('mm-renewal').value;
+      const joined = document.getElementById('mm-joined').value;
+
+      const memberData = {
+        id: _editingMemberId || (Date.now() + Math.random()).toString(36),
+        name: name || discord,
+        whopUsername: document.getElementById('mm-whop-un').value.trim(),
+        whopKey: document.getElementById('mm-key').value.trim(),
+        email: document.getElementById('mm-email').value.trim(),
+        discordName: discord,
+        discordId: '',
+        tvUsername: document.getElementById('mm-tv').value.trim(),
+        status,
+        accessType: access,
+        planName: access,
+        source: document.getElementById('mm-source').value,
+        joined,
+        renewal,
+        tvRenew: renewal,
+        billingCycle: cycle,
+        billingAmount: amountVal ? parseFloat(amountVal) : 0,
+        spend: amountVal ? String(parseFloat(amountVal)) : '0',
+        notes: document.getElementById('mm-notes').value.trim(),
+        manualEntry: true,
+        updatedAt: new Date().toISOString(),
+      };
+
+      // If adding, just push; if editing, replace
+      if (_editingMemberId) {
+        const idx = rosterData.findIndex(r => r.id === _editingMemberId);
+        if (idx !== -1) rosterData[idx] = { ...rosterData[idx], ...memberData };
+        else rosterData.push(memberData);
+      } else {
+        rosterData.push(memberData);
+      }
+
+      // If billing cycle set and amount > 0, log a payment entry
+      if (cycle !== 'none' && parseFloat(amountVal) > 0 && !_editingMemberId) {
+        const payment = {
+          id: 'manual_' + Date.now().toString(36),
+          paidAt: new Date().toISOString(),
+          status: 'paid',
+          description: `${access} — ${cycle} billing`,
+          email: memberData.email,
+          discordName: memberData.discordName,
+          amount: parseFloat(amountVal),
+          currency: 'usd',
+          billingReason: 'manual_entry',
+          customerName: memberData.name,
+          country: '',
+          receiptNumber: '',
+          failureReason: '',
+        };
+        paymentsData.unshift(payment);
+        await savePaymentsToKV();
+      }
+
+      await saveRosterToKV();
+      renderRoster();
+      closeMemberModal();
+      showMemberModalMsg('', 'success'); // just close
+
+      btn.disabled = false;
+      btn.textContent = _editingMemberId ? 'Save Changes' : 'Add to Roster';
+    }
+
+    async function archiveMemberFromModal() {
+      if (!_editingMemberId) return;
+      if (!confirm('Move this member to History? They will be removed from the active roster.')) return;
+      const idx = rosterData.findIndex(r => r.id === _editingMemberId);
+      if (idx === -1) { closeMemberModal(); return; }
+      const member = rosterData[idx];
+      const archived = { ...member, leftDate: new Date().toISOString().slice(0,10), status: 'cancelled', archivedAt: new Date().toISOString() };
+      historyData.unshift(archived);
+      rosterData.splice(idx, 1);
+      await saveRosterToKV();
+      await saveHistoryToKV();
+      renderRoster();
+      closeMemberModal();
+    }
+
+    function showMemberModalMsg(text, type) {
+      if (!text) return;
+      const el = document.getElementById('member-modal-msg');
+      el.textContent = text;
+      el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-green-500/10 border-green-500/30 text-green-400');
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 3000);
+    }
+
+    // Close modal on backdrop click
+    document.addEventListener('click', e => {
+      const modal = document.getElementById('member-modal');
+      if (modal && e.target === modal) closeMemberModal();
+    });
 
     // Set today's date as default
     document.addEventListener('DOMContentLoaded', () => {
@@ -2499,6 +2861,11 @@
       if (h.includes('member id') && h.includes('renewal date')) return 'whop_members';
       if (h.includes('subscription status') && h.includes('next payment date')) return 'whop_memberships';
       if (h.includes('paid at') && h.includes('billing reason')) return 'whop_payments';
+      // Legacy CSV: has 'discord name' + 'tv username' + 'access type', no 'member id'
+      // VIP Legacy has 'whop un' column; Legacy does not
+      if (h.includes('access type') && h.includes('discord name') && h.includes('tv username') && !h.includes('member id')) {
+        return h.includes('whop un') ? 'discord_vip_legacy' : 'discord_legacy';
+      }
       if (h.includes('access type') && h.includes('discord name') && !h.includes('member id')) return 'discord_csv';
       return 'unknown';
     }
@@ -2735,7 +3102,7 @@
       });
     }
 
-    // ── Parse Discord CSV ──
+    // ── Parse Discord CSV (generic old format) ──
     function parseDiscordCSV(rows) {
       return rows.map(r => {
         const accessType = (r['Access Type'] || '').trim();
@@ -2768,6 +3135,104 @@
           country: '',
           notes: r['Notes'] || '',
           source_detail: 'discord_csv',
+        };
+      });
+    }
+
+    // ── Parse Legacy CSV (no Whop, TV-access-only lifetime members) ──
+    // Columns: #, Discord Name, TV Username, Key, Email, Access Type, Source, Access Start, TV Review Date, TV Removal Needed?, Notes
+    function parseLegacyCSV(rows) {
+      return rows.filter(r => r['Discord Name'] || r['TV Username']).map(r => {
+        const discordName = (r['Discord Name'] || '').trim();
+        const tvUsername = (r['TV Username'] || '').trim();
+        const email = (r['Email'] || '').trim();
+        const whopKey = (r['Key'] || '').trim();
+        const joinedRaw = (r['Access Start'] || '').trim();
+        const notes = (r['Notes'] || '').trim();
+        const tvRemoval = (r['TV Removal Needed?'] || r['TV Removal?'] || 'No').trim();
+
+        // Parse M/D/YYYY to YYYY-MM-DD
+        function parseDate(s) {
+          if (!s) return '';
+          const parts = s.split('/');
+          if (parts.length === 3) {
+            const [m, d, y] = parts;
+            return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+          }
+          return s;
+        }
+
+        return {
+          id: (Date.now() + Math.random()).toString(36),
+          name: discordName,
+          whopUsername: '',
+          whopKey,
+          email,
+          discordName,
+          discordId: '',
+          tvUsername,
+          status: 'lifetime',     // Legacy = permanent free lifetime access
+          accessType: 'Legacy',
+          planName: 'Legacy',
+          source: (r['Source'] || 'Early Access').trim(),
+          joined: parseDate(joinedRaw),
+          renewal: '',             // No renewal — lifetime
+          tvRenew: '',
+          tvRemoval,
+          spend: '0',
+          country: '',
+          notes,
+          source_detail: 'discord_legacy',
+          manualEntry: true,
+        };
+      });
+    }
+
+    // ── Parse VIP Legacy CSV (free Whop account acting as VIP Lifetime) ──
+    // Columns: #, Whop UN, Discord Name, TV Username, Key, Email, Access Type, Source, Access Start, TV Review Date, TV Removal Needed?, Notes
+    function parseVipLegacyCSV(rows) {
+      return rows.filter(r => (r['Discord Name'] || r['Whop UN'] || r['TV Username'])).map(r => {
+        const whopUsername = (r['Whop UN'] || '').trim();
+        const discordName = (r['Discord Name'] || '').trim();
+        const tvUsername = (r['TV Username'] || '').trim();
+        const whopKey = (r['Key'] || '').trim();
+        const email = (r['Email'] || '').trim();
+        const joinedRaw = (r['Access Start'] || '').trim();
+        const notes = (r['Notes'] || '').trim();
+        const tvRemoval = (r['TV Removal Needed?'] || r['TV Removal?'] || 'No').trim();
+
+        function parseDate(s) {
+          if (!s) return '';
+          const parts = s.split('/');
+          if (parts.length === 3) {
+            const [m, d, y] = parts;
+            return `${y}-${m.padStart(2,'0')}-${d.padStart(2,'0')}`;
+          }
+          return s;
+        }
+
+        return {
+          id: (Date.now() + Math.random()).toString(36),
+          name: whopUsername || discordName,
+          whopUsername,
+          whopKey,
+          email,
+          discordName,
+          discordId: '',
+          tvUsername,
+          status: 'lifetime',     // VIP Legacy = free Whop account, acts as lifetime
+          accessType: 'VIP Legacy',
+          planName: 'VIP Legacy',
+          source: 'Whop',
+          joined: parseDate(joinedRaw),
+          renewal: '',             // Free account — no renewal
+          tvRenew: '',
+          tvRemoval,
+          spend: '0',
+          country: '',
+          notes,
+          source_detail: 'discord_vip_legacy',
+          manualEntry: true,
         };
       });
     }
@@ -2868,6 +3333,8 @@
       if (format === 'whop_members') incoming = parseWhopMembers(rows);
       else if (format === 'whop_memberships') incoming = parseWhopMemberships(rows);
       else if (format === 'whop_users') incoming = parseWhopUsers(rows);
+      else if (format === 'discord_legacy') incoming = parseLegacyCSV(rows);
+      else if (format === 'discord_vip_legacy') incoming = parseVipLegacyCSV(rows);
       else if (format === 'discord_csv') incoming = parseDiscordCSV(rows);
 
       const diff = diffImport(incoming, format);
@@ -3362,7 +3829,7 @@
 
       const tbody = document.getElementById('roster-table');
       if (!rosterData.length) {
-        tbody.innerHTML = '<tr><td colspan="11" class="px-4 py-8 text-center text-zinc-600">No roster data — import a CSV to get started.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" class="px-4 py-8 text-center text-zinc-600">No roster data — import a CSV to get started.</td></tr>';
         return;
       }
       // Update filter count
@@ -3371,7 +3838,7 @@
       if (filterCount) filterCount.textContent = hasFilters ? filtered.length + ' member' + (filtered.length!==1?'s':'') + ' shown' : '';
 
       if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="11" class="px-4 py-8 text-center text-zinc-600">No records match filters.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="12" class="px-4 py-8 text-center text-zinc-600">No records match filters.</td></tr>';
         return;
       }
 
@@ -3436,6 +3903,9 @@
             ${r.cancelReason ? `<div class="text-red-400/70 truncate" title="Cancel: ${r.cancelReason}">✗ ${r.cancelReason}</div>` : ''}
             ${r.notes && r.notes !== r.cancelReason && !r.leftDate ? `<div class="text-zinc-600 truncate" title="${r.notes}">${r.notes}</div>` : ''}
             ${!r.leftDate && !r.churnedDate && !r.cancelReason && !r.notes ? '<span class="text-zinc-700">—</span>' : ''}
+          </td>
+          <td class="px-4 py-3">
+            <button onclick="openEditMemberModal('${r.id}')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 hover:border-white/30 px-2.5 py-1 rounded-lg transition font-bold">Edit</button>
           </td>
         </tr>`;
       }).join('');
