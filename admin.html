@@ -142,17 +142,26 @@
       <!-- MEMBERS TAB -->
       <div id="panel-members" class="tab-panel active">
         <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-6">
-            <h2 class="text-lg font-black text-white">Member Accounts</h2>
-            <div class="flex items-center gap-4">
-              <div><div class="text-[10px] text-zinc-500 uppercase tracking-wider">Total</div><div id="stat-total" class="text-xl font-black text-white">—</div></div>
-              <div><div class="text-[10px] text-zinc-500 uppercase tracking-wider">VIP</div><div id="stat-vip" class="text-xl font-black text-green-400">—</div></div>
-              <div><div class="text-[10px] text-zinc-500 uppercase tracking-wider">Trialing</div><div id="stat-trial" class="text-xl font-black text-white">—</div></div>
-            </div>
+          <div>
+            <h2 class="text-sm font-black text-white">Member Accounts</h2>
           </div>
           <input type="text" id="member-search" placeholder="Search by email or name..."
             oninput="filterMembers()"
             class="bg-black border border-white/10 text-white text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-600 w-56">
+        </div>
+        <div class="grid grid-cols-3 gap-3 mb-4">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center">
+            <div class="text-[10px] text-zinc-500 mb-1">Total Members</div>
+            <div id="stat-total" class="text-xl font-black text-white">—</div>
+          </div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center">
+            <div class="text-[10px] text-zinc-500 mb-1">VIP</div>
+            <div id="stat-vip" class="text-xl font-black text-green-400">—</div>
+          </div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center">
+            <div class="text-[10px] text-zinc-500 mb-1">Trialing</div>
+            <div id="stat-trial" class="text-xl font-black text-blue-400">—</div>
+          </div>
         </div>
         <div class="border border-white/10 rounded-2xl overflow-hidden">
           <div class="overflow-x-auto">
