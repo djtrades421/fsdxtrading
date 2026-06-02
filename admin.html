@@ -2857,6 +2857,7 @@
             existing.planName = [...plans].join(' → ');
           }
           if (h.cancelReason && !existing.cancelReason) existing.cancelReason = h.cancelReason;
+          if (!existing.leftDate && h.leftDate) existing.leftDate = h.leftDate;
           if (h.discordName && !existing.discordName) existing.discordName = h.discordName;
           if (h.country && !existing.country) existing.country = h.country;
           if (h.whopKey && !existing.whopKey) existing.whopKey = h.whopKey;
@@ -3760,6 +3761,8 @@
             if (item.discordName && !h.discordName) h.discordName = item.discordName;
             if (item.discordId && !h.discordId) h.discordId = item.discordId;
             if (item.country && !h.country) h.country = item.country;
+            // Keep leftDate — use churnedDate from memberships if leftDate not already set
+            if (!h.leftDate && (item.churnedDate || item.leftDate)) h.leftDate = item.churnedDate || item.leftDate;
             // Keep earliest joined date
             if (item.joined && (!h.joined || item.joined < h.joined)) h.joined = item.joined;
           } else {
@@ -3776,7 +3779,7 @@
               country: item.country || '',
               spend: String(itemSpend.toFixed(2)),
               joined: item.joined || '',
-              leftDate: '',
+              leftDate: item.churnedDate || item.leftDate || '',
               cancelReason: item.cancelReason || '',
               planName: item.planName || item.accessType || '',
               converted: false,
