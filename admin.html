@@ -994,11 +994,12 @@
                 <th class="px-4 py-3">Country</th>
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('spend')">Spend <span id="hsort-spend" class="text-zinc-700">↕</span></th>
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('joined')">Joined Whop <span id="hsort-joined" class="text-zinc-400">↓</span></th>
+                <th class="px-4 py-3">Added to History</th>
                 <th class="px-4 py-3">Type</th>
                 <th class="px-4 py-3"></th>
               </tr></thead>
               <tbody id="history-table" class="divide-y divide-white/5 text-xs">
-                <tr><td colspan="8" class="px-4 py-8 text-center text-zinc-600">Import a Whop users CSV to populate leads.</td></tr>
+                <tr><td colspan="9" class="px-4 py-8 text-center text-zinc-600">Import a Whop users CSV to populate leads.</td></tr>
               </tbody>
             </table>
           </div>
@@ -1228,7 +1229,7 @@
       if (tab === 'sales') loadCurrentSale();
       if (tab === 'updates') loadAdminUpdates();
       if (tab === 'schedule') loadAdminSchedule();
-      if (tab === 'roster') renderRoster();
+      if (tab === 'roster') { cleanRosterNotes(); renderRoster(); }
       if (tab === 'payments') renderPayments();
       if (tab === 'flags') renderFlags();
       if (tab === 'analytics') renderAnalytics();
@@ -2821,6 +2822,18 @@
       renderHistory2();
     }
 
+    function cleanRosterNotes() {
+      // Deduplicate notes fields that got repeated on each import
+      let dirty = false;
+      rosterData.forEach(r => {
+        if (!r.notes) return;
+        const parts = r.notes.split(' · ').map(s => s.trim()).filter(Boolean);
+        const deduped = [...new Set(parts)].join(' · ');
+        if (deduped !== r.notes) { r.notes = deduped; dirty = true; }
+      });
+      if (dirty) saveRosterToKV();
+    }
+
     function dedupeHistory() {
       // Merge duplicate history entries for the same email into one record
       const seen = {};
@@ -2894,7 +2907,7 @@
 
       const tbody = document.getElementById('history-table');
       if (!historyData.length) {
-        tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-zinc-600">No history yet — import a Whop users CSV to populate.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="px-4 py-8 text-center text-zinc-600">No history yet — import a Whop users CSV to populate.</td></tr>';
         return;
       }
 
@@ -2929,7 +2942,7 @@
       if (filterCount) filterCount.textContent = hasFilters ? filtered.length + ' shown' : '';
 
       if (!filtered.length) {
-        tbody.innerHTML = '<tr><td colspan="8" class="px-4 py-8 text-center text-zinc-600">No leads match filters.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="px-4 py-8 text-center text-zinc-600">No leads match filters.</td></tr>';
         return;
       }
 
@@ -2963,6 +2976,7 @@
           <td class="px-4 py-3 text-zinc-500">${flag} ${location||'—'}</td>
           <td class="px-4 py-3 ${spend>0?'text-green-400 font-bold':'text-zinc-700'}">$${spend.toFixed(2)}</td>
           <td class="px-4 py-3 text-zinc-500">${r.joined ? fmtDate(r.joined) : '—'}</td>
+          <td class="px-4 py-3 text-zinc-600">${r.archivedAt ? fmtDate(r.archivedAt.slice(0,10)) : '—'}</td>
           <td class="px-4 py-3">${typeBadge}</td>
           <td class="px-4 py-3 whitespace-nowrap">
             <button onclick="openEditHistoryModal('${r.id}')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 hover:border-white/30 px-2.5 py-1 rounded-lg transition font-bold mr-1">Edit</button>
@@ -3698,7 +3712,13 @@
             cancelReason: isMembershipsExport ? (item.cancelReason || existing.cancelReason) : existing.cancelReason,
             ...(isMembershipsExport && item.cancelReason && existing.status === 'trialing' ? { status: 'trial_cancelled' } : {}),
             cancelingDate: isUsersExport ? (item.cancelingDate || existing.cancelingDate) : existing.cancelingDate,
-            notes: [existing.notes, item.notes && item.notes !== existing.notes ? item.notes : ''].filter(Boolean).join(' · ') || existing.notes,
+            notes: (() => {
+              // Merge notes without duplicating — split on ' · ', dedupe, rejoin
+              const existingParts = (existing.notes || '').split(' · ').map(s => s.trim()).filter(Boolean);
+              const newParts = (item.notes || '').split(' · ').map(s => s.trim()).filter(Boolean);
+              const merged = [...new Set([...existingParts, ...newParts])];
+              return merged.join(' · ');
+            })(),
             source_detail: existing.source_detail || item.source_detail,
           };
         } else if (!isMembershipsExport) {
@@ -3759,6 +3779,7 @@
               planName: item.planName || item.accessType || '',
               converted: false,
               source: 'whop_memberships',
+              archivedAt: new Date().toISOString(),
             });
           }
         });
@@ -3792,6 +3813,7 @@
           leftDate: r['Left date'] ? r['Left date'].split(' ')[0] : '',
           converted: rosterEmails.has(r['Email']?.toLowerCase()),
           source: 'whop_import',
+          archivedAt: new Date().toISOString(),
         }));
 
         // Merge with existing leads — deduplicate by email
