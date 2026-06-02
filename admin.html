@@ -994,8 +994,8 @@
                 <th class="px-4 py-3">Country</th>
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('spend')">Spend <span id="hsort-spend" class="text-zinc-700">↕</span></th>
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('joined')">Joined Whop <span id="hsort-joined" class="text-zinc-400">↓</span></th>
-                <th class="px-4 py-3">Added to History</th>
-                <th class="px-4 py-3">Type</th>
+                <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('archivedAt')">Added to History <span id="hsort-archivedAt" class="text-zinc-700">↕</span></th>
+                <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('leftDate')">Type <span id="hsort-leftDate" class="text-zinc-700">↕</span></th>
                 <th class="px-4 py-3"></th>
               </tr></thead>
               <tbody id="history-table" class="divide-y divide-white/5 text-xs">
@@ -2778,8 +2778,8 @@
 
     function sortHistory(field) {
       if (historySortField === field) historySortDir = historySortDir === 'asc' ? 'desc' : 'asc';
-      else { historySortField = field; historySortDir = 'asc'; }
-      ['name','spend','joined'].forEach(f => {
+      else { historySortField = field; historySortDir = field === 'archivedAt' ? 'desc' : 'asc'; }
+      ['name','spend','joined','archivedAt','leftDate'].forEach(f => {
         const el = document.getElementById('hsort-'+f);
         if (el) el.textContent = f === historySortField ? (historySortDir === 'asc' ? '↑' : '↓') : '↕';
       });
@@ -2918,6 +2918,8 @@
         if (historySortField === 'name') { va = (a.name||a.whopUsername||'').toLowerCase(); vb = (b.name||b.whopUsername||'').toLowerCase(); }
         else if (historySortField === 'spend') { return (parseFloat(a.spend||0) - parseFloat(b.spend||0)) * sDir; }
         else if (historySortField === 'joined') { va = a.joined||''; vb = b.joined||''; }
+        else if (historySortField === 'archivedAt') { va = a.archivedAt||''; vb = b.archivedAt||''; }
+        else if (historySortField === 'leftDate') { va = a.leftDate||''; vb = b.leftDate||''; }
         return va < vb ? -sDir : va > vb ? sDir : 0;
       });
 
