@@ -2845,19 +2845,22 @@
           seen[key] = h;
           deduped.push(h);
         } else {
-          // Merge into existing entry
           const existing = seen[key];
-          // Accumulate spend
+          // Keep highest spend
           const existSpend = parseFloat(existing.spend || '0') || 0;
           const newSpend = parseFloat(h.spend || '0') || 0;
           existing.spend = String(Math.max(existSpend, newSpend).toFixed(2));
-          // Plan history
-          if (h.planName && h.planName !== existing.planName) {
-            const plans = new Set([existing.planName, h.planName].filter(Boolean));
-            existing.planName = [...plans].join(' → ');
+          // Deduplicate plan names — split both chains, merge unique values
+          const allPlans = [
+            ...(existing.planName || '').split(' → '),
+            ...(h.planName || '').split(' → ')
+          ].map(s => s.trim()).filter(Boolean);
+          existing.planName = [...new Set(allPlans)].join(' → ');
+          // Keep most recent leftDate (latest date wins)
+          if (h.leftDate) {
+            if (!existing.leftDate || h.leftDate > existing.leftDate) existing.leftDate = h.leftDate;
           }
           if (h.cancelReason && !existing.cancelReason) existing.cancelReason = h.cancelReason;
-          if (!existing.leftDate && h.leftDate) existing.leftDate = h.leftDate;
           if (h.discordName && !existing.discordName) existing.discordName = h.discordName;
           if (h.country && !existing.country) existing.country = h.country;
           if (h.whopKey && !existing.whopKey) existing.whopKey = h.whopKey;
@@ -2867,6 +2870,11 @@
       if (deduped.length !== historyData.length) {
         historyData = deduped;
         saveHistoryToKV();
+      } else {
+        // Even if count is same, save if plan names or leftDates were cleaned up
+        const cleaned = JSON.stringify(historyData) !== JSON.stringify(deduped);
+        historyData = deduped;
+        if (cleaned) saveHistoryToKV();
       }
     }
 
@@ -3754,9 +3762,12 @@
             h.spend = String(Math.max(existSpend, itemSpend).toFixed(2));
             // Keep most recent cancel reason
             if (item.cancelReason && !h.cancelReason) h.cancelReason = item.cancelReason;
-            // Build plan history — track all plans they had
-            const plans = new Set([h.planName, item.planName].filter(Boolean));
-            h.planName = [...plans].join(' → ');
+            // Build plan history — track all unique plans they had
+            const allPlans = [
+              ...(h.planName || '').split(' → '),
+              ...(item.planName || '').split(' → ')
+            ].map(s => s.trim()).filter(Boolean);
+            h.planName = [...new Set(allPlans)].join(' → ');
             if (item.whopKey && !h.whopKey) h.whopKey = item.whopKey;
             if (item.discordName && !h.discordName) h.discordName = item.discordName;
             if (item.discordId && !h.discordId) h.discordId = item.discordId;
