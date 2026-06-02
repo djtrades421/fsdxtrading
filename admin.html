@@ -1170,7 +1170,7 @@
       if (tab === 'payments') renderPayments();
       if (tab === 'flags') renderFlags();
       if (tab === 'analytics') renderAnalytics();
-      if (tab === 'history') renderHistory2();
+      if (tab === 'history') { dedupeHistory(); renderHistory2(); }
     }
 
     async function handleLogout() {
@@ -2759,6 +2759,41 @@
       renderHistory2();
     }
 
+    function dedupeHistory() {
+      // Merge duplicate history entries for the same email into one record
+      const seen = {};
+      const deduped = [];
+      historyData.forEach(h => {
+        const key = h.email?.toLowerCase();
+        if (!key) { deduped.push(h); return; }
+        if (!seen[key]) {
+          seen[key] = h;
+          deduped.push(h);
+        } else {
+          // Merge into existing entry
+          const existing = seen[key];
+          // Accumulate spend
+          const existSpend = parseFloat(existing.spend || '0') || 0;
+          const newSpend = parseFloat(h.spend || '0') || 0;
+          existing.spend = String((existSpend + newSpend).toFixed(2));
+          // Plan history
+          if (h.planName && h.planName !== existing.planName) {
+            const plans = new Set([existing.planName, h.planName].filter(Boolean));
+            existing.planName = [...plans].join(' → ');
+          }
+          if (h.cancelReason && !existing.cancelReason) existing.cancelReason = h.cancelReason;
+          if (h.discordName && !existing.discordName) existing.discordName = h.discordName;
+          if (h.country && !existing.country) existing.country = h.country;
+          if (h.whopKey && !existing.whopKey) existing.whopKey = h.whopKey;
+          if (h.joined && (!existing.joined || h.joined < existing.joined)) existing.joined = h.joined;
+        }
+      });
+      if (deduped.length !== historyData.length) {
+        historyData = deduped;
+        saveHistoryToKV();
+      }
+    }
+
     function renderHistory2() {
       const search = (document.getElementById('history-search')?.value || '').toLowerCase();
       const discordFilter = document.querySelector('input[name="hs-discord"]:checked')?.value || '';
@@ -3547,21 +3582,40 @@
         // Memberships active/completed/trialing that don't match roster — skip, not our member
       });
 
-      // Cancelled memberships → leads only (never touches roster)
+      // Cancelled memberships → history only (never touches roster)
       if (isMembershipsExport) {
+        const rosterEmailSet = new Set(rosterData.map(r => r.email?.toLowerCase()).filter(Boolean));
+        const rosterKeySet = new Set(rosterData.map(r => r.whopKey).filter(Boolean));
         const cancelledFromMemberships = incoming.filter(item => item.status === 'cancelled' && item.email);
-        let newLeadCount2 = 0;
+
         cancelledFromMemberships.forEach(item => {
           const emailKey = item.email?.toLowerCase();
+          const itemSpend = parseFloat(item.spend || '0') || 0;
+
+          // Skip entirely if this person is already an active roster member
+          // (they had an old cancelled membership but their current one is active)
+          if (rosterEmailSet.has(emailKey)) return;
+          if (item.whopKey && rosterKeySet.has(item.whopKey)) return;
+
           const existIdx = historyData.findIndex(l => l.email?.toLowerCase() === emailKey);
           if (existIdx >= 0) {
-            // Enrich existing lead with cancel reason and plan if missing
-            if (item.cancelReason && !historyData[existIdx].cancelReason) historyData[existIdx].cancelReason = item.cancelReason;
-            if (item.planName && !historyData[existIdx].planName) historyData[existIdx].planName = item.planName;
-            if (item.whopKey && !historyData[existIdx].whopKey) historyData[existIdx].whopKey = item.whopKey;
-            if (item.spend && parseFloat(item.spend) > parseFloat(historyData[existIdx].spend||0)) historyData[existIdx].spend = item.spend;
+            // Merge into existing history entry — accumulate spend, keep best/most recent data
+            const h = historyData[existIdx];
+            const existSpend = parseFloat(h.spend || '0') || 0;
+            h.spend = String((existSpend + itemSpend).toFixed(2));
+            // Keep most recent cancel reason
+            if (item.cancelReason && !h.cancelReason) h.cancelReason = item.cancelReason;
+            // Build plan history — track all plans they had
+            const plans = new Set([h.planName, item.planName].filter(Boolean));
+            h.planName = [...plans].join(' → ');
+            if (item.whopKey && !h.whopKey) h.whopKey = item.whopKey;
+            if (item.discordName && !h.discordName) h.discordName = item.discordName;
+            if (item.discordId && !h.discordId) h.discordId = item.discordId;
+            if (item.country && !h.country) h.country = item.country;
+            // Keep earliest joined date
+            if (item.joined && (!h.joined || item.joined < h.joined)) h.joined = item.joined;
           } else {
-            // New lead from cancelled membership
+            // New history entry
             historyData.push({
               id: item.id || (Date.now() + Math.random()).toString(36),
               name: item.name || '',
@@ -3572,7 +3626,7 @@
               discordId: item.discordId || '',
               city: '', state: '',
               country: item.country || '',
-              spend: item.spend || '0',
+              spend: String(itemSpend.toFixed(2)),
               joined: item.joined || '',
               leftDate: '',
               cancelReason: item.cancelReason || '',
@@ -3580,7 +3634,6 @@
               converted: false,
               source: 'whop_memberships',
             });
-            newLeadCount2++;
           }
         });
         await saveHistoryToKV();
