@@ -3826,7 +3826,7 @@
           country: r['Country'] || '',
           spend: r['Platform spend (USD)'] || '0',
           joined: r['Joined date'] ? r['Joined date'].split(' ')[0] : '',
-          leftDate: r['Left date'] ? r['Left date'].split(' ')[0] : '',
+          leftDate: (r['Left date'] || r['Churned date'] || '').split(' ')[0],
           converted: rosterEmails.has(r['Email']?.toLowerCase()),
           source: 'whop_import',
           archivedAt: new Date().toISOString(),
@@ -3838,12 +3838,19 @@
         newLeads.forEach(lead => {
           const emailKey = lead.email?.toLowerCase();
           if (!emailKey) return;
-          // Check if converted status changed
           const existIdx = historyData.findIndex(l => l.email?.toLowerCase() === emailKey);
           if (existIdx >= 0) {
             // Update converted status if they joined roster
             if (lead.converted && !historyData[existIdx].converted) {
               historyData[existIdx].converted = true;
+            }
+            // Patch missing leftDate from churn date
+            if (lead.leftDate && !historyData[existIdx].leftDate) {
+              historyData[existIdx].leftDate = lead.leftDate;
+            }
+            // Patch missing cancelReason
+            if (lead.cancelReason && !historyData[existIdx].cancelReason) {
+              historyData[existIdx].cancelReason = lead.cancelReason;
             }
           } else {
             historyData.push(lead);
