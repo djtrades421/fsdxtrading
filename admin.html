@@ -1217,7 +1217,7 @@
     let allRecaps = [];
 
     function switchTab(tab) {
-      ['members','recaps','announce','sales','updates','migrate','roster','payments','flags','analytics','history'].forEach(t => {
+      ['members','recaps','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('tab-' + t);
         if (btn) btn.classList.remove('active-nav');
