@@ -9,8 +9,8 @@
   <script src="vip-nav.js"></script>
   <style>
     body { background-color: #000; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
+    .tab-panel { display: none !important; }
+    .tab-panel.active { display: block !important; }
     .nav-btn.active-nav { color: #22c55e !important; background: rgba(34,197,94,0.08); }
   </style>
 </head>
@@ -59,10 +59,10 @@
 
 
     <!-- Sidebar + Content layout -->
-    <div class="flex min-h-[calc(100vh-137px)]">
+    <div class="flex min-h-[calc(100vh-57px)]">
 
       <!-- Left Sidebar Nav -->
-      <aside class="w-52 shrink-0 border-r border-white/10 bg-zinc-950/60 sticky top-[137px] h-[calc(100vh-137px)] overflow-y-auto flex flex-col">
+      <aside class="w-52 shrink-0 border-r border-white/10 bg-zinc-950/60 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto flex flex-col">
         <nav class="flex-1 py-6 px-3 space-y-0.5">
 
           <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-1">// Members</div>
@@ -2257,7 +2257,6 @@
       document.getElementById('sched-btn').textContent = 'Save Changes';
       document.getElementById('sched-cancel-btn').classList.remove('hidden');
       document.getElementById('sched-title').focus();
-      document.getElementById('panel-schedule').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function cancelEditSchedule() {
