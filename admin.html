@@ -3603,9 +3603,11 @@
 
     // ── Parse Whop Users export ──
     function parseWhopUsers(rows) {
-      // Filter out ghost accounts — no membership, plan, or product = never purchased
+      // Filter out true ghost accounts — no dates, no activity = never actually joined
+      const ACTIVITY_COLS = ['Renewal date','Churned date','Left date','Canceling date','Trial end date','Past due date','Paused date','Expiring date'];
       const realMembers = rows.filter(r =>
-        r['Membership IDs']?.trim() || r['Plan IDs']?.trim() || r['Product IDs']?.trim()
+        r['Membership IDs']?.trim() || r['Plan IDs']?.trim() || r['Product IDs']?.trim() ||
+        ACTIVITY_COLS.some(col => r[col]?.trim())
       );
       return realMembers.map(r => {
         const left = r['Left date'] || '';
