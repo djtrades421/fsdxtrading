@@ -742,7 +742,9 @@
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="active" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Active</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="trialing" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Trialing</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="canceling" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Cancelling</span></label>
-
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="lifetime" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Lifetime</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="legacy" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Legacy</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="cancelled" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Cancelled</span></label>
             </div>
           </div>
           <!-- Source -->
@@ -4537,7 +4539,7 @@
           if (!accessFilter.includes(normalizedAccess)) return false;
         }
         if (search) {
-          const haystack = [r.name, r.email, r.discordName, r.tvUsername, r.whopUsername, r.whopKey, r.notes].join(' ').toLowerCase();
+          const haystack = [r.name, r.email, r.discordName, r.tvUsername, r.whopUsername, r.whopKey, r.notes, r.status, r.planName, r.accessType, r.country].join(' ').toLowerCase();
           if (!haystack.includes(search)) return false;
         }
         return true;
