@@ -1063,7 +1063,7 @@
             <div>
               <label class="block text-[10px] text-zinc-600 mb-1">Access Type</label>
               <select id="mm-access" onchange="updateModalRenewalLogic()" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-                <option value="VIP">VIP Monthly</option>
+                <option value="VIP Monthly">VIP Monthly</option>
                 <option value="VIP Annual">VIP Annual</option>
                 <option value="Lifetime">Lifetime</option>
                 <option value="VIP Legacy">VIP Legacy</option>
@@ -1406,11 +1406,16 @@
       ).sort((a,b) => (b.paidAt||'') > (a.paidAt||'') ? 1 : -1);
 
       const PLAN_NAMES = {
-        'plan_C6yQOo7Z6tRap': 'VIP Monthly', 'plan_WDBtpCQLgdO6K': 'VIP Annual',
-        'plan_yO1Ma62pSUYFu': 'Lifetime', 'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
-        'plan_aXiLFJZu79HYG': 'VIP Legacy', 'plan_mhrt4tqPQYjNH': 'Lifetime',
-        'plan_gs2owPJ8MtUgk': 'ORB Pro', 'plan_8IvI1MMosoCf9': 'ORB Pro Trial',
-        'plan_qPUdhXCOGcZsu': 'VIP Monthly No Trial', 'plan_UrMJmbJlwxUhV': 'VIP Monthly No Trial',
+        'plan_C6yQOo7Z6tRap': 'VIP Monthly',
+        'plan_WDBtpCQLgdO6K': 'VIP Annual',
+        'plan_yO1Ma62pSUYFu': 'Lifetime',
+        'plan_mhrt4tqPQYjNH': 'Lifetime',
+        'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
+        'plan_aXiLFJZu79HYG': 'VIP Legacy',
+        'plan_qPUdhXCOGcZsu': 'Strategy Optimizer | TradingView',
+        'plan_UrMJmbJlwxUhV': 'Strategy Optimizer | TradingView',
+        'plan_gs2owPJ8MtUgk': 'FSD-X Nexus 2.0',
+        'plan_8IvI1MMosoCf9': 'ORB PRO v5 Alpha'
       };
 
       let html = '<div class="grid md:grid-cols-2 gap-6">';
@@ -2434,7 +2439,7 @@
         billingSection.style.opacity = '1';
         if (access === 'VIP Annual') {
           document.getElementById('mm-billing-cycle').value = 'annual';
-        } else if (access === 'VIP') {
+        } else if (access === 'VIP Monthly') {
           document.getElementById('mm-billing-cycle').value = 'monthly';
         }
         if (status === 'canceling') {
@@ -3358,13 +3363,13 @@
         'plan_C6yQOo7Z6tRap': 'VIP Monthly',
         'plan_WDBtpCQLgdO6K': 'VIP Annual',
         'plan_yO1Ma62pSUYFu': 'Lifetime',
+        'plan_mhrt4tqPQYjNH': 'Lifetime',
         'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
         'plan_aXiLFJZu79HYG': 'VIP Legacy',
-        'plan_mhrt4tqPQYjNH': 'Lifetime',
-        'plan_gs2owPJ8MtUgk': 'ORB Pro',
-        'plan_8IvI1MMosoCf9': 'ORB Pro Trial',
-        'plan_qPUdhXCOGcZsu': 'VIP Monthly No Trial',
-        'plan_UrMJmbJlwxUhV': 'VIP Monthly No Trial',
+        'plan_qPUdhXCOGcZsu': 'Strategy Optimizer | TradingView',
+        'plan_UrMJmbJlwxUhV': 'Strategy Optimizer | TradingView',
+        'plan_gs2owPJ8MtUgk': 'FSD-X Nexus 2.0',
+        'plan_8IvI1MMosoCf9': 'ORB PRO v5 Alpha'
       };
       return rows.map(r => {
         const subStatus = (r['Subscription status'] || '').toLowerCase();
@@ -3383,7 +3388,10 @@
         if (['plan_yO1Ma62pSUYFu','plan_mhrt4tqPQYjNH'].includes(planId)) accessType = 'Lifetime';
         else if (planId === 'plan_WDBtpCQLgdO6K') accessType = 'Yearly';
         else if (planId === 'plan_aXiLFJZu79HYG') accessType = 'VIP Legacy';
-        else if (['plan_hbtb1mgoj9BRW','plan_qPUdhXCOGcZsu','plan_UrMJmbJlwxUhV'].includes(planId)) accessType = 'VIP Monthly No Trial';
+        else if (planId === 'plan_hbtb1mgoj9BRW') accessType = 'VIP Monthly No Trial';
+        else if (['plan_qPUdhXCOGcZsu','plan_UrMJmbJlwxUhV'].includes(planId)) accessType = 'Strategy Optimizer';
+        else if (planId === 'plan_gs2owPJ8MtUgk') accessType = 'FSD-X Nexus';
+        else if (planId === 'plan_8IvI1MMosoCf9') accessType = 'ORB PRO Alpha';
 
         const whopKey = r['Key'] || '';
         const nextPayment = r['Next payment date'] || '';
@@ -3452,11 +3460,16 @@
     // ── Parse Whop Users export ──
     function parseWhopUsers(rows) {
       const PLAN_NAMES = {
-        'plan_C6yQOo7Z6tRap': 'VIP Monthly', 'plan_WDBtpCQLgdO6K': 'VIP Annual',
-        'plan_yO1Ma62pSUYFu': 'Lifetime', 'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
-        'plan_aXiLFJZu79HYG': 'VIP Legacy', 'plan_mhrt4tqPQYjNH': 'Lifetime',
-        'plan_gs2owPJ8MtUgk': 'ORB Pro', 'plan_8IvI1MMosoCf9': 'ORB Pro Trial',
-        'plan_qPUdhXCOGcZsu': 'VIP Monthly No Trial', 'plan_UrMJmbJlwxUhV': 'VIP Monthly No Trial',
+        'plan_C6yQOo7Z6tRap': 'VIP Monthly',
+        'plan_WDBtpCQLgdO6K': 'VIP Annual',
+        'plan_yO1Ma62pSUYFu': 'Lifetime',
+        'plan_mhrt4tqPQYjNH': 'Lifetime',
+        'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
+        'plan_aXiLFJZu79HYG': 'VIP Legacy',
+        'plan_qPUdhXCOGcZsu': 'Strategy Optimizer | TradingView',
+        'plan_UrMJmbJlwxUhV': 'Strategy Optimizer | TradingView',
+        'plan_gs2owPJ8MtUgk': 'FSD-X Nexus 2.0',
+        'plan_8IvI1MMosoCf9': 'ORB PRO v5 Alpha'
       };
       // Filter out ghost accounts — no membership, plan, or product = never purchased
       const realMembers = rows.filter(r =>
@@ -3489,7 +3502,10 @@
         if (['plan_yO1Ma62pSUYFu','plan_mhrt4tqPQYjNH'].includes(planId)) accessType = 'Lifetime';
         else if (planId === 'plan_WDBtpCQLgdO6K') accessType = 'Yearly';
         else if (planId === 'plan_aXiLFJZu79HYG') accessType = 'VIP Legacy';
-        else if (['plan_hbtb1mgoj9BRW','plan_qPUdhXCOGcZsu','plan_UrMJmbJlwxUhV'].includes(planId)) accessType = 'VIP Monthly No Trial';
+        else if (planId === 'plan_hbtb1mgoj9BRW') accessType = 'VIP Monthly No Trial';
+        else if (['plan_qPUdhXCOGcZsu','plan_UrMJmbJlwxUhV'].includes(planId)) accessType = 'Strategy Optimizer';
+        else if (planId === 'plan_gs2owPJ8MtUgk') accessType = 'FSD-X Nexus';
+        else if (planId === 'plan_8IvI1MMosoCf9') accessType = 'ORB PRO Alpha';
 
         const renewalDate = renewal || trialEnd || canceling || '';
 
@@ -4352,7 +4368,12 @@
           }
         }
         if (sourceFilter.length && !sourceFilter.includes(r.source)) return false;
-        if (accessFilter.length && !accessFilter.includes(r.planName||r.accessType)) return false;
+        if (accessFilter.length) {
+          const memberAccess = r.planName || r.accessType || '';
+          // Treat legacy 'VIP' value as 'VIP Monthly'
+          const normalizedAccess = memberAccess === 'VIP' ? 'VIP Monthly' : memberAccess;
+          if (!accessFilter.includes(normalizedAccess)) return false;
+        }
         if (search) {
           const haystack = [r.name, r.email, r.discordName, r.tvUsername, r.whopUsername, r.whopKey, r.notes].join(' ').toLowerCase();
           if (!haystack.includes(search)) return false;
@@ -4429,7 +4450,7 @@
           <td class="px-4 py-3" onclick="event.stopPropagation()">${renderRosterKey(r)}</td>
           <td class="px-4 py-3 text-zinc-400">${r.tvUsername||'—'}</td>
           <td class="px-4 py-3">${statusBadge(r.status)}</td>
-          <td class="px-4 py-3 text-zinc-500">${r.planName||r.accessType||'—'}</td>
+          <td class="px-4 py-3 text-zinc-500">${(r.planName||r.accessType||'—') === 'VIP' ? 'VIP Monthly' : (r.planName||r.accessType||'—')}</td>
           <td class="px-4 py-3 text-zinc-600">${r.source||'—'}</td>
           <td class="px-4 py-3 text-zinc-500">${fmtDate(r.joined)}</td>
           <td class="px-4 py-3 text-zinc-400">${renewalDisplay}</td>
