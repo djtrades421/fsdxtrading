@@ -3207,7 +3207,7 @@
         if (dateFrom && r.joined && r.joined < dateFrom) return false;
         if (dateTo && r.joined && r.joined > dateTo) return false;
         if (search) {
-          const hay = [r.name, r.whopUsername, r.whopKey, r.email, r.discordName, r.country, r.city, r.state].join(' ').toLowerCase();
+          const hay = [r.name, r.whopUsername, r.whopKey, r.email, r.discordName, r.country, r.city, r.state, r.planName, r.cancelReason, r.status].join(' ').toLowerCase();
           if (!hay.includes(search)) return false;
         }
         return true;
