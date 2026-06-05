@@ -3878,6 +3878,7 @@
 
     async function handleMultiImport(files) {
       if (!files || !files.length) return;
+      console.log('[import] files selected:', files.length, Array.from(files).map(f => f.name));
 
       const FORMAT_ORDER = { whop_users: 0, whop_members: 1, discord_csv: 2, whop_memberships: 3, whop_payments: 4, unknown: 5 };
 
@@ -3886,6 +3887,7 @@
       for (const file of Array.from(files)) {
         const text = await file.text();
         const rows = parseAdminCSV(text);
+        console.log('[import]', file.name, '→ rows:', rows.length, 'format:', rows.length ? detectImportFormat(Object.keys(rows[0])) : 'no rows');
         if (!rows.length) continue;
         const format = detectImportFormat(Object.keys(rows[0]));
         parsed.push({ file, rows, format });
