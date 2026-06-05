@@ -3207,7 +3207,9 @@
         if (dateFrom && r.joined && r.joined < dateFrom) return false;
         if (dateTo && r.joined && r.joined > dateTo) return false;
         if (search) {
-          const hay = [r.name, r.whopUsername, r.whopKey, r.email, r.discordName, r.country, r.city, r.state, r.planName, r.cancelReason, r.status].join(' ').toLowerCase();
+          const hSpendVal = parseFloat(r.spend || '0') || 0;
+          const hSpendStr = hSpendVal > 0 ? `$${hSpendVal.toFixed(2)} spent ${hSpendVal}` : '';
+          const hay = [r.name, r.whopUsername, r.whopKey, r.email, r.discordName, r.country, r.city, r.state, r.planName, r.cancelReason, r.status, hSpendStr].join(' ').toLowerCase();
           if (!hay.includes(search)) return false;
         }
         return true;
@@ -4539,7 +4541,9 @@
           if (!accessFilter.includes(normalizedAccess)) return false;
         }
         if (search) {
-          const haystack = [r.name, r.email, r.discordName, r.tvUsername, r.whopUsername, r.whopKey, r.notes, r.status, r.planName, r.accessType, r.country].join(' ').toLowerCase();
+          const spendVal = parseFloat(r.spend || '0') || 0;
+          const spendStr = spendVal > 0 ? `$${spendVal.toFixed(2)} spent ${spendVal}` : '';
+          const haystack = [r.name, r.email, r.discordName, r.tvUsername, r.whopUsername, r.whopKey, r.notes, r.status, r.planName, r.accessType, r.country, spendStr].join(' ').toLowerCase();
           if (!haystack.includes(search)) return false;
         }
         return true;
