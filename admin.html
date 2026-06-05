@@ -2481,9 +2481,9 @@
 
       } catch(err) {
         console.error('[sync]', err);
-        btn.textContent = '✗ Sync failed';
+        btn.textContent = '✗ ' + (err.message || 'Sync failed');
         btn.style.background = '#ef4444';
-        setTimeout(() => { btn.textContent = '⟳ Sync Whop'; btn.style.background = ''; btn.disabled = false; }, 4000);
+        setTimeout(() => { btn.textContent = '⟳ Sync Whop'; btn.style.background = ''; btn.disabled = false; }, 6000);
       }
     }
 
