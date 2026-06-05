@@ -2386,6 +2386,12 @@
         // 3. Process memberships — same merge logic as CSV import
         btn.textContent = '⟳ Updating roster...';
         const incoming = memData.data || [];
+        // Debug: log what we got
+        console.log('[sync] incoming memberships:', incoming.length);
+        const statusBreakdown = {};
+        incoming.forEach(m => { statusBreakdown[m.status] = (statusBreakdown[m.status]||0)+1; });
+        console.log('[sync] status breakdown:', JSON.stringify(statusBreakdown));
+        console.log('[sync] sample member:', JSON.stringify(incoming[0]));
 
         // Resurrect from history first
         const ACTIVE_STATUSES = new Set(['active', 'trialing', 'lifetime', 'yearly', 'canceling']);
