@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Admin Panel</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="vip-nav.js"></script>
+  <script src="nav-loader.js"></script>
   <style>
     body { background-color: #000; }
     .tab-panel { display: none !important; }
@@ -2352,6 +2352,139 @@
       setTimeout(() => el.classList.add('hidden'), 3000);
     }
 
+    // ── WHOP API SYNC ──
+    async function syncFromWhop() {
+      const btn = document.getElementById('whop-sync-btn');
+      const token = localStorage.getItem('fsdx_token') || '';
+      btn.textContent = '⟳ Syncing...';
+      btn.disabled = true;
+
+      try {
+        // 1. Pull memberships
+        btn.textContent = '⟳ Pulling members...';
+        const memRes = await fetch(`${API}/api/admin/whop-sync`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ type: 'memberships' })
+        });
+        const memData = await memRes.json();
+        if (!memData.success) throw new Error(memData.error || 'Membership sync failed');
+
+        // 2. Pull payments
+        btn.textContent = '⟳ Pulling payments...';
+        const payRes = await fetch(`${API}/api/admin/whop-sync`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ type: 'payments' })
+        });
+        const payData = await payRes.json();
+        if (!payData.success) throw new Error(payData.error || 'Payment sync failed');
+
+        // 3. Process memberships — same merge logic as CSV import
+        btn.textContent = '⟳ Updating roster...';
+        const incoming = memData.data || [];
+
+
+        // Resurrect from history first
+        const ACTIVE_STATUSES = new Set(['active', 'trialing', 'lifetime', 'yearly', 'canceling']);
+        incoming.forEach(item => {
+          if (!ACTIVE_STATUSES.has(item.status)) return;
+          const emailKey = item.email?.toLowerCase();
+          const histIdx = historyData.findIndex(h =>
+            (emailKey && h.email?.toLowerCase() === emailKey) ||
+            (item.whopKey && h.whopKey && h.whopKey === item.whopKey)
+          );
+          if (histIdx === -1) return;
+          const alreadyInRoster = rosterData.some(r => r.email?.toLowerCase() === emailKey);
+          if (!alreadyInRoster) {
+            const histEntry = historyData[histIdx];
+            historyData.splice(histIdx, 1);
+            rosterData.push({ ...histEntry, ...item, leftDate: '', churnedDate: '', archivedAt: '' });
+          }
+        });
+
+        // Merge into roster — update existing, add new (skip manual entries)
+        const rosterEmailSet = new Set(rosterData.map(r => r.email?.toLowerCase()).filter(Boolean));
+        const rosterKeySet = new Set(rosterData.map(r => r.whopKey).filter(Boolean));
+
+        incoming.forEach(item => {
+          if (!item.email) return;
+          const emailKey = item.email.toLowerCase();
+          const existIdx = rosterData.findIndex(r =>
+            r.email?.toLowerCase() === emailKey ||
+            (item.whopKey && r.whopKey === item.whopKey)
+          );
+
+          if (existIdx >= 0) {
+            const existing = rosterData[existIdx];
+            // Don't overwrite manual entries' custom fields
+            rosterData[existIdx] = {
+              ...existing,
+              status: item.status,
+              accessType: item.accessType,
+              planName: item.planName,
+              renewal: item.renewal || existing.renewal,
+              churnedDate: item.churnedDate || existing.churnedDate,
+              cancelReason: item.cancelReason || existing.cancelReason,
+              spend: item.spend || existing.spend,
+              whopKey: item.whopKey || existing.whopKey,
+              discordName: item.discordName || existing.discordName,
+              discordId: item.discordId || existing.discordId,
+              country: item.country || existing.country,
+              source_detail: 'whop_api',
+              lastSynced: new Date().toISOString(),
+            };
+          } else if (item.status !== 'cancelled') {
+            // New active member
+            rosterData.push({ ...item, id: item.id || (Date.now() + Math.random()).toString(36), lastSynced: new Date().toISOString() });
+          } else {
+            // Cancelled — goes to history
+            const histExists = historyData.findIndex(h => h.email?.toLowerCase() === emailKey) >= 0;
+            if (!histExists) {
+              historyData.push({
+                id: item.id || (Date.now() + Math.random()).toString(36),
+                name: item.name, whopUsername: item.whopUsername, whopKey: item.whopKey,
+                email: item.email, discordName: item.discordName, discordId: item.discordId,
+                country: item.country, spend: item.spend, joined: item.joined,
+                leftDate: item.churnedDate, cancelReason: item.cancelReason,
+                planName: item.planName, converted: false, source: 'Whop',
+                archivedAt: new Date().toISOString(),
+              });
+            }
+          }
+        });
+
+        // Auto-archive canceling members whose renewal passed
+        checkCancelingMembers();
+
+        // 4. Merge payments
+        const newPayments = (payData.data || []).filter(p =>
+          !paymentsData.some(existing => existing.id === p.id)
+        );
+        paymentsData = [...paymentsData, ...newPayments].sort((a,b) => (b.paidAt||'') > (a.paidAt||'') ? 1 : -1);
+        rawPaymentRows = paymentsData;
+
+        // 5. Store raw membership rows for expand view
+        rawMembershipRows = incoming;
+        saveRawMembershipsToKV();
+
+        // 6. Save everything
+        await saveRosterToKV();
+        await saveHistoryToKV();
+        await savePaymentsToKV();
+
+        renderRoster();
+        btn.textContent = `✓ Synced (${incoming.length} members, ${payData.count} payments)`;
+        setTimeout(() => { btn.textContent = '⟳ Sync Whop'; btn.disabled = false; }, 4000);
+
+      } catch(err) {
+        console.error('[sync]', err);
+        btn.textContent = '✗ ' + (err.message || 'Sync failed');
+        btn.style.background = '#ef4444';
+        setTimeout(() => { btn.textContent = '⟳ Sync Whop'; btn.style.background = ''; btn.disabled = false; }, 6000);
+      }
+    }
+
     // ── ADD / EDIT MEMBER MODAL ──
     let _editingMemberId = null;
 
@@ -3372,7 +3505,8 @@
 
     // ── Parse Whop memberships — fully dynamic, no hardcoded plan IDs ──
     function parseWhopMemberships(rows) {
-      return rows.map(r => {
+      const STATUS_PRIORITY = { lifetime: 0, active: 1, trialing: 2, trial_cancelled: 3, canceling: 4, past_due: 5, yearly: 6, inactive: 7, cancelled: 8 };
+      const allParsed = rows.map(r => {
         const subStatus = (r['Subscription status'] || '').toLowerCase();
         const cancelReason = (r['Cancelation reason'] || '').trim();
 
