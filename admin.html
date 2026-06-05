@@ -758,19 +758,14 @@
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-source accent-green-500" value="Early Acess" onchange="updateMultiSelectLabel('source');renderRoster()"><span class="text-xs text-zinc-300">Legacy / Early Access</span></label>
             </div>
           </div>
-          <!-- Access Type -->
+          <!-- Access Type — built dynamically from roster data -->
           <div class="relative" id="ms-access-wrap">
             <button type="button" onclick="toggleMultiSelect('access')" class="flex items-center gap-1.5 bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg hover:border-white/20 transition min-w-[110px]" id="ms-access-btn">
               <span id="ms-access-label">Access Type</span>
               <svg class="w-3 h-3 ml-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
             </button>
             <div id="ms-access-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[190px]">
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="VIP Monthly" onchange="updateMultiSelectLabel('access');renderRoster()"><span class="text-xs text-zinc-300">VIP Monthly</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="VIP Monthly No Trial" onchange="updateMultiSelectLabel('access');renderRoster()"><span class="text-xs text-zinc-300">VIP Monthly No Trial</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="VIP Annual" onchange="updateMultiSelectLabel('access');renderRoster()"><span class="text-xs text-zinc-300">VIP Annual</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="Lifetime" onchange="updateMultiSelectLabel('access');renderRoster()"><span class="text-xs text-zinc-300">Lifetime</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="VIP Legacy" onchange="updateMultiSelectLabel('access');renderRoster()"><span class="text-xs text-zinc-300">VIP Legacy</span></label>
-              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="Legacy" onchange="updateMultiSelectLabel('access');renderRoster()"><span class="text-xs text-zinc-300">Legacy</span></label>
+              <!-- Options injected by buildAccessTypeFilter() -->
             </div>
           </div>
           <input type="text" id="rf-search" oninput="renderRoster()" placeholder="Search name, email, Discord, TV..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-52">
@@ -3357,24 +3352,31 @@
       });
     }
 
-    // ── Parse Whop memberships (new format with Key field) ──
+    // ── Core membership tier names — used to distinguish members from standalone buyers ──
+    // These are the plan names (from Whop's Product column) that count as VIP members.
+    // Add new membership tiers here if you create them on Whop. Standalone products
+    // (Strategy Optimizer, Nexus, etc.) don't need to be listed — they auto-label from CSV.
+    const CORE_MEMBERSHIP_NAMES = [
+      'fsd-x trading vip access',
+      'fsd-x vip access no trial',
+      'fsd-x vip access: fsd-x orb pro',
+      'fsd-x vip legacy',
+      'lifetime',
+      'legacy',
+    ];
+
+    function isCoresMembership(productName) {
+      const n = (productName || '').toLowerCase().trim();
+      return CORE_MEMBERSHIP_NAMES.some(core => n.includes(core.toLowerCase()));
+    }
+
+    // ── Parse Whop memberships — fully dynamic, no hardcoded plan IDs ──
     function parseWhopMemberships(rows) {
-      const PLAN_NAMES = {
-        'plan_C6yQOo7Z6tRap': 'VIP Monthly',
-        'plan_WDBtpCQLgdO6K': 'VIP Annual',
-        'plan_yO1Ma62pSUYFu': 'Lifetime',
-        'plan_mhrt4tqPQYjNH': 'Lifetime',
-        'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
-        'plan_aXiLFJZu79HYG': 'VIP Legacy',
-        'plan_qPUdhXCOGcZsu': 'Strategy Optimizer | TradingView',
-        'plan_UrMJmbJlwxUhV': 'Strategy Optimizer | TradingView',
-        'plan_gs2owPJ8MtUgk': 'FSD-X Nexus 2.0',
-        'plan_8IvI1MMosoCf9': 'ORB PRO v5 Alpha'
-      };
       return rows.map(r => {
         const subStatus = (r['Subscription status'] || '').toLowerCase();
-        const planType = (r['Plan type'] || '').toLowerCase();
         const cancelReason = (r['Cancelation reason'] || '').trim();
+
+        // Status from Whop subscription status
         let status = 'active';
         if (subStatus === 'canceled') status = 'cancelled';
         else if (subStatus === 'completed') status = 'lifetime';
@@ -3382,16 +3384,24 @@
         else if (subStatus === 'trialing') status = 'trialing';
         else if (subStatus === 'paused') status = 'inactive';
 
+        // Plan name comes straight from Whop — no mapping needed
         const planId = r['Plan'] || '';
-        const planName = PLAN_NAMES[planId] || planId;
-        let accessType = 'VIP';
-        if (['plan_yO1Ma62pSUYFu','plan_mhrt4tqPQYjNH'].includes(planId)) accessType = 'Lifetime';
-        else if (planId === 'plan_WDBtpCQLgdO6K') accessType = 'Yearly';
-        else if (planId === 'plan_aXiLFJZu79HYG') accessType = 'VIP Legacy';
-        else if (planId === 'plan_hbtb1mgoj9BRW') accessType = 'VIP Monthly No Trial';
-        else if (['plan_qPUdhXCOGcZsu','plan_UrMJmbJlwxUhV'].includes(planId)) accessType = 'Strategy Optimizer';
-        else if (planId === 'plan_gs2owPJ8MtUgk') accessType = 'FSD-X Nexus';
-        else if (planId === 'plan_8IvI1MMosoCf9') accessType = 'ORB PRO Alpha';
+        const productName = (r['Product'] || '').trim();
+        // Use Whop's product name directly. Clean up common suffixes.
+        let planName = productName || planId;
+        // Normalize plan name for display — strip long bundle descriptions
+        if (planName.includes(':')) planName = planName.split(':')[0].trim();
+
+        // Access type derived from plan name — no hardcoded IDs
+        let accessType = planName; // default: use product name as access type
+        const nameLower = planName.toLowerCase();
+        if (nameLower.includes('lifetime') || subStatus === 'completed') accessType = 'Lifetime';
+        else if (nameLower.includes('vip legacy')) accessType = 'VIP Legacy';
+        else if (nameLower.includes('legacy')) accessType = 'Legacy';
+        else if (nameLower.includes('annual') || nameLower.includes('yearly')) accessType = 'VIP Annual';
+        else if (nameLower.includes('vip') && (nameLower.includes('no trial') || nameLower.includes('access no trial'))) accessType = 'VIP Monthly No Trial';
+        else if (nameLower.includes('vip')) accessType = 'VIP Monthly';
+        // Anything else (Optimizer, Nexus, Mentorship, etc.) keeps its product name as accessType
 
         const whopKey = r['Key'] || '';
         const nextPayment = r['Next payment date'] || '';
@@ -3459,18 +3469,6 @@
 
     // ── Parse Whop Users export ──
     function parseWhopUsers(rows) {
-      const PLAN_NAMES = {
-        'plan_C6yQOo7Z6tRap': 'VIP Monthly',
-        'plan_WDBtpCQLgdO6K': 'VIP Annual',
-        'plan_yO1Ma62pSUYFu': 'Lifetime',
-        'plan_mhrt4tqPQYjNH': 'Lifetime',
-        'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
-        'plan_aXiLFJZu79HYG': 'VIP Legacy',
-        'plan_qPUdhXCOGcZsu': 'Strategy Optimizer | TradingView',
-        'plan_UrMJmbJlwxUhV': 'Strategy Optimizer | TradingView',
-        'plan_gs2owPJ8MtUgk': 'FSD-X Nexus 2.0',
-        'plan_8IvI1MMosoCf9': 'ORB PRO v5 Alpha'
-      };
       // Filter out ghost accounts — no membership, plan, or product = never purchased
       const realMembers = rows.filter(r =>
         r['Membership IDs']?.trim() || r['Plan IDs']?.trim() || r['Product IDs']?.trim()
@@ -3484,8 +3482,10 @@
         const pastDue = r['Past due date'] || '';
         const paused = r['Paused date'] || '';
         const planId = (r['Plan IDs'] || '').split(',')[0].trim();
+        const productName = (r['Product names'] || r['Products'] || '').split(',')[0].trim();
 
-        const LIFETIME_PLANS = ['plan_yO1Ma62pSUYFu','plan_mhrt4tqPQYjNH','plan_aXiLFJZu79HYG'];
+        // Detect lifetime by dates pattern — no renewal, no churn, no cancel
+        const hasNoActivity = !renewal && !left && !churned && !canceling && !trialEnd && !pastDue && !paused;
         let status = 'active';
         if (left || churned) status = 'cancelled';
         else if (canceling && trialEnd) status = 'trial_cancelled';
@@ -3493,19 +3493,21 @@
         else if (trialEnd) status = 'trialing';
         else if (pastDue) status = 'past_due';
         else if (paused) status = 'inactive';
-        // Lifetime members have no dates at all — detect by plan ID
-        else if (!renewal && !left && !churned && !canceling && !trialEnd && !pastDue && !paused && LIFETIME_PLANS.includes(planId)) status = 'lifetime';
-        // Only mark inactive if no renewal AND not a lifetime plan
-        else if (!renewal && !LIFETIME_PLANS.includes(planId)) status = 'inactive';
+        else if (hasNoActivity) status = 'lifetime';
+        else if (!renewal) status = 'inactive';
 
-        let accessType = 'VIP';
-        if (['plan_yO1Ma62pSUYFu','plan_mhrt4tqPQYjNH'].includes(planId)) accessType = 'Lifetime';
-        else if (planId === 'plan_WDBtpCQLgdO6K') accessType = 'Yearly';
-        else if (planId === 'plan_aXiLFJZu79HYG') accessType = 'VIP Legacy';
-        else if (planId === 'plan_hbtb1mgoj9BRW') accessType = 'VIP Monthly No Trial';
-        else if (['plan_qPUdhXCOGcZsu','plan_UrMJmbJlwxUhV'].includes(planId)) accessType = 'Strategy Optimizer';
-        else if (planId === 'plan_gs2owPJ8MtUgk') accessType = 'FSD-X Nexus';
-        else if (planId === 'plan_8IvI1MMosoCf9') accessType = 'ORB PRO Alpha';
+        // Access type derived from product name — no hardcoded plan IDs
+        let accessType = 'VIP Monthly'; // safe default
+        if (productName) {
+          const n = productName.toLowerCase();
+          if (n.includes('lifetime') || hasNoActivity) accessType = 'Lifetime';
+          else if (n.includes('vip legacy')) accessType = 'VIP Legacy';
+          else if (n.includes('legacy')) accessType = 'Legacy';
+          else if (n.includes('annual') || n.includes('yearly')) accessType = 'VIP Annual';
+          else if (n.includes('vip') && n.includes('no trial')) accessType = 'VIP Monthly No Trial';
+          else if (n.includes('vip')) accessType = 'VIP Monthly';
+          else accessType = productName; // standalone product — use its name
+        }
 
         const renewalDate = renewal || trialEnd || canceling || '';
 
@@ -4294,7 +4296,29 @@
     }
 
     // ── Render roster ──
+    // ── Build Access Type filter dynamically from roster data ──
+    function buildAccessTypeFilter() {
+      const menu = document.getElementById('ms-access-menu');
+      if (!menu) return;
+      // Get all unique access types currently in the roster
+      const types = [...new Set(rosterData.map(r => {
+        const raw = r.planName || r.accessType || '';
+        return raw === 'VIP' ? 'VIP Monthly' : raw;
+      }).filter(Boolean))].sort();
+
+      // Keep currently checked values so selections survive re-renders
+      const checked = new Set([...document.querySelectorAll('.rf-ms-access:checked')].map(el => el.value));
+
+      menu.innerHTML = types.map(t =>
+        `<label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer">
+          <input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="${t}" ${checked.has(t)?'checked':''} onchange="updateMultiSelectLabel('access');renderRoster()">
+          <span class="text-xs text-zinc-300">${t}</span>
+        </label>`
+      ).join('');
+    }
+
     function renderRoster() {
+      buildAccessTypeFilter();
       const statusFilter = [...document.querySelectorAll('.rf-ms-status:checked')].map(el => el.value);
       const sourceFilter = [...document.querySelectorAll('.rf-ms-source:checked')].map(el => el.value);
       const search = (document.getElementById('rf-search')?.value || '').toLowerCase();
