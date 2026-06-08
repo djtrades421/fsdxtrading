@@ -67,15 +67,6 @@
         </div>
       </div>
 
-      <!-- Gate (not logged in) -->
-      <div id="access-gate" class="hidden flex-1 flex items-center justify-center">
-        <div class="text-center max-w-sm px-6">
-          <div class="text-4xl mb-4">🔒</div>
-          <div class="text-lg font-bold mb-2">Members Only</div>
-          <p class="text-zinc-400 text-sm mb-6">Log in to access your Playbook and sync with Nexus.</p>
-          <a href="login.html" class="bg-green-500 text-black font-bold px-6 py-3 rounded-lg text-sm tracking-wide">LOG IN</a>
-        </div>
-      </div>
 
       <!-- Main content -->
       <div id="playbook-content" class="hidden flex-1 px-6 md:px-10 py-8">
@@ -226,26 +217,31 @@ let editingCheck = null;
 let editingSetup = null;
 let editingGoal = null;
 let goalPeriod = 'weekly';
+let whopKey = null;
 
-// ── Auth / init ──
+// ── Auth / init — same pattern as journal.html ──
 window.addEventListener('DOMContentLoaded', async () => {
-  const key = localStorage.getItem('fsdx_license_key') || localStorage.getItem('nexus_key');
-  if (!key) {
-    document.getElementById('loading-screen').classList.add('hidden');
-    document.getElementById('page-content').classList.remove('hidden');
-    document.getElementById('access-gate').classList.remove('hidden');
+  const token = localStorage.getItem('fsdx_token');
+  if (!token) { window.location.href = 'login.html'; return; }
+  try {
+    const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await res.json();
+    whopKey = data.user?.whopKey;
+  } catch(e) {}
+  if (!whopKey) {
+    document.getElementById('loading-screen').innerHTML = '<p class="text-zinc-500 text-sm text-center px-6">Could not load your key. <a href="login.html" class="text-green-400">Log out and back in</a>.</p>';
     return;
   }
-  await loadPlaybook(key);
+  await loadPlaybook(whopKey);
   document.getElementById('loading-screen').classList.add('hidden');
   document.getElementById('page-content').classList.remove('hidden');
   document.getElementById('playbook-content').classList.remove('hidden');
   renderAll();
 });
 
-function getLicenseKey() {
-  return localStorage.getItem('fsdx_license_key') || localStorage.getItem('nexus_key') || '';
-}
+function getLicenseKey() { return whopKey || ''; }
 
 // ── Load ──
 async function loadPlaybook(key) {
