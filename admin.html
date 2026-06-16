@@ -3574,6 +3574,7 @@
           affiliate: r['Affiliate username'] || '',
           churnedDate: churnedDate ? churnedDate.split(' ')[0] : '',
           notes: r['Cancelation reason'] ? 'Cancel reason: ' + r['Cancelation reason'] : '',
+          initialPrice: parseFloat(r['Initial price'] || '0') || 0,
           source_detail: 'whop_memberships',
         };
       });
@@ -4053,6 +4054,7 @@
 
         if (idx >= 0) {
           const existing = rosterData[idx];
+          const isManual = existing.manualEntry === true;
           rosterData[idx] = {
             ...existing,
             status: isUsersExport
@@ -4064,8 +4066,9 @@
             trialLeaver: item.trialLeaver || existing.trialLeaver || false,
             renewal: item.renewal || existing.renewal,
             tvRenew: item.tvRenew || existing.tvRenew,
-            name: item.name || existing.name,
-            discordName: item.discordName || existing.discordName,
+            // For manual entries, only overwrite name/discord/email if they were blank on the manual record
+            name: isManual ? (existing.name || item.name) : (item.name || existing.name),
+            discordName: isManual ? (existing.discordName || item.discordName) : (item.discordName || existing.discordName),
             discordId: item.discordId || existing.discordId,
             whopKey: isMembershipsExport ? (item.whopKey || existing.whopKey) : existing.whopKey,
             spend: item.spend || existing.spend,
@@ -4082,6 +4085,11 @@
               return merged.join(' · ');
             })(),
             source_detail: existing.source_detail || item.source_detail,
+            // Preserve manual entry flag and billing info set by the admin
+            manualEntry: existing.manualEntry || false,
+            billingAmount: isManual && existing.billingAmount ? existing.billingAmount : (existing.billingAmount || item.initialPrice || 0),
+            billingCycle: isManual && existing.billingCycle ? existing.billingCycle : (existing.billingCycle || ''),
+            initialPrice: item.initialPrice || existing.initialPrice || 0,
           };
         } else if (!isMembershipsExport) {
           // Only non-memberships imports can add new roster members
@@ -4939,6 +4947,8 @@
       const newSubs = paymentsData.filter(p => p.billingReason === 'subscription_create' && p.status === 'paid').length;
 
       // Stats
+      const DEFAULT_RENEWAL_PRICE = 12.50;
+      const getMemberPrice = (r) => r.billingAmount || r.initialPrice || DEFAULT_RENEWAL_PRICE;
       const statsEl = document.getElementById('payment-stats');
       if (statsEl) {
         const now = new Date();
@@ -4960,8 +4970,8 @@
         }).reduce((s,p) => s+p.amount, 0);
 
         // Upcoming revenue from roster renewals
-        // Estimate $12.50 per active VIP renewal (can refine later)
-        const RENEWAL_PRICE = 12.50;
+        // Use each member's actual billing amount (set manually or from memberships import)
+        // Falls back to $12.50 if no price data is available
         const thisMonthRenewals = rosterData.filter(r => {
           if (!r.renewal || ['cancelled','canceling','trial_cancelled','inactive','lifetime'].includes(r.status)) return false;
           try {
@@ -4976,8 +4986,8 @@
             return d.getFullYear() === nextMonthYear && d.getMonth() === nextMonth;
           } catch(e) { return false; }
         });
-        const thisMonthUpcoming = thisMonthRenewals.length * RENEWAL_PRICE;
-        const nextMonthUpcoming = nextMonthRenewals.length * RENEWAL_PRICE;
+        const thisMonthUpcoming = thisMonthRenewals.reduce((s, r) => s + getMemberPrice(r), 0);
+        const nextMonthUpcoming = nextMonthRenewals.reduce((s, r) => s + getMemberPrice(r), 0);
 
         statsEl.innerHTML = [
           ['YTD Revenue', '$'+ytdRev.toFixed(2), '#22c55e', thisYear+' total collected'],
@@ -5015,6 +5025,7 @@
                 <span class="text-zinc-600 ml-2 text-[10px]">${r.planName||r.accessType||''}</span>
               </div>
               <div class="flex items-center gap-3">
+                <span class="text-green-400/80 text-[10px] font-bold">$${getMemberPrice(r).toFixed(2)}</span>
                 <span class="text-zinc-500">${fmtDate(r.renewal)}</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${daysLeft<=3?'bg-red-500/10 text-red-400':'bg-yellow-500/10 text-yellow-400'}">${daysLeft}d</span>
               </div>
