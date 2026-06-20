@@ -63,6 +63,7 @@
             <button class="tab-btn px-5 py-3 text-xs font-bold tracking-widest uppercase" data-tab="checklist">Checklist</button>
             <button class="tab-btn px-5 py-3 text-xs font-bold tracking-widest uppercase" data-tab="setups">Setups</button>
             <button class="tab-btn px-5 py-3 text-xs font-bold tracking-widest uppercase" data-tab="goals">Goals</button>
+            <button class="tab-btn px-5 py-3 text-xs font-bold tracking-widest uppercase" data-tab="risk">Risk Profiles</button>
           </div>
         </div>
       </div>
@@ -198,6 +199,42 @@
             <div id="goals-empty" class="hidden text-center py-16 text-zinc-600">
               <div class="text-3xl mb-3">🎯</div>
               <div class="text-sm">No goals set yet.</div>
+            </div>
+          </div>
+
+          <!-- ── RISK PROFILES PANEL ── -->
+          <div class="panel" id="panel-risk">
+            <div class="mb-5">
+              <div class="text-sm font-bold text-white">Risk Profiles — Eval Planner</div>
+              <div class="text-xs text-zinc-500 mt-0.5">Pick an account size and base risk to see backtested eval pass rates and time-to-pass. Hypothetical simulation, 2019–2026.</div>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Account Size</div>
+              <div class="flex flex-wrap gap-2">
+                <button class="rp-acct active px-4 py-2 rounded-lg text-xs font-bold border border-green-500/40 bg-green-500/10 text-green-400" data-acct="50k">50K</button>
+                <button class="rp-acct px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-600 cursor-not-allowed" disabled>100K · 🔒 Coming Soon</button>
+                <button class="rp-acct px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-600 cursor-not-allowed" disabled>150K · 🔒 Coming Soon</button>
+              </div>
+            </div>
+            <div class="mb-4">
+              <div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Base Risk Per Trade</div>
+              <div class="flex flex-wrap gap-2">
+                <button class="rp-risk px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-300" data-risk="250">$250 · Conservative</button>
+                <button class="rp-risk active px-4 py-2 rounded-lg text-xs font-bold border border-green-500/40 bg-green-500/10 text-green-400" data-risk="375">$375 · Balanced ★</button>
+                <button class="rp-risk px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-300" data-risk="500">$500 · Aggressive</button>
+                <button class="rp-risk px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-300" data-risk="625">$625 · Max</button>
+              </div>
+            </div>
+            <div class="mb-6">
+              <div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Backtest Window</div>
+              <div class="flex gap-2">
+                <button class="rp-tf active px-4 py-2 rounded-lg text-xs font-bold border border-green-500/40 bg-green-500/10 text-green-400" data-tf="7yr">7-Year (Full)</button>
+                <button class="rp-tf px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-300" data-tf="2yr">2-Year (Recent)</button>
+              </div>
+            </div>
+            <div id="rp-display"></div>
+            <div class="mt-6 border-t border-white/5 pt-4 text-[10px] text-zinc-600 leading-relaxed">
+              50K eval modeled as: <span class="text-zinc-400">+$3,000 profit target · $2,000 end-of-day trailing drawdown</span>, evaluated continuously back-to-back across the backtest — each pass or fail starts a fresh eval the next trading day. Drawdown breach is checked intraday. Assumes every signal taken mechanically at the selected base risk (an idealized ceiling; real execution varies). Hypothetical/simulated results, not actual trading. Past performance is not indicative of future results.
             </div>
           </div>
 
@@ -588,6 +625,64 @@ document.getElementById('goal-save').onclick = () => {
   document.getElementById('goal-form').classList.add('hidden');
   editingGoal=null; renderGoals(); scheduleSave();
 };
+</script>
+<script>
+(function(){
+  const RP_DATA = {"50k": {"250": {"7yr": {"strat": {"trades": 1147, "net": 66090, "maxdd": -1534, "win": 61.9, "pf": 1.63, "ev": 57.62}, "eval": {"completed": 21, "passes": 21, "fails": 0, "passrate": 100, "avg": 118, "median": 109, "fast": 41, "slow": 268}}, "2yr": {"strat": {"trades": 390, "net": 25446, "maxdd": -1350, "win": 62.3, "pf": 1.75, "ev": 65.24}, "eval": {"completed": 9, "passes": 9, "fails": 0, "passrate": 100, "avg": 85, "median": 71, "fast": 41, "slow": 161}}}, "375": {"7yr": {"strat": {"trades": 1147, "net": 95898, "maxdd": -2518, "win": 61.9, "pf": 1.65, "ev": 83.61}, "eval": {"completed": 34, "passes": 31, "fails": 3, "passrate": 91, "avg": 71, "median": 63, "fast": 21, "slow": 266}}, "2yr": {"strat": {"trades": 390, "net": 38476, "maxdd": -1724, "win": 62.3, "pf": 1.82, "ev": 98.66}, "eval": {"completed": 13, "passes": 13, "fails": 0, "passrate": 100, "avg": 60, "median": 53, "fast": 21, "slow": 142}}}, "500": {"7yr": {"strat": {"trades": 1147, "net": 102802, "maxdd": -2773, "win": 61.9, "pf": 1.63, "ev": 89.63}, "eval": {"completed": 38, "passes": 32, "fails": 6, "passrate": 84, "avg": 63, "median": 58, "fast": 8, "slow": 266}}, "2yr": {"strat": {"trades": 390, "net": 42584, "maxdd": -2052, "win": 62.3, "pf": 1.78, "ev": 109.19}, "eval": {"completed": 14, "passes": 13, "fails": 1, "passrate": 93, "avg": 44, "median": 34, "fast": 8, "slow": 84}}}, "625": {"7yr": {"strat": {"trades": 1147, "net": 133974, "maxdd": -3290, "win": 61.9, "pf": 1.63, "ev": 116.8}, "eval": {"completed": 59, "passes": 43, "fails": 16, "passrate": 73, "avg": 44, "median": 35, "fast": 12, "slow": 253}}, "2yr": {"strat": {"trades": 390, "net": 55548, "maxdd": -3290, "win": 62.3, "pf": 1.79, "ev": 142.43}, "eval": {"completed": 22, "passes": 18, "fails": 4, "passrate": 82, "avg": 33, "median": 30, "fast": 12, "slow": 65}}}}};
+  const PROFILE = {
+    "250":{tag:"Conservative",note:"Highest survival rate — near-impossible to fail, but slowest to reach target. Best when patience beats speed."},
+    "375":{tag:"Balanced ★",note:"The recommended sweet spot. Strong pass rate with a reasonable target window. Best all-around for a 50K."},
+    "500":{tag:"Aggressive",note:"Faster to payout, but fails more often — especially in volatile years. For accounts that can absorb a deeper drawdown."},
+    "625":{tag:"Max",note:"Fastest to target, but disproportionate blow-up risk (drawdown exceeds the $2K trail). Not recommended for a 50K."}
+  };
+  let state={acct:"50k",risk:"375",tf:"7yr"};
+  const fmt=n=>(n<0?"-$":"$")+Math.abs(n).toLocaleString();
+  const passColor=p=>p>=90?"#22c55e":p>=80?"#a3e635":p>=75?"#facc15":"#f87171";
+  function card(label,val,cls){
+    return '<div class="border border-white/5 bg-zinc-950/40 rounded-xl p-4"><div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">'+label+'</div><div class="text-xl font-black '+cls+'">'+val+'</div></div>';
+  }
+  function render(){
+    const box=document.getElementById('rp-display'); if(!box) return;
+    const lvl=(RP_DATA[state.acct]||{})[state.risk]; const d=lvl&&lvl[state.tf];
+    if(!d){ box.innerHTML='<div class="text-zinc-600 text-sm py-8 text-center">No data for this combination yet.</div>'; return; }
+    const e=d.eval,s=d.strat,pm=PROFILE[state.risk],col=passColor(e.passrate);
+    const win=state.tf==='7yr'?'7-year backtest':'last 2 years';
+    const med=e.median!=null?e.median:'—';
+    const sub=e.avg!=null?('avg '+e.avg+'d · fastest '+e.fast+'d · slowest '+e.slow+'d'):'';
+    box.innerHTML=
+      '<div class="bg-zinc-950/60 border border-white/10 rounded-2xl p-6">'+
+        '<div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-10">'+
+          '<div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Eval Pass Rate · '+win+'</div>'+
+          '<div class="text-5xl font-black" style="color:'+col+'">'+e.passrate+'%</div>'+
+          '<div class="text-xs text-zinc-500 mt-1">'+e.passes+' passed / '+e.fails+' failed · '+e.completed+' evals</div></div>'+
+          '<div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Time to Pass</div>'+
+          '<div class="text-3xl font-black text-white">'+med+' <span class="text-base text-zinc-500">days median</span></div>'+
+          '<div class="text-xs text-zinc-500 mt-1">'+sub+'</div></div>'+
+        '</div>'+
+        '<div class="mt-4 text-xs text-zinc-400 bg-zinc-900/50 border border-white/5 rounded-lg px-3 py-2"><span class="font-bold text-zinc-300">$'+state.risk+' · '+pm.tag+':</span> '+pm.note+'</div>'+
+      '</div>'+
+      '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">'+
+        card('Net P&L ('+(state.tf==='7yr'?'7yr':'2yr')+')',fmt(s.net),'text-green-400')+
+        card('Max Drawdown',fmt(s.maxdd),'text-zinc-300')+
+        card('Win Rate',s.win+'%','text-white')+
+        card('Profit Factor',s.pf,'text-white')+
+      '</div>';
+  }
+  function wire(sel,key){
+    document.querySelectorAll(sel).forEach(b=>{
+      if(b.disabled) return;
+      b.addEventListener('click',()=>{
+        document.querySelectorAll(sel).forEach(x=>{ if(x.disabled) return;
+          x.classList.remove('active','border-green-500/40','bg-green-500/10','text-green-400');
+          x.classList.add('border-white/10','bg-zinc-900','text-zinc-300'); });
+        b.classList.remove('border-white/10','bg-zinc-900','text-zinc-300');
+        b.classList.add('active','border-green-500/40','bg-green-500/10','text-green-400');
+        state[key]=b.dataset[key]; render();
+      });
+    });
+  }
+  wire('.rp-acct','acct'); wire('.rp-risk','risk'); wire('.rp-tf','tf'); render();
+})();
 </script>
 </body>
 </html>
