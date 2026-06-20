@@ -233,6 +233,8 @@
               </div>
             </div>
             <div id="rp-display"></div>
+            <div id="rp-compare" class="mt-6"></div>
+            <div id="rp-yearly" class="mt-6"></div>
             <div class="mt-6 border-t border-white/5 pt-4 text-[10px] text-zinc-600 leading-relaxed">
               50K eval modeled as: <span class="text-zinc-400">+$3,000 profit target · $2,000 end-of-day trailing drawdown</span>, evaluated continuously back-to-back across the backtest — each pass or fail starts a fresh eval the next trading day. Drawdown breach is checked intraday. Assumes every signal taken mechanically at the selected base risk (an idealized ceiling; real execution varies). Hypothetical/simulated results, not actual trading. Past performance is not indicative of future results.
             </div>
@@ -629,6 +631,7 @@ document.getElementById('goal-save').onclick = () => {
 <script>
 (function(){
   const RP_DATA = {"50k": {"250": {"7yr": {"strat": {"trades": 1147, "net": 66090, "maxdd": -1534, "win": 61.9, "pf": 1.63, "ev": 57.62}, "eval": {"completed": 21, "passes": 21, "fails": 0, "passrate": 100, "avg": 118, "median": 109, "fast": 41, "slow": 268}}, "2yr": {"strat": {"trades": 390, "net": 25446, "maxdd": -1350, "win": 62.3, "pf": 1.75, "ev": 65.24}, "eval": {"completed": 9, "passes": 9, "fails": 0, "passrate": 100, "avg": 85, "median": 71, "fast": 41, "slow": 161}}}, "375": {"7yr": {"strat": {"trades": 1147, "net": 95898, "maxdd": -2518, "win": 61.9, "pf": 1.65, "ev": 83.61}, "eval": {"completed": 34, "passes": 31, "fails": 3, "passrate": 91, "avg": 71, "median": 63, "fast": 21, "slow": 266}}, "2yr": {"strat": {"trades": 390, "net": 38476, "maxdd": -1724, "win": 62.3, "pf": 1.82, "ev": 98.66}, "eval": {"completed": 13, "passes": 13, "fails": 0, "passrate": 100, "avg": 60, "median": 53, "fast": 21, "slow": 142}}}, "500": {"7yr": {"strat": {"trades": 1147, "net": 102802, "maxdd": -2773, "win": 61.9, "pf": 1.63, "ev": 89.63}, "eval": {"completed": 38, "passes": 32, "fails": 6, "passrate": 84, "avg": 63, "median": 58, "fast": 8, "slow": 266}}, "2yr": {"strat": {"trades": 390, "net": 42584, "maxdd": -2052, "win": 62.3, "pf": 1.78, "ev": 109.19}, "eval": {"completed": 14, "passes": 13, "fails": 1, "passrate": 93, "avg": 44, "median": 34, "fast": 8, "slow": 84}}}, "625": {"7yr": {"strat": {"trades": 1147, "net": 133974, "maxdd": -3290, "win": 61.9, "pf": 1.63, "ev": 116.8}, "eval": {"completed": 59, "passes": 43, "fails": 16, "passrate": 73, "avg": 44, "median": 35, "fast": 12, "slow": 253}}, "2yr": {"strat": {"trades": 390, "net": 55548, "maxdd": -3290, "win": 62.3, "pf": 1.79, "ev": 142.43}, "eval": {"completed": 22, "passes": 18, "fails": 4, "passrate": 82, "avg": 33, "median": 30, "fast": 12, "slow": 65}}}}};
+  const RP_YEARLY = {"50k": {"250": [{"yr": 2019, "pass": 0, "fail": 0, "net": 386}, {"yr": 2020, "pass": 2, "fail": 0, "net": 6974}, {"yr": 2021, "pass": 3, "fail": 0, "net": 9968}, {"yr": 2022, "pass": 3, "fail": 0, "net": 10130}, {"yr": 2023, "pass": 3, "fail": 0, "net": 8877}, {"yr": 2024, "pass": 3, "fail": 0, "net": 8419}, {"yr": 2025, "pass": 4, "fail": 0, "net": 13906}, {"yr": 2026, "pass": 3, "fail": 0, "net": 7430}], "375": [{"yr": 2019, "pass": 0, "fail": 0, "net": 464}, {"yr": 2020, "pass": 2, "fail": 1, "net": 7972}, {"yr": 2021, "pass": 5, "fail": 1, "net": 13746}, {"yr": 2022, "pass": 5, "fail": 1, "net": 13846}, {"yr": 2023, "pass": 4, "fail": 0, "net": 14530}, {"yr": 2024, "pass": 5, "fail": 0, "net": 14054}, {"yr": 2025, "pass": 6, "fail": 0, "net": 20116}, {"yr": 2026, "pass": 4, "fail": 0, "net": 11169}], "500": [{"yr": 2019, "pass": 0, "fail": 0, "net": 464}, {"yr": 2020, "pass": 2, "fail": 1, "net": 8775}, {"yr": 2021, "pass": 5, "fail": 1, "net": 14200}, {"yr": 2022, "pass": 5, "fail": 3, "net": 14992}, {"yr": 2023, "pass": 5, "fail": 0, "net": 14922}, {"yr": 2024, "pass": 4, "fail": 1, "net": 13931}, {"yr": 2025, "pass": 7, "fail": 0, "net": 22517}, {"yr": 2026, "pass": 4, "fail": 0, "net": 13000}], "625": [{"yr": 2019, "pass": 0, "fail": 0, "net": 616}, {"yr": 2020, "pass": 5, "fail": 3, "net": 12036}, {"yr": 2021, "pass": 6, "fail": 2, "net": 19306}, {"yr": 2022, "pass": 6, "fail": 5, "net": 19505}, {"yr": 2023, "pass": 6, "fail": 1, "net": 18376}, {"yr": 2024, "pass": 5, "fail": 4, "net": 16600}, {"yr": 2025, "pass": 9, "fail": 0, "net": 30708}, {"yr": 2026, "pass": 6, "fail": 1, "net": 16826}]}};
   const PROFILE = {
     "250":{tag:"Conservative",note:"Highest survival rate — near-impossible to fail, but slowest to reach target. Best when patience beats speed."},
     "375":{tag:"Balanced ★",note:"The recommended sweet spot. Strong pass rate with a reasonable target window. Best all-around for a 50K."},
@@ -667,6 +670,50 @@ document.getElementById('goal-save').onclick = () => {
         card('Win Rate',s.win+'%','text-white')+
         card('Profit Factor',s.pf,'text-white')+
       '</div>';
+    renderCompare(); renderYearly();
+  }
+  function renderCompare(){
+    const box=document.getElementById('rp-compare'); if(!box) return;
+    const tfL=state.tf==='7yr'?'7-Year':'2-Year';
+    let rows='';
+    for(const r of ['250','375','500','625']){
+      const dd=(RP_DATA[state.acct]||{})[r]; const d=dd&&dd[state.tf]; if(!d) continue;
+      const e=d.eval,s=d.strat,sel=(r===state.risk),col=passColor(e.passrate);
+      rows+='<tr class="'+(sel?'bg-green-500/10 ':'')+'border-b border-white/5">'+
+        '<td class="py-2.5 px-3 font-bold '+(sel?'text-green-400':'text-white')+'">$'+r+'</td>'+
+        '<td class="py-2.5 px-3 font-bold" style="color:'+col+'">'+e.passrate+'%</td>'+
+        '<td class="py-2.5 px-3 text-zinc-300">'+(e.median!=null?e.median+'d':'\u2014')+'</td>'+
+        '<td class="py-2.5 px-3 text-zinc-400">'+(e.fast!=null?e.fast+'d':'\u2014')+'</td>'+
+        '<td class="py-2.5 px-3 text-zinc-400">'+e.fails+'</td>'+
+        '<td class="py-2.5 px-3 text-green-400/90">'+fmt(s.net)+'</td>'+
+        '<td class="py-2.5 px-3 text-zinc-400">'+fmt(s.maxdd)+'</td>'+
+        '<td class="py-2.5 px-3 text-zinc-300">'+s.pf+'</td></tr>';
+    }
+    box.innerHTML='<div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">All Risk Profiles \u00b7 '+tfL+' \u00b7 '+state.acct.toUpperCase()+'</div>'+
+      '<div class="overflow-x-auto border border-white/10 rounded-xl"><table class="w-full text-xs text-left" style="min-width:560px">'+
+      '<thead><tr class="bg-zinc-900/40 text-zinc-500 uppercase text-[10px] tracking-wider">'+
+      '<th class="py-2.5 px-3">Risk</th><th class="py-2.5 px-3">Pass Rate</th><th class="py-2.5 px-3">Median</th><th class="py-2.5 px-3">Fastest</th><th class="py-2.5 px-3">Fails</th><th class="py-2.5 px-3">Net P&L</th><th class="py-2.5 px-3">Max DD</th><th class="py-2.5 px-3">PF</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div>';
+  }
+  function renderYearly(){
+    const box=document.getElementById('rp-yearly'); if(!box) return;
+    const yr=(RP_YEARLY[state.acct]||{})[state.risk]; if(!yr){ box.innerHTML=''; return; }
+    let body='';
+    for(const y of yr){
+      const tot=y.pass+y.fail, rate=tot?Math.round(100*y.pass/tot):null;
+      const col=rate==null?'#71717a':passColor(rate);
+      body+='<tr class="border-b border-white/5">'+
+        '<td class="py-2 px-3 font-bold text-white">'+y.yr+'</td>'+
+        '<td class="py-2 px-3 text-green-400">'+y.pass+'</td>'+
+        '<td class="py-2 px-3 '+(y.fail>0?'text-red-400':'text-zinc-600')+'">'+y.fail+'</td>'+
+        '<td class="py-2 px-3" style="color:'+col+'">'+(rate!=null?rate+'%':'\u2014')+'</td>'+
+        '<td class="py-2 px-3 text-green-400/90">'+fmt(y.net)+'</td></tr>';
+    }
+    box.innerHTML='<div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Year-by-Year \u00b7 $'+state.risk+' \u00b7 full history</div>'+
+      '<div class="overflow-x-auto border border-white/10 rounded-xl"><table class="w-full text-xs text-left" style="min-width:420px">'+
+      '<thead><tr class="bg-zinc-900/40 text-zinc-500 uppercase text-[10px] tracking-wider">'+
+      '<th class="py-2 px-3">Year</th><th class="py-2 px-3">Passed</th><th class="py-2 px-3">Failed</th><th class="py-2 px-3">Pass Rate</th><th class="py-2 px-3">Strategy Net</th></tr></thead>'+
+      '<tbody>'+body+'</tbody></table></div>';
   }
   function wire(sel,key){
     document.querySelectorAll(sel).forEach(b=>{
