@@ -205,8 +205,8 @@
           <!-- ── RISK PROFILES PANEL ── -->
           <div class="panel" id="panel-risk">
             <div class="mb-5">
-              <div class="text-sm font-bold text-white">Risk Profiles — Eval Planner</div>
-              <div class="text-xs text-zinc-500 mt-0.5">Pick an account size and base risk to see backtested eval pass rates and time-to-pass. Hypothetical simulation, 2019–2026.</div>
+              <div class="text-sm font-bold text-white">Risk Profiles — Eval &amp; Daily Driver</div>
+              <div class="text-xs text-zinc-500 mt-0.5">Pick an account size and base risk to see the full picture for each profile: how it performs <span class="text-zinc-300">getting funded</span> (eval pass rates) and <span class="text-zinc-300">trading funded</span> (backtest performance). Hypothetical simulation, 2019–2026.</div>
             </div>
             <div class="mb-4">
               <div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Account Size</div>
@@ -221,6 +221,7 @@
               <div class="flex flex-wrap gap-2">
                 <button class="rp-risk px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-300" data-risk="250">$250 · Conservative</button>
                 <button class="rp-risk active px-4 py-2 rounded-lg text-xs font-bold border border-green-500/40 bg-green-500/10 text-green-400" data-risk="375">$375 · Balanced ★</button>
+                <button class="rp-risk px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-300" data-risk="400">$400 · Aggr. Balanced</button>
                 <button class="rp-risk px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-300" data-risk="500">$500 · Aggressive</button>
                 <button class="rp-risk px-4 py-2 rounded-lg text-xs font-bold border border-white/10 bg-zinc-900 text-zinc-300" data-risk="625">$625 · Max</button>
               </div>
@@ -630,11 +631,13 @@ document.getElementById('goal-save').onclick = () => {
 </script>
 <script>
 (function(){
-  const RP_DATA = {"50k": {"250": {"7yr": {"strat": {"trades": 1147, "net": 66090, "maxdd": -1534, "win": 61.9, "pf": 1.63, "ev": 57.62}, "eval": {"completed": 21, "passes": 21, "fails": 0, "passrate": 100, "avg": 118, "median": 109, "fast": 41, "slow": 268}}, "2yr": {"strat": {"trades": 390, "net": 25446, "maxdd": -1350, "win": 62.3, "pf": 1.75, "ev": 65.24}, "eval": {"completed": 9, "passes": 9, "fails": 0, "passrate": 100, "avg": 85, "median": 71, "fast": 41, "slow": 161}}}, "375": {"7yr": {"strat": {"trades": 1147, "net": 95898, "maxdd": -2518, "win": 61.9, "pf": 1.65, "ev": 83.61}, "eval": {"completed": 34, "passes": 31, "fails": 3, "passrate": 91, "avg": 71, "median": 63, "fast": 21, "slow": 266}}, "2yr": {"strat": {"trades": 390, "net": 38476, "maxdd": -1724, "win": 62.3, "pf": 1.82, "ev": 98.66}, "eval": {"completed": 13, "passes": 13, "fails": 0, "passrate": 100, "avg": 60, "median": 53, "fast": 21, "slow": 142}}}, "500": {"7yr": {"strat": {"trades": 1147, "net": 102802, "maxdd": -2773, "win": 61.9, "pf": 1.63, "ev": 89.63}, "eval": {"completed": 38, "passes": 32, "fails": 6, "passrate": 84, "avg": 63, "median": 58, "fast": 8, "slow": 266}}, "2yr": {"strat": {"trades": 390, "net": 42584, "maxdd": -2052, "win": 62.3, "pf": 1.78, "ev": 109.19}, "eval": {"completed": 14, "passes": 13, "fails": 1, "passrate": 93, "avg": 44, "median": 34, "fast": 8, "slow": 84}}}, "625": {"7yr": {"strat": {"trades": 1147, "net": 133974, "maxdd": -3290, "win": 61.9, "pf": 1.63, "ev": 116.8}, "eval": {"completed": 59, "passes": 43, "fails": 16, "passrate": 73, "avg": 44, "median": 35, "fast": 12, "slow": 253}}, "2yr": {"strat": {"trades": 390, "net": 55548, "maxdd": -3290, "win": 62.3, "pf": 1.79, "ev": 142.43}, "eval": {"completed": 22, "passes": 18, "fails": 4, "passrate": 82, "avg": 33, "median": 30, "fast": 12, "slow": 65}}}}};
-  const RP_YEARLY = {"50k": {"250": [{"yr": 2019, "pass": 0, "fail": 0, "net": 386}, {"yr": 2020, "pass": 2, "fail": 0, "net": 6974}, {"yr": 2021, "pass": 3, "fail": 0, "net": 9968}, {"yr": 2022, "pass": 3, "fail": 0, "net": 10130}, {"yr": 2023, "pass": 3, "fail": 0, "net": 8877}, {"yr": 2024, "pass": 3, "fail": 0, "net": 8419}, {"yr": 2025, "pass": 4, "fail": 0, "net": 13906}, {"yr": 2026, "pass": 3, "fail": 0, "net": 7430}], "375": [{"yr": 2019, "pass": 0, "fail": 0, "net": 464}, {"yr": 2020, "pass": 2, "fail": 1, "net": 7972}, {"yr": 2021, "pass": 5, "fail": 1, "net": 13746}, {"yr": 2022, "pass": 5, "fail": 1, "net": 13846}, {"yr": 2023, "pass": 4, "fail": 0, "net": 14530}, {"yr": 2024, "pass": 5, "fail": 0, "net": 14054}, {"yr": 2025, "pass": 6, "fail": 0, "net": 20116}, {"yr": 2026, "pass": 4, "fail": 0, "net": 11169}], "500": [{"yr": 2019, "pass": 0, "fail": 0, "net": 464}, {"yr": 2020, "pass": 2, "fail": 1, "net": 8775}, {"yr": 2021, "pass": 5, "fail": 1, "net": 14200}, {"yr": 2022, "pass": 5, "fail": 3, "net": 14992}, {"yr": 2023, "pass": 5, "fail": 0, "net": 14922}, {"yr": 2024, "pass": 4, "fail": 1, "net": 13931}, {"yr": 2025, "pass": 7, "fail": 0, "net": 22517}, {"yr": 2026, "pass": 4, "fail": 0, "net": 13000}], "625": [{"yr": 2019, "pass": 0, "fail": 0, "net": 616}, {"yr": 2020, "pass": 5, "fail": 3, "net": 12036}, {"yr": 2021, "pass": 6, "fail": 2, "net": 19306}, {"yr": 2022, "pass": 6, "fail": 5, "net": 19505}, {"yr": 2023, "pass": 6, "fail": 1, "net": 18376}, {"yr": 2024, "pass": 5, "fail": 4, "net": 16600}, {"yr": 2025, "pass": 9, "fail": 0, "net": 30708}, {"yr": 2026, "pass": 6, "fail": 1, "net": 16826}]}};
+  const RP_DATA = {"50k":{"250":{"7yr":{"strat":{"trades":1147,"net":66090,"maxdd":-1534,"maxdd_intra":-1690,"win":62.0,"pf":1.63,"ev":57.62},"eval":{"completed":21,"passes":21,"fails":0,"passrate":100,"median":109,"avg":117,"fast":41,"slow":268}},"2yr":{"strat":{"trades":390,"net":25446,"maxdd":-1350,"maxdd_intra":-1592,"win":62.3,"pf":1.75,"ev":65.24},"eval":{"completed":8,"passes":8,"fails":0,"passrate":100,"median":71,"avg":83,"fast":25,"slow":165}}},"375":{"7yr":{"strat":{"trades":1147,"net":95898,"maxdd":-2518,"maxdd_intra":-2724,"win":62.0,"pf":1.65,"ev":83.61},"eval":{"completed":34,"passes":31,"fails":3,"passrate":91,"median":63,"avg":70,"fast":21,"slow":266}},"2yr":{"strat":{"trades":390,"net":38476,"maxdd":-1724,"maxdd_intra":-2045,"win":62.3,"pf":1.82,"ev":98.66},"eval":{"completed":12,"passes":12,"fails":0,"passrate":100,"median":50,"avg":56,"fast":22,"slow":142}}},"400":{"7yr":{"strat":{"trades":1147,"net":97743,"maxdd":-2518,"maxdd_intra":-2724,"win":62.0,"pf":1.64,"ev":85.22},"eval":{"completed":35,"passes":31,"fails":4,"passrate":89,"median":62,"avg":65,"fast":10,"slow":266}},"2yr":{"strat":{"trades":390,"net":40116,"maxdd":-1833,"maxdd_intra":-2045,"win":62.3,"pf":1.83,"ev":102.86},"eval":{"completed":14,"passes":13,"fails":1,"passrate":93,"median":48,"avg":47,"fast":10,"slow":85}}},"500":{"7yr":{"strat":{"trades":1147,"net":102802,"maxdd":-2773,"maxdd_intra":-2979,"win":62.0,"pf":1.63,"ev":89.63},"eval":{"completed":38,"passes":32,"fails":6,"passrate":84,"median":57,"avg":62,"fast":8,"slow":266}},"2yr":{"strat":{"trades":390,"net":42584,"maxdd":-2052,"maxdd_intra":-2372,"win":62.3,"pf":1.78,"ev":109.19},"eval":{"completed":14,"passes":13,"fails":1,"passrate":93,"median":34,"avg":43,"fast":8,"slow":84}}},"625":{"7yr":{"strat":{"trades":1147,"net":133974,"maxdd":-3290,"maxdd_intra":-3394,"win":62.0,"pf":1.63,"ev":116.8},"eval":{"completed":59,"passes":43,"fails":16,"passrate":73,"median":35,"avg":44,"fast":12,"slow":253}},"2yr":{"strat":{"trades":390,"net":55548,"maxdd":-3290,"maxdd_intra":-3370,"win":62.3,"pf":1.79,"ev":142.43},"eval":{"completed":21,"passes":17,"fails":4,"passrate":81,"median":30,"avg":34,"fast":14,"slow":65}}}}};
+  const RP_DEEP = {"50k":{"250":{"net":66090,"maxdd":-1534,"maxdd_intra":-1690,"win":61.95,"pf":1.63,"trades":1147,"wins":710,"losses":436,"be":1,"ev":57.62,"avgwin":241,"avgloss":-241,"mcw":12,"mcl":5,"profmon":71,"totmon":82,"avgmon":806,"sharpe":1.066,"recov":43.1,"grades":[{"g":"A+","n":144,"win":66.0,"pf":1.96,"net":12524},{"g":"A","n":341,"win":64.2,"pf":1.86,"net":25530},{"g":"B+","n":219,"win":60.3,"pf":1.43,"net":9692},{"g":"B","n":284,"win":60.9,"pf":1.51,"net":14995},{"g":"C+","n":28,"win":60.7,"pf":1.8,"net":1106},{"g":"C","n":131,"win":56.5,"pf":1.25,"net":2243}],"annual":[{"yr":"2019","trades":11,"wins":8,"losses":3,"win":72.7,"net":386},{"yr":"2020","trades":140,"wins":84,"losses":56,"win":60.0,"net":6974},{"yr":"2021","trades":155,"wins":99,"losses":55,"win":63.9,"net":9968},{"yr":"2022","trades":213,"wins":127,"losses":86,"win":59.6,"net":10130},{"yr":"2023","trades":170,"wins":104,"losses":66,"win":61.2,"net":8877},{"yr":"2024","trades":182,"wins":109,"losses":73,"win":59.9,"net":8419},{"yr":"2025","trades":195,"wins":124,"losses":71,"win":63.6,"net":13906},{"yr":"2026","trades":81,"wins":55,"losses":26,"win":67.9,"net":7430}]},"375":{"net":95898,"maxdd":-2518,"maxdd_intra":-2724,"win":61.95,"pf":1.65,"trades":1147,"wins":710,"losses":436,"be":1,"ev":83.61,"avgwin":343,"avgloss":-339,"mcw":12,"mcl":5,"profmon":73,"totmon":82,"avgmon":1169,"sharpe":1.092,"recov":38.1,"grades":[{"g":"A+","n":144,"win":66.0,"pf":2.07,"net":20466},{"g":"A","n":341,"win":64.2,"pf":1.85,"net":38565},{"g":"B+","n":219,"win":60.3,"pf":1.45,"net":14866},{"g":"B","n":284,"win":60.9,"pf":1.46,"net":15858},{"g":"C+","n":28,"win":60.7,"pf":1.92,"net":1838},{"g":"C","n":131,"win":56.5,"pf":1.33,"net":4305}],"annual":[{"yr":"2019","trades":11,"wins":8,"losses":3,"win":72.7,"net":464},{"yr":"2020","trades":140,"wins":84,"losses":56,"win":60.0,"net":7972},{"yr":"2021","trades":155,"wins":99,"losses":55,"win":63.9,"net":13746},{"yr":"2022","trades":213,"wins":127,"losses":86,"win":59.6,"net":13846},{"yr":"2023","trades":170,"wins":104,"losses":66,"win":61.2,"net":14530},{"yr":"2024","trades":182,"wins":109,"losses":73,"win":59.9,"net":14054},{"yr":"2025","trades":195,"wins":124,"losses":71,"win":63.6,"net":20116},{"yr":"2026","trades":81,"wins":55,"losses":26,"win":67.9,"net":11169}]},"400":{"net":97743,"maxdd":-2518,"maxdd_intra":-2724,"win":61.95,"pf":1.64,"trades":1147,"wins":710,"losses":436,"be":1,"ev":85.22,"avgwin":352,"avgloss":-348,"mcw":12,"mcl":5,"profmon":73,"totmon":82,"avgmon":1192,"sharpe":1.086,"recov":38.8,"grades":[{"g":"A+","n":144,"win":66.0,"pf":2.05,"net":21003},{"g":"A","n":341,"win":64.2,"pf":1.84,"net":39121},{"g":"B+","n":219,"win":60.3,"pf":1.44,"net":15188},{"g":"B","n":284,"win":60.9,"pf":1.48,"net":16640},{"g":"C+","n":28,"win":60.7,"pf":1.98,"net":1969},{"g":"C","n":131,"win":56.5,"pf":1.28,"net":3822}],"annual":[{"yr":"2019","trades":11,"wins":8,"losses":3,"win":72.7,"net":464},{"yr":"2020","trades":140,"wins":84,"losses":56,"win":60.0,"net":8246},{"yr":"2021","trades":155,"wins":99,"losses":55,"win":63.9,"net":13592},{"yr":"2022","trades":213,"wins":127,"losses":86,"win":59.6,"net":13364},{"yr":"2023","trades":170,"wins":104,"losses":66,"win":61.2,"net":15097},{"yr":"2024","trades":182,"wins":109,"losses":73,"win":59.9,"net":13798},{"yr":"2025","trades":195,"wins":124,"losses":71,"win":63.6,"net":21330},{"yr":"2026","trades":81,"wins":55,"losses":26,"win":67.9,"net":11852}]},"500":{"net":102802,"maxdd":-2773,"maxdd_intra":-2979,"win":61.95,"pf":1.63,"trades":1147,"wins":710,"losses":436,"be":1,"ev":89.63,"avgwin":374,"avgloss":-373,"mcw":12,"mcl":5,"profmon":71,"totmon":82,"avgmon":1254,"sharpe":1.069,"recov":37.1,"grades":[{"g":"A+","n":144,"win":66.0,"pf":1.92,"net":20306},{"g":"A","n":341,"win":64.2,"pf":1.83,"net":41596},{"g":"B+","n":219,"win":60.3,"pf":1.47,"net":17242},{"g":"B","n":284,"win":60.9,"pf":1.46,"net":16592},{"g":"C+","n":28,"win":60.7,"pf":1.89,"net":2076},{"g":"C","n":131,"win":56.5,"pf":1.31,"net":4990}],"annual":[{"yr":"2019","trades":11,"wins":8,"losses":3,"win":72.7,"net":464},{"yr":"2020","trades":140,"wins":84,"losses":56,"win":60.0,"net":8775},{"yr":"2021","trades":155,"wins":99,"losses":55,"win":63.9,"net":14200},{"yr":"2022","trades":213,"wins":127,"losses":86,"win":59.6,"net":14992},{"yr":"2023","trades":170,"wins":104,"losses":66,"win":61.2,"net":14922},{"yr":"2024","trades":182,"wins":109,"losses":73,"win":59.9,"net":13931},{"yr":"2025","trades":195,"wins":124,"losses":71,"win":63.6,"net":22517},{"yr":"2026","trades":81,"wins":55,"losses":26,"win":67.9,"net":13000}]},"625":{"net":133974,"maxdd":-3290,"maxdd_intra":-3394,"win":61.95,"pf":1.63,"trades":1147,"wins":710,"losses":436,"be":1,"ev":116.8,"avgwin":487,"avgloss":-486,"mcw":12,"mcl":5,"profmon":73,"totmon":82,"avgmon":1634,"sharpe":1.075,"recov":40.7,"grades":[{"g":"A+","n":144,"win":66.0,"pf":2.01,"net":28474},{"g":"A","n":341,"win":64.2,"pf":1.83,"net":54844},{"g":"B+","n":219,"win":60.3,"pf":1.44,"net":21297},{"g":"B","n":284,"win":60.9,"pf":1.46,"net":22726},{"g":"C+","n":28,"win":60.7,"pf":1.6,"net":1651},{"g":"C","n":131,"win":56.5,"pf":1.29,"net":4982}],"annual":[{"yr":"2019","trades":11,"wins":8,"losses":3,"win":72.7,"net":616},{"yr":"2020","trades":140,"wins":84,"losses":56,"win":60.0,"net":12036},{"yr":"2021","trades":155,"wins":99,"losses":55,"win":63.9,"net":19306},{"yr":"2022","trades":213,"wins":127,"losses":86,"win":59.6,"net":19505},{"yr":"2023","trades":170,"wins":104,"losses":66,"win":61.2,"net":18376},{"yr":"2024","trades":182,"wins":109,"losses":73,"win":59.9,"net":16600},{"yr":"2025","trades":195,"wins":124,"losses":71,"win":63.6,"net":30708},{"yr":"2026","trades":81,"wins":55,"losses":26,"win":67.9,"net":16826}]}}};
+  const RP_YEARLY = {"50k":{"250":[{"yr":2019,"pass":1,"fail":0,"net":386},{"yr":2020,"pass":2,"fail":0,"net":6974},{"yr":2021,"pass":3,"fail":0,"net":9968},{"yr":2022,"pass":3,"fail":0,"net":10130},{"yr":2023,"pass":3,"fail":0,"net":8877},{"yr":2024,"pass":3,"fail":0,"net":8419},{"yr":2025,"pass":4,"fail":0,"net":13906},{"yr":2026,"pass":2,"fail":0,"net":7430}],"375":[{"yr":2019,"pass":1,"fail":0,"net":464},{"yr":2020,"pass":2,"fail":1,"net":7972},{"yr":2021,"pass":5,"fail":1,"net":13746},{"yr":2022,"pass":5,"fail":1,"net":13846},{"yr":2023,"pass":4,"fail":0,"net":14530},{"yr":2024,"pass":5,"fail":0,"net":14054},{"yr":2025,"pass":6,"fail":0,"net":20116},{"yr":2026,"pass":3,"fail":0,"net":11169}],"400":[{"yr":2019,"pass":1,"fail":0,"net":464},{"yr":2020,"pass":2,"fail":1,"net":8246},{"yr":2021,"pass":5,"fail":1,"net":13592},{"yr":2022,"pass":4,"fail":1,"net":13364},{"yr":2023,"pass":4,"fail":0,"net":15097},{"yr":2024,"pass":5,"fail":1,"net":13798},{"yr":2025,"pass":7,"fail":0,"net":21330},{"yr":2026,"pass":3,"fail":0,"net":11852}],"500":[{"yr":2019,"pass":1,"fail":0,"net":464},{"yr":2020,"pass":2,"fail":1,"net":8775},{"yr":2021,"pass":5,"fail":1,"net":14200},{"yr":2022,"pass":5,"fail":3,"net":14992},{"yr":2023,"pass":5,"fail":0,"net":14922},{"yr":2024,"pass":4,"fail":1,"net":13931},{"yr":2025,"pass":7,"fail":0,"net":22517},{"yr":2026,"pass":3,"fail":0,"net":13000}],"625":[{"yr":2019,"pass":1,"fail":0,"net":616},{"yr":2020,"pass":4,"fail":4,"net":12036},{"yr":2021,"pass":7,"fail":1,"net":19306},{"yr":2022,"pass":5,"fail":6,"net":19505},{"yr":2023,"pass":7,"fail":0,"net":18376},{"yr":2024,"pass":5,"fail":4,"net":16600},{"yr":2025,"pass":9,"fail":0,"net":30708},{"yr":2026,"pass":5,"fail":1,"net":16826}]}};
   const PROFILE = {
     "250":{tag:"Conservative",note:"Highest survival rate — near-impossible to fail, but slowest to reach target. Best when patience beats speed."},
     "375":{tag:"Balanced ★",note:"The recommended sweet spot. Strong pass rate with a reasonable target window. Best all-around for a 50K."},
+    "400":{tag:"Aggr. Balanced",note:"Same edge as Balanced with a touch more size — ~2% more net for a marginally thinner cushion. Slightly faster best-case pass, one extra historical fail. A reasonable daily driver; $375 is the safer eval pick."},
     "500":{tag:"Aggressive",note:"Faster to payout, but fails more often — especially in volatile years. For accounts that can absorb a deeper drawdown."},
     "625":{tag:"Max",note:"Fastest to target, but disproportionate blow-up risk (drawdown exceeds the $2K trail). Not recommended for a 50K."}
   };
@@ -644,39 +647,110 @@ document.getElementById('goal-save').onclick = () => {
   function card(label,val,cls){
     return '<div class="border border-white/5 bg-zinc-950/40 rounded-xl p-4"><div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">'+label+'</div><div class="text-xl font-black '+cls+'">'+val+'</div></div>';
   }
+  function gradeTable(g){
+    let rows='';
+    for(const x of g){
+      rows+='<tr class="border-b border-white/5">'+
+        '<td class="py-2 px-3 font-bold text-white">'+x.g+'</td>'+
+        '<td class="py-2 px-3 text-zinc-300">'+x.n+'</td>'+
+        '<td class="py-2 px-3 text-zinc-300">'+x.win+'%</td>'+
+        '<td class="py-2 px-3 text-zinc-300">'+x.pf+'</td>'+
+        '<td class="py-2 px-3 text-green-400/90">'+fmt(x.net)+'</td></tr>';
+    }
+    return '<div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Performance by Grade \u00b7 7-Year</div>'+
+      '<div class="overflow-x-auto border border-white/10 rounded-xl"><table class="w-full text-xs text-left" style="min-width:420px">'+
+      '<thead><tr class="bg-zinc-900/40 text-zinc-500 uppercase text-[10px] tracking-wider">'+
+      '<th class="py-2 px-3">Grade</th><th class="py-2 px-3">Trades</th><th class="py-2 px-3">Win Rate</th><th class="py-2 px-3">Profit Factor</th><th class="py-2 px-3">Net P&L</th></tr></thead>'+
+      '<tbody>'+rows+'</tbody></table></div>';
+  }
+  function anatomyBlock(D){
+    const item=(l,v,c)=>'<div class="flex justify-between py-1.5 border-b border-white/5"><span class="text-zinc-500">'+l+'</span><span class="font-bold '+(c||'text-zinc-200')+'">'+v+'</span></div>';
+    return '<div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">System Anatomy \u00b7 7-Year</div>'+
+      '<div class="grid sm:grid-cols-2 gap-x-6 text-xs border border-white/10 rounded-xl p-4 bg-zinc-950/40">'+
+        '<div>'+
+          item('Total Trades',D.trades)+
+          item('Wins / Losses',D.wins+' / '+D.losses+(D.be?(' / '+D.be+' BE'):''))+
+          item('Expected Value','$'+D.ev+' / trade','text-green-400')+
+          item('Avg Win / Avg Loss','$'+D.avgwin+' / -$'+Math.abs(D.avgloss))+
+          item('Max Consec. W / L',D.mcw+' / '+D.mcl)+
+        '</div>'+
+        '<div>'+
+          item('Profitable Months',D.profmon+' / '+D.totmon+' ('+Math.round(100*D.profmon/D.totmon)+'%)','text-green-400')+
+          item('Avg Monthly','$'+D.avgmon.toLocaleString())+
+          item('Monthly Sharpe',D.sharpe)+
+          item('Recovery Factor',D.recov+'x')+
+          item('Max Drawdown',fmt(D.maxdd)+(D.maxdd_intra?(' \u00b7 '+fmt(D.maxdd_intra)+' TV'):''),'text-zinc-300')+
+        '</div>'+
+      '</div>';
+  }
+  function annualLedger(A){
+    let body='';
+    for(const y of A){
+      body+='<tr class="border-b border-white/5">'+
+        '<td class="py-2 px-3 font-bold text-white">'+y.yr+'</td>'+
+        '<td class="py-2 px-3 text-zinc-300">'+y.trades+'</td>'+
+        '<td class="py-2 px-3 text-zinc-400">'+y.wins+' / '+y.losses+'</td>'+
+        '<td class="py-2 px-3 text-zinc-300">'+y.win+'%</td>'+
+        '<td class="py-2 px-3 text-green-400/90">'+fmt(y.net)+'</td></tr>';
+    }
+    return '<div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Annual Ledger \u00b7 Backtest</div>'+
+      '<div class="overflow-x-auto border border-white/10 rounded-xl"><table class="w-full text-xs text-left" style="min-width:420px">'+
+      '<thead><tr class="bg-zinc-900/40 text-zinc-500 uppercase text-[10px] tracking-wider">'+
+      '<th class="py-2 px-3">Year</th><th class="py-2 px-3">Trades</th><th class="py-2 px-3">W / L</th><th class="py-2 px-3">Win Rate</th><th class="py-2 px-3">Net Return</th></tr></thead>'+
+      '<tbody>'+body+'</tbody></table></div>';
+  }
+  function sectionHead(kicker,title,sub){
+    return '<div class="flex items-center gap-3 mb-3 mt-2">'+
+      '<div class="text-[10px] font-black tracking-widest uppercase px-2.5 py-1 rounded-md bg-green-500/10 text-green-400 border border-green-500/20">'+kicker+'</div>'+
+      '<div><div class="text-sm font-bold text-white leading-tight">'+title+'</div><div class="text-[11px] text-zinc-500">'+sub+'</div></div></div>';
+  }
   function render(){
     const box=document.getElementById('rp-display'); if(!box) return;
     const lvl=(RP_DATA[state.acct]||{})[state.risk]; const d=lvl&&lvl[state.tf];
-    if(!d){ box.innerHTML='<div class="text-zinc-600 text-sm py-8 text-center">No data for this combination yet.</div>'; return; }
+    const deep=(RP_DEEP[state.acct]||{})[state.risk];
+    if(!d){ box.innerHTML='<div class="text-zinc-600 text-sm py-8 text-center">No data for this combination yet.</div>'; renderCompare(); renderYearly(); return; }
     const e=d.eval,s=d.strat,pm=PROFILE[state.risk],col=passColor(e.passrate);
     const win=state.tf==='7yr'?'7-year backtest':'last 2 years';
-    const med=e.median!=null?e.median:'—';
-    const sub=e.avg!=null?('avg '+e.avg+'d · fastest '+e.fast+'d · slowest '+e.slow+'d'):'';
-    box.innerHTML=
+    const med=e.median!=null?e.median:'\u2014';
+    const sub=e.avg!=null?('avg '+e.avg+'d \u00b7 fastest '+e.fast+'d \u00b7 slowest '+e.slow+'d'):'';
+
+    // ===== GETTING FUNDED (eval) =====
+    let html=sectionHead('Getting Funded','Eval Pass Rate &amp; Time to Funding','How reliably this base risk clears a 50K challenge \u2014 '+win+'.')+
       '<div class="bg-zinc-950/60 border border-white/10 rounded-2xl p-6">'+
         '<div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-10">'+
-          '<div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Eval Pass Rate · '+win+'</div>'+
+          '<div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Eval Pass Rate \u00b7 '+win+'</div>'+
           '<div class="text-5xl font-black" style="color:'+col+'">'+e.passrate+'%</div>'+
-          '<div class="text-xs text-zinc-500 mt-1">'+e.passes+' passed / '+e.fails+' failed · '+e.completed+' evals</div></div>'+
+          '<div class="text-xs text-zinc-500 mt-1">'+e.passes+' passed / '+e.fails+' failed \u00b7 '+e.completed+' evals</div></div>'+
           '<div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Time to Pass</div>'+
           '<div class="text-3xl font-black text-white">'+med+' <span class="text-base text-zinc-500">days median</span></div>'+
           '<div class="text-xs text-zinc-500 mt-1">'+sub+'</div></div>'+
         '</div>'+
-        '<div class="mt-4 text-xs text-zinc-400 bg-zinc-900/50 border border-white/5 rounded-lg px-3 py-2"><span class="font-bold text-zinc-300">$'+state.risk+' · '+pm.tag+':</span> '+pm.note+'</div>'+
-      '</div>'+
-      '<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">'+
-        card('Net P&L ('+(state.tf==='7yr'?'7yr':'2yr')+')',fmt(s.net),'text-green-400')+
-        card('Max Drawdown',fmt(s.maxdd),'text-zinc-300')+
-        card('Win Rate',s.win+'%','text-white')+
-        card('Profit Factor',s.pf,'text-white')+
+        '<div class="mt-4 text-xs text-zinc-400 bg-zinc-900/50 border border-white/5 rounded-lg px-3 py-2"><span class="font-bold text-zinc-300">$'+state.risk+' \u00b7 '+pm.tag+':</span> '+pm.note+'</div>'+
       '</div>';
+
+    // ===== TRADING FUNDED (daily driver) =====
+    if(deep){
+      html+=sectionHead('Trading Funded','Daily-Driver Performance','What it looks like to actually trade this profile once funded \u2014 full 7-year record. The window toggle above adjusts the eval planner.')+
+      '<div class="grid grid-cols-2 md:grid-cols-4 gap-3">'+
+        card('Net P&L (7yr)',fmt(deep.net),'text-green-400')+
+        card('Max Drawdown',fmt(deep.maxdd),'text-zinc-300')+
+        card('Win Rate',deep.win+'%','text-white')+
+        card('Profit Factor',deep.pf,'text-white')+
+      '</div>'+
+      '<div class="grid lg:grid-cols-2 gap-4 mt-4">'+
+        '<div>'+gradeTable(deep.grades)+'</div>'+
+        '<div>'+anatomyBlock(deep)+'</div>'+
+      '</div>'+
+      '<div class="mt-4">'+annualLedger(deep.annual)+'</div>';
+    }
+    box.innerHTML=html;
     renderCompare(); renderYearly();
   }
   function renderCompare(){
     const box=document.getElementById('rp-compare'); if(!box) return;
     const tfL=state.tf==='7yr'?'7-Year':'2-Year';
     let rows='';
-    for(const r of ['250','375','500','625']){
+    for(const r of ['250','375','400','500','625']){
       const dd=(RP_DATA[state.acct]||{})[r]; const d=dd&&dd[state.tf]; if(!d) continue;
       const e=d.eval,s=d.strat,sel=(r===state.risk),col=passColor(e.passrate);
       rows+='<tr class="'+(sel?'bg-green-500/10 ':'')+'border-b border-white/5">'+
