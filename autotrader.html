@@ -43,7 +43,7 @@
     <div class="w-full flex-1">
 
       <!-- ===================== HERO ===================== -->
-      <section class="px-6 md:px-12 border-b border-white/10 pt-20 pb-16 lg:pt-28 lg:pb-24 bg-gradient-to-b from-zinc-950 to-black">
+      <section class="min-h-screen flex items-center px-6 md:px-12 border-b border-white/10 py-16 lg:py-20 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl w-full mx-auto">
 
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold tracking-wide mb-6">
@@ -84,35 +84,6 @@
 
           <p class="mt-6 text-zinc-600 text-xs leading-relaxed max-w-xl">
             Currently in private beta with a small group of testers on demo/paper accounts. Public release coming — get on the list to be first.
-          </p>
-        </div>
-      </section>
-
-      <!-- ===================== HOW IT WORKS ===================== -->
-      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
-        <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// How It Works</div>
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Three steps. Then you walk away.</h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-green-400 font-black text-lg mb-3">01</div>
-              <div class="font-bold text-white mb-1.5">The strategy fires</div>
-              <p class="text-sm text-zinc-400 leading-relaxed">A graded breakout triggers at the close of the bar — exactly as Knightfall does, with the same A+ through C scoring and grade-based contract sizing.</p>
-            </div>
-            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-green-400 font-black text-lg mb-3">02</div>
-              <div class="font-bold text-white mb-1.5">Your service receives it</div>
-              <p class="text-sm text-zinc-400 leading-relaxed">It sends the order — direction, contracts, entry, stop, and targets — to the automation service you connect (PickMyTrade, TradersPost, and others).</p>
-            </div>
-            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-green-400 font-black text-lg mb-3">03</div>
-              <div class="font-bold text-white mb-1.5">Your broker executes</div>
-              <p class="text-sm text-zinc-400 leading-relaxed">The bracket lives at your broker and manages the trade. At session end it flattens automatically — and it skips holidays and half-days on its own.</p>
-            </div>
-          </div>
-          <p class="mt-5 text-zinc-600 text-xs max-w-2xl leading-relaxed">
-            The strategy emits alerts only — it does not place orders itself. Execution happens through a third-party service and broker that you configure and control. Full setup guide included on access.
           </p>
         </div>
       </section>
@@ -219,6 +190,35 @@
             <span>MNQ · 5-minute</span><span class="text-zinc-800">•</span>
             <a href="results.html" class="text-green-400/80 hover:text-green-400 transition">View full backtest research ↗</a>
           </div>
+        </div>
+      </section>
+
+      <!-- ===================== HOW IT WORKS ===================== -->
+      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// How It Works</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Three steps. Then you walk away.</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">01</div>
+              <div class="font-bold text-white mb-1.5">The strategy fires</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">A graded breakout triggers at the close of the bar — exactly as Knightfall does, with the same A+ through C scoring and grade-based contract sizing.</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">02</div>
+              <div class="font-bold text-white mb-1.5">Your service receives it</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">It sends the order — direction, contracts, entry, stop, and targets — to the automation service you connect (PickMyTrade, TradersPost, and others).</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">03</div>
+              <div class="font-bold text-white mb-1.5">Your broker executes</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">The bracket lives at your broker and manages the trade. At session end it flattens automatically — and it skips holidays and half-days on its own.</p>
+            </div>
+          </div>
+          <p class="mt-5 text-zinc-600 text-xs max-w-2xl leading-relaxed">
+            The strategy emits alerts only — it does not place orders itself. Execution happens through a third-party service and broker that you configure and control. Full setup guide included on access.
+          </p>
         </div>
       </section>
 
