@@ -365,6 +365,13 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById(`panel-${btn.dataset.tab}`).classList.add('active');
   });
 });
+// Deep-link: open a tab via URL hash (e.g. playbook.html#risk from the dashboard card)
+(function(){
+  const h=(location.hash||'').replace('#','');
+  if(!h) return;
+  const tb=document.querySelector(`.tab-btn[data-tab="${h}"]`);
+  if(tb){ tb.click(); try{ tb.scrollIntoView({block:'nearest'}); }catch(e){} }
+})();
 
 // ── Helpers ──
 function pbId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
