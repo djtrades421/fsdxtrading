@@ -247,14 +247,17 @@
           </p>
 
           <form id="waitlist-form" class="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-            <input id="waitlist-email" type="email" required placeholder="you@email.com"
+            <input id="waitlist-email" name="email" type="email" required placeholder="you@email.com"
               class="flex-1 bg-zinc-950 border border-white/10 focus:border-green-500/50 focus:outline-none rounded-2xl px-5 py-4 text-sm text-white placeholder-zinc-600 transition" />
-            <button type="submit"
+            <input type="hidden" name="_subject" value="🚀 Auto-Trader Waitlist Signup" />
+            <input type="hidden" name="list" value="Auto-Trader Waitlist" />
+            <button id="waitlist-btn" type="submit"
               class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-7 py-4 rounded-2xl whitespace-nowrap shadow-lg shadow-green-500/10">
               Join Waitlist
             </button>
           </form>
           <div id="waitlist-msg" class="hidden mt-4 text-sm font-semibold text-green-400"></div>
+          <div id="waitlist-err" class="hidden mt-4 text-sm font-semibold text-red-400">Something went wrong — email <a href="mailto:fsdxteam@gmail.com?subject=Auto-Trader%20Waitlist" class="underline">fsdxteam@gmail.com</a> and we'll add you.</div>
 
           <p class="mt-6 text-zinc-600 text-xs">
             Already a member or have questions?
@@ -313,25 +316,34 @@
       }
     }
 
-    // Waitlist handler — works today via mailto fallback.
-    // TODO: to capture emails directly, replace the mailto block with a POST
-    // to your endpoint (Whop / Formspree / the nexus worker), e.g.:
-    //   await fetch('https://YOUR-ENDPOINT/api/waitlist', {method:'POST',
-    //     headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})});
-    document.getElementById('waitlist-form').addEventListener('submit', function (e) {
+    // Waitlist handler — posts to the same Formspree as the contact form.
+    // Submissions are tagged "Auto-Trader Waitlist" (hidden field) so they're easy
+    // to filter in your Formspree inbox. To split them into their own inbox later,
+    // create a new form on Formspree and replace the ID below.
+    const WAITLIST_FORMSPREE_ID = 'xvzjpyeg';
+    document.getElementById('waitlist-form').addEventListener('submit', async function (e) {
       e.preventDefault();
-      const email = document.getElementById('waitlist-email').value.trim();
-      if (!email) return;
+      const btn = document.getElementById('waitlist-btn');
       const msg = document.getElementById('waitlist-msg');
-
-      // --- mailto fallback (no backend required) ---
-      const subject = encodeURIComponent('Auto-Trader Waitlist');
-      const body = encodeURIComponent('Add me to the Auto-Trader waitlist.\n\nEmail: ' + email + '\nTradingView username: ');
-      window.location.href = 'mailto:fsdxteam@gmail.com?subject=' + subject + '&body=' + body;
-
-      msg.textContent = "✓ You're on the list — finish sending the email that just opened.";
-      msg.classList.remove('hidden');
-      document.getElementById('waitlist-email').value = '';
+      const err = document.getElementById('waitlist-err');
+      err.classList.add('hidden');
+      btn.textContent = 'Joining...';
+      btn.disabled = true;
+      try {
+        const response = await fetch('https://formspree.io/f/' + WAITLIST_FORMSPREE_ID, {
+          method: 'POST',
+          body: new FormData(this),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) throw new Error('failed');
+        this.classList.add('hidden');
+        msg.textContent = "✓ You're on the list. We'll be in touch with early access.";
+        msg.classList.remove('hidden');
+      } catch (e2) {
+        err.classList.remove('hidden');
+        btn.textContent = 'Join Waitlist';
+        btn.disabled = false;
+      }
     });
   </script>
   <script src="nav-loader.js"></script>
