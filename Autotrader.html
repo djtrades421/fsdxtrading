@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X // ORB Pro Auto-Trader (Knightfall AT) — Automated Execution | DJ Trades</title>
+  <meta name="description" content="Knightfall, automated. The same validated FSD-X ORB engine — now hands-off. Fires your trades to the automation service of your choice. Currently in private beta. Join the waitlist." />
+  <meta name="author" content="DJ Trades" />
+  <meta name="keywords" content="FSD-X Auto-Trader, Knightfall auto trader, automated ORB, MNQ automated trading, TradingView webhook strategy, PickMyTrade" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FSD-X // ORB Pro Auto-Trader (Knightfall AT) — Automated Execution" />
+  <meta property="og:description" content="Knightfall, automated. The same validated ORB engine — hands-off. Currently in private beta. Join the waitlist." />
+  <meta property="og:image" content="og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FSD-X // ORB Pro Auto-Trader (Knightfall AT)" />
+  <meta name="twitter:description" content="Knightfall, automated. The same validated ORB engine — hands-off. In private beta. Join the waitlist." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #000; }
+    @keyframes pulse-ring { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+    .beta-dot { animation: pulse-ring 2s ease-in-out infinite; }
+  </style>
+  <link rel="canonical" href="https://www.fsdxtrading.com/autotrader" />
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">
+      FSD-X
+    </div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">
+      // MENU
+    </button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+
+    <div class="w-full flex-1">
+
+      <!-- ===================== HERO ===================== -->
+      <section class="min-h-screen flex items-center px-6 md:px-12 border-b border-white/10 py-16 lg:py-20 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl w-full mx-auto">
+
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold tracking-wide mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-400 beta-dot"></span>
+            <span>BETA — IN TESTING · DEMO ONLY</span>
+          </div>
+
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-4">// FSD-X ORB Pro — Auto-Trader</div>
+
+          <h1 class="text-4xl md:text-5xl lg:text-7xl font-black leading-[1.05] tracking-tight">
+            Knightfall.<br>
+            <span class="text-green-400">Now Automated.</span>
+          </h1>
+
+          <p class="mt-6 text-zinc-300 text-lg md:text-xl max-w-2xl leading-relaxed">
+            The same engine behind ORB Pro — <span class="text-white font-semibold">validated trade-for-trade</span> — stripped down to a lightweight execution engine that fires your trades automatically through the service you already use.
+          </p>
+          <p class="mt-3 text-zinc-500 text-base max-w-2xl leading-relaxed">
+            Same system. Same trades. Hands-off.
+          </p>
+
+          <div class="mt-9 flex flex-col sm:flex-row items-stretch gap-4 max-w-lg">
+            <a href="#waitlist"
+               class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center flex-1 shadow-lg shadow-green-500/10 whitespace-nowrap">
+              Join the Waitlist
+            </a>
+            <a href="#proof"
+               class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl text-center font-medium whitespace-nowrap">
+              See the Numbers
+            </a>
+          </div>
+
+          <p class="mt-6 text-zinc-600 text-xs leading-relaxed max-w-xl">
+            Currently in private beta with a small group of testers on demo/paper accounts. Public release coming — get on the list to be first.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== PROOF: SAME ENGINE ===================== -->
+      <section id="proof" class="pt-14 pb-4 lg:pt-20 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Same Engine, Same Trades</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">It doesn't approximate Knightfall. It <span class="text-green-400">is</span> Knightfall.</h2>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
+            The auto-trader was validated against the original strategy across the full backtest — matched line-for-line on all 1,147 trades: same entries, same grade-based sizing, same exits, same result. The only thing removed is the on-chart dashboard.
+            <span class="text-zinc-600">Hypothetical results — past performance is not indicative of future results.</span>
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Hypothetical Net (MNQ)</div>
+              <div class="text-3xl font-black text-green-400">$95,898</div>
+              <div class="text-xs font-semibold text-zinc-500 mt-2 block">Dynamic risk by grade · $375 setting</div>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Simulated Win Rate</div>
+              <div class="text-3xl font-black text-white">61.90%</div>
+              <div class="text-[10px] text-zinc-600 mt-2">710 of 1,147 trades profitable</div>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Profit Factor</div>
+              <div class="text-3xl font-black text-white">1.65</div>
+              <div class="text-[10px] text-zinc-600 mt-2">Positive math expectancy</div>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Max Drawdown</div>
+              <div class="text-3xl font-black text-zinc-400">-$2,518</div>
+              <div class="text-[10px] text-zinc-600 mt-2">Closed-trade, peak-to-trough</div>
+            </div>
+          </div>
+
+          <div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] text-zinc-600">
+            <span>1,147 trades</span><span class="text-zinc-800">•</span>
+            <span>June 2019 → June 2026 (7 yrs)</span><span class="text-zinc-800">•</span>
+            <span>MNQ · 5-minute</span><span class="text-zinc-800">•</span>
+            <a href="results.html" class="text-green-400/80 hover:text-green-400 transition">View full backtest research ↗</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== HOW IT WORKS ===================== -->
+      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// How It Works</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Three steps. Then you walk away.</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">01</div>
+              <div class="font-bold text-white mb-1.5">The strategy fires</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">A graded breakout triggers at the close of the bar — exactly as Knightfall does, with the same A+ through C scoring and grade-based contract sizing.</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">02</div>
+              <div class="font-bold text-white mb-1.5">Your service receives it</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">It sends the order — direction, contracts, entry, stop, and targets — to the automation service you connect (PickMyTrade, TradersPost, and others).</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">03</div>
+              <div class="font-bold text-white mb-1.5">Your broker executes</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">The bracket lives at your broker and manages the trade. At session end it flattens automatically — and it skips holidays and half-days on its own.</p>
+            </div>
+          </div>
+          <p class="mt-5 text-zinc-600 text-xs max-w-2xl leading-relaxed">
+            The strategy emits alerts only — it does not place orders itself. Execution happens through a third-party service and broker that you configure and control. Full setup guide included on access.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== BUILT FOR EXECUTION ===================== -->
+      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Built for Execution</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Lightweight like a sports car.</h2>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">Only what's needed to take trades — the dashboard and heavy chart drawing are gone, so it runs clean and reliable.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="font-bold text-white mb-1.5">⚡ Runs lean</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Stripped to the engine. No dashboard clutter, no object overload — built to run hands-off without choking.</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="font-bold text-white mb-1.5">🔌 Works with your service</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Connect the automation platform you already use. You pick the middleman — it sends clean, standard signals either way.</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="font-bold text-white mb-1.5">📊 At-a-glance panel</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">A slim status readout: today's P&L, trades taken, current position, win rate — so you can check in without watching charts.</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="font-bold text-white mb-1.5">🛡️ Same validated brain</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Identical decision logic to Knightfall — cash-correct end-of-day flatten and holiday/half-day skip carried over exactly.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== ACCESS / PRICING ===================== -->
+      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Access</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Where it stands right now.</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+            <!-- BETA STATUS -->
+            <div class="border border-amber-500/30 bg-amber-500/[0.04] rounded-2xl p-7">
+              <div class="inline-flex items-center gap-2 text-amber-400 text-[10px] font-bold uppercase tracking-widest mb-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 beta-dot"></span> Current Phase
+              </div>
+              <div class="text-2xl font-black text-white mb-2">Private Beta</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Invite-only testing on demo/paper accounts. We're proving out the execution path across different services before anyone runs it live. Not yet open to the public.</p>
+              <a href="#waitlist" class="inline-block mt-5 text-sm font-bold text-amber-400 hover:text-amber-300 transition">Get on the waitlist →</a>
+            </div>
+
+            <!-- COMING PRICING -->
+            <div class="border border-white/10 bg-zinc-950/50 rounded-2xl p-7">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">At Launch</div>
+              <div class="flex items-baseline gap-1.5 mb-1">
+                <span class="text-4xl font-black text-green-400">$129</span>
+                <span class="text-zinc-500 text-sm font-semibold">/ month</span>
+              </div>
+              <p class="text-xs text-zinc-500 mb-4">Annual available (≈2 months free). No lifetime.</p>
+              <ul class="space-y-2 text-sm text-zinc-300">
+                <li class="flex gap-2"><span class="text-green-400">✓</span> 14-day free trial — set it up, run it on demo, confirm it executes correctly, then go live</li>
+                <li class="flex gap-2"><span class="text-green-400">✓</span> Standalone product — separate from VIP, not required to have one for the other</li>
+                <li class="flex gap-2"><span class="text-green-400">✓</span> Full setup guide + dedicated support channel</li>
+              </ul>
+              <p class="mt-4 text-[11px] text-zinc-600 leading-relaxed">Pricing shown is planned and subject to change at public launch.</p>
+            </div>
+          </div>
+
+          <p class="mt-4 text-[11px] text-zinc-600 leading-relaxed max-w-2xl">
+            VIP members active as of June 15, 2026 receive the Auto-Trader at no additional cost when it launches, as promised before it became a standalone product.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== NINJATRADER TEASER ===================== -->
+      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="border border-white/5 bg-gradient-to-r from-zinc-950 to-black rounded-2xl p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="inline-flex items-center gap-2 text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400 beta-dot"></span> In Development
+              </div>
+              <div class="text-xl font-black text-white">A NinjaTrader® version is on the way.</div>
+              <p class="text-sm text-zinc-400 mt-1 max-w-xl leading-relaxed">Native execution for the NinjaTrader ecosystem — in development now. Waitlist members hear about it first.</p>
+            </div>
+            <a href="#waitlist" class="shrink-0 border border-white/20 hover:bg-white/10 transition px-6 py-3 rounded-2xl text-center font-medium whitespace-nowrap">Keep me posted</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== WAITLIST ===================== -->
+      <section id="waitlist" class="pt-14 pb-16 lg:pt-20 lg:pb-24 px-6 md:px-12">
+        <div class="max-w-2xl mx-auto text-center">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Get Early Access</div>
+          <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">Be first when it opens.</h2>
+          <p class="mt-4 text-zinc-400 text-sm leading-relaxed max-w-lg mx-auto">
+            Drop your email to join the waitlist. You'll get early access, the setup guide, and first word when the public release and the NinjaTrader version go live.
+          </p>
+
+          <form id="waitlist-form" class="mt-8 flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+            <input id="waitlist-email" type="email" required placeholder="you@email.com"
+              class="flex-1 bg-zinc-950 border border-white/10 focus:border-green-500/50 focus:outline-none rounded-2xl px-5 py-4 text-sm text-white placeholder-zinc-600 transition" />
+            <button type="submit"
+              class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-7 py-4 rounded-2xl whitespace-nowrap shadow-lg shadow-green-500/10">
+              Join Waitlist
+            </button>
+          </form>
+          <div id="waitlist-msg" class="hidden mt-4 text-sm font-semibold text-green-400"></div>
+
+          <p class="mt-6 text-zinc-600 text-xs">
+            Already a member or have questions?
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400/80 hover:text-green-400 transition">Ask in Discord</a>
+            <span class="text-zinc-800 mx-1">·</span>
+            <a href="mailto:fsdxteam@gmail.com?subject=Auto-Trader%20Waitlist" class="text-green-400/80 hover:text-green-400 transition">Email us</a>
+          </p>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+            CFTC Rule 4.41 — Hypothetical Performance Disclosure
+          </span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+            Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
+          </p>
+        </div>
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+            Futures & Forex Risk Disclosure
+          </span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+            Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
+          </p>
+        </div>
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
+            Automation & Vendor Disclosure
+          </span>
+          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+            FSD-X is an independent software provider. The Auto-Trader emits alert signals only; it does not place, manage, or guarantee any order. Any automated execution is performed by separate third-party services and brokers that the user selects, configures, and is solely responsible for, including compliance with broker and prop-firm rules (some restrict or prohibit automated trading) and all applicable laws. This is a beta product intended for demo/paper testing. Performance metrics reflect hypothetical, simulated backtest results of educational tools and should not be construed as investment or financial advice. Always validate on a demo account before risking real capital.
+          </p>
+        </div>
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
+          <div>FSD-X Trading (FSDX Trading) by DJ Trades • NinjaTrader® Vendor Ecosystem Partner</div>
+          <div>&copy; 2026 FSD-X Trading by DJ Trades. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      if (sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.remove('-translate-x-full');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+      }
+    }
+
+    // Waitlist handler — works today via mailto fallback.
+    // TODO: to capture emails directly, replace the mailto block with a POST
+    // to your endpoint (Whop / Formspree / the nexus worker), e.g.:
+    //   await fetch('https://YOUR-ENDPOINT/api/waitlist', {method:'POST',
+    //     headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})});
+    document.getElementById('waitlist-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('waitlist-email').value.trim();
+      if (!email) return;
+      const msg = document.getElementById('waitlist-msg');
+
+      // --- mailto fallback (no backend required) ---
+      const subject = encodeURIComponent('Auto-Trader Waitlist');
+      const body = encodeURIComponent('Add me to the Auto-Trader waitlist.\n\nEmail: ' + email + '\nTradingView username: ');
+      window.location.href = 'mailto:fsdxteam@gmail.com?subject=' + subject + '&body=' + body;
+
+      msg.textContent = "✓ You're on the list — finish sending the email that just opened.";
+      msg.classList.remove('hidden');
+      document.getElementById('waitlist-email').value = '';
+    });
+  </script>
+  <script src="nav-loader.js"></script>
+</body>
+</html>
