@@ -43,7 +43,7 @@
     <div class="w-full flex-1">
 
       <!-- ===================== HERO ===================== -->
-      <section class="min-h-screen flex items-center px-6 md:px-12 border-b border-white/10 py-16 lg:py-20 bg-gradient-to-b from-zinc-950 to-black">
+      <section class="px-6 md:px-12 border-b border-white/10 pt-20 pb-16 lg:pt-28 lg:pb-24 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl w-full mx-auto">
 
           <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold tracking-wide mb-6">
@@ -76,8 +76,84 @@
             </a>
           </div>
 
+          <p class="mt-4 text-sm text-zinc-400">
+            From <span class="text-white font-bold">$129/mo</span> at launch
+            <span class="text-zinc-700 mx-1.5">·</span> 14-day free trial
+            <span class="ml-2 text-[9px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded uppercase tracking-wider align-middle">Planned · subject to change</span>
+          </p>
+
           <p class="mt-6 text-zinc-600 text-xs leading-relaxed max-w-xl">
             Currently in private beta with a small group of testers on demo/paper accounts. Public release coming — get on the list to be first.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== HOW IT WORKS ===================== -->
+      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// How It Works</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Three steps. Then you walk away.</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">01</div>
+              <div class="font-bold text-white mb-1.5">The strategy fires</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">A graded breakout triggers at the close of the bar — exactly as Knightfall does, with the same A+ through C scoring and grade-based contract sizing.</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">02</div>
+              <div class="font-bold text-white mb-1.5">Your service receives it</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">It sends the order — direction, contracts, entry, stop, and targets — to the automation service you connect (PickMyTrade, TradersPost, and others).</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-lg mb-3">03</div>
+              <div class="font-bold text-white mb-1.5">Your broker executes</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">The bracket lives at your broker and manages the trade. At session end it flattens automatically — and it skips holidays and half-days on its own.</p>
+            </div>
+          </div>
+          <p class="mt-5 text-zinc-600 text-xs max-w-2xl leading-relaxed">
+            The strategy emits alerts only — it does not place orders itself. Execution happens through a third-party service and broker that you configure and control. Full setup guide included on access.
+          </p>
+        </div>
+      </section>
+
+      <!-- ===================== ACCESS / PRICING ===================== -->
+      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Access</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Where it stands right now.</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+            <!-- BETA STATUS -->
+            <div class="border border-amber-500/30 bg-amber-500/[0.04] rounded-2xl p-7">
+              <div class="inline-flex items-center gap-2 text-amber-400 text-[10px] font-bold uppercase tracking-widest mb-3">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 beta-dot"></span> Current Phase
+              </div>
+              <div class="text-2xl font-black text-white mb-2">Private Beta</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Invite-only testing on demo/paper accounts. We're proving out the execution path across different services before anyone runs it live. Not yet open to the public.</p>
+              <a href="#waitlist" class="inline-block mt-5 text-sm font-bold text-amber-400 hover:text-amber-300 transition">Get on the waitlist →</a>
+            </div>
+
+            <!-- COMING PRICING -->
+            <div class="border border-white/10 bg-zinc-950/50 rounded-2xl p-7">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">At Launch</div>
+              <div class="flex items-baseline flex-wrap gap-x-1.5 gap-y-2 mb-1">
+                <span class="text-4xl font-black text-green-400">$129</span>
+                <span class="text-zinc-500 text-sm font-semibold">/ month</span>
+                <span class="ml-1 text-[9px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded uppercase tracking-wider">Planned · Subject to change</span>
+              </div>
+              <p class="text-xs text-zinc-500 mb-4">Annual available (≈2 months free). No lifetime.</p>
+              <ul class="space-y-2 text-sm text-zinc-300">
+                <li class="flex gap-2"><span class="text-green-400">✓</span> 14-day free trial — set it up, run it on demo, confirm it executes correctly, then go live</li>
+                <li class="flex gap-2"><span class="text-green-400">✓</span> Standalone product — separate from VIP, not required to have one for the other</li>
+                <li class="flex gap-2"><span class="text-green-400">✓</span> Full setup guide + dedicated support channel</li>
+              </ul>
+              <p class="mt-4 text-[11px] text-zinc-600 leading-relaxed">Beta — not yet for sale. Planned pricing shown for reference only; price, plans, and terms are subject to change at launch.</p>
+            </div>
+          </div>
+
+          <p class="mt-4 text-[11px] text-zinc-600 leading-relaxed max-w-2xl">
+            VIP members active as of June 15, 2026 receive the Auto-Trader at no additional cost when it launches, as promised before it became a standalone product.
           </p>
         </div>
       </section>
@@ -146,35 +222,6 @@
         </div>
       </section>
 
-      <!-- ===================== HOW IT WORKS ===================== -->
-      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
-        <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// How It Works</div>
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Three steps. Then you walk away.</h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-green-400 font-black text-lg mb-3">01</div>
-              <div class="font-bold text-white mb-1.5">The strategy fires</div>
-              <p class="text-sm text-zinc-400 leading-relaxed">A graded breakout triggers at the close of the bar — exactly as Knightfall does, with the same A+ through C scoring and grade-based contract sizing.</p>
-            </div>
-            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-green-400 font-black text-lg mb-3">02</div>
-              <div class="font-bold text-white mb-1.5">Your service receives it</div>
-              <p class="text-sm text-zinc-400 leading-relaxed">It sends the order — direction, contracts, entry, stop, and targets — to the automation service you connect (PickMyTrade, TradersPost, and others).</p>
-            </div>
-            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-green-400 font-black text-lg mb-3">03</div>
-              <div class="font-bold text-white mb-1.5">Your broker executes</div>
-              <p class="text-sm text-zinc-400 leading-relaxed">The bracket lives at your broker and manages the trade. At session end it flattens automatically — and it skips holidays and half-days on its own.</p>
-            </div>
-          </div>
-          <p class="mt-5 text-zinc-600 text-xs max-w-2xl leading-relaxed">
-            The strategy emits alerts only — it does not place orders itself. Execution happens through a third-party service and broker that you configure and control. Full setup guide included on access.
-          </p>
-        </div>
-      </section>
-
       <!-- ===================== BUILT FOR EXECUTION ===================== -->
       <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
         <div class="max-w-5xl mx-auto">
@@ -200,47 +247,6 @@
               <p class="text-sm text-zinc-400 leading-relaxed">Identical decision logic to Knightfall — cash-correct end-of-day flatten and holiday/half-day skip carried over exactly.</p>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- ===================== ACCESS / PRICING ===================== -->
-      <section class="pt-14 pb-4 lg:pt-16 px-6 md:px-12 border-b border-white/5">
-        <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Access</div>
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Where it stands right now.</h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-            <!-- BETA STATUS -->
-            <div class="border border-amber-500/30 bg-amber-500/[0.04] rounded-2xl p-7">
-              <div class="inline-flex items-center gap-2 text-amber-400 text-[10px] font-bold uppercase tracking-widest mb-3">
-                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 beta-dot"></span> Current Phase
-              </div>
-              <div class="text-2xl font-black text-white mb-2">Private Beta</div>
-              <p class="text-sm text-zinc-400 leading-relaxed">Invite-only testing on demo/paper accounts. We're proving out the execution path across different services before anyone runs it live. Not yet open to the public.</p>
-              <a href="#waitlist" class="inline-block mt-5 text-sm font-bold text-amber-400 hover:text-amber-300 transition">Get on the waitlist →</a>
-            </div>
-
-            <!-- COMING PRICING -->
-            <div class="border border-white/10 bg-zinc-950/50 rounded-2xl p-7">
-              <div class="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">At Launch</div>
-              <div class="flex items-baseline flex-wrap gap-x-1.5 gap-y-2 mb-1">
-                <span class="text-4xl font-black text-green-400">$129</span>
-                <span class="text-zinc-500 text-sm font-semibold">/ month</span>
-                <span class="ml-1 text-[9px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded uppercase tracking-wider">Planned · Subject to change</span>
-              </div>
-              <p class="text-xs text-zinc-500 mb-4">Annual available (≈2 months free). No lifetime.</p>
-              <ul class="space-y-2 text-sm text-zinc-300">
-                <li class="flex gap-2"><span class="text-green-400">✓</span> 14-day free trial — set it up, run it on demo, confirm it executes correctly, then go live</li>
-                <li class="flex gap-2"><span class="text-green-400">✓</span> Standalone product — separate from VIP, not required to have one for the other</li>
-                <li class="flex gap-2"><span class="text-green-400">✓</span> Full setup guide + dedicated support channel</li>
-              </ul>
-              <p class="mt-4 text-[11px] text-zinc-600 leading-relaxed">Beta — not yet for sale. Planned pricing shown for reference only; price, plans, and terms are subject to change at launch.</p>
-            </div>
-          </div>
-
-          <p class="mt-4 text-[11px] text-zinc-600 leading-relaxed max-w-2xl">
-            VIP members active as of June 15, 2026 receive the Auto-Trader at no additional cost when it launches, as promised before it became a standalone product.
-          </p>
         </div>
       </section>
 
