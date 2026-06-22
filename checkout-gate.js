@@ -29,6 +29,19 @@
       agree: "I understand and agree to the Terms of Service.",
       proceed: "Proceed to Checkout"
     },
+    tools: {
+      eyebrow: "Before You Continue",
+      title: "FSD-X Tool — Terms of Service",
+      points: [
+        "This is a software utility — <strong>not financial advice</strong> and not a trade-signal service.",
+        "Trading involves <strong>substantial risk</strong>; no outcome or result is guaranteed. Tools assist your process; they do not guarantee performance.",
+        "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. Cancel during any free trial to avoid being charged.",
+        "Access is delivered via a <strong>license key tied to your account</strong>. Sharing, reselling, or redistributing your key or access is prohibited and may end access without refund.",
+        "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
+      ],
+      agree: "I understand and agree to the Terms of Service.",
+      proceed: "Proceed to Checkout"
+    },
     autotrader: {
       eyebrow: "Before You Continue · Automated Product",
       title: "FSD-X // ORB Auto-Trader — Terms of Service",
