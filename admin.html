@@ -380,6 +380,41 @@
       <div id="panel-sales" class="tab-panel">
         <div class="grid gap-6 max-w-2xl">
 
+          <!-- ===== Auto-Trader Early-Access Spots ===== -->
+          <div class="border border-green-500/30 bg-green-500/[0.04] rounded-2xl p-6">
+            <div class="flex items-start justify-between gap-3 mb-1">
+              <h2 class="text-base font-black text-white">Auto-Trader Early-Access Spots</h2>
+              <span id="fs-state-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0">—</span>
+            </div>
+            <p class="text-zinc-500 text-xs mb-5">Controls the live "spots left" counter on the Auto-Trader page. When <span class="text-zinc-300 font-semibold">Remaining</span> hits 0 the waitlist form locks itself automatically, so nobody emails for an early-access spot that's already gone. Edit the number here as codes go out — no code changes needed.</p>
+
+            <div id="fs-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Total Spots</label>
+                  <input type="number" min="0" id="fs-total-input" placeholder="30"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Remaining</label>
+                  <input type="number" min="0" id="fs-remaining-input" placeholder="30"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+              </div>
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="checkbox" id="fs-active-input" class="accent-green-500 w-4 h-4">
+                <span class="text-sm text-zinc-300">Show the counter on the Auto-Trader page</span>
+              </label>
+              <p class="text-zinc-600 text-[11px] -mt-1">Leave this off (or never set spots) and the page stays a plain "join the waitlist" — no early-access pricing or counter shown.</p>
+              <div class="flex gap-3 pt-1">
+                <button onclick="saveFounderSpots()" id="fs-save-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Spots</button>
+                <button onclick="loadFounderSpots()" id="fs-reload-btn" class="px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Reload</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Live Sale Display -->
           <div id="current-sale-display" class="hidden border rounded-2xl p-5">
             <div class="flex items-start justify-between gap-3 mb-4">
@@ -1224,7 +1259,7 @@
       const activeBtn = document.getElementById('tab-' + tab);
       if (activeBtn) activeBtn.classList.add('active-nav');
       if (tab === 'announce') loadCurrentAnnouncement();
-      if (tab === 'sales') loadCurrentSale();
+      if (tab === 'sales') { loadCurrentSale(); loadFounderSpots(); }
       if (tab === 'updates') loadAdminUpdates();
       if (tab === 'schedule') loadAdminSchedule();
       if (tab === 'roster') { cleanRosterNotes(); renderRoster(); }
@@ -1918,6 +1953,62 @@
         showAdminMsg('announce-msg', data.error || 'Failed to post announcement.', 'error');
       }
       btn.disabled = false; btn.textContent = 'Post Announcement';
+    }
+
+    async function loadFounderSpots() {
+      const badge = document.getElementById('fs-state-badge');
+      try {
+        const res = await fetch(`${API}/api/founder-spots`);
+        const data = await res.json();
+        const fs = data.founderSpots;
+        if (fs) {
+          document.getElementById('fs-total-input').value = fs.total ?? '';
+          document.getElementById('fs-remaining-input').value = fs.remaining ?? '';
+          document.getElementById('fs-active-input').checked = fs.active !== false;
+          if (fs.active === false) {
+            badge.textContent = 'Hidden'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0';
+          } else if ((fs.remaining ?? 0) <= 0) {
+            badge.textContent = 'Full · Form locked'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/15 text-red-400 shrink-0';
+          } else {
+            badge.textContent = fs.remaining + ' of ' + fs.total + ' left'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-green-500/15 text-green-400 shrink-0';
+          }
+        } else {
+          document.getElementById('fs-active-input').checked = false;
+          badge.textContent = 'Not set up'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0';
+        }
+      } catch(e) {
+        badge.textContent = 'Load error'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/15 text-red-400 shrink-0';
+      }
+    }
+
+    async function saveFounderSpots() {
+      const total = parseInt(document.getElementById('fs-total-input').value, 10);
+      const remaining = parseInt(document.getElementById('fs-remaining-input').value, 10);
+      const active = document.getElementById('fs-active-input').checked;
+      if (!Number.isFinite(total) || total < 0) { showAdminMsg('fs-msg', 'Enter a valid Total (0 or more).', 'error'); return; }
+      if (!Number.isFinite(remaining) || remaining < 0) { showAdminMsg('fs-msg', 'Enter a valid Remaining (0 or more).', 'error'); return; }
+      if (remaining > total) { showAdminMsg('fs-msg', 'Remaining can\u2019t be more than Total.', 'error'); return; }
+
+      const btn = document.getElementById('fs-save-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/founder-spots`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ total, remaining, active })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showAdminMsg('fs-msg', active ? `Saved \u2014 ${remaining} of ${total} spots showing on the Auto-Trader page.` : 'Saved \u2014 counter is hidden; page shows a plain waitlist.', 'success');
+          loadFounderSpots();
+        } else {
+          showAdminMsg('fs-msg', data.error || 'Failed to save.', 'error');
+        }
+      } catch(e) {
+        showAdminMsg('fs-msg', 'Network error.', 'error');
+      }
+      btn.disabled = false; btn.textContent = 'Save Spots';
     }
 
     async function loadCurrentSale() {
