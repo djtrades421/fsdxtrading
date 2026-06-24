@@ -274,6 +274,20 @@
             Drop your email to join the waitlist. You'll get early access, the setup guide, and first word when the public release and the NinjaTrader version go live.
           </p>
 
+          <!-- Early-access spots — number is controlled from the admin panel (/api/founder-spots).
+               Hidden entirely unless the counter is turned on there. -->
+          <div id="founder-strip" class="hidden mt-6 max-w-md mx-auto">
+            <div id="founder-open" class="hidden rounded-2xl border border-green-500/30 bg-green-500/[0.05] px-5 py-4 text-left">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-green-400 mb-1">Early Access Rate</div>
+              <div class="text-sm text-zinc-200">Lock <span class="text-white font-bold">$99/mo</span> instead of $129 — waitlist members only.</div>
+              <div class="mt-2 text-2xl font-black text-white"><span id="founder-remaining">—</span> <span class="text-zinc-500 text-base font-bold">of <span id="founder-total">—</span> spots left</span></div>
+            </div>
+            <div id="founder-full" class="hidden rounded-2xl border border-amber-500/30 bg-amber-500/[0.05] px-5 py-4 text-left">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-amber-400 mb-1">Early Access Full</div>
+              <div class="text-sm text-zinc-200">All early-access spots are claimed. Public launch at <span class="text-white font-bold">$129/mo</span> is coming — follow below to hear when it goes live.</div>
+            </div>
+          </div>
+
           <form id="waitlist-form" class="mt-8 max-w-md mx-auto">
             <div class="flex flex-col sm:flex-row gap-3">
               <input id="waitlist-email" name="email" type="email" required placeholder="you@email.com"
@@ -374,6 +388,36 @@
       }
     }
 
+    // Founder-spots counter — driven entirely by the admin panel (/api/founder-spots).
+    // No counter set / turned off  -> this stays a plain waitlist.
+    // Spots remaining > 0          -> shows "X of N spots left".
+    // Spots remaining = 0          -> locks the form so nobody emails for a spot that's gone.
+    let waitlistLocked = false;
+    (async function initFounderSpots() {
+      try {
+        const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/founder-spots');
+        const data = await res.json();
+        const fs = data && data.founderSpots;
+        if (!fs || fs.active === false) return;               // counter off -> plain waitlist
+        const strip = document.getElementById('founder-strip');
+        strip.classList.remove('hidden');
+        const remaining = Math.max(0, parseInt(fs.remaining, 10) || 0);
+        const total     = Math.max(0, parseInt(fs.total, 10) || 0);
+        if (remaining > 0) {
+          document.getElementById('founder-remaining').textContent = remaining;
+          document.getElementById('founder-total').textContent = total;
+          document.getElementById('founder-open').classList.remove('hidden');
+        } else {
+          document.getElementById('founder-full').classList.remove('hidden');
+          waitlistLocked = true;
+          const email = document.getElementById('waitlist-email');
+          const btn   = document.getElementById('waitlist-btn');
+          if (email) { email.disabled = true; email.placeholder = 'Early access full'; }
+          if (btn)   { btn.disabled = true; btn.textContent = 'Early access full'; btn.classList.add('opacity-60', 'cursor-not-allowed'); }
+        }
+      } catch (e) { /* network issue -> leave as a plain waitlist, never block signups */ }
+    })();
+
     // Waitlist handler — posts to the same Formspree as the contact form.
     // Submissions are tagged "Auto-Trader Waitlist" (hidden field) so they're easy
     // to filter in your Formspree inbox. To split them into their own inbox later,
@@ -381,6 +425,7 @@
     const WAITLIST_FORMSPREE_ID = 'xvzjpyeg';
     document.getElementById('waitlist-form').addEventListener('submit', async function (e) {
       e.preventDefault();
+      if (waitlistLocked) return;   // founder run full — form is closed
       const btn = document.getElementById('waitlist-btn');
       const msg = document.getElementById('waitlist-msg');
       const err = document.getElementById('waitlist-err');
