@@ -508,12 +508,14 @@
       const discColor = s.disciplineScore >= 80 ? 'text-green-400' : s.disciplineScore >= 60 ? 'text-yellow-400' : 'text-red-400';
       const wrColor = s.wr >= 55 ? 'text-green-400' : s.wr >= 45 ? 'text-zinc-300' : 'text-red-400';
 
-      // Mini progress bar
+      // Mini progress bar — DD always red (any use is bad); target green and
+      // empty while underwater. Width clamped so a negative % never paints full.
       const miniBar = (pct, warn) => {
         if (pct === null) return '';
-        const col = warn ? (pct>=80?'#ef4444':pct>=50?'#f59e0b':'#22c55e') : '#22c55e';
+        const col = warn ? '#ef4444' : '#22c55e';
+        const w = Math.max(0, Math.min(100, pct));
         return `<div class="h-1 bg-white/5 rounded-full overflow-hidden w-16">
-          <div class="h-full rounded-full" style="width:${pct}%;background:${col}"></div>
+          <div class="h-full rounded-full" style="width:${w}%;background:${col}"></div>
         </div>`;
       };
 
@@ -540,8 +542,8 @@
 
           <!-- Progress bars -->
           <div class="hidden md:flex flex-col gap-1 items-end shrink-0">
-            ${s.targetPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">Target</span>${miniBar(s.targetPct,false)}<span class="text-[10px] font-bold text-zinc-400">${s.targetPct}%</span></div>` : ''}
-            ${s.ddPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">DD</span>${miniBar(s.ddPct,true)}<span class="text-[10px] font-bold text-zinc-400">${s.ddPct}%</span></div>` : ''}
+            ${s.targetPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">Target</span>${miniBar(s.targetPct,false)}<span class="text-[10px] font-bold" style="color:${s.targetPct>=0?'#22c55e':'#ef4444'}">${s.targetPct}%</span></div>` : ''}
+            ${s.ddPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">DD</span>${miniBar(s.ddPct,true)}<span class="text-[10px] font-bold" style="color:${s.ddPct>0?'#ef4444':'#a1a1aa'}">${s.ddPct}%</span></div>` : ''}
           </div>
 
           <!-- Discipline + WR -->
@@ -581,9 +583,9 @@
             <div class="border border-white/5 bg-zinc-900/30 rounded-xl p-4 space-y-3">
               <div class="text-xs font-black text-zinc-400 uppercase tracking-wider">⚡ Firm Rules</div>
               <div class="space-y-3">
-                ${s.targetPct !== null ? progressRow('Profit Target', s.targetPct, false, '$'+s.totalPnl.toFixed(0)+' of $'+s.target.toFixed(0), s.targetPct>=100?'Hit ✓':'$'+(s.target-s.totalPnl).toFixed(0)+' to go') : ''}
+                ${s.targetPct !== null ? targetBar(s) : ''}
                 ${s.firmDailyPct !== null ? progressRow('Firm Daily Limit — Today', s.firmDailyPct, true, '$'+Math.abs(Math.min(0,s.todayPnl)).toFixed(0)+' used of $'+s.firmDaily.toFixed(0), s.firmDailyRemaining!==null?'$'+s.firmDailyRemaining.toFixed(0)+' remaining':'') : ''}
-                ${s.ddPct !== null ? progressRow((card.ddType==='eod'?'EOD':'Trailing')+' Drawdown', s.ddPct, true, '$'+Math.abs(s.currentDD).toFixed(0)+' used of $'+s.maxDDLimit.toFixed(0), s.ddRemaining!==null?'$'+s.ddRemaining.toFixed(0)+' remaining':'') : ''}
+                ${s.ddPct !== null ? progressRow((card.ddType==='eod'?'EOD':'Trailing')+' Drawdown', s.ddPct, true, '$'+Math.abs(s.currentDD).toFixed(0)+' used of $'+s.maxDDLimit.toFixed(0), s.ddRemaining!==null?'$'+s.ddRemaining.toFixed(0)+' remaining':'', '#ef4444') : ''}
                 ${s.maxDDLimit > 0 ? `<div class="flex justify-between text-xs py-1 border-b border-white/5"><span class="text-zinc-500">High Water Mark</span><span class="text-white font-bold">${s.hwm>=0?'+':'-'}$${Math.abs(s.hwm).toFixed(2)}</span></div>` : ''}
                 ${s.maxDDLimit > 0 ? `<div class="flex justify-between text-xs py-1"><span class="text-zinc-500">Max Drawdown Reached</span><span class="text-red-400 font-bold">-$${Math.abs(s.maxDD).toFixed(2)}</span></div>` : ''}
               </div>
@@ -638,8 +640,9 @@
       </div>`;
     }
 
-    function progressRow(label, pct, warn, used, remaining) {
-      const col = warn ? (pct>=80?'#ef4444':pct>=50?'#f59e0b':'#22c55e') : '#22c55e';
+    function progressRow(label, pct, warn, used, remaining, fixedColor) {
+      const col = fixedColor || (warn ? (pct>=80?'#ef4444':pct>=50?'#f59e0b':'#22c55e') : '#22c55e');
+      const w = Math.max(0, Math.min(100, pct)); // clamp: never let a negative/over-100 pct paint a full bar
       return `<div>
         <div class="flex items-center justify-between mb-1">
           <span class="text-xs text-zinc-500">${label}</span>
@@ -649,9 +652,35 @@
           </div>
         </div>
         <div class="h-1.5 bg-white/5 rounded-full overflow-hidden mb-1">
-          <div class="h-full rounded-full transition-all" style="width:${pct}%;background:${col}"></div>
+          <div class="h-full rounded-full transition-all" style="width:${w}%;background:${col}"></div>
         </div>
         ${remaining ? `<div class="text-[10px] text-zinc-600 text-right">${remaining}</div>` : ''}
+      </div>`;
+    }
+
+    // Profit-target bar: empty while underwater (no profit progress yet), the %
+    // shows your actual standing (e.g. -19%) in red. Once P&L is positive it
+    // fills green from the left toward target, and the % turns green.
+    function targetBar(s) {
+      const pnl = s.totalPnl;
+      const target = s.target;                         // > 0 (row only renders when target set)
+      const w = pnl > 0 ? Math.min(100, (pnl / target) * 100) : 0;  // empty when in the red
+      const col = pnl >= 0 ? '#22c55e' : '#ef4444';    // number red while in the red
+      const used = (pnl < 0 ? '-$'+Math.abs(pnl).toFixed(0) : '$'+pnl.toFixed(0)) + ' of $'+target.toFixed(0);
+      const remaining = s.targetPct >= 100 ? 'Hit ✓' : '$'+(target - pnl).toFixed(0)+' to go';
+
+      return `<div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-zinc-500">Profit Target</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] text-zinc-600">${used}</span>
+            <span class="text-xs font-bold" style="color:${col}">${s.targetPct}%</span>
+          </div>
+        </div>
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden mb-1">
+          <div class="h-full rounded-full transition-all" style="width:${w}%;background:#22c55e"></div>
+        </div>
+        <div class="text-[10px] text-zinc-600 text-right">${remaining}</div>
       </div>`;
     }
 
