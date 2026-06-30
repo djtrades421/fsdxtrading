@@ -4766,7 +4766,11 @@
         description: r['Description'] || '',
         email: r['Email'] || '',
         discordName: r['Discord username'] || '',
-        amount: parseFloat(r['Payment Amount']||'0')||0,
+        // Use the USD-converted total so foreign-currency charges (INR, AUD, etc.)
+        // aren't displayed as raw dollars. Falls back to Payment Amount for rows
+        // with no USD value (e.g. unpaid/open transactions, which are all USD).
+        amount: parseFloat(r['Total Amount USD (Including Fees)'] || r['Payment Amount'] || '0') || 0,
+        nativeAmount: parseFloat(r['Payment Amount']||'0')||0,
         currency: r['Payment Currency'] || 'usd',
         billingReason: r['Billing reason'] || '',
         failureReason: r['Failure reason'] || '',
@@ -4870,6 +4874,7 @@
               </div>
               <div class="text-right shrink-0 ml-3">
                 <div class="text-sm font-black text-green-400">+$${p.amount.toFixed(2)}</div>
+                ${p.currency && p.currency.toLowerCase() !== 'usd' ? `<div class="text-[9px] text-zinc-500">${p.nativeAmount.toFixed(2)} ${p.currency.toUpperCase()}</div>` : ''}
                 <div class="text-[10px] text-zinc-600">${p.paidAt?p.paidAt.slice(11,16):''}</div>
               </div>
             </div>`).join('')}
