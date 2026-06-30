@@ -2752,11 +2752,14 @@
         rosterData.push(memberData);
       }
 
-      // If billing cycle set and amount > 0, log a payment entry
+      // If billing cycle set and amount > 0, log a payment entry.
+      // Date the payment to the member's Joined Date (when they actually paid),
+      // not today. Noon-local avoids any date rollover when grouped by day or
+      // month. Falls back to today only if no joined date was entered.
       if (cycle !== 'none' && parseFloat(amountVal) > 0 && !_editingMemberId) {
         const payment = {
           id: 'manual_' + Date.now().toString(36),
-          paidAt: new Date().toISOString(),
+          paidAt: joined ? joined + 'T12:00:00' : new Date().toISOString(),
           status: 'paid',
           description: `${access} — ${cycle} billing`,
           email: memberData.email,
