@@ -675,6 +675,12 @@
         if (toDate && first.iso && first.iso > toDate) return;
 
         const scaled = entryFills.length > 1 || exitFills.length > 1;
+        // Full-precision prices (weighted averages aren't tick-aligned). Keep
+        // enough decimals that the journal's price-mode recompute reproduces the
+        // exact gross rather than drifting from a 2-dp round.
+        const fmtPrice = v => (Math.round(v * 1e6) / 1e6).toString();
+        const entryPriceStr = fmtPrice(wAvg(entryFills));
+        const exitPriceStr = fmtPrice(wAvg(exitFills));
         trades.push({
           id: Date.now().toString() + Math.random().toString(36).slice(2),
           date: first.iso,
@@ -684,16 +690,28 @@
           direction,
           grade: '',
           result: getResult(pnl),
+          // In price mode the journal treats tp1Pnl as the GROSS exit leg and
+          // subtracts commissions to get net — so store gross here, net in netPnl.
           netPnl: pnl,
           grossPnl: gross,
           fees: fees,
-          tp1Pnl: pnl,
+          commissions: fees,          // journal/backtest edit form reads `commissions`
+          pnlMode: 'price',           // open the editor pre-filled in By-Price mode
+          tp1Pnl: gross,
           tp1Contracts: entryQty,
           tp2Pnl: 0,
           tp2Contracts: 0,
           contracts: entryQty.toString(),
-          entryPrice: (Math.round(wAvg(entryFills) * 100) / 100).toString(),
-          exitPrice: (Math.round(wAvg(exitFills) * 100) / 100).toString(),
+          // Provide every alias the journal/backtest editors look for.
+          entryPrice: entryPriceStr,
+          entry: entryPriceStr,
+          exitPrice: exitPriceStr,
+          tp1Price: exitPriceStr,
+          tp1Exit: exitPriceStr,
+          tp2Price: null,
+          tp2Exit: null,
+          slPrice: null,
+          sl: null,
           strategy: 'Live Trade',
           notes: `Tradovate · ${first.rawContract}` + (scaled ? ` · ${entryFills.length} in / ${exitFills.length} out` : '') + (fees > 0 ? ` · gross $${gross.toFixed(2)} − fees $${fees.toFixed(2)}` : ''),
           accountName: first.account,
