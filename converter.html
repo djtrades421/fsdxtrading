@@ -149,6 +149,19 @@
               <p class="text-[10px] text-zinc-600 mt-1">Leave blank for all dates</p>
             </div>
           </div>
+
+          <!-- Tradovate only: commission -->
+          <div id="opt-commission-row" class="hidden">
+            <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Commission per side ($)</label>
+            <div class="flex items-center gap-2 max-w-xs">
+              <span class="text-zinc-600 text-sm">$</span>
+              <input type="number" id="opt-commission" value="0.50" min="0" step="0.01" placeholder="0.50"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+              <span class="text-zinc-600 text-xs whitespace-nowrap">/ contract / side</span>
+            </div>
+            <p class="text-[10px] text-zinc-600 mt-1">All-in rate (commission + exchange/NFA/clearing). Deducted per contract on entry <span class="text-zinc-500">and</span> exit so imported P&amp;L matches Tradovate's <span class="text-zinc-400">Total P/L</span>. Set to 0 for gross. Common: $0.37–$0.85.</p>
+          </div>
+
           <div class="flex gap-3">
             <button onclick="convert()" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Convert →</button>
             <button onclick="resetConverter()" class="px-4 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-400 text-xs font-bold rounded-xl transition">← New File</button>
@@ -473,6 +486,7 @@
       document.getElementById('format-badge').innerHTML = getFormatBadgeHTML(detectedMode);
       document.getElementById('format-badge').className = '';
       document.getElementById('format-info').outerHTML = `<div id="format-info">${getFormatInfoHTML(detectedMode)}</div>`;
+      document.getElementById('opt-commission-row').classList.toggle('hidden', detectedMode !== 'tradovate');
 
       // Auto-detect date range
       let dates = [];
@@ -599,7 +613,8 @@
     // every scale-in and scale-out correctly regardless of order or size.
     // Reversals (a fill that flips the position through zero) are split so the
     // closing portion ends one campaign and the remainder opens the next.
-    function parseTradovate(rows, ticker, fromDate, toDate) {
+    function parseTradovate(rows, ticker, fromDate, toDate, commPerSide) {
+      commPerSide = Math.max(0, commPerSide || 0);
       const DEFAULT_SPEC = { tick: 0.25, value: 0.50 };
       const pointValue = sym => {
         const spec = TRADOVATE_TICK_MAP[sym] || TRADOVATE_TICK_MAP[ticker] || DEFAULT_SPEC;
@@ -642,7 +657,13 @@
         const sells = camp.filter(f => f.side === 'SELL');
         const buyVal = buys.reduce((s, f) => s + f.qty * f.price, 0);
         const sellVal = sells.reduce((s, f) => s + f.qty * f.price, 0);
-        const pnl = parseFloat(((sellVal - buyVal) * pointValue(sym)).toFixed(2));
+        const gross = parseFloat(((sellVal - buyVal) * pointValue(sym)).toFixed(2));
+
+        // Commission: every filled contract is charged once on entry and once
+        // on exit, so a campaign's commissioned sides = sum of all fill qty.
+        const sides = camp.reduce((s, f) => s + f.qty, 0);
+        const fees = parseFloat((sides * commPerSide).toFixed(2));
+        const pnl = parseFloat((gross - fees).toFixed(2));
 
         const entryFills = camp.filter(f => f.side === entrySide);
         const exitFills = camp.filter(f => f.side !== entrySide);
@@ -664,6 +685,8 @@
           grade: '',
           result: getResult(pnl),
           netPnl: pnl,
+          grossPnl: gross,
+          fees: fees,
           tp1Pnl: pnl,
           tp1Contracts: entryQty,
           tp2Pnl: 0,
@@ -672,7 +695,7 @@
           entryPrice: (Math.round(wAvg(entryFills) * 100) / 100).toString(),
           exitPrice: (Math.round(wAvg(exitFills) * 100) / 100).toString(),
           strategy: 'Live Trade',
-          notes: `Tradovate · ${first.rawContract}` + (scaled ? ` · ${entryFills.length} in / ${exitFills.length} out` : ''),
+          notes: `Tradovate · ${first.rawContract}` + (scaled ? ` · ${entryFills.length} in / ${exitFills.length} out` : '') + (fees > 0 ? ` · gross $${gross.toFixed(2)} − fees $${fees.toFixed(2)}` : ''),
           accountName: first.account,
           source: 'tradovate',
         });
@@ -718,7 +741,8 @@
       let trades = [];
 
       if (detectedMode === 'tradovate') {
-        trades = parseTradovate(rows, ticker, fromDate, toDate);
+        const commPerSide = Math.max(0, parseFloat(document.getElementById('opt-commission').value) || 0);
+        trades = parseTradovate(rows, ticker, fromDate, toDate, commPerSide);
       } else if (detectedMode === 'fsdx_new' || detectedMode === 'tv_new') {
         // New TradingView format: "Trade number", "Net PnL USD", "Size (qty)", Entry comes AFTER Exit in CSV
         const tradeMap = {};
@@ -889,7 +913,13 @@
         noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Trade count may differ by 1 from TradingView</span> — TV sometimes excludes the first trade from its summary if a position was open before the backtest window. Your converter counts all complete entry+exit pairs.`;
       } else {
         noteEl.classList.remove('hidden');
-        noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Tradovate import note</span> — Commissions are not included in Tradovate's Orders CSV. P&L is calculated from fill prices. Grade column will be blank — you can tag trades manually in the journal or backtest.`;
+        const grossSum = trades.reduce((s, t) => s + (parseFloat(t.grossPnl) || parseFloat(t.netPnl)), 0);
+        const feeSum = trades.reduce((s, t) => s + (parseFloat(t.fees) || 0), 0);
+        if (feeSum > 0) {
+          noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Tradovate import note</span> — Gross P&L <span class="text-zinc-300 font-mono">$${grossSum.toFixed(2)}</span> − commissions <span class="text-red-400 font-mono">$${feeSum.toFixed(2)}</span> = net <span class="${(grossSum - feeSum) >= 0 ? 'text-green-400' : 'text-red-400'} font-mono font-bold">$${(grossSum - feeSum).toFixed(2)}</span>. Fees estimated at your commission rate (not in the CSV). Win/Loss is graded on net P&L. Set commission to 0 to import gross.`;
+        } else {
+          noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Tradovate import note</span> — Showing <span class="font-bold text-zinc-300">gross</span> P&L (commission set to 0). Tradovate's Total P/L also subtracts commissions & exchange fees, which aren't in the Orders CSV — enter your per-side rate on the previous screen to match your net. Grade column will be blank.`;
+        }
       }
 
       // Preview
