@@ -572,14 +572,14 @@
         const tip=[p.date||(p.time?'@ '+p.time:''),`${p.ticker}${p.grade?' ['+p.grade+']':''}`,`${sign}$${Math.abs(p.pnl).toFixed(2)} → $${p.equity.toFixed(2)}`].filter(Boolean).join('·||·');
         return `<rect x="${(prevX+(x-prevX)*0.1).toFixed(1)}" y="${PAD_T}" width="${sliceW.toFixed(1)}" height="${CH}" fill="transparent" onmouseenter="showChartTooltip(event,'${tip}','${col}',${x.toFixed(1)},${toY(p.equity).toFixed(1)})" onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>`;}).join('');
 
-      const lastLineCol = '#22c55e';
+      const lastLineCol = isPos ? '#22c55e' : '#ef4444';
       const crosshairDot=`<circle id="${uid}-dot" cx="0" cy="0" r="5" fill="${lastLineCol}" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>`;
       const crosshairLine=`<line id="${uid}-vline" x1="0" y1="${PAD_T}" x2="0" y2="${PAD_T+CH}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>`;
 
       // Build segment SVG paths
       const baseY = Math.min(toY(Math.max(0,dataMin)), PAD_T+CH);
       const segmentSVG = segments.map((seg, si) => {
-        const col = '#22c55e'; // single solid color — always green
+        const col = seg.color === 'red' ? '#ef4444' : '#22c55e';
         const gid = `${uid}-fill-${si}`;
         const pathD = catmullRomPath(seg.pts);
         // Fill to the zero line (clamped to chart area)
