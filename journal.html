@@ -1435,10 +1435,10 @@
 
       const gridLines=yTicks.map(v=>{const y=toY(v);if(y<PAD_T-2||y>PAD_T+CH+2)return '';const isZero=Math.abs(v)<step*0.01;
         return `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
-          <text x="${(PAD_L-10).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.18)'}" font-size="10" font-family="ui-monospace,monospace">${fmtY(v)}</text>`;}).join('');
+          <text x="${(PAD_L-10).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.85)':'rgba(255,255,255,0.7)'}" font-size="11" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${fmtY(v)}</text>`;}).join('');
 
       const xLabels=xDates.map(d=>{const idx=points.findIndex(p=>p.date===d);if(idx<0)return '';const x=toX(idx);
-        return `<text x="${x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.22)" font-size="10" font-family="ui-monospace,monospace">${fmtX(d)}</text>`;}).join('');
+        return `<text x="${x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${fmtX(d)}</text>`;}).join('');
 
       const hoverRects=points.slice(1).map((p,i)=>{const x=toX(i+1),prevX=toX(i),sliceW=Math.max(8,x-prevX);
         const col=p.result==='WIN'?'#22c55e':p.result==='LOSS'?'#ef4444':'#a1a1aa';
