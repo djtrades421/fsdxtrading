@@ -601,9 +601,7 @@
               <div class="text-xs font-black text-zinc-400 uppercase tracking-wider">⚡ Firm Rules</div>
               ${accountAxisBar(s, card)}
               <div class="space-y-3">
-                ${s.targetPct !== null ? targetBar(s) : ''}
                 ${s.firmDailyPct !== null ? progressRow('Firm Daily Limit — Today', s.firmDailyPct, true, '$'+Math.abs(Math.min(0,s.todayPnl)).toFixed(0)+' used of $'+s.firmDaily.toFixed(0), s.firmDailyRemaining!==null?'$'+s.firmDailyRemaining.toFixed(0)+' remaining':'') : ''}
-                ${s.ddPct !== null ? progressRow((card.ddType==='eod'?'EOD':'Trailing')+' Drawdown', s.ddPct, true, '$'+Math.abs(s.currentDD).toFixed(0)+' used of $'+s.maxDDLimit.toFixed(0), s.ddRemaining!==null?'$'+s.ddRemaining.toFixed(0)+' remaining':'', '#ef4444') : ''}
                 ${s.maxDDLimit > 0 ? `<div class="flex justify-between text-xs py-1 border-b border-white/5"><span class="text-zinc-500">High Water Mark</span><span class="text-white font-bold">${s.hwm>=0?'+':'-'}$${Math.abs(s.hwm).toFixed(2)}</span></div>` : ''}
                 ${s.maxDDLimit > 0 ? `<div class="flex justify-between text-xs py-1"><span class="text-zinc-500">Max Drawdown Reached</span><span class="text-red-400 font-bold">-$${Math.abs(s.maxDD).toFixed(2)}</span></div>` : ''}
               </div>
