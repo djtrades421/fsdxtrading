@@ -599,6 +599,7 @@
             <!-- Firm Rules section -->
             <div class="border border-white/5 bg-zinc-900/30 rounded-xl p-4 space-y-3">
               <div class="text-xs font-black text-zinc-400 uppercase tracking-wider">⚡ Firm Rules</div>
+              ${accountAxisBar(s, card)}
               <div class="space-y-3">
                 ${s.targetPct !== null ? targetBar(s) : ''}
                 ${s.firmDailyPct !== null ? progressRow('Firm Daily Limit — Today', s.firmDailyPct, true, '$'+Math.abs(Math.min(0,s.todayPnl)).toFixed(0)+' used of $'+s.firmDaily.toFixed(0), s.firmDailyRemaining!==null?'$'+s.firmDailyRemaining.toFixed(0)+' remaining':'') : ''}
@@ -698,6 +699,79 @@
           <div class="h-full rounded-full transition-all" style="width:${w}%;background:#22c55e"></div>
         </div>
         <div class="text-[10px] text-zinc-600 text-right">${remaining}</div>
+      </div>`;
+    }
+
+    // Unified account axis: liquidation floor (MLL) ── START ── profit target,
+    // with the live balance riding between them. One bar for profit + drawdown.
+    //   MLL      = start + peak P&L − DD limit   (trailing/EOD floor)
+    //   balance  = start + total P&L
+    //   target$  = start + profit target
+    // Renders only when accountSize, DD limit and profit target are all set.
+    function accountAxisBar(s, card) {
+      const start   = parseFloat(card.accountSize) || 0;
+      const ddLimit = s.maxDDLimit || 0;
+      const tgtPnl  = s.target || 0;
+      if (!start || !ddLimit || !tgtPnl) return '';
+
+      const balance   = start + s.totalPnl;
+      const mll       = start + Math.max(0, s.hwm) - ddLimit;  // floor never below start−DD
+      const targetBal = start + tgtPnl;
+      const span      = targetBal - mll;
+      if (span <= 0) return '';
+
+      const money = v => '$' + Math.round(v).toLocaleString();
+      const clampPct = v => Math.max(0, Math.min(100, (v - mll) / span * 100));
+      const startPct = clampPct(start);
+      const balPct   = clampPct(balance);
+      const cushion  = balance - mll;                 // room to liquidation
+      const remaining = Math.max(0, targetBal - balance);
+      const inProfit = balance >= start;
+      const breached = balance <= mll;
+
+      // Fill: green start→balance when up, red balance→start when below start.
+      const fill = inProfit
+        ? `<div class="absolute inset-y-0 rounded-full" style="left:${startPct}%;width:${Math.max(0,balPct-startPct)}%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div>`
+        : `<div class="absolute inset-y-0 rounded-full" style="left:${balPct}%;width:${Math.max(0,startPct-balPct)}%;background:linear-gradient(90deg,#ef4444,#f87171)"></div>`;
+
+      const balColor = breached ? '#ef4444' : inProfit ? '#22c55e' : '#f59e0b';
+
+      return `<div class="pt-0.5 pb-1">
+        <div class="relative h-2.5 rounded-full bg-zinc-800/80 overflow-visible">
+          <!-- buffer zone below start (danger side) -->
+          <div class="absolute inset-y-0 left-0 rounded-l-full" style="width:${startPct}%;background:rgba(239,68,68,0.14)"></div>
+          <!-- target track above start -->
+          <div class="absolute inset-y-0 rounded-r-full" style="left:${startPct}%;right:0;background:rgba(34,197,94,0.10)"></div>
+          ${fill}
+          <!-- START marker -->
+          <div class="absolute top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-full bg-zinc-300" style="left:calc(${startPct}% - 1.5px)"></div>
+          <!-- balance marker -->
+          <div class="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full border-2 border-zinc-950" style="left:calc(${balPct}% - 5px);background:${balColor};box-shadow:0 0 8px ${balColor}"></div>
+        </div>
+        <!-- START caption under marker -->
+        <div class="relative h-3 mt-0.5">
+          <span class="absolute text-[9px] font-bold uppercase tracking-wider text-zinc-500 -translate-x-1/2" style="left:${startPct}%">Start</span>
+        </div>
+        <!-- top labels: MLL / TARGET -->
+        <div class="flex items-center justify-between mt-1">
+          <span class="text-xs font-bold text-red-400">${money(mll)} <span class="text-[10px] text-zinc-500 font-medium">MLL</span></span>
+          <span class="text-xs font-bold text-green-400">${money(targetBal)} <span class="text-[10px] text-zinc-500 font-medium">TARGET</span></span>
+        </div>
+        <!-- bottom labels: cushion / balance / remaining -->
+        <div class="flex items-center justify-between mt-2">
+          <div class="text-left">
+            <div class="text-sm font-black" style="color:${cushion<=0?'#ef4444':'#e4e4e7'}">${money(Math.max(0,cushion))}</div>
+            <div class="text-[10px] text-zinc-600">${breached?'breached':'cushion'}</div>
+          </div>
+          <div class="text-center">
+            <div class="text-sm font-black text-white">${money(balance)}</div>
+            <div class="text-[10px] text-zinc-600">balance</div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black" style="color:${remaining<=0?'#22c55e':'#e4e4e7'}">${remaining<=0?'Hit ✓':money(remaining)}</div>
+            <div class="text-[10px] text-zinc-600">remaining</div>
+          </div>
+        </div>
       </div>`;
     }
 
