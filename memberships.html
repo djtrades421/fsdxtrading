@@ -1,358 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="logo.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X Memberships — Plus & Pro Packages</title>
-  <meta name="description" content="Choose Plus for the full FSD-X indicator suite, or Pro to add Auto Trader. Monthly from $19.99 with a 14-day free trial. Annual and Lifetime options available." />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="FSD-X Memberships — Plus & Pro Packages" />
-  <meta property="og:description" content="Choose Plus for the full FSD-X indicator suite, or Pro to add Auto Trader. Monthly from $19.99 with a 14-day free trial. Annual and Lifetime options available." />
-  <meta property="og:image" content="og-image.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="FSD-X Memberships — Plus & Pro Packages" />
-  <meta name="twitter:description" content="Choose Plus for the full FSD-X indicator suite, or Pro to add Auto Trader. Monthly from $19.99 with a 14-day free trial. Annual and Lifetime options available." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body { background-color: #000; }
-  </style>
-  <link rel="canonical" href="https://www.fsdxtrading.com/memberships.html" />
-</head>
-<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+<div>
+  <div class="flex justify-between items-center mb-8 md:block">
+    <div class="text-4xl font-black tracking-wider flex flex-col">
+      <span class="text-green-400">FSD-X</span>
+      <span class="text-xs uppercase text-zinc-500 tracking-[0.2em] -mt-1 font-bold">Trading</span>
+    </div>
+    <button onclick="toggleMobileMenu()" class="md:hidden text-zinc-500 hover:text-white text-xs font-bold">[ESC]</button>
+  </div>
 
-  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
-    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
-    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
-  </header>
-
-  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
-    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
-  </aside>
-
-  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
-    <div class="w-full flex-1">
-
-      <!-- PAGE HEADER -->
-      <section class="pt-12 pb-10 lg:pt-20 lg:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Transparent Package Plans</div>
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">Choose Your Package</h1>
-          <p class="mt-4 text-zinc-400 text-sm max-w-xl leading-relaxed">
-            Plus gives you the full FSD-X indicator suite. Pro adds hands-off Auto Trader execution on top.
-          </p>
-
-          <!-- STAT STRIP — compliant feature statements -->
-          <div class="mt-8 grid grid-cols-3 gap-4 max-w-2xl">
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">7 Years of Data</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">1,247 Backtested Signals</div>
-            </div>
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">Zero Discretion</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Rules Define Every Entry</div>
-            </div>
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">Real-Time Grading</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">A+ Through C Automatically</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- DYNAMIC SALE BANNER (memberships.html) -->
-      <div id="sale-section-mem" class="hidden px-6 md:px-12 pt-8">
-        <div class="max-w-5xl mx-auto">
-          <div class="relative overflow-hidden bg-gradient-to-r from-red-950/60 via-red-900/30 to-red-950/60 border border-red-500/50 rounded-2xl p-4 shadow-xl shadow-red-950/30">
-            <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_8px,rgba(255,255,255,0.015)_8px,rgba(255,255,255,0.015)_16px)]"></div>
-            <div class="relative flex items-start gap-3">
-              <span class="text-xl leading-none mt-0.5 animate-bounce">🔥</span>
-              <div class="text-xs leading-relaxed flex-1">
-                <div class="flex items-center justify-between gap-2 mb-1">
-                  <div id="sale-label-mem" class="font-black text-red-400 uppercase tracking-widest text-[11px]">⚡ Flash Sale — Limited Time</div>
-                  <div id="sale-discount-mem" class="bg-red-500 text-white font-black text-[11px] px-2 py-0.5 rounded-lg tracking-wide animate-pulse">17% OFF</div>
-                </div>
-                <div class="text-zinc-200">
-                  Use code <span id="sale-code-mem" class="text-white font-black bg-zinc-900 border border-red-500/40 px-2 py-0.5 rounded-lg mx-0.5 tracking-wider">—</span> at checkout — <span id="sale-applies-mem">applies to Annual and Lifetime plans only.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  <nav class="flex flex-col gap-4 w-full">
+    <div>
+      <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Ecosystem</div>
+      <div class="flex flex-col gap-2.5 pl-1">
+        <a href="index.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75H15.75a.75.75 0 01-.75-.75v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 00-.75.75V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z"/></svg>Home</a>
+        <a href="suite.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>FSD-X Suite</a>
+        <a href="autotrader.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>ORB Auto-Trader</a>
+        <a href="memberships.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>Memberships</a>
+        <a href="results.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>Backtest Research Data</a>
       </div>
-      <script>
-        (async function() {
-          try {
-            const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/sale');
-            const data = await res.json();
-            if (data.sale) {
-              const s = data.sale;
-              document.getElementById('sale-label-mem').textContent = '⚡ ' + s.label;
-              document.getElementById('sale-discount-mem').textContent = s.discount;
-              document.getElementById('sale-code-mem').textContent = s.code;
-              if (s.applies) document.getElementById('sale-applies-mem').textContent = s.applies;
-              document.getElementById('sale-section-mem').classList.remove('hidden');
-              // Show inline card badges too
-              document.querySelectorAll('.sale-card-badge').forEach(el => {
-                el.textContent = '⚡ Use code ' + s.code + ' for ' + s.discount + ' at checkout';
-                el.classList.remove('hidden');
-              });
-            }
-          } catch(e) { /* no sale — banners stay hidden */ }
-        })();
-      </script>
-
-      <!-- PRICING CARDS -->
-      <section class="py-12 px-6 md:px-12">
-        <div class="max-w-5xl mx-auto">
-
-          <!-- PACKAGE TOGGLE -->
-          <div class="flex items-center justify-center mb-10">
-            <div class="inline-flex border border-white/10 bg-zinc-950/60 rounded-2xl p-1">
-              <button id="tab-plus" onclick="selectPackage('plus')" class="px-6 py-2.5 rounded-xl text-sm font-bold transition">Plus</button>
-              <button id="tab-pro" onclick="selectPackage('pro')" class="px-6 py-2.5 rounded-xl text-sm font-bold transition">Pro</button>
-            </div>
-          </div>
-
-          <!-- PLUS PACKAGE -->
-          <div id="package-plus">
-          <div class="mb-2 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> Plus — VIP Access to the FSD-X Suite
-          </div>
-          <p class="mb-6 text-zinc-600 text-[11px] leading-relaxed">Plus does not include Auto Trader — see the Pro package above.</p>
-
-          <div class="mb-10 border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
-            <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 font-bold">// Everything included in every plan</div>
-            <p class="text-zinc-600 text-[10px] mb-5">Full FSD-X Suite access — same tools regardless of which tier you choose.</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X ORB PRO (Knightfall)</span> — flagship all-in-one breakout indicator + backtester</div></div>
-              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X Stack V1</span> — 7-timeframe MTF trend confirmation</div></div>
-              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X // Volume Engine</span> — breakout volume companion</div></div>
-              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X Nexus 2.0</span> — Chrome workspace extension</div></div>
-              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Strategy Optimizer Pro</span> — automated backtesting engine</div></div>
-              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">SCOUT</span> — live Discord alert streams</div></div>
-              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Private Discord</span> — community, knowledge base & video library</div></div>
-            </div>
-            <div class="mt-5 pt-4 border-t border-white/5 text-center">
-              <a href="suite.html" class="text-[11px] text-zinc-500 hover:text-green-400 transition">View full suite breakdown &rarr;</a>
-            </div>
-          </div>
-
-          <div class="grid md:grid-cols-3 gap-8 items-stretch">
-
-            <!-- MONTHLY -->
-            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-white/20 transition">
-              <div>
-                <div class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mb-2">Flexible Pass</div>
-                <h3 class="text-xl font-black text-white">Monthly Access</h3>
-                <div class="mt-4 flex items-baseline gap-1">
-                  <span class="text-4xl font-black text-white">$19.99</span>
-                  <span class="text-zinc-500 text-xs font-medium">/ month</span>
-                </div>
-                <p class="text-zinc-500 text-xs mt-5 leading-relaxed">Try the full ecosystem with zero commitment. Includes a 14-day free trial — no charge until day 15. Cancel anytime.</p>
-                <div class="mt-5 border-t border-white/5 pt-5 text-[10px] text-zinc-600">Best for: Traders who want to test live before committing.</div>
-              </div>
-              <div class="mt-8 space-y-2">
-                <a href="https://whop.com/checkout/plan_NSAGowAQ4cwsD" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold rounded-xl transition text-sm">Start VIP 14-Day Free Trial</a>
-                <p class="text-center text-[10px] text-zinc-600">Instant access · Cancel anytime</p>
-              </div>
-            </div>
-
-            <!-- ANNUAL -->
-            <div class="border-2 border-green-500/30 bg-zinc-950 rounded-3xl p-8 flex flex-col justify-between hover:border-green-500/50 transition relative shadow-2xl shadow-green-500/5">
-              <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-green-500 text-black font-black text-[12px] uppercase tracking-widest px-3.5 py-1 rounded-xl shadow-md flex flex-col items-center justify-center leading-tight text-center whitespace-nowrap">
-                <div>Most Popular</div>
-                <div class="text-[12px] opacity-80 font-bold border-t border-black/10 w-full mt-0.5 pt-0.5">Save $41</div>
-              </div>
-              <div class="mt-2">
-                <div class="text-green-400 text-[10px] font-bold uppercase tracking-widest mb-2">Committed Workspace</div>
-                <h3 class="text-xl font-black text-white">Annual Membership</h3>
-                <div class="mt-4 flex items-baseline gap-2">
-                  <span class="text-4xl font-black text-green-400">$199</span>
-                  <div class="flex flex-col">
-                    <span class="text-zinc-500 text-xs font-medium">/ year</span>
-                    <span class="text-zinc-600 text-[10px]">≈ $16.58 / month</span>
-                  </div>
-                </div>
-                <p class="text-zinc-400 text-xs mt-5 leading-relaxed">Full ecosystem access at the lowest recurring rate. Your price is locked in — it won't increase as the suite grows.</p>
-                <div class="mt-5 border-t border-white/5 pt-5 text-[10px] text-zinc-600">Best for: Active traders who want consistent access at the best rate.</div>
-                <div class="mt-4 bg-green-500/5 border border-green-500/15 rounded-xl px-3 py-2 text-[10px] text-green-400 sale-card-badge hidden">
-                  ⚡ Use code — for — at checkout
-                </div>
-              </div>
-              <div class="mt-8 space-y-2">
-                <a href="https://whop.com/checkout/plan_etRhZZco5nGda" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-xl transition text-sm shadow-md shadow-green-500/10">Lock Annual Plan</a>
-                <p class="text-center text-[10px] text-zinc-600">Instant access · Renews annually</p>
-              </div>
-            </div>
-
-            <!-- LIFETIME -->
-            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-white/20 transition">
-              <div>
-                <div class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mb-2">Infinite Run</div>
-                <h3 class="text-xl font-black text-white">Lifetime License</h3>
-                <div class="mt-4 flex items-baseline gap-2">
-                  <span class="text-4xl font-black text-white">$599</span>
-                  <span class="text-zinc-500 text-xs font-medium">/ one-time</span>
-                </div>
-                <p class="text-zinc-500 text-xs mt-5 leading-relaxed">Pay once, own it forever. No renewals, no price increases, no subscriptions — ever. Breaks even vs Annual in just over 3 years.</p>
-                <div class="mt-5 border-t border-white/5 pt-5 text-[10px] text-zinc-600">Best for: Long-term traders who want to eliminate overhead for good.</div>
-                <div class="mt-4 bg-zinc-900/60 border border-white/5 rounded-xl px-3 py-2 text-[10px] text-zinc-400 sale-card-badge hidden">
-                  ⚡ Use code — for — at checkout
-                </div>
-              </div>
-              <div class="mt-8 space-y-2">
-                <a href="https://whop.com/checkout/plan_yO1Ma62pSUYFu" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold rounded-xl transition text-sm">Claim Lifetime</a>
-                <p class="text-center text-[10px] text-zinc-600">One-time payment · No renewals ever</p>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- BOTTOM TRUST ROW -->
-          <div class="mt-12 border border-white/5 bg-zinc-950/30 rounded-2xl px-6 py-5 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center text-xs">
-            <div class="text-zinc-500">
-              <div class="text-white font-bold text-sm mb-1">Instant Access</div>
-              Indicators unlock immediately after checkout via NinjaTrader ecosystem
-            </div>
-            <div class="text-zinc-500 sm:border-x sm:border-white/5 sm:px-4">
-              <div class="text-white font-bold text-sm mb-1">14-Day Free Trial</div>
-              Monthly plan includes a full two-week no-charge trial period
-            </div>
-            <div class="text-zinc-500">
-              <div class="text-white font-bold text-sm mb-1">Grandfathered Pricing</div>
-              Annual & Lifetime members lock today's rate through all future updates
-            </div>
-          </div>
-
-          <div class="mt-6 text-center">
-            <p class="text-zinc-600 text-xs">Just subscribed? <a href="setup.html" class="text-green-400 hover:underline font-semibold">Follow the Getting Started guide →</a> to claim your Discord access, TradingView indicators, and Nexus key.</p>
-          </div>
-          </div>
-          <!-- /PLUS PACKAGE -->
-
-          <!-- PRO PACKAGE -->
-          <div id="package-pro" class="hidden">
-            <div class="mb-6 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span> Pro — Plus + Auto Trader
-            </div>
-
-            <div class="mb-10 border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
-              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1 font-bold">// Everything in Plus, plus</div>
-              <p class="text-zinc-600 text-[10px] mb-5">Same full FSD-X Suite as Plus — with hands-off Auto Trader execution added on top.</p>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Everything in Plus</span> — indicators, Discord, Nexus, SCOUT, and more</div></div>
-                <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Auto Trader</span> — sends trades to your connected automation service (PickMyTrade, TradersPost, etc.), which executes them at your broker</div></div>
-              </div>
-              <div class="mt-5 pt-4 border-t border-white/5 text-center">
-                <a href="autotrader.html" class="text-[11px] text-zinc-500 hover:text-green-400 transition">Learn more about Auto Trader &rarr;</a>
-              </div>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-8 items-stretch max-w-3xl mx-auto">
-              <!-- PRO MONTHLY -->
-              <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between">
-                <div>
-                  <div class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest mb-2">Flexible Pass</div>
-                  <h3 class="text-xl font-black text-white">Monthly Access</h3>
-                  <div class="mt-4 flex items-baseline flex-wrap gap-x-1.5 gap-y-1">
-                    <span class="text-4xl font-black text-white">$129</span>
-                    <span class="text-zinc-500 text-xs font-medium">/ month</span>
-                    <span class="ml-1 text-[9px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded uppercase tracking-wider">Planned · Subject to change</span>
-                  </div>
-                  <p class="text-zinc-500 text-xs mt-5 leading-relaxed">Plus, plus Auto Trader execution. Includes a 7-day free trial — connect your demo account and confirm it's firing correctly before going live.</p>
-                  <div class="mt-5 border-t border-white/5 pt-5 text-[10px] text-zinc-600">Best for: Traders who want to test Auto Trader live before committing.</div>
-                </div>
-                <div class="mt-8 space-y-2">
-                  <span class="block w-full text-center py-3 bg-zinc-900/60 border border-white/5 text-zinc-500 font-bold rounded-xl text-sm cursor-not-allowed">Not Yet Live</span>
-                  <p class="text-center text-[10px] text-zinc-600">Auto Trader is in private beta</p>
-                </div>
-              </div>
-
-              <!-- PRO ANNUAL -->
-              <div class="border-2 border-green-500/20 bg-zinc-950 rounded-3xl p-8 flex flex-col justify-between">
-                <div>
-                  <div class="text-green-400 text-[10px] font-bold uppercase tracking-widest mb-2">Committed Workspace</div>
-                  <h3 class="text-xl font-black text-white">Annual Membership</h3>
-                  <div class="mt-4 flex items-baseline flex-wrap gap-x-1.5 gap-y-1">
-                    <span class="text-4xl font-black text-green-400">$1,299</span>
-                    <span class="text-zinc-500 text-xs font-medium">/ year</span>
-                    <span class="ml-1 text-[9px] font-bold text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded uppercase tracking-wider">Planned · Subject to change</span>
-                  </div>
-                  <p class="text-zinc-400 text-xs mt-5 leading-relaxed">Plus, plus Auto Trader execution, at the lowest recurring rate once pricing is finalized.</p>
-                  <div class="mt-5 border-t border-white/5 pt-5 text-[10px] text-zinc-600">Best for: Active traders who want consistent access at the best rate.</div>
-                </div>
-                <div class="mt-8 space-y-2">
-                  <span class="block w-full text-center py-3 bg-zinc-900/60 border border-white/5 text-zinc-500 font-bold rounded-xl text-sm cursor-not-allowed">Not Yet Live</span>
-                  <p class="text-center text-[10px] text-zinc-600">Auto Trader is in private beta</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="mt-8 text-center text-[12px] text-zinc-600 tracking-wide">
-              Pro is <span class="text-zinc-400 font-semibold">Plus + Auto Trader</span>. Monthly and Annual only — no Lifetime option for Pro. Includes a 7-day free trial to test your demo connection before going live. Auto Trader is currently in private beta; Pro pricing shown is planned and subject to change before public launch.
-            </div>
-          </div>
-          <!-- /PRO PACKAGE -->
-
-        </div>
-      </section>
-
     </div>
 
-    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
-      <div class="max-w-5xl mx-auto space-y-6">
-        <div>
-          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">CFTC Rule 4.41 — Hypothetical Performance Disclosure</span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.</p>
-        </div>
-        <div>
-          <p class="text-zinc-600 text-[10px] leading-relaxed">NinjaTrader® is a registered trademark of NinjaTrader Group, LLC. No NinjaTrader company has any affiliation with the owner, developer, or provider of the products or services described herein, or any interest, ownership or otherwise, in any such product or service, or endorses, recommends or approves any such product or service.</p>
-        </div>
-        <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
-          <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
-          <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
-        </div>
+    <!-- VIP AREA — hidden by default, shown by nav-loader.js when logged in -->
+    <div class="vip-only hidden mt-2">
+      <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// VIP Area</div>
+      <div class="flex flex-col gap-2.5 pl-1">
+        <a href="dashboard.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>Dashboard</a>
+        <a href="journal.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>Journal</a>
+        <a href="playbook.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>Playbook</a>
+        <a href="backtest.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23-.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"/></svg>Backtest</a>
+        <a href="converter.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>BT Converter</a>
+        <a href="tracker.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>Account Tracker</a>
+        <a href="recaps.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>Session Recaps</a>
+        <a href="profile.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>My Profile</a>
       </div>
-    </footer>
-  </main>
+    </div>
 
-  <script>
-    function toggleMobileMenu() {
-      const sidebar = document.getElementById('sidebar-panel');
-      if (sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.remove('-translate-x-full');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-      }
-    }
+    <div class="mt-2">
+      <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Resources</div>
+      <div class="flex flex-col gap-2.5 pl-1">
+        <a href="setup.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg>Getting Started</a>
+        <a href="affiliates.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>Affiliates</a>
+        <a href="knowledge.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>Knowledge Base</a>
+        <a href="schedule.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 9v7.5"/></svg>Schedule</a>
+      </div>
+    </div>
 
-    function selectPackage(tier) {
-      const plus = document.getElementById('package-plus');
-      const pro = document.getElementById('package-pro');
-      const tabPlus = document.getElementById('tab-plus');
-      const tabPro = document.getElementById('tab-pro');
-      if (tier === 'pro') {
-        plus.classList.add('hidden');
-        pro.classList.remove('hidden');
-        tabPro.classList.add('bg-green-500', 'text-black');
-        tabPro.classList.remove('text-zinc-400');
-        tabPlus.classList.remove('bg-green-500', 'text-black');
-        tabPlus.classList.add('text-zinc-400');
-      } else {
-        pro.classList.add('hidden');
-        plus.classList.remove('hidden');
-        tabPlus.classList.add('bg-green-500', 'text-black');
-        tabPlus.classList.remove('text-zinc-400');
-        tabPro.classList.remove('bg-green-500', 'text-black');
-        tabPro.classList.add('text-zinc-400');
-      }
-    }
-    selectPackage('plus');
-  </script>
+    <div class="mt-2">
+      <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// Social Channels</div>
+      <div class="flex flex-col gap-2.5 pl-1">
+        <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.328l5.603 3.113z"/></svg>YouTube <span class="text-[10px] text-zinc-600 ml-auto">↗</span></a>
+        <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>Instagram <span class="text-[10px] text-zinc-600 ml-auto">↗</span></a>
+      </div>
+    </div>
 
+    <div class="mt-2">
+      <div class="text-[10px] uppercase tracking-widest text-zinc-600 mb-2">// System</div>
+      <div class="flex flex-col gap-2.5 pl-1">
+        <a href="contact.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>Contact & Help</a>
+        <a href="faq.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>FAQ</a>
+        <a href="disclosures.html" class="nav-link text-zinc-400 hover:text-green-400 font-medium transition text-sm flex items-center gap-2"><svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>Disclosures</a>
+      </div>
+    </div>
+  </nav>
+</div>
 
-  <script src="nav-loader.js"></script>
-  <script src="checkout-gate.js"></script>
-</body>
-</html>
+<div class="w-full pt-4 border-t border-white/5 mt-8 space-y-3">
+  <a href="login.html" id="nav-login-btn" class="nav-link flex items-center gap-2 w-full px-3 py-2.5 bg-green-500/10 hover:bg-green-500/20 border border-green-500/20 hover:border-green-500/40 rounded-xl transition">
+    <svg class="w-3.5 h-3.5 shrink-0 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+    <span class="text-xs font-bold text-green-400 tracking-wide">Member Login</span>
+  </a>
+  <a href="profile.html" id="nav-user-btn" class="vip-only hidden flex items-center gap-3 px-2 hover:bg-white/5 rounded-xl py-1.5 transition group">
+    <div id="nav-avatar" class="w-8 h-8 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-xs font-black shrink-0">?</div>
+    <div class="flex-1 min-w-0">
+      <div id="nav-username" class="text-sm text-white font-bold truncate group-hover:text-green-400 transition">Member</div>
+      <div id="nav-tier" class="text-[10px] text-green-400 uppercase tracking-wider">VIP</div>
+    </div>
+    <svg class="w-3 h-3 text-zinc-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+  </a>
+  <button onclick="navLogout()" class="vip-only hidden w-full text-left text-xs text-zinc-500 hover:text-white transition flex items-center gap-2 px-2 py-1">
+    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+    Logout
+  </button>
+  <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-xs text-zinc-500 hover:text-white transition flex items-center gap-2">
+    <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
+    Launch Discord &rarr;
+  </a>
+</div>
