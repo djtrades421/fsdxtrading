@@ -51,9 +51,10 @@
         "A missed, delayed, or failed alert can leave unintended open positions. <strong>You are responsible for your own safeguards</strong> (broker-side stop, end-of-day flatten, risk limits) and for monitoring your account.",
         "<strong>You</strong> are responsible for confirming automated trading is permitted by your broker and prop firm and for complying with their rules.",
         "Validate on a <strong>demo/paper account</strong> before any live use. Trading involves substantial risk; no result is guaranteed.",
+        "<strong>By purchasing and accepting these terms, you take full responsibility for all trades, positions, losses, and outcomes on your account.</strong> Once accepted, that responsibility is yours — FSD-X has no liability for any result.",
         "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Auto-Trader Addendum."
       ],
-      agree: "I understand and accept the Auto-Trader Terms.",
+      agree: "I accept the Auto-Trader Terms and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
       proceed: "Proceed to Checkout"
     }
   };
