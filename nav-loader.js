@@ -54,7 +54,14 @@
         if (avatar) avatar.textContent = name.charAt(0).toUpperCase();
         if (username) username.textContent = name;
         const whopStatus = localStorage.getItem('fsdx_whop_status') || '';
-        if (tierEl) tierEl.textContent = tier === 'trial' ? 'VIP Trial' : whopStatus === 'completed' ? 'VIP Lifetime' : 'VIP Member';
+        const plan = localStorage.getItem('fsdx_plan') || '';
+        // Base name: "VIP Plus" / "VIP Pro" when known, else "VIP"
+        const planName = plan === 'pro' ? 'VIP Pro' : plan === 'plus' ? 'VIP Plus' : 'VIP';
+        let tierText;
+        if (tier === 'trial') tierText = planName + ' Trial';
+        else if (whopStatus === 'completed') tierText = planName + ' Lifetime';
+        else tierText = plan ? planName : 'VIP Member';
+        if (tierEl) tierEl.textContent = tierText;
       }
     })
     .catch(err => console.error('[nav] Failed to load nav.html:', err));
@@ -70,5 +77,6 @@ function navLogout() {
   localStorage.removeItem('fsdx_token');
   localStorage.removeItem('fsdx_name');
   localStorage.removeItem('fsdx_tier');
+  localStorage.removeItem('fsdx_plan');
   window.location.href = 'index.html';
 }
