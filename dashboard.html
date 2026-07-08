@@ -675,7 +675,7 @@
       if (!token) { window.location.href = 'login.html'; return; }
 
       let whopKey = null, tier = 'pro', whopStatus = 'active', whopExpiresAt = null, whopRenewalEnd = null, whopCancelAtPeriodEnd = false, createdAt = null;
-      let rosterRenewal = null, rosterStatus = null, rosterPlanName = null;
+      let rosterRenewal = null, rosterStatus = null, rosterPlanName = null, memberPlan = null;
       let firstName = localStorage.getItem('fsdx_name') || 'Member';
       try {
         const res = await fetch(`${API}/api/auth/profile`, { headers:{'Authorization':`Bearer ${token}`} });
@@ -683,6 +683,7 @@
         if (data.user) {
           whopKey = data.user.whopKey;
           tier = data.user.tier || 'pro';
+          memberPlan = data.user.plan || null;
           whopStatus = data.user.whopStatus || 'active';
           whopExpiresAt = data.user.whopExpiresAt || null;
           whopRenewalEnd = data.user.whopRenewalEnd || null;
@@ -694,10 +695,11 @@
           rosterStatus = data.user.rosterStatus || null;
           rosterPlanName = data.user.rosterPlanName || null;
           localStorage.setItem('fsdx_tier', tier);
+          localStorage.setItem('fsdx_plan', memberPlan || '');
           localStorage.setItem('fsdx_name', firstName);
           localStorage.setItem('fsdx_whop_status', data.user.whopStatus || '');
         }
-      } catch(e) { tier = localStorage.getItem('fsdx_tier') || 'pro'; }
+      } catch(e) { tier = localStorage.getItem('fsdx_tier') || 'pro'; memberPlan = localStorage.getItem('fsdx_plan') || null; }
 
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('dashboard-content').classList.remove('hidden');
@@ -733,6 +735,15 @@
         statusMap['_canceling'] = { label: 'VIP', sub: 'Cancels at period end', color: 'yellow', cardCls: 'border-yellow-500/20 bg-yellow-500/5 hover:border-yellow-500/40', textCls: 'text-yellow-400', badgeCls: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/25' };
       }
       const sc = statusMap[effectiveStatus] || statusMap['active'];
+
+      // Reflect the member's plan (Plus vs Pro) in the tier label. Falls back to
+      // the status-based label when the plan is unknown, so nothing breaks.
+      if (memberPlan) {
+        const planName = memberPlan === 'pro' ? 'VIP Pro' : 'VIP Plus';
+        if (effectiveStatus === 'completed')      sc.label = planName + ' Lifetime';
+        else if (effectiveStatus === 'trialing')  sc.label = planName + ' Trial';
+        else                                       sc.label = planName;
+      }
 
       // Apply to status card
       document.getElementById('status-card').className = `flex items-center gap-2 px-3 py-1.5 border ${sc.cardCls} rounded-lg cursor-pointer transition`;
