@@ -3124,6 +3124,36 @@
     const flagsKey = () => 'roster_flags:' + (window._adminKey || '');
     const rawMembershipsKey = () => 'roster_raw_memberships:' + (window._adminKey || '');
 
+    // ── Refresh stored tier labels from the current PLAN_MAP ──
+    // Roster records store the tier label computed at import time, so after a
+    // PLAN_MAP change (or a fix like Plus/Pro) the stored labels can go stale even
+    // though the plan ID is correct. This re-derives accessType/planName for every
+    // member from their plan ID — taken from the raw membership rows (the same
+    // source the expanded card uses) or the planId saved on the record — so the
+    // roster + Access-Type filter match the expanded view without a re-import.
+    function relabelRosterFromPlanMap() {
+      if (!Array.isArray(rosterData) || !rosterData.length) return false;
+      let changed = false;
+      rosterData.forEach(r => {
+        const emailLower = (r.email || '').toLowerCase();
+        let label = '';
+        // 1) Prefer the raw membership row(s) — same source as the expanded card
+        const matches = rawMembershipRows.filter(m =>
+          (emailLower && (m['Email'] || m['Imported email'] || '').toLowerCase() === emailLower) ||
+          (r.whopKey && m['Key'] === r.whopKey)
+        );
+        for (const m of matches) { const l = planLabelFromId(m['Plan'] || ''); if (l) { label = l; break; } }
+        // 2) Fall back to the plan ID stored on the roster record
+        if (!label) label = planLabelFromId(r.planId || '');
+        if (label && (r.accessType !== label || r.planName !== label)) {
+          r.accessType = label;
+          r.planName = label;
+          changed = true;
+        }
+      });
+      return changed;
+    }
+
     async function loadRosterFromKV() {
       try {
         const [rr, pr, fr, lr, mr] = await Promise.all([
@@ -3140,6 +3170,11 @@
         historyData = Array.isArray(ld.trades) ? ld.trades : [];
         rawMembershipRows = Array.isArray(mrd.trades) ? mrd.trades : [];
         rawPaymentRows = paymentsData; // payments double as raw payment rows
+        // Refresh stored tier labels from the current PLAN_MAP (fixes stale
+        // labels like "VIP Monthly" on Plus/Pro members — no re-import needed).
+        if (relabelRosterFromPlanMap()) {
+          try { await saveRosterToKV(); } catch(e) { console.error('Relabel save failed:', e); }
+        }
       } catch(e) { console.error('Roster load error:', e); }
 
       // Load site users from allMembers (already loaded by loadData)
