@@ -1095,11 +1095,22 @@
             <div>
               <label class="block text-[10px] text-zinc-600 mb-1">Access Type</label>
               <select id="mm-access" onchange="updateModalRenewalLogic()" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-                <option value="VIP Monthly">VIP Monthly</option>
-                <option value="VIP Annual">VIP Annual</option>
-                <option value="Lifetime">Lifetime</option>
-                <option value="VIP Legacy">VIP Legacy</option>
-                <option value="Legacy">Legacy</option>
+                <optgroup label="Plus">
+                  <option value="Plus Monthly">Plus Monthly</option>
+                  <option value="Plus Yearly">Plus Yearly</option>
+                  <option value="Plus Lifetime">Plus Lifetime</option>
+                </optgroup>
+                <optgroup label="Pro">
+                  <option value="Pro Monthly">Pro Monthly</option>
+                  <option value="Pro Yearly">Pro Yearly</option>
+                </optgroup>
+                <optgroup label="Legacy / VIP">
+                  <option value="VIP Monthly">VIP Monthly</option>
+                  <option value="VIP Annual">VIP Annual</option>
+                  <option value="Lifetime">Lifetime</option>
+                  <option value="VIP Legacy">VIP Legacy</option>
+                  <option value="Legacy">Legacy</option>
+                </optgroup>
               </select>
             </div>
             <div>
@@ -1422,6 +1433,37 @@
       document.getElementById(rowId + '_content').innerHTML = buildExpandContent(email, whopKey);
     }
 
+    // ── Central plan-ID → tier label map (single source of truth) ──
+    // Maps Whop plan IDs to the labels shown in the roster, the Access-Type
+    // filter, and the expanded member view. To add/rename a tier, edit here only.
+    const PLAN_MAP = {
+      // ── FSD-X Trading Plus ──
+      'plan_C6yQOo7Z6tRap': 'Plus Monthly',    // $12.50 (legacy monthly price)
+      'plan_NSAGowAQ4cwsD': 'Plus Monthly',    // $19.99
+      'plan_B5bAvYiAJvc5i': 'Plus Monthly',    // $19.99
+      'plan_WDBtpCQLgdO6K': 'Plus Yearly',     // $119
+      'plan_yO1Ma62pSUYFu': 'Plus Lifetime',   // $599
+      'plan_mhrt4tqPQYjNH': 'Plus Lifetime',   // $209 (legacy lifetime price)
+      // ── FSD-X Trading Pro  (Pro has no lifetime) ──
+      'plan_l0KkbipfcgnAp': 'Pro Monthly',     // $129.99
+      // 'PASTE_PRO_YEARLY_PLAN_ID_HERE': 'Pro Yearly',  // $1299 — add the real plan_… ID after the first Pro Yearly sale
+      // ── Other products / legacy tiers ──
+      'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
+      'plan_aXiLFJZu79HYG': 'VIP Legacy',
+      'plan_qPUdhXCOGcZsu': 'Strategy Optimizer | TradingView',
+      'plan_UrMJmbJlwxUhV': 'Strategy Optimizer | TradingView',
+      'plan_gs2owPJ8MtUgk': 'FSD-X Nexus 2.0',
+      'plan_JpU6TRNItnQgh': 'FSD-X Nexus 2.0',
+      'plan_8IvI1MMosoCf9': 'ORB PRO v5 Alpha',
+      // 'plan_W09iQHkZxMFNQ': test plan — intentionally omitted (ignored)
+    };
+    // Resolve a tier label from any Plan-ID string (handles comma-joined IDs).
+    function planLabelFromId(planId) {
+      if (!planId) return '';
+      for (const id in PLAN_MAP) { if (planId.includes(id)) return PLAN_MAP[id]; }
+      return '';
+    }
+
     function buildExpandContent(email, whopKey) {
       const emailLower = email.toLowerCase();
 
@@ -1437,18 +1479,7 @@
         (p.discordName && memberships.some(m => m['Discord username'] === p.discordName))
       ).sort((a,b) => (b.paidAt||'') > (a.paidAt||'') ? 1 : -1);
 
-      const PLAN_NAMES = {
-        'plan_C6yQOo7Z6tRap': 'VIP Monthly',
-        'plan_WDBtpCQLgdO6K': 'VIP Annual',
-        'plan_yO1Ma62pSUYFu': 'Lifetime',
-        'plan_mhrt4tqPQYjNH': 'Lifetime',
-        'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
-        'plan_aXiLFJZu79HYG': 'VIP Legacy',
-        'plan_qPUdhXCOGcZsu': 'Strategy Optimizer | TradingView',
-        'plan_UrMJmbJlwxUhV': 'Strategy Optimizer | TradingView',
-        'plan_gs2owPJ8MtUgk': 'FSD-X Nexus 2.0',
-        'plan_8IvI1MMosoCf9': 'ORB PRO v5 Alpha'
-      };
+      const PLAN_NAMES = PLAN_MAP;  // central map — see PLAN_MAP definition above
 
       let html = '<div class="grid md:grid-cols-2 gap-6">';
 
@@ -2651,7 +2682,8 @@
       const cycle = document.getElementById('mm-billing-cycle').value;
       const hint = document.getElementById('mm-renewal-hint');
       const billingSection = document.getElementById('mm-billing-section');
-      const isLifetime = ['Lifetime','Legacy','VIP Legacy'].includes(access) || ['lifetime','legacy'].includes(status);
+      const accessLower = access.toLowerCase();
+      const isLifetime = accessLower.includes('lifetime') || accessLower.includes('legacy') || ['lifetime','legacy'].includes(status);
 
       // Auto-set billing cycle based on access type
       if (isLifetime) {
@@ -2661,9 +2693,9 @@
         hint.textContent = 'Lifetime / Legacy members have no renewal date.';
       } else {
         billingSection.style.opacity = '1';
-        if (access === 'VIP Annual') {
+        if (accessLower.includes('annual') || accessLower.includes('yearly')) {
           document.getElementById('mm-billing-cycle').value = 'annual';
-        } else if (access === 'VIP Monthly') {
+        } else if (accessLower.includes('monthly')) {
           document.getElementById('mm-billing-cycle').value = 'monthly';
         }
         if (status === 'canceling') {
@@ -3566,11 +3598,10 @@
         else if (expiring) status = 'expiring';
         else if (!renewal && status !== 'lifetime') status = 'inactive';
 
-        // Determine access type from plan
-        let accessType = 'VIP';
-        if (planId.includes('plan_yO1Ma62pSUYFu')) accessType = 'Lifetime';
-        else if (planId.includes('plan_WDBtpCQLgdO6K')) accessType = 'Yearly';
-        else if (planId.includes('plan_C6yQOo7Z6tRap')) accessType = 'VIP';
+        // Determine access type from plan ID (central PLAN_MAP)
+        let accessType = planLabelFromId(planId) || 'VIP Monthly';
+        // Lifetime tiers have no renewal — don't leave them mislabeled as inactive
+        if (/lifetime/i.test(accessType) && status === 'inactive') status = 'lifetime';
 
         const joinedRaw = r['Joined date'] || '';
         const renewalRaw = renewal || expiring || trialEnd || '';
@@ -3585,6 +3616,7 @@
           tvUsername: '',
           status,
           accessType,
+          planName: accessType,
           source: 'Whop',
           joined: joinedRaw ? joinedRaw.split(' ')[0] : '',
           renewal: renewalRaw ? renewalRaw.split(' ')[0] : '',
@@ -3639,10 +3671,13 @@
         // Normalize plan name for display — strip long bundle descriptions
         if (planName.includes(':')) planName = planName.split(':')[0].trim();
 
-        // Access type derived from plan name — no hardcoded IDs
-        let accessType = planName; // default: use product name as access type
+        // Access type — plan ID is authoritative (central PLAN_MAP); fall back to product name.
+        const mappedLabel = planLabelFromId(planId);
+        let accessType = mappedLabel || planName; // default: product name if plan ID unmapped
         const nameLower = planName.toLowerCase();
-        if (nameLower.includes('lifetime') || subStatus === 'completed') accessType = 'Lifetime';
+        if (mappedLabel) {
+          accessType = mappedLabel;
+        } else if (nameLower.includes('lifetime') || subStatus === 'completed') accessType = 'Lifetime';
         else if (nameLower.includes('vip legacy')) accessType = 'VIP Legacy';
         else if (nameLower.includes('legacy')) accessType = 'Legacy';
         else if (nameLower.includes('annual') || nameLower.includes('yearly')) accessType = 'VIP Annual';
@@ -3666,7 +3701,7 @@
           tvUsername: '',
           status,
           accessType,
-          planName,
+          planName: accessType,
           planId,
           source: 'Whop',
           joined: joinedAt ? joinedAt.split(' ')[0] : '',
@@ -3746,9 +3781,10 @@
         else if (hasNoActivity) status = 'lifetime';
         else if (!renewal) status = 'inactive';
 
-        // Access type derived from product name — no hardcoded plan IDs
-        let accessType = 'VIP Monthly'; // safe default
-        if (productName) {
+        // Access type — plan ID is authoritative (central PLAN_MAP); fall back to product name.
+        const mappedLabel = planLabelFromId(planId);
+        let accessType = mappedLabel || 'VIP Monthly'; // safe default
+        if (!mappedLabel && productName) {
           const n = productName.toLowerCase();
           if (n.includes('lifetime') || hasNoActivity) accessType = 'Lifetime';
           else if (n.includes('vip legacy')) accessType = 'VIP Legacy';
