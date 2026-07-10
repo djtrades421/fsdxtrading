@@ -4601,15 +4601,30 @@
         return raw === 'VIP' ? 'VIP Monthly' : raw;
       }).filter(Boolean))].sort();
 
+      // Tier "family" quick-filters — checking one catches every interval under it,
+      // e.g. "Plus" matches Plus Monthly / Plus Yearly / Plus Lifetime. Only families
+      // actually present in the roster are shown.
+      const FAMILY_ORDER = ['Plus', 'Pro', 'VIP'];
+      const families = FAMILY_ORDER.filter(fam =>
+        types.some(t => t === fam || t.startsWith(fam + ' '))
+      );
+
       // Keep currently checked values so selections survive re-renders
       const checked = new Set([...document.querySelectorAll('.rf-ms-access:checked')].map(el => el.value));
 
-      menu.innerHTML = types.map(t =>
+      const rowHtml = (val, label, bold) =>
         `<label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer">
-          <input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="${t}" ${checked.has(t)?'checked':''} onchange="updateMultiSelectLabel('access');renderRoster()">
-          <span class="text-xs text-zinc-300">${t}</span>
-        </label>`
-      ).join('');
+          <input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="${val}" ${checked.has(val)?'checked':''} onchange="updateMultiSelectLabel('access');renderRoster()">
+          <span class="text-xs ${bold ? 'text-white font-semibold' : 'text-zinc-300'}">${label}</span>
+        </label>`;
+
+      let html = '';
+      if (families.length) {
+        html += families.map(f => rowHtml(f, f + ' — all', true)).join('');
+        html += '<div class="border-t border-white/10 my-1"></div>';
+      }
+      html += types.map(t => rowHtml(t, t, false)).join('');
+      menu.innerHTML = html;
     }
 
     function renderRoster() {
@@ -4691,7 +4706,12 @@
           const memberAccess = r.planName || r.accessType || '';
           // Treat legacy 'VIP' value as 'VIP Monthly'
           const normalizedAccess = memberAccess === 'VIP' ? 'VIP Monthly' : memberAccess;
-          if (!accessFilter.includes(normalizedAccess)) return false;
+          // A checked value matches the exact tier OR a whole family:
+          // "Plus" matches "Plus Monthly"/"Plus Yearly"/"Plus Lifetime", etc.
+          const matchesAccess = accessFilter.some(v =>
+            normalizedAccess === v || normalizedAccess.startsWith(v + ' ')
+          );
+          if (!matchesAccess) return false;
         }
         if (search) {
           const spendVal = parseFloat(r.spend || '0') || 0;
