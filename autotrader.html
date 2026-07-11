@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X // ORB Pro Auto-Trader (Knightfall AT) — Automated Execution | DJ Trades</title>
-  <meta name="description" content="Knightfall, automated. The same validated FSD-X ORB engine — now hands-off. Fires your trades to the automation service of your choice. Part of the Pro package." />
+  <title>FSD-X // ORB Pro Auto-Trader (Knightfall AT) — TradingView Automated Execution | DJ Trades</title>
+  <meta name="description" content="Knightfall, automated. The same validated FSD-X ORB engine — now hands-off on TradingView. Fires your trades to the automation service of your choice. Part of the Pro package. A NinjaTrader® version is on the way." />
   <meta name="author" content="DJ Trades" />
   <meta name="keywords" content="FSD-X Auto-Trader, Knightfall auto trader, automated ORB, MNQ automated trading, TradingView webhook strategy, PickMyTrade" />
   <meta property="og:type" content="website" />
@@ -48,7 +48,27 @@
 
           <!-- LEFT: pitch + CTA -->
           <div>
-            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-4">// FSD-X ORB Pro — Auto-Trader</div>
+
+            <!-- ===== PLATFORM VERSION SWITCHER ===== -->
+            <div class="mb-7">
+              <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// Choose Your Platform</div>
+              <div class="inline-flex items-center gap-1 p-1 rounded-2xl border border-white/10 bg-zinc-950/60">
+                <button type="button" id="tab-tv" onclick="setPlatform('tv')"
+                  class="px-4 py-2 rounded-xl text-sm font-bold transition bg-green-500 text-black">
+                  TradingView
+                  <span class="ml-1.5 text-[9px] font-black uppercase tracking-wider opacity-60">Live</span>
+                </button>
+                <button type="button" id="tab-nt" onclick="setPlatform('nt')"
+                  class="px-4 py-2 rounded-xl text-sm font-bold transition text-zinc-400 hover:text-white">
+                  NinjaTrader
+                  <span class="ml-1.5 text-[9px] font-black uppercase tracking-wider opacity-60">Coming Soon</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- ===== TRADINGVIEW (LIVE) HERO ===== -->
+            <div id="tv-hero">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-4">// FSD-X ORB Pro — Auto-Trader · TradingView</div>
 
             <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
               Knightfall.<br>
@@ -81,6 +101,40 @@
                 ↗ Download the Setup Guide — Full Auto-Trader Walkthrough
               </a>
             </div>
+            </div>
+            <!-- ===== /TRADINGVIEW HERO ===== -->
+
+            <!-- ===== NINJATRADER (COMING SOON) HERO ===== -->
+            <div id="nt-hero" class="hidden">
+              <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-4">// FSD-X ORB Pro — Auto-Trader · NinjaTrader</div>
+
+              <div class="inline-flex items-center gap-2 mb-5 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/[0.06]">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-400 beta-dot"></span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-green-400">In Development</span>
+              </div>
+
+              <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
+                Knightfall.<br>
+                <span class="text-green-400">Coming to NinjaTrader.</span>
+              </h1>
+
+              <p class="mt-6 text-zinc-300 text-lg leading-relaxed">
+                A <span class="text-white font-semibold">NinjaTrader®-native</span> version of the Auto Trader is in development now — the same validated ORB engine, built to run directly inside the NinjaTrader ecosystem.
+              </p>
+              <p class="mt-3 text-zinc-500 text-base leading-relaxed">
+                When it launches, it'll live right here — just switch platforms up top.
+              </p>
+
+              <div class="mt-9 flex flex-col sm:flex-row items-stretch gap-4 max-w-lg">
+                <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center flex-1 shadow-lg shadow-green-500/10 whitespace-nowrap">Get Notified in Discord</a>
+                <button type="button" onclick="setPlatform('tv')" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl text-center font-medium whitespace-nowrap">← Use the live TradingView version</button>
+              </div>
+
+              <div class="mt-5 text-sm text-zinc-500 max-w-lg leading-relaxed">
+                The TradingView Auto Trader is available now as part of Pro — everything below covers that live version.
+              </div>
+            </div>
+            <!-- ===== /NINJATRADER HERO ===== -->
           </div>
 
           <!-- RIGHT: How It Works fills the space -->
@@ -189,7 +243,7 @@
 
           <figure class="mt-8 rounded-2xl overflow-hidden border border-white/5 bg-black">
             <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold flex items-center justify-between">
-              <span>// Live on Demo — MNQ 5m</span>
+              <span>// Live on Demo — TradingView · MNQ 5m</span>
             </div>
             <img src="Screenshot%202026-06-21%20142909.png" alt="FSD-X ORB Auto-Trader running on a Micro E-mini Nasdaq 5-minute chart, status panel showing position, P&amp;L, trades and win rate" class="w-full object-cover" />
           </figure>
@@ -278,8 +332,11 @@
                 <span class="w-1.5 h-1.5 rounded-full bg-green-400 beta-dot"></span> In Development
               </div>
               <div class="text-xl font-black text-white">A NinjaTrader® version is on the way.</div>
-              <p class="text-sm text-zinc-400 mt-1 max-w-xl leading-relaxed">Native execution for the NinjaTrader ecosystem — in development now. More soon.</p>
+              <p class="text-sm text-zinc-400 mt-1 max-w-xl leading-relaxed">The Auto Trader currently runs on <span class="text-zinc-200 font-semibold">TradingView</span>. A NinjaTrader-native version is in development now — when it's ready, it'll live right here on this page. Use the <span class="text-green-400 font-semibold">platform switcher</span> at the top to preview it.</p>
             </div>
+            <button type="button" onclick="setPlatform('nt'); window.scrollTo({top:0,behavior:'smooth'});" class="shrink-0 w-full sm:w-auto text-center px-6 py-3 border border-white/15 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
+              Preview NinjaTrader &rarr;
+            </button>
           </div>
         </div>
       </section>
@@ -386,6 +443,20 @@
       } else {
         sidebar.classList.add('-translate-x-full');
       }
+    }
+
+    // ===== Platform version switcher (TradingView live / NinjaTrader coming soon) =====
+    function setPlatform(p) {
+      var tab = { tv: document.getElementById('tab-tv'), nt: document.getElementById('tab-nt') };
+      var hero = { tv: document.getElementById('tv-hero'), nt: document.getElementById('nt-hero') };
+      var activeCls = "px-4 py-2 rounded-xl text-sm font-bold transition bg-green-500 text-black";
+      var idleCls = "px-4 py-2 rounded-xl text-sm font-bold transition text-zinc-400 hover:text-white";
+      var on = (p === 'nt') ? 'nt' : 'tv';
+      var off = (on === 'nt') ? 'tv' : 'nt';
+      if (tab[on]) tab[on].className = activeCls;
+      if (tab[off]) tab[off].className = idleCls;
+      if (hero[on]) hero[on].classList.remove('hidden');
+      if (hero[off]) hero[off].classList.add('hidden');
     }
 
     // (Waitlist + founder-spots logic removed — Auto Trader is live; CTAs link directly to Whop checkout.)
