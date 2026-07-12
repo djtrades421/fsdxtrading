@@ -3101,6 +3101,25 @@
     let rawPaymentRows = [];     // raw rows from payments import for expand view
     let historyData = [];          // Whop users who never purchased
     let paymentsData = [];      // all payment records
+
+    // Net take-home for a payment. Uses the parsed "Excluding Fees" value when
+    // present; falls back to gross for older records, manual entries, and API
+    // sync rows that don't carry fee data. Re-importing the payments CSV
+    // backfills netAmount on those records.
+    function netOf(p) {
+      return (p && p.netAmount !== null && p.netAmount !== undefined) ? p.netAmount : (p ? p.amount : 0);
+    }
+
+    // Historical average net/gross ratio across paid records that have real
+    // fee data — used to *estimate* take-home on upcoming renewals, since
+    // actual tax + fees aren't known until a sale completes.
+    function avgNetRatio() {
+      const withNet = paymentsData.filter(p => p.status === 'paid' && p.netAmount !== null && p.netAmount !== undefined && p.amount > 0);
+      if (!withNet.length) return null;
+      const gross = withNet.reduce((s,p) => s + p.amount, 0);
+      const net = withNet.reduce((s,p) => s + p.netAmount, 0);
+      return gross > 0 ? net / gross : null;
+    }
     let flagsData = [];         // detected flags
     let membershipRows = {};    // raw membership rows keyed by email for expand view
     let pendingImport = null;   // staged import before confirm
@@ -4876,6 +4895,11 @@
         // aren't displayed as raw dollars. Falls back to Payment Amount for rows
         // with no USD value (e.g. unpaid/open transactions, which are all USD).
         amount: parseFloat(r['Total Amount USD (Including Fees)'] || r['Payment Amount'] || '0') || 0,
+        // Net take-home after sales tax + all processing/platform fees.
+        // Only exists on completed (paid) rows — open/failed rows have no
+        // fee data yet, so this stays null and we fall back to gross.
+        netAmount: (r['Total Amount USD (Excluding Fees)'] !== undefined && r['Total Amount USD (Excluding Fees)'] !== '')
+          ? (parseFloat(r['Total Amount USD (Excluding Fees)']) || 0) : null,
         nativeAmount: parseFloat(r['Payment Amount']||'0')||0,
         currency: r['Payment Currency'] || 'usd',
         billingReason: r['Billing reason'] || '',
@@ -4898,7 +4922,7 @@
           const idx = paymentsData.findIndex(ep => ep.id === p.id);
           if (idx !== -1) {
             const ep = paymentsData[idx];
-            if (ep.status !== p.status || ep.amount !== p.amount || ep.currency !== p.currency) {
+            if (ep.status !== p.status || ep.amount !== p.amount || ep.currency !== p.currency || ep.netAmount !== p.netAmount) {
               paymentsData[idx] = p; // refresh with latest parsed values
               updated++;
             }
@@ -5066,7 +5090,7 @@
         const [y,m] = d.split('-').map(Number);
         if (y === payCalYear && m-1 === payCalMonth) {
           if (!paymentMap[d]) paymentMap[d] = { paid: 0, failed: 0, amount: 0 };
-          if (p.status === 'paid') { paymentMap[d].paid++; paymentMap[d].amount += p.amount; }
+          if (p.status === 'paid') { paymentMap[d].paid++; paymentMap[d].amount += netOf(p); }
           else paymentMap[d].failed++;
         }
       });
@@ -5149,7 +5173,7 @@
       const paid = paymentsData.filter(p => p.status === 'paid');
       const failed = paymentsData.filter(p => p.status !== 'paid' && p.status !== 'open');
       const open = paymentsData.filter(p => p.status === 'open');
-      const totalRev = paid.reduce((s,p) => s+p.amount, 0);
+      const totalRev = paid.reduce((s,p) => s+netOf(p), 0);
       const newSubs = paymentsData.filter(p => p.billingReason === 'subscription_create' && p.status === 'paid').length;
 
       // Stats
@@ -5167,13 +5191,17 @@
         const ytdRev = paid.filter(p => {
           if (!p.paidAt) return false;
           return new Date(p.paidAt).getFullYear() === thisYear;
+        }).reduce((s,p) => s+netOf(p), 0);
+        const ytdGross = paid.filter(p => {
+          if (!p.paidAt) return false;
+          return new Date(p.paidAt).getFullYear() === thisYear;
         }).reduce((s,p) => s+p.amount, 0);
 
         const monthRev = paid.filter(p => {
           if (!p.paidAt) return false;
           const d = new Date(p.paidAt);
           return d.getFullYear() === thisYear && d.getMonth() === thisMonth;
-        }).reduce((s,p) => s+p.amount, 0);
+        }).reduce((s,p) => s+netOf(p), 0);
 
         // Upcoming revenue from roster renewals
         // Use each member's actual billing amount (set manually or from memberships import)
@@ -5195,11 +5223,17 @@
         const thisMonthUpcoming = thisMonthRenewals.reduce((s, r) => s + getMemberPrice(r), 0);
         const nextMonthUpcoming = nextMonthRenewals.reduce((s, r) => s + getMemberPrice(r), 0);
 
+        const ratio = avgNetRatio();
+        const estNote = (grossVal, count) => {
+          const base = count + ' renewals due';
+          if (ratio === null) return base;
+          return base + ' · ≈$' + (grossVal * ratio).toFixed(0) + ' after fees (est.)';
+        };
         statsEl.innerHTML = [
-          ['YTD Revenue', '$'+ytdRev.toFixed(2), '#22c55e', thisYear+' total collected'],
-          ['This Month', '$'+monthRev.toFixed(2), '#22c55e', paid.filter(p=>p.paidAt&&new Date(p.paidAt).getMonth()===thisMonth&&new Date(p.paidAt).getFullYear()===thisYear).length+' payments'],
-          ['Coming This Month', '~$'+thisMonthUpcoming.toFixed(0), '#f59e0b', thisMonthRenewals.length+' renewals due'],
-          ['Coming Next Month', '~$'+nextMonthUpcoming.toFixed(0), '#a78bfa', nextMonthRenewals.length+' renewals due'],
+          ['YTD Take-Home', '$'+ytdRev.toFixed(2), '#22c55e', thisYear+' net after taxes & fees ($'+ytdGross.toFixed(2)+' gross)'],
+          ['This Month', '$'+monthRev.toFixed(2), '#22c55e', paid.filter(p=>p.paidAt&&new Date(p.paidAt).getMonth()===thisMonth&&new Date(p.paidAt).getFullYear()===thisYear).length+' payments · net'],
+          ['Coming This Month', '~$'+thisMonthUpcoming.toFixed(0), '#f59e0b', estNote(thisMonthUpcoming, thisMonthRenewals.length)],
+          ['Coming Next Month', '~$'+nextMonthUpcoming.toFixed(0), '#a78bfa', estNote(nextMonthUpcoming, nextMonthRenewals.length)],
           ['Failed / Open', (failed.length+open.length), '#ef4444', 'needs attention'],
           ['New Subscribers', newSubs, '#22c55e', 'this export'],
         ].map(([l,v,c,sub]) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
@@ -5278,7 +5312,7 @@
       let filtered = statusFilter ? paymentsData.filter(p => p.status === statusFilter) : paymentsData;
       const pDir = paymentsSortDir === 'asc' ? 1 : -1;
       filtered = [...filtered].sort((a,b) => {
-        if (paymentsSortField === 'amount') return (a.amount - b.amount) * pDir;
+        if (paymentsSortField === 'amount') return ((a.status==='paid'?netOf(a):a.amount) - (b.status==='paid'?netOf(b):b.amount)) * pDir;
         return ((a.paidAt||'') < (b.paidAt||'') ? -1 : 1) * pDir;
       });
       if (!paymentsData.length) {
@@ -5293,7 +5327,7 @@
           <td class="px-4 py-3 text-zinc-500">${fmtDate(p.paidAt)}</td>
           <td class="px-4 py-3"><div class="text-white font-bold">${p.customerName||'—'}</div><div class="text-zinc-500 text-[10px]">${p.email}</div></td>
           <td class="px-4 py-3 text-zinc-400">${p.discordName||'—'}</td>
-          <td class="px-4 py-3 font-bold ${p.status==='paid'?'text-green-400':'text-zinc-400'}">$${p.amount.toFixed(2)}</td>
+          <td class="px-4 py-3 font-bold ${p.status==='paid'?'text-green-400':'text-zinc-400'}">$${(p.status==='paid'?netOf(p):p.amount).toFixed(2)}${p.status==='paid'&&p.netAmount!==null&&p.netAmount!==undefined&&Math.abs(p.netAmount-p.amount)>0.005?`<div class="text-[10px] font-normal text-zinc-600">$${p.amount.toFixed(2)} gross</div>`:''}</td>
           <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${sc}">${p.status}</span></td>
           <td class="px-4 py-3 text-zinc-500">${reasonLabel[p.billingReason]||p.billingReason||'—'}</td>
           <td class="px-4 py-3 text-red-400/80 text-[10px] max-w-[200px] truncate" title="${p.failureReason||''}">${p.failureReason||'—'}</td>
@@ -5494,10 +5528,10 @@
 
     function exportPaymentsCSV() {
       if (!paymentsData.length) { alert('No payments data to export.'); return; }
-      const headers = ['Date','Customer Name','Email','Discord','Amount','Currency','Status','Type','Failure Reason','Receipt'];
+      const headers = ['Date','Customer Name','Email','Discord','Gross Amount','Net Take-Home','Currency','Status','Type','Failure Reason','Receipt'];
       const rows = paymentsData.map(p => [
         p.paidAt?p.paidAt.slice(0,10):'', p.customerName||'', p.email||'', p.discordName||'',
-        p.amount||0, p.currency||'usd', p.status||'', p.billingReason||'',
+        p.amount||0, (p.netAmount!==null&&p.netAmount!==undefined)?p.netAmount:'', p.currency||'usd', p.status||'', p.billingReason||'',
         p.failureReason||'', p.receiptNumber||''
       ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','));
       const csv = [headers.join(','),...rows].join('\n');
