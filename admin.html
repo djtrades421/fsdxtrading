@@ -879,6 +879,16 @@
           </div>
         </div>
 
+        <!-- Revenue by Product -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl mb-5 overflow-hidden">
+          <div class="px-5 py-4">
+            <div class="text-xs font-black text-white uppercase tracking-wider">💰 Revenue by Product <span class="text-zinc-600 font-normal normal-case">— net take-home</span></div>
+          </div>
+          <div class="px-5 pb-4">
+            <div id="revenue-by-product" class="text-xs text-zinc-600">Import payments CSV to see product breakdown.</div>
+          </div>
+        </div>
+
         <!-- Payment Calendar -->
         <div class="border border-white/10 bg-zinc-950/40 rounded-2xl mb-5 overflow-hidden">
           <div class="px-5 py-4 flex items-center justify-between">
@@ -3703,7 +3713,15 @@
     }
 
     // ── Parse Whop memberships — fully dynamic, no hardcoded plan IDs ──
+    // Service products are payments, not memberships — they show in the
+    // Payments tab (revenue by product) but never enter the roster.
+    const NON_ROSTER_PRODUCTS = ['mentorship'];
+    function isServiceProduct(productName) {
+      const n = (productName || '').toLowerCase();
+      return NON_ROSTER_PRODUCTS.some(s => n.includes(s));
+    }
     function parseWhopMemberships(rows) {
+      rows = rows.filter(r => !isServiceProduct(r['Product']));
       const STATUS_PRIORITY = { lifetime: 0, active: 1, trialing: 2, trial_cancelled: 3, canceling: 4, past_due: 5, yearly: 6, inactive: 7, cancelled: 8 };
       const allParsed = rows.map(r => {
         const subStatus = (r['Subscription status'] || '').toLowerCase();
@@ -5284,6 +5302,46 @@
           if (body) { body.classList.remove('hidden'); if(arrow) arrow.style.transform='rotate(180deg)'; }
         } else {
           upcomingEl.textContent = 'No renewals in the next 14 days.';
+        }
+      }
+
+      // Revenue by product — net take-home grouped by description.
+      // Surfaces one-time products (1-on-1 Mentorship, Optimizer, etc.)
+      // that never appear in the roster or renewals.
+      const revProdEl = document.getElementById('revenue-by-product');
+      if (revProdEl) {
+        const byProduct = {};
+        paid.forEach(p => {
+          const key = (p.description || 'Other').trim() || 'Other';
+          if (!byProduct[key]) byProduct[key] = { net: 0, gross: 0, count: 0, oneTime: 0 };
+          byProduct[key].net += netOf(p);
+          byProduct[key].gross += p.amount;
+          byProduct[key].count++;
+          if (p.billingReason === 'one_time') byProduct[key].oneTime++;
+        });
+        const products = Object.entries(byProduct).sort((a,b) => b[1].net - a[1].net);
+        if (products.length) {
+          const grand = products.reduce((s,[,v]) => s + v.net, 0);
+          revProdEl.innerHTML = products.map(([name, v]) => {
+            const pct = grand > 0 ? (v.net / grand * 100) : 0;
+            const isOneTime = v.oneTime === v.count && v.count > 0;
+            return `<div class="py-2 border-b border-white/5 last:border-0">
+              <div class="flex items-center justify-between mb-1">
+                <div>
+                  <span class="text-white font-bold">${name}</span>
+                  ${isOneTime ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 ml-2">ONE-TIME</span>' : ''}
+                  <span class="text-zinc-600 ml-2 text-[10px]">${v.count} sale${v.count!==1?'s':''}</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-green-400 font-black">$${v.net.toFixed(2)}</span>
+                  ${Math.abs(v.gross-v.net)>0.005 ? `<span class="text-zinc-600 text-[10px] ml-1.5">$${v.gross.toFixed(2)} gross</span>` : ''}
+                </div>
+              </div>
+              <div class="h-1 rounded-full bg-zinc-800 overflow-hidden"><div class="h-full rounded-full bg-green-500/50" style="width:${pct.toFixed(1)}%"></div></div>
+            </div>`;
+          }).join('');
+        } else {
+          revProdEl.textContent = 'No paid transactions yet.';
         }
       }
 
