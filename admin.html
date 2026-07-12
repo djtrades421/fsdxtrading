@@ -879,16 +879,6 @@
           </div>
         </div>
 
-        <!-- Revenue by Product -->
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl mb-5 overflow-hidden">
-          <div class="px-5 py-4">
-            <div class="text-xs font-black text-white uppercase tracking-wider">💰 Revenue by Product <span class="text-zinc-600 font-normal normal-case">— net take-home</span></div>
-          </div>
-          <div class="px-5 pb-4">
-            <div id="revenue-by-product" class="text-xs text-zinc-600">Import payments CSV to see product breakdown.</div>
-          </div>
-        </div>
-
         <!-- Payment Calendar -->
         <div class="border border-white/10 bg-zinc-950/40 rounded-2xl mb-5 overflow-hidden">
           <div class="px-5 py-4 flex items-center justify-between">
@@ -900,6 +890,16 @@
             </div>
           </div>
           <div id="pay-cal-grid" class="px-5 pb-5"></div>
+        </div>
+
+        <!-- Revenue by Product -->
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl mb-5 overflow-hidden">
+          <div class="px-5 py-4">
+            <div class="text-xs font-black text-white uppercase tracking-wider">💰 Revenue by Product <span class="text-zinc-600 font-normal normal-case">— net take-home</span></div>
+          </div>
+          <div class="px-5 pb-4">
+            <div id="revenue-by-product" class="text-xs text-zinc-600">Import payments CSV to see product breakdown.</div>
+          </div>
         </div>
 
         <!-- Failed payments collapsible -->
@@ -1509,6 +1509,14 @@
           const cancelReason = m['Cancelation reason'] || '';
           const key = m['Key'] || '';
           const spend = m['Total spend (in USD)'] || '0';
+          // Real net take-home for this membership's product, from actual payments.
+          const prodId = m['Product ID'] || '';
+          const prodPaid = prodId ? payments.filter(p => p.status === 'paid' && p.productId === prodId) : [];
+          const prodNet = prodPaid.reduce((s,p) => s + netOf(p), 0);
+          const prodGross = prodPaid.reduce((s,p) => s + p.amount, 0);
+          const spendHtml = prodPaid.length
+            ? `<div>Spent <span class="text-green-400">$${prodNet.toFixed(2)} net</span>${Math.abs(prodGross-prodNet)>0.005?` <span class="text-zinc-600">($${prodGross.toFixed(2)} gross)</span>`:''}</div>`
+            : (parseFloat(spend) > 0 ? `<div>Spent <span class="text-green-400">$${parseFloat(spend).toFixed(2)}</span> <span class="text-zinc-600">gross</span></div>` : '');
 
           const statusColor = status === 'active' ? 'text-green-400 border-green-500/20 bg-green-500/10'
             : status === 'completed' ? 'text-purple-400 border-purple-500/20 bg-purple-500/10'
@@ -1524,7 +1532,7 @@
               ${joined ? `<div>Joined <span class="text-zinc-300">${fmtDate(joined)}</span></div>` : ''}
               ${nextPayment && status !== 'canceled' ? `<div>Next Payment <span class="text-zinc-300">${fmtDate(nextPayment)}</span></div>` : ''}
               ${churned ? `<div>Churned <span class="text-red-400">${fmtDate(churned)}</span></div>` : ''}
-              ${parseFloat(spend) > 0 ? `<div>Spent <span class="text-green-400">$${parseFloat(spend).toFixed(2)}</span></div>` : ''}
+              ${spendHtml}
               ${cancelReason ? `<div class="col-span-2 text-red-400/70">✗ ${cancelReason}</div>` : ''}
               ${key ? `<div class="col-span-2 font-mono text-[10px] text-zinc-600">${key}</div>` : ''}
             </div>
@@ -1538,16 +1546,23 @@
 
       // Payments section
       html += '<div>';
-      html += '<div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-3">Payments</div>';
+      const memberPaid = payments.filter(p => p.status === 'paid');
+      const memberNetTotal = memberPaid.reduce((s,p) => s + netOf(p), 0);
+      const memberGrossTotal = memberPaid.reduce((s,p) => s + p.amount, 0);
+      html += `<div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-3">Payments${memberPaid.length ? ` <span class="text-green-400 normal-case tracking-normal">· $${memberNetTotal.toFixed(2)} net total</span>${Math.abs(memberGrossTotal-memberNetTotal)>0.005?` <span class="text-zinc-600 normal-case tracking-normal">($${memberGrossTotal.toFixed(2)} gross)</span>`:''}` : ''}</div>`;
       if (payments.length) {
         html += '<div class="space-y-1.5">';
         payments.forEach(p => {
           const date = p.paidAt ? p.paidAt.split('T')[0].split(' ')[0] : '—';
           const statusColor = p.status === 'paid' || p.status === 'succeeded' ? 'text-green-400' : 'text-red-400';
           const statusLabel = p.status === 'paid' ? 'Paid' : p.status === 'succeeded' ? 'Paid' : p.status === 'failed' ? 'Failed' : p.status || '—';
+          const isPaid = p.status === 'paid' || p.status === 'succeeded';
+          const shown = isPaid ? netOf(p) : (p.amount||0);
+          const showGross = isPaid && p.netAmount !== null && p.netAmount !== undefined && Math.abs(p.netAmount - p.amount) > 0.005;
           html += `<div class="flex items-center justify-between border border-white/5 bg-black/30 rounded-lg px-3 py-2 text-xs">
             <div>
-              <span class="text-white font-bold">$${(p.amount||0).toFixed(2)}</span>
+              <span class="text-white font-bold">$${shown.toFixed(2)}</span>
+              ${showGross ? `<span class="text-zinc-600 ml-1 text-[10px]">($${p.amount.toFixed(2)} gross)</span>` : ''}
               <span class="text-zinc-600 ml-2">${p.description || p.billingReason || '—'}</span>
             </div>
             <div class="flex items-center gap-3 text-zinc-500">
@@ -4919,6 +4934,7 @@
         // fee data yet, so this stays null and we fall back to gross.
         netAmount: (r['Total Amount USD (Excluding Fees)'] !== undefined && r['Total Amount USD (Excluding Fees)'] !== '')
           ? (parseFloat(r['Total Amount USD (Excluding Fees)']) || 0) : null,
+        productId: r['Product ID'] || '',
         nativeAmount: parseFloat(r['Payment Amount']||'0')||0,
         currency: r['Payment Currency'] || 'usd',
         billingReason: r['Billing reason'] || '',
@@ -4941,7 +4957,7 @@
           const idx = paymentsData.findIndex(ep => ep.id === p.id);
           if (idx !== -1) {
             const ep = paymentsData[idx];
-            if (ep.status !== p.status || ep.amount !== p.amount || ep.currency !== p.currency || ep.netAmount !== p.netAmount) {
+            if (ep.status !== p.status || ep.amount !== p.amount || ep.currency !== p.currency || ep.netAmount !== p.netAmount || ep.productId !== p.productId) {
               paymentsData[idx] = p; // refresh with latest parsed values
               updated++;
             }
@@ -5362,10 +5378,7 @@
             </div>
             <span class="text-zinc-500 text-[10px]">$${p.amount.toFixed(2)}</span>
           </div>`).join('');
-          // Auto-expand if there are failed payments
-          const body = document.getElementById('failed-body');
-          const arrow = document.getElementById('failed-arrow');
-          if (body) { body.classList.remove('hidden'); if(arrow) arrow.style.transform='rotate(180deg)'; }
+          // Stays collapsed by default — the red count badge signals attention needed.
         } else {
           failedEl.textContent = 'No failed payments.';
         }
