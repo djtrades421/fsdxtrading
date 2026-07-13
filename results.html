@@ -116,7 +116,7 @@
               </div>
               <div class="mt-6 pt-5 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div class="text-xs text-zinc-400 max-w-md">This is just the <span class="text-zinc-200 font-semibold">$375</span> tier. Members get the full interactive <span class="text-green-400 font-semibold">Risk Profile Planner</span> — all 5 risk levels ($250–$625), each with eval pass rates <span class="text-zinc-300">and</span> full daily-driver backtest (grades, anatomy, annual ledger).</div>
-                <a href="memberships.html" class="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">See All 5 Profiles in the Playbook →</a>
+                <a href="memberships.html" id="profiles-cta" class="shrink-0 inline-flex items-center justify-center gap-2 px-5 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">See All 5 Profiles in the Playbook →</a>
               </div>
             </div>
             <div class="text-[10px] text-zinc-600 mt-3 leading-relaxed">Hypothetical/simulated eval results, not actual trading. Assumes every signal taken mechanically at the selected base risk (an idealized ceiling; real execution varies). Past performance is not indicative of future results.</div>
@@ -281,6 +281,16 @@
     }
   </script>
 
+  <script>
+    // Risk Profiles CTA — members go straight to the Playbook tab, everyone else to Memberships.
+    // Same login check nav-loader.js uses to reveal the VIP Area.
+    (function () {
+      var cta = document.getElementById('profiles-cta');
+      if (cta && localStorage.getItem('fsdx_token')) {
+        cta.href = 'playbook.html#risk';
+      }
+    })();
+  </script>
   <script src="nav-loader.js"></script>
 </body>
 </html>
