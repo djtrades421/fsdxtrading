@@ -122,6 +122,11 @@
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
             Analytics
           </button>
+          <button onclick="switchTab('traffic')" id="tab-traffic"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M18.75 3v.75m0 0a48.6 48.6 0 010 0M7.5 14.25l3-3 3 3 4.5-4.5"/></svg>
+            Traffic
+          </button>
           <button onclick="switchTab('history')" id="tab-history"
             class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
@@ -956,6 +961,26 @@
         </div>
       </div>
 
+      <!-- TRAFFIC TAB -->
+      <div id="panel-traffic" class="tab-panel">
+        <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+          <div>
+            <h2 class="text-sm font-black text-white">Site Traffic</h2>
+            <p class="text-xs text-zinc-600 mt-0.5">Prospect visits to fsdxtrading.com · once per session · times in CT</p>
+          </div>
+          <button onclick="loadTraffic()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">↻ Refresh</button>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5" id="traffic-stats">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">Today</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">Last 7 Days</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">This Month</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
+        </div>
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">This Month by Source</div>
+          <div id="traffic-sources" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
+        </div>
+      </div>
+
       <!-- ANALYTICS TAB -->
       <div id="panel-analytics" class="tab-panel">
         <div class="flex items-center justify-between mb-5">
@@ -1272,7 +1297,7 @@
     let allRecaps = [];
 
     function switchTab(tab) {
-      ['members','recaps','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history'].forEach(t => {
+      ['members','recaps','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history','traffic'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('tab-' + t);
         if (btn) btn.classList.remove('active-nav');
@@ -1288,7 +1313,45 @@
       if (tab === 'payments') renderPayments();
       if (tab === 'flags') renderFlags();
       if (tab === 'analytics') renderAnalytics();
+      if (tab === 'traffic') loadTraffic();
       if (tab === 'history') { dedupeHistory(); renderHistory2(); }
+    }
+
+    // ── Site Traffic ──
+    function trafficCard(label, value) {
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">${label}</div><div class="text-3xl font-black text-green-400 mt-1">${value}</div></div>`;
+    }
+    async function loadTraffic() {
+      const statsEl = document.getElementById('traffic-stats');
+      const srcEl = document.getElementById('traffic-sources');
+      if (!statsEl) return;
+      try {
+        const token = localStorage.getItem('fsdx_token') || '';
+        const res = await fetch(`${API}/api/admin/visits`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!res.ok) throw new Error('unauthorized');
+        const d = await res.json();
+        statsEl.innerHTML = trafficCard('Today', d.today ?? 0) + trafficCard('Last 7 Days', d.week ?? 0) + trafficCard('This Month', d.month ?? 0);
+        // Source breakdown for the month
+        const sources = d.monthSources || {};
+        const entries = Object.entries(sources).sort((a, b) => b[1] - a[1]);
+        const monthTotal = d.month || 0;
+        if (!entries.length || monthTotal === 0) {
+          srcEl.innerHTML = '<span class="text-zinc-600">No visits recorded yet this month. Once the beacon is live and traffic comes in, sources will show here.</span>';
+        } else {
+          const nice = { youtube: 'YouTube', google: 'Google', search: 'Search', social: 'Social', referral: 'Referral', direct: 'Direct' };
+          srcEl.innerHTML = entries.map(([k, v]) => {
+            const pct = Math.round((v / monthTotal) * 100);
+            const name = nice[k] || (k.charAt(0).toUpperCase() + k.slice(1));
+            return `<div class="mb-2">
+              <div class="flex justify-between text-xs mb-1"><span class="text-zinc-300 font-semibold">${name}</span><span class="text-zinc-500">${v} · ${pct}%</span></div>
+              <div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-green-500/70 rounded-full" style="width:${pct}%"></div></div>
+            </div>`;
+          }).join('');
+        }
+      } catch (err) {
+        statsEl.innerHTML = trafficCard('Today', '—') + trafficCard('Last 7 Days', '—') + trafficCard('This Month', '—');
+        if (srcEl) srcEl.innerHTML = '<span class="text-zinc-600">Couldn\'t load traffic. Make sure the worker is deployed with the /api/track and /api/admin/visits routes.</span>';
+      }
     }
 
     async function handleLogout() {
