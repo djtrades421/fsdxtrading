@@ -1,6 +1,41 @@
 // nav-loader.js — Universal nav loader
 // Handles logged-in and logged-out states automatically
 
+// ── Site-visit beacon ──
+// Counts prospective visitors (not logged-in members, not admin pages),
+// once per browsing session, and attributes the source (utm_source > referrer).
+(function() {
+  try {
+    // Only count non-members: skip if a logged-in session exists
+    if (localStorage.getItem('fsdx_token')) return;
+    // Skip admin/login/member-tool pages — we want marketing traffic
+    var p = (location.pathname || '').toLowerCase();
+    if (/admin|login|reset|dashboard|profile|journal|tracker|playbook/.test(p)) return;
+    // One count per session
+    if (sessionStorage.getItem('fsdx_v')) return;
+    sessionStorage.setItem('fsdx_v', '1');
+
+    var params = new URLSearchParams(location.search);
+    var src = (params.get('utm_source') || '').toLowerCase().trim().slice(0, 40);
+    if (!src) {
+      var ref = document.referrer || '';
+      if (/youtube\.com|youtu\.be/.test(ref)) src = 'youtube';
+      else if (/google\./.test(ref)) src = 'google';
+      else if (/bing\.|duckduckgo|yahoo/.test(ref)) src = 'search';
+      else if (/instagram|facebook|fb\.|tiktok|twitter|t\.co|x\.com/.test(ref)) src = 'social';
+      else if (ref && ref.indexOf(location.host) === -1) src = 'referral';
+      else src = 'direct';
+    }
+
+    fetch('https://nexus-validator.dfuentes4211.workers.dev/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source: src, path: location.pathname }),
+      keepalive: true
+    }).catch(function(){});
+  } catch (e) { /* analytics never breaks the page */ }
+})();
+
 (function() {
   // Show skeleton immediately to prevent flash
   const navContent = document.getElementById('nav-content');
