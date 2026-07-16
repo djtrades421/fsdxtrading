@@ -5262,16 +5262,18 @@
         const nextMonthUpcoming = nextMonthRenewals.reduce((s, r) => s + getMemberPrice(r), 0);
 
         const ratio = avgNetRatio();
+        // Big number = estimated take-home (net); sub-line shows gross — mirrors the YTD Take-Home card
+        const takeHome = (grossVal) => ratio === null ? grossVal : grossVal * ratio;
         const estNote = (grossVal, count) => {
           const base = count + ' renewals due';
-          if (ratio === null) return base;
-          return base + ' · ≈$' + (grossVal * ratio).toFixed(0) + ' after fees (est.)';
+          if (ratio === null) return base + ' · gross (fee data n/a)';
+          return base + ' · ≈$' + grossVal.toFixed(0) + ' gross (est.)';
         };
         statsEl.innerHTML = [
           ['YTD Take-Home', '$'+ytdRev.toFixed(2), '#22c55e', thisYear+' net after taxes & fees ($'+ytdGross.toFixed(2)+' gross)'],
           ['This Month', '$'+monthRev.toFixed(2), '#22c55e', paid.filter(p=>p.paidAt&&new Date(p.paidAt).getMonth()===thisMonth&&new Date(p.paidAt).getFullYear()===thisYear).length+' payments · net'],
-          ['Coming This Month', '~$'+thisMonthUpcoming.toFixed(0), '#f59e0b', estNote(thisMonthUpcoming, thisMonthRenewals.length)],
-          ['Coming Next Month', '~$'+nextMonthUpcoming.toFixed(0), '#a78bfa', estNote(nextMonthUpcoming, nextMonthRenewals.length)],
+          ['Coming This Month', '~$'+takeHome(thisMonthUpcoming).toFixed(0), '#f59e0b', estNote(thisMonthUpcoming, thisMonthRenewals.length)],
+          ['Coming Next Month', '~$'+takeHome(nextMonthUpcoming).toFixed(0), '#a78bfa', estNote(nextMonthUpcoming, nextMonthRenewals.length)],
           ['Failed / Open', (failed.length+open.length), '#ef4444', 'needs attention'],
           ['New Subscribers', newSubs, '#22c55e', 'this export'],
         ].map(([l,v,c,sub]) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
