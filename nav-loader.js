@@ -1,11 +1,10 @@
 // nav-loader.js — Universal nav loader
 // Handles logged-in and logged-out states automatically
 
-// ── Site traffic beacons ──
-// Non-members only, public marketing pages only.
-//   • Visit ping — once per session — drives the top counters + source attribution.
-//   • Page ping  — once per session PER page — drives the "Pages Visited" breakdown.
-// The two use separate endpoints/keys so they never overwrite each other.
+// ── Site traffic beacon ──
+// Non-members only, public marketing pages only. Fires once per session PER page.
+// The first ping of the session also counts as the visit (top counters + source);
+// every page a visitor opens is tallied for the "Pages Visited" breakdown.
 (function() {
   try {
     // Only count non-members: skip if a logged-in session exists
@@ -14,13 +13,18 @@
     var rawPath = location.pathname || '/';
     if (/admin|login|reset|dashboard|profile|journal|tracker|playbook/.test(rawPath.toLowerCase())) return;
 
-    var BASE = 'https://nexus-validator.dfuentes4211.workers.dev';
+    // One ping per page per session
+    var pgKey = rawPath.toLowerCase().split('?')[0].split('#')[0];
+    if (sessionStorage.getItem('fsdx_pv:' + pgKey)) return;
+    sessionStorage.setItem('fsdx_pv:' + pgKey, '1');
 
-    // ---- Visit ping: once per session (top counters + sources) ----
-    if (!sessionStorage.getItem('fsdx_v')) {
+    // Is this the first tracked page of the whole session? → count it as a visit.
+    var firstOfSession = !sessionStorage.getItem('fsdx_v');
+    var src = 'direct';
+    if (firstOfSession) {
       sessionStorage.setItem('fsdx_v', '1');
       var params = new URLSearchParams(location.search);
-      var src = (params.get('utm_source') || '').toLowerCase().trim().slice(0, 40);
+      src = (params.get('utm_source') || '').toLowerCase().trim().slice(0, 40);
       if (!src) {
         var ref = document.referrer || '';
         if (/youtube\.com|youtu\.be/.test(ref)) src = 'youtube';
@@ -30,25 +34,14 @@
         else if (ref && ref.indexOf(location.host) === -1) src = 'referral';
         else src = 'direct';
       }
-      fetch(BASE + '/api/track', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source: src }),
-        keepalive: true
-      }).catch(function(){});
     }
 
-    // ---- Page ping: once per session PER page (Pages Visited) ----
-    var pgKey = rawPath.toLowerCase().split('?')[0].split('#')[0];
-    if (!sessionStorage.getItem('fsdx_pv:' + pgKey)) {
-      sessionStorage.setItem('fsdx_pv:' + pgKey, '1');
-      fetch(BASE + '/api/track-page', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ path: rawPath }),
-        keepalive: true
-      }).catch(function(){});
-    }
+    fetch('https://nexus-validator.dfuentes4211.workers.dev/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source: src, path: rawPath, visit: firstOfSession }),
+      keepalive: true
+    }).catch(function(){});
   } catch (e) { /* analytics never breaks the page */ }
 })();
 
