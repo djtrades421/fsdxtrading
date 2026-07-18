@@ -982,9 +982,16 @@
           <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">Last 14 Days</div>
           <div id="traffic-chart" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
         </div>
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 mb-5">
           <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">This Month by Source</div>
           <div id="traffic-sources" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
+        </div>
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Pages Visited This Month</div>
+            <div class="text-[10px] text-zinc-600">public pages · non-members</div>
+          </div>
+          <div id="traffic-pages" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
         </div>
       </div>
 
@@ -1346,6 +1353,22 @@
     }
 
     // ── Site Traffic ──
+    function prettyPath(p) {
+      let s = (p || '/').toLowerCase().split('?')[0].split('#')[0];
+      s = s.replace(/index\.html$/, '').replace(/\.html$/, '');
+      if (s.length > 1 && s.endsWith('/')) s = s.slice(0, -1);
+      if (s === '' || s === '/') return 'Home';
+      const map = {
+        '/memberships': 'Memberships', '/results': 'Results', '/backtest': 'Backtest',
+        '/faq': 'FAQ', '/contact': 'Contact', '/disclosures': 'Disclosures',
+        '/autotrader': 'Auto Trader', '/suite': 'Suite', '/knowledge': 'Knowledge',
+        '/affiliates': 'Affiliates', '/converter': 'Converter', '/recaps': 'Recaps',
+        '/schedule': 'Schedule', '/setup': 'Setup'
+      };
+      if (map[s]) return map[s];
+      const seg = s.replace(/^\//, '').replace(/[-_/]/g, ' ').trim();
+      return seg.charAt(0).toUpperCase() + seg.slice(1);
+    }
     function trafficCard(label, value, sub) {
       return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">${label}</div><div class="text-3xl font-black text-green-400 mt-1">${value}</div>${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}</div>`;
     }
@@ -1378,6 +1401,33 @@
               <div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-green-500/70 rounded-full" style="width:${pct}%"></div></div>
             </div>`;
           }).join('');
+        }
+        // Page breakdown for the month
+        const pagesEl = document.getElementById('traffic-pages');
+        if (pagesEl) {
+          if (d.monthPages === undefined || d.monthPages === null) {
+            pagesEl.innerHTML = '<span class="text-zinc-600">Page data isn\'t coming from the worker yet. Deploy the worker update that stores <code class="text-zinc-400">path</code> and returns <code class="text-zinc-400">monthPages</code>, then hit Refresh.</span>';
+          } else {
+            const pEntries = Object.entries(d.monthPages).sort((a, b) => b[1] - a[1]);
+            const pageTotal = pEntries.reduce((s, [, v]) => s + v, 0);
+            if (!pEntries.length || pageTotal === 0) {
+              pagesEl.innerHTML = '<span class="text-zinc-600">No page visits recorded yet this month.</span>';
+            } else {
+              pagesEl.innerHTML = pEntries.map(([k, v]) => {
+                const pct = Math.round((v / pageTotal) * 100);
+                return `<div class="mb-2.5">
+                  <div class="flex justify-between items-baseline text-xs mb-1">
+                    <span class="text-zinc-300 font-semibold">${prettyPath(k)}</span>
+                    <span class="text-zinc-600 font-mono text-[10px]">${k}</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <div class="flex-1 h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-green-500/70 rounded-full" style="width:${pct}%"></div></div>
+                    <span class="text-zinc-500 text-xs whitespace-nowrap w-16 text-right">${v} · ${pct}%</span>
+                  </div>
+                </div>`;
+              }).join('');
+            }
+          }
         }
       } catch (err) {
         statsEl.innerHTML = trafficCard('Today', '—') + trafficCard('Last 7 Days', '—') + trafficCard('This Month', '—');
