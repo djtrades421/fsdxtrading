@@ -1,38 +1,54 @@
 // nav-loader.js — Universal nav loader
 // Handles logged-in and logged-out states automatically
 
-// ── Site-visit beacon ──
-// Counts prospective visitors (not logged-in members, not admin pages),
-// once per browsing session, and attributes the source (utm_source > referrer).
+// ── Site traffic beacons ──
+// Non-members only, public marketing pages only.
+//   • Visit ping — once per session — drives the top counters + source attribution.
+//   • Page ping  — once per session PER page — drives the "Pages Visited" breakdown.
+// The two use separate endpoints/keys so they never overwrite each other.
 (function() {
   try {
     // Only count non-members: skip if a logged-in session exists
     if (localStorage.getItem('fsdx_token')) return;
-    // Skip admin/login/member-tool pages — we want marketing traffic
-    var p = (location.pathname || '').toLowerCase();
-    if (/admin|login|reset|dashboard|profile|journal|tracker|playbook/.test(p)) return;
-    // One count per session
-    if (sessionStorage.getItem('fsdx_v')) return;
-    sessionStorage.setItem('fsdx_v', '1');
+    // Skip admin/login/member-tool pages — we want marketing traffic only
+    var rawPath = location.pathname || '/';
+    if (/admin|login|reset|dashboard|profile|journal|tracker|playbook/.test(rawPath.toLowerCase())) return;
 
-    var params = new URLSearchParams(location.search);
-    var src = (params.get('utm_source') || '').toLowerCase().trim().slice(0, 40);
-    if (!src) {
-      var ref = document.referrer || '';
-      if (/youtube\.com|youtu\.be/.test(ref)) src = 'youtube';
-      else if (/google\./.test(ref)) src = 'google';
-      else if (/bing\.|duckduckgo|yahoo/.test(ref)) src = 'search';
-      else if (/instagram|facebook|fb\.|tiktok|twitter|t\.co|x\.com/.test(ref)) src = 'social';
-      else if (ref && ref.indexOf(location.host) === -1) src = 'referral';
-      else src = 'direct';
+    var BASE = 'https://nexus-validator.dfuentes4211.workers.dev';
+
+    // ---- Visit ping: once per session (top counters + sources) ----
+    if (!sessionStorage.getItem('fsdx_v')) {
+      sessionStorage.setItem('fsdx_v', '1');
+      var params = new URLSearchParams(location.search);
+      var src = (params.get('utm_source') || '').toLowerCase().trim().slice(0, 40);
+      if (!src) {
+        var ref = document.referrer || '';
+        if (/youtube\.com|youtu\.be/.test(ref)) src = 'youtube';
+        else if (/google\./.test(ref)) src = 'google';
+        else if (/bing\.|duckduckgo|yahoo/.test(ref)) src = 'search';
+        else if (/instagram|facebook|fb\.|tiktok|twitter|t\.co|x\.com/.test(ref)) src = 'social';
+        else if (ref && ref.indexOf(location.host) === -1) src = 'referral';
+        else src = 'direct';
+      }
+      fetch(BASE + '/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source: src }),
+        keepalive: true
+      }).catch(function(){});
     }
 
-    fetch('https://nexus-validator.dfuentes4211.workers.dev/api/track', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ source: src, path: location.pathname }),
-      keepalive: true
-    }).catch(function(){});
+    // ---- Page ping: once per session PER page (Pages Visited) ----
+    var pgKey = rawPath.toLowerCase().split('?')[0].split('#')[0];
+    if (!sessionStorage.getItem('fsdx_pv:' + pgKey)) {
+      sessionStorage.setItem('fsdx_pv:' + pgKey, '1');
+      fetch(BASE + '/api/track-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: rawPath }),
+        keepalive: true
+      }).catch(function(){});
+    }
   } catch (e) { /* analytics never breaks the page */ }
 })();
 
