@@ -1159,6 +1159,7 @@
                 </optgroup>
                 <optgroup label="Pro">
                   <option value="Pro Monthly">Pro Monthly</option>
+                  <option value="Pro Quarterly">Pro Quarterly</option>
                   <option value="Pro Yearly">Pro Yearly</option>
                 </optgroup>
                 <optgroup label="Legacy / VIP">
@@ -1206,6 +1207,7 @@
               <select id="mm-billing-cycle" onchange="updateModalRenewalLogic()" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition">
                 <option value="none">None / Lifetime</option>
                 <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
                 <option value="annual">Annual</option>
               </select>
             </div>
@@ -1652,7 +1654,8 @@
       'plan_mhrt4tqPQYjNH': 'Plus Lifetime',   // $209 (legacy lifetime price)
       // ── FSD-X Trading Pro  (Pro has no lifetime) ──
       'plan_l0KkbipfcgnAp': 'Pro Monthly',     // $129.99
-      // 'PASTE_PRO_YEARLY_PLAN_ID_HERE': 'Pro Yearly',  // $1299 — add the real plan_… ID after the first Pro Yearly sale
+      'plan_RYMEBnqYNmFEZ': 'Pro Quarterly',   // $349 (14-day free trial)
+      'plan_1CAj5BxdzpT1W': 'Pro Yearly',      // $1,299 — live plan ID from the Annual checkout button (verify in Whop)
       // ── Other products / legacy tiers ──
       'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
       'plan_aXiLFJZu79HYG': 'VIP Legacy',
@@ -2916,6 +2919,8 @@
         billingSection.style.opacity = '1';
         if (accessLower.includes('annual') || accessLower.includes('yearly')) {
           document.getElementById('mm-billing-cycle').value = 'annual';
+        } else if (accessLower.includes('quarterly')) {
+          document.getElementById('mm-billing-cycle').value = 'quarterly';
         } else if (accessLower.includes('monthly')) {
           document.getElementById('mm-billing-cycle').value = 'monthly';
         }
@@ -2923,6 +2928,8 @@
           hint.textContent = 'Status set to Canceling — member will be moved to History automatically when their renewal date passes.';
         } else if (cycle === 'monthly') {
           hint.textContent = 'Renewal date will auto-advance by 1 month each time a payment is logged.';
+        } else if (cycle === 'quarterly') {
+          hint.textContent = 'Renewal date will auto-advance by 3 months each time a payment is logged.';
         } else if (cycle === 'annual') {
           hint.textContent = 'Renewal date will auto-advance by 12 months each time a payment is logged.';
         } else {
@@ -2936,6 +2943,7 @@
       try {
         const d = new Date(currentRenewal);
         if (cycle === 'monthly') d.setMonth(d.getMonth() + 1);
+        else if (cycle === 'quarterly') d.setMonth(d.getMonth() + 3);
         else if (cycle === 'annual') d.setFullYear(d.getFullYear() + 1);
         return d.toISOString().slice(0,10);
       } catch(e) { return currentRenewal; }
