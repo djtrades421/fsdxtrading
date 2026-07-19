@@ -14,50 +14,32 @@
 (function () {
   "use strict";
 
-  // ---- TOS content per product ----
-  var TERMS = {
-    membership: {
-      eyebrow: "Before You Continue",
-      title: "FSD-X Membership — Terms of Service",
-      points: [
-        "This is an educational, rules-based tool — <strong>not a signal service</strong> and not financial advice.",
-        "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit or result is guaranteed.",
-        "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. Cancel during any free trial to avoid being charged.",
-        "Access is limited to <strong>one Discord and one TradingView account</strong>. Sharing or reselling is prohibited and may end access without refund.",
-        "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
-      ],
-      agree: "I understand and agree to the Terms of Service.",
-      proceed: "Proceed to Checkout"
-    },
-    tools: {
-      eyebrow: "Before You Continue",
-      title: "FSD-X Tool — Terms of Service",
-      points: [
-        "This is a software utility — <strong>not financial advice</strong> and not a trade-signal service.",
-        "Trading involves <strong>substantial risk</strong>; no outcome or result is guaranteed. Tools assist your process; they do not guarantee performance.",
-        "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. Cancel during any free trial to avoid being charged.",
-        "Access is tied to <strong>one Whop account</strong>. Sharing, reselling, or redistributing your access is prohibited and may end access without refund.",
-        "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
-      ],
-      agree: "I understand and agree to the Terms of Service.",
-      proceed: "Proceed to Checkout"
-    },
-    autotrader: {
-      eyebrow: "Before You Continue · Automated Product",
-      title: "FSD-X // ORB Auto-Trader — Terms of Service",
-      points: [
-        "The Auto-Trader <strong>emits automation alerts only — it does not place or guarantee any order</strong>. All execution happens through third-party services and brokers <strong>you</strong> select, configure, and control.",
-        "FSD-X is <strong>not responsible</strong> for those third parties, their reliability, fills, latency, or outages — or for any activity once the Auto-Trader is running on your account.",
-        "A missed, delayed, or failed alert can leave unintended open positions. <strong>You are responsible for your own safeguards</strong> (broker-side stop, end-of-day flatten, risk limits) and for monitoring your account.",
-        "<strong>You</strong> are responsible for confirming automated trading is permitted by your broker and prop firm and for complying with their rules.",
-        "Validate on a <strong>demo/paper account</strong> before any live use. Trading involves substantial risk; no result is guaranteed.",
-        "<strong>By purchasing and accepting these terms, you take full responsibility for all trades, positions, losses, and outcomes on your account.</strong> Once accepted, that responsibility is yours — FSD-X has no liability for any result.",
-        "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Auto-Trader Addendum."
-      ],
-      agree: "I accept the Auto-Trader Terms and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
-      proceed: "Proceed to Checkout"
-    }
+  // ---- ONE membership, ONE gate ----
+  // Everything is now a single FSD-X membership — the full indicator suite,
+  // Strategy Optimizer, Nexus, alerts, the live trade room, and the ORB
+  // Auto-Trader — so every checkout shows the SAME unified terms. All
+  // data-gate values (membership / tools / autotrader) alias to UNIFIED,
+  // so no link can surface mismatched or legacy ("Plus") terms.
+  var UNIFIED = {
+    eyebrow: "Before You Continue",
+    title: "FSD-X Membership — Terms of Service",
+    points: [
+      "This is one FSD-X membership covering everything — the full indicator suite, Strategy Optimizer, Nexus, alerts, the live trade room, and the ORB Auto-Trader. All of it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
+      "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed — the tools assist your process, they do not guarantee performance.",
+      "The Auto-Trader <strong>emits automation alerts only — it does not place or guarantee any order</strong>. All execution happens through third-party services and brokers <strong>you</strong> select, configure, and control.",
+      "FSD-X is <strong>not responsible</strong> for those third parties — their reliability, fills, latency, or outages — or for any activity once the Auto-Trader is running on your account. A missed, delayed, or failed alert can leave unintended open positions, so <strong>you are responsible for your own safeguards</strong> (broker-side stop, end-of-day flatten, risk limits) and for monitoring your account.",
+      "<strong>You</strong> are responsible for confirming automated trading is permitted by your broker and prop firm and for complying with their rules. Validate on a <strong>demo/paper account</strong> before any live use.",
+      "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. Cancel during any free trial to avoid being charged.",
+      "Access is limited to <strong>one Discord and one TradingView account</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
+      "<strong>By purchasing and accepting these terms, you take full responsibility for all trades, positions, losses, and outcomes on your account.</strong> Once accepted, that responsibility is yours — FSD-X has no liability for any result.",
+      "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Auto-Trader Addendum."
+    ],
+    agree: "I accept the FSD-X Membership Terms — including the Auto-Trader Addendum — and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
+    proceed: "Proceed to Checkout"
   };
+
+  // Every data-gate value resolves to the same unified terms (one plan → one gate).
+  var TERMS = { membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED };
 
   var pendingUrl = null;
   var pendingTarget = "_blank";
