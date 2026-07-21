@@ -993,9 +993,9 @@
             </div>
             <div id="traffic-trend" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
           </div>
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col">
             <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">Source Mix · This Month</div>
-            <div id="traffic-sources" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
+            <div id="traffic-sources" class="text-xs text-zinc-600 flex-1 flex items-center">Open this tab to load traffic…</div>
           </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
@@ -1415,8 +1415,8 @@
       if(!entries.length || !monthTotal){ el.innerHTML='<span class="text-zinc-600 text-xs">No visits recorded yet this month.</span>'; return; }
       const R=52, C=2*Math.PI*R; let off=0;
       const segs = entries.map(([k,v],i)=>{ const frac=v/monthTotal; const col=srcColorAt(k,i); const dash=`${(frac*C).toFixed(2)} ${(C-frac*C).toFixed(2)}`; const seg=`<circle cx="70" cy="70" r="${R}" fill="none" stroke="${col}" stroke-width="16" stroke-dasharray="${dash}" stroke-dashoffset="${(-off*C).toFixed(2)}" transform="rotate(-90 70 70)"/>`; off+=frac; return seg; }).join('');
-      const legend = entries.slice(0,6).map(([k,v],i)=>{ const pct=Math.round(v/monthTotal*100); return `<div class="flex items-center justify-between text-[11px] mb-1.5"><span class="flex items-center gap-1.5 text-zinc-300"><span style="width:8px;height:8px;border-radius:2px;background:${srcColorAt(k,i)};display:inline-block"></span>${niceSrc(k)}</span><span class="text-zinc-500">${v} · ${pct}%</span></div>`; }).join('');
-      el.innerHTML=`<div class="flex items-center gap-4"><svg viewBox="0 0 140 140" style="width:104px;height:104px;flex-shrink:0"><circle cx="70" cy="70" r="52" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="16"/>${segs}<text x="70" y="66" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">${monthTotal}</text><text x="70" y="82" text-anchor="middle" fill="#71717a" font-size="9">visits</text></svg><div class="flex-1 min-w-0">${legend}</div></div>`;
+      const legend = entries.slice(0,6).map(([k,v],i)=>{ const pct=Math.round(v/monthTotal*100); return `<div class="flex items-center justify-between text-[15px] mb-3.5"><span class="flex items-center gap-2.5 text-zinc-100 font-medium"><span style="width:11px;height:11px;border-radius:3px;background:${srcColorAt(k,i)};display:inline-block"></span>${niceSrc(k)}</span><span class="text-zinc-400 text-sm"><span class="text-white font-bold text-[15px]">${v.toLocaleString()}</span> · ${pct}%</span></div>`; }).join('');
+      el.innerHTML=`<div class="flex items-center gap-6 w-full"><svg viewBox="0 0 140 140" style="width:150px;height:150px;flex-shrink:0"><circle cx="70" cy="70" r="52" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="16"/>${segs}<text x="70" y="68" text-anchor="middle" fill="#fff" font-size="26" font-weight="800">${monthTotal.toLocaleString()}</text><text x="70" y="82" text-anchor="middle" fill="#71717a" font-size="9">visits</text></svg><div class="flex-1 min-w-0">${legend}</div></div>`;
     }
 
     function trafficDOW(daily){
@@ -1455,7 +1455,7 @@
       const total = ent.reduce((s,[,v])=>s+v,0);
       if(!ent.length || !total){ el.innerHTML='<span class="text-zinc-600 text-xs">No page visits recorded yet this month.</span>'; return; }
       const top = ent.slice(0,10);
-      el.innerHTML = top.map(([k,v])=>{ const pct=Math.round(v/total*100); const isChk=(k==='/checkout-started'); return `<div class="mb-2"><div class="flex justify-between items-baseline text-[11px] mb-0.5"><span class="${isChk?'text-amber-400':'text-zinc-300'} font-semibold">${prettyPath(k)}</span><span class="text-zinc-500 text-[10px] font-mono">${v} · ${pct}%</span></div><div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full ${isChk?'bg-amber-400/70':'bg-green-500/70'} rounded-full" style="width:${Math.max(pct,2)}%"></div></div></div>`; }).join('') + (ent.length>10?`<div class="text-[10px] text-zinc-600 mt-2">+${ent.length-10} more page${ent.length-10>1?'s':''}</div>`:'');
+      el.innerHTML = top.map(([k,v])=>{ const pct=Math.round(v/total*100); const isChk=(k==='/checkout-started'); return `<div class="mb-3.5"><div class="flex justify-between items-baseline text-[14px] mb-1.5"><span class="${isChk?'text-amber-400':'text-zinc-100'} font-semibold">${prettyPath(k)}</span><span class="text-zinc-400 text-sm"><span class="text-white font-bold text-[15px]">${v.toLocaleString()}</span> · ${pct}%</span></div><div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full ${isChk?'bg-amber-400/70':'bg-green-500/70'} rounded-full" style="width:${Math.max(pct,2)}%"></div></div></div>`; }).join('') + (ent.length>10?`<div class="text-[11px] text-zinc-600 mt-2">+${ent.length-10} more page${ent.length-10>1?'s':''}</div>`:'');
     }
 
     // ── Site Traffic ──
