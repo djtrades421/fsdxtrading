@@ -1000,11 +1000,11 @@
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-            <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">By Day of Week · Last 30 Days</div>
+            <div class="flex items-baseline justify-between mb-4"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">By Day of Week · Last 30 Days</div><div class="text-xl font-black text-white" id="traffic-dow-total">—</div></div>
             <div id="traffic-dow" class="text-xs text-zinc-600">—</div>
           </div>
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-4"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">By Hour · This Month</div><div class="text-[10px] text-zinc-600">CT</div></div>
+            <div class="flex items-baseline justify-between mb-4"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">By Hour · This Month <span class="text-zinc-600 normal-case tracking-normal">· CT</span></div><div class="text-xl font-black text-white" id="traffic-hours-total">—</div></div>
             <div id="traffic-hours" class="text-xs text-zinc-600">—</div>
           </div>
         </div>
@@ -1394,7 +1394,7 @@
       const tot={};
       daily.forEach(d=>{ for(const [k,v] of Object.entries(d.sources||{})) tot[k]=(tot[k]||0)+v; });
       const top = Object.entries(tot).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
-      const W=600,H=170,padL=26,padB=18,padT=8,padR=6, n=daily.length;
+      const W=920,H=210,padL=34,padB=22,padT=10,padR=10, n=daily.length;
       const maxY = Math.max(1, ...daily.map(d=>d.total||0));
       const x = i => padL + (i/(n-1||1))*(W-padL-padR);
       const y = v => padT + (1-(v/maxY))*(H-padT-padB);
@@ -1403,9 +1403,9 @@
       const area = 'M'+x(0)+' '+y(totals[0])+' '+totals.map((v,i)=>'L'+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ')+' L'+x(n-1).toFixed(1)+' '+(H-padB)+' L'+x(0)+' '+(H-padB)+' Z';
       let lines='';
       top.forEach((s,idx)=>{ const vals=daily.map(d=>(d.sources&&d.sources[s])||0); lines+=`<path d="${line(vals)}" fill="none" stroke="${srcColorAt(s,idx)}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`; });
-      const gl=[0,0.5,1].map(f=>{ const yy=y(maxY*f).toFixed(1); return `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="rgba(255,255,255,0.05)"/><text x="2" y="${(+yy+3)}" fill="#52525b" font-size="8">${Math.round(maxY*f)}</text>`; }).join('');
-      const xl=[0,Math.floor(n/2),n-1].map(i=>`<text x="${x(i).toFixed(1)}" y="${H-4}" fill="#52525b" font-size="8" text-anchor="middle">${daily[i].day.slice(5)}</text>`).join('');
-      el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="w-full" style="height:180px" preserveAspectRatio="none"><defs><linearGradient id="tgrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#22c55e" stop-opacity="0.18"/><stop offset="1" stop-color="#22c55e" stop-opacity="0"/></linearGradient></defs>${gl}<path d="${area}" fill="url(#tgrad)"/><path d="${line(totals)}" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.35"/>${lines}${xl}</svg>`;
+      const gl=[0,0.5,1].map(f=>{ const yy=y(maxY*f).toFixed(1); return `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="rgba(255,255,255,0.05)"/><text x="2" y="${(+yy+3)}" fill="#71717a" font-size="11">${Math.round(maxY*f)}</text>`; }).join('');
+      const xl=[0,Math.floor(n/2),n-1].map(i=>`<text x="${x(i).toFixed(1)}" y="${H-4}" fill="#71717a" font-size="11" text-anchor="middle">${daily[i].day.slice(5)}</text>`).join('');
+      el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="w-full" style="height:200px"><defs><linearGradient id="tgrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#22c55e" stop-opacity="0.18"/><stop offset="1" stop-color="#22c55e" stop-opacity="0"/></linearGradient></defs>${gl}<path d="${area}" fill="url(#tgrad)"/><path d="${line(totals)}" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.35"/>${lines}${xl}</svg>`;
       if(leg) leg.innerHTML = top.length ? top.map((s,idx)=>`<span class="inline-flex items-center gap-1 text-[10px] text-zinc-400 ml-3"><span style="width:8px;height:8px;border-radius:2px;background:${srcColorAt(s,idx)};display:inline-block"></span>${niceSrc(s)}</span>`).join('') : '<span class="text-[10px] text-zinc-600">deploy worker update for per-source lines</span>';
     }
 
@@ -1424,17 +1424,19 @@
       if(!daily || !daily.length){ el.innerHTML='<span class="text-zinc-600 text-xs">No data yet.</span>'; return; }
       const names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; const agg=[0,0,0,0,0,0,0];
       daily.forEach(d=>{ const dt=new Date(d.day+'T12:00:00Z'); agg[dt.getUTCDay()]+=d.total||0; });
-      const order=[1,2,3,4,5,6,0]; const max=Math.max(1,...agg);
-      el.innerHTML='<div class="flex items-end gap-1.5" style="height:118px">'+order.map(i=>{ const v=agg[i]; const pct=v?Math.max(Math.round(v/max*100),4):2; return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${names[i]}: ${v}"><div class="text-[9px] text-zinc-400 mb-1" style="height:12px">${v||''}</div><div class="w-full ${v?'bg-green-500/60':'bg-white/5'} rounded-t" style="height:${pct}%"></div><div class="text-[8px] text-zinc-600 mt-1">${names[i]}</div></div>`; }).join('')+'</div>';
+      const order=[1,2,3,4,5,6,0]; const max=Math.max(1,...agg); const sum=agg.reduce((a,b)=>a+b,0);
+      const dt2=document.getElementById('traffic-dow-total'); if(dt2) dt2.textContent=sum.toLocaleString();
+      el.innerHTML='<div class="flex items-end gap-1.5" style="height:118px">'+order.map(i=>{ const v=agg[i]; const pct=v?Math.max(Math.round(v/max*100),4):2; return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${names[i]}: ${v}"><div class="text-[11px] font-semibold text-zinc-300 mb-1" style="height:14px">${v||''}</div><div class="w-full ${v?'bg-green-500/60':'bg-white/5'} rounded-t" style="height:${pct}%"></div><div class="text-[11px] text-zinc-400 mt-1.5">${names[i]}</div></div>`; }).join('')+'</div>';
     }
 
     function trafficHours(monthHours){
       const el = document.getElementById('traffic-hours'); if(!el) return;
       const h = monthHours||{};
-      if(!Object.keys(h).length){ el.innerHTML='<div class="text-zinc-600 text-xs py-8 text-center">No hourly data yet — this starts filling in once the worker update is deployed and visits come in.</div>'; return; }
+      if(!Object.keys(h).length){ const ht0=document.getElementById('traffic-hours-total'); if(ht0) ht0.textContent='0'; el.innerHTML='<div class="text-zinc-600 text-xs py-8 text-center">No hourly data yet — this starts filling in once the worker update is deployed and visits come in.</div>'; return; }
       const arr=[]; for(let i=0;i<24;i++){ arr.push(h[('0'+i).slice(-2)]||0); }
-      const max=Math.max(1,...arr);
-      el.innerHTML='<div class="flex items-end gap-[2px]" style="height:118px">'+arr.map((v,i)=>{ const pct=v?Math.max(Math.round(v/max*100),4):2; const lbl=(i%6===0)?(i===0?'12a':i===12?'12p':i<12?i+'a':(i-12)+'p'):''; const bg=v?`rgba(34,197,94,${(0.25+0.6*(v/max)).toFixed(2)})`:'rgba(255,255,255,0.05)'; return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${i}:00 CT — ${v} visit(s)"><div class="w-full rounded-t" style="height:${pct}%;background:${bg}"></div><div class="text-[7px] text-zinc-600 mt-1 h-2">${lbl}</div></div>`; }).join('')+'</div>';
+      const max=Math.max(1,...arr); const sum=arr.reduce((a,b)=>a+b,0);
+      const ht=document.getElementById('traffic-hours-total'); if(ht) ht.textContent=sum.toLocaleString();
+      el.innerHTML='<div class="flex items-end gap-[2px]" style="height:118px">'+arr.map((v,i)=>{ const pct=v?Math.max(Math.round(v/max*100),4):2; const lbl=(i%6===0)?(i===0?'12a':i===12?'12p':i<12?i+'a':(i-12)+'p'):''; const bg=v?`rgba(34,197,94,${(0.25+0.6*(v/max)).toFixed(2)})`:'rgba(255,255,255,0.05)'; return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${i}:00 CT — ${v} visit(s)"><div class="w-full rounded-t" style="height:${pct}%;background:${bg}"></div><div class="text-[10px] text-zinc-400 mt-1.5 h-3">${lbl}</div></div>`; }).join('')+'</div>';
     }
 
     function trafficFunnel(month, monthPages){
