@@ -14,6 +14,30 @@
 (function () {
   "use strict";
 
+  // ---- Checkout-intent beacon ----
+  // Fires once per session the moment a visitor accepts the terms and clicks
+  // "Proceed to Checkout". Non-members only, so it lines up 1:1 with the
+  // non-member visit counts in the admin Traffic tab. It reuses the same
+  // /api/track endpoint as nav-loader.js and posts a synthetic path, so it
+  // shows up in "Pages Visited This Month" under /checkout-started.
+  function trackCheckoutStart() {
+    try {
+      // Members already bought — exclude them so this stays a marketing-funnel number
+      if (localStorage.getItem("fsdx_token")) return;
+      // Count each session once (matches how pages are tallied per session)
+      if (sessionStorage.getItem("fsdx_checkout_started")) return;
+      sessionStorage.setItem("fsdx_checkout_started", "1");
+      // Same payload shape as a normal secondary-page ping: visit:false means
+      // it adds to the page breakdown WITHOUT inflating visit or source totals.
+      fetch("https://nexus-validator.dfuentes4211.workers.dev/api/track", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: "direct", path: "/checkout-started", visit: false }),
+        keepalive: true
+      }).catch(function () {});
+    } catch (e) { /* tracking never blocks checkout */ }
+  }
+
   // ---- ONE membership, ONE gate ----
   // Everything is now a single FSD-X membership — the full indicator suite,
   // Strategy Optimizer, Nexus, alerts, the live trade room, and the ORB
@@ -92,6 +116,7 @@
       if (!check.checked || !pendingUrl) return;
       var url = pendingUrl;
       var tgt = pendingTarget;
+      trackCheckoutStart();   // record checkout intent before we send them to Whop
       closeModal();
       if (tgt === "_blank") { window.open(url, "_blank", "noopener"); }
       else { window.location.href = url; }
