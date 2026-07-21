@@ -979,26 +979,47 @@
             <button onclick="clearTraffic()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-500 font-bold text-xs rounded-xl transition">Clear Data</button>
           </div>
         </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5" id="traffic-stats">
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">Today</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">Last 7 Days</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">This Month</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">Last Month</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4" id="traffic-stats">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">Today</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">Last 7 Days</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">This Month</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">Last Month</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
         </div>
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 mb-5">
-          <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">Last 14 Days</div>
-          <div id="traffic-chart" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
-        </div>
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 mb-5">
-          <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">This Month by Source</div>
-          <div id="traffic-sources" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
-        </div>
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-          <div class="flex items-center justify-between mb-4">
-            <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Pages Visited This Month</div>
-            <div class="text-[10px] text-zinc-600">public pages · non-members</div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-3">
+          <div class="lg:col-span-2 border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-3 flex-wrap gap-1">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Visits &amp; Sources · Last 30 Days</div>
+              <div id="traffic-trend-legend"></div>
+            </div>
+            <div id="traffic-trend" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
           </div>
-          <div id="traffic-pages" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">Source Mix · This Month</div>
+            <div id="traffic-sources" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">By Day of Week · Last 30 Days</div>
+            <div id="traffic-dow" class="text-xs text-zinc-600">—</div>
+          </div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-4"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">By Hour · This Month</div><div class="text-[10px] text-zinc-600">CT</div></div>
+            <div id="traffic-hours" class="text-xs text-zinc-600">—</div>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">Checkout Funnel · This Month</div>
+            <div id="traffic-funnel" class="text-xs text-zinc-600">—</div>
+          </div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Top Pages · This Month</div>
+              <div class="text-[10px] text-zinc-600">public · non-members</div>
+            </div>
+            <div id="traffic-pages" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
+          </div>
         </div>
       </div>
 
@@ -1347,19 +1368,92 @@
         return new Date(iso).toLocaleDateString('en-US', { timeZone: 'America/Chicago', month: 'short', day: 'numeric', year: 'numeric' });
       } catch { return ''; }
     }
-    function renderTrafficChart(daily) {
-      const el = document.getElementById('traffic-chart');
-      if (!el) return;
-      if (!daily || !daily.length) { el.innerHTML = '<span class="text-zinc-600">No data yet.</span>'; return; }
-      const max = Math.max(1, ...daily.map(d => d.total || 0));
-      el.innerHTML = '<div class="flex items-end gap-1.5" style="height:140px">' + daily.map(d => {
-        const pct = d.total ? Math.max(Math.round((d.total / max) * 100), 4) : 2;
-        return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${d.day}: ${d.total} visit(s)">
-          <div class="text-[9px] font-bold text-zinc-400 mb-1" style="height:12px">${d.total || ''}</div>
-          <div class="w-full ${d.total ? 'bg-green-500/60' : 'bg-white/5'} rounded-t transition-all" style="height:${pct}%"></div>
-          <div class="text-[8px] text-zinc-600 mt-1.5 whitespace-nowrap">${d.day.slice(5)}</div>
-        </div>`;
-      }).join('') + '</div>';
+    // ── Traffic dashboard renderers ──
+    const TSRC_NICE = { youtube:'YouTube', google:'Google', search:'Search', social:'Social', referral:'Referral', direct:'Direct', ig:'Instagram', discord:'Discord', tiktok:'TikTok', email:'Email' };
+    const TSRC_C = { youtube:'#22c55e', direct:'#38bdf8', google:'#f59e0b', search:'#06b6d4', social:'#a78bfa', referral:'#f472b6', ig:'#ec4899', discord:'#818cf8' };
+    const TSRC_PAL = ['#22c55e','#38bdf8','#f59e0b','#a78bfa','#f472b6','#06b6d4','#fb923c'];
+    function niceSrc(k){ return TSRC_NICE[k] || (k.charAt(0).toUpperCase()+k.slice(1)); }
+    function srcColorAt(k,i){ return TSRC_C[k] || TSRC_PAL[i % TSRC_PAL.length]; }
+
+    function trafficStats(d){
+      const el = document.getElementById('traffic-stats'); if(!el) return;
+      const card = (label,val,sub,delta)=>{
+        let dl='';
+        if(delta!=null && isFinite(delta)){ const up=delta>=0; dl=`<div class="text-[10px] mt-0.5 ${up?'text-green-400':'text-red-400'}">${up?'▲':'▼'} ${Math.abs(delta)}% vs last mo</div>`; }
+        return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">${label}</div><div class="text-3xl font-black text-green-400 mt-1">${val}</div>${sub?`<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>`:''}${dl}</div>`;
+      };
+      const mo=d.month||0, lm=d.lastMonth||0;
+      const delta = lm ? Math.round((mo-lm)/lm*100) : null;
+      el.innerHTML = card('Today', d.today??0) + card('Last 7 Days', d.week??0) + card('This Month', mo, d.thisMonthLabel, delta) + card('Last Month', lm, d.lastMonthLabel);
+    }
+
+    function trafficTrend(daily){
+      const el = document.getElementById('traffic-trend'); const leg = document.getElementById('traffic-trend-legend');
+      if(!el) return;
+      if(!daily || !daily.length){ el.innerHTML='<span class="text-zinc-600 text-xs">No data yet.</span>'; if(leg) leg.innerHTML=''; return; }
+      const tot={};
+      daily.forEach(d=>{ for(const [k,v] of Object.entries(d.sources||{})) tot[k]=(tot[k]||0)+v; });
+      const top = Object.entries(tot).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+      const W=600,H=170,padL=26,padB=18,padT=8,padR=6, n=daily.length;
+      const maxY = Math.max(1, ...daily.map(d=>d.total||0));
+      const x = i => padL + (i/(n-1||1))*(W-padL-padR);
+      const y = v => padT + (1-(v/maxY))*(H-padT-padB);
+      const line = vals => vals.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+      const totals = daily.map(d=>d.total||0);
+      const area = 'M'+x(0)+' '+y(totals[0])+' '+totals.map((v,i)=>'L'+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ')+' L'+x(n-1).toFixed(1)+' '+(H-padB)+' L'+x(0)+' '+(H-padB)+' Z';
+      let lines='';
+      top.forEach((s,idx)=>{ const vals=daily.map(d=>(d.sources&&d.sources[s])||0); lines+=`<path d="${line(vals)}" fill="none" stroke="${srcColorAt(s,idx)}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`; });
+      const gl=[0,0.5,1].map(f=>{ const yy=y(maxY*f).toFixed(1); return `<line x1="${padL}" y1="${yy}" x2="${W-padR}" y2="${yy}" stroke="rgba(255,255,255,0.05)"/><text x="2" y="${(+yy+3)}" fill="#52525b" font-size="8">${Math.round(maxY*f)}</text>`; }).join('');
+      const xl=[0,Math.floor(n/2),n-1].map(i=>`<text x="${x(i).toFixed(1)}" y="${H-4}" fill="#52525b" font-size="8" text-anchor="middle">${daily[i].day.slice(5)}</text>`).join('');
+      el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" class="w-full" style="height:180px" preserveAspectRatio="none"><defs><linearGradient id="tgrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#22c55e" stop-opacity="0.18"/><stop offset="1" stop-color="#22c55e" stop-opacity="0"/></linearGradient></defs>${gl}<path d="${area}" fill="url(#tgrad)"/><path d="${line(totals)}" fill="none" stroke="#22c55e" stroke-width="1" stroke-opacity="0.35"/>${lines}${xl}</svg>`;
+      if(leg) leg.innerHTML = top.length ? top.map((s,idx)=>`<span class="inline-flex items-center gap-1 text-[10px] text-zinc-400 ml-3"><span style="width:8px;height:8px;border-radius:2px;background:${srcColorAt(s,idx)};display:inline-block"></span>${niceSrc(s)}</span>`).join('') : '<span class="text-[10px] text-zinc-600">deploy worker update for per-source lines</span>';
+    }
+
+    function trafficDonut(monthSources, monthTotal){
+      const el = document.getElementById('traffic-sources'); if(!el) return;
+      const entries = Object.entries(monthSources||{}).sort((a,b)=>b[1]-a[1]);
+      if(!entries.length || !monthTotal){ el.innerHTML='<span class="text-zinc-600 text-xs">No visits recorded yet this month.</span>'; return; }
+      const R=52, C=2*Math.PI*R; let off=0;
+      const segs = entries.map(([k,v],i)=>{ const frac=v/monthTotal; const col=srcColorAt(k,i); const dash=`${(frac*C).toFixed(2)} ${(C-frac*C).toFixed(2)}`; const seg=`<circle cx="70" cy="70" r="${R}" fill="none" stroke="${col}" stroke-width="16" stroke-dasharray="${dash}" stroke-dashoffset="${(-off*C).toFixed(2)}" transform="rotate(-90 70 70)"/>`; off+=frac; return seg; }).join('');
+      const legend = entries.slice(0,6).map(([k,v],i)=>{ const pct=Math.round(v/monthTotal*100); return `<div class="flex items-center justify-between text-[11px] mb-1.5"><span class="flex items-center gap-1.5 text-zinc-300"><span style="width:8px;height:8px;border-radius:2px;background:${srcColorAt(k,i)};display:inline-block"></span>${niceSrc(k)}</span><span class="text-zinc-500">${v} · ${pct}%</span></div>`; }).join('');
+      el.innerHTML=`<div class="flex items-center gap-4"><svg viewBox="0 0 140 140" style="width:104px;height:104px;flex-shrink:0"><circle cx="70" cy="70" r="52" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="16"/>${segs}<text x="70" y="66" text-anchor="middle" fill="#fff" font-size="22" font-weight="800">${monthTotal}</text><text x="70" y="82" text-anchor="middle" fill="#71717a" font-size="9">visits</text></svg><div class="flex-1 min-w-0">${legend}</div></div>`;
+    }
+
+    function trafficDOW(daily){
+      const el = document.getElementById('traffic-dow'); if(!el) return;
+      if(!daily || !daily.length){ el.innerHTML='<span class="text-zinc-600 text-xs">No data yet.</span>'; return; }
+      const names=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']; const agg=[0,0,0,0,0,0,0];
+      daily.forEach(d=>{ const dt=new Date(d.day+'T12:00:00Z'); agg[dt.getUTCDay()]+=d.total||0; });
+      const order=[1,2,3,4,5,6,0]; const max=Math.max(1,...agg);
+      el.innerHTML='<div class="flex items-end gap-1.5" style="height:118px">'+order.map(i=>{ const v=agg[i]; const pct=v?Math.max(Math.round(v/max*100),4):2; return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${names[i]}: ${v}"><div class="text-[9px] text-zinc-400 mb-1" style="height:12px">${v||''}</div><div class="w-full ${v?'bg-green-500/60':'bg-white/5'} rounded-t" style="height:${pct}%"></div><div class="text-[8px] text-zinc-600 mt-1">${names[i]}</div></div>`; }).join('')+'</div>';
+    }
+
+    function trafficHours(monthHours){
+      const el = document.getElementById('traffic-hours'); if(!el) return;
+      const h = monthHours||{};
+      if(!Object.keys(h).length){ el.innerHTML='<div class="text-zinc-600 text-xs py-8 text-center">No hourly data yet — this starts filling in once the worker update is deployed and visits come in.</div>'; return; }
+      const arr=[]; for(let i=0;i<24;i++){ arr.push(h[('0'+i).slice(-2)]||0); }
+      const max=Math.max(1,...arr);
+      el.innerHTML='<div class="flex items-end gap-[2px]" style="height:118px">'+arr.map((v,i)=>{ const pct=v?Math.max(Math.round(v/max*100),4):2; const lbl=(i%6===0)?(i===0?'12a':i===12?'12p':i<12?i+'a':(i-12)+'p'):''; const bg=v?`rgba(34,197,94,${(0.25+0.6*(v/max)).toFixed(2)})`:'rgba(255,255,255,0.05)'; return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${i}:00 CT — ${v} visit(s)"><div class="w-full rounded-t" style="height:${pct}%;background:${bg}"></div><div class="text-[7px] text-zinc-600 mt-1 h-2">${lbl}</div></div>`; }).join('')+'</div>';
+    }
+
+    function trafficFunnel(month, monthPages){
+      const el = document.getElementById('traffic-funnel'); if(!el) return;
+      const mp = monthPages||{}; const visits=month||0;
+      const memb = mp['/memberships']||0; const chk = mp['/checkout-started']||0;
+      const base = Math.max(1, visits);
+      const rows=[['Visits (sessions)',visits,'#22c55e',false],['Viewed Memberships',memb,'#38bdf8',true],['Clicked Proceed to Checkout',chk,'#f59e0b',true]];
+      el.innerHTML = rows.map(([label,v,col,showPct])=>{ const pct=Math.round(v/base*100); const w=Math.max(v/base*100,2); return `<div class="mb-3"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${label}</span><span class="text-zinc-500">${v}${showPct?` · ${pct}% of visits`:''}</span></div><div class="h-3 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${w}%;background:${col}"></div></div></div>`; }).join('') + `<div class="text-[10px] text-zinc-600 mt-1 leading-relaxed">Checkout = reached the Terms gate and clicked <span class="text-amber-400/80">Proceed to Checkout</span> — the front of the Whop step. Actual purchases live in Whop.</div>`;
+    }
+
+    function trafficPages(monthPages){
+      const el = document.getElementById('traffic-pages'); if(!el) return;
+      if(monthPages===undefined || monthPages===null){ el.innerHTML='<span class="text-zinc-600 text-xs">Waiting on worker page data.</span>'; return; }
+      const ent = Object.entries(monthPages).sort((a,b)=>b[1]-a[1]);
+      const total = ent.reduce((s,[,v])=>s+v,0);
+      if(!ent.length || !total){ el.innerHTML='<span class="text-zinc-600 text-xs">No page visits recorded yet this month.</span>'; return; }
+      const top = ent.slice(0,10);
+      el.innerHTML = top.map(([k,v])=>{ const pct=Math.round(v/total*100); const isChk=(k==='/checkout-started'); return `<div class="mb-2"><div class="flex justify-between items-baseline text-[11px] mb-0.5"><span class="${isChk?'text-amber-400':'text-zinc-300'} font-semibold">${prettyPath(k)}</span><span class="text-zinc-500 text-[10px] font-mono">${v} · ${pct}%</span></div><div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full ${isChk?'bg-amber-400/70':'bg-green-500/70'} rounded-full" style="width:${Math.max(pct,2)}%"></div></div></div>`; }).join('') + (ent.length>10?`<div class="text-[10px] text-zinc-600 mt-2">+${ent.length-10} more page${ent.length-10>1?'s':''}</div>`:'');
     }
 
     // ── Site Traffic ──
@@ -1373,8 +1467,7 @@
         '/faq': 'FAQ', '/contact': 'Contact', '/disclosures': 'Disclosures',
         '/autotrader': 'Auto Trader', '/suite': 'Suite', '/knowledge': 'Knowledge',
         '/affiliates': 'Affiliates', '/converter': 'Converter', '/recaps': 'Recaps',
-        '/schedule': 'Schedule', '/setup': 'Setup',
-        '/checkout-started': '🛒 Checkout Started'
+        '/schedule': 'Schedule', '/setup': 'Setup'
       };
       if (map[s]) return map[s];
       const seg = s.replace(/^\//, '').replace(/[-_/]/g, ' ').trim();
@@ -1385,69 +1478,28 @@
     }
     async function loadTraffic() {
       const statsEl = document.getElementById('traffic-stats');
-      const srcEl = document.getElementById('traffic-sources');
       if (!statsEl) return;
       try {
         const token = localStorage.getItem('fsdx_token') || '';
         const res = await fetch(`${API}/api/admin/visits`, { headers: { 'Authorization': `Bearer ${token}` } });
         if (!res.ok) throw new Error('unauthorized');
         const d = await res.json();
-        statsEl.innerHTML = trafficCard('Today', d.today ?? 0) + trafficCard('Last 7 Days', d.week ?? 0) + trafficCard('This Month', d.month ?? 0, d.thisMonthLabel) + trafficCard('Last Month', d.lastMonth ?? 0, d.lastMonthLabel);
+        trafficStats(d);
         const sinceEl = document.getElementById('traffic-since');
         if (sinceEl) sinceEl.textContent = d.since ? ('Counting since ' + fmtSince(d.since)) : 'No visits recorded yet';
-        renderTrafficChart(d.daily);
-        // Source breakdown for the month
-        const sources = d.monthSources || {};
-        const entries = Object.entries(sources).sort((a, b) => b[1] - a[1]);
-        const monthTotal = d.month || 0;
-        if (!entries.length || monthTotal === 0) {
-          srcEl.innerHTML = '<span class="text-zinc-600">No visits recorded yet this month. Once the beacon is live and traffic comes in, sources will show here.</span>';
-        } else {
-          const nice = { youtube: 'YouTube', google: 'Google', search: 'Search', social: 'Social', referral: 'Referral', direct: 'Direct' };
-          srcEl.innerHTML = entries.map(([k, v]) => {
-            const pct = Math.round((v / monthTotal) * 100);
-            const name = nice[k] || (k.charAt(0).toUpperCase() + k.slice(1));
-            return `<div class="mb-2">
-              <div class="flex justify-between text-xs mb-1"><span class="text-zinc-300 font-semibold">${name}</span><span class="text-zinc-500">${v} · ${pct}%</span></div>
-              <div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-green-500/70 rounded-full" style="width:${pct}%"></div></div>
-            </div>`;
-          }).join('');
-        }
-        // Page breakdown for the month
-        const pagesEl = document.getElementById('traffic-pages');
-        if (pagesEl) {
-          if (d.monthPages === undefined || d.monthPages === null) {
-            pagesEl.innerHTML = '<span class="text-zinc-600">Page data isn\'t coming from the worker yet. Deploy the worker update that stores <code class="text-zinc-400">path</code> and returns <code class="text-zinc-400">monthPages</code>, then hit Refresh.</span>';
-          } else {
-            const pEntries = Object.entries(d.monthPages).sort((a, b) => b[1] - a[1]);
-            const pageTotal = pEntries.reduce((s, [, v]) => s + v, 0);
-            if (!pEntries.length || pageTotal === 0) {
-              pagesEl.innerHTML = '<span class="text-zinc-600">No page visits recorded yet this month.</span>';
-            } else {
-              pagesEl.innerHTML = pEntries.map(([k, v]) => {
-                const pct = Math.round((v / pageTotal) * 100);
-                return `<div class="mb-2.5">
-                  <div class="flex justify-between items-baseline text-xs mb-1">
-                    <span class="text-zinc-300 font-semibold">${prettyPath(k)}</span>
-                    <span class="text-zinc-600 font-mono text-[10px]">${k}</span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    <div class="flex-1 h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-green-500/70 rounded-full" style="width:${pct}%"></div></div>
-                    <span class="text-zinc-500 text-xs whitespace-nowrap w-16 text-right">${v} · ${pct}%</span>
-                  </div>
-                </div>`;
-              }).join('');
-            }
-          }
-        }
+        trafficTrend(d.daily);
+        trafficDonut(d.monthSources, d.month);
+        trafficDOW(d.daily);
+        trafficHours(d.monthHours);
+        trafficFunnel(d.month, d.monthPages);
+        trafficPages(d.monthPages);
         const upEl = document.getElementById('traffic-updated');
         if (upEl) {
           const now = new Date().toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit', second: '2-digit' });
           upEl.textContent = 'Last updated ' + now + ' CT';
         }
       } catch (err) {
-        statsEl.innerHTML = trafficCard('Today', '—') + trafficCard('Last 7 Days', '—') + trafficCard('This Month', '—');
-        if (srcEl) srcEl.innerHTML = '<span class="text-zinc-600">Couldn\'t load traffic. Make sure the worker is deployed with the /api/track and /api/admin/visits routes.</span>';
+        statsEl.innerHTML = '<div class="col-span-full border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-zinc-600 text-sm text-center">Couldn\'t load traffic. Make sure the worker is deployed with the /api/track and /api/admin/visits routes.</div>';
         const upEl = document.getElementById('traffic-updated');
         if (upEl) upEl.textContent = 'Update failed — check the worker deploy';
       }
