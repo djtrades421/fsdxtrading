@@ -596,13 +596,12 @@
     for(const y of yr){
       const tot=y.pass+y.fail, rate=tot?Math.round(100*y.pass/tot):null;
       const col=rate==null?'#71717a':passColor(rate);
-      const star=y.star?'<span class="text-green-400 cursor-help">*</span>':'';
-      const tip=y.star?(' title="Final eval of '+y.yr+' started '+y.s0+' and finished '+y.star+' \u2014 counted in '+y.yr+'"'):'';
+      const star=y.star?'<span class="text-green-400">*</span>':'';
       let lastCell;
       if(y.star){ lastCell='<span class="text-zinc-400">'+y.s0+' \u2192 '+y.star+'</span>'; }
       else if(y.prog){ lastCell='<span class="text-zinc-500">in progress</span>'; anyProg=true; }
       else { lastCell='<span class="text-zinc-700">\u2014</span>'; }
-      body+='<tr class="border-b border-white/5"'+tip+'>'+
+      body+='<tr class="border-b border-white/5">'+
         '<td class="py-2 px-3 font-bold text-white">'+y.yr+star+'</td>'+
         '<td class="py-2 px-3 text-zinc-300">'+y.n+'</td>'+
         '<td class="py-2 px-3 text-green-400">'+y.pass+'</td>'+
@@ -611,7 +610,7 @@
         '<td class="py-2 px-3 text-green-400/90">'+fmt(y.net)+'</td>'+
         '<td class="py-2 px-3 whitespace-nowrap">'+lastCell+'</td></tr>';
     }
-    let noteHtml='<div class="text-[10px] text-zinc-600 leading-relaxed mt-2">Each year restarts the eval clock on Jan 1 \u2014 evals run back-to-back within the year (a new one begins the day after a pass or fail), so every row is the standalone count for someone starting that year. * = the year\u2019s final eval carried into the next year; the Last Eval column shows when it started and finished (hover the year for details).'+(anyProg?' \u201cIn progress\u201d = an eval still running at the end of the data.':'')+'</div>';
+    let noteHtml='<div class="text-[10px] text-zinc-600 leading-relaxed mt-2">Each year restarts the eval clock on Jan 1 \u2014 evals run back-to-back within the year (a new one begins the day after a pass or fail), so every row is the standalone count for someone starting that year. * = the year\u2019s final eval carried into the next year; the Last Eval column shows when it started and finished.'+(anyProg?' \u201cIn progress\u201d = an eval still running at the end of the data.':'')+'</div>';
     return '<div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2 mt-5">Eval Year-by-Year \u00b7 $'+state.risk+' \u00b7 EOD trailing \u00b7 each year starts fresh</div>'+
       '<div class="overflow-x-auto border border-white/10 rounded-xl"><table class="w-full text-xs text-left" style="min-width:560px">'+
       '<thead><tr class="bg-zinc-900/40 text-zinc-500 uppercase text-[10px] tracking-wider">'+
