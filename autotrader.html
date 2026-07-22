@@ -11,7 +11,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="FSD-X // ORB Pro Auto-Trader (Knightfall AT) — Automated Execution" />
   <meta property="og:description" content="Knightfall, automated. The same validated ORB engine — hands-off. Included with your membership." />
-  <meta property="og:image" content="og-image.png" />
+  <meta property="og:image" content="https://www.fsdxtrading.com/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="FSD-X // ORB Pro Auto-Trader (Knightfall AT)" />
   <meta name="twitter:description" content="Knightfall, automated. The same validated ORB engine — hands-off. Included with your membership." />
@@ -21,7 +21,29 @@
     @keyframes pulse-ring { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
     .beta-dot { animation: pulse-ring 2s ease-in-out infinite; }
   </style>
-  <link rel="canonical" href="https://www.fsdxtrading.com/autotrader" />
+  <link rel="canonical" href="https://www.fsdxtrading.com/autotrader.html" />
+  <meta property="og:url" content="https://www.fsdxtrading.com/autotrader.html" />
+  <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image.png" />
+  <script src="analytics.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "FSD-X Knightfall Auto-Trader",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web (TradingView)",
+  "description": "Automated execution layer for the FSD-X ORB engine. Routes signals to your own broker through a third-party automation service you configure and control.",
+  "publisher": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "129.00",
+    "priceCurrency": "USD",
+    "url": "https://www.fsdxtrading.com/memberships.html"
+  }
+}
+  </script>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
@@ -264,7 +286,7 @@
             <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold flex items-center justify-between">
               <span>// Live on Demo — TradingView · MNQ 5m</span>
             </div>
-            <img src="Screenshot%202026-06-21%20142909.png" alt="FSD-X ORB Auto-Trader running on a Micro E-mini Nasdaq 5-minute chart, status panel showing position, P&amp;L, trades and win rate" class="w-full object-cover" />
+            <img src="Screenshot%202026-06-21%20142909.png" alt="FSD-X ORB Auto-Trader running on a Micro E-mini Nasdaq 5-minute chart, status panel showing position, P&amp;L, trades and win rate" class="w-full object-cover" / width="1815" height="686" loading="lazy" decoding="async">
           </figure>
           <figcaption class="mt-3 text-[11px] text-zinc-600 leading-relaxed max-w-2xl">
             Demo/paper account — the panel shows the session's running totals. Hypothetical, simulated results; not actual trading and not indicative of future performance.
@@ -430,7 +452,7 @@
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
             CFTC Rule 4.41 — Hypothetical Performance Disclosure
           </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
             Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
           </p>
         </div>
@@ -438,7 +460,7 @@
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
             Futures & Forex Risk Disclosure
           </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
             Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
           </p>
         </div>
@@ -446,11 +468,26 @@
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
             Automation & Vendor Disclosure
           </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
             FSD-X is an independent software provider. The Auto-Trader emits alert signals only; it does not place, manage, or guarantee any order. Any automated execution is performed by separate third-party services and brokers that the user selects, configures, and is solely responsible for, including compliance with broker and prop-firm rules (some restrict or prohibit automated trading) and all applicable laws. Performance metrics reflect hypothetical, simulated backtest results of educational tools and should not be construed as investment or financial advice. Always validate on a demo account before risking real capital.
           </p>
         </div>
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
+        <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+          <a href="index.html" class="hover:text-green-400 transition">Home</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
+          <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
+          <a href="knowledge.html" class="hover:text-green-400 transition">Knowledge Base</a>
+          <a href="converter.html" class="hover:text-green-400 transition">Trade Converter</a>
+          <a href="affiliates.html" class="hover:text-green-400 transition">Prop Firm Partners</a>
+          <a href="faq.html" class="hover:text-green-400 transition">FAQ</a>
+          <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+          <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
+        </nav>
+
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
           <div>FSD-X Trading (FSDX Trading) by DJ Trades • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading by DJ Trades. All rights reserved.</div>
         </div>
