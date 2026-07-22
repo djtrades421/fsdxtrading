@@ -11,7 +11,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="FSD-X Trading — ORB PRO | Rules-Based NQ/MNQ Framework | DJ Trades" />
   <meta property="og:description" content="DJ Trades | Creator of FSD-X Trading (FSDX Trading). Rules-based opening range breakout framework for NQ/MNQ futures. Built on nearly 7 years of backtested market data. 14-day free trial." />
-  <meta property="og:image" content="og-image.png" />
+  <meta property="og:image" content="https://www.fsdxtrading.com/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="FSD-X Trading — ORB PRO | Rules-Based NQ/MNQ Framework | DJ Trades" />
   <meta name="twitter:description" content="DJ Trades | Creator of FSD-X Trading (FSDX Trading). Rules-based opening range breakout framework for NQ/MNQ futures. Built on nearly 7 years of backtested market data. 14-day free trial." />
@@ -20,6 +20,100 @@
     body { background-color: #000; }
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/" />
+  <meta property="og:url" content="https://www.fsdxtrading.com/" />
+  <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image.png" />
+  <script src="analytics.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.fsdxtrading.com/#organization",
+  "name": "FSD-X Trading",
+  "alternateName": [
+    "FSDX Trading",
+    "FSD-X"
+  ],
+  "url": "https://www.fsdxtrading.com/",
+  "logo": "https://www.fsdxtrading.com/logo.png",
+  "image": "https://www.fsdxtrading.com/og-image.png",
+  "description": "Independent trading software provider. Rules-based opening range breakout (ORB) tools for NQ and MNQ futures traders.",
+  "founder": {
+    "@type": "Person",
+    "name": "DJ Trades"
+  },
+  "email": "fsdxteam@gmail.com",
+  "sameAs": [
+    "https://www.youtube.com/@FSD-XTrading",
+    "https://www.instagram.com/fsdx_trading/"
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://www.fsdxtrading.com/#website",
+  "url": "https://www.fsdxtrading.com/",
+  "name": "FSD-X Trading",
+  "publisher": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "@id": "https://www.fsdxtrading.com/#membership",
+  "name": "FSD-X Membership — ORB PRO (Knightfall)",
+  "description": "Rules-based opening range breakout framework for NQ/MNQ futures. Includes the ORB PRO (Knightfall) signal engine, Volume indicator, Stack V1, Scout, Nexus 2.0 Chrome extension, the TradingView Auto-Trader, and daily live trade room access.",
+  "brand": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  },
+  "image": "https://www.fsdxtrading.com/og-image.png",
+  "category": "Trading software",
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Monthly",
+      "price": "129.00",
+      "priceCurrency": "USD",
+      "url": "https://www.fsdxtrading.com/memberships.html",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "name": "Quarterly",
+      "price": "349.00",
+      "priceCurrency": "USD",
+      "url": "https://www.fsdxtrading.com/memberships.html",
+      "availability": "https://schema.org/InStock"
+    },
+    {
+      "@type": "Offer",
+      "name": "Annual",
+      "price": "1299.00",
+      "priceCurrency": "USD",
+      "url": "https://www.fsdxtrading.com/memberships.html",
+      "availability": "https://schema.org/InStock"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "See how Knightfall works — the simple MNQ ORB strategy",
+  "description": "A short walkthrough of the FSD-X Knightfall opening range breakout engine on a TradingView chart, showing how each breakout is graded.",
+  "thumbnailUrl": "https://img.youtube.com/vi/6Lsj2MB7vGc/hqdefault.jpg",
+  "embedUrl": "https://www.youtube.com/embed/6Lsj2MB7vGc",
+  "duration": "PT2M13S",
+  "publisher": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  }
+}
+  </script>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
@@ -205,7 +299,7 @@
               </div>
 
               <div class="px-4 py-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                <p class="text-[11px] text-zinc-600 leading-relaxed">
+                <p class="text-[11px] text-zinc-400 leading-relaxed">
                   ⚠ For educational purposes only. Any trades shown are illustrative and should not be expected to be replicated in a live account. Futures trading involves substantial risk of loss. Past performance is not necessarily indicative of future results.
                 </p>
                 <a href="knowledge.html#videos" class="text-xs text-green-400 hover:text-green-300 font-bold whitespace-nowrap transition">Full setup walkthrough →</a>
@@ -222,7 +316,7 @@
               <span class="ml-3 text-[11px] text-zinc-500 tracking-wide">FSD-X Knightfall · ORB Pro Engine</span>
             </div>
             <button type="button" onclick="openShot(this)" class="block w-full cursor-zoom-in" data-shot="FSD-X%20Knightfall%20trade.png" data-cap="FSD-X Knightfall — the core ORB Pro signal engine.">
-              <img src="FSD-X%20Knightfall%20trade.png" alt="FSD-X Knightfall ORB Pro engine on a chart" loading="lazy" class="w-full h-auto block transition duration-300 group-hover:scale-[1.01]" />
+              <img src="FSD-X%20Knightfall%20trade.png" alt="FSD-X Knightfall ORB Pro engine on a chart" loading="lazy" class="w-full h-auto block transition duration-300 group-hover:scale-[1.01]" / width="1813" height="659">
             </button>
             <figcaption class="px-4 py-3 text-xs text-zinc-500 border-t border-white/5">FSD-X Knightfall — <span class="text-zinc-300">the core ORB Pro signal engine.</span></figcaption>
           </figure>
@@ -236,7 +330,7 @@
               <span class="ml-3 text-[11px] text-zinc-500 tracking-wide">Knightfall Auto-Trader · TradingView</span>
             </div>
             <button type="button" onclick="openShot(this)" class="block w-full cursor-zoom-in" data-shot="Screenshot%202026-06-21%20142909.png" data-cap="Knightfall Auto-Trader — hands-off execution on TradingView.">
-              <img src="Screenshot%202026-06-21%20142909.png" alt="FSD-X Knightfall Auto-Trader running on TradingView" loading="lazy" class="w-full h-auto block transition duration-300 group-hover:scale-[1.01]" />
+              <img src="Screenshot%202026-06-21%20142909.png" alt="FSD-X Knightfall Auto-Trader running on TradingView" loading="lazy" class="w-full h-auto block transition duration-300 group-hover:scale-[1.01]" / width="1815" height="686">
             </button>
             <figcaption class="px-4 py-3 text-xs text-zinc-500 border-t border-white/5">Auto Trader — <span class="text-zinc-300">the same engine, hands-off on TradingView.</span></figcaption>
           </figure>
@@ -519,6 +613,9 @@
             <span class="text-zinc-400 text-sm font-medium">5.0 · 2 Verified Member Reviews on Whop</span>
           </div>
           <h2 class="text-3xl font-black mb-12">What Members Are Saying</h2>
+          <p class="text-xs text-zinc-400 leading-relaxed max-w-2xl mx-auto mt-4 border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
+            ⚠ Testimonials reflect the individual experience of the member quoted and are not a guarantee, promise, or projection of results. They are not representative of all members. Individual results vary and most traders lose money. No compensation was provided for these reviews.
+          </p>
 
           <div class="relative overflow-hidden">
             <!-- Slides -->
@@ -529,7 +626,7 @@
                 <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8 md:p-10 text-left">
                   <div class="text-yellow-400 text-base mb-5">★★★★★</div>
                   <p class="text-zinc-300 text-sm md:text-base leading-relaxed mb-8">
-                    "I've been using this indicator for a while now and honestly, it's been a great experience so far. I went back and tested it across 2025 and 2026, and the win rate came out to be around 70%, which really impressed me. What really stood out to me is the grading system — once you understand how the grading works alongside the setups, it becomes much easier to decide how much risk to take on each trade. It adds a level of clarity that most indicators don't provide. I'm not saying it's some magic tool — you still need discipline and consistency — but if you actually stick with it and follow the system properly, the results can be really solid over time."
+                    "I've been using this indicator for a while now and honestly, it's been a great experience so far. What really stood out to me is the grading system — once you understand how the grading works alongside the setups, it becomes much easier to decide how much risk to take on each trade. It adds a level of clarity that most indicators don't provide. I'm not saying it's some magic tool — you still need discipline and consistency — but if you actually stick with it and follow the system properly, it brings real structure to how you trade."
                   </p>
                   <div class="flex items-center gap-3 pt-5 border-t border-white/5">
                     <div class="w-9 h-9 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-xs font-black shrink-0">✓</div>
@@ -650,11 +747,11 @@
           
           <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-5 w-full xl:w-80 shrink-0">
             <a href="https://ninjatraderus.pxf.io/c/7305371/3254693/37538" target="_blank" rel="noopener noreferrer" class="bg-black/40 border border-white/5 hover:border-green-500/30 transition rounded-2xl p-6 flex flex-col items-center justify-center min-h-[150px] w-full group text-center">
-              <img src="NinjaTrader.png" alt="NinjaTrader Ecosystem Vendor" class="max-w-[190px] w-full h-auto object-contain mb-2 transition transform group-hover:scale-105 duration-300" />
+              <img src="NinjaTrader.png" alt="NinjaTrader Ecosystem Vendor" class="max-w-[190px] w-full h-auto object-contain mb-2 transition transform group-hover:scale-105 duration-300" / width="2376" height="300" loading="lazy" decoding="async">
               <span class="text-[11px] text-zinc-400 group-hover:text-green-400 tracking-widest uppercase transition">Official Platform Vendor ↗</span>
             </a>
             <a href="http://kinetick.com/NinjaTrader" target="_blank" rel="noopener noreferrer" class="bg-black/40 border border-white/5 hover:border-green-500/30 transition rounded-2xl p-6 flex flex-col items-center justify-center min-h-[150px] w-full group text-center">
-              <img src="Kinetick_Logo.png" alt="Kinetick Market Data Feed" class="max-w-[190px] w-full h-auto object-contain mb-2 transition transform group-hover:scale-105 duration-300" />
+              <img src="Kinetick_Logo.png" alt="Kinetick Market Data Feed" class="max-w-[190px] w-full h-auto object-contain mb-2 transition transform group-hover:scale-105 duration-300" / width="400" height="100" loading="lazy" decoding="async">
               <span class="text-[11px] text-zinc-400 group-hover:text-green-400 tracking-widest uppercase transition">Recommended Data Feed ↗</span>
             </a>
           </div>
@@ -669,7 +766,7 @@
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
             CFTC Rule 4.41 — Hypothetical Performance Disclosure
           </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
             Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
           </p>
         </div>
@@ -677,7 +774,7 @@
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
             Futures & Forex Risk Disclosure
           </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
             Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
           </p>
         </div>
@@ -685,11 +782,26 @@
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
             Vendor Verification Disclosure
           </span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">
-            FSD-X is an independent software provider. Performance metrics, system evaluations, and user results posted within community channels reflect educational tools and should not be construed as investment or financial advice. Not an auto-trading system. No trade signals are provided.
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
+            FSD-X is an independent software provider. Our tools generate algorithmic chart signals for educational and analytical purposes, and the optional Auto-Trader routes those signals to your own broker through a third-party automation service that you configure and control. FSD-X is not a broker, futures commission merchant, commodity trading advisor, or investment adviser. We do not manage accounts, place trades on your behalf, hold customer funds, or provide personalized investment or financial advice. Performance metrics, system evaluations, and user results posted within community channels are illustrative and educational only. You are solely responsible for every order placed in your account.
           </p>
         </div>
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
+        <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+          <a href="index.html" class="hover:text-green-400 transition">Home</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
+          <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
+          <a href="knowledge.html" class="hover:text-green-400 transition">Knowledge Base</a>
+          <a href="converter.html" class="hover:text-green-400 transition">Trade Converter</a>
+          <a href="affiliates.html" class="hover:text-green-400 transition">Prop Firm Partners</a>
+          <a href="faq.html" class="hover:text-green-400 transition">FAQ</a>
+          <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+          <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
+        </nav>
+
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
           <div>FSD-X Trading (FSDX Trading) by DJ Trades • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading by DJ Trades. All rights reserved.</div>
         </div>
