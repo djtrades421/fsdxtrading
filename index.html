@@ -171,6 +171,49 @@
             </p>
           </div>
 
+          <!-- ============================================================
+               SEE HOW KNIGHTFALL WORKS — video (facade: thumbnail only,
+               YouTube iframe is injected on click so the homepage stays fast)
+          ============================================================ -->
+          <div id="knightfall-video" class="mb-12 scroll-mt-24">
+            <div class="rounded-2xl border border-white/10 bg-zinc-950 overflow-hidden shadow-2xl shadow-black/40 hover:border-green-500/30 transition">
+              <div class="flex items-center gap-1.5 px-4 py-3 border-b border-white/5 bg-zinc-900/50">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-500/60"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></span>
+                <span class="w-2.5 h-2.5 rounded-full bg-green-500/60"></span>
+                <span class="ml-3 text-[11px] text-zinc-500 tracking-wide">See How Knightfall Works · 2:13</span>
+              </div>
+
+              <div id="kf-video-wrapper"
+                   class="aspect-video bg-zinc-900 relative group cursor-pointer flex items-center justify-center"
+                   role="button" tabindex="0" aria-label="Play: See how Knightfall works"
+                   onclick="playKnightfallVideo()"
+                   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playKnightfallVideo();}">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent z-10 group-hover:from-black/90 transition"></div>
+                <img src="https://img.youtube.com/vi/6Lsj2MB7vGc/maxresdefault.jpg"
+                     onerror="this.onerror=null;this.src='https://img.youtube.com/vi/6Lsj2MB7vGc/hqdefault.jpg';"
+                     alt="Walkthrough of the FSD-X Knightfall ORB engine on a TradingView chart"
+                     loading="lazy"
+                     class="absolute inset-0 w-full h-full object-cover opacity-45 group-hover:opacity-30 transition duration-300" />
+                <div class="w-16 h-16 rounded-full bg-black/70 border border-white/20 flex items-center justify-center absolute z-20 group-hover:bg-green-400 group-hover:border-transparent transition transform group-hover:scale-105 duration-300 shadow-2xl">
+                  <svg class="w-6 h-6 text-white group-hover:text-black ml-1 transition" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 z-20 p-4 md:p-5 pointer-events-none">
+                  <div class="text-[10px] text-green-400 uppercase tracking-[0.25em] font-bold mb-1">Watch · 2 min</div>
+                  <div class="text-base md:text-lg font-black text-white leading-snug">See how Knightfall works</div>
+                  <div class="text-xs text-zinc-400 mt-1 max-w-xl">A quick walkthrough of the ORB engine on the chart — how a breakout gets graded and how simple it is to run.</div>
+                </div>
+              </div>
+
+              <div class="px-4 py-3 border-t border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <p class="text-[11px] text-zinc-600 leading-relaxed">
+                  ⚠ For educational purposes only. Any trades shown are illustrative and should not be expected to be replicated in a live account. Futures trading involves substantial risk of loss. Past performance is not necessarily indicative of future results.
+                </p>
+                <a href="knowledge.html#videos" class="text-xs text-green-400 hover:text-green-300 font-bold whitespace-nowrap transition">Full setup walkthrough →</a>
+              </div>
+            </div>
+          </div>
+
           <!-- FEATURED (top): FSD-X Knightfall -->
           <figure class="group rounded-2xl border border-white/10 bg-zinc-950 overflow-hidden hover:border-green-500/30 transition shadow-2xl shadow-black/40">
             <div class="flex items-center gap-1.5 px-4 py-3 border-b border-white/5 bg-zinc-900/50">
@@ -199,21 +242,24 @@
             <figcaption class="px-4 py-3 text-xs text-zinc-500 border-t border-white/5">Auto Trader — <span class="text-zinc-300">the same engine, hands-off on TradingView.</span></figcaption>
           </figure>
 
-          <!-- ============================================================
-               VIDEO SLOT (optional) — uncomment and drop in your clip.
-               A 20–30s screen recording of a live morning or the indicator
-               firing will convert even harder than the stills above.
-               YouTube: replace VIDEO_ID.  Loom: swap the whole src URL.
-          =================================================================
-          <div class="mt-10 rounded-2xl border border-white/10 bg-zinc-950 overflow-hidden">
-            <div class="aspect-video w-full">
-              <iframe class="w-full h-full" src="https://www.youtube.com/embed/VIDEO_ID"
-                title="FSD-X in action" frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen></iframe>
-            </div>
-          </div>
-          ============================================================ -->
+          <script>
+            // Swaps the thumbnail facade for the real YouTube player on click.
+            function playKnightfallVideo() {
+              var el = document.getElementById('kf-video-wrapper');
+              if (!el || el.dataset.loaded) return;
+              el.dataset.loaded = '1';
+              el.innerHTML = '<iframe class="absolute inset-0 w-full h-full z-30" ' +
+                'src="https://www.youtube.com/embed/6Lsj2MB7vGc?autoplay=1&rel=0" ' +
+                'title="See how FSD-X Knightfall works" frameborder="0" ' +
+                'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+                'allowfullscreen></iframe>';
+              el.removeAttribute('onclick');
+              el.removeAttribute('onkeydown');
+              el.removeAttribute('role');
+              el.removeAttribute('tabindex');
+              el.classList.remove('cursor-pointer', 'group');
+            }
+          </script>
 
           <div class="text-center mt-12">
             <a href="#pricing" class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">
