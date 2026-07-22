@@ -9,7 +9,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="FSD-X FAQ — Frequently Asked Questions" />
   <meta property="og:description" content="Answers to common questions about the FSD-X membership, the Auto Trader, ORB PRO, Nexus 2.0, and billing." />
-  <meta property="og:image" content="og-image.png" />
+  <meta property="og:image" content="https://www.fsdxtrading.com/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="FSD-X FAQ — Frequently Asked Questions" />
   <meta name="twitter:description" content="Answers to common questions about the FSD-X membership, the Auto Trader, ORB PRO, Nexus 2.0, and billing." />
@@ -26,6 +26,201 @@
     .faq-item.active .faq-icon { transform: rotate(45deg); }
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/faq.html" />
+  <meta property="og:url" content="https://www.fsdxtrading.com/faq.html" />
+  <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image.png" />
+  <script src="analytics.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the FSD-X Auto Trader?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It's the hands-off version of our ORB PRO engine (Knightfall). Instead of you clicking each entry and exit, the strategy fires its signals automatically to your broker through an automation service you connect. Same system, same trades — it just places them for you. The current Auto Trader runs on TradingView ; a NinjaTrader® -native version is in development and will be added to the same Auto Trader page when it's ready."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which plan includes it, and is there a trial?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Auto Trader is included with your membership. The Monthly and Quarterly plans come with a 14-day free trial for new members, so you can test your demo connection before going live. The annual plan has no trial."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it copy trading? Does it trade for me?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It's not copy trading and not a managed account — no one is trading into your account. It runs a defined, rules-based strategy on your own account. \"Automated\" means the clicking is automated, not that you can walk away: you still test on demo, monitor it daily, and manage your own risk."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What do I need to run it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Three things working together: ✓ A TradingView paid plan — automated alerts use webhooks, which the free plan doesn't support ✓ An automation/bridge service (e.g. PickMyTrade or TradersPost) that receives the signal ✓ A supported broker (e.g. Tradovate) where the trade executes The flow is always: Strategy → Bridge → Broker. Full walkthrough is in the setup guide and the Discord support channel."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it only work with PickMyTrade?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Our setup guide is written for PickMyTrade, but the Auto Trader follows the same flow with other bridges like TradersPost. If you use a different service, a few details differ — the alert format, how the stop/target bracket is placed, and how the contract symbol is handled — so check that service's own docs."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it fully hands-off, or do I have to watch it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "You must test it on a demo/sim account before going live, and check on it daily once live. It relies on third-party services (TradingView, your bridge, and your broker) that can have delays, disconnects, or outages outside our control. You are responsible for your account at all times."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What do I get with my membership?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "One membership includes everything — the full FSD-X indicator suite plus the hands-off Auto Trader: ✓ FSD-X ORB PRO indicator ✓ FSD-X ORB PRO Backtester ✓ FSD-X // Stack V1 ✓ FSD-X // Volume Indicator ✓ FSD-X Nexus 2.0 (Chrome extension) ✓ Strategy Optimizer Pro ✓ SCOUT live Discord alerts ✓ Live trade room — every market morning at 8:30 AM CT ✓ Private Discord community ✓ Auto Trader — hands-off execution on TradingView (NinjaTrader® coming soon)"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you trade live with the community?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — we go live in Discord every market morning at 8:30 AM CT for the ORB session. You're not just loading the indicators and trading alone: you watch the setups unfold in real time, ask questions, and trade the open with the community. It's included with your membership. Sessions are educational — any trades shown are hypothetical and should not be expected to be replicated in a live account."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this a trading bot that places trades for me?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The indicators themselves (ORB PRO, Stack, and the rest of the suite) are a discretionary framework — they grade breakouts, plot SL/TP levels, and give you the data, while you control every entry and exit. If you want hands-off execution, that's the Auto Trader , included with your membership (see the Auto Trader section above). It runs a rules-based strategy on your own account — it is not copy trading and not a managed account."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on the free version of TradingView?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — FSD-X ORB PRO works on free, Pro, and Premium TradingView plans. You don't need a paid TradingView subscription to use it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What markets and timeframes does it work on?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The system is optimized specifically for NQ and MNQ futures on the 5-minute timeframe. It can be used on other futures (ES, MES) but the default settings and backtest data are calibrated for NQ/MNQ."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work on Mac and Windows?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — the TradingView indicators work in any browser. The Nexus Chrome extension runs on any OS that supports Chrome (Mac, Windows, Linux)."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is Nexus and what does it include?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nexus is a Chrome extension that runs as a side panel inside TradingView. It includes: ✓ Trade Journal (multi-account, calendar view) ✓ Strategy Optimizer (automated Pine Script backtesting) ✓ AI Chart Analyzer (up to 3 timeframes) ✓ News Scanner with AI sentiment ✓ Economic Calendar ✓ Position Size Calculator (Futures + Forex) ✓ Eval Sim & Strategy Analyzer ✓ Options Flow Reader ✓ Backtest Journal"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need TradingView to use Nexus?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Only the Strategy Optimizer requires TradingView since it interacts with your chart. Everything else — Journal, AI Analyzer, News Scanner, Position Calculator, Eval Sim — works independently without TradingView open."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the position calculator work for forex?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes — it supports all major forex pairs with Standard, Mini, and Micro lot sizing. For futures it covers MNQ, NQ, ES, MES, CL, GC and more. Unknown instruments just need a manual $/point or $/pip entry."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How many AI scans do I get per day?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "VIP members get 5 AI scans/day (Chart Analyzer, News Scanner, Flow Reader, Eval Sim) plus 3 Strategy Analyzer runs. Trial members get 2 scans/day across AI features. All limits reset at midnight UTC."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I install Nexus?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Install directly from the Chrome Web Store — find the link on the FSD-X Suite page . After installing, enter your license key inside the extension to unlock VIP features. Setup takes under 2 minutes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do the free trials work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Monthly and Quarterly plans come with a 14-day free trial — full access to everything; cancel through your Whop dashboard before day 15 and you won't be charged. The Annual plan doesn't include a trial."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much is it and what are the plan options?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "There's one membership with everything included — the full suite plus the Auto Trader. Monthly — $129/mo, with a 14-day free trial for new members. Quarterly — $349/qtr (save ~10% vs monthly), also with a 14-day free trial. Annual — $1,299/yr (≈$108/mo), no trial. Cancel anytime through your Whop dashboard."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I get my Nexus license key after subscribing?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "After subscribing, DM your Whop username in the Discord or send a message through Whop and your key will be sent within 24 hours."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use my license on multiple devices?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Each Nexus license key locks to the first device it's activated on. If you need to transfer to a new device, open a ticket in Discord or email fsdxteam@gmail.com and we'll reset it for you."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are refunds available?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Once a billing cycle begins, fees are non-refundable — that's why we offer a 14-day free trial on the Monthly plan so you can try everything before being charged. If you have a billing issue, contact us at fsdxteam@gmail.com ."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I share my access with someone else?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No — access is tied to one Discord account and one TradingView username per subscription. Sharing, reselling, or transferring access is prohibited and will result in immediate termination without refund."
+      }
+    }
+  ]
+}
+  </script>
 </head>
 
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
@@ -378,13 +573,28 @@
       <div class="max-w-5xl mx-auto space-y-6">
         <div>
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">CFTC Rule 4.41 — Performance Disclosure</span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.</p>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.</p>
         </div>
         <div>
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Risk Disclosure</span>
-          <p class="text-[11px] text-zinc-500 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
         </div>
-        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-600 gap-4 text-center sm:text-left">
+        <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+          <a href="index.html" class="hover:text-green-400 transition">Home</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
+          <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
+          <a href="knowledge.html" class="hover:text-green-400 transition">Knowledge Base</a>
+          <a href="converter.html" class="hover:text-green-400 transition">Trade Converter</a>
+          <a href="affiliates.html" class="hover:text-green-400 transition">Prop Firm Partners</a>
+          <a href="faq.html" class="hover:text-green-400 transition">FAQ</a>
+          <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+          <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
+        </nav>
+
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
           <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
