@@ -23,8 +23,8 @@
     --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{height:100%;background:#0b0b0d;font-family:var(--body)}
-  body{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:16px;overflow:hidden}
+  html,body{height:100%;background:#000;font-family:var(--body)}
+  body{display:flex;align-items:center;justify-content:center;overflow:hidden}
 
   #fit{position:relative}
   #stage{position:relative;width:1080px;height:1920px;background:#000;
@@ -246,7 +246,7 @@
 
   var fit=document.getElementById('fit'), stage=document.getElementById('stage');
   function resize(){
-    var s=Math.min((window.innerWidth-32)/1080,(window.innerHeight-90)/1920);
+    var s=Math.min(window.innerWidth/1080,window.innerHeight/1920);
     stage.style.transform='scale('+s+')';
     fit.style.width=(1080*s)+'px'; fit.style.height=(1920*s)+'px';
   }
