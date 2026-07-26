@@ -20,7 +20,7 @@
 
 var FSDX_ANALYTICS = {
   META_PIXEL_ID:    "3483027555206453",   // FSD-X Trading pixel
-  GA4_ID:           "",   // e.g. "G-ABC1234XYZ"
+  GA4_ID:           "G-CKJ2Q0R1KC",   // FSD-X Trading GA4
   GOOGLE_ADS_ID:    "",   // e.g. "AW-123456789"
   GOOGLE_ADS_LABEL: ""    // e.g. "AbCdEfGhIj"
 };
