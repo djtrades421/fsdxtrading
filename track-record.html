@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Live Track Record</title>
-  <meta name="description" content="Every setup the FSD-X ORB PRO (Knightfall) engine has signaled on MNQ since June 1, 2026 — wins and losses, posted after the close, on the $400 risk profile. Not a signal feed." />
+  <meta name="description" content="Knightfall 2.0 — the current version of FSD-X ORB PRO. Every setup it has signaled on MNQ since June 1, 2026: wins and losses, posted after the close, on the $400 risk profile. Not a signal feed." />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
   <script src="analytics.js"></script>
@@ -37,17 +37,23 @@
       <!-- ── Header ── -->
       <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-8">
         <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// Live Track Record</div>
+          <div class="flex items-center gap-2.5 mb-2 flex-wrap">
+            <span class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold">// Live Track Record</span>
+            <span id="m-version" class="px-2 py-0.5 rounded-md bg-green-500/10 border border-green-500/25 text-green-400 text-[10px] font-black tracking-wider">KNIGHTFALL 2.0</span>
+          </div>
           <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">Every Setup. Wins and Losses.</h1>
           <p class="text-zinc-400 text-sm max-w-2xl mb-5">
-            Every trade the ORB PRO <span class="text-white font-semibold">Knightfall</span> engine has signaled on MNQ since it went live.
-            Nothing removed, nothing cherry-picked. Posted after the close &mdash; this is a record, not a signal feed.
-            All results use the <span class="text-white font-semibold">$400 risk profile</span>.
+            FSD-X ORB PRO isn't new &mdash; it's been running for years, with
+            <a href="results.html" class="text-zinc-300 underline hover:text-green-400">seven years of backtest research</a> behind it.
+            <span class="text-white font-semibold">Knightfall is version 2.0</span>, released June 2026, and this page tracks it from day one:
+            every setup it has signaled on MNQ, wins and losses, nothing removed, nothing cherry-picked.
+            Posted after the close &mdash; this is a record, not a signal feed. All results use the
+            <span class="text-white font-semibold">$400 risk profile</span>.
           </p>
 
           <div class="flex flex-wrap gap-x-6 gap-y-2 text-[11px]">
-            <div><span class="text-zinc-600 uppercase tracking-wider">Tracking since</span> <span id="m-inception" class="text-white font-bold ml-1">&mdash;</span></div>
-            <div><span class="text-zinc-600 uppercase tracking-wider">Public release</span> <span id="m-release" class="text-white font-bold ml-1">&mdash;</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Tracking v2.0 since</span> <span id="m-inception" class="text-white font-bold ml-1">&mdash;</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">v2.0 public release</span> <span id="m-release" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Instrument</span> <span id="m-inst" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Risk profile</span> <span id="m-risk" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Data through</span> <span id="m-through" class="text-green-400 font-bold ml-1">&mdash;</span></div>
@@ -153,7 +159,7 @@
           <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-5 text-[11px] text-yellow-300/70 leading-relaxed">
             <div class="font-black uppercase tracking-wider text-yellow-400/90 mb-2 text-[10px]">// Important — Please Read</div>
             <p class="mb-2">
-              This page shows the signal output of the FSD-X ORB PRO (Knightfall) strategy on MNQ &mdash; every setup it generated
+              This page shows the signal output of the FSD-X ORB PRO strategy, Knightfall version 2.0, on MNQ &mdash; every setup it generated
               over the period shown, wins and losses, with no trades removed. Results are shown <span class="font-bold">as signaled</span>,
               at the position size the strategy itself assigns using the <span id="d-risk" class="font-bold">$400</span>
               risk-per-trade profile (which produces 1&ndash;3 MNQ contracts depending on grade and stop distance), net of an assumed
@@ -165,6 +171,11 @@
               whether a trader takes every signal. A different risk setting produces different contract counts, and
               therefore different dollar results, from the same signals. The sample shown here is small and is not a statistically reliable basis for
               projecting future performance.
+            </p>
+            <p>
+              Earlier versions of ORB PRO are not represented here. The seven-year backtest shown on our
+              <a href="results.html" class="underline hover:text-yellow-200">research data</a> page is simulated and covers the
+              strategy logic over historical data; this page covers only what version 2.0 has signaled since going live.
             </p>
             <p>
               Futures trading involves substantial risk of loss and is not suitable for every investor. Past performance is not
@@ -203,6 +214,7 @@
       document.getElementById('m-inception').textContent = fmtDate(m.inception);
       document.getElementById('m-release').textContent  = fmtDate(m.public_release);
       document.getElementById('m-inst').textContent     = m.instrument || 'MNQ';
+      if (m.version) document.getElementById('m-version').textContent = m.version.toUpperCase();
       document.getElementById('m-risk').textContent     = m.risk_profile ? '$' + Number(m.risk_profile).toLocaleString() + ' per trade' : '—';
       document.getElementById('d-risk').textContent     = m.risk_profile ? '$' + Number(m.risk_profile).toLocaleString() : '—';
       document.getElementById('m-through').textContent  = fmtDate(m.last_trade_date);
