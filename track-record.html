@@ -94,6 +94,7 @@
                 <button onclick="calMove(1)" class="px-2.5 py-1 bg-zinc-900 border border-white/10 rounded-lg text-xs text-zinc-400 hover:text-white transition">&rarr;</button>
               </div>
             </div>
+            <div id="cal-summary" class="hidden flex-wrap items-center gap-x-5 gap-y-1 mb-4 pb-3 border-b border-white/5"></div>
             <div class="grid grid-cols-7 gap-1 mb-1">
               <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Sun</div>
               <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Mon</div>
@@ -501,6 +502,33 @@
       const y = calRef.getFullYear(), mo = calRef.getMonth();
       document.getElementById('cal-label').textContent =
         calRef.toLocaleDateString('en-US', {month:'long', year:'numeric'});
+
+      // ── Month summary ──
+      const prefix = `${y}-${String(mo+1).padStart(2,'0')}`;
+      const inMonth = TRADES.filter(t => t.date.startsWith(prefix));
+      const sumEl = document.getElementById('cal-summary');
+      if (!inMonth.length) {
+        sumEl.className = 'hidden';
+      } else {
+        const ms = stats(inMonth);
+        const netCls = ms.net >= 0 ? 'text-green-400' : 'text-red-400';
+        const dayNets = {};
+        inMonth.forEach(t => { dayNets[t.date] = (dayNets[t.date] || 0) + t.pnl; });
+        const greenDays = Object.values(dayNets).filter(v => v >= 0).length;
+        sumEl.className = 'flex flex-wrap items-center gap-x-5 gap-y-1 mb-4 pb-3 border-b border-white/5';
+        sumEl.innerHTML = `
+          <div class="flex items-baseline gap-2">
+            <span class="text-[10px] uppercase tracking-wider text-zinc-600 font-bold">Month P&L</span>
+            <span class="text-lg font-black ${netCls}">${money(ms.net)}</span>
+          </div>
+          <div class="flex items-baseline gap-1.5"><span class="text-[10px] uppercase tracking-wider text-zinc-600 font-bold">Trades</span><span class="text-xs font-bold text-white">${ms.n}</span></div>
+          <div class="flex items-baseline gap-1.5"><span class="text-[10px] uppercase tracking-wider text-zinc-600 font-bold">Days</span><span class="text-xs font-bold text-white">${ms.days}</span></div>
+          <div class="flex items-baseline gap-1.5"><span class="text-[10px] uppercase tracking-wider text-zinc-600 font-bold">Win Rate</span><span class="text-xs font-bold text-white">${ms.winRate.toFixed(1)}%</span></div>
+          <div class="flex items-baseline gap-1.5">
+            <span class="text-[10px] uppercase tracking-wider text-zinc-600 font-bold">Green / Red Days</span>
+            <span class="text-xs font-bold"><span class="text-green-400">${greenDays}</span><span class="text-zinc-700"> / </span><span class="text-red-400">${ms.days - greenDays}</span></span>
+          </div>`;
+      }
 
       const first = new Date(y, mo, 1).getDay();
       const days = new Date(y, mo + 1, 0).getDate();
