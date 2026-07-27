@@ -13,6 +13,7 @@
     body { background-color: #000; }
     .cal-day { aspect-ratio: 1 / 1; }
     .tr-row:hover { background: rgba(255,255,255,0.02); }
+    #equity-chart-wrap svg { display: block; overflow: visible; }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
@@ -43,7 +44,7 @@
           </div>
           <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">Every Setup. Wins and Losses.</h1>
           <p class="text-zinc-400 text-sm max-w-2xl mb-5">
-            FSD-X ORB PRO isn't new &mdash; it's been running for years, with
+            FSD-X ORB PRO isn't new &mdash; it's been running since 2025, with
             <a href="results.html" class="text-zinc-300 underline hover:text-green-400">seven years of backtest research</a> behind it.
             <span class="text-white font-semibold">Knightfall is version 2.0</span>, released June 2026, and this page tracks it from day one:
             every setup it has signaled on MNQ, wins and losses, nothing removed, nothing cherry-picked.
@@ -68,12 +69,18 @@
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="stat-cards"></div>
 
           <!-- ── Equity curve ── -->
-          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
-            <div class="flex items-baseline justify-between mb-4">
-              <h2 class="text-sm font-black uppercase tracking-wider text-white">Cumulative P&amp;L</h2>
-              <span class="text-[10px] text-zinc-600">Net of commissions &middot; as signaled</span>
+          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6">
+            <div class="flex items-start justify-between mb-1 flex-wrap gap-2">
+              <div>
+                <div class="text-xs text-zinc-500 uppercase tracking-[0.2em]">Cumulative P&amp;L</div>
+                <div id="chart-final-pnl" class="text-2xl font-black mt-1"></div>
+              </div>
+              <div class="text-right">
+                <div id="chart-legend" class="text-xs text-zinc-500"></div>
+                <div class="text-[10px] text-zinc-600 mt-1">Net of commissions &middot; as signaled</div>
+              </div>
             </div>
-            <div id="equity-wrap" class="w-full overflow-hidden"></div>
+            <div id="equity-chart-wrap" class="relative mt-4" style="height:260px"></div>
           </div>
 
           <!-- ── Calendar ── -->
@@ -221,7 +228,7 @@
       document.getElementById('m-comm').textContent     = '$' + Number(m.commission_rt).toFixed(2);
       document.getElementById('m-gen').textContent      = fmtDate(m.generated);
 
-      renderStats(); renderEquity(); renderGrades(); renderExits(); renderLog();
+      renderStats(); drawEquityCurve(); renderGrades(); renderExits(); renderLog();
       calRef = pdate(TRADES[TRADES.length - 1].date); calRef.setDate(1); renderCal();
 
       document.getElementById('loading-screen').classList.add('hidden');
@@ -265,35 +272,215 @@
         card('Trading Days', s.days, 'text-white');
     }
 
-    function renderEquity() {
-      const W = 900, H = 200, PAD = 8;
-      let cum = 0;
-      const pts = TRADES.map((t, i) => { cum += t.pnl; return {x: i, y: cum}; });
-      pts.unshift({x: -1, y: 0});
-      const ys = pts.map(p => p.y), minY = Math.min(0, ...ys), maxY = Math.max(0, ...ys);
-      const range = (maxY - minY) || 1;
-      const sx = i => PAD + (i + 1) / (pts.length - 1 || 1) * (W - PAD * 2);
-      const sy = v => H - PAD - (v - minY) / range * (H - PAD * 2);
-      const line = pts.map((p, i) => `${i ? 'L' : 'M'}${sx(p.x).toFixed(1)},${sy(p.y).toFixed(1)}`).join(' ');
-      const area = line + ` L${sx(pts[pts.length-1].x).toFixed(1)},${sy(0).toFixed(1)} L${sx(-1).toFixed(1)},${sy(0).toFixed(1)} Z`;
-      const end = pts[pts.length - 1].y;
-      const col = end >= 0 ? '#22c55e' : '#ef4444';
-      document.getElementById('equity-wrap').innerHTML = `
-        <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" preserveAspectRatio="none" style="max-height:200px">
-          <defs><linearGradient id="eqg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="${col}" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="${col}" stop-opacity="0"/>
-          </linearGradient></defs>
-          <line x1="${PAD}" y1="${sy(0)}" x2="${W-PAD}" y2="${sy(0)}" stroke="#3f3f46" stroke-width="1" stroke-dasharray="3 3"/>
-          <path d="${area}" fill="url(#eqg)"/>
-          <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-        </svg>
-        <div class="flex justify-between text-[10px] text-zinc-600 mt-2">
-          <span>${fmtShort(TRADES[0].date)}</span>
-          <span class="${end>=0?'text-green-400':'text-red-400'} font-bold">${money(end)}</span>
-          <span>${fmtShort(TRADES[TRADES.length-1].date)}</span>
-        </div>`;
+    // ── Cumulative P&L chart (same treatment as the member journal) ──
+    function drawEquityCurve() {
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!wrap || !TRADES.length) return;
+
+      const sorted = TRADES.slice().sort((a, b) =>
+        ((a.date || '') + (a.entry_time || '')) < ((b.date || '') + (b.entry_time || '')) ? -1 : 1);
+
+      const points = [{ equity: 0, date: null, pnl: 0, result: null, grade: '', time: '', dir: '', qty: 0 }];
+      sorted.forEach(t => {
+        const pnl = parseFloat(t.pnl) || 0;
+        points.push({
+          equity: points[points.length - 1].equity + pnl,
+          date: t.date, pnl,
+          result: pnl > 0 ? 'WIN' : 'LOSS',
+          grade: t.grade || '', time: t.entry_time || '',
+          dir: t.dir || '', qty: t.contracts || 1
+        });
+      });
+
+      const finalPnl = points[points.length - 1].equity;
+      const isPos = finalPnl >= 0;
+      const uid = 'eq' + Date.now();
+
+      const finalEl = document.getElementById('chart-final-pnl');
+      if (finalEl) {
+        finalEl.textContent = (finalPnl >= 0 ? '+' : '-') + '$' + Math.abs(finalPnl).toFixed(2);
+        finalEl.className = 'text-2xl font-black mt-1 ' + (isPos ? 'text-green-400' : 'text-red-400');
+      }
+
+      const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const legendEl = document.getElementById('chart-legend');
+      if (legendEl) {
+        const dates = points.filter(p => p.date).map(p => p.date).sort();
+        if (dates.length >= 2) {
+          const fmt = d => { const q = d.split('-'); return MON[+q[1]-1] + ' ' + q[2] + ', ' + q[0]; };
+          legendEl.innerHTML = '<span>' + fmt(dates[0]) + ' — ' + fmt(dates[dates.length-1]) + '</span>';
+        }
+      }
+
+      const W = wrap.clientWidth || 700, H = 260;
+      const PAD_L = 62, PAD_R = 20, PAD_T = 14, PAD_B = 34, CW = W - PAD_L - PAD_R, CH = H - PAD_T - PAD_B;
+      const equities = points.map(p => p.equity);
+      const rawMin = Math.min(...equities), rawMax = Math.max(...equities), rng = rawMax - rawMin || 1;
+      const dataMin = rawMin - rng * 0.15, dataMax = rawMax + rng * 0.15, dataRange = dataMax - dataMin;
+      const toX = i => PAD_L + (i / (points.length - 1 || 1)) * CW;
+      const toY = v => PAD_T + CH - ((v - dataMin) / dataRange) * CH;
+
+      function catmullRomPath(pts) {
+        if (pts.length < 2) return '';
+        const tension = 0.4;
+        let d = 'M ' + pts[0].x.toFixed(2) + ' ' + pts[0].y.toFixed(2);
+        for (let i = 0; i < pts.length - 1; i++) {
+          const p0 = pts[Math.max(0, i-1)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(pts.length-1, i+2)];
+          const cp1x = p1.x + (p2.x - p0.x) * tension, cp1y = p1.y + (p2.y - p0.y) * tension;
+          const cp2x = p2.x - (p3.x - p1.x) * tension, cp2y = p2.y - (p3.y - p1.y) * tension;
+          d += ' C ' + cp1x.toFixed(2) + ' ' + cp1y.toFixed(2) + ', ' + cp2x.toFixed(2) + ' ' + cp2y.toFixed(2) + ', ' + p2.x.toFixed(2) + ' ' + p2.y.toFixed(2);
+        }
+        return d;
+      }
+
+      // Green above water, red once underwater below the running peak
+      let peak = 0;
+      const segments = [];
+      let curColor = points[0].equity >= 0 ? 'green' : 'red';
+      let curPts = [{ x: toX(0), y: toY(points[0].equity) }];
+      for (let i = 1; i < points.length; i++) {
+        const eq = points[i].equity, prevEq = points[i-1].equity;
+        if (eq > peak) peak = eq;
+        const newColor = (eq < peak && eq < 0) ? 'red' : 'green';
+        if (newColor !== curColor) {
+          const denom = Math.abs(prevEq) + Math.abs(eq);
+          const t = denom > 0 ? Math.abs(prevEq) / denom : 0.5;
+          const crossX = toX(i-1) + t * (toX(i) - toX(i-1));
+          const crossY = toY(0);
+          curPts.push({ x: crossX, y: crossY });
+          segments.push({ pts: curPts.slice(), color: curColor });
+          curPts = [{ x: crossX, y: crossY }];
+          curColor = newColor;
+        }
+        curPts.push({ x: toX(i), y: toY(eq) });
+      }
+      if (curPts.length > 1) segments.push({ pts: curPts, color: curColor });
+
+      function niceStep(range, n) {
+        const r = range / n, mag = Math.pow(10, Math.floor(Math.log10(r)));
+        return [1,2,2.5,5,10].map(m => m * mag).find(c => c >= r) || mag * 10;
+      }
+      const step = niceStep(dataRange, 5), yTicks = [];
+      for (let v = Math.ceil(dataMin/step)*step; v <= dataMax + step*0.01; v += step) yTicks.push(parseFloat(v.toFixed(8)));
+
+      const allDates = [...new Set(points.filter(p => p.date).map(p => p.date))].sort();
+      const maxXLabels = Math.min(7, allDates.length);
+      const xDates = allDates.length <= maxXLabels
+        ? allDates
+        : Array.from({length: maxXLabels}, (_, i) => allDates[Math.round(i/(maxXLabels-1)*(allDates.length-1))]);
+
+      const fmtY = v => { const a = Math.abs(v), sg = v < 0 ? '-' : '';
+        return a >= 1000 ? sg + '$' + (a/1000).toFixed(a >= 10000 ? 0 : 1) + 'K' : sg + '$' + a.toFixed(0); };
+      const fmtX = d => { if (!d) return ''; const q = d.split('-'); return MON[+q[1]-1] + ' ' + parseInt(q[2]); };
+      const FONT = "ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif";
+
+      const gridLines = yTicks.map(v => {
+        const y = toY(v);
+        if (y < PAD_T - 2 || y > PAD_T + CH + 2) return '';
+        const isZero = Math.abs(v) < step * 0.01;
+        return '<line x1="' + PAD_L + '" y1="' + y.toFixed(1) + '" x2="' + (PAD_L+CW).toFixed(1) + '" y2="' + y.toFixed(1) +
+          '" stroke="' + (isZero ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)') + '" stroke-width="1"/>' +
+          '<text x="' + (PAD_L-10).toFixed(1) + '" y="' + y.toFixed(1) + '" dy="0.35em" text-anchor="end" fill="' +
+          (isZero ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.7)') + '" font-size="11" font-family="' + FONT + '">' + fmtY(v) + '</text>';
+      }).join('');
+
+      const xLabels = xDates.map(d => {
+        const idx = points.findIndex(p => p.date === d);
+        if (idx < 0) return '';
+        return '<text x="' + toX(idx).toFixed(1) + '" y="' + (PAD_T+CH+22).toFixed(1) +
+          '" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="' + FONT + '">' + fmtX(d) + '</text>';
+      }).join('');
+
+      const hoverRects = points.slice(1).map((p, i) => {
+        const x = toX(i+1), prevX = toX(i), sliceW = Math.max(8, x - prevX);
+        const col = p.result === 'WIN' ? '#22c55e' : '#ef4444';
+        const sign = p.pnl >= 0 ? '+' : '-';
+        const line2 = p.dir + (p.grade ? ' [' + p.grade + ']' : '') + ' · ' + p.qty + 'c';
+        const tip = [p.date || '', line2, sign + '$' + Math.abs(p.pnl).toFixed(2) + ' → $' + p.equity.toFixed(2)].join('·||·');
+        return '<rect x="' + (prevX + (x-prevX)*0.1).toFixed(1) + '" y="' + PAD_T + '" width="' + sliceW.toFixed(1) +
+          '" height="' + CH + '" fill="transparent" onmouseenter="showChartTooltip(event,\'' + tip + '\',\'' + col + '\',' +
+          x.toFixed(1) + ',' + toY(p.equity).toFixed(1) + ')" onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>';
+      }).join('');
+
+      const lastLineCol = isPos ? '#22c55e' : '#ef4444';
+      const crosshairDot = '<circle id="' + uid + '-dot" cx="0" cy="0" r="5" fill="' + lastLineCol + '" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>';
+      const crosshairLine = '<line id="' + uid + '-vline" x1="0" y1="' + PAD_T + '" x2="0" y2="' + (PAD_T+CH) + '" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>';
+
+      const segmentSVG = segments.map((seg, si) => {
+        const col = seg.color === 'green' ? '#22c55e' : '#ef4444';
+        const gid = uid + '-fill-' + si;
+        const pathD = catmullRomPath(seg.pts);
+        const fillBase = Math.max(Math.min(toY(0), PAD_T + CH), PAD_T);
+        const fillD = pathD + ' L ' + seg.pts[seg.pts.length-1].x.toFixed(2) + ' ' + fillBase.toFixed(2) +
+                      ' L ' + seg.pts[0].x.toFixed(2) + ' ' + fillBase.toFixed(2) + ' Z';
+        return '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
+          '<stop offset="0%" stop-color="' + col + '" stop-opacity="0.35"/>' +
+          '<stop offset="40%" stop-color="' + col + '" stop-opacity="0.15"/>' +
+          '<stop offset="100%" stop-color="' + col + '" stop-opacity="0"/></linearGradient></defs>' +
+          '<path d="' + fillD + '" fill="url(#' + gid + ')"/>' +
+          '<path d="' + pathD + '" fill="none" stroke="' + col + '" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.12"/>' +
+          '<path d="' + pathD + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>';
+      }).join('');
+
+      wrap.innerHTML =
+        '<svg id="' + uid + '-svg" width="100%" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">' +
+          '<defs><clipPath id="' + uid + '-clip"><rect x="' + PAD_L + '" y="' + (PAD_T-2) + '" width="' + (CW+1) + '" height="' + (CH+4) + '"/></clipPath></defs>' +
+          gridLines + xLabels +
+          '<g clip-path="url(#' + uid + '-clip)">' + segmentSVG + crosshairLine + crosshairDot + hoverRects + '</g>' +
+        '</svg>' +
+        '<div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:11px;white-space:nowrap;font-family:ui-monospace,monospace;color:#e4e4e7;box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>';
+
+      wrap._uid = uid;
     }
+
+    function showChartTooltip(e, rawLabel, color, dotX, dotY) {
+      const tt = document.getElementById('eq-tooltip');
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!tt || !wrap) return;
+      const parts = rawLabel.split('·||·');
+      tt.innerHTML =
+        '<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-bottom:5px;letter-spacing:0.05em">' + (parts[0] || '') + '</div>' +
+        '<div style="color:#e4e4e7;margin-bottom:4px">' + (parts[1] || '') + '</div>' +
+        '<div style="color:' + color + ';font-weight:800;font-size:14px">' + (parts[2] || '') + '</div>';
+      tt.style.borderColor = color + '40';
+      tt.style.display = 'block';
+
+      const rect = wrap.getBoundingClientRect();
+      const er = e.target.getBoundingClientRect();
+      const tipW = tt.offsetWidth || 170;
+      let left = er.left - rect.left + er.width/2 - tipW/2;
+      if (left + tipW > rect.width - 8) left = rect.width - tipW - 8;
+      if (left < 0) left = 4;
+      let top = (er.top - rect.top) - 80;
+      if (top < 0) top = 8;
+      tt.style.left = left + 'px';
+      tt.style.top = top + 'px';
+
+      const uid = wrap._uid;
+      if (uid) {
+        const dot = document.getElementById(uid + '-dot');
+        const vline = document.getElementById(uid + '-vline');
+        if (dot) { dot.setAttribute('cx', dotX); dot.setAttribute('cy', dotY); dot.style.display = ''; }
+        if (vline) { vline.setAttribute('x1', dotX); vline.setAttribute('x2', dotX); vline.style.display = ''; }
+      }
+    }
+
+    function hideChartTooltip() {
+      const tt = document.getElementById('eq-tooltip');
+      if (tt) tt.style.display = 'none';
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!wrap || !wrap._uid) return;
+      const dot = document.getElementById(wrap._uid + '-dot');
+      const vline = document.getElementById(wrap._uid + '-vline');
+      if (dot) dot.style.display = 'none';
+      if (vline) vline.style.display = 'none';
+    }
+
+    let _eqResize;
+    window.addEventListener('resize', () => {
+      clearTimeout(_eqResize);
+      _eqResize = setTimeout(() => { if (TRADES.length) drawEquityCurve(); }, 180);
+    });
 
     function dayMap() {
       const m = {};
