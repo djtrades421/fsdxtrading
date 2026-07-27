@@ -80,7 +80,7 @@
                 <div class="text-[10px] text-zinc-600 mt-1">Net of commissions &middot; as signaled</div>
               </div>
             </div>
-            <div id="equity-chart-wrap" class="relative mt-4" style="height:260px"></div>
+            <div id="equity-chart-wrap" class="relative mt-5" style="height:340px"></div>
           </div>
 
           <!-- ── Calendar ── -->
@@ -312,17 +312,17 @@
         }
       }
 
-      const W = wrap.clientWidth || 700, H = 260;
-      const PAD_L = 62, PAD_R = 20, PAD_T = 14, PAD_B = 34, CW = W - PAD_L - PAD_R, CH = H - PAD_T - PAD_B;
+      const W = wrap.clientWidth || 700, H = 340;
+      const PAD_L = 66, PAD_R = 34, PAD_T = 20, PAD_B = 40, CW = W - PAD_L - PAD_R, CH = H - PAD_T - PAD_B;
       const equities = points.map(p => p.equity);
       const rawMin = Math.min(...equities), rawMax = Math.max(...equities), rng = rawMax - rawMin || 1;
-      const dataMin = rawMin - rng * 0.15, dataMax = rawMax + rng * 0.15, dataRange = dataMax - dataMin;
+      const dataMin = rawMin - rng * 0.08, dataMax = rawMax + rng * 0.08, dataRange = dataMax - dataMin;
       const toX = i => PAD_L + (i / (points.length - 1 || 1)) * CW;
       const toY = v => PAD_T + CH - ((v - dataMin) / dataRange) * CH;
 
       function catmullRomPath(pts) {
         if (pts.length < 2) return '';
-        const tension = 0.4;
+        const tension = 0.18;
         let d = 'M ' + pts[0].x.toFixed(2) + ' ' + pts[0].y.toFixed(2);
         for (let i = 0; i < pts.length - 1; i++) {
           const p0 = pts[Math.max(0, i-1)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(pts.length-1, i+2)];
@@ -360,11 +360,11 @@
         const r = range / n, mag = Math.pow(10, Math.floor(Math.log10(r)));
         return [1,2,2.5,5,10].map(m => m * mag).find(c => c >= r) || mag * 10;
       }
-      const step = niceStep(dataRange, 5), yTicks = [];
+      const step = niceStep(dataRange, 6), yTicks = [];
       for (let v = Math.ceil(dataMin/step)*step; v <= dataMax + step*0.01; v += step) yTicks.push(parseFloat(v.toFixed(8)));
 
       const allDates = [...new Set(points.filter(p => p.date).map(p => p.date))].sort();
-      const maxXLabels = Math.min(7, allDates.length);
+      const maxXLabels = Math.min(6, allDates.length);
       const xDates = allDates.length <= maxXLabels
         ? allDates
         : Array.from({length: maxXLabels}, (_, i) => allDates[Math.round(i/(maxXLabels-1)*(allDates.length-1))]);
