@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Live Track Record</title>
+  <meta name="description" content="Every setup the FSD-X ORB PRO (Knightfall) engine has signaled on MNQ since June 1, 2026 — wins and losses, posted after the close. Not a signal feed." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="nav-loader.js"></script>
+  <script src="analytics.js"></script>
+  <style>
+    body { background-color: #000; }
+    .cal-day { aspect-ratio: 1 / 1; }
+    .tr-row:hover { background: rgba(255,255,255,0.02); }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <div id="loading-screen" class="flex-1 flex items-center justify-center">
+      <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
+    </div>
+
+    <div id="page-content" class="hidden flex-1">
+
+      <!-- ── Header ── -->
+      <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-8">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// Live Track Record</div>
+          <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">Every Setup. Wins and Losses.</h1>
+          <p class="text-zinc-400 text-sm max-w-2xl mb-5">
+            Every trade the ORB PRO <span class="text-white font-semibold">Knightfall</span> engine has signaled on MNQ since it went live.
+            Nothing removed, nothing cherry-picked. Posted after the close &mdash; this is a record, not a signal feed.
+          </p>
+
+          <div class="flex flex-wrap gap-x-6 gap-y-2 text-[11px]">
+            <div><span class="text-zinc-600 uppercase tracking-wider">Tracking since</span> <span id="m-inception" class="text-white font-bold ml-1">&mdash;</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Public release</span> <span id="m-release" class="text-white font-bold ml-1">&mdash;</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Instrument</span> <span id="m-inst" class="text-white font-bold ml-1">&mdash;</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Data through</span> <span id="m-through" class="text-green-400 font-bold ml-1">&mdash;</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex-1 px-6 md:px-10 py-8">
+        <div class="max-w-5xl mx-auto space-y-8">
+
+          <!-- ── Stat cards ── -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="stat-cards"></div>
+
+          <!-- ── Equity curve ── -->
+          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+            <div class="flex items-baseline justify-between mb-4">
+              <h2 class="text-sm font-black uppercase tracking-wider text-white">Cumulative P&amp;L</h2>
+              <span class="text-[10px] text-zinc-600">Net of commissions &middot; as signaled</span>
+            </div>
+            <div id="equity-wrap" class="w-full overflow-hidden"></div>
+          </div>
+
+          <!-- ── Calendar ── -->
+          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-sm font-black uppercase tracking-wider text-white">Daily Results</h2>
+              <div class="flex items-center gap-2">
+                <button onclick="calMove(-1)" class="px-2.5 py-1 bg-zinc-900 border border-white/10 rounded-lg text-xs text-zinc-400 hover:text-white transition">&larr;</button>
+                <span id="cal-label" class="text-xs font-bold text-white w-32 text-center">&mdash;</span>
+                <button onclick="calMove(1)" class="px-2.5 py-1 bg-zinc-900 border border-white/10 rounded-lg text-xs text-zinc-400 hover:text-white transition">&rarr;</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-7 gap-1 mb-1">
+              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Sun</div>
+              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Mon</div>
+              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Tue</div>
+              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Wed</div>
+              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Thu</div>
+              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Fri</div>
+              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Sat</div>
+            </div>
+            <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
+            <div id="cal-detail" class="hidden mt-4 pt-4 border-t border-white/10"></div>
+          </div>
+
+          <!-- ── Grade + exit breakdown ── -->
+          <div class="grid md:grid-cols-2 gap-3">
+            <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+              <h2 class="text-sm font-black uppercase tracking-wider text-white mb-1">Performance by Grade</h2>
+              <p class="text-[11px] text-zinc-600 mb-4">The grade sets position size. A+ and A take full size; B and C take reduced size.</p>
+              <div id="grade-table" class="space-y-2"></div>
+            </div>
+            <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+              <h2 class="text-sm font-black uppercase tracking-wider text-white mb-1">How Trades Closed</h2>
+              <p class="text-[11px] text-zinc-600 mb-4">Every exit is taken by the engine &mdash; target, stop, or end of session.</p>
+              <div id="exit-table" class="space-y-2"></div>
+            </div>
+          </div>
+
+          <!-- ── Trade log ── -->
+          <div class="bg-zinc-950 border border-white/10 rounded-2xl overflow-hidden">
+            <div class="p-5 pb-3 flex items-center justify-between flex-wrap gap-3">
+              <div>
+                <h2 class="text-sm font-black uppercase tracking-wider text-white">Trade Log</h2>
+                <p class="text-[11px] text-zinc-600 mt-0.5">Most recent first. Every signal, unfiltered.</p>
+              </div>
+              <div class="flex gap-1.5" id="log-filters">
+                <button onclick="setLogFilter('all')" data-f="all" class="log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-green-500/10 border-green-500/40 text-green-400">All</button>
+                <button onclick="setLogFilter('win')" data-f="win" class="log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-zinc-900 border-white/10 text-zinc-400">Wins</button>
+                <button onclick="setLogFilter('loss')" data-f="loss" class="log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-zinc-900 border-white/10 text-zinc-400">Losses</button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs">
+                <thead>
+                  <tr class="text-[10px] uppercase tracking-wider text-zinc-600 border-y border-white/10">
+                    <th class="text-left font-bold px-5 py-2.5">Date</th>
+                    <th class="text-left font-bold px-3 py-2.5">Side</th>
+                    <th class="text-left font-bold px-3 py-2.5">Grade</th>
+                    <th class="text-right font-bold px-3 py-2.5">Qty</th>
+                    <th class="text-right font-bold px-3 py-2.5">Entry</th>
+                    <th class="text-right font-bold px-3 py-2.5">Exit</th>
+                    <th class="text-left font-bold px-3 py-2.5">Closed By</th>
+                    <th class="text-right font-bold px-5 py-2.5">Net P&amp;L</th>
+                  </tr>
+                </thead>
+                <tbody id="log-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ── CTA ── -->
+          <div class="bg-gradient-to-br from-green-500/10 to-transparent border border-green-500/20 rounded-2xl p-6 text-center">
+            <h3 class="text-lg font-black text-white mb-1">Want these as they set up?</h3>
+            <p class="text-zinc-400 text-sm mb-4 max-w-lg mx-auto">This page posts after the close. Members see every setup live in the trade room, with the grade and the reasoning behind it.</p>
+            <div class="flex flex-wrap gap-2 justify-center">
+              <a href="memberships.html" class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">View Memberships</a>
+              <a href="results.html" class="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Backtest Research Data</a>
+            </div>
+          </div>
+
+          <!-- ── Disclosure ── -->
+          <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-5 text-[11px] text-yellow-300/70 leading-relaxed">
+            <div class="font-black uppercase tracking-wider text-yellow-400/90 mb-2 text-[10px]">// Important — Please Read</div>
+            <p class="mb-2">
+              This page shows the signal output of the FSD-X ORB PRO (Knightfall) strategy on MNQ &mdash; every setup it generated
+              over the period shown, wins and losses, with no trades removed. Results are shown <span class="font-bold">as signaled</span>,
+              at the position size the strategy itself assigns by grade (1&ndash;3 MNQ contracts), net of an assumed
+              <span id="m-comm" class="font-bold">$2.50</span> round-turn commission per contract.
+            </p>
+            <p class="mb-2">
+              These are <span class="font-bold">not the results of any individual trading account</span>, and they do not represent the returns
+              of any member or of FSD-X Trading. Actual results will differ based on position sizing, execution, slippage, fees, and
+              whether a trader takes every signal. The sample shown here is small and is not a statistically reliable basis for
+              projecting future performance.
+            </p>
+            <p>
+              Futures trading involves substantial risk of loss and is not suitable for every investor. Past performance is not
+              indicative of future results. See our full <a href="disclosures.html" class="underline hover:text-yellow-200">Disclosures</a>.
+            </p>
+          </div>
+
+          <div class="text-center text-[10px] text-zinc-700 pb-4">
+            Generated from the strategy's own trade record &middot; last updated <span id="m-gen">&mdash;</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let DATA = null, TRADES = [], calRef = null, logFilter = 'all';
+
+    const money = n => (n < 0 ? '-' : '+') + '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
+    const money2 = n => (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    const pdate = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+    const fmtDate = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    const fmtShort = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+
+    fetch('track-record.json?v=' + Date.now())
+      .then(r => r.json())
+      .then(d => { DATA = d; TRADES = d.trades || []; render(); })
+      .catch(() => {
+        document.getElementById('loading-screen').innerHTML =
+          '<div class="text-zinc-600 text-sm">Track record data unavailable.</div>';
+      });
+
+    function render() {
+      const m = DATA.meta || {};
+      document.getElementById('m-inception').textContent = fmtDate(m.inception);
+      document.getElementById('m-release').textContent  = fmtDate(m.public_release);
+      document.getElementById('m-inst').textContent     = m.instrument || 'MNQ';
+      document.getElementById('m-through').textContent  = fmtDate(m.last_trade_date);
+      document.getElementById('m-comm').textContent     = '$' + Number(m.commission_rt).toFixed(2);
+      document.getElementById('m-gen').textContent      = fmtDate(m.generated);
+
+      renderStats(); renderEquity(); renderGrades(); renderExits(); renderLog();
+      calRef = pdate(TRADES[TRADES.length - 1].date); calRef.setDate(1); renderCal();
+
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('page-content').classList.remove('hidden');
+    }
+
+    function stats(list) {
+      const w = list.filter(t => t.pnl > 0), l = list.filter(t => t.pnl <= 0);
+      const gp = w.reduce((a,t) => a + t.pnl, 0), gl = Math.abs(l.reduce((a,t) => a + t.pnl, 0));
+      return {
+        n: list.length, wins: w.length, losses: l.length,
+        winRate: list.length ? 100 * w.length / list.length : 0,
+        pf: gl ? gp / gl : 0,
+        net: list.reduce((a,t) => a + t.pnl, 0),
+        avgW: w.length ? gp / w.length : 0,
+        avgL: l.length ? -gl / l.length : 0,
+        best: list.length ? Math.max(...list.map(t => t.pnl)) : 0,
+        worst: list.length ? Math.min(...list.map(t => t.pnl)) : 0,
+        days: new Set(list.map(t => t.date)).size
+      };
+    }
+
+    function card(label, value, cls) {
+      return `<div class="bg-zinc-950 border border-white/10 rounded-2xl px-4 py-3.5">
+        <div class="text-[10px] uppercase tracking-wider text-zinc-600 font-bold mb-1">${label}</div>
+        <div class="text-xl font-black ${cls || 'text-white'}">${value}</div>
+      </div>`;
+    }
+
+    function renderStats() {
+      const s = stats(TRADES);
+      const netCls = s.net >= 0 ? 'text-green-400' : 'text-red-400';
+      document.getElementById('stat-cards').innerHTML =
+        card('Net P&L', money(s.net), netCls) +
+        card('Win Rate', s.winRate.toFixed(1) + '%', 'text-white') +
+        card('Profit Factor', s.pf.toFixed(2), s.pf >= 1 ? 'text-green-400' : 'text-red-400') +
+        card('Trades', s.n, 'text-white') +
+        card('Wins / Losses', `<span class="text-green-400">${s.wins}</span> <span class="text-zinc-700">/</span> <span class="text-red-400">${s.losses}</span>`) +
+        card('Avg Win', money(s.avgW), 'text-green-400') +
+        card('Avg Loss', money(s.avgL), 'text-red-400') +
+        card('Trading Days', s.days, 'text-white');
+    }
+
+    function renderEquity() {
+      const W = 900, H = 200, PAD = 8;
+      let cum = 0;
+      const pts = TRADES.map((t, i) => { cum += t.pnl; return {x: i, y: cum}; });
+      pts.unshift({x: -1, y: 0});
+      const ys = pts.map(p => p.y), minY = Math.min(0, ...ys), maxY = Math.max(0, ...ys);
+      const range = (maxY - minY) || 1;
+      const sx = i => PAD + (i + 1) / (pts.length - 1 || 1) * (W - PAD * 2);
+      const sy = v => H - PAD - (v - minY) / range * (H - PAD * 2);
+      const line = pts.map((p, i) => `${i ? 'L' : 'M'}${sx(p.x).toFixed(1)},${sy(p.y).toFixed(1)}`).join(' ');
+      const area = line + ` L${sx(pts[pts.length-1].x).toFixed(1)},${sy(0).toFixed(1)} L${sx(-1).toFixed(1)},${sy(0).toFixed(1)} Z`;
+      const end = pts[pts.length - 1].y;
+      const col = end >= 0 ? '#22c55e' : '#ef4444';
+      document.getElementById('equity-wrap').innerHTML = `
+        <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" preserveAspectRatio="none" style="max-height:200px">
+          <defs><linearGradient id="eqg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${col}" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="${col}" stop-opacity="0"/>
+          </linearGradient></defs>
+          <line x1="${PAD}" y1="${sy(0)}" x2="${W-PAD}" y2="${sy(0)}" stroke="#3f3f46" stroke-width="1" stroke-dasharray="3 3"/>
+          <path d="${area}" fill="url(#eqg)"/>
+          <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+        </svg>
+        <div class="flex justify-between text-[10px] text-zinc-600 mt-2">
+          <span>${fmtShort(TRADES[0].date)}</span>
+          <span class="${end>=0?'text-green-400':'text-red-400'} font-bold">${money(end)}</span>
+          <span>${fmtShort(TRADES[TRADES.length-1].date)}</span>
+        </div>`;
+    }
+
+    function dayMap() {
+      const m = {};
+      TRADES.forEach(t => { (m[t.date] = m[t.date] || []).push(t); });
+      return m;
+    }
+
+    function calMove(d) { calRef.setMonth(calRef.getMonth() + d); renderCal(); }
+
+    function renderCal() {
+      const dm = dayMap();
+      const y = calRef.getFullYear(), mo = calRef.getMonth();
+      document.getElementById('cal-label').textContent =
+        calRef.toLocaleDateString('en-US', {month:'long', year:'numeric'});
+
+      const first = new Date(y, mo, 1).getDay();
+      const days = new Date(y, mo + 1, 0).getDate();
+      let html = '';
+      for (let i = 0; i < first; i++) html += '<div class="cal-day"></div>';
+      for (let d = 1; d <= days; d++) {
+        const key = `${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const list = dm[key];
+        if (!list) {
+          html += `<div class="cal-day rounded-lg border border-white/5 bg-zinc-950/40 flex items-start justify-end p-1.5">
+            <span class="text-[10px] text-zinc-700">${d}</span></div>`;
+        } else {
+          const net = list.reduce((a,t) => a + t.pnl, 0);
+          const up = net >= 0;
+          html += `<button onclick="showDay('${key}')" class="cal-day rounded-lg border transition text-left p-1.5 flex flex-col justify-between
+            ${up ? 'border-green-500/30 bg-green-500/10 hover:bg-green-500/20' : 'border-red-500/30 bg-red-500/10 hover:bg-red-500/20'}">
+            <span class="text-[10px] ${up ? 'text-green-300/60' : 'text-red-300/60'} self-end">${d}</span>
+            <span class="text-[10px] md:text-xs font-black ${up ? 'text-green-400' : 'text-red-400'} leading-tight">${money(net)}</span>
+            <span class="text-[9px] text-zinc-500">${list.length} trade${list.length>1?'s':''}</span>
+          </button>`;
+        }
+      }
+      document.getElementById('cal-grid').innerHTML = html;
+      document.getElementById('cal-detail').classList.add('hidden');
+    }
+
+    function showDay(key) {
+      const list = dayMap()[key] || [];
+      const net = list.reduce((a,t) => a + t.pnl, 0);
+      const el = document.getElementById('cal-detail');
+      el.innerHTML = `
+        <div class="flex items-baseline justify-between mb-3">
+          <div class="text-sm font-black text-white">${fmtDate(key)}</div>
+          <div class="text-sm font-black ${net>=0?'text-green-400':'text-red-400'}">${money(net)}</div>
+        </div>
+        <div class="space-y-1.5">` +
+        list.map(t => `
+          <div class="flex items-center gap-3 bg-black/40 border border-white/5 rounded-lg px-3 py-2 text-xs">
+            <span class="font-bold ${t.dir==='LONG'?'text-green-400':'text-red-400'} w-12">${t.dir}</span>
+            <span class="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 font-bold text-[10px]">${t.grade||'—'}</span>
+            <span class="text-zinc-600 text-[11px]">${t.contracts}c</span>
+            <span class="text-zinc-500 text-[11px] hidden sm:inline">${t.entry_time} → ${t.exit_time}</span>
+            <span class="text-zinc-500 text-[11px] flex-1 truncate">${t.exit_reason}</span>
+            <span class="font-black ${t.pnl>=0?'text-green-400':'text-red-400'}">${money(t.pnl)}</span>
+          </div>`).join('') + '</div>';
+      el.classList.remove('hidden');
+    }
+
+    function bar(label, sub, pct, cls) {
+      return `<div>
+        <div class="flex justify-between text-[11px] mb-1">
+          <span class="text-zinc-300 font-bold">${label}</span>
+          <span class="text-zinc-500">${sub}</span>
+        </div>
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+          <div class="h-full ${cls} rounded-full" style="width:${Math.max(2, pct).toFixed(1)}%"></div>
+        </div>
+      </div>`;
+    }
+
+    function renderGrades() {
+      const order = ['A+','A','B+','B','C+','C'];
+      const g = {};
+      TRADES.forEach(t => { const k = t.grade || '—'; (g[k] = g[k] || []).push(t); });
+      const keys = order.filter(k => g[k]).concat(Object.keys(g).filter(k => !order.includes(k)));
+      document.getElementById('grade-table').innerHTML = keys.map(k => {
+        const s = stats(g[k]);
+        return bar(`Grade ${k}`,
+          `${s.wins}/${s.n} &middot; ${s.winRate.toFixed(0)}% &middot; <span class="${s.net>=0?'text-green-400':'text-red-400'}">${money(s.net)}</span>`,
+          s.winRate, s.winRate >= 50 ? 'bg-green-500' : 'bg-red-500');
+      }).join('') || '<div class="text-zinc-600 text-xs">No data.</div>';
+    }
+
+    function renderExits() {
+      const e = {};
+      TRADES.forEach(t => { const k = t.exit_reason || '—'; (e[k] = e[k] || []).push(t); });
+      const keys = Object.keys(e).sort((a,b) => e[b].length - e[a].length);
+      const total = TRADES.length;
+      document.getElementById('exit-table').innerHTML = keys.map(k => {
+        const s = stats(e[k]);
+        return bar(k,
+          `${s.n} trade${s.n>1?'s':''} &middot; <span class="${s.net>=0?'text-green-400':'text-red-400'}">${money(s.net)}</span>`,
+          100 * s.n / total, s.net >= 0 ? 'bg-green-500' : 'bg-red-500');
+      }).join('');
+    }
+
+    function setLogFilter(f) {
+      logFilter = f;
+      document.querySelectorAll('.log-f').forEach(b => {
+        const on = b.dataset.f === f;
+        b.className = 'log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ' +
+          (on ? 'bg-green-500/10 border-green-500/40 text-green-400' : 'bg-zinc-900 border-white/10 text-zinc-400');
+      });
+      renderLog();
+    }
+
+    function renderLog() {
+      let list = TRADES.slice().reverse();
+      if (logFilter === 'win')  list = list.filter(t => t.pnl > 0);
+      if (logFilter === 'loss') list = list.filter(t => t.pnl <= 0);
+      document.getElementById('log-body').innerHTML = list.map(t => `
+        <tr class="tr-row border-b border-white/5">
+          <td class="px-5 py-2.5 text-zinc-300 whitespace-nowrap">${fmtShort(t.date)}</td>
+          <td class="px-3 py-2.5"><span class="font-bold ${t.dir==='LONG'?'text-green-400':'text-red-400'}">${t.dir}</span></td>
+          <td class="px-3 py-2.5"><span class="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 font-bold text-[10px]">${t.grade||'—'}</span></td>
+          <td class="px-3 py-2.5 text-right text-zinc-400">${t.contracts}</td>
+          <td class="px-3 py-2.5 text-right text-zinc-400 tabular-nums">${t.entry.toLocaleString()}</td>
+          <td class="px-3 py-2.5 text-right text-zinc-400 tabular-nums">${t.exit.toLocaleString()}</td>
+          <td class="px-3 py-2.5 text-zinc-500 whitespace-nowrap">${t.exit_reason}</td>
+          <td class="px-5 py-2.5 text-right font-black tabular-nums ${t.pnl>=0?'text-green-400':'text-red-400'}">${money2(t.pnl)}</td>
+        </tr>`).join('') ||
+        '<tr><td colspan="8" class="px-5 py-8 text-center text-zinc-600 text-xs">No trades match that filter.</td></tr>';
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('sidebar-panel').classList.toggle('-translate-x-full');
+    }
+  </script>
+</body>
+</html>
