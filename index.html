@@ -286,6 +286,25 @@
               </div>
             </div>
           </a>
+
+          <a href="track-record.html" class="group block border border-white/10 hover:border-green-500/40 bg-zinc-950/60 rounded-2xl p-5 sm:p-6 transition mt-3">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+              <div class="flex-1">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-[0.25em] font-bold mb-1">Live Track Record</div>
+                <div class="text-lg sm:text-xl font-black text-white">Every setup since we went live. Wins and losses.</div>
+                <div class="text-xs text-zinc-500 mt-1">
+                  A backtest is easy to publish. This is the other half &mdash; every trade the engine has signaled since
+                  <span class="text-zinc-400 font-semibold">June 1, 2026</span>, posted after the close, nothing removed.
+                  Losing days included.
+                </div>
+              </div>
+              <div class="flex items-center gap-6 shrink-0">
+                <div class="text-center"><div id="tr-teaser-n" class="text-2xl font-black text-white">&mdash;</div><div class="text-[9px] text-zinc-600 uppercase tracking-wider">Trades</div></div>
+                <div class="text-center"><div id="tr-teaser-d" class="text-2xl font-black text-white">&mdash;</div><div class="text-[9px] text-zinc-600 uppercase tracking-wider">Days Tracked</div></div>
+                <span class="inline-flex items-center gap-1 text-zinc-400 group-hover:text-green-400 font-black text-xs uppercase tracking-wider group-hover:gap-2 transition-all">See Every Trade &rarr;</span>
+              </div>
+            </div>
+          </a>
         </div>
       </section>
 
@@ -881,6 +900,7 @@
           <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
           <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
           <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="track-record.html" class="hover:text-green-400 transition">Live Track Record</a>
           <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
           <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
           <a href="knowledge.html" class="hover:text-green-400 transition">Knowledge Base</a>
@@ -911,5 +931,20 @@
   </script>
   <script src="nav-loader.js"></script>
   <script src="checkout-gate.js"></script>
+
+  <!-- Live Track Record teaser counts -->
+  <script>
+    fetch('track-record.json?v=' + Date.now())
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        var t = d.trades || [];
+        if (!t.length) return;
+        var n = document.getElementById('tr-teaser-n');
+        var days = document.getElementById('tr-teaser-d');
+        if (n) n.textContent = t.length;
+        if (days) days.textContent = new Set(t.map(function(x){ return x.date; })).size;
+      })
+      .catch(function(){});
+  </script>
 </body>
 </html>
