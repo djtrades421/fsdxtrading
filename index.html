@@ -338,10 +338,10 @@
                    role="button" tabindex="0" aria-label="Play: See how Knightfall works"
                    onclick="playKnightfallVideo()"
                    onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playKnightfallVideo();}">
-                <img src="https://img.youtube.com/vi/6Lsj2MB7vGc/maxresdefault.jpg"
-                     onerror="this.src='https://img.youtube.com/vi/6Lsj2MB7vGc/hqdefault.jpg'"
+                <img id="kf-thumb" src="https://img.youtube.com/vi/6Lsj2MB7vGc/maxresdefault.jpg"
                      alt="Walkthrough of the FSD-X Knightfall ORB engine on a TradingView chart"
-                     loading="lazy"
+                     onload="kfThumbCheck(this)" onerror="kfThumbNext(this)"
+                     data-step="0"
                      class="absolute inset-0 w-full h-full object-cover" />
 
                 <!-- YouTube play button -->
@@ -406,6 +406,24 @@
 
           <script>
             // Swaps the thumbnail facade for the real YouTube player on click.
+            // YouTube returns a grey 120x90 placeholder (HTTP 200) when a
+            // resolution doesn't exist, so fall back on size, not on error.
+            var KF_THUMBS = [
+              'https://img.youtube.com/vi/6Lsj2MB7vGc/maxresdefault.jpg',
+              'https://img.youtube.com/vi/6Lsj2MB7vGc/sddefault.jpg',
+              'https://img.youtube.com/vi/6Lsj2MB7vGc/hqdefault.jpg',
+              'https://img.youtube.com/vi/6Lsj2MB7vGc/mqdefault.jpg'
+            ];
+            function kfThumbNext(img) {
+              var i = parseInt(img.dataset.step || '0', 10) + 1;
+              if (i >= KF_THUMBS.length) return;
+              img.dataset.step = i;
+              img.src = KF_THUMBS[i];
+            }
+            function kfThumbCheck(img) {
+              if (img.naturalWidth && img.naturalWidth <= 120) kfThumbNext(img);
+            }
+
             function playKnightfallVideo() {
               var el = document.getElementById('kf-video-wrapper');
               if (!el || el.dataset.loaded) return;
