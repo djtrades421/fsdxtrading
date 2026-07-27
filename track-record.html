@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Live Track Record</title>
-  <meta name="description" content="Every setup the FSD-X ORB PRO (Knightfall) engine has signaled on MNQ since June 1, 2026 — wins and losses, posted after the close. Not a signal feed." />
+  <meta name="description" content="Every setup the FSD-X ORB PRO (Knightfall) engine has signaled on MNQ since June 1, 2026 — wins and losses, posted after the close, on the $400 risk profile. Not a signal feed." />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
   <script src="analytics.js"></script>
@@ -42,12 +42,14 @@
           <p class="text-zinc-400 text-sm max-w-2xl mb-5">
             Every trade the ORB PRO <span class="text-white font-semibold">Knightfall</span> engine has signaled on MNQ since it went live.
             Nothing removed, nothing cherry-picked. Posted after the close &mdash; this is a record, not a signal feed.
+            All results use the <span class="text-white font-semibold">$400 risk profile</span>.
           </p>
 
           <div class="flex flex-wrap gap-x-6 gap-y-2 text-[11px]">
             <div><span class="text-zinc-600 uppercase tracking-wider">Tracking since</span> <span id="m-inception" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Public release</span> <span id="m-release" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Instrument</span> <span id="m-inst" class="text-white font-bold ml-1">&mdash;</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Risk profile</span> <span id="m-risk" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Data through</span> <span id="m-through" class="text-green-400 font-bold ml-1">&mdash;</span></div>
           </div>
         </div>
@@ -153,13 +155,15 @@
             <p class="mb-2">
               This page shows the signal output of the FSD-X ORB PRO (Knightfall) strategy on MNQ &mdash; every setup it generated
               over the period shown, wins and losses, with no trades removed. Results are shown <span class="font-bold">as signaled</span>,
-              at the position size the strategy itself assigns by grade (1&ndash;3 MNQ contracts), net of an assumed
+              at the position size the strategy itself assigns using the <span id="d-risk" class="font-bold">$400</span>
+              risk-per-trade profile (which produces 1&ndash;3 MNQ contracts depending on grade and stop distance), net of an assumed
               <span id="m-comm" class="font-bold">$2.50</span> round-turn commission per contract.
             </p>
             <p class="mb-2">
               These are <span class="font-bold">not the results of any individual trading account</span>, and they do not represent the returns
-              of any member or of FSD-X Trading. Actual results will differ based on position sizing, execution, slippage, fees, and
-              whether a trader takes every signal. The sample shown here is small and is not a statistically reliable basis for
+              of any member or of FSD-X Trading. Actual results will differ based on the risk profile selected, execution, slippage, fees, and
+              whether a trader takes every signal. A different risk setting produces different contract counts, and
+              therefore different dollar results, from the same signals. The sample shown here is small and is not a statistically reliable basis for
               projecting future performance.
             </p>
             <p>
@@ -199,6 +203,8 @@
       document.getElementById('m-inception').textContent = fmtDate(m.inception);
       document.getElementById('m-release').textContent  = fmtDate(m.public_release);
       document.getElementById('m-inst').textContent     = m.instrument || 'MNQ';
+      document.getElementById('m-risk').textContent     = m.risk_profile ? '$' + Number(m.risk_profile).toLocaleString() + ' per trade' : '—';
+      document.getElementById('d-risk').textContent     = m.risk_profile ? '$' + Number(m.risk_profile).toLocaleString() : '—';
       document.getElementById('m-through').textContent  = fmtDate(m.last_trade_date);
       document.getElementById('m-comm').textContent     = '$' + Number(m.commission_rt).toFixed(2);
       document.getElementById('m-gen').textContent      = fmtDate(m.generated);
