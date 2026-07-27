@@ -228,11 +228,14 @@
       document.getElementById('m-comm').textContent     = '$' + Number(m.commission_rt).toFixed(2);
       document.getElementById('m-gen').textContent      = fmtDate(m.generated);
 
-      renderStats(); drawEquityCurve(); renderGrades(); renderExits(); renderLog();
-      calRef = pdate(TRADES[TRADES.length - 1].date); calRef.setDate(1); renderCal();
-
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
+
+      renderStats(); renderGrades(); renderExits(); renderLog();
+      calRef = pdate(TRADES[TRADES.length - 1].date); calRef.setDate(1); renderCal();
+
+      // Draw the chart only once the container has a real width to measure.
+      requestAnimationFrame(() => drawEquityCurve());
     }
 
     function stats(list) {
@@ -312,7 +315,9 @@
         }
       }
 
-      const W = wrap.clientWidth || 700, H = 340;
+      const W = wrap.clientWidth;
+      if (!W) { requestAnimationFrame(() => drawEquityCurve()); return; }
+      const H = 340;
       const PAD_L = 66, PAD_R = 34, PAD_T = 20, PAD_B = 40, CW = W - PAD_L - PAD_R, CH = H - PAD_T - PAD_B;
       const equities = points.map(p => p.equity);
       const rawMin = Math.min(...equities), rawMax = Math.max(...equities), rng = rawMax - rawMin || 1;
