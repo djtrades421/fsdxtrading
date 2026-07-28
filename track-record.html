@@ -11,7 +11,16 @@
   <script src="analytics.js"></script>
   <style>
     body { background-color: #000; }
-    .cal-day { aspect-ratio: 1 / 1; }
+    .cal-day { min-height: 110px; height: 110px; }
+    .cal-day-win  { background: rgba(34,197,94,0.09); border-left: 2px solid rgba(34,197,94,0.45) !important; }
+    .cal-day-loss { background: rgba(239,68,68,0.09); border-left: 2px solid rgba(239,68,68,0.4) !important; }
+    .cal-day.cal-clickable:hover { background: rgba(255,255,255,0.03); cursor: pointer; }
+    @media (max-width: 640px) {
+      .cal-day { min-height: 72px; height: 72px; padding: 6px !important; }
+      .cal-day .text-sm { font-size: 11px !important; }
+      .cal-day .text-xs { font-size: 10px !important; }
+      .cal-day .text-\[11px\] { font-size: 9px !important; }
+    }
     .tr-row:hover { background: rgba(255,255,255,0.02); }
     #equity-chart-wrap svg { display: block; overflow: visible; }
   </style>
@@ -95,15 +104,17 @@
               </div>
             </div>
             <div id="cal-summary" class="hidden flex-wrap items-center gap-x-5 gap-y-1 mb-4 pb-3 border-b border-white/5"></div>
-            <div class="grid grid-cols-6 gap-1 mb-1">
-              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Mon</div>
-              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Tue</div>
-              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Wed</div>
-              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Thu</div>
-              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Fri</div>
-              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1 text-right pr-1">Weekly</div>
+            <div class="border border-white/10 rounded-2xl overflow-hidden">
+              <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
+                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
+                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
+                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
+                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
+                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
+                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Weekly</div>
+              </div>
+              <div id="cal-grid"></div>
             </div>
-            <div id="cal-grid" class="grid grid-cols-6 gap-1"></div>
             <div id="cal-detail" class="hidden mt-4 pt-4 border-t border-white/10"></div>
           </div>
 
@@ -205,6 +216,9 @@
 
     const money = n => (n < 0 ? '-' : '+') + '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
     const money2 = n => (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    // Abbreviated money for calendar cells (e.g. +$986, -$1.4K), matching the journal
+    const moneyShort = n => { const p = n||0, abs = Math.abs(p), sign = p >= 0 ? '+' : '-';
+      return abs >= 1000 ? sign + '$' + (abs/1000).toFixed(abs >= 10000 ? 0 : 1) + 'K' : sign + '$' + abs.toFixed(0); };
     const pdate = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
     const fmtDate = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
     const fmtShort = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric'});
@@ -530,6 +544,7 @@
       }
 
       const daysInMonth = new Date(y, mo + 1, 0).getDate();
+      const todayStr = new Date().toISOString().slice(0,10);
       // Weekday-only (Mon–Fri) + weekly totals, matching the journal calendar
       const weekdays = [];
       for (let d = 1; d <= daysInMonth; d++) {
@@ -542,37 +557,62 @@
       weekdays.forEach(d => cells.push(d));
       while (cells.length % 5 !== 0) cells.push(null);
 
-      let html = '';
+      const grid = document.getElementById('cal-grid');
+      grid.innerHTML = '';
       for (let r = 0; r < cells.length / 5; r++) {
-        let rowNet = 0, rowHas = false, rowCells = '';
+        const row = document.createElement('div');
+        row.className = 'grid grid-cols-6 border-b border-white/[0.06] last:border-0';
+        let rowNet = 0, rowHas = false;
         for (let c = 0; c < 5; c++) {
           const d = cells[r * 5 + c];
-          if (!d) { rowCells += '<div class="cal-day"></div>'; continue; }
-          const key = `${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-          const list = dm[key];
-          if (!list) {
-            rowCells += `<div class="cal-day rounded-lg border border-white/5 bg-zinc-950/40 flex items-start justify-end p-1.5">
-              <span class="text-[10px] text-zinc-700">${d}</span></div>`;
-          } else {
-            const net = list.reduce((a,t) => a + t.pnl, 0);
-            rowNet += net; rowHas = true;
-            const up = net >= 0;
-            rowCells += `<button onclick="showDay('${key}')" class="cal-day rounded-lg border transition text-left p-1.5 flex flex-col justify-between
-              ${up ? 'border-green-500/30 bg-green-500/10 hover:bg-green-500/20' : 'border-red-500/30 bg-red-500/10 hover:bg-red-500/20'}">
-              <span class="text-[10px] ${up ? 'text-green-300/60' : 'text-red-300/60'} self-end">${d}</span>
-              <span class="text-[10px] md:text-xs font-black ${up ? 'text-green-400' : 'text-red-400'} leading-tight">${money(net)}</span>
-              <span class="text-[9px] text-zinc-500">${list.length} trade${list.length>1?'s':''}</span>
-            </button>`;
+          const cell = document.createElement('div');
+          cell.className = 'cal-day border-r border-white/[0.06] p-4 flex flex-col';
+          if (d) {
+            const key = `${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const list = dm[key];
+            const isToday = key === todayStr;
+            if (isToday) cell.style.outline = '1px solid rgba(34,197,94,0.3)';
+            if (list) { rowNet += list.reduce((a,t) => a + t.pnl, 0); rowHas = true; }
+
+            // Date number — top-right, plain day number
+            const dateDiv = document.createElement('div');
+            dateDiv.className = (isToday ? 'text-xs font-black text-green-400' : 'text-xs font-bold text-zinc-600') + ' text-right';
+            dateDiv.textContent = d;
+            cell.appendChild(dateDiv);
+
+            if (list) {
+              const net = list.reduce((a,t) => a + t.pnl, 0);
+              cell.classList.add(net >= 0 ? 'cal-day-win' : 'cal-day-loss', 'cal-clickable');
+              const body = document.createElement('div');
+              body.className = 'mt-auto';
+              const pnlDiv = document.createElement('div');
+              pnlDiv.className = 'text-sm font-black ' + (net >= 0 ? 'text-green-400' : 'text-red-400');
+              pnlDiv.textContent = money(net);
+              body.appendChild(pnlDiv);
+              const countDiv = document.createElement('div');
+              countDiv.className = 'text-[11px] text-zinc-500 mt-1';
+              countDiv.textContent = `${list.length} trade${list.length !== 1 ? 's' : ''}`;
+              body.appendChild(countDiv);
+              cell.appendChild(body);
+              cell.onclick = () => showDay(key);
+            }
           }
+          row.appendChild(cell);
         }
-        const wUp = rowNet >= 0;
-        rowCells += `<div class="cal-day rounded-lg border border-white/5 bg-zinc-950/30 flex flex-col items-end justify-center p-1.5">
-          <span class="text-[8px] uppercase tracking-wider text-zinc-600 font-bold">Wk</span>
-          <span class="text-[10px] md:text-xs font-black ${rowHas ? (wUp ? 'text-green-400' : 'text-red-400') : 'text-zinc-700'} leading-tight">${rowHas ? money(rowNet) : '—'}</span>
-        </div>`;
-        html += rowCells;
+        // Weekly total col
+        const wc = document.createElement('div');
+        wc.className = 'cal-day p-4 flex flex-col items-end justify-end bg-zinc-950/30';
+        const wkLabel = document.createElement('div');
+        wkLabel.className = 'text-[10px] uppercase tracking-wider text-zinc-600 font-bold mb-1';
+        wkLabel.textContent = 'WK';
+        wc.appendChild(wkLabel);
+        const wcInner = document.createElement('div');
+        wcInner.className = 'text-sm font-black ' + (rowHas ? (rowNet >= 0 ? 'text-green-400' : 'text-red-400') : 'text-zinc-700');
+        wcInner.textContent = rowHas ? money(rowNet) : '—';
+        wc.appendChild(wcInner);
+        row.appendChild(wc);
+        grid.appendChild(row);
       }
-      document.getElementById('cal-grid').innerHTML = html;
       document.getElementById('cal-detail').classList.add('hidden');
     }
 
