@@ -95,16 +95,15 @@
               </div>
             </div>
             <div id="cal-summary" class="hidden flex-wrap items-center gap-x-5 gap-y-1 mb-4 pb-3 border-b border-white/5"></div>
-            <div class="grid grid-cols-7 gap-1 mb-1">
-              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Sun</div>
+            <div class="grid grid-cols-6 gap-1 mb-1">
               <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Mon</div>
               <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Tue</div>
               <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Wed</div>
               <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Thu</div>
               <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Fri</div>
-              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1">Sat</div>
+              <div class="text-center text-[9px] uppercase tracking-wider text-zinc-600 font-bold py-1 text-right pr-1">Weekly</div>
             </div>
-            <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
+            <div id="cal-grid" class="grid grid-cols-6 gap-1"></div>
             <div id="cal-detail" class="hidden mt-4 pt-4 border-t border-white/10"></div>
           </div>
 
@@ -530,26 +529,48 @@
           </div>`;
       }
 
-      const first = new Date(y, mo, 1).getDay();
-      const days = new Date(y, mo + 1, 0).getDate();
+      const daysInMonth = new Date(y, mo + 1, 0).getDate();
+      // Weekday-only (Mon–Fri) + weekly totals, matching the journal calendar
+      const weekdays = [];
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dow = new Date(y, mo, d).getDay();
+        if (dow !== 0 && dow !== 6) weekdays.push(d);
+      }
+      const firstDow = new Date(y, mo, weekdays[0]).getDay() - 1; // Mon=0
+      const cells = [];
+      for (let i = 0; i < firstDow; i++) cells.push(null);
+      weekdays.forEach(d => cells.push(d));
+      while (cells.length % 5 !== 0) cells.push(null);
+
       let html = '';
-      for (let i = 0; i < first; i++) html += '<div class="cal-day"></div>';
-      for (let d = 1; d <= days; d++) {
-        const key = `${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const list = dm[key];
-        if (!list) {
-          html += `<div class="cal-day rounded-lg border border-white/5 bg-zinc-950/40 flex items-start justify-end p-1.5">
-            <span class="text-[10px] text-zinc-700">${d}</span></div>`;
-        } else {
-          const net = list.reduce((a,t) => a + t.pnl, 0);
-          const up = net >= 0;
-          html += `<button onclick="showDay('${key}')" class="cal-day rounded-lg border transition text-left p-1.5 flex flex-col justify-between
-            ${up ? 'border-green-500/30 bg-green-500/10 hover:bg-green-500/20' : 'border-red-500/30 bg-red-500/10 hover:bg-red-500/20'}">
-            <span class="text-[10px] ${up ? 'text-green-300/60' : 'text-red-300/60'} self-end">${d}</span>
-            <span class="text-[10px] md:text-xs font-black ${up ? 'text-green-400' : 'text-red-400'} leading-tight">${money(net)}</span>
-            <span class="text-[9px] text-zinc-500">${list.length} trade${list.length>1?'s':''}</span>
-          </button>`;
+      for (let r = 0; r < cells.length / 5; r++) {
+        let rowNet = 0, rowHas = false, rowCells = '';
+        for (let c = 0; c < 5; c++) {
+          const d = cells[r * 5 + c];
+          if (!d) { rowCells += '<div class="cal-day"></div>'; continue; }
+          const key = `${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+          const list = dm[key];
+          if (!list) {
+            rowCells += `<div class="cal-day rounded-lg border border-white/5 bg-zinc-950/40 flex items-start justify-end p-1.5">
+              <span class="text-[10px] text-zinc-700">${d}</span></div>`;
+          } else {
+            const net = list.reduce((a,t) => a + t.pnl, 0);
+            rowNet += net; rowHas = true;
+            const up = net >= 0;
+            rowCells += `<button onclick="showDay('${key}')" class="cal-day rounded-lg border transition text-left p-1.5 flex flex-col justify-between
+              ${up ? 'border-green-500/30 bg-green-500/10 hover:bg-green-500/20' : 'border-red-500/30 bg-red-500/10 hover:bg-red-500/20'}">
+              <span class="text-[10px] ${up ? 'text-green-300/60' : 'text-red-300/60'} self-end">${d}</span>
+              <span class="text-[10px] md:text-xs font-black ${up ? 'text-green-400' : 'text-red-400'} leading-tight">${money(net)}</span>
+              <span class="text-[9px] text-zinc-500">${list.length} trade${list.length>1?'s':''}</span>
+            </button>`;
+          }
         }
+        const wUp = rowNet >= 0;
+        rowCells += `<div class="cal-day rounded-lg border border-white/5 bg-zinc-950/30 flex flex-col items-end justify-center p-1.5">
+          <span class="text-[8px] uppercase tracking-wider text-zinc-600 font-bold">Wk</span>
+          <span class="text-[10px] md:text-xs font-black ${rowHas ? (wUp ? 'text-green-400' : 'text-red-400') : 'text-zinc-700'} leading-tight">${rowHas ? money(rowNet) : '—'}</span>
+        </div>`;
+        html += rowCells;
       }
       document.getElementById('cal-grid').innerHTML = html;
       document.getElementById('cal-detail').classList.add('hidden');
