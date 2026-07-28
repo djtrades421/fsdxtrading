@@ -734,7 +734,7 @@ document.getElementById('goal-save').onclick = () => {
     const e=d.eval[state.dll],s=d.strat,pm=PROFILE[state.risk],col=passColor(e.passrate);
     const win=state.tf==='7yr'?'7-year backtest':'last 2 years';
     const med=e.median!=null?e.median:'\u2014';
-    const sub=e.avg!=null?('avg '+e.avg+'d \u00b7 fastest '+e.fast+'d \u00b7 slowest '+e.slow+'d'):'';
+    const sub=e.avg!=null?('avg '+e.avg+' \u00b7 fastest '+e.fast+' \u00b7 slowest '+e.slow+' calendar days'):'';
 
     // ===== GETTING FUNDED (eval) =====
     let html=sectionHead('Getting Funded','Eval Pass Rate &amp; Time to Funding','How reliably this base risk clears a '+state.acct.toUpperCase()+' challenge on an EOD trailing drawdown \u2014 '+win+'.')+
@@ -744,7 +744,7 @@ document.getElementById('goal-save').onclick = () => {
           '<div class="text-5xl font-black" style="color:'+col+'">'+e.passrate+'%</div>'+
           '<div class="text-xs text-zinc-500 mt-1">'+e.passes+' passed / '+e.fails+' failed \u00b7 '+e.completed+' evals</div></div>'+
           '<div><div class="text-[10px] uppercase tracking-widest text-zinc-500 mb-1">Time to Pass</div>'+
-          '<div class="text-3xl font-black text-white">'+med+' <span class="text-base text-zinc-500">days median</span></div>'+
+          '<div class="text-3xl font-black text-white">'+med+' <span class="text-base text-zinc-500">calendar days median</span></div>'+
           '<div class="text-xs text-zinc-500 mt-1">'+sub+'</div></div>'+
         '</div>'+
         '<div class="mt-4 text-xs text-zinc-400 bg-zinc-900/50 border border-white/5 rounded-lg px-3 py-2"><span class="font-bold text-zinc-300">$'+state.risk+' \u00b7 '+pm.tag+':</span> '+pm.note+'</div>'+
@@ -789,7 +789,8 @@ document.getElementById('goal-save').onclick = () => {
       '<div class="overflow-x-auto border border-white/10 rounded-xl"><table class="w-full text-xs text-left" style="min-width:480px">'+
       '<thead><tr class="bg-zinc-900/40 text-zinc-500 uppercase text-[10px] tracking-wider">'+
       '<th class="py-2.5 px-3">Risk</th><th class="py-2.5 px-3">Pass Rate</th><th class="py-2.5 px-3">Median</th><th class="py-2.5 px-3">Fastest</th><th class="py-2.5 px-3">Fails</th></tr></thead>'+
-      '<tbody>'+rows+'</tbody></table></div>';
+      '<tbody>'+rows+'</tbody></table></div>'+
+      '<div class="text-[10px] text-zinc-600 mt-1.5">Median and Fastest are calendar days from eval start to pass.</div>';
   }
   function tradeCompareTable(){
     let rows='';
