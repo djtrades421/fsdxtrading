@@ -118,12 +118,8 @@
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
   <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
-    <div class="text-2xl font-black tracking-wider text-green-400">
-      FSD-X
-    </div>
-    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">
-      // MENU
-    </button>
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
   </header>
 
   <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
@@ -133,57 +129,56 @@
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
 
     <div class="w-full flex-1">
-      
+
+      <!-- ═══ HERO ═══ -->
       <section id="hero" class="min-h-screen flex items-center justify-center px-6 md:px-12 border-b border-white/10 py-16 lg:py-20">
         <div class="max-w-7xl w-full grid xl:grid-cols-2 gap-12 items-center">
           <div>
             <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold tracking-wide mb-6">
               <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-              <span>NinjaTrader® Ecosystem Vendor</span>
+              <span>NinjaTrader® Ecosystem Vendor · 300+ traders</span>
             </div>
 
             <h1 class="text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1]">
-              Built for prop traders who are tired of
-              <span class="text-green-400">failing evals on one bad morning.</span>
+              Most prop traders fail evals on
+              <span class="text-green-400">one bad morning.</span>
             </h1>
 
             <p class="mt-5 text-zinc-400 text-base md:text-lg max-w-xl leading-relaxed">
-              A rules-based <span class="text-white font-semibold">opening range breakout</span> system for <span class="text-white font-semibold">NQ/MNQ on the 5-minute</span> — every setup graded A+ through C before you enter, every risk size decided in advance.
+              FSD-X is a rules-based system for trading the Nasdaq (<span class="text-white font-semibold">NQ / MNQ</span>) right at the market open — the <span class="text-white font-semibold">opening range breakout</span>. It grades every setup A+ to C before you enter, and gives you the exact stop and target. The point isn't more trades. It's knowing which mornings to skip.
             </p>
 
-            <p class="mt-4 text-zinc-400 text-base md:text-lg max-w-xl leading-relaxed">
-              Check the eval pass rate for your account size, then <span class="text-white font-semibold">run the whole system free for 14 days.</span>
+            <p class="mt-4 text-zinc-500 text-sm max-w-xl leading-relaxed">
+              Built for the prop-firm trader — whether you've already failed an evaluation or you're about to take your first one. If you keep giving back progress on one bad trade, this is for you.
             </p>
 
-            <!-- LIVE TRADE ROOM HIGHLIGHT -->
+            <!-- LIVE TRADE ROOM -->
             <div class="mt-6 flex items-start gap-3 rounded-2xl border border-green-500/30 bg-green-500/[0.06] px-4 py-3.5 max-w-xl">
               <span class="w-2 h-2 rounded-full bg-green-400 mt-1.5 shrink-0 animate-pulse"></span>
               <div class="text-sm text-zinc-300 leading-relaxed">
-                <span class="text-white font-bold">You don't trade this alone.</span> We're live in Discord every market morning at <span class="text-green-400 font-semibold">8:30 AM CT</span>, calling the open together — you see the setups form, hear the reasoning, and ask questions while it's happening. <span class="text-zinc-500">Included with your membership.</span>
+                <span class="text-white font-bold">You don't trade this alone.</span> We're live in Discord every market morning at <span class="text-green-400 font-semibold">8:30 AM CT</span>, calling the open together — setups form, you hear the reasoning, you ask questions in real time. <span class="text-zinc-500">Included with membership.</span>
               </div>
             </div>
 
             <div class="mt-8 max-w-md w-full space-y-4">
               <div class="flex flex-col sm:flex-row items-stretch gap-4">
-                <a href="#pricing"
-                   class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center flex-1 shadow-lg shadow-green-500/10 whitespace-nowrap">
+                <a href="#pricing" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center flex-1 shadow-lg shadow-green-500/10 whitespace-nowrap">
                   Start 14-Day Free Trial
                 </a>
-                <a href="results.html#risk-profiles"
-                   class="border border-green-500/40 hover:bg-green-500/10 transition px-6 py-4 rounded-2xl text-center font-bold text-green-400 whitespace-nowrap">
-                  See the eval data first
+                <a href="results.html#risk-profiles" class="border border-green-500/40 hover:bg-green-500/10 transition px-6 py-4 rounded-2xl text-center font-bold text-green-400 whitespace-nowrap">
+                  Check your eval pass rate
                 </a>
               </div>
 
-              <!-- DYNAMIC SALE BANNER (index.html) -->
+              <!-- DYNAMIC SALE BANNER -->
               <div id="sale-banner-index" class="hidden relative overflow-hidden bg-gradient-to-r from-red-950/60 via-red-900/30 to-red-950/60 border border-red-500/50 rounded-2xl p-4 shadow-xl shadow-red-950/30">
                 <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_8px,rgba(255,255,255,0.015)_8px,rgba(255,255,255,0.015)_16px)]"></div>
                 <div class="relative flex items-start gap-3">
                   <span class="text-xl leading-none mt-0.5 animate-bounce">🔥</span>
                   <div class="text-xs leading-relaxed flex-1">
                     <div class="flex items-center justify-between gap-2 mb-1">
-                      <div id="sale-label-index" class="font-black text-red-400 uppercase tracking-widest text-[11px]">⚡ Flash Sale — Limited Time</div>
-                      <div id="sale-discount-index" class="bg-red-500 text-white font-black text-[11px] px-2 py-0.5 rounded-lg tracking-wide animate-pulse">17% OFF</div>
+                      <div id="sale-label-index" class="font-black text-red-400 uppercase tracking-widest text-[11px]">⚡ Flash Sale</div>
+                      <div id="sale-discount-index" class="bg-red-500 text-white font-black text-[11px] px-2 py-0.5 rounded-lg tracking-wide animate-pulse">—</div>
                     </div>
                     <div class="text-zinc-200">
                       Use code <span id="sale-code-index" class="text-white font-black bg-zinc-900 border border-red-500/40 px-2 py-0.5 rounded-lg mx-0.5 tracking-wider">—</span> at checkout — <span id="sale-applies-index">applies to the Annual plan.</span>
@@ -204,684 +199,298 @@
                       if (s.applies) document.getElementById('sale-applies-index').textContent = s.applies;
                       document.getElementById('sale-banner-index').classList.remove('hidden');
                     }
-                  } catch(e) { /* no sale or network error — banner stays hidden */ }
+                  } catch(e) {}
                 })();
               </script>
 
               <p class="text-[11px] text-zinc-500 flex items-center gap-1.5 pl-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-                $129/mo after trial • Cancel instantly anytime in one click via Whop.
+                14-day free trial · no charge until day 15 · cancel anytime in one click via Whop.
               </p>
               <p class="text-[11px] text-zinc-500 pl-1 leading-relaxed">
-                Want to look around first?
-                <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:text-green-300 font-semibold transition">Join the Discord →</a>
-                <span class="block text-zinc-600">Start Here pages are open to everyone — VIP channels unlock with membership.</span>
+                Not ready? <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:text-green-300 font-semibold transition">Join the free Discord →</a>
+                <span class="block text-zinc-600">Free to join. VIP channels unlock with membership.</span>
               </p>
             </div>
           </div>
 
-          <!-- ORB PRO DEMO — the ad loop, in a phone-style frame -->
+          <!-- ORB PRO DEMO -->
           <div class="flex justify-center xl:justify-end">
             <div class="relative w-full max-w-[380px] rounded-[28px] border border-white/10 bg-black overflow-hidden shadow-2xl shadow-black/50">
               <div class="absolute top-0 inset-x-0 h-6 flex items-center justify-center z-10 pointer-events-none">
                 <div class="w-16 h-1.5 rounded-full bg-white/10 mt-1.5"></div>
               </div>
-              <iframe src="ad4.html" title="FSD-X ORB PRO demo"
-                      loading="lazy" scrolling="no"
-                      class="block w-full aspect-[9/16] border-0"></iframe>
+              <iframe src="ad4.html" title="FSD-X ORB PRO demo" loading="lazy" scrolling="no" class="block w-full aspect-[9/16] border-0"></iframe>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- PRODUCT CARDS — full-width row under the hero -->
-      <section class="px-6 md:px-12 pt-4 pb-12 border-b border-white/10 bg-black">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-zinc-900/60 border border-white/10 rounded-3xl p-6 hover:border-green-500/20 transition group">
-            <div class="text-green-400 font-black text-lg group-hover:text-green-300 transition">FSD-X ORB PRO (Knightfall)</div>
-            <div class="text-xs text-zinc-500 mt-1 mb-2">1,143 backtested signals · 2019–2026</div>
-            <div class="inline-block mt-1 mb-2 px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/30 text-green-400 text-[10px] font-bold uppercase tracking-wider">⚡ Knightfall v1.1 — Now Live · All-In-One</div>
-            <div class="text-zinc-400 text-xs leading-relaxed">
-              Core signal engine — grades every breakout A+ through C in real time so you only take the setups math backs.
-            </div>
+      <!-- ═══ TRUST STRIP ═══ -->
+      <section class="px-6 md:px-12 py-6 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div><div class="text-2xl font-black text-white">300+</div><div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Traders</div></div>
+          <div><div class="text-2xl font-black text-white">1,100+</div><div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Trades · 7-yr backtest</div></div>
+          <div><div class="text-2xl font-black text-white">★ 5.0</div><div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Verified on Whop</div></div>
+          <div><div class="text-2xl font-black text-white">8:30 CT</div><div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Live room · Mon–Fri</div></div>
+        </div>
+      </section>
+
+      <!-- ═══ PROBLEM → MECHANISM ═══ -->
+      <section class="py-24 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-3xl md:text-4xl font-black leading-tight">Most accounts don't blow up on a bad system. They blow up on <span class="text-green-400">one trade that never should've happened.</span></h2>
+          <p class="mt-6 text-zinc-400 text-base leading-relaxed">The opening range breakout isn't a secret — plenty of people trade it. The hard part is knowing when it's worth taking and when to sit on your hands, plus where to put your stop and target. That's the part FSD-X turns into simple rules.</p>
+        </div>
+        <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-5 mt-14">
+          <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+            <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">A grade before you enter</div>
+            <p class="text-zinc-400 text-sm leading-relaxed">Every setup is scored A+ down to C as it forms. You take the strong ones and pass on the weak ones — no guessing.</p>
           </div>
-          <div class="bg-zinc-900/60 border border-white/10 rounded-3xl p-6 hover:border-green-500/20 transition group">
-            <div class="text-green-400 font-black text-lg group-hover:text-green-300 transition">FSD-X // VOLUME</div>
-            <div class="text-xs text-zinc-500 mt-1 mb-2">Breakout confirmation layer</div>
-            <div class="text-zinc-400 text-xs leading-relaxed">
-              Session volume clusters, ORB windows, and highlighted breakout candles — confirms the move before you're in it.
-            </div>
+          <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+            <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">Your stop and target, set first</div>
+            <p class="text-zinc-400 text-sm leading-relaxed">You know your exit before you enter — decided by the setup, not by nerves in the moment.</p>
           </div>
-          <div class="bg-zinc-900/60 border border-white/10 rounded-3xl p-6 hover:border-green-500/20 transition group">
-            <div class="text-green-400 font-black text-lg group-hover:text-green-300 transition">NEXUS 2.0</div>
-            <div class="text-xs text-zinc-500 mt-1 mb-2">All-in-one TradingView side panel</div>
-            <div class="text-zinc-400 text-xs leading-relaxed">
-              Chrome extension for prop firm futures traders — trade, journal, and analyze right next to your chart. No tab switching.
-            </div>
-          </div>
-          <div class="bg-zinc-900/60 border border-white/10 rounded-3xl p-6 hover:border-green-500/20 transition group">
-            <div class="text-green-400 font-black text-lg group-hover:text-green-300 transition">LIVE TRADING ROOM</div>
-            <div class="text-xs text-zinc-500 mt-1 mb-2">Every market morning · 8:30 AM CT · Discord</div>
-            <div class="text-zinc-400 text-xs leading-relaxed">
-              We go live and trade the open together — watch the setups unfold and trade them with the community, not alone.
-            </div>
+          <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+            <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">Made for funded accounts</div>
+            <p class="text-zinc-400 text-sm leading-relaxed">Built around prop-firm rules — especially the drawdown limit that quietly ends most people's attempts.</p>
           </div>
         </div>
       </section>
 
-      <!-- RESULTS / RISK-PROFILE TEASER STRIP -->
-      <section class="py-8 px-6 md:px-12 border-b border-white/10 bg-black">
+      <!-- ═══ WHAT YOU GET — ONE MEMBERSHIP ═══ -->
+      <section id="what-you-get" class="py-24 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
         <div class="max-w-7xl mx-auto">
-          <a href="results.html#risk-profiles" class="group block border border-green-500/25 hover:border-green-500/50 bg-gradient-to-r from-green-500/[0.06] to-transparent rounded-2xl p-5 sm:p-6 transition">
-            <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div class="flex-1">
-                <div class="text-[10px] text-green-400 uppercase tracking-[0.25em] font-bold mb-1">Backtested Results</div>
-                <div class="text-lg sm:text-xl font-black text-white">How long does it take to pass an eval?</div>
-                <div class="text-xs text-zinc-500 mt-1">Pick your account size (50K–250K) and base risk to see your eval pass rate (EOD trailing), time-to-fund, and full 7-year backtest — all 6 risk profiles, open to explore.</div>
-              </div>
-              <div class="flex items-center gap-6 shrink-0">
-                <div class="text-center"><div class="text-2xl font-black text-green-400">90%</div><div class="text-[9px] text-zinc-600 uppercase tracking-wider">Pass Rate · EOD</div></div>
-                <div class="text-center"><div class="text-2xl font-black text-white">48d</div><div class="text-[9px] text-zinc-600 uppercase tracking-wider">Median</div></div>
-                <span class="inline-flex items-center gap-1 text-green-400 font-black text-xs uppercase tracking-wider group-hover:gap-2 transition-all">View Results →</span>
-              </div>
-            </div>
-          </a>
-
-          <a href="track-record.html" class="group block border border-white/10 hover:border-green-500/40 bg-zinc-950/60 rounded-2xl p-5 sm:p-6 transition mt-3">
-            <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div class="flex-1">
-                <div class="text-[10px] text-zinc-500 uppercase tracking-[0.25em] font-bold mb-1">Live Track Record</div>
-                <div class="text-lg sm:text-xl font-black text-white">Every setup since we went live. Wins and losses.</div>
-                <div class="text-xs text-zinc-500 mt-1">
-                  A backtest is easy to publish. This is the other half &mdash; every trade the engine has signaled since
-                  <span class="text-zinc-400 font-semibold">May 1, 2026</span>, posted after the close, nothing removed.
-                  Losing days included.
-                </div>
-              </div>
-              <div class="flex items-center gap-6 shrink-0">
-                <div class="text-center"><div id="tr-teaser-n" class="text-2xl font-black text-white">&mdash;</div><div class="text-[9px] text-zinc-600 uppercase tracking-wider">Trades</div></div>
-                <div class="text-center"><div id="tr-teaser-d" class="text-2xl font-black text-white">&mdash;</div><div class="text-[9px] text-zinc-600 uppercase tracking-wider">Days Tracked</div></div>
-                <span class="inline-flex items-center gap-1 text-zinc-400 group-hover:text-green-400 font-black text-xs uppercase tracking-wider group-hover:gap-2 transition-all">See Every Trade &rarr;</span>
-              </div>
-            </div>
-          </a>
-        </div>
-      </section>
-
-      <!-- ============================================================
-           SEE IT IN ACTION — visual showcase (screenshots + video slot)
-           Screenshots are click-to-enlarge (lightbox script at bottom).
-           To add a video: uncomment the VIDEO SLOT block below and paste
-           your YouTube embed ID or Loom share URL where marked.
-      ============================================================ -->
-      <section id="see-it" class="py-20 md:py-24 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-black via-zinc-950/40 to-black">
-        <div class="max-w-7xl mx-auto">
-
-          <div class="text-center mb-12">
-            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">See It In Action</div>
-            <h2 class="text-3xl md:text-4xl font-black">Not just theory — watch it work.</h2>
-            <p class="text-zinc-400 text-sm md:text-base mt-3 max-w-xl mx-auto leading-relaxed">
-              Real setups, real grading, live every market morning. Here's what you're actually getting inside FSD-X.
-            </p>
+          <div class="text-center mb-4">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">One membership · everything unlocks</div>
+            <h2 class="text-3xl md:text-4xl font-black">Everything you need to run the system</h2>
+            <p class="text-zinc-400 text-sm mt-3 max-w-xl mx-auto">No tiers. No upsells. Nothing else to buy. The trial unlocks all of it — the signals, the tools, the live room every morning, and the community.</p>
           </div>
 
-          <!-- ============================================================
-               SEE HOW KNIGHTFALL WORKS — video (facade: thumbnail only,
-               YouTube iframe is injected on click so the homepage stays fast)
-          ============================================================ -->
-          <div id="knightfall-video" class="mb-12 scroll-mt-24">
-            <div class="max-w-3xl mx-auto">
-
-              <!-- Player -->
-              <div id="kf-video-wrapper"
-                   class="aspect-video bg-black relative group cursor-pointer rounded-xl overflow-hidden"
-                   role="button" tabindex="0" aria-label="Play: See how Knightfall works"
-                   onclick="playKnightfallVideo()"
-                   onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playKnightfallVideo();}">
-                <img id="kf-thumb" src="https://img.youtube.com/vi/6Lsj2MB7vGc/maxresdefault.jpg"
-                     alt="Walkthrough of the FSD-X Knightfall ORB engine on a TradingView chart"
-                     onload="kfThumbCheck(this)" onerror="kfThumbNext(this)"
-                     data-step="0"
-                     class="absolute inset-0 w-full h-full object-cover" />
-
-                <!-- YouTube play button -->
-                <div class="absolute inset-0 flex items-center justify-center z-20">
-                  <svg viewBox="0 0 68 48" class="w-[68px] h-[48px] md:w-[85px] md:h-[60px] drop-shadow-lg" aria-hidden="true">
-                    <path class="transition-all duration-200 group-hover:fill-[#ff0000]"
-                          fill="#212121" fill-opacity="0.8"
-                          d="M66.52 7.74a8 8 0 0 0-5.63-5.67C56.1.99 34 1 34 1s-22.1-.01-26.89 1.06a8 8 0 0 0-5.63 5.67C.42 12.52.42 24 .42 24s0 11.48 1.06 16.26a8 8 0 0 0 5.63 5.67C11.9 47 34 47 34 47s22.1.01 26.89-1.07a8 8 0 0 0 5.63-5.67C67.58 35.48 67.58 24 67.58 24s0-11.48-1.06-16.26z"/>
-                    <path d="M27 34V14l17.5 10L27 34z" fill="#fff"/>
-                  </svg>
-                </div>
-
-                <!-- Duration badge -->
-                <span class="absolute bottom-2 right-2 z-20 px-1.5 py-0.5 rounded bg-black/80 text-white text-[11px] font-medium tabular-nums">2:13</span>
-              </div>
-
-              <!-- Meta, below the player -->
-              <div class="mt-3">
-                <h3 class="text-base md:text-lg font-bold text-white leading-snug">See how Knightfall works</h3>
-                <div class="text-xs text-zinc-500 mt-1">FSD-X Trading &middot; 2 min watch</div>
-                <p class="text-sm text-zinc-400 mt-2 leading-relaxed">
-                  A quick walkthrough of the ORB engine on the chart &mdash; how a breakout gets graded and how simple it is to run.
-                </p>
-                <div class="mt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <p class="text-[11px] text-zinc-600 leading-relaxed">
-                    &#9888; For educational purposes only. Any trades shown are illustrative and should not be expected to be replicated in a live account. Futures trading involves substantial risk of loss. Past performance is not necessarily indicative of future results.
-                  </p>
-                  <a href="knowledge.html#videos" class="text-xs text-green-400 hover:text-green-300 font-bold whitespace-nowrap transition">Full setup walkthrough &rarr;</a>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- FEATURED (top): FSD-X Knightfall -->
-          <figure class="group rounded-2xl border border-white/10 bg-zinc-950 overflow-hidden hover:border-green-500/30 transition shadow-2xl shadow-black/40">
-            <div class="flex items-center gap-1.5 px-4 py-3 border-b border-white/5 bg-zinc-900/50">
-              <span class="w-2.5 h-2.5 rounded-full bg-red-500/60"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-green-500/60"></span>
-              <span class="ml-3 text-[11px] text-zinc-500 tracking-wide">FSD-X Knightfall · ORB Pro Engine</span>
-            </div>
-            <button type="button" onclick="openShot(this)" class="block w-full cursor-zoom-in" data-shot="FSD-X%20Knightfall%20trade.png" data-cap="FSD-X Knightfall — the core ORB Pro signal engine.">
-              <img src="FSD-X%20Knightfall%20trade.png" alt="FSD-X Knightfall ORB Pro engine on a chart" loading="lazy" class="w-full h-auto block transition duration-300 group-hover:scale-[1.01]" / width="1813" height="659">
-            </button>
-            <figcaption class="px-4 py-3 text-xs text-zinc-500 border-t border-white/5">FSD-X Knightfall — <span class="text-zinc-300">the core ORB Pro signal engine.</span></figcaption>
-          </figure>
-
-          <!-- Auto Trader (below Knightfall) -->
-          <figure class="group rounded-2xl border border-white/10 bg-zinc-950 overflow-hidden hover:border-green-500/30 transition shadow-2xl shadow-black/40 mt-10">
-            <div class="flex items-center gap-1.5 px-4 py-3 border-b border-white/5 bg-zinc-900/50">
-              <span class="w-2.5 h-2.5 rounded-full bg-red-500/60"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></span>
-              <span class="w-2.5 h-2.5 rounded-full bg-green-500/60"></span>
-              <span class="ml-3 text-[11px] text-zinc-500 tracking-wide">Knightfall Auto-Trader · TradingView</span>
-            </div>
-            <button type="button" onclick="openShot(this)" class="block w-full cursor-zoom-in" data-shot="Screenshot%202026-06-21%20142909.png" data-cap="Knightfall Auto-Trader — hands-off execution on TradingView.">
-              <img src="Screenshot%202026-06-21%20142909.png" alt="FSD-X Knightfall Auto-Trader running on TradingView" loading="lazy" class="w-full h-auto block transition duration-300 group-hover:scale-[1.01]" / width="1815" height="686">
-            </button>
-            <figcaption class="px-4 py-3 text-xs text-zinc-500 border-t border-white/5">Auto Trader — <span class="text-zinc-300">the same engine, hands-off on TradingView.</span></figcaption>
-          </figure>
-
-          <script>
-            // Swaps the thumbnail facade for the real YouTube player on click.
-            // YouTube returns a grey 120x90 placeholder (HTTP 200) when a
-            // resolution doesn't exist, so fall back on size, not on error.
-            var KF_THUMBS = [
-              'https://img.youtube.com/vi/6Lsj2MB7vGc/maxresdefault.jpg',
-              'https://img.youtube.com/vi/6Lsj2MB7vGc/sddefault.jpg',
-              'https://img.youtube.com/vi/6Lsj2MB7vGc/hqdefault.jpg',
-              'https://img.youtube.com/vi/6Lsj2MB7vGc/mqdefault.jpg'
-            ];
-            function kfThumbNext(img) {
-              var i = parseInt(img.dataset.step || '0', 10) + 1;
-              if (i >= KF_THUMBS.length) return;
-              img.dataset.step = i;
-              img.src = KF_THUMBS[i];
-            }
-            function kfThumbCheck(img) {
-              if (img.naturalWidth && img.naturalWidth <= 120) kfThumbNext(img);
-            }
-
-            function playKnightfallVideo() {
-              var el = document.getElementById('kf-video-wrapper');
-              if (!el || el.dataset.loaded) return;
-              el.dataset.loaded = '1';
-              el.innerHTML = '<iframe class="absolute inset-0 w-full h-full z-30" ' +
-                'src="https://www.youtube.com/embed/6Lsj2MB7vGc?autoplay=1&rel=0" ' +
-                'title="See how FSD-X Knightfall works" frameborder="0" ' +
-                'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
-                'allowfullscreen></iframe>';
-              el.removeAttribute('onclick');
-              el.removeAttribute('onkeydown');
-              el.removeAttribute('role');
-              el.removeAttribute('tabindex');
-              el.classList.remove('cursor-pointer', 'group');
-            }
-          </script>
-
-        </div>
-      </section>
-
-      <!-- Lightbox overlay for screenshot click-to-enlarge -->
-      <div id="shot-lightbox" class="hidden fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm items-center justify-center p-4 md:p-10" onclick="closeShot(event)">
-        <button type="button" onclick="closeShot(event)" class="absolute top-5 right-5 w-10 h-10 rounded-full bg-zinc-900 border border-white/10 hover:border-white/40 text-zinc-300 hover:text-white text-xl leading-none transition flex items-center justify-center">&times;</button>
-        <figure class="max-w-7xl w-full">
-          <img id="shot-lightbox-img" src="" alt="" class="w-full h-auto max-h-[82vh] object-contain rounded-xl border border-white/10 shadow-2xl" />
-          <figcaption id="shot-lightbox-cap" class="text-center text-sm text-zinc-400 mt-4"></figcaption>
-        </figure>
-      </div>
-      <script>
-        function openShot(btn){
-          var lb = document.getElementById('shot-lightbox');
-          document.getElementById('shot-lightbox-img').src = btn.getAttribute('data-shot');
-          document.getElementById('shot-lightbox-cap').textContent = btn.getAttribute('data-cap') || '';
-          lb.classList.remove('hidden'); lb.classList.add('flex');
-          document.body.style.overflow = 'hidden';
-        }
-        function closeShot(e){
-          if(e.target.closest('figure') && e.target.tagName === 'IMG') return; // don't close when clicking the image itself
-          var lb = document.getElementById('shot-lightbox');
-          lb.classList.add('hidden'); lb.classList.remove('flex');
-          document.body.style.overflow = '';
-        }
-        document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ var lb=document.getElementById('shot-lightbox'); lb.classList.add('hidden'); lb.classList.remove('flex'); document.body.style.overflow=''; } });
-      </script>
-
-            <!-- ============================================================
-           LIVE TRADE ROOM / COMMUNITY — the "you don't trade alone" pillar
-      ============================================================ -->
-      <section id="live-room" class="py-20 md:py-24 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-black via-zinc-950/50 to-black scroll-mt-24">
-        <div class="max-w-7xl mx-auto">
-
-          <div class="text-center mb-12">
-            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">The Live Trade Room</div>
-            <h2 class="text-3xl md:text-4xl font-black leading-tight">Most traders don't blow an eval because of a bad system.</h2>
-            <p class="text-zinc-300 text-lg md:text-xl mt-4 max-w-2xl mx-auto leading-relaxed font-semibold">
-              They blow it alone, at 8:30, improvising.
-            </p>
-            <p class="text-zinc-400 text-sm md:text-base mt-4 max-w-2xl mx-auto leading-relaxed">
-              That's the part an indicator can't fix on its own. So we show up every market morning and trade the open together — you see the setups form in real time, hear why one gets taken and another gets skipped, and ask questions while it's still happening.
-            </p>
-          </div>
-
-          <div class="grid md:grid-cols-3 gap-5 mb-10">
-            <div class="rounded-2xl border border-green-500/25 bg-green-500/[0.05] p-6">
-              <div class="flex items-center gap-2 mb-3">
-                <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
-                <span class="text-[10px] text-green-400 uppercase tracking-[0.2em] font-bold">Monday–Friday</span>
-              </div>
-              <div class="text-white font-black text-lg leading-snug">Live at 8:30 AM CT</div>
-              <p class="text-zinc-400 text-xs leading-relaxed mt-2">
-                Every market morning for the Nasdaq ORB session. Not a recording — the open, called as it happens.
-              </p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-zinc-950/60 p-6">
-              <div class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mb-3">In The Moment</div>
-              <div class="text-white font-black text-lg leading-snug">Ask why, while it's happening</div>
-              <p class="text-zinc-400 text-xs leading-relaxed mt-2">
-                A recording can't answer you. Live, you can ask why a B setup got skipped or why size got cut — and get the answer before the next candle closes.
-              </p>
-            </div>
-            <div class="rounded-2xl border border-white/10 bg-zinc-950/60 p-6">
-              <div class="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold mb-3">Every Monday</div>
-              <div class="text-white font-black text-lg leading-snug">Weekly gameplan session</div>
-              <p class="text-zinc-400 text-xs leading-relaxed mt-2">
-                We map the week before it starts — levels, context, and what would make us stand down.
-              </p>
-            </div>
-          </div>
-
-          <div class="rounded-2xl border border-white/10 bg-zinc-950/40 p-6 md:p-8 text-center">
-            <p class="text-zinc-300 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
-              Between sessions the Discord keeps running — traders posting their charts, comparing grades on the same setup, and working through the stuff nobody talks about publicly, like what to do after two red days in a row.
-            </p>
-            <p class="text-white font-bold text-base md:text-lg mt-5">
-              In the room or on your own — the rules don't change.
-            </p>
-            <div class="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-              <a href="#pricing" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">
-                Start Your 14-Day Free Trial →
-              </a>
-              <a href="schedule.html" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl font-medium text-white">
-                See the session schedule
-              </a>
-            </div>
-            <p class="text-[11px] text-zinc-500 mt-4">
-              Sessions run Monday–Friday · Included with every membership tier
-            </p>
-            <p class="text-[11px] text-zinc-400 mt-5 max-w-2xl mx-auto leading-relaxed border-t border-white/5 pt-4">
-              Live sessions are educational and the opinions expressed are those of the presenter only. All trades presented should be considered hypothetical and should not be expected to be replicated in a live trading account.
-            </p>
-          </div>
-
-        </div>
-      </section>
-
-      <section class="py-12 bg-zinc-950 border-b border-white/10 px-6 md:px-12">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-          <div class="border-l-2 border-green-500 pl-6">
-            <div class="text-3xl font-black tracking-tight text-white">Nearly 7 Years of Data</div>
-            <div class="text-xs text-zinc-500 mt-1 uppercase tracking-wider font-semibold">1,143 Backtested Signals · Jun 2019–Jul 2026</div>
-          </div>
-          <div class="border-l-2 border-green-500 pl-6">
-            <div class="text-3xl font-black tracking-tight text-white">Zero Discretion Required</div>
-            <div class="text-xs text-zinc-500 mt-1 uppercase tracking-wider font-semibold">Rules Define Every Entry — No Guesswork</div>
-          </div>
-          <div class="border-l-2 border-green-500 pl-6">
-            <div class="text-3xl font-black tracking-tight text-white">Real-Time Signal Grading</div>
-            <div class="text-xs text-zinc-500 mt-1 uppercase tracking-wider font-semibold">Every Breakout Scored A+ Through C Automatically</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- AUTO-TRADER ANNOUNCEMENT STRIP -->
-      <section class="py-8 px-6 md:px-12 border-b border-white/10 bg-black">
-        <div class="max-w-7xl mx-auto">
-          <a href="autotrader.html" class="group block relative overflow-hidden border border-green-500/30 hover:border-green-500/60 bg-gradient-to-r from-green-500/[0.07] via-green-500/[0.02] to-transparent rounded-2xl p-5 sm:p-6 transition">
-            <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-              <div class="flex-1">
-                <div class="inline-flex items-center gap-2 mb-2">
-                  <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
-                  <span class="text-[10px] text-green-400 uppercase tracking-[0.25em] font-bold">Now Live</span>
-                </div>
-                <div class="text-lg sm:text-xl font-black text-white">⚡ Knightfall Auto-Trader <span class="text-zinc-500 font-bold text-base">(TradingView)</span> — it trades itself.</div>
-                <div class="text-xs text-zinc-400 mt-1 max-w-2xl">The same validated ORB engine, now hands-off on TradingView — fires straight to your broker through your automation service. Included with your membership. <span class="text-zinc-500">A NinjaTrader® version is coming soon.</span></div>
-              </div>
-              <div class="flex items-center shrink-0">
-                <span class="inline-flex items-center gap-1.5 bg-green-500 group-hover:bg-green-400 text-black font-extrabold text-xs uppercase tracking-wider px-5 py-3 rounded-2xl transition whitespace-nowrap group-hover:gap-2.5">Join FSD-X →</span>
-              </div>
-            </div>
-          </a>
-        </div>
-      </section>
-
-      <section class="py-24 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-black to-zinc-950/40">
-        <div class="max-w-7xl mx-auto">
-          <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+          <!-- HERO PRODUCT -->
+          <div class="mt-12 grid lg:grid-cols-2 gap-8 items-center border border-green-500/20 bg-green-500/[0.04] rounded-3xl p-8">
             <div>
-              <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">Complete Ecosystem Access</div>
-              <h2 class="text-4xl font-black">Inside the FSD-X VIP Suite</h2>
+              <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">The core · Knightfall (ORB PRO 2.0)</div>
+              <h3 class="text-2xl font-black mb-3">The signal engine</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed">Grades every opening-range breakout A+ through C as it forms, and hands you the exact stop and target for the setup. This is the piece everything else is built around — the reason members stop overtrading the open.</p>
             </div>
-            <div class="text-zinc-400 text-sm max-w-sm font-medium leading-relaxed">
-              Every tool, the live trade room, and the Discord — included in one membership. No upsells, no tiers to unlock.
+            <div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
+              <img src="screenshot-orbpro.png" alt="FSD-X Knightfall ORB PRO signal on an MNQ 5-minute chart" class="w-full h-auto" loading="lazy" decoding="async">
             </div>
           </div>
 
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl flex gap-3">
-              <span class="text-green-400 font-bold shrink-0">✓</span>
-              <div>
-                <h4 class="font-bold text-sm text-white">FSD-X ORB PRO (Knightfall)</h4>
-                <p class="text-xs text-zinc-500 mt-1">Flagship all-in-one strategy — precise breakout signals, grading, and full backtesting built into one script.</p>
+          <!-- SUPPORTING: two groups -->
+          <div class="grid md:grid-cols-2 gap-8 mt-10">
+            <div>
+              <div class="text-zinc-500 text-[11px] font-bold uppercase tracking-widest mb-4">The signals</div>
+              <div class="space-y-4">
+                <div class="border border-white/10 bg-black/40 rounded-2xl p-5">
+                  <div class="text-white font-bold text-sm mb-1">Volume Indicator</div>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Confirms the breakout before you're in it — session volume clusters and the candles that actually matter.</p>
+                </div>
+                <div class="border border-white/10 bg-black/40 rounded-2xl p-5">
+                  <div class="text-white font-bold text-sm mb-1">Stack V1</div>
+                  <p class="text-zinc-400 text-xs leading-relaxed">The companion filter layer that keeps you out of the low-quality mornings.</p>
+                </div>
               </div>
             </div>
-            <div class="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl flex gap-3">
-              <span class="text-green-400 font-bold shrink-0">✓</span>
-              <div>
-                <h4 class="font-bold text-sm text-white">FSD-X // Volume Indicator</h4>
-                <p class="text-xs text-zinc-500 mt-1">Tracks structural session zones, ORB blocks, and breakout candles.</p>
-              </div>
-            </div>
-            <div class="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl flex gap-3">
-              <span class="text-green-400 font-bold shrink-0">✓</span>
-              <div>
-                <h4 class="font-bold text-sm text-white">FSD-X // Stack V1</h4>
-                <p class="text-xs text-zinc-500 mt-1">7-Timeframe EMA matrix alignments, Session POC, and Daily Pivot points.</p>
-              </div>
-            </div>
-            <div class="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl flex gap-3">
-              <span class="text-green-400 font-bold shrink-0">✓</span>
-              <div>
-                <h4 class="font-bold text-sm text-white">FSD-X Scout</h4>
-                <p class="text-xs text-zinc-500 mt-1">Instant internal Discord alerting pipelines tracking breakout grading and TPs.</p>
-              </div>
-            </div>
-            <div class="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl flex gap-3">
-              <span class="text-green-400 font-bold shrink-0">✓</span>
-              <div>
-                <h4 class="font-bold text-sm text-white">FSD-X Nexus 2.0</h4>
-                <p class="text-xs text-zinc-500 mt-1">All-in-one Chrome side panel inside TradingView — trade, journal, and analyze without leaving your chart.</p>
-              </div>
-            </div>
-            <div class="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl flex gap-3">
-              <span class="text-green-400 font-bold shrink-0">✓</span>
-              <div>
-                <h4 class="font-bold text-sm text-white">Live Execution/PnL Mapping</h4>
-                <p class="text-xs text-zinc-500 mt-1">Real-time target plotting, live stop-loss tracking, and raw performance metrics.</p>
-              </div>
-            </div>
-            <div class="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl flex gap-3">
-              <span class="text-green-400 font-bold shrink-0">✓</span>
-              <div>
-                <h4 class="font-bold text-sm text-white">Live Trade Room — Every Market Morning</h4>
-                <p class="text-xs text-zinc-500 mt-1">We go live at 8:30 AM CT to trade the open together — watch the ORB setups unfold in real time, ask questions, and trade with the community instead of alone.</p>
-              </div>
-            </div>
-            <div class="p-6 bg-zinc-900/40 border border-white/5 rounded-2xl flex gap-3">
-              <span class="text-green-400 font-bold shrink-0">✓</span>
-              <div>
-                <h4 class="font-bold text-sm text-white">Bi-Weekly Sync Walkthroughs</h4>
-                <p class="text-xs text-zinc-500 mt-1">Deep architectural walkthroughs, trading rules adjustments, and session logs reviews.</p>
+            <div>
+              <div class="text-zinc-500 text-[11px] font-bold uppercase tracking-widest mb-4">The tools around them</div>
+              <div class="space-y-4">
+                <div class="border border-white/10 bg-black/40 rounded-2xl p-5">
+                  <div class="text-white font-bold text-sm mb-1">Nexus 2.0 · TradingView side panel</div>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Trade, journal, and analyze right next to your chart. No tab switching.</p>
+                </div>
+                <div class="border border-white/10 bg-black/40 rounded-2xl p-5">
+                  <div class="text-white font-bold text-sm mb-1">ORB Auto-Trader</div>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Hands-off execution — fires the exact Knightfall setup to your broker. Trade it yourself or let it run. <span class="text-zinc-600">TradingView now; NinjaTrader® coming.</span></p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-8 text-center text-[12px] text-zinc-600 tracking-wide">
-            📌 Standalone products outside the core FSD-X software suite may be priced separately. All future standard software tool modifications are grandfathered automatically.
+          <div class="text-center mt-12">
+            <a href="#pricing" class="inline-block bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">Start 14-Day Free Trial</a>
           </div>
         </div>
       </section>
 
-      <!-- ── TESTIMONIALS: Auto-rotating carousel ── -->
+      <!-- ═══ PROOF ═══ -->
+      <section id="proof" class="py-24 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-12">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">The receipts</div>
+            <h2 class="text-3xl md:text-4xl font-black">Backtested for years. Traded in the open.</h2>
+          </div>
+          <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Backtest card -->
+            <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-300 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Backtest</span>
+                <span class="text-zinc-500 text-xs">2019–2026 · 1,100+ signals</span>
+              </div>
+              <h3 class="text-xl font-black mb-3">7-year backtest research</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-6">Pick your account size and risk, and see how often the system passed the evaluation and how long it took — across every risk setting, tested against 7 years of historical data. This is a backtest, not live trading.</p>
+              <div class="rounded-2xl overflow-hidden border border-white/10 bg-black mb-6">
+                <img src="equity_curve_preview.png" alt="FSD-X ORB PRO backtest equity curve" class="w-full h-auto" loading="lazy" decoding="async">
+              </div>
+              <a href="results.html#risk-profiles" class="inline-block border border-green-500/40 hover:bg-green-500/10 transition px-6 py-3 rounded-xl font-bold text-green-400 text-sm">Explore the backtest data →</a>
+            </div>
+            <!-- Live track record card -->
+            <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="text-[10px] bg-green-500/10 border border-green-500/20 text-green-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Live</span>
+                <span class="text-zinc-500 text-xs">Since May 1, 2026</span>
+              </div>
+              <h3 class="text-xl font-black mb-3">Live track record — wins and losses</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-6">Every setup the strategy has signaled since going live, posted openly — the red days too. Shown on the $400 risk profile. These are strategy signals, not personal account results.</p>
+              <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="border border-white/10 bg-black/40 rounded-2xl p-5 text-center">
+                  <div class="text-3xl font-black text-white"><span id="tr-teaser-n">—</span></div>
+                  <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Signals logged</div>
+                </div>
+                <div class="border border-white/10 bg-black/40 rounded-2xl p-5 text-center">
+                  <div class="text-3xl font-black text-white"><span id="tr-teaser-d">—</span></div>
+                  <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Trading days</div>
+                </div>
+              </div>
+              <a href="track-record.html" class="inline-block border border-green-500/40 hover:bg-green-500/10 transition px-6 py-3 rounded-xl font-bold text-green-400 text-sm">See every live trade →</a>
+            </div>
+          </div>
+          <p class="text-[11px] text-zinc-600 text-center mt-8 max-w-3xl mx-auto leading-relaxed">Backtested and live figures are shown separately and are never combined. Past performance — backtested or live — is not indicative of future results. Individual results vary and most traders lose money.</p>
+        </div>
+      </section>
+
+      <!-- ═══ HOW IT WORKS ═══ -->
+      <section class="py-24 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-14">
+            <h2 class="text-3xl md:text-4xl font-black">Trading with us by tomorrow morning</h2>
+          </div>
+          <div class="space-y-5">
+            <div class="flex items-start gap-5 border border-white/10 bg-black/40 rounded-2xl p-6">
+              <div class="w-9 h-9 rounded-xl bg-green-500 text-black font-black flex items-center justify-center shrink-0">1</div>
+              <div><div class="font-bold text-white mb-1">Start your trial</div><p class="text-zinc-400 text-sm leading-relaxed">One membership, everything unlocked. No charge until day 15. Cancel anytime.</p></div>
+            </div>
+            <div class="flex items-start gap-5 border border-white/10 bg-black/40 rounded-2xl p-6">
+              <div class="w-9 h-9 rounded-xl bg-green-500 text-black font-black flex items-center justify-center shrink-0">2</div>
+              <div><div class="font-bold text-white mb-1">Load the tools · follow Getting Started</div><p class="text-zinc-400 text-sm leading-relaxed">Add the indicators to TradingView, claim your Discord access, set up Nexus. The guide walks you through it.</p></div>
+            </div>
+            <div class="flex items-start gap-5 border border-white/10 bg-black/40 rounded-2xl p-6">
+              <div class="w-9 h-9 rounded-xl bg-green-500 text-black font-black flex items-center justify-center shrink-0">3</div>
+              <div><div class="font-bold text-white mb-1">Trade the open with us · 8:30 AM CT</div><p class="text-zinc-400 text-sm leading-relaxed">Join the live room every market morning. Watch the setups grade, hear the reasoning, trade them alongside the community.</p></div>
+            </div>
+          </div>
+          <div class="text-center mt-12">
+            <a href="#pricing" class="inline-block bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">Start 14-Day Free Trial</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ TESTIMONIALS ═══ -->
       <section id="testimonials" class="py-24 px-6 md:px-12 border-b border-white/10 bg-black">
         <div class="max-w-3xl mx-auto text-center">
           <div class="inline-flex items-center gap-2 mb-3">
             <span class="text-yellow-400 text-lg">★★★★★</span>
-            <span class="text-zinc-400 text-sm font-medium">5.0 · 2 Verified Member Reviews on Whop</span>
+            <span class="text-zinc-400 text-sm font-medium">5.0 · Verified Member Reviews on Whop</span>
           </div>
-          <h2 class="text-3xl font-black mb-12">What Members Are Saying</h2>
-          <p class="text-xs text-zinc-400 leading-relaxed max-w-2xl mx-auto mt-4 border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
+          <h2 class="text-3xl font-black mb-6">What members are saying</h2>
+          <p class="text-xs text-zinc-400 leading-relaxed max-w-2xl mx-auto mb-10 border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
             ⚠ Testimonials reflect the individual experience of the member quoted and are not a guarantee, promise, or projection of results. They are not representative of all members. Individual results vary and most traders lose money. No compensation was provided for these reviews.
           </p>
-
-          <div class="relative overflow-hidden">
-            <!-- Slides -->
-            <div id="carousel-track" class="flex transition-transform duration-700 ease-in-out">
-
-              <!-- Slide 1 -->
-              <div class="w-full shrink-0 px-2">
-                <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8 md:p-10 text-left">
-                  <div class="text-yellow-400 text-base mb-5">★★★★★</div>
-                  <p class="text-zinc-300 text-sm md:text-base leading-relaxed mb-8">
-                    "I've been using this indicator for a while now and honestly, it's been a great experience so far. What really stood out to me is the grading system — once you understand how the grading works alongside the setups, it becomes much easier to decide how much risk to take on each trade. It adds a level of clarity that most indicators don't provide. I'm not saying it's some magic tool — you still need discipline and consistency — but if you actually stick with it and follow the system properly, it brings real structure to how you trade."
-                  </p>
-                  <div class="flex items-center gap-3 pt-5 border-t border-white/5">
-                    <div class="w-9 h-9 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-xs font-black shrink-0">✓</div>
-                    <div class="text-left">
-                      <div class="text-white text-xs font-bold">Verified Member</div>
-                      <div class="text-zinc-600 text-[10px]">Confirmed purchase via Whop · April 18, 2026 · 14 days after purchase</div>
-                    </div>
-                  </div>
-                </div>
+          <div class="space-y-5 text-left">
+            <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8">
+              <div class="text-yellow-400 text-base mb-4">★★★★★</div>
+              <p class="text-zinc-300 text-sm leading-relaxed mb-6">"I've been using this indicator for a while now and honestly, it's been a great experience so far. What really stood out to me is the grading system — once you understand how the grading works alongside the setups, it becomes much easier to decide how much risk to take on each trade. It adds a level of clarity that most indicators don't provide. I'm not saying it's some magic tool — you still need discipline and consistency — but if you actually stick with it and follow the system properly, it brings real structure to how you trade."</p>
+              <div class="flex items-center gap-3 pt-5 border-t border-white/5">
+                <div class="w-9 h-9 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-xs font-black shrink-0">✓</div>
+                <div><div class="text-white text-xs font-bold">Verified Member</div><div class="text-zinc-600 text-[10px]">Confirmed purchase via Whop · April 18, 2026</div></div>
               </div>
-
-              <!-- Slide 2 -->
-              <div class="w-full shrink-0 px-2">
-                <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8 md:p-10 text-left">
-                  <div class="text-yellow-400 text-base mb-5">★★★★★</div>
-                  <p class="text-zinc-300 text-sm md:text-base leading-relaxed mb-8">
-                    "After spending a good amount of time trading with all the indicators, I can confidently say this is not just another trading product — it's a complete environment built around discipline, structure, and real execution. What stands out immediately is how present DJ is. The NY breakout sessions are one of the strongest aspects of the community — being able to watch setups unfold in real time is extremely valuable. The tools are extremely well built, the signals are clean, and the system is designed to remove as much noise as possible. If you're serious about trading and want something that's structured, realistic, and supported by a strong community and an engaged creator, this is absolutely worth it."
-                  </p>
-                  <div class="flex items-center gap-3 pt-5 border-t border-white/5">
-                    <div class="w-9 h-9 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-xs font-black shrink-0">✓</div>
-                    <div class="text-left">
-                      <div class="text-white text-xs font-bold">Verified Member</div>
-                      <div class="text-zinc-600 text-[10px]">Confirmed purchase via Whop · April 14, 2026 · 11 days after purchase</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 3 -->
-              <div class="w-full shrink-0 px-2">
-                <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8 md:p-10 text-left">
-                  <div class="text-yellow-400 text-base mb-5">★★★★★</div>
-                  <p class="text-zinc-300 text-sm md:text-base leading-relaxed mb-8">
-                    "I've started using FSD-X two weeks ago, and I couldn't be more impressed. It provides clear, accurate direction and signals that have significantly improved my trading decisions. The user interface is intuitive and easy to understand, making it accessible even for those new to trading. What I appreciate most is its reliability — it's helped me identify profitable entry and exit points with confidence. TP and SL calculations are really accurate and helping to keep my emotions in control. Thank you so much for your hard work and sharing FSD-X with the rest of us."
-                  </p>
-                  <div class="flex items-center gap-3 pt-5 border-t border-white/5">
-                    <div class="w-9 h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
-                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
-                    </div>
-                    <div class="text-left">
-                      <div class="text-white text-xs font-bold">Verified Member · Discord Community</div>
-                      <div class="text-zinc-600 text-[10px]">Active paying member · FSD-X Discord server</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Slide 4 -->
-              <div class="w-full shrink-0 px-2">
-                <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8 md:p-10 text-left">
-                  <div class="text-yellow-400 text-base mb-5">★★★★★</div>
-                  <p class="text-zinc-300 text-sm md:text-base leading-relaxed mb-8">
-                    "I've been in the trading game for four years and over the past year I focused on the ORB strategy. There's a ton of content on YouTube and way too many variations of it — like you guys I've taken the time to test them and run backtests, but most of the time I wasn't comfortable with the results since trading a breakout on its own is basically a gamble. That's why I started combining it with price action, but when it came to live execution it was working against me. With this indicator I cut out all that noise and focus more on risk management, protecting capital and working on my psychology. Nothing gives you more confidence than having solid stats behind it."
-                  </p>
-                  <div class="flex items-center gap-3 pt-5 border-t border-white/5">
-                    <div class="w-9 h-9 rounded-full bg-indigo-500/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
-                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg>
-                    </div>
-                    <div class="text-left">
-                      <div class="text-white text-xs font-bold">Verified Member · Discord Community</div>
-                      <div class="text-zinc-600 text-[10px]">4 years trading experience · FSD-X Discord server</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
             </div>
-
-            <!-- Arrows -->
-            <button onclick="carouselPrev()" class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-9 h-9 rounded-full bg-zinc-900 border border-white/10 hover:border-white/30 flex items-center justify-center text-zinc-400 hover:text-white transition z-10">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
-            </button>
-            <button onclick="carouselNext()" class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 w-9 h-9 rounded-full bg-zinc-900 border border-white/10 hover:border-white/30 flex items-center justify-center text-zinc-400 hover:text-white transition z-10">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-            </button>
-          </div>
-
-          <!-- Dots -->
-          <div class="flex justify-center gap-2 mt-6">
-            <button onclick="carouselGo(0)" id="dot-0" class="w-2 h-2 rounded-full bg-green-400 transition"></button>
-            <button onclick="carouselGo(1)" id="dot-1" class="w-2 h-2 rounded-full bg-zinc-700 transition"></button>
-            <button onclick="carouselGo(2)" id="dot-2" class="w-2 h-2 rounded-full bg-zinc-700 transition"></button>
-            <button onclick="carouselGo(3)" id="dot-3" class="w-2 h-2 rounded-full bg-zinc-700 transition"></button>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-3xl p-8">
+              <div class="text-yellow-400 text-base mb-4">★★★★★</div>
+              <p class="text-zinc-300 text-sm leading-relaxed mb-6">"After spending a good amount of time trading with all the indicators, I can confidently say this is not just another trading product — it's a complete environment built around discipline, structure, and real execution. What stands out immediately is how present DJ is. The NY breakout sessions are one of the strongest aspects of the community — being able to watch setups unfold in real time is extremely valuable. The tools are extremely well built, the signals are clean, and the system is designed to remove as much noise as possible. If you're serious about trading and want something that's structured, realistic, and supported by a strong community and an engaged creator, this is absolutely worth it."</p>
+              <div class="flex items-center gap-3 pt-5 border-t border-white/5">
+                <div class="w-9 h-9 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-xs font-black shrink-0">✓</div>
+                <div><div class="text-white text-xs font-bold">Verified Member</div><div class="text-zinc-600 text-[10px]">Confirmed purchase via Whop · April 14, 2026</div></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <script>
-        let carouselIdx = 0;
-        const carouselTotal = 4;
-        let carouselTimer = setInterval(carouselNext, 6000);
-
-        function carouselGo(idx) {
-          carouselIdx = idx;
-          document.getElementById('carousel-track').style.transform = `translateX(-${idx * 100}%)`;
-          [0,1,2,3].forEach(i => {
-            document.getElementById('dot-' + i).className = 'w-2 h-2 rounded-full transition ' + (i === idx ? 'bg-green-400' : 'bg-zinc-700');
-          });
-          clearInterval(carouselTimer);
-          carouselTimer = setInterval(carouselNext, 6000);
-        }
-        function carouselNext() { carouselGo((carouselIdx + 1) % carouselTotal); }
-        function carouselPrev() { carouselGo((carouselIdx - 1 + carouselTotal) % carouselTotal); }
-      </script>
-
+      <!-- ═══ PRICING ═══ -->
       <section id="pricing" class="py-24 px-6 md:px-12 border-b border-white/10 bg-black">
         <div class="max-w-7xl mx-auto">
           <div class="text-center mb-10">
-            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">One Membership · Everything Included</div>
-            <h2 class="text-4xl font-black">The FSD-X Membership</h2>
-            <p id="pricing-subhead" class="text-zinc-400 text-sm mt-2 max-w-md mx-auto">One plan, everything included — the full suite plus hands-off Auto Trader. Monthly includes a 14-day free trial.</p>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">One membership · everything included</div>
+            <h2 class="text-4xl font-black">Start your 14-day free trial</h2>
+            <p class="text-zinc-400 text-sm mt-3 max-w-lg mx-auto">The full suite, the Auto-Trader, the live room, and the community — all in one plan. Monthly and Quarterly include a 14-day free trial. No charge until day 15.</p>
           </div>
 
-          <!-- SINGLE MEMBERSHIP -->
-          <div>
-            <div class="text-center mb-8 max-w-lg mx-auto">
-              <p class="text-zinc-200 text-base md:text-lg leading-relaxed font-semibold">The complete FSD-X ecosystem — full indicator suite, Discord &amp; community, the live trade room every market morning at 8:30 AM CT, and hands-off Auto Trader execution. Trade it yourself or let the Auto Trader run it.</p>
-            </div>
-            <div class="grid md:grid-cols-3 gap-6 items-stretch pt-6 max-w-7xl mx-auto">
-              <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-white/20 transition">
-                <div>
-                  <div class="text-zinc-400 text-xs font-bold uppercase tracking-wider mb-2">Flexible Pass</div>
-                  <h3 class="text-xl font-black text-white">Monthly Access</h3>
-                  <div class="mt-4 flex items-baseline gap-1">
-                    <span class="text-4xl font-black text-white">$129</span>
-                    <span class="text-zinc-500 text-xs font-medium">/ month</span>
-                  </div>
-                  <p class="text-green-400/90 text-xs mt-3 font-semibold leading-relaxed">The complete ecosystem <span class="text-white">— indicators, Auto Trader, and live trading with us every market morning.</span> You're never trading alone.</p>
-                  <p class="text-zinc-500 text-xs mt-4 leading-relaxed">Try the full ecosystem with zero commitment. Includes a 14-day free trial — no charge until day 15. Cancel anytime.</p>
-                </div>
-                <div class="mt-8">
-                  <a href="https://whop.com/checkout/plan_l0KkbipfcgnAp" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold rounded-xl transition text-sm">Start 14-Day Free Trial</a>
-                </div>
+          <div class="grid md:grid-cols-3 gap-6 items-stretch pt-6 max-w-7xl mx-auto">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-white/20 transition">
+              <div>
+                <div class="text-zinc-400 text-xs font-bold uppercase tracking-wider mb-2">Flexible Pass</div>
+                <h3 class="text-xl font-black text-white">Monthly Access</h3>
+                <div class="mt-4 flex items-baseline gap-1"><span class="text-4xl font-black text-white">$129</span><span class="text-zinc-500 text-xs font-medium">/ month</span></div>
+                <p class="text-green-400/90 text-xs mt-3 font-semibold leading-relaxed">The complete ecosystem <span class="text-white">— indicators, Auto-Trader, and live trading with us every market morning.</span></p>
+                <p class="text-zinc-500 text-xs mt-4 leading-relaxed">Includes a 14-day free trial — no charge until day 15. Cancel anytime.</p>
               </div>
-
-              <div class="border border-green-500/20 bg-zinc-950/60 rounded-3xl p-8 flex flex-col justify-between hover:border-green-500/40 transition relative mt-6 md:mt-0">
-                <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <div class="text-green-400/80 text-xs font-bold uppercase tracking-wider">Season Pass</div>
-                    <div class="text-[9px] font-black uppercase tracking-widest text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-md">Save ~10%</div>
-                  </div>
-                  <h3 class="text-xl font-black text-white">Quarterly Access</h3>
-                  <div class="mt-4 flex items-baseline gap-1">
-                    <span class="text-4xl font-black text-white">$349</span>
-                    <span class="text-zinc-500 text-xs font-medium">/ quarter</span>
-                  </div>
-                  <p class="text-green-400/90 text-xs mt-3 font-semibold leading-relaxed">The complete ecosystem <span class="text-white">— commit a full quarter</span> and give the system time to prove itself across changing market conditions.</p>
-                  <p class="text-zinc-500 text-xs mt-4 leading-relaxed">Includes the same 14-day free trial. Save ≈ $38 versus paying month to month. Cancel anytime before renewal.</p>
-                </div>
-                <div class="mt-8">
-                  <a href="https://whop.com/checkout/plan_RYMEBnqYNmFEZ" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 border border-green-500/20 text-white font-bold rounded-xl transition text-sm">Start 14-Day Free Trial</a>
-                </div>
-              </div>
-
-              <div class="border-2 border-green-500/30 bg-zinc-950 rounded-3xl p-8 flex flex-col justify-between hover:border-green-500/50 transition relative shadow-2xl shadow-green-500/5 mt-6 md:mt-0">
-                <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-green-500 text-black font-black text-[12px] uppercase tracking-widest px-3.5 py-1 rounded-xl shadow-md flex flex-col items-center justify-center leading-tight text-center whitespace-nowrap">
-                  <div>Best Value</div>
-                  <div class="text-[12px] opacity-80 font-bold border-t border-black/10 w-full mt-0.5 pt-0.5">≈ 2 Months Free</div>
-                </div>
-                <div>
-                  <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 mt-2">Committed Workspace</div>
-                  <h3 class="text-xl font-black text-white">Annual Membership</h3>
-                  <div class="mt-4 flex items-baseline gap-1">
-                    <span class="text-4xl font-black text-green-400">$1,299</span>
-                    <span class="text-zinc-500 text-xs font-medium">/ year</span>
-                  </div>
-                  <p class="text-zinc-400 text-xs mt-4 leading-relaxed">The complete ecosystem at the lowest recurring rate. Your price is locked in — won't increase as the suite grows.</p>
-                </div>
-                <div class="mt-8">
-                  <a href="https://whop.com/checkout/plan_1CAj5BxdzpT1W" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-xl transition text-sm shadow-md shadow-green-500/10">Get Annual</a>
-                </div>
-              </div>
+              <div class="mt-8"><a href="https://whop.com/checkout/plan_l0KkbipfcgnAp" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold rounded-xl transition text-sm">Start 14-Day Free Trial</a></div>
             </div>
 
-            <div class="mt-8 text-center text-[12px] text-zinc-600 tracking-wide">
-              One membership includes the full FSD-X Suite plus hands-off Auto Trader execution. Monthly, Quarterly, and Annual options. Monthly and Quarterly include a 14-day free trial (new members only). The Auto Trader currently runs on <span class="text-zinc-400 font-semibold">TradingView</span>; a NinjaTrader® version is coming soon.
+            <div class="border border-green-500/20 bg-zinc-950/60 rounded-3xl p-8 flex flex-col justify-between hover:border-green-500/40 transition relative mt-6 md:mt-0">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="text-green-400/80 text-xs font-bold uppercase tracking-wider">Season Pass</div>
+                  <div class="text-[9px] font-black uppercase tracking-widest text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-md">Save ~10%</div>
+                </div>
+                <h3 class="text-xl font-black text-white">Quarterly Access</h3>
+                <div class="mt-4 flex items-baseline gap-1"><span class="text-4xl font-black text-white">$349</span><span class="text-zinc-500 text-xs font-medium">/ quarter</span></div>
+                <p class="text-green-400/90 text-xs mt-3 font-semibold leading-relaxed">The complete ecosystem <span class="text-white">— commit a full quarter</span> and give the system time across changing conditions.</p>
+                <p class="text-zinc-500 text-xs mt-4 leading-relaxed">Includes the same 14-day free trial. Cancel anytime before renewal.</p>
+              </div>
+              <div class="mt-8"><a href="https://whop.com/checkout/plan_RYMEBnqYNmFEZ" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-zinc-900 hover:bg-zinc-800 border border-green-500/20 text-white font-bold rounded-xl transition text-sm">Start 14-Day Free Trial</a></div>
+            </div>
+
+            <div class="border-2 border-green-500/30 bg-zinc-950 rounded-3xl p-8 flex flex-col justify-between hover:border-green-500/50 transition relative shadow-2xl shadow-green-500/5 mt-6 md:mt-0">
+              <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-green-500 text-black font-black text-[12px] uppercase tracking-widest px-3.5 py-1 rounded-xl shadow-md flex flex-col items-center justify-center leading-tight text-center whitespace-nowrap">
+                <div>Best Value</div><div class="text-[12px] opacity-80 font-bold border-t border-black/10 w-full mt-0.5 pt-0.5">≈ 2 Months Free</div>
+              </div>
+              <div>
+                <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2 mt-2">Committed Workspace</div>
+                <h3 class="text-xl font-black text-white">Annual Membership</h3>
+                <div class="mt-4 flex items-baseline gap-1"><span class="text-4xl font-black text-green-400">$1,299</span><span class="text-zinc-500 text-xs font-medium">/ year</span></div>
+                <p class="text-zinc-400 text-xs mt-4 leading-relaxed">The complete ecosystem at the lowest recurring rate. Your price is locked in — won't increase as the suite grows.</p>
+              </div>
+              <div class="mt-8"><a href="https://whop.com/checkout/plan_1CAj5BxdzpT1W" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-xl transition text-sm shadow-md shadow-green-500/10">Get Annual</a></div>
             </div>
           </div>
-          <!-- /SINGLE MEMBERSHIP -->
 
-          <div class="mt-3 text-center text-[12px] text-zinc-600">
-            By signing up, you explicitly indicate contractual agreement with the Whop Terms of Service and FSD-X internal guide provisions.
+          <div class="mt-8 text-center text-[12px] text-zinc-600 tracking-wide max-w-3xl mx-auto leading-relaxed">
+            One membership includes the full FSD-X Suite plus hands-off Auto-Trader execution. Monthly and Quarterly include a 14-day free trial (new members only). The Auto-Trader currently runs on <span class="text-zinc-400 font-semibold">TradingView</span>; a NinjaTrader® version is coming soon.
           </div>
+          <div class="mt-3 text-center text-[12px] text-zinc-600">By signing up, you agree to the Whop Terms of Service and FSD-X internal guide provisions.</div>
         </div>
       </section>
 
+      <!-- ═══ NINJATRADER VENDOR ═══ -->
       <section class="px-6 md:px-12 py-24">
         <div class="max-w-7xl mx-auto border border-white/10 bg-zinc-950 rounded-3xl p-8 flex flex-col xl:flex-row items-center justify-between gap-12">
           <div class="max-w-xl w-full">
             <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">Official Recommended Platform Partner</div>
             <h3 class="text-2xl font-black mb-3">NinjaTrader® Ecosystem Vendor</h3>
-            <p class="text-zinc-400 text-sm leading-relaxed">
-              FSD-X is proud to be an official ecosystem vendor for the <span class="text-white font-bold">NinjaTrader®</span> trading platform. Our analytical architectures and trade management indicators are purpose-built to operate seamlessly within NinjaTrader's professional infrastructure. To achieve optimum institutional-grade execution speeds and precision chart syncing, we recommend provisioning your workspace utilizing raw data pipelines powered directly by <span class="text-white font-bold">Kinetick®</span> streaming market feeds.
-            </p>
-            <p class="text-zinc-600 text-[10px] leading-relaxed mt-4">
-              NinjaTrader® is a registered trademark of NinjaTrader Group, LLC. No NinjaTrader company has any affiliation with the owner, developer, or provider of the products or services described herein, or any interest, ownership or otherwise, in any such product or service, or endorses, recommends or approves any such product or service.
-            </p>
+            <p class="text-zinc-400 text-sm leading-relaxed">FSD-X is proud to be an official ecosystem vendor for the <span class="text-white font-bold">NinjaTrader®</span> trading platform. Our indicators are purpose-built to operate within NinjaTrader's professional infrastructure. For optimal execution speed and chart syncing, we recommend a workspace powered by <span class="text-white font-bold">Kinetick®</span> streaming market data.</p>
+            <p class="text-zinc-600 text-[10px] leading-relaxed mt-4">NinjaTrader® is a registered trademark of NinjaTrader Group, LLC. No NinjaTrader company has any affiliation with the owner, developer, or provider of the products or services described herein, or any interest, ownership or otherwise, in any such product or service, or endorses, recommends or approves any such product or service.</p>
           </div>
-          
           <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-5 w-full xl:w-80 shrink-0">
             <a href="https://ninjatraderus.pxf.io/c/7305371/3254693/37538" target="_blank" rel="noopener noreferrer" class="bg-black/40 border border-white/5 hover:border-green-500/30 transition rounded-2xl p-6 flex flex-col items-center justify-center min-h-[150px] w-full group text-center">
-              <img src="NinjaTrader.png" alt="NinjaTrader Ecosystem Vendor" class="max-w-[190px] w-full h-auto object-contain mb-2 transition transform group-hover:scale-105 duration-300" / width="2376" height="300" loading="lazy" decoding="async">
+              <img src="NinjaTrader.png" alt="NinjaTrader Ecosystem Vendor" class="max-w-[190px] w-full h-auto object-contain mb-2 transition transform group-hover:scale-105 duration-300" width="2376" height="300" loading="lazy" decoding="async">
               <span class="text-[11px] text-zinc-400 group-hover:text-green-400 tracking-widest uppercase transition">Official Platform Vendor ↗</span>
             </a>
             <a href="http://kinetick.com/NinjaTrader" target="_blank" rel="noopener noreferrer" class="bg-black/40 border border-white/5 hover:border-green-500/30 transition rounded-2xl p-6 flex flex-col items-center justify-center min-h-[150px] w-full group text-center">
-              <img src="Kinetick_Logo.png" alt="Kinetick Market Data Feed" class="max-w-[190px] w-full h-auto object-contain mb-2 transition transform group-hover:scale-105 duration-300" / width="400" height="100" loading="lazy" decoding="async">
+              <img src="Kinetick_Logo.png" alt="Kinetick Market Data Feed" class="max-w-[190px] w-full h-auto object-contain mb-2 transition transform group-hover:scale-105 duration-300" width="400" height="100" loading="lazy" decoding="async">
               <span class="text-[11px] text-zinc-400 group-hover:text-green-400 tracking-widest uppercase transition">Recommended Data Feed ↗</span>
             </a>
           </div>
@@ -893,32 +502,20 @@
     <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
       <div class="max-w-7xl mx-auto space-y-6">
         <div>
-          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
-            CFTC Rule 4.41 — Hypothetical Performance Disclosure
-          </span>
-          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
-            Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.
-          </p>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">CFTC Rule 4.41 — Hypothetical Performance Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Also, since the trades have not been executed, the results may have under-or-over compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also subject to the fact that they are designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profit or losses similar to those shown.</p>
         </div>
         <div>
-          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
-            Futures & Forex Risk Disclosure
-          </span>
-          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
-            Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.
-          </p>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Futures & Forex Risk Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
         </div>
         <div>
-          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">
-            Vendor Verification Disclosure
-          </span>
-          <p class="text-xs text-zinc-400 leading-relaxed mt-2">
-            FSD-X is an independent software provider. Our tools generate algorithmic chart signals for educational and analytical purposes, and the optional Auto-Trader routes those signals to your own broker through a third-party automation service that you configure and control. FSD-X is not a broker, futures commission merchant, commodity trading advisor, or investment adviser. We do not manage accounts, place trades on your behalf, hold customer funds, or provide personalized investment or financial advice. Performance metrics, system evaluations, and user results posted within community channels are illustrative and educational only. You are solely responsible for every order placed in your account.
-          </p>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Vendor Verification Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">FSD-X is an independent software provider. Our tools generate algorithmic chart signals for educational and analytical purposes, and the optional Auto-Trader routes those signals to your own broker through a third-party automation service that you configure and control. FSD-X is not a broker, futures commission merchant, commodity trading advisor, or investment adviser. We do not manage accounts, place trades on your behalf, hold customer funds, or provide personalized investment or financial advice. Performance metrics, system evaluations, and user results posted within community channels are illustrative and educational only. You are solely responsible for every order placed in your account.</p>
         </div>
         <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
           <a href="index.html" class="hover:text-green-400 transition">Home</a>
-          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The System</a>
           <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
           <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
           <a href="track-record.html" class="hover:text-green-400 transition">Live Track Record</a>
@@ -930,7 +527,6 @@
           <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
           <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
         </nav>
-
         <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
           <div>FSD-X Trading (FSDX Trading) by DJ Trades • NinjaTrader® Vendor Ecosystem Partner</div>
           <div>&copy; 2026 FSD-X Trading by DJ Trades. All rights reserved.</div>
@@ -943,17 +539,13 @@
   <script>
     function toggleMobileMenu() {
       const sidebar = document.getElementById('sidebar-panel');
-      if (sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.remove('-translate-x-full');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-      }
+      if (sidebar.classList.contains('-translate-x-full')) { sidebar.classList.remove('-translate-x-full'); }
+      else { sidebar.classList.add('-translate-x-full'); }
     }
   </script>
   <script src="nav-loader.js"></script>
   <script src="checkout-gate.js"></script>
 
-  <!-- Live Track Record teaser counts -->
   <script>
     fetch('track-record.json?v=' + Date.now())
       .then(function(r){ return r.json(); })
