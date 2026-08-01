@@ -45,6 +45,35 @@
   } catch (e) { /* analytics never breaks the page */ }
 })();
 
+// ── Dark scrollbar styling ──
+// Injected here so every page picks it up without editing each file.
+(function() {
+  if (document.getElementById('fsdx-scrollbar-style')) return;
+  var css = document.createElement('style');
+  css.id = 'fsdx-scrollbar-style';
+  css.textContent = [
+    /* Firefox */
+    'html, #sidebar-panel, .fsdx-scroll {',
+    '  scrollbar-width: thin;',
+    '  scrollbar-color: rgba(255,255,255,0.14) transparent;',
+    '}',
+    /* WebKit / Chromium */
+    '::-webkit-scrollbar { width: 8px; height: 8px; }',
+    '::-webkit-scrollbar-track { background: transparent; }',
+    '::-webkit-scrollbar-thumb {',
+    '  background: rgba(255,255,255,0.12);',
+    '  border-radius: 8px;',
+    '}',
+    '::-webkit-scrollbar-thumb:hover { background: rgba(74,222,128,0.35); }',
+    '::-webkit-scrollbar-corner { background: transparent; }',
+    /* Sidebar: hide until hovered so it stays clean */
+    '#sidebar-panel::-webkit-scrollbar-thumb { background: transparent; transition: background .2s; }',
+    '#sidebar-panel:hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); }',
+    '#sidebar-panel:hover::-webkit-scrollbar-thumb:hover { background: rgba(74,222,128,0.35); }'
+  ].join('\n');
+  (document.head || document.documentElement).appendChild(css);
+})();
+
 (function() {
   // Show skeleton immediately to prevent flash
   const navContent = document.getElementById('nav-content');
