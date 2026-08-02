@@ -1931,7 +1931,13 @@
         payments.forEach(p => {
           const date = p.paidAt ? p.paidAt.split('T')[0].split(' ')[0] : '—';
           const statusColor = p.status === 'paid' || p.status === 'succeeded' ? 'text-green-400' : 'text-red-400';
-          const statusLabel = p.status === 'paid' ? 'Paid' : p.status === 'succeeded' ? 'Paid' : p.status === 'failed' ? 'Failed' : p.status || '—';
+          // Whop's CSV writes "open" for an unpaid invoice, but their UI calls a
+          // failed attempt "Failed". Match their labelling so the two agree.
+          const statusLabel = (p.status === 'paid' || p.status === 'succeeded') ? 'Paid'
+            : p.status === 'failed' ? 'Failed'
+            : (p.status === 'open' && p.failureReason) ? 'Failed'
+            : p.status === 'open' ? 'Open'
+            : p.status || '—';
           const isPaid = p.status === 'paid' || p.status === 'succeeded';
           const shown = isPaid ? netOf(p) : (p.amount||0);
           const showGross = isPaid && p.netAmount !== null && p.netAmount !== undefined && Math.abs(p.netAmount - p.amount) > 0.005;
@@ -3527,6 +3533,18 @@
       const net = withNet.reduce((s,p) => s + p.netAmount, 0);
       return gross > 0 ? net / gross : null;
     }
+    // ── Single source of truth for "is this member expected to pay again?" ──
+    // Used by the payments calendar, day modal, and forecast so they can't drift
+    // apart. A member who left or churned has no renewal coming, regardless of
+    // what status or renewal date is still sitting on their record.
+    const DEAD_STATUSES = ['cancelled','canceling','trial_cancelled','inactive','lifetime','yearly'];
+    function isRenewalDue(r) {
+      if (!r || !r.renewal) return false;
+      if (DEAD_STATUSES.includes(r.status)) return false;
+      if (r.leftDate || r.churnedDate) return false;
+      return true;
+    }
+
     let flagsData = [];         // detected flags
     let membershipRows = {};    // raw membership rows keyed by email for expand view
     let pendingImport = null;   // staged import before confirm
@@ -4607,6 +4625,10 @@
       const ACTIVE_STATUSES = new Set(['active', 'trialing', 'lifetime', 'yearly', 'canceling']);
       incoming.forEach(item => {
         if (!ACTIVE_STATUSES.has(item.status)) return;
+        // A returning trialer with zero lifetime spend is the exact pattern the
+        // flags tab is built to catch. Still resurrect them, but tag the record.
+        const spendAmt = parseFloat(item.spend || '0') || 0;
+        const suspectReturn = item.status === 'trialing' && spendAmt === 0;
         const emailKey = item.email?.toLowerCase();
         const whopKey = item.whopKey;
         const histIdx = historyData.findIndex(h =>
@@ -4629,7 +4651,7 @@
             leftDate: '',
             churnedDate: '',
             archivedAt: '',
-            notes: [histEntry.notes, 'Reactivated after lapse'].filter(Boolean).join(' · '),
+            notes: [histEntry.notes, 'Reactivated after lapse', suspectReturn ? 'Zero-spend trial return' : ''].filter(Boolean).join(' · '),
           });
         }
       });
@@ -4660,23 +4682,54 @@
                      discordKey && discordMap[discordKey] !== undefined ? discordMap[discordKey] :
                      tvKey && tvMap[tvKey] !== undefined ? tvMap[tvKey] : -1);
 
-        // Memberships cancelled records — skip roster entirely, handle in leads below
-        if (isMembershipsExport && item.status === 'cancelled') return;
+        // Memberships cancelled records — if this person is already on the roster,
+        // apply the cancellation to their record instead of silently skipping.
+        // Previously this returned early, so a churned membership could never
+        // correct a stale active/trialing roster row. Non-roster cancellations
+        // still fall through to the history/leads handling below.
+        if (isMembershipsExport && item.status === 'cancelled') {
+          if (idx >= 0) {
+            const ex = rosterData[idx];
+            // Only downgrade if this cancellation belongs to their current
+            // membership — otherwise an old cancelled plan would kill a live one.
+            if (!ex.whopKey || !item.whopKey || ex.whopKey === item.whopKey) {
+              rosterData[idx] = {
+                ...ex,
+                status: 'cancelled',
+                leftDate:    item.leftDate    || ex.leftDate    || '',
+                churnedDate: item.churnedDate || ex.churnedDate || '',
+                renewal: '',
+                tvRenew: '',
+                tvRemoval: 'Removed',
+                cancelReason: item.cancelReason || ex.cancelReason || '',
+              };
+            }
+          }
+          return;
+        }
 
         if (idx >= 0) {
           const existing = rosterData[idx];
           const isManual = existing.manualEntry === true;
           rosterData[idx] = {
             ...existing,
+            // Records sourced from the Users export are normally status-locked so
+            // narrower files can't overwrite them. Terminal statuses are exempt —
+            // an exit is authoritative no matter which file reports it.
             status: isUsersExport
               ? (['lifetime','cancelled'].includes(existing.status) && item.status === 'inactive' ? existing.status : item.status)
-              : (existing.source_detail === 'whop_users' ? existing.status : item.status || existing.status),
+              : (existing.source_detail === 'whop_users'
+                  && !['cancelled','trial_cancelled','canceling','past_due'].includes(item.status)
+                    ? existing.status
+                    : item.status || existing.status),
             leftDate: item.leftDate || existing.leftDate || '',
             churnedDate: item.churnedDate || existing.churnedDate || '',
             tenureDays: item.tenureDays ?? existing.tenureDays ?? null,
             trialLeaver: item.trialLeaver || existing.trialLeaver || false,
-            renewal: item.renewal || existing.renewal,
-            tvRenew: item.tvRenew || existing.tvRenew,
+            // Blank never overwrites, so a departed member's stale renewal date
+            // would stick forever and show as expected revenue. Clear it on exit.
+            renewal: (item.leftDate || item.churnedDate) ? '' : (item.renewal || existing.renewal),
+            tvRenew: (item.leftDate || item.churnedDate) ? '' : (item.tvRenew || existing.tvRenew),
             // For manual entries, only overwrite name/discord/email if they were blank on the manual record
             name: isManual ? (existing.name || item.name) : (item.name || existing.name),
             discordName: isManual ? (existing.discordName || item.discordName) : (item.discordName || existing.discordName),
@@ -5396,7 +5449,7 @@
 
       // Get renewals due this day from roster
       const dayRenewals = rosterData.filter(r => {
-        if (!r.renewal || ['cancelled','canceling','trial_cancelled','inactive','lifetime','yearly'].includes(r.status)) return false;
+        if (!isRenewalDue(r)) return false;
         return r.renewal.slice(0,10) === ds;
       });
 
@@ -5490,7 +5543,7 @@
       // Build renewal map for this month from roster
       const renewalMap = {};
       rosterData.forEach(r => {
-        if (!r.renewal || ['cancelled','canceling','trial_cancelled','inactive','lifetime','yearly'].includes(r.status)) return;
+        if (!isRenewalDue(r)) return;
         const d = r.renewal.slice(0,10);
         if (!d) return;
         const [y,m] = d.split('-').map(Number);
@@ -5625,14 +5678,14 @@
         // Use each member's actual billing amount (set manually or from memberships import)
         // Falls back to $12.50 if no price data is available
         const thisMonthRenewals = rosterData.filter(r => {
-          if (!r.renewal || ['cancelled','canceling','trial_cancelled','inactive','lifetime'].includes(r.status)) return false;
+          if (!isRenewalDue(r)) return false;
           try {
             const d = new Date(r.renewal);
             return d.getFullYear() === thisYear && d.getMonth() === thisMonth && d >= now;
           } catch(e) { return false; }
         });
         const nextMonthRenewals = rosterData.filter(r => {
-          if (!r.renewal || ['cancelled','canceling','trial_cancelled','inactive','lifetime'].includes(r.status)) return false;
+          if (!isRenewalDue(r)) return false;
           try {
             const d = new Date(r.renewal);
             return d.getFullYear() === nextMonthYear && d.getMonth() === nextMonth;
@@ -5670,7 +5723,7 @@
         const now = new Date();
         const in14 = new Date(now.getTime() + 14*24*60*60*1000);
         const upcoming = rosterData.filter(r => {
-          if (!r.renewal || ['cancelled','canceling','trial_cancelled','inactive','lifetime','yearly'].includes(r.status)) return false;
+          if (!isRenewalDue(r)) return false;
           try { const rd = new Date(r.renewal); return rd >= now && rd <= in14; } catch(e) { return false; }
         }).sort((a,b) => new Date(a.renewal) - new Date(b.renewal));
         if (upcomingCount) upcomingCount.textContent = upcoming.length ? upcoming.length + ' upcoming' : '';
