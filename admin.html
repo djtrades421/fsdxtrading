@@ -4203,6 +4203,7 @@
           churnedDate: churnedDate ? churnedDate.split(' ')[0] : '',
           notes: r['Cancelation reason'] ? 'Cancel reason: ' + r['Cancelation reason'] : '',
           initialPrice: parseFloat(r['Initial price'] || '0') || 0,
+          renewalPrice: parseFloat(r['Renewal price'] || '0') || 0,
           source_detail: 'whop_memberships',
         };
       });
@@ -4751,9 +4752,12 @@
             source_detail: existing.source_detail || item.source_detail,
             // Preserve manual entry flag and billing info set by the admin
             manualEntry: existing.manualEntry || false,
-            billingAmount: isManual && existing.billingAmount ? existing.billingAmount : (existing.billingAmount || item.initialPrice || 0),
+            billingAmount: isManual && existing.billingAmount
+              ? existing.billingAmount
+              : (existing.billingAmount || item.renewalPrice || item.initialPrice || 0),
             billingCycle: isManual && existing.billingCycle ? existing.billingCycle : (existing.billingCycle || ''),
             initialPrice: item.initialPrice || existing.initialPrice || 0,
+            renewalPrice: item.renewalPrice || existing.renewalPrice || 0,
           };
         } else if (!isMembershipsExport) {
           // Only non-memberships imports can add new roster members
@@ -5648,8 +5652,30 @@
       const newSubs = paymentsData.filter(p => p.billingReason === 'subscription_create' && p.status === 'paid').length;
 
       // Stats
-      const DEFAULT_RENEWAL_PRICE = 12.50;
-      const getMemberPrice = (r) => r.billingAmount || r.initialPrice || DEFAULT_RENEWAL_PRICE;
+      // ── Plan-ID → recurring price ──
+      // Fallback when CSV price data is missing (manual adds, trials with $0
+      // initial price). Keep in sync with PLAN_MAP.
+      const PLAN_PRICE = {
+        // FSD-X Trading Pro
+        'plan_l0KkbipfcgnAp': 129.99,   // Pro Monthly
+        'plan_RYMEBnqYNmFEZ': 349.00,   // Pro Quarterly
+        'plan_1CAj5BxdzpT1W': 1299.00,  // Pro Yearly — verify ID in Whop
+        // FSD-X Trading Plus
+        'plan_lIqzQ9zktAv0y': 49.99,    // Plus Monthly (current)
+        'plan_NSAGowAQ4cwsD': 19.99,    // Plus Monthly (grandfathered)
+        'plan_B5bAvYiAJvc5i': 19.99,    // Plus Monthly (grandfathered)
+        'plan_C6yQOo7Z6tRap': 12.50,    // Plus Monthly (legacy)
+        'plan_WDBtpCQLgdO6K': 119.00,   // Plus Yearly
+      };
+      const priceFromPlanId = (planId) => {
+        if (!planId) return 0;
+        for (const id in PLAN_PRICE) { if (planId.includes(id)) return PLAN_PRICE[id]; }
+        return 0;
+      };
+      // No blanket default — a wrong price is worse than a visible $0.00.
+      const DEFAULT_RENEWAL_PRICE = 0;
+      const getMemberPrice = (r) =>
+        r.billingAmount || r.renewalPrice || priceFromPlanId(r.planId) || r.initialPrice || DEFAULT_RENEWAL_PRICE;
       const statsEl = document.getElementById('payment-stats');
       if (statsEl) {
         const now = new Date();
@@ -5676,7 +5702,7 @@
 
         // Upcoming revenue from roster renewals
         // Use each member's actual billing amount (set manually or from memberships import)
-        // Falls back to $12.50 if no price data is available
+        // Falls back to the plan-ID price map, then $0 if nothing is known
         const thisMonthRenewals = rosterData.filter(r => {
           if (!isRenewalDue(r)) return false;
           try {
