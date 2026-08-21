@@ -380,6 +380,10 @@
         <button onclick="executeImport('skip')" id="overlap-skip-btn" class="w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
           Skip Duplicates — Import New Only
         </button>
+        <button onclick="executeImport('replace')" id="overlap-replace-btn" class="w-full py-2.5 bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-300 font-bold text-xs uppercase tracking-wider rounded-xl transition">
+          Replace Existing With These
+        </button>
+        <p class="text-[10px] text-zinc-600 text-center -mt-1">Use this when you're re-importing at a corrected commission rate.</p>
         <button onclick="executeImport('all')" class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
           Import Everything Anyway
         </button>
@@ -1110,7 +1114,7 @@
       const deduped = [];
       let dupes = 0;
       all.forEach(t => {
-        const key = [normAcctNum(t.accountNumber) || t.accountName || '', t.date || '', t.entryTime || '', t.exitTime || '', t.contracts || '', t.netPnl].join('|');
+        const key = tradeKey(t);
         if (seen.has(key)) { dupes++; return; }
         seen.add(key);
         deduped.push(t);
@@ -1458,6 +1462,10 @@
     // account's trade that merely happens to share a date. Date ranges alone
     // can't do this: importing Tradeify then Apex for the same week is not an
     // overlap, and skipping by date would delete the second account's trades.
+    // Deliberately EXCLUDES netPnl. The same fill re-imported at a corrected
+    // commission rate has different P&L but is still the same trade — keying on
+    // P&L would let it back in as a "new" trade and silently double the account.
+    // Account + date + both times + size identifies a fill uniquely.
     function tradeKey(t) {
       return [
         normAcctNum(t.accountNumber) || (t.accountName || ''),
@@ -1465,7 +1473,6 @@
         t.entryTime || '',
         t.exitTime || '',
         String(t.contracts || ''),
-        String(Math.round((parseFloat(t.netPnl) || 0) * 100)),
       ].join('|');
     }
 
@@ -1483,6 +1490,16 @@
       const byAccount = {};
       dupes.forEach(t => { const k = t.accountName || '(unassigned)'; byAccount[k] = (byAccount[k] || 0) + 1; });
       return { dupes, fresh, sharedDateNotDupe, byAccount };
+    }
+
+    // Tag every trade in one upload with a shared batch id, so the journal can
+    // remove precisely that upload later.
+    function stampImportBatch(trades) {
+      const id = 'imp_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+      const names = loadedFiles.filter(f => !f.error).map(f => f.name);
+      const label = names.length > 1 ? `${names.length} files — ${names[0]} +${names.length - 1} more` : (names[0] || 'Import');
+      const at = new Date().toISOString();
+      return trades.map(t => ({ ...t, importBatch: id, importBatchLabel: label, importedAt: at }));
     }
 
     function rangeOf(trades) {
@@ -1560,6 +1577,19 @@
         let tradesToAdd = convertedTrades;
         if (mode === 'skip') tradesToAdd = convertedTrades.filter(t => !_dupeKeys.has(tradeKey(t)));
 
+        // Stamp this upload so the journal can undo exactly these trades later —
+        // the fix for "imported at the wrong commission rate" without wiping
+        // everything else.
+        tradesToAdd = stampImportBatch(tradesToAdd);
+
+        // Replace: drop the saved copies of these exact trades so the incoming
+        // (correctly-priced) versions stand in for them instead of stacking.
+        let baseTrades = _journalExistingTrades;
+        if (mode === 'replace') {
+          const incoming = new Set(convertedTrades.map(tradeKey));
+          baseTrades = _journalExistingTrades.filter(t => !incoming.has(tradeKey(t)));
+        }
+
         // Trades that routed themselves by account # are already correct — the
         // picker only fills in the ones that matched nothing, so a fallback
         // selection can never overwrite a confident match.
@@ -1577,15 +1607,17 @@
           }));
         }
 
-        const merged = [..._journalExistingTrades, ...tradesToAdd].sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+        const merged = [...baseTrades, ...tradesToAdd].sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
         await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key: whopKey, payload: { trades: merged } }) });
         const skipped = convertedTrades.length - tradesToAdd.length;
+        const replaced = _journalExistingTrades.length - baseTrades.length;
         const acctLabel = pickName || pickType;
-        document.getElementById('success-title').textContent = 'Added to Journal!';
+        document.getElementById('success-title').textContent = mode === 'replace' ? 'Journal Updated!' : 'Added to Journal!';
         document.getElementById('success-desc').textContent =
           `${tradesToAdd.length} trade${tradesToAdd.length!==1?'s':''} imported to your journal` +
           (acctLabel ? ` · assigned to ${acctLabel}` : '') +
-          (skipped > 0 ? ` · ${skipped} overlapping trade${skipped!==1?'s':''} skipped` : '') + '.';
+          (replaced > 0 ? ` · ${replaced} earlier version${replaced!==1?'s':''} replaced` : '') +
+          (skipped > 0 ? ` · ${skipped} duplicate${skipped!==1?'s':''} skipped` : '') + '.';
         document.getElementById('success-btns').innerHTML = `<a href="journal.html" class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition text-center">View Journal →</a><button onclick="document.getElementById('import-success-modal').classList.add('hidden')" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Stay Here</button>`;
         document.getElementById('import-success-modal').classList.remove('hidden');
       } catch(e) { showImportMsg('journal-import-msg', 'Import failed. Please try again.', 'error'); }
@@ -1642,8 +1674,15 @@
         // Drop only the exact trades already in this session, keeping a
         // different account's trades that happen to share the same dates.
         if (mode === 'skip') tradesToAdd = convertedTrades.filter(t => !_dupeKeys.has(tradeKey(t)));
+        tradesToAdd = stampImportBatch(tradesToAdd);
 
-        const merged = [..._existingTrades, ...tradesToAdd].sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
+        let baseTrades = _existingTrades;
+        if (mode === 'replace') {
+          const incoming = new Set(convertedTrades.map(tradeKey));
+          baseTrades = _existingTrades.filter(t => !incoming.has(tradeKey(t)));
+        }
+
+        const merged = [...baseTrades, ...tradesToAdd].sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
         await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key:'backtest:'+whopKey+':'+sessionId, payload:{ trades: merged } }) });
 
         const sessionIdx = btSessions.findIndex(s => s.id === sessionId);
