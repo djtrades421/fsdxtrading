@@ -294,8 +294,9 @@
                     <input id="af-name" type="text" placeholder="e.g. Apex Funded #1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
                   </div>
                   <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Account # — Optional</label>
-                    <input id="af-number" type="text" placeholder="Full account number" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                    <label class="block text-xs text-zinc-600 mb-1">Account # <span class="text-amber-500/80">— required for auto-import</span></label>
+                    <input id="af-number" type="text" placeholder="e.g. FTDFYL50565079459" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                    <p class="text-[10px] text-zinc-600 mt-1">Must match the <span class="text-zinc-500 font-mono">Account</span> column in your Tradovate export so imports route here automatically.</p>
                   </div>
                   <div>
                     <label class="block text-xs text-zinc-600 mb-1">Account Size — Optional</label>
@@ -309,6 +310,11 @@
                       <option value="Evaluation">Evaluation</option>
                       <option value="Personal">Personal</option>
                     </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Commission — Optional</label>
+                    <input id="af-comm" type="number" step="0.01" min="0" placeholder="e.g. 0.37" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                    <p class="text-[10px] text-zinc-600 mt-1">All-in rate <span class="text-zinc-500">per side</span> (commission + exchange/NFA/clearing). Charged on entry <span class="text-zinc-500">and</span> exit — <span class="text-zinc-500">not</span> a round-turn figure. Common: $0.37–$0.85.</p>
                   </div>
                 </div>
                 <div id="af-msg" class="hidden text-xs py-1.5 rounded-lg text-center"></div>
@@ -2077,9 +2083,9 @@
     // ── CSV Export ──
     function exportCSV() {
       if (!allTrades.length) { alert('No trades to export.'); return; }
-      const headers = ['Date','Entry Time','Exit Time','Ticker','Account Type','# Accounts','Direction','Contracts','Entry','TP1 Exit','TP1 Contracts','TP1 P&L','TP2 Exit','TP2 Contracts','TP2 P&L','Net P&L','Result','SL','Commissions','Strategy','Timeframe','Grade','Tags','Chart URL','Notes'];
+      const headers = ['Date','Entry Time','Exit Time','Ticker','Account','Account #','Account Type','# Accounts','Direction','Contracts','Entry','TP1 Exit','TP1 Contracts','TP1 P&L','TP2 Exit','TP2 Contracts','TP2 P&L','Net P&L','Result','SL','Commissions','Strategy','Timeframe','Grade','Tags','Chart URL','Notes'];
       const rows = allTrades.map(t => [
-        t.date, t.entryTime, t.exitTime, t.ticker, t.accountType, t.numAccounts||1, t.direction, t.contracts,
+        t.date, t.entryTime, t.exitTime, t.ticker, t.accountName, t.accountNumber, t.accountType, t.numAccounts||1, t.direction, t.contracts,
         t.entry||t.entryPrice, t.tp1Exit||t.tp1Price, t.tp1Contracts, t.tp1Pnl,
         t.tp2Exit||t.tp2Price, t.tp2Contracts, t.tp2Pnl,
         t.netPnl, t.result, t.sl||t.slPrice, t.commissions, t.strategy, t.timeframe, t.grade,
@@ -2110,7 +2116,7 @@
       const isTVFormat = firstLine.includes('trade number') || firstLine.includes('date and time') || firstLine.includes('net pnl usd');
       if (!imported.length) {
         if (isTVFormat) {
-          alert('This looks like a raw TradingView backtest CSV.\n\nUse the BT Converter to process this file.');
+          alert('This looks like a raw TradingView backtest CSV.\n\nUse the Trade Importer to process this file.');
         } else {
           alert('No valid trades found. Make sure the CSV has at least a Date and Net P&L column.');
         }
@@ -2221,7 +2227,9 @@
           date, entryTime:col(row,'entry time','time','open time','entrytime'),
           exitTime:col(row,'exit time','close time','exittime'),
           ticker:(col(row,'ticker','symbol','instrument','market','contract')||'MNQ').toUpperCase(),
-          accountType:col(row,'account type','account','acct','firm'),
+          accountName:col(row,'account','account name','account nickname'),
+          accountNumber:col(row,'account #','account number','acct #','acct number'),
+          accountType:col(row,'account type','acct type','acct','firm'),
           numAccounts:parseInt(col(row,'# accounts','num accounts','accounts'))||1,
           direction, contracts:parseInt(col(row,'contracts','# contracts','qty','quantity','size','volume'))||1,
           entry, tp1Exit, tp1Contracts, tp1Pnl, tp2Exit, tp2Contracts, tp2Pnl,
@@ -2356,9 +2364,12 @@
       el.innerHTML = journalAccounts.map((a, idx) => `
         <div class="flex items-center justify-between border border-white/5 bg-zinc-900/40 rounded-xl px-4 py-3">
           <div>
-            <div class="text-sm font-bold text-white">${a.name}</div>
+            <div class="text-sm font-bold text-white flex items-center gap-2">
+              ${a.name}
+              ${a.accountNumber ? '' : '<span class="text-[10px] font-bold text-amber-500/90 bg-amber-500/10 border border-amber-500/25 rounded px-1.5 py-0.5" title="Add an Account # so Tradovate imports route here automatically">⚠ no auto-import</span>'}
+            </div>
             <div class="text-xs text-zinc-500 mt-0.5">
-              ${a.accountType||''}${a.accountSize?' · $'+Number(a.accountSize).toLocaleString():''}${a.accountNumber?' · #'+a.accountNumber:''}
+              ${a.accountType||''}${a.accountSize?' · $'+Number(a.accountSize).toLocaleString():''}${a.accountNumber?' · #'+a.accountNumber:''}${a.commissionRate!=null?' · $'+Number(a.commissionRate).toFixed(2)+'/side':''}
             </div>
           </div>
           <div class="flex gap-2">
@@ -2380,6 +2391,7 @@
       document.getElementById('af-number').value = a.accountNumber || '';
       document.getElementById('af-size').value = a.accountSize || '';
       document.getElementById('af-type').value = a.accountType || '';
+      document.getElementById('af-comm').value = a.commissionRate != null ? a.commissionRate : '';
       document.getElementById('account-form-title').textContent = 'Edit Account';
       document.getElementById('af-btn').textContent = 'Save Changes';
       document.getElementById('af-cancel').classList.remove('hidden');
@@ -2388,7 +2400,7 @@
 
     function cancelEditAccount() {
       editingAccountId = null;
-      ['af-name','af-number','af-size'].forEach(id => document.getElementById(id).value = '');
+      ['af-name','af-number','af-size','af-comm'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('af-type').value = '';
       document.getElementById('account-form-title').textContent = 'Add Account';
       document.getElementById('af-btn').textContent = '+ Add Account';
@@ -2396,15 +2408,32 @@
       document.getElementById('af-msg').classList.add('hidden');
     }
 
+    // Account numbers are the join key for auto-import. Normalize so a value
+    // copied off-screen ("#FTDFYL...") still matches the raw CSV value.
+    function normAcctNum(s) { return (s || '').replace(/[#\s]/g, '').toUpperCase(); }
+
     async function saveAccount() {
       const name = document.getElementById('af-name').value.trim();
       if (!name) { showAfMsg('Nickname is required.', 'error'); return; }
+      const acctNumber = normAcctNum(document.getElementById('af-number').value);
+      const acctSize = parseFloat(document.getElementById('af-size').value) || null;
+      const acctType = document.getElementById('af-type').value;
+      const commRaw = document.getElementById('af-comm').value;
+      const commissionRate = commRaw === '' ? null : Math.max(0, parseFloat(commRaw) || 0);
+
+      // A duplicate account # would make import routing pick whichever record
+      // happens to sit first in the array — silently wrong. Block it here.
+      if (acctNumber) {
+        const clash = journalAccounts.find(a => a.id !== editingAccountId && normAcctNum(a.accountNumber) === acctNumber);
+        if (clash) { showAfMsg('Account # already used by "' + clash.name + '".', 'error'); return; }
+      }
+
       if (editingAccountId) {
         const idx = journalAccounts.findIndex(a => a.id === editingAccountId);
-        if (idx >= 0) journalAccounts[idx] = { ...journalAccounts[idx], name, accountNumber: document.getElementById('af-number').value.trim(), accountSize: parseFloat(document.getElementById('af-size').value)||null, accountType: document.getElementById('af-type').value };
+        if (idx >= 0) journalAccounts[idx] = { ...journalAccounts[idx], name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate };
       } else {
         if (journalAccounts.find(a => a.name === name)) { showAfMsg('Account with this name already exists.', 'error'); return; }
-        journalAccounts.push({ id: Date.now().toString(), name, accountNumber: document.getElementById('af-number').value.trim(), accountSize: parseFloat(document.getElementById('af-size').value)||null, accountType: document.getElementById('af-type').value });
+        journalAccounts.push({ id: Date.now().toString(), name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate });
       }
       await saveAccountsToKV();
       cancelEditAccount();
