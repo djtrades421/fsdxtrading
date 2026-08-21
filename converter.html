@@ -1579,7 +1579,30 @@
 
     // Accounts must be in hand before convert() runs, since parsing routes each
     // trade by its Account column — not just when the journal destination is picked.
-    loadAuth().then(loadJournalAccounts);
+    // ?dest=backtest&session=<id> comes from the Backtest page's Import button, so
+    // arriving from an open session lands straight on "add to this session".
+    let pendingSessionId = null;
+    loadAuth().then(async () => {
+      await loadJournalAccounts();
+      const qs = new URLSearchParams(window.location.search);
+      const dest = qs.get('dest');
+      pendingSessionId = qs.get('session');
+      if (dest === 'backtest' || dest === 'journal') {
+        setDestination(dest);
+        if (dest === 'backtest' && pendingSessionId) {
+          // Sessions load async; apply the preselection once the list is populated.
+          const applySession = () => {
+            const sel = document.getElementById('session-select');
+            if (sel && [...sel.options].some(o => o.value === pendingSessionId)) { sel.value = pendingSessionId; return true; }
+            return false;
+          };
+          if (!applySession()) {
+            let tries = 0;
+            const timer = setInterval(() => { if (applySession() || ++tries > 20) clearInterval(timer); }, 150);
+          }
+        }
+      }
+    });
   </script>
   <script src="nav-loader.js"></script>
 </body>
