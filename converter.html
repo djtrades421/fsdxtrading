@@ -355,30 +355,30 @@
     </div>
   </main>
 
-  <!-- Overlap warning modal -->
+  <!-- Duplicate trade modal — only shown when the SAME trades already exist -->
   <div id="overlap-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
     <div class="bg-zinc-950 border border-yellow-500/20 rounded-2xl w-full max-w-md p-6">
       <div class="text-3xl mb-3 text-center">⚠️</div>
-      <h2 class="text-base font-black text-white mb-1 text-center">Date Overlap Detected</h2>
-      <p class="text-zinc-500 text-xs mb-5 text-center">Your import overlaps with existing trades in this session.</p>
+      <h2 class="text-base font-black text-white mb-1 text-center">Duplicate Trades Found</h2>
+      <p class="text-zinc-500 text-xs mb-5 text-center" id="overlap-sub">Some of these trades are already saved.</p>
       <div class="space-y-3 mb-5">
         <div class="border border-white/10 bg-zinc-900/60 rounded-xl p-4 grid grid-cols-2 gap-3 text-xs">
           <div>
-            <div class="text-zinc-600 uppercase tracking-wider text-[10px] mb-1">Already in session</div>
-            <div class="text-white font-bold" id="overlap-existing-range">—</div>
-            <div class="text-zinc-500 mt-1" id="overlap-existing-times">—</div>
+            <div class="text-zinc-600 uppercase tracking-wider text-[10px] mb-1">New trades</div>
+            <div class="text-lg font-black text-green-400" id="overlap-new-count">—</div>
+            <div class="text-zinc-500 mt-1" id="overlap-new-range">—</div>
           </div>
           <div>
-            <div class="text-zinc-600 uppercase tracking-wider text-[10px] mb-1">Your import</div>
-            <div class="text-white font-bold" id="overlap-import-range">—</div>
-            <div class="text-zinc-500 mt-1" id="overlap-import-times">—</div>
+            <div class="text-zinc-600 uppercase tracking-wider text-[10px] mb-1">Already saved</div>
+            <div class="text-lg font-black text-yellow-400" id="overlap-dupe-count">—</div>
+            <div class="text-zinc-500 mt-1" id="overlap-dupe-range">—</div>
           </div>
         </div>
         <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-xl px-4 py-3 text-xs text-yellow-300/80" id="overlap-detail"></div>
       </div>
       <div class="space-y-2">
-        <button onclick="executeImport('skip')" class="w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-          Skip Overlapping Dates — Import New Only
+        <button onclick="executeImport('skip')" id="overlap-skip-btn" class="w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+          Skip Duplicates — Import New Only
         </button>
         <button onclick="executeImport('all')" class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
           Import Everything Anyway
@@ -1452,6 +1452,78 @@
     // ── Import to journal ──
     let _overlapTarget = 'backtest'; // 'backtest' or 'journal'
     let _journalExistingTrades = [];
+    let _dupeKeys = new Set();
+
+    // Identity of a trade, for telling a real duplicate from a different
+    // account's trade that merely happens to share a date. Date ranges alone
+    // can't do this: importing Tradeify then Apex for the same week is not an
+    // overlap, and skipping by date would delete the second account's trades.
+    function tradeKey(t) {
+      return [
+        normAcctNum(t.accountNumber) || (t.accountName || ''),
+        t.date || '',
+        t.entryTime || '',
+        t.exitTime || '',
+        String(t.contracts || ''),
+        String(Math.round((parseFloat(t.netPnl) || 0) * 100)),
+      ].join('|');
+    }
+
+    // Split the pending import into trades already saved and genuinely new ones.
+    function analyzeDuplicates(incoming, existing) {
+      const existKeys = new Set(existing.map(tradeKey));
+      const dupes = [], fresh = [];
+      incoming.forEach(t => (existKeys.has(tradeKey(t)) ? dupes : fresh).push(t));
+
+      // Same dates, different account — the case that used to trigger a scary
+      // warning. Counted so the modal can say plainly that it is not a clash.
+      const existDates = new Set(existing.map(t => t.date).filter(Boolean));
+      const sharedDateNotDupe = fresh.filter(t => existDates.has(t.date)).length;
+
+      const byAccount = {};
+      dupes.forEach(t => { const k = t.accountName || '(unassigned)'; byAccount[k] = (byAccount[k] || 0) + 1; });
+      return { dupes, fresh, sharedDateNotDupe, byAccount };
+    }
+
+    function rangeOf(trades) {
+      const d = trades.map(t => t.date).filter(Boolean).sort();
+      if (!d.length) return '—';
+      return d[0] === d[d.length - 1] ? d[0] : d[0] + ' to ' + d[d.length - 1];
+    }
+
+    // Populate and show the duplicate modal. Returns false when there is nothing
+    // to warn about, so callers can just import.
+    function showDuplicateModal(analysis, where) {
+      if (!analysis.dupes.length) return false;
+      _dupeKeys = new Set(analysis.dupes.map(tradeKey));
+      const d = analysis.dupes.length, n = analysis.fresh.length;
+      const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      document.getElementById('overlap-sub').textContent = `${d} trade${d !== 1 ? 's' : ''} in this import ${d !== 1 ? 'are' : 'is'} already in your ${where}.`;
+      document.getElementById('overlap-new-count').textContent = n;
+      document.getElementById('overlap-new-range').textContent = n ? rangeOf(analysis.fresh) : 'nothing new';
+      document.getElementById('overlap-dupe-count').textContent = d;
+      document.getElementById('overlap-dupe-range').textContent = rangeOf(analysis.dupes);
+
+      const accts = Object.keys(analysis.byAccount);
+      const acctLine = accts.length
+        ? `<div class="mt-2 pt-2 border-t border-yellow-500/15">Duplicates by account: ${accts.map(a => `<span class="text-white font-bold">${esc(a)}</span> (${analysis.byAccount[a]})`).join(', ')}</div>`
+        : '';
+      const sameDateLine = analysis.sharedDateNotDupe
+        ? `<div class="mt-2 pt-2 border-t border-yellow-500/15 text-zinc-400">${analysis.sharedDateNotDupe} of the new trade${analysis.sharedDateNotDupe !== 1 ? 's' : ''} fall on dates you already have but ${analysis.sharedDateNotDupe !== 1 ? 'are' : 'is'} <span class="text-white font-bold">not</span> ${analysis.sharedDateNotDupe !== 1 ? 'duplicates' : 'a duplicate'} — different account or different fills. Skipping keeps ${analysis.sharedDateNotDupe !== 1 ? 'them' : 'it'}.</div>`
+        : '';
+      document.getElementById('overlap-detail').innerHTML =
+        `Matched on account, date, entry/exit time, size and P&amp;L — not just the date.${acctLine}${sameDateLine}`;
+
+      const skipBtn = document.getElementById('overlap-skip-btn');
+      if (skipBtn) {
+        skipBtn.textContent = n ? `Skip Duplicates — Import ${n} New` : 'Nothing New To Import';
+        skipBtn.disabled = !n;
+        skipBtn.className = 'w-full py-2.5 font-black text-xs uppercase tracking-wider rounded-xl transition ' +
+          (n ? 'bg-green-500 hover:bg-green-400 text-black' : 'bg-zinc-800 text-zinc-600 cursor-not-allowed');
+      }
+      document.getElementById('overlap-modal').classList.remove('hidden');
+      return true;
+    }
 
     async function importToJournal() {
       if (!whopKey) { showImportMsg('journal-import-msg', 'You must be logged in to import.', 'error'); return; }
@@ -1463,34 +1535,15 @@
         _journalExistingTrades = Array.isArray(data.trades) ? data.trades : [];
         _overlapTarget = 'journal';
 
+        // Only warn about genuine duplicates. A different account's trades on
+        // the same dates import silently — that's a normal multi-account day.
         if (_journalExistingTrades.length > 0) {
-          const existDates = _journalExistingTrades.map(t=>t.date).filter(Boolean).sort();
-          const importDates = convertedTrades.map(t=>t.date).filter(Boolean).sort();
-          const existMin = existDates[0], existMax = existDates[existDates.length-1];
-          const importMin = importDates[0], importMax = importDates[importDates.length-1];
-          const hasOverlap = importMin <= existMax && importMax >= existMin;
-
-          if (hasOverlap) {
-            const existDateSet = new Set(existDates);
-            const overlapDates = importDates.filter(d => existDateSet.has(d));
-            const overlapTrades = convertedTrades.filter(t => existDateSet.has(t.date));
-            const existTimes = _journalExistingTrades.map(t=>t.entryTime).filter(Boolean).sort();
-            const importTimes = convertedTrades.map(t=>t.entryTime).filter(Boolean).sort();
-            const existTimeRange = existTimes.length ? existTimes[0].slice(0,5) + ' – ' + existTimes[existTimes.length-1].slice(0,5) : 'No times recorded';
-            const importTimeRange = importTimes.length ? importTimes[0].slice(0,5) + ' – ' + importTimes[importTimes.length-1].slice(0,5) : 'No times recorded';
-            document.getElementById('overlap-existing-range').textContent = existMin + ' to ' + existMax;
-            document.getElementById('overlap-existing-times').textContent = 'Entry times: ' + existTimeRange;
-            document.getElementById('overlap-import-range').textContent = importMin + ' to ' + importMax;
-            document.getElementById('overlap-import-times').textContent = 'Entry times: ' + importTimeRange;
-            document.getElementById('overlap-detail').innerHTML =
-              `<span class="font-bold text-yellow-400">${overlapDates.length} overlapping date${overlapDates.length!==1?'s':''}</span> — ${overlapTrades.length} trade${overlapTrades.length!==1?'s':''} in your import land on dates already in your journal.<br><br>
-              <span class="text-zinc-400">If these are different sessions (e.g. London vs NY), choose <span class="text-white font-bold">Import Everything</span>. If you accidentally included dates you already have, choose <span class="text-white font-bold">Skip Overlapping</span>.</span>`;
-            document.getElementById('overlap-modal').classList.remove('hidden');
+          const analysis = analyzeDuplicates(convertedTrades, _journalExistingTrades);
+          if (showDuplicateModal(analysis, 'journal')) {
             if (btn) { btn.disabled = false; btn.textContent = 'Import to Journal →'; }
             return;
           }
         }
-        // No overlap — import directly
         await executeJournalImport('all');
       } catch(e) {
         showImportMsg('journal-import-msg', 'Import failed. Please try again.', 'error');
@@ -1502,11 +1555,10 @@
       const btn = document.querySelector('[onclick="importToJournal()"]');
       if (btn) { btn.disabled = true; btn.textContent = 'Importing...'; }
       try {
+        // Skip drops the exact trades already saved — not every trade sharing a
+        // date with them, which would delete another account's real trades.
         let tradesToAdd = convertedTrades;
-        if (mode === 'skip') {
-          const existDateSet = new Set(_journalExistingTrades.map(t=>t.date).filter(Boolean));
-          tradesToAdd = convertedTrades.filter(t => !existDateSet.has(t.date));
-        }
+        if (mode === 'skip') tradesToAdd = convertedTrades.filter(t => !_dupeKeys.has(tradeKey(t)));
 
         // Trades that routed themselves by account # are already correct — the
         // picker only fills in the ones that matched nothing, so a fallback
@@ -1558,44 +1610,15 @@
         _existingTrades = Array.isArray(existData.trades) ? existData.trades : [];
         _overlapSessionId = sessionId;
 
-        // Check for date overlap
+        // Same rule as the journal path: warn only on real duplicates.
         if (_existingTrades.length > 0) {
-          const existDates = _existingTrades.map(t=>t.date).filter(Boolean).sort();
-          const importDates = convertedTrades.map(t=>t.date).filter(Boolean).sort();
-          const existMin = existDates[0], existMax = existDates[existDates.length-1];
-          const importMin = importDates[0], importMax = importDates[importDates.length-1];
-
-          // Overlap exists if ranges intersect
-          const hasOverlap = importMin <= existMax && importMax >= existMin;
-
-          if (hasOverlap) {
-            // Count overlapping dates
-            const existDateSet = new Set(existDates);
-            const overlapDates = importDates.filter(d => existDateSet.has(d));
-            const overlapTrades = convertedTrades.filter(t => existDateSet.has(t.date));
-
-            // Get time ranges for context
-            const existTimes = _existingTrades.map(t=>t.entryTime).filter(Boolean).sort();
-            const importTimes = convertedTrades.map(t=>t.entryTime).filter(Boolean).sort();
-            const existTimeRange = existTimes.length ? existTimes[0].slice(0,5) + ' – ' + existTimes[existTimes.length-1].slice(0,5) : 'No times recorded';
-            const importTimeRange = importTimes.length ? importTimes[0].slice(0,5) + ' – ' + importTimes[importTimes.length-1].slice(0,5) : 'No times recorded';
-
-            // Fill the modal
-            document.getElementById('overlap-existing-range').textContent = existMin + ' to ' + existMax;
-            document.getElementById('overlap-existing-times').textContent = 'Entry times: ' + existTimeRange;
-            document.getElementById('overlap-import-range').textContent = importMin + ' to ' + importMax;
-            document.getElementById('overlap-import-times').textContent = 'Entry times: ' + importTimeRange;
-            document.getElementById('overlap-detail').innerHTML =
-              `<span class="font-bold text-yellow-400">${overlapDates.length} overlapping date${overlapDates.length!==1?'s':''}</span> — ${overlapTrades.length} trade${overlapTrades.length!==1?'s':''} in your import land on dates already in this session.<br><br>
-              <span class="text-zinc-400">If these are different sessions (e.g. London vs NY), choose <span class="text-white font-bold">Import Everything</span>. If you accidentally included dates you already have, choose <span class="text-white font-bold">Skip Overlapping</span>.</span>`;
-
-            document.getElementById('overlap-modal').classList.remove('hidden');
+          const analysis = analyzeDuplicates(convertedTrades, _existingTrades);
+          if (showDuplicateModal(analysis, 'session')) {
             btn.disabled = false; btn.textContent = 'Add to Session →';
             return;
           }
         }
 
-        // No overlap — import directly
         await executeImport('all');
       } catch(e) {
         showImportMsg('import-existing-msg', 'Import failed. Please try again.', 'error');
@@ -1616,11 +1639,9 @@
       try {
         let tradesToAdd = convertedTrades;
 
-        if (mode === 'skip') {
-          // Skip any trade whose date already exists in the session
-          const existDateSet = new Set(_existingTrades.map(t=>t.date).filter(Boolean));
-          tradesToAdd = convertedTrades.filter(t => !existDateSet.has(t.date));
-        }
+        // Drop only the exact trades already in this session, keeping a
+        // different account's trades that happen to share the same dates.
+        if (mode === 'skip') tradesToAdd = convertedTrades.filter(t => !_dupeKeys.has(tradeKey(t)));
 
         const merged = [..._existingTrades, ...tradesToAdd].sort((a,b) => (a.date||'') < (b.date||'') ? -1 : 1);
         await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'save-all', key:'backtest:'+whopKey+':'+sessionId, payload:{ trades: merged } }) });
