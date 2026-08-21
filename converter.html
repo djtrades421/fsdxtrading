@@ -94,13 +94,14 @@
               onclick="document.getElementById('csv-input').click()"
               ondragover="event.preventDefault();this.classList.add('drag-over')"
               ondragleave="this.classList.remove('drag-over')"
-              ondrop="event.preventDefault();this.classList.remove('drag-over');handleFile(event.dataTransfer.files[0])">
-              <input type="file" id="csv-input" accept=".csv" class="hidden" onchange="handleFile(this.files[0])">
+              ondrop="event.preventDefault();this.classList.remove('drag-over');handleFiles(event.dataTransfer.files)">
+              <input type="file" id="csv-input" accept=".csv" multiple class="hidden" onchange="handleFiles(this.files)">
               <div class="w-12 h-12 rounded-2xl bg-zinc-900 border border-white/10 flex items-center justify-center mx-auto mb-4">
                 <svg class="w-6 h-6 text-zinc-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
               </div>
-              <div class="text-sm font-bold text-zinc-300 mb-1">Drop your CSV here</div>
-              <div class="text-xs text-zinc-600">TradingView export · Tradovate Orders · FSD-X ORB Pro — auto-detected</div>
+              <div class="text-sm font-bold text-zinc-300 mb-1">Drop your CSVs here</div>
+              <div class="text-xs text-zinc-600">One file or many — each routes to its own account by account #</div>
+              <div class="text-[10px] text-zinc-700 mt-1">TradingView export · Tradovate Orders · FSD-X ORB Pro · Journal export — auto-detected</div>
             </div>
           </div>
 
@@ -412,6 +413,8 @@
     let destination = ''; // 'journal' | 'backtest'
     let unmatchedRows = 0;
     let tradovateAccountIds = []; // distinct Account values seen in the last parse
+    let loadedFiles = [];         // [{ name, text, rows, mode, error, tradeCount }]
+    let duplicatesDropped = 0;    // identical trades appearing in more than one file
 
     // ── Auth ──
     async function loadAuth() {
@@ -438,12 +441,27 @@
       processCSVText(text);
     }
 
-    function handleFile(file) {
-      if (!file) return;
-      if (!file.name.endsWith('.csv')) return showError('Please upload a CSV file.');
-      const reader = new FileReader();
-      reader.onload = e => processCSVText(e.target.result);
-      reader.readAsText(file);
+    function handleFile(file) { handleFiles(file ? [file] : []); }
+
+    // Accepts one file or many. Multi-file is the whole point for prop traders:
+    // each prop account is its own Tradovate login and therefore its own export,
+    // so a normal session means dropping five or ten files that each belong to a
+    // different account. Every file is detected and parsed on its own terms and
+    // routed by its account #, so one pass replaces one-at-a-time importing.
+    async function handleFiles(fileList) {
+      const files = [...(fileList || [])].filter(f => f && f.name.toLowerCase().endsWith('.csv'));
+      if (!files.length) return showError('Please upload at least one CSV file.');
+
+      loadedFiles = [];
+      for (const f of files) {
+        try {
+          const text = await f.text();
+          loadedFiles.push({ name: f.name, text });
+        } catch (e) {
+          loadedFiles.push({ name: f.name, text: '', error: 'Could not read file' });
+        }
+      }
+      processLoadedFiles();
     }
 
     // ── Format Detection ──
@@ -504,69 +522,73 @@
     }
 
     function processCSVText(text) {
-      rawCSV = text;
-      const firstLine = rawCSV.replace(/^\uFEFF/, '').split('\n')[0];
-      const rows = parseCSV(rawCSV);
-      if (!rows.length) return showError('No data found in this file. Make sure the CSV has content.');
+      loadedFiles = [{ name: 'Pasted CSV', text }];
+      processLoadedFiles();
+    }
 
-      detectedMode = detectFormat(firstLine, rows);
-      if (detectedMode === 'unknown') {
-        return showError('Could not detect format. Supported: TradingView List of Trades export, Tradovate Orders export, or FSD-X ORB Pro strategy export.');
+    // Detect every loaded file, then drive the options panel off the combined set.
+    function processLoadedFiles() {
+      let anyOk = false;
+      loadedFiles.forEach(f => {
+        if (f.error) return;
+        const firstLine = (f.text || '').replace(/^\uFEFF/, '').split('\n')[0];
+        f.rows = parseCSV(f.text || '');
+        if (!f.rows.length) { f.error = 'No data rows'; return; }
+        f.mode = detectFormat(firstLine, f.rows);
+        if (f.mode === 'unknown') { f.error = 'Unrecognized format'; return; }
+        anyOk = true;
+      });
+
+      if (!anyOk) {
+        const why = loadedFiles.length === 1 ? (loadedFiles[0].error || 'Unrecognized format') : 'None of these files could be read';
+        return showError(why + '. Supported: TradingView List of Trades export, Tradovate Orders export, FSD-X ORB Pro strategy export, or an FSD-X journal export.');
       }
+
+      const ok = loadedFiles.filter(f => !f.error);
+      const modes = [...new Set(ok.map(f => f.mode))];
+      // With mixed formats the panel still needs one mode for its labels; the
+      // parser always uses each file's own mode, never this one.
+      detectedMode = modes.length === 1 ? modes[0] : 'mixed';
+      rawCSV = ok[0].text;
+      const rows = ok[0].rows;
 
       document.getElementById('input-panel').classList.add('hidden');
       document.getElementById('options-panel').classList.remove('hidden');
       document.getElementById('error-msg').classList.add('hidden');
-      document.getElementById('format-badge').innerHTML = getFormatBadgeHTML(detectedMode);
+      document.getElementById('format-badge').innerHTML = loadedFiles.length > 1
+        ? `<div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-green-500/10 border-green-500/30 text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>${ok.length} File${ok.length !== 1 ? 's' : ''} Loaded \u2713</div>`
+        : getFormatBadgeHTML(detectedMode);
       document.getElementById('format-badge').className = '';
-      document.getElementById('format-info').outerHTML = `<div id="format-info">${getFormatInfoHTML(detectedMode)}</div>`;
-      document.getElementById('opt-commission-row').classList.toggle('hidden', detectedMode !== 'tradovate');
+      document.getElementById('format-info').outerHTML = `<div id="format-info">${loadedFiles.length > 1 ? getMultiFileInfoHTML() : getFormatInfoHTML(detectedMode)}</div>`;
+      document.getElementById('opt-commission-row').classList.toggle('hidden', !ok.some(f => f.mode === 'tradovate'));
       // A journal export carries its own per-row ticker and already-net P&L, so
       // a single global ticker override would be wrong for a mixed-symbol file.
-      document.getElementById('opt-ticker-row').classList.toggle('hidden', detectedMode === 'journal');
+      document.getElementById('opt-ticker-row').classList.toggle('hidden', ok.every(f => f.mode === 'journal'));
 
-      // Which accounts does this file actually contain? Collected before parsing
-      // so the routing/commission summary can be shown while options are still open.
-      if (detectedMode === 'tradovate') {
-        tradovateAccountIds = [...new Set(rows.map(r => r['Account']).filter(Boolean))];
-        renderCommissionSourceNote();
-      } else if (detectedMode === 'journal') {
-        tradovateAccountIds = [...new Set(rows.map(r => r['Account #']).filter(Boolean))];
-      } else {
-        tradovateAccountIds = [];
-      }
+      // Which accounts do these files contain? Collected before parsing so the
+      // routing/commission summary can be shown while options are still open.
+      const ids = [];
+      ok.forEach(f => {
+        if (f.mode === 'tradovate') f.rows.forEach(r => { if (r['Account']) ids.push(r['Account']); });
+        else if (f.mode === 'journal') f.rows.forEach(r => { if (r['Account #']) ids.push(r['Account #']); });
+      });
+      tradovateAccountIds = [...new Set(ids)];
+      renderCommissionSourceNote();
 
-      // Auto-detect date range
+      // Auto-detect date range across every loaded file.
       let dates = [];
-      if (detectedMode === 'fsdx_new' || detectedMode === 'tv_new') {
-        dates = rows.filter(r => r['Type'] && r['Type'].toLowerCase().includes('entry'))
-          .map(r => r['Date and time'] ? r['Date and time'].split(' ')[0] : null)
-          .filter(Boolean).sort();
-      } else if (detectedMode === 'tradovate') {
-        // Use ISO dates from every filled fill so the <input type=date> accepts them.
-        dates = rows
-          .map(r => parseTradovateTime(r['Fill Time'] || r['Date/Time'] || r['Timestamp'] || r['Date'] || '').iso)
-          .filter(Boolean).sort();
-      } else if (detectedMode === 'journal') {
-        dates = rows.map(r => {
-          let d = String(r['Date'] || '').trim();
-          if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(d)) { const [m, dd, y] = d.split('/'); d = y + '-' + m.padStart(2, '0') + '-' + dd.padStart(2, '0'); }
-          return /^\d{4}-\d{2}-\d{2}/.test(d) ? d.slice(0, 10) : null;
-        }).filter(Boolean).sort();
-      } else {
-        dates = rows.filter(r => r['Type'] && r['Type'].includes('Entry'))
-          .map(r => r['Date and time'] ? r['Date and time'].split(' ')[0] : null)
-          .filter(Boolean).sort();
-      }
-
+      ok.forEach(f => dates.push(...datesForFile(f)));
+      dates.sort();
       if (dates.length) {
         document.getElementById('opt-from').value = dates[0];
         document.getElementById('opt-to').value = dates[dates.length - 1];
       }
 
       // Auto-detect ticker for Tradovate (strip month/expiry: MNQU6 → MNQ, ESM6 → ES)
-      if (detectedMode === 'tradovate') {
-        const firstContract = rows[0]?.['Contract'] || rows[0]?.['Product'] || rows[0]?.['Symbol'] || '';
+      const firstTv = ok.find(f => f.mode === 'tradovate');
+      if (firstTv) {
+        const r0 = firstTv.rows[0] || {};
+        const firstContract = r0['Contract'] || r0['Product'] || r0['Symbol'] || '';
         if (firstContract) {
           const sym = stripExpiry(firstContract, '');
           if (sym) document.getElementById('opt-ticker').value = sym;
@@ -578,6 +600,46 @@
         const ticker = document.getElementById('opt-ticker').value || 'MNQ';
         document.getElementById('new-session-name').value = `${ticker} ${dates[0].slice(0,4)}–${dates[dates.length-1].slice(0,4)}`;
       }
+    }
+
+    // Date column varies by format — pull the sortable ISO dates for one file.
+    function datesForFile(f) {
+      const rows = f.rows || [];
+      if (f.mode === 'fsdx_new' || f.mode === 'tv_new') {
+        return rows.filter(r => r['Type'] && r['Type'].toLowerCase().includes('entry'))
+          .map(r => r['Date and time'] ? r['Date and time'].split(' ')[0] : null).filter(Boolean);
+      }
+      if (f.mode === 'tradovate') {
+        return rows.map(r => parseTradovateTime(r['Fill Time'] || r['Date/Time'] || r['Timestamp'] || r['Date'] || '').iso).filter(Boolean);
+      }
+      if (f.mode === 'journal') {
+        return rows.map(r => {
+          let d = String(r['Date'] || '').trim();
+          if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(d)) { const [m, dd, y] = d.split('/'); d = y + '-' + m.padStart(2, '0') + '-' + dd.padStart(2, '0'); }
+          return /^\d{4}-\d{2}-\d{2}/.test(d) ? d.slice(0, 10) : null;
+        }).filter(Boolean);
+      }
+      return rows.filter(r => r['Type'] && r['Type'].includes('Entry'))
+        .map(r => r['Date and time'] ? r['Date and time'].split(' ')[0] : null).filter(Boolean);
+    }
+
+    // Per-file summary shown in place of the single-format info blurb.
+    function getMultiFileInfoHTML() {
+      const labels = { fsdx: 'FSD-X ORB Pro', fsdx_new: 'FSD-X ORB Pro', tv: 'TradingView', tv_new: 'TradingView', tradovate: 'Tradovate Orders', journal: 'Journal export' };
+      const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      const rows = loadedFiles.map(f => {
+        const bad = !!f.error;
+        return `<div class="flex items-center justify-between gap-3 py-1 border-b border-white/5 last:border-0">
+          <div class="text-[11px] ${bad ? 'text-zinc-600 line-through' : 'text-zinc-300'} truncate">${esc(f.name)}</div>
+          <div class="text-[10px] shrink-0 ${bad ? 'text-red-400' : 'text-green-400'}">${bad ? esc(f.error) : esc(labels[f.mode] || f.mode)}</div>
+        </div>`;
+      }).join('');
+      const okCount = loadedFiles.filter(f => !f.error).length;
+      return `<div class="rounded-xl px-4 py-3 text-xs border bg-green-500/5 border-green-500/20">
+        <div class="font-bold text-green-400 mb-2">Bulk import — ${okCount} of ${loadedFiles.length} file${loadedFiles.length !== 1 ? 's' : ''} ready</div>
+        ${rows}
+        <p class="text-[10px] text-zinc-500 mt-2">Each file is parsed on its own terms and routed by its account #. Identical trades appearing in more than one file are dropped automatically.</p>
+      </div>`;
     }
 
     // ── CSV Parser ──
@@ -902,11 +964,11 @@
     }
 
     // ── Main convert function ──
-    function convert() {
-      const ticker = (document.getElementById('opt-ticker').value.trim() || 'MNQ').toUpperCase();
-      const fromDate = document.getElementById('opt-from').value;
-      const toDate = document.getElementById('opt-to').value;
-      const rows = parseCSV(rawCSV);
+    // Converts ONE loaded file using that file's own detected mode, so a bulk
+    // drop can mix formats without the files interfering with each other.
+    function convertFile(fileObj, ticker, fromDate, toDate) {
+      const rows = fileObj.rows || parseCSV(fileObj.text || '');
+      const detectedMode = fileObj.mode;
       let trades = [];
 
       if (detectedMode === 'journal') {
@@ -1018,16 +1080,56 @@
         });
       }
 
-      if (!trades.length) return showError('No trades found. Check your date range or make sure you exported the right file/tab.');
+      return trades;
+    }
 
-      convertedTrades = trades;
+    // Convert every loaded file and merge the results.
+    function convert() {
+      const ticker = (document.getElementById('opt-ticker').value.trim() || 'MNQ').toUpperCase();
+      const fromDate = document.getElementById('opt-from').value;
+      const toDate = document.getElementById('opt-to').value;
+      const ok = loadedFiles.filter(f => !f.error);
+
+      let all = [];
+      let totalUnmatched = 0;
+      ok.forEach(f => {
+        unmatchedRows = 0;
+        let t = [];
+        try { t = convertFile(f, ticker, fromDate, toDate) || []; }
+        catch (e) { f.error = 'Parse failed'; return; }
+        f.tradeCount = t.length;
+        totalUnmatched += unmatchedRows;
+        all.push(...t);
+      });
+      unmatchedRows = totalUnmatched;
+
+      // Drop trades that appear in more than one file. Re-exporting an
+      // overlapping date range per account is easy to do by accident, and a
+      // duplicated trade would silently double that account's P&L.
+      const seen = new Set();
+      const deduped = [];
+      let dupes = 0;
+      all.forEach(t => {
+        const key = [normAcctNum(t.accountNumber) || t.accountName || '', t.date || '', t.entryTime || '', t.exitTime || '', t.contracts || '', t.netPnl].join('|');
+        if (seen.has(key)) { dupes++; return; }
+        seen.add(key);
+        deduped.push(t);
+      });
+      duplicatesDropped = dupes;
+
+      deduped.sort((a, b) => ((a.date || '') + (a.entryTime || '')).localeCompare((b.date || '') + (b.entryTime || '')));
+
+      if (!deduped.length) return showError('No trades found. Check your date range or make sure you exported the right file/tab.');
+
+      convertedTrades = deduped;
 
       // Auto-fill new session fields
+      const primaryMode = ok.length ? ok[0].mode : detectedMode;
       document.getElementById('new-session-ticker').value = ticker;
-      document.getElementById('new-session-strategy').value = detectedMode === 'fsdx' ? 'FSD-X ORB PRO' : detectedMode === 'tradovate' ? 'Live Trade' : 'TradingView Strategy';
+      document.getElementById('new-session-strategy').value = primaryMode === 'fsdx' ? 'FSD-X ORB PRO' : primaryMode === 'tradovate' ? 'Live Trade' : primaryMode === 'journal' ? 'Imported' : 'TradingView Strategy';
       if (fromDate) document.getElementById('new-session-startdate').value = fromDate;
 
-      showResults(trades);
+      showResults(deduped);
     }
 
     function setDestination(dest) {
@@ -1172,11 +1274,55 @@
       if (acct && acct.accountType) document.getElementById('import-acct-type').value = acct.accountType;
     }
 
+    // Per-account totals so a bulk import can be sanity-checked against each
+    // account's own P&L before anything is written to the journal.
+    function renderAccountBreakdown(trades) {
+      const host = document.getElementById('result-stats');
+      if (!host) return;
+      let el = document.getElementById('account-breakdown');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'account-breakdown';
+        el.className = 'mt-4';
+        host.parentNode.insertBefore(el, host.nextSibling);
+      }
+      const groups = {};
+      trades.forEach(t => {
+        const k = t.accountName || '(unassigned)';
+        groups[k] = groups[k] || { n: 0, pnl: 0, wins: 0, losses: 0, matched: t.accountMatched, liq: 0 };
+        const g = groups[k];
+        g.n++; g.pnl += parseFloat(t.netPnl) || 0;
+        if (t.result === 'WIN') g.wins++; else if (t.result === 'LOSS') g.losses++;
+        if (t.liquidated) g.liq++;
+      });
+      const keys = Object.keys(groups);
+      if (keys.length < 2 && !duplicatesDropped) { el.innerHTML = ''; return; }
+      const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      el.innerHTML = `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4">
+        <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">By account</div>
+        ${keys.map(k => {
+          const g = groups[k];
+          const dec = g.wins + g.losses;
+          return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-white/5 last:border-0">
+            <div class="min-w-0">
+              <div class="text-xs font-bold ${g.matched ? 'text-white' : 'text-amber-400'} truncate">${esc(k)}${g.matched ? '' : ' ⚠'}</div>
+              <div class="text-[10px] text-zinc-600">${g.n} trade${g.n !== 1 ? 's' : ''} · ${dec ? Math.round(g.wins / dec * 100) : 0}% WR${g.liq ? ' · ' + g.liq + ' liquidated' : ''}</div>
+            </div>
+            <div class="text-xs font-black shrink-0" style="color:${g.pnl >= 0 ? '#22c55e' : '#ef4444'}">${g.pnl >= 0 ? '+' : ''}$${g.pnl.toFixed(2)}</div>
+          </div>`;
+        }).join('')}
+        ${duplicatesDropped ? `<div class="text-[10px] text-zinc-500 mt-2 pt-2 border-t border-white/5">${duplicatesDropped} identical trade${duplicatesDropped !== 1 ? 's' : ''} appeared in more than one file and ${duplicatesDropped !== 1 ? 'were' : 'was'} counted once.</div>` : ''}
+      </div>`;
+    }
+
     function showResults(trades) {
       document.getElementById('options-panel').classList.add('hidden');
       document.getElementById('results-panel').classList.remove('hidden');
 
-      document.getElementById('result-format-badge').innerHTML = getFormatBadgeHTML(detectedMode);
+      const okFiles = loadedFiles.filter(f => !f.error);
+      document.getElementById('result-format-badge').innerHTML = okFiles.length > 1
+        ? `<div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-green-500/10 border-green-500/30 text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>${okFiles.length} Files Imported ✓</div>`
+        : getFormatBadgeHTML(detectedMode);
       document.getElementById('result-format-badge').className = '';
 
       // Unmatched warning for Tradovate
@@ -1203,16 +1349,19 @@
       </div>`;
 
       document.getElementById('result-stats').innerHTML =
-        stat('Trades', trades.length, '#ffffff') +
+        stat('Trades', trades.length, '#ffffff', duplicatesDropped ? duplicatesDropped + ' duplicate' + (duplicatesDropped !== 1 ? 's' : '') + ' dropped' : '') +
         stat('Win Rate', wr + '%', wr >= 50 ? '#22c55e' : '#ef4444', 'TV: ' + (Math.round(wins/(wins+losses+bes)*10000)/100).toFixed(2) + '% (incl. BE)') +
         stat('Net P&L', (netPnl >= 0 ? '+' : '') + '$' + netPnl.toFixed(2), netPnl >= 0 ? '#22c55e' : '#ef4444') +
         stat('W / L / BE', `${wins} / ${losses} / ${bes}`, '#71717a');
 
+      renderAccountBreakdown(trades);
       drawMiniCurve(trades);
 
       // Note
       const noteEl = document.getElementById('trade-count-note');
-      if (detectedMode !== 'tradovate') {
+      if (detectedMode === 'journal') {
+        noteEl.classList.add('hidden');
+      } else if (detectedMode !== 'tradovate') {
         noteEl.classList.remove('hidden');
         noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Trade count may differ by 1 from TradingView</span> — TV sometimes excludes the first trade from its summary if a position was open before the backtest window. Your converter counts all complete entry+exit pairs.`;
       } else {
@@ -1558,6 +1707,8 @@
 
     function resetConverter() {
       convertedTrades=[]; rawCSV=''; detectedMode=''; destination=''; unmatchedRows=0; _existingTrades=[]; _overlapSessionId=null;
+      loadedFiles=[]; duplicatesDropped=0; tradovateAccountIds=[];
+      const bd = document.getElementById('account-breakdown'); if (bd) bd.innerHTML='';
       document.getElementById('input-panel').classList.remove('hidden');
       document.getElementById('options-panel').classList.add('hidden');
       document.getElementById('results-panel').classList.add('hidden');
