@@ -423,7 +423,7 @@
     // ── Auth ──
     async function loadAuth() {
       const token = localStorage.getItem('fsdx_token');
-      if (!token) return;
+      if (!token) { window.location.href='login.html'; return; }
       try {
         const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', { headers: { 'Authorization': 'Bearer ' + token } });
         const data = await res.json();
