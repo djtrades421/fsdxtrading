@@ -9,6 +9,7 @@
         GA4_ID          Google Analytics -> Admin -> Data Streams (G-XXXXXXX)
         GOOGLE_ADS_ID   Google Ads -> Tools -> Conversions (AW-XXXXXXXXX)
         GOOGLE_ADS_LABEL  the conversion action's label (AW-.../LabelHere)
+        WHOP_BIZ_ID     Whop dashboard URL -> biz_xxxxxxxxxxxxx
 
    What gets tracked automatically once IDs are in:
      - PageView on every public page
@@ -16,13 +17,16 @@
        checkout link (this is your trial-start signal — the actual purchase
        completes on Whop's domain, so this click is the last event we own)
      - Lead when someone clicks through to Discord
+     - Whop pixel page view on every page, so Whop can attribute the
+       purchase/trial (which completes on whop.com) back to this visit
    ========================================================================== */
 
 var FSDX_ANALYTICS = {
   META_PIXEL_ID:    "3483027555206453",   // FSD-X Trading pixel
   GA4_ID:           "G-CKJ2Q0R1KC",   // FSD-X Trading GA4
   GOOGLE_ADS_ID:    "",   // e.g. "AW-123456789"
-  GOOGLE_ADS_LABEL: ""    // e.g. "AbCdEfGhIj"
+  GOOGLE_ADS_LABEL: "",   // e.g. "AbCdEfGhIj"
+  WHOP_BIZ_ID:      "biz_2f60zABhyFQYpX"   // FSD-X Trading Whop pixel
 };
 
 (function () {
@@ -58,12 +62,26 @@ var FSDX_ANALYTICS = {
     if (C.GOOGLE_ADS_ID) gtag("config", C.GOOGLE_ADS_ID);
   }
 
+  /* ---------- Whop Pixel ----------
+     Ties a visitor on this site to the purchase/trial that completes on
+     whop.com. First-party, so it survives cookie blocking. Checkout views
+     and purchases are tracked by Whop on their own domain once the scope
+     is set here — nothing extra to fire on our side.                    */
+  if (C.WHOP_BIZ_ID) {
+    !function(w,d,s,u,n,a,b){if(w[n])return;a=w[n]={q:[],t:+new Date,s:[],o:u,track:function(){a.q.push([+new Date].concat([].slice.call(arguments)))},setScope:function(){a.s=[].slice.call(arguments).filter(function(x){return typeof x==="string"});a.q.push([+new Date,"setScope"].concat(a.s))},scope:function(){var c=[].slice.call(arguments);return{track:function(){a.q.push([+new Date].concat([].slice.call(arguments)).concat([{__scope:c}]))}}}};b=d.createElement(s);b.async=1;b.src=u+"/s.js";d.getElementsByTagName(s)[0].parentNode.insertBefore(b,d.getElementsByTagName(s)[0])}(window,document,"script","https://t.whop.tw","whop");
+    whop.setScope(C.WHOP_BIZ_ID);
+    whop.track("page");
+  }
+
   /* ---------- helpers ---------- */
   function metaTrack(name, params) {
     if (window.fbq) fbq("track", name, params || {});
   }
   function gaEvent(name, params) {
     if (window.gtag) gtag("event", name, params || {});
+  }
+  function whopTrack(name, params) {
+    if (window.whop) { params ? whop.track(name, params) : whop.track(name); }
   }
   function adsConversion() {
     if (window.gtag && C.GOOGLE_ADS_ID && C.GOOGLE_ADS_LABEL) {
@@ -95,9 +113,10 @@ var FSDX_ANALYTICS = {
     if (href.indexOf("discord.gg") > -1) {
       metaTrack("Lead", { content_name: "Discord" });
       gaEvent("generate_lead", { method: "discord" });
+      whopTrack("lead");
     }
   }, true);
 
   /* expose for manual firing elsewhere if ever needed */
-  window.fsdxTrack = { meta: metaTrack, ga: gaEvent, adsConversion: adsConversion };
+  window.fsdxTrack = { meta: metaTrack, ga: gaEvent, whop: whopTrack, adsConversion: adsConversion };
 })();
