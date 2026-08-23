@@ -771,6 +771,9 @@
           </div>
         </div>
 
+        <!-- What each imported file was detected as — Whop export filenames are opaque -->
+        <div id="import-detect-summary" class="hidden mb-4 rounded-xl border border-white/10 bg-zinc-950/60 px-4 py-3"></div>
+
         <!-- Stats row -->
         <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-3" id="roster-stats"></div>
 
@@ -4655,6 +4658,47 @@
     // ── Multi-file import — detects format for each file automatically ──
     let _multiImportQueue = [];  // queue of non-roster files to process after roster confirms
 
+    // Plain-English label + what each format actually contributes.
+    const FORMAT_INFO = {
+      whop_api_members:     { label: 'Whop members (new export)',     role: 'Names & usernames — lookup only', ok: true },
+      whop_api_memberships: { label: 'Whop memberships (new export)', role: 'Plans, statuses, renewal dates',   ok: true },
+      whop_memberships:     { label: 'Whop memberships (old export)', role: 'Plans, statuses, renewal dates',   ok: true },
+      whop_users:           { label: 'Whop users (old export)',       role: 'Roster — can add new members',     ok: true },
+      whop_members:         { label: 'Whop members (old export)',     role: 'Roster',                           ok: true },
+      whop_payments:        { label: 'Whop payments',                 role: 'Revenue + real prices paid',       ok: true },
+      discord_legacy:       { label: 'Discord legacy CSV',            role: 'Legacy roster',                    ok: true },
+      discord_vip_legacy:   { label: 'Discord VIP legacy CSV',        role: 'Legacy roster',                    ok: true },
+      discord_csv:          { label: 'Discord CSV',                   role: 'Roster',                           ok: true },
+      unknown:              { label: 'Not recognised',                role: 'Skipped — nothing imported',       ok: false },
+    };
+
+    function renderImportDetectSummary(parsed) {
+      const el = document.getElementById('import-detect-summary');
+      if (!el) return;
+      if (!parsed || !parsed.length) { el.classList.add('hidden'); return; }
+      el.classList.remove('hidden');
+      const hasPayments = parsed.some(p => p.format === 'whop_payments');
+      const rows = parsed.map(p => {
+        const info = FORMAT_INFO[p.format] || FORMAT_INFO.unknown;
+        return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-white/5 last:border-0">
+          <div class="min-w-0">
+            <span class="${info.ok ? 'text-zinc-500' : 'text-red-400'} text-[10px] truncate">${p.file.name}</span>
+            <span class="text-white text-[11px] font-bold ml-2">${info.label}</span>
+          </div>
+          <div class="flex items-center gap-3 shrink-0">
+            <span class="text-zinc-600 text-[10px]">${info.role}</span>
+            <span class="text-zinc-600 text-[10px]">${p.rows.length} rows</span>
+            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${info.ok ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}">${info.ok ? 'detected' : 'skipped'}</span>
+          </div>
+        </div>`;
+      }).join('');
+      // Renewal prices come from the payments file — without it everything falls
+      // back to plan list price and discounted members read too high.
+      const warn = hasPayments ? '' :
+        `<div class="mt-2 text-[10px] text-yellow-400">No payments export included — renewal amounts will fall back to plan list price, so discounted members will read too high.</div>`;
+      el.innerHTML = `<div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-2">Files detected</div>${rows}${warn}`;
+    }
+
     async function handleMultiImport(files) {
       if (!files || !files.length) return;
       console.log('[import] files selected:', files.length, Array.from(files).map(f => f.name));
@@ -4685,6 +4729,11 @@
       const unknown = parsed.filter(p => p.format === 'unknown');
 
       if (unknown.length) console.warn('Unrecognised files skipped:', unknown.map(p => p.file.name).join(', '));
+
+      // Whop export filenames are opaque (exprt_dZ9epXabldzH.csv), so show what
+      // each file was actually detected as. Order and file count don't matter —
+      // this is just so a missing or unrecognised file is obvious.
+      renderImportDetectSummary(parsed);
 
       // The API members export is a lookup table, not a roster file — it holds no
       // plan or renewal data. Load it straight into the directory with no diff
@@ -4757,13 +4806,26 @@
       const list = document.getElementById('diff-list');
       panel.classList.remove('hidden');
 
-      summary.textContent = `${diff.newItems.length} new · ${diff.changed.length} changed · ${diff.unchanged.length} unchanged`;
+      // Memberships exports can update and archive members but never create new
+      // roster rows. Calling their unmatched rows "new" implies they'll be added,
+      // and then nothing appears. Label them honestly instead.
+      const fmt = pendingImport?.format || '';
+      const noAdd = fmt === 'whop_memberships' || fmt === 'whop_api_memberships';
+      const newLabel = noAdd ? 'SKIP' : 'NEW';
+      const newWord  = noAdd ? 'not on roster (skipped)' : 'new';
+
+      summary.textContent = `${diff.newItems.length} ${newWord} · ${diff.changed.length} changed · ${diff.unchanged.length} unchanged`;
 
       const rows = [
-        ...diff.newItems.map(d => `<div class="flex items-start gap-3 p-2 rounded-lg bg-green-500/5 border border-green-500/15">
-          <span class="text-[10px] font-black text-green-400 uppercase mt-0.5 shrink-0">NEW</span>
-          <div class="text-xs"><span class="text-white font-bold">${d.item.name || d.item.discordName || d.item.email}</span>
-          <span class="text-zinc-500 ml-2">${d.item.email}</span>
+        ...(noAdd && diff.newItems.length ? [`<div class="p-2 rounded-lg bg-zinc-900/60 border border-white/10 text-[11px] text-zinc-400">
+          A memberships export only updates people already on the roster — it never adds anyone.
+          The ${diff.newItems.length} below matched no existing record and will be skipped.
+          Cancelled ones still get archived to History. To add someone new, import a Users export or use <span class="text-white font-bold">+ Add Member</span>.
+        </div>`] : []),
+        ...diff.newItems.map(d => `<div class="flex items-start gap-3 p-2 rounded-lg ${noAdd ? 'bg-zinc-800/30 border border-white/5' : 'bg-green-500/5 border border-green-500/15'}">
+          <span class="text-[10px] font-black ${noAdd ? 'text-zinc-500' : 'text-green-400'} uppercase mt-0.5 shrink-0">${newLabel}</span>
+          <div class="text-xs"><span class="text-white font-bold">${d.item.name || d.item.discordName || d.item.whopUsername || d.item.email}</span>
+          <span class="text-zinc-500 ml-2">${d.item.email || d.item.whopKey || ''}</span>
           <span class="ml-2 text-zinc-600">${d.item.status} · ${d.item.accessType}</span></div>
         </div>`),
         ...diff.changed.map(d => `<div class="flex items-start gap-3 p-2 rounded-lg bg-yellow-500/5 border border-yellow-500/15">
