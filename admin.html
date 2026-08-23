@@ -1355,8 +1355,9 @@
               </select>
             </div>
             <div>
-              <label class="block text-[10px] text-zinc-600 mb-1">Monthly Amount ($)</label>
-              <input type="number" id="mm-amount" placeholder="0.00" step="0.01" min="0" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              <label class="block text-[10px] text-zinc-600 mb-1">Monthly Amount ($) <span class="text-zinc-700 font-normal">— override</span></label>
+              <input type="number" id="mm-amount" placeholder="auto from payments" step="0.01" min="0" class="w-full bg-black border border-white/10 text-white text-xs px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              <p class="text-[9px] text-zinc-600 mt-1 leading-relaxed">Leave blank to use their last real charge from the payments export. Set a value only to override it — e.g. a promo price they haven't been billed at yet.</p>
             </div>
             <div>
               <label class="block text-[10px] text-zinc-600 mb-1">Next Renewal Date</label>
@@ -3182,6 +3183,9 @@
         tvRenew: renewal,
         billingCycle: cycle,
         billingAmount: amountVal ? parseFloat(amountVal) : 0,
+        // Flags this price as a deliberate admin override so payment history and
+        // future imports can't overwrite it. Clear the field to hand control back.
+        billingAmountManual: !!amountVal,
         spend: amountVal ? String(parseFloat(amountVal)) : '0',
         notes: document.getElementById('mm-notes').value.trim(),
         manualEntry: true,
@@ -4044,6 +4048,13 @@
     // ── Format detection ──
     function detectImportFormat(headers) {
       const h = headers.join(',').toLowerCase();
+      // ── Newer Whop API-style exports (lowercase snake_case headers) ──
+      // Memberships: id,status,user_id,product_id,plan_id,license_key,
+      //              cancel_at_period_end,current_period_end,created_at,...
+      // Members:     id,account_id,access_level,status,joined_at,...,user.username
+      // Checked first — their headers can't collide with the older exports.
+      if (h.includes('license_key') && h.includes('plan_id') && h.includes('current_period_end')) return 'whop_api_memberships';
+      if (h.includes('access_level') && h.includes('user.username')) return 'whop_api_members';
       if (h.includes('member id') && h.includes('renewal date') && h.includes('canceling date')) return 'whop_users';
       if (h.includes('member id') && h.includes('renewal date')) return 'whop_members';
       if (h.includes('subscription status') && h.includes('next payment date')) return 'whop_memberships';
@@ -4236,6 +4247,127 @@
         }
       });
       return Object.values(emailBest);
+    }
+
+    // ══ Newer Whop API-style exports ══════════════════════════════════════
+    // Whop's current export gives two files that join on user id:
+    //   members export     — user.id, user.username, user.name, access_level,
+    //                        status (joined/left), joined_at
+    //   memberships export — user_id, plan_id, license_key, status,
+    //                        cancel_at_period_end, current_period_end
+    // Neither carries an email address, so these imports match existing roster
+    // rows on license key (whopKey) and Whop username instead. Import the
+    // members file first (or together) — it fills the directory below, which the
+    // memberships parser reads to attach real names to each membership.
+    let apiUserDirectory = {};   // user_id → { whopUsername, name, joined, left, accessLevel }
+
+    function parseWhopApiMembers(rows) {
+      rows.forEach(r => {
+        const uid = r['user.id'] || '';
+        if (!uid) return;
+        apiUserDirectory[uid] = {
+          whopUsername: r['user.username'] || '',
+          name: r['user.name'] || '',
+          joined: (r['joined_at'] || r['created_at'] || '').split('T')[0],
+          left: (r['status'] || '').toLowerCase() === 'left',
+          accessLevel: (r['access_level'] || '').toLowerCase(),
+          lastAccessed: (r['last_accessed_at'] || '').split('T')[0],
+        };
+      });
+      // The members file has no plan or renewal data, so it can't build roster
+      // rows on its own. It only enriches the memberships import.
+      return [];
+    }
+
+    function parseWhopApiMemberships(rows) {
+      // A LIVE subscription outranks a completed one-time purchase. Whop reports
+      // finished one-time buys (Optimizer, Nexus, Lifetime) as status "completed",
+      // and a paying member who also bought one of those must not collapse to
+      // 'lifetime' — that status is in DEAD_STATUSES and would drop them out of
+      // the revenue forecast entirely.
+      const STATUS_PRIORITY = { active: 0, trialing: 1, canceling: 2, past_due: 3, lifetime: 4, trial_cancelled: 5, inactive: 6, cancelled: 7 };
+      const parsed = rows.map(r => {
+        const rawStatus = (r['status'] || '').toLowerCase();
+        const cancelAtEnd = String(r['cancel_at_period_end'] || '').toLowerCase() === 'true';
+        const planId = r['plan_id'] || '';
+        const periodEnd = (r['current_period_end'] || '').split('T')[0];
+        const created = (r['created_at'] || '').split('T')[0];
+        const uid = r['user_id'] || '';
+        const dir = apiUserDirectory[uid] || {};
+
+        // Whop status → roster status.
+        // "completed" = a finished one-time / lifetime purchase, not a churn.
+        let status = 'active';
+        if (rawStatus === 'canceled' || rawStatus === 'cancelled') status = 'cancelled';
+        else if (rawStatus === 'completed') status = 'lifetime';
+        else if (rawStatus === 'past_due') status = 'past_due';
+        else if (rawStatus === 'trialing') status = cancelAtEnd ? 'trial_cancelled' : 'trialing';
+        else if (rawStatus === 'paused') status = 'inactive';
+        else if (rawStatus === 'active' && cancelAtEnd) status = 'canceling';
+
+        const accessType = planLabelFromId(planId) || planId || '—';
+        if (/lifetime/i.test(accessType) && status === 'active') status = 'lifetime';
+
+        // A lifetime/cancelled membership has no renewal coming — leave it blank
+        // so it never lands in the revenue forecast.
+        const renewal = (status === 'cancelled' || status === 'lifetime') ? '' : periodEnd;
+
+        return {
+          id: r['id'] || (Date.now() + Math.random()).toString(36),
+          membershipId: r['id'] || '',
+          userId: uid,
+          name: dir.name || '',
+          whopUsername: dir.whopUsername || '',
+          whopKey: r['license_key'] || '',
+          email: '',              // not present in this export — matched by key/username
+          discordName: '',
+          discordId: '',
+          tvUsername: '',
+          status,
+          accessType,
+          planName: accessType,
+          planId,
+          productId: r['product_id'] || '',
+          source: 'Whop',
+          joined: dir.joined || created,
+          renewal,
+          tvRenew: renewal,
+          tvRemoval: status === 'cancelled' ? 'Removed' : cancelAtEnd ? 'Pending' : 'No',
+          churnedDate: status === 'cancelled' ? periodEnd : '',
+          cancelingDate: (cancelAtEnd && status !== 'cancelled') ? periodEnd : '',
+          spend: '0',
+          country: '',
+          notes: '',
+          source_detail: 'whop_api_memberships',
+        };
+      });
+
+      // One user can hold several memberships (upgrades, add-on products).
+      // Collapse to the best live status per user so the roster gets one row.
+      const bestByUser = {};
+      parsed.forEach(item => {
+        const key = item.whopKey || item.userId;
+        if (!key) return;
+        const uk = item.userId || key;
+        if (!bestByUser[uk]) { bestByUser[uk] = item; return; }
+        const ex = bestByUser[uk];
+        const exPri = STATUS_PRIORITY[ex.status] ?? 99;
+        const newPri = STATUS_PRIORITY[item.status] ?? 99;
+        if (newPri < exPri) {
+          // Carry forward anything the better row is missing
+          item.whopKey = item.whopKey || ex.whopKey;
+          item.joined = (ex.joined && (!item.joined || ex.joined < item.joined)) ? ex.joined : item.joined;
+          bestByUser[uk] = item;
+        } else {
+          if (!ex.whopKey && item.whopKey) ex.whopKey = item.whopKey;
+          if (item.joined && (!ex.joined || item.joined < ex.joined)) ex.joined = item.joined;
+          if (item.planName && item.planName !== ex.planName) {
+            const plans = [...new Set([...(ex.planName || '').split(' → '), ...(item.planName || '').split(' → ')].filter(Boolean))];
+            ex.planName = plans.join(' → ');
+          }
+        }
+      });
+      return Object.values(bestByUser);
     }
 
     // ── Parse Whop Users export ──
@@ -4476,19 +4608,28 @@
       const emailMap = {};
       const discordMap = {};
       const tvMap = {};
+      // Whop's newer exports carry no email, so key and username are the only
+      // way to recognise an existing member.
+      const keyMap = {};
+      const whopUserMap = {};
       rosterData.forEach(r => {
         if (r.email) emailMap[r.email.toLowerCase()] = r;
         if (r.discordName) discordMap[r.discordName.toLowerCase()] = r;
         if (r.tvUsername) tvMap[r.tvUsername.toLowerCase()] = r;
+        if (r.whopKey) keyMap[r.whopKey] = r;
+        if (r.whopUsername) whopUserMap[r.whopUsername.toLowerCase()] = r;
       });
 
       incoming.forEach(item => {
         const emailKey = item.email?.toLowerCase();
         const discordKey = item.discordName?.toLowerCase();
         const tvKey = item.tvUsername?.toLowerCase();
+        const whopUserKey = item.whopUsername?.toLowerCase();
         const existing = (emailKey && emailMap[emailKey]) ||
+                         (item.whopKey && keyMap[item.whopKey]) ||
                          (discordKey && discordMap[discordKey]) ||
-                         (tvKey && tvMap[tvKey]);
+                         (tvKey && tvMap[tvKey]) ||
+                         (whopUserKey && whopUserMap[whopUserKey]);
         if (!existing) {
           newItems.push({ type: 'new', item });
         } else {
@@ -4518,7 +4659,9 @@
       if (!files || !files.length) return;
       console.log('[import] files selected:', files.length, Array.from(files).map(f => f.name));
 
-      const FORMAT_ORDER = { whop_users: 0, whop_members: 1, discord_csv: 2, whop_memberships: 3, whop_payments: 4, unknown: 5 };
+      // whop_api_members must run before whop_api_memberships — it fills the
+      // user directory that gives each membership row its name and username.
+      const FORMAT_ORDER = { whop_users: 0, whop_members: 1, discord_csv: 2, whop_api_members: 3, whop_api_memberships: 4, whop_memberships: 5, whop_payments: 6, unknown: 7 };
 
       // Read all files FIRST before resetting the input
       const parsed = [];
@@ -4534,13 +4677,22 @@
       // Now safe to reset the input
       document.getElementById('roster-import-input').value = '';
 
-      parsed.sort((a, b) => (FORMAT_ORDER[a.format]??5) - (FORMAT_ORDER[b.format]??5));
+      parsed.sort((a, b) => (FORMAT_ORDER[a.format]??9) - (FORMAT_ORDER[b.format]??9));
 
       const payments = parsed.filter(p => p.format === 'whop_payments');
-      const rosterFiles = parsed.filter(p => p.format !== 'whop_payments' && p.format !== 'unknown');
+      const apiMembers = parsed.filter(p => p.format === 'whop_api_members');
+      const rosterFiles = parsed.filter(p => !['whop_payments', 'whop_api_members', 'unknown'].includes(p.format));
       const unknown = parsed.filter(p => p.format === 'unknown');
 
       if (unknown.length) console.warn('Unrecognised files skipped:', unknown.map(p => p.file.name).join(', '));
+
+      // The API members export is a lookup table, not a roster file — it holds no
+      // plan or renewal data. Load it straight into the directory with no diff
+      // prompt so the memberships file that follows can resolve names.
+      for (const { rows, file } of apiMembers) {
+        parseWhopApiMembers(rows);
+        console.log('[import]', file.name, '→ user directory:', Object.keys(apiUserDirectory).length, 'users');
+      }
 
       // Payments process immediately
       for (const { file } of payments) {
@@ -4561,11 +4713,19 @@
       if (!rows.length) { alert('No data found in file.'); return; }
       const headers = Object.keys(rows[0]);
       const format = detectImportFormat(headers);
-      if (format === 'unknown') { alert('Could not detect format. Supported: Whop memberships export, Discord/Legacy CSV.'); return; }
+      if (format === 'unknown') { alert('Could not detect format. Supported: Whop memberships/members exports (old or new), Whop payments export, Discord/Legacy CSV.'); return; }
       if (format === 'whop_payments') { await handlePaymentsImport(file); return; }
+      // Members lookup file — no plan data, so it just fills the directory.
+      if (format === 'whop_api_members') {
+        parseWhopApiMembers(rows);
+        alert(`Loaded ${Object.keys(apiUserDirectory).length} Whop users. Now import the memberships export to update the roster.`);
+        document.getElementById('roster-import-input').value = '';
+        return;
+      }
 
       let incoming = [];
-      if (format === 'whop_members') incoming = parseWhopMembers(rows);
+      if (format === 'whop_api_memberships') incoming = parseWhopApiMemberships(rows);
+      else if (format === 'whop_members') incoming = parseWhopMembers(rows);
       else if (format === 'whop_memberships') {
         incoming = parseWhopMemberships(rows);
         // Store raw rows keyed by email for the expand detail view
@@ -4660,17 +4820,24 @@
 
       // Merge: update changed, add new
       const emailMap = {}; const discordMap = {}; const tvMap = {};
+      const keyMap = {}; const whopUserMap = {};
       rosterData.forEach((r, i) => {
         if (r.email) emailMap[r.email.toLowerCase()] = i;
         if (r.discordName) discordMap[r.discordName.toLowerCase()] = i;
         if (r.tvUsername) tvMap[r.tvUsername.toLowerCase()] = i;
+        if (r.whopKey) keyMap[r.whopKey] = i;
+        if (r.whopUsername) whopUserMap[r.whopUsername.toLowerCase()] = i;
       });
 
       const isUsersExport = importFormat === 'whop_users';
-      const isMembershipsExport = importFormat === 'whop_memberships';
+      const isApiMemberships = importFormat === 'whop_api_memberships';
+      // Both memberships formats share the same rules: they can update and
+      // archive existing members but must never invent new roster rows.
+      const isMembershipsExport = importFormat === 'whop_memberships' || isApiMemberships;
 
-      // Store raw rows for the expand view
-      if (isMembershipsExport) {
+      // Store raw rows for the expand view — old-format columns only.
+      // The API export has different headers and would break buildExpandContent().
+      if (isMembershipsExport && !isApiMemberships) {
         rawMembershipRows = pendingImport._allRows || [];
         saveRawMembershipsToKV();
       }
@@ -4679,9 +4846,12 @@
         const emailKey = item.email?.toLowerCase();
         const discordKey = item.discordName?.toLowerCase();
         const tvKey = item.tvUsername?.toLowerCase();
+        const whopUserKey = item.whopUsername?.toLowerCase();
         const idx = (emailKey && emailMap[emailKey] !== undefined ? emailMap[emailKey] :
+                     item.whopKey && keyMap[item.whopKey] !== undefined ? keyMap[item.whopKey] :
                      discordKey && discordMap[discordKey] !== undefined ? discordMap[discordKey] :
-                     tvKey && tvMap[tvKey] !== undefined ? tvMap[tvKey] : -1);
+                     tvKey && tvMap[tvKey] !== undefined ? tvMap[tvKey] :
+                     whopUserKey && whopUserMap[whopUserKey] !== undefined ? whopUserMap[whopUserKey] : -1);
 
         // Memberships cancelled records — if this person is already on the roster,
         // apply the cancellation to their record instead of silently skipping.
@@ -4736,12 +4906,22 @@
             discordName: isManual ? (existing.discordName || item.discordName) : (item.discordName || existing.discordName),
             discordId: item.discordId || existing.discordId,
             whopKey: isMembershipsExport ? (item.whopKey || existing.whopKey) : existing.whopKey,
+            // The API export has no email, so username + key are how this member
+            // gets recognised on the next import. Keep them current.
+            whopUsername: item.whopUsername || existing.whopUsername || '',
+            // Plan/tier is authoritative in the API memberships export — it's the
+            // live plan_id straight from Whop.
+            ...(isApiMemberships && item.planId ? {
+              planId: item.planId,
+              accessType: item.accessType || existing.accessType,
+              planName: item.planName || existing.planName,
+            } : {}),
             spend: item.spend || existing.spend,
             country: item.country || existing.country,
             tvRemoval: item.tvRemoval || existing.tvRemoval,
             cancelReason: isMembershipsExport ? (item.cancelReason || existing.cancelReason) : existing.cancelReason,
             ...(isMembershipsExport && item.cancelReason && existing.status === 'trialing' ? { status: 'trial_cancelled' } : {}),
-            cancelingDate: isUsersExport ? (item.cancelingDate || existing.cancelingDate) : existing.cancelingDate,
+            cancelingDate: (isUsersExport || isApiMemberships) ? (item.cancelingDate || existing.cancelingDate) : existing.cancelingDate,
             notes: (() => {
               // Merge notes without duplicating — split on ' · ', dedupe, rejoin
               const existingParts = (existing.notes || '').split(' · ').map(s => s.trim()).filter(Boolean);
@@ -4755,6 +4935,8 @@
             billingAmount: isManual && existing.billingAmount
               ? existing.billingAmount
               : (existing.billingAmount || item.renewalPrice || item.initialPrice || 0),
+            // An explicit admin price override survives every import.
+            billingAmountManual: existing.billingAmountManual || false,
             billingCycle: isManual && existing.billingCycle ? existing.billingCycle : (existing.billingCycle || ''),
             initialPrice: item.initialPrice || existing.initialPrice || 0,
             renewalPrice: item.renewalPrice || existing.renewalPrice || 0,
@@ -4770,7 +4952,10 @@
       if (isMembershipsExport) {
         const rosterEmailSet = new Set(rosterData.map(r => r.email?.toLowerCase()).filter(Boolean));
         const rosterKeySet = new Set(rosterData.map(r => r.whopKey).filter(Boolean));
-        const cancelledFromMemberships = incoming.filter(item => item.status === 'cancelled' && item.email);
+        // The API export carries no email, so a licence key is an acceptable
+        // identity here — without one there's nothing to dedupe on and the row
+        // would create endless duplicate history entries.
+        const cancelledFromMemberships = incoming.filter(item => item.status === 'cancelled' && (item.email || item.whopKey));
 
         cancelledFromMemberships.forEach(item => {
           const emailKey = item.email?.toLowerCase();
@@ -4778,10 +4963,12 @@
 
           // Skip entirely if this person is already an active roster member
           // (they had an old cancelled membership but their current one is active)
-          if (rosterEmailSet.has(emailKey)) return;
+          if (emailKey && rosterEmailSet.has(emailKey)) return;
           if (item.whopKey && rosterKeySet.has(item.whopKey)) return;
 
-          const existIdx = historyData.findIndex(l => l.email?.toLowerCase() === emailKey);
+          const existIdx = emailKey
+            ? historyData.findIndex(l => l.email?.toLowerCase() === emailKey)
+            : historyData.findIndex(l => item.whopKey && l.whopKey === item.whopKey);
           if (existIdx >= 0) {
             // Merge into existing history entry — keep highest spend value
             const h = historyData[existIdx];
@@ -4837,8 +5024,11 @@
       // Extract ghost accounts (no plan/membership data) as leads
       // Cross-ref against roster emails to mark converted ones
       const rosterEmails = new Set(rosterData.map(r => r.email?.toLowerCase()).filter(Boolean));
-      // pendingImport.allRows contains the raw rows — we need to re-parse ghosts
-      if (pendingImport._allRows) {
+      // pendingImport.allRows contains the raw rows — we need to re-parse ghosts.
+      // Only the old Users/Members exports have the 'Membership IDs' columns this
+      // test relies on. Running it on any other format marks EVERY row a ghost.
+      const GHOST_CAPABLE = ['whop_users', 'whop_members'];
+      if (pendingImport._allRows && GHOST_CAPABLE.includes(importFormat)) {
         const ghosts = pendingImport._allRows.filter(r =>
           !r['Membership IDs']?.trim() && !r['Plan IDs']?.trim() && !r['Product IDs']?.trim()
         );
@@ -5373,6 +5563,14 @@
         netAmount: (r['Total Amount USD (Excluding Fees)'] !== undefined && r['Total Amount USD (Excluding Fees)'] !== '')
           ? (parseFloat(r['Total Amount USD (Excluding Fees)']) || 0) : null,
         productId: r['Product ID'] || '',
+        // ── Real price data ──
+        // Subtotal = plan list price. Whop's "Promo code" column holds the
+        // DISCOUNT AMOUNT in dollars, not a code string. Subtotal − promoDiscount
+        // = the member's actual recurring price before tax. This is what drives
+        // the renewal forecast so discounted members aren't projected at list price.
+        subtotal: parseFloat(r['Subtotal'] || '0') || 0,
+        promoDiscount: parseFloat(r['Promo code'] || '0') || 0,
+        taxAmount: parseFloat(r['Tax amount'] || '0') || 0,
         nativeAmount: parseFloat(r['Payment Amount']||'0')||0,
         currency: r['Payment Currency'] || 'usd',
         billingReason: r['Billing reason'] || '',
@@ -5395,7 +5593,10 @@
           const idx = paymentsData.findIndex(ep => ep.id === p.id);
           if (idx !== -1) {
             const ep = paymentsData[idx];
-            if (ep.status !== p.status || ep.amount !== p.amount || ep.currency !== p.currency || ep.netAmount !== p.netAmount || ep.productId !== p.productId) {
+            // subtotal/promoDiscount are also compared so a re-import backfills
+            // price data onto records saved before those fields existed.
+            if (ep.status !== p.status || ep.amount !== p.amount || ep.currency !== p.currency || ep.netAmount !== p.netAmount || ep.productId !== p.productId
+                || ep.subtotal !== p.subtotal || ep.promoDiscount !== p.promoDiscount) {
               paymentsData[idx] = p; // refresh with latest parsed values
               updated++;
             }
@@ -5674,8 +5875,40 @@
       };
       // No blanket default — a wrong price is worse than a visible $0.00.
       const DEFAULT_RENEWAL_PRICE = 0;
+
+      // ── What this member ACTUALLY renews at ──
+      // Pulled from their most recent recurring charge in the payments export:
+      // Subtotal − promo discount. Pre-tax on purpose, because PLAN_PRICE is
+      // pre-tax too and avgNetRatio() already absorbs tax on the take-home side.
+      // Matches on email first, Discord username as a fallback.
+      // Caveat: a promo with a limited number of cycles will keep forecasting at
+      // the discounted price until the member bills at full price again. Use the
+      // manual Billing Amount override on the member record to correct that.
+      const lastRecurringPrice = (r) => {
+        const em = (r.email || '').toLowerCase();
+        const dn = (r.discordName || '').toLowerCase();
+        if (!em && !dn) return 0;
+        const hits = paymentsData.filter(p => {
+          if (p.status !== 'paid') return false;
+          if (p.billingReason !== 'subscription_cycle' && p.billingReason !== 'subscription_create') return false;
+          if (!(p.subtotal > 0)) return false;
+          const pe = (p.email || '').toLowerCase();
+          const pd = (p.discordName || '').toLowerCase();
+          return (em && pe === em) || (dn && pd === dn);
+        }).sort((a, b) => new Date(b.paidAt || 0) - new Date(a.paidAt || 0));
+        if (!hits.length) return 0;
+        const h = hits[0];
+        return Math.max(0, +(h.subtotal - (h.promoDiscount || 0)).toFixed(2));
+      };
+
       const getMemberPrice = (r) =>
-        r.billingAmount || r.renewalPrice || priceFromPlanId(r.planId) || r.initialPrice || DEFAULT_RENEWAL_PRICE;
+        (r.billingAmountManual ? r.billingAmount : 0)   // admin override always wins
+        || lastRecurringPrice(r)                        // real price from payment history
+        || r.billingAmount
+        || r.renewalPrice
+        || priceFromPlanId(r.planId)                    // plan list price (last resort)
+        || r.initialPrice
+        || DEFAULT_RENEWAL_PRICE;
       const statsEl = document.getElementById('payment-stats');
       if (statsEl) {
         const now = new Date();
@@ -5759,15 +5992,21 @@
             const d = new Date(r.renewal);
             const daysLeft = Math.ceil((d - now) / (1000*60*60*24));
             const price = getMemberPrice(r);
+            // Show list price struck through when this member is on a discount,
+            // so a low forecast reads as intentional rather than a data error.
+            const listPrice = priceFromPlanId(r.planId);
+            const discounted = listPrice > 0 && price > 0 && price < listPrice - 0.005;
+            const priceSource = r.billingAmountManual ? 'manual' : (lastRecurringPrice(r) > 0 ? 'from last charge' : 'plan price');
             return `<div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
               <div>
                 <span class="text-white font-bold">${r.name||r.discordName||r.email}</span>
                 <span class="text-zinc-500 ml-2">${r.email}</span>
                 <span class="text-zinc-600 ml-2 text-[10px]">${r.planName||r.accessType||''}</span>
+                ${discounted ? `<span class="ml-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">discounted</span>` : ''}
               </div>
               <div class="flex items-center gap-3">
-                <div class="text-right">
-                  <div class="text-green-400/80 text-[10px] font-bold">$${price.toFixed(2)}</div>
+                <div class="text-right" title="${priceSource}">
+                  <div class="text-green-400/80 text-[10px] font-bold">${discounted ? `<span class="text-zinc-600 font-normal line-through mr-1">$${listPrice.toFixed(2)}</span>` : ''}$${price.toFixed(2)}</div>
                   ${upRatio !== null ? `<div class="text-zinc-600 text-[9px]">≈$${(price*upRatio).toFixed(2)} after fees</div>` : ''}
                 </div>
                 <span class="text-zinc-500">${fmtDate(r.renewal)}</span>
@@ -6071,9 +6310,10 @@
 
     function exportPaymentsCSV() {
       if (!paymentsData.length) { alert('No payments data to export.'); return; }
-      const headers = ['Date','Customer Name','Email','Discord','Product','Gross Amount','Net Take-Home','Currency','Status','Type','Failure Reason','Receipt'];
+      const headers = ['Date','Customer Name','Email','Discord','Product','List Price','Discount','Charged Price','Tax','Gross Amount','Net Take-Home','Currency','Status','Type','Failure Reason','Receipt'];
       const rows = paymentsData.map(p => [
         p.paidAt?p.paidAt.slice(0,10):'', p.customerName||'', p.email||'', p.discordName||'', p.description||'',
+        p.subtotal||0, p.promoDiscount||0, (p.subtotal||0)-(p.promoDiscount||0), p.taxAmount||0,
         p.amount||0, (p.netAmount!==null&&p.netAmount!==undefined)?p.netAmount:'', p.currency||'usd', p.status||'', p.billingReason||'',
         p.failureReason||'', p.receiptNumber||''
       ].map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(','));
