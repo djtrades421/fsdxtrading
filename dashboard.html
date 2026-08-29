@@ -186,25 +186,9 @@
             <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between gap-3 flex-wrap">
               <h3 class="text-sm font-black text-white shrink-0">Economic Calendar</h3>
               <div class="flex flex-wrap items-center gap-2">
-                <select id="cal-date" onchange="renderCalendar()" class="bg-black border border-white/10 text-white text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40 transition">
-                  <option value="today">Today</option>
-                  <option value="tomorrow">Tomorrow</option>
-                  <option value="week" selected>This Week</option>
-                </select>
+                <div id="cal-date"></div>
                 <div id="cal-currency"></div>
-                <select id="cal-tz" onchange="renderCalendar()" class="bg-black border border-white/10 text-white text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40 transition">
-                  <option value="America/New_York">ET</option>
-                  <option value="America/Chicago" selected>CT</option>
-                  <option value="America/Denver">MT</option>
-                  <option value="America/Los_Angeles">PT</option>
-                  <option value="Europe/London">GMT</option>
-                  <option value="Europe/Paris">CET (Paris)</option>
-                  <option value="Europe/Berlin">CET (Berlin)</option>
-                  <option value="Asia/Tokyo">JST</option>
-                  <option value="Australia/Sydney">AEST</option>
-                  <option value="Asia/Dubai">GST</option>
-                  <option value="Asia/Singapore">SGT</option>
-                </select>
+                <div id="cal-tz"></div>
                 <div class="flex gap-1">
                   <button id="imp-H" onclick="toggleImpact('High')" class="px-2 py-1 rounded text-[10px] font-black border border-red-500/40 bg-red-500/10 text-red-400 transition">H</button>
                   <button id="imp-M" onclick="toggleImpact('Medium')" class="px-2 py-1 rounded text-[10px] font-black border border-yellow-500/40 bg-yellow-500/10 text-yellow-400 transition">M</button>
@@ -858,10 +842,27 @@
 
     // ── Economic Calendar ──
     let calEvents = [];
-    let calCurrency = null;
+    let calCurrency = null, calDate = null, calTz = null;
 
     function initCalFilters() {
       if (calCurrency) return;
+      calDate = FSDXFilter.create({
+        mount: '#cal-date', label: 'This Week', mode: 'single', value: 'week',
+        options: [ { value:'week', label:'This Week' }, { value:'today', label:'Today' }, { value:'tomorrow', label:'Tomorrow' } ],
+        storageKey: 'fsdx_cal_range', onChange: renderCalendar
+      });
+      calTz = FSDXFilter.create({
+        mount: '#cal-tz', label: 'CT', mode: 'single', value: 'America/Chicago',
+        options: [
+          { value:'America/Chicago', label:'CT' }, { value:'America/New_York', label:'ET' },
+          { value:'America/Denver', label:'MT' }, { value:'America/Los_Angeles', label:'PT' },
+          { value:'Europe/London', label:'GMT' }, { value:'Europe/Paris', label:'CET (Paris)' },
+          { value:'Europe/Berlin', label:'CET (Berlin)' }, { value:'Asia/Tokyo', label:'JST' },
+          { value:'Australia/Sydney', label:'AEST' }, { value:'Asia/Dubai', label:'GST' },
+          { value:'Asia/Singapore', label:'SGT' }
+        ],
+        storageKey: 'fsdx_cal_tz', onChange: renderCalendar
+      });
       calCurrency = FSDXFilter.create({
         mount: '#cal-currency',
         label: 'Currencies',
@@ -923,8 +924,8 @@
     function renderCalendar() {
       const body = document.getElementById('cal-body');
       if (!body || !calEvents.length) return;
-      const tz = document.getElementById('cal-tz')?.value || 'America/Chicago';
-      const dateFilter = document.getElementById('cal-date')?.value || 'week';
+      const tz = calTz ? calTz.getValue() : 'America/Chicago';
+      const dateFilter = calDate ? calDate.getValue() : 'week';
       // calCurrency is a multi-select (filters.js); empty = every currency.
       const todayStr = todayInTz('America/Chicago');
       const nowCT = new Date(new Date().toLocaleString('en-US',{timeZone:'America/Chicago'}));
