@@ -25,7 +25,10 @@
   var MUTE_KEY = 'fsdx_alert_muted';
   var ON_KEY = 'fsdx_alert_enabled';
   var TYPES_KEY = 'fsdx_alert_types';
+  var GRADE_KEY = 'fsdx_alert_min_grade';
   var ALL_TYPES = ['breakout','brewing','vwap','level','tp','sl','info'];
+  // Best first — index order is what makes "this grade or better" work.
+  var GRADE_ORDER = ['A+','A','B+','B','C+','C','D','F'];
   var MAX_VISIBLE = 3;
 
   // Type drives the accent colour and icon. Direction wins where it applies —
@@ -106,6 +109,27 @@
     return getTypes().indexOf(type || 'info') !== -1;
   }
 
+  // '' means every grade.
+  function getMinGrade() {
+    try { return localStorage.getItem(GRADE_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  function setMinGrade(g) {
+    try { localStorage.setItem(GRADE_KEY, g || ''); } catch (e) {}
+  }
+
+  // Only graded alerts are judged here. Setup Brewing, VWAP and the session
+  // summary carry no grade, so a grade cutoff must not silence them — they're
+  // governed by their own type toggle instead.
+  function gradeAllowed(grade) {
+    var min = getMinGrade();
+    if (!min || !grade) return true;
+    var gi = GRADE_ORDER.indexOf(String(grade).toUpperCase());
+    var mi = GRADE_ORDER.indexOf(min);
+    if (gi === -1 || mi === -1) return true;
+    return gi <= mi;
+  }
+
   function styles() {
     if (document.getElementById('fsdx-alert-style')) return;
     var css = document.createElement('style');
@@ -184,6 +208,7 @@
     // settings page shows you what an alert looks like.
     if (!a.force && !isEnabled()) return null;
     if (!a.force && !typeAllowed(a.type)) return null;
+    if (!a.force && !gradeAllowed(a.grade)) return null;
     if (a.id && alreadySeen(a.id)) return null;
     markSeen(a.id);
 
@@ -417,6 +442,10 @@
     setEnabled: setEnabled,
     getTypes: getTypes,
     setTypes: setTypes,
+    getMinGrade: getMinGrade,
+    setMinGrade: setMinGrade,
+    gradeAllowed: gradeAllowed,
+    GRADE_ORDER: GRADE_ORDER,
     start: start,
     stop: stop,
     // Testing helper: forget the cursor so the next poll re-toasts recent alerts.
