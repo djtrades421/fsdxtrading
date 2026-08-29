@@ -214,19 +214,8 @@
 
         </div>
 
-        <!-- LATEST SESSION RECAP + QUICK ACCESS -->
-        <div class="grid lg:grid-cols-2 gap-6">
-
-          <!-- LATEST SESSION RECAP -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden flex flex-col">
-            <div class="px-6 pt-5 pb-4 border-b border-white/10 flex items-center justify-between">
-              <h3 class="text-sm font-black text-white">Latest Session Recap</h3>
-              <a href="recaps.html" class="text-[10px] text-zinc-500 hover:text-green-400 transition font-bold">All Recaps →</a>
-            </div>
-            <div id="latest-recap" class="px-6 py-5 flex-1">
-              <div class="text-center py-8 text-zinc-600 text-xs">Loading...</div>
-            </div>
-          </div>
+        <!-- QUICK ACCESS -->
+        <div class="grid gap-6">
 
           <!-- QUICK ACCESS -->
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
@@ -366,7 +355,6 @@
       const cross = `<span class="text-zinc-600">—</span>`;
       const features = [
         { label: 'Trade Journal', trial: true, pro: true, note: '' },
-        { label: 'Session Recaps', trial: true, pro: true, note: '' },
         { label: 'Backtest Sessions', trial: true, pro: true, note: isTrial ? 'Limit 3' : 'Unlimited' },
         { label: 'Performance Stats', trial: true, pro: true, note: '' },
         { label: 'VIP Discord', trial: true, pro: true, note: '' },
@@ -796,7 +784,6 @@
       document.getElementById('access-grid').innerHTML = renderAccessGrid(tier);
       if (whopKey) loadJournalStats(whopKey);
       loadAnnouncement(token);
-      loadLatestRecap(token);
       loadUpdates(token);
       if (whopKey) loadMiniCalTrades(whopKey);
     }
@@ -930,48 +917,6 @@
         </div>`;
       });
       body.innerHTML = html;
-    }
-
-    async function loadLatestRecap(token) {
-      const el = document.getElementById('latest-recap');
-      if (!el) return;
-      try {
-        const res = await fetch(`${API}/api/recaps`, { headers: { 'Authorization': `Bearer ${token}` } });
-        const data = await res.json();
-        const recaps = data.recaps || [];
-        if (!recaps.length) { el.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">No recaps posted yet.</div>'; return; }
-        const r = recaps[0];
-        const dateStr = r.date ? new Date(r.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) : '';
-        const setups = Array.isArray(r.setups) ? r.setups.filter(s => s.grade || s.result || s.direction) : [];
-        const gColor = g => ['A+','A'].includes(g) ? 'bg-green-500/10 text-green-400 border-green-500/25' : ['B+','B'].includes(g) ? 'bg-blue-500/10 text-blue-400 border-blue-500/25' : ['C+','C'].includes(g) ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/25' : 'bg-zinc-800 text-zinc-400 border-white/10';
-        const rColor = v => v?.toLowerCase().includes('win') ? 'text-green-400' : v?.toLowerCase().includes('loss') ? 'text-red-400' : 'text-yellow-400';
-        const rBg = v => v?.toLowerCase().includes('win') ? 'bg-green-500/10 border-green-500/20' : v?.toLowerCase().includes('loss') ? 'bg-red-500/10 border-red-500/20' : 'bg-yellow-500/10 border-yellow-500/20';
-        const dColor = d => d === 'LONG' ? 'text-green-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-400';
-        const setupsHtml = setups.length ? `<div class="border border-white/10 bg-zinc-900/30 rounded-xl px-4 py-1 mb-3">
-          <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold pt-2 pb-1">Setups</div>
-          ${setups.map((s, i) => `<div class="py-2 border-b border-white/5 last:border-0">
-            <div class="flex flex-wrap items-center gap-2 mb-0.5">
-              <span class="text-[10px] text-zinc-600 font-bold">Setup ${i+1}</span>
-              ${s.grade ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-black border ${gColor(s.grade)}">${s.grade}</span>` : ''}
-              ${s.direction ? `<span class="text-xs font-black ${dColor(s.direction)}">${s.direction}</span>` : ''}
-              ${s.result ? `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${rBg(s.result)} ${rColor(s.result)}">${s.result}</span>` : ''}
-              ${s.rr ? `<span class="text-xs text-zinc-500">RR <span class="text-white font-bold">${s.rr}</span></span>` : ''}
-            </div>
-            ${s.notes ? `<p class="text-xs text-zinc-500 leading-relaxed">${s.notes}</p>` : ''}
-          </div>`).join('')}
-        </div>` : '';
-        el.innerHTML = `<div class="text-xs text-zinc-500 mb-1">${dateStr}</div>
-          <div class="text-sm font-black text-white mb-2">${r.title || 'Session Recap'}</div>
-          ${r.summary ? `<p class="text-xs text-zinc-400 leading-relaxed mb-3">${r.summary}</p>` : ''}
-          ${setupsHtml}
-          ${r.notes ? `<div class="border-l-2 border-white/10 pl-3 mb-3"><p class="text-xs text-zinc-500">${r.notes}</p></div>` : ''}
-          <div class="flex items-center gap-3 pt-2">
-            ${r.chartUrl ? `<a href="${r.chartUrl}" target="_blank" class="text-xs text-green-400 hover:text-green-300 font-bold transition">View Chart ↗</a>` : ''}
-            <a href="recaps.html" class="text-xs text-zinc-500 hover:text-zinc-300 transition ml-auto">All recaps →</a>
-          </div>`;
-      } catch(e) {
-        el.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">Could not load recap.</div>';
-      }
     }
 
     async function loadCalendar() {
