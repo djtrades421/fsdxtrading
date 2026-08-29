@@ -8,11 +8,122 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
   <style>
-    body { background-color: #000; }
+    body { background-color: #000; overflow-x: hidden; }
     .tab-panel { display: none !important; }
     .tab-panel.active { display: block !important; }
     .nav-btn.active-nav { color: #22c55e !important; background: rgba(34,197,94,0.08); }
+
+    /* ─────────────────────────────────────────────────────────────
+       MOBILE
+       Under 768px two things change:
+         1. the sidebar becomes a slide-out drawer — same mechanics as
+            the main site (// MENU button + -translate-x-full)
+         2. every wide table inside .m-cards stacks into labelled cards,
+            so nothing needs horizontal scrolling
+       Desktop layout is untouched.
+       ───────────────────────────────────────────────────────────── */
+
+    #admin-aside { transition: transform .3s ease-in-out, width .18s ease; }
+    body.admin-nav-open { overflow: hidden; }
+
+    @media (max-width: 767px) {
+
+      /* ── Tables → cards ── */
+      .m-cards .tbl-scroll { overflow-x: visible !important; }
+      .m-cards table { min-width: 0 !important; width: 100% !important; }
+      .m-cards thead { display: none; }
+      .m-cards tbody { display: block; }
+
+      .m-cards tbody tr {
+        display: block;
+        padding: .7rem .85rem .8rem;
+        border-bottom: 1px solid rgba(255,255,255,.07);
+      }
+      .m-cards tbody tr:last-child { border-bottom: 0; }
+
+      .m-cards tbody td {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .75rem;
+        width: 100%;
+        padding: .22rem 0 !important;
+        border: 0 !important;
+        text-align: right;
+        white-space: normal !important;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+      }
+      .m-cards tbody td::before {
+        content: attr(data-label);
+        flex: 0 0 36%;
+        text-align: left;
+        color: #71717a;
+        font-size: 9.5px;
+        line-height: 1.55;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .07em;
+        padding-top: .18rem;
+      }
+
+      /* First cell is the card title — no label, full width, bigger */
+      .m-cards tbody td.card-title {
+        justify-content: flex-start;
+        text-align: left;
+        font-size: 13px;
+        padding-bottom: .5rem !important;
+        margin-bottom: .35rem;
+        border-bottom: 1px solid rgba(255,255,255,.06) !important;
+      }
+      .m-cards tbody td.card-title::before { display: none; }
+
+      /* Unlabelled cells (action buttons, checkboxes) run full width */
+      .m-cards tbody td.card-plain { justify-content: flex-start; text-align: left; padding-top: .5rem !important; }
+      .m-cards tbody td.card-plain::before { display: none; }
+
+      /* Empty-state / "no results" rows */
+      .m-cards tbody td[colspan] { justify-content: center; text-align: center; padding: 1.75rem .5rem !important; }
+      .m-cards tbody td[colspan]::before { display: none; }
+
+      .m-cards tbody td > div { max-width: 100%; }
+      .m-cards tbody td .truncate { white-space: normal !important; overflow: visible !important; text-overflow: clip !important; }
+
+      /* ── Stat tiles: compact so the list below is reachable ── */
+      main .grid > .rounded-xl.text-center,
+      main .grid > .rounded-2xl.text-center { padding: .6rem .5rem !important; }
+      main .grid > .text-center .text-3xl,
+      main .grid > .text-center .text-2xl { font-size: 1.15rem !important; line-height: 1.25 !important; }
+      main .grid > .text-center .text-xl  { font-size: 1.05rem !important; line-height: 1.25 !important; }
+      main .grid > .text-center .mb-1 { margin-bottom: .1rem !important; }
+
+      /* Row action buttons get a real tap target */
+      .m-cards tbody td.card-plain button,
+      .m-cards tbody td.card-plain a { padding: .45rem .55rem; margin: -.45rem -.55rem; }
+
+      /* ── Everything else ── */
+      main { max-width: 100vw; }
+      .ms-menu { left: 0 !important; right: 0 !important; min-width: 0 !important; width: 100%; }
+      /* 16px inputs stop iOS zooming in on focus */
+      input:not([type=checkbox]):not([type=radio]), select, textarea { font-size: 16px !important; }
+      .m-cards tbody td input,
+      .m-cards tbody td select { font-size: 14px !important; }
+    }
+
+    /* ── Desktop: collapse the sidebar to icons ── */
+    @media (min-width: 768px) {
+      html.admin-nav-collapsed #admin-aside { width: 4.25rem; }
+      html.admin-nav-collapsed #admin-aside .nav-btn { justify-content: center; gap: 0 !important; padding-left: .3rem; padding-right: .3rem; }
+      html.admin-nav-collapsed #admin-aside .nav-label { display: none !important; }
+      html.admin-nav-collapsed #admin-aside .nav-sec { height: 0; padding: 0; margin: .55rem .3rem; overflow: hidden; border-top: 1px solid rgba(255,255,255,.07); }
+      html.admin-nav-collapsed #admin-aside .nav-btn svg { width: 1.1rem; height: 1.1rem; }
+      html.admin-nav-collapsed #admin-collapse-icon { transform: rotate(180deg); }
+    }
   </style>
+  <script>
+    // Applied before paint so a collapsed sidebar never flashes open.
+    try { if (localStorage.getItem('fsdx_admin_nav_collapsed') === '1') document.documentElement.classList.add('admin-nav-collapsed'); } catch(e) {}
+  </script>
 </head>
 <body class="text-white bg-black min-h-screen antialiased">
 
@@ -38,21 +149,36 @@
   <div id="admin-content" class="hidden">
 
     <!-- Header -->
-    <div class="bg-zinc-950 border-b border-white/10 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-      <div class="flex items-center gap-3">
-        <a href="dashboard.html" class="text-zinc-500 hover:text-white transition">
+    <div class="bg-zinc-950 border-b border-white/10 px-4 md:px-6 py-3 md:py-4 flex items-center justify-between gap-3 sticky top-0 z-30">
+      <div class="flex items-center gap-2.5 md:gap-3 min-w-0">
+        <!-- Mobile: open the section drawer -->
+        <button onclick="toggleAdminNav()" aria-label="Open admin menu"
+          class="md:hidden shrink-0 border border-white/10 bg-zinc-900 hover:bg-zinc-800 px-3 py-2 rounded-lg text-[11px] font-bold tracking-wider text-zinc-300 transition">// MENU</button>
+        <a href="dashboard.html" class="text-zinc-500 hover:text-white transition shrink-0 hidden md:block">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
         </a>
-        <div>
-          <h1 class="text-lg font-black text-white">Admin Panel</h1>
-          <p class="text-[10px] text-zinc-500 uppercase tracking-wider">FSD-X — Restricted Access</p>
+        <div class="min-w-0">
+          <h1 class="text-base md:text-lg font-black text-white leading-tight truncate">
+            <span class="md:hidden" id="admin-mobile-title">Admin Panel</span>
+            <span class="hidden md:inline">Admin Panel</span>
+          </h1>
+          <p class="text-[10px] text-zinc-500 uppercase tracking-wider hidden md:block">FSD-X — Restricted Access</p>
         </div>
       </div>
-      <button onclick="handleLogout()" class="text-xs text-zinc-500 hover:text-white transition flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
-        Logout
-      </button>
+      <div class="flex items-center gap-2 shrink-0">
+        <a href="dashboard.html" class="md:hidden text-zinc-500 hover:text-white transition p-2" aria-label="Back to dashboard">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
+        </a>
+        <button onclick="handleLogout()" class="text-xs text-zinc-500 hover:text-white transition flex items-center gap-1.5 p-1">
+          <svg class="w-4 h-4 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
+          <span class="hidden sm:inline">Logout</span>
+        </button>
+      </div>
     </div>
+
+    <!-- Drawer backdrop (mobile only) -->
+    <div id="admin-nav-backdrop" onclick="toggleAdminNav()"
+      class="hidden fixed inset-0 bg-black/70 backdrop-blur-[2px] z-40 md:hidden"></div>
 
     <!-- Stats bar -->
 
@@ -61,98 +187,121 @@
     <!-- Sidebar + Content layout -->
     <div class="flex min-h-[calc(100vh-57px)]">
 
-      <!-- Left Sidebar Nav -->
-      <aside class="w-52 shrink-0 border-r border-white/10 bg-zinc-950/60 sticky top-[57px] h-[calc(100vh-57px)] overflow-y-auto flex flex-col">
-        <nav class="flex-1 py-6 px-3 space-y-0.5">
+      <!-- Left Sidebar Nav — drawer on mobile, sticky column on desktop -->
+      <aside id="admin-aside"
+        class="w-64 md:w-52 shrink-0 border-r border-white/10 bg-zinc-950 md:bg-zinc-950/60
+               fixed md:sticky top-0 md:top-[57px] left-0 bottom-0 md:bottom-auto
+               h-auto md:h-[calc(100vh-57px)] z-50
+               overflow-y-auto flex flex-col
+               -translate-x-full md:translate-x-0">
 
-          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-1">// Members</div>
+        <!-- Drawer head (mobile only) -->
+        <div class="md:hidden flex items-center justify-between px-4 py-3.5 border-b border-white/10 sticky top-0 bg-zinc-950 z-10">
+          <div class="text-sm font-black text-green-400 tracking-wider">FSD-X ADMIN</div>
+          <button onclick="toggleAdminNav()" aria-label="Close menu" class="text-zinc-500 hover:text-white p-1.5 -mr-1.5">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <nav class="flex-1 py-4 md:py-6 px-3 space-y-0.5">
+
+          <div class="nav-sec text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-1">// Members</div>
           <button onclick="switchTab('members')" id="tab-members"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left active-nav">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left active-nav">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
             Members
           </button>
           <button onclick="switchTab('roster')" id="tab-roster"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"/></svg>
             Roster
           </button>
           <button onclick="switchTab('flags')" id="tab-flags"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5"/></svg>
             Flags
           </button>
 
-          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Content</div>
+          <div class="nav-sec text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Content</div>
           <button onclick="switchTab('updates')" id="tab-updates"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"/></svg>
             Updates
           </button>
           <button onclick="switchTab('announce')" id="tab-announce"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.848 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"/></svg>
             Announcement
           </button>
           <button onclick="switchTab('schedule')" id="tab-schedule"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
             Schedule
           </button>
           <button onclick="switchTab('trackrec')" id="tab-trackrec"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
             Track Record
           </button>
 
-          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Sales & Finance</div>
+          <div class="nav-sec text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Sales & Finance</div>
           <button onclick="switchTab('sales')" id="tab-sales"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185z"/></svg>
             Sales
           </button>
           <button onclick="switchTab('payments')" id="tab-payments"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
             Payments
           </button>
 
-          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Data</div>
+          <div class="nav-sec text-[10px] text-zinc-600 uppercase tracking-widest font-bold px-3 pb-2 pt-4">// Data</div>
           <button onclick="switchTab('analytics')" id="tab-analytics"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
             Analytics
           </button>
           <button onclick="switchTab('traffic')" id="tab-traffic"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M18.75 3v.75m0 0a48.6 48.6 0 010 0M7.5 14.25l3-3 3 3 4.5-4.5"/></svg>
             Traffic
           </button>
           <button onclick="switchTab('history')" id="tab-history"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
             History
           </button>
           <button onclick="switchTab('migrate')" id="tab-migrate"
-            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
             Key Migration
           </button>
 
         </nav>
+
+        <!-- Collapse toggle (desktop only) -->
+        <div class="hidden md:block border-t border-white/10 p-2">
+          <button id="admin-collapse-btn" onclick="toggleAdminNavCollapse()" title="Collapse menu"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs font-semibold text-zinc-500 hover:text-white hover:bg-white/5 transition text-left">
+            <svg id="admin-collapse-icon" class="w-3.5 h-3.5 shrink-0 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.75 19.5l-7.5-7.5 7.5-7.5m-6 15L5.25 12l7.5-7.5"/></svg>
+            <span class="nav-label">Collapse</span>
+          </button>
+        </div>
       </aside>
 
       <!-- Main content area -->
-      <main class="flex-1 min-w-0 px-8 py-8">
+      <main class="flex-1 min-w-0 w-full px-4 sm:px-6 md:px-8 py-5 md:py-8">
 
       <!-- MEMBERS TAB -->
       <div id="panel-members" class="tab-panel active">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 mb-4">
           <div>
             <h2 class="text-sm font-black text-white">Member Accounts</h2>
           </div>
           <input type="text" id="member-search" placeholder="Search by email or name..."
             oninput="filterMembers()"
-            class="bg-black border border-white/10 text-white text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-600 w-56">
+            class="bg-black border border-white/10 text-white text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-600 w-full sm:w-56">
         </div>
         <div class="grid grid-cols-3 gap-3 mb-4">
           <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center">
@@ -168,8 +317,8 @@
             <div id="stat-trial" class="text-xl font-black text-blue-400">—</div>
           </div>
         </div>
-        <div class="border border-white/10 rounded-2xl overflow-hidden">
-          <div class="overflow-x-auto">
+        <div class="m-cards border border-white/10 rounded-2xl overflow-hidden">
+          <div class="tbl-scroll overflow-x-auto">
             <table class="w-full text-left min-w-[1000px]">
               <thead>
                 <tr class="bg-zinc-950 border-b border-white/10 text-xs text-zinc-500 uppercase tracking-wider">
@@ -196,7 +345,7 @@
         <div class="grid gap-6 max-w-2xl">
 
           <!-- ===== Auto-Trader Early-Access Spots ===== -->
-          <div class="border border-green-500/30 bg-green-500/[0.04] rounded-2xl p-6">
+          <div class="border border-green-500/30 bg-green-500/[0.04] rounded-2xl p-4 sm:p-6">
             <div class="flex items-start justify-between gap-3 mb-1">
               <h2 class="text-base font-black text-white">Auto-Trader Early-Access Spots</h2>
               <span id="fs-state-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0">—</span>
@@ -206,7 +355,7 @@
             <div id="fs-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
 
             <div class="space-y-4">
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Total Spots</label>
                   <input type="number" min="0" id="fs-total-input" placeholder="30"
@@ -231,7 +380,7 @@
           </div>
 
           <!-- Live Sale Display -->
-          <div id="current-sale-display" class="hidden border rounded-2xl p-5">
+          <div id="current-sale-display" class="hidden border rounded-2xl p-4 sm:p-5">
             <div class="flex items-start justify-between gap-3 mb-4">
               <div>
                 <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1">🔴 Live Sale</div>
@@ -271,7 +420,7 @@
           </div>
 
           <!-- Form -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
             <h2 id="sale-form-title" class="text-base font-black text-white mb-1">Start a Sale</h2>
             <p class="text-zinc-500 text-xs mb-5">The banner will appear on the homepage and memberships page. Leave Expires blank for an indefinite sale.</p>
             <div id="sale-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
@@ -282,7 +431,7 @@
                 <input type="text" id="sale-label-input" placeholder="e.g. Flash Sale — Limited Time"
                   class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
               </div>
-              <div class="grid grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Promo Code</label>
                   <input type="text" id="sale-code-input" placeholder="e.g. MAY17"
@@ -316,7 +465,7 @@
       </div>
 
       <div id="panel-announce" class="tab-panel">
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 max-w-xl">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6 max-w-xl">
           <h2 class="text-base font-black text-white mb-1">Post Announcement</h2>
           <p class="text-zinc-500 text-xs mb-5">This message will appear at the top of every member's dashboard.</p>
           <div id="announce-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
@@ -365,7 +514,7 @@
       <!-- SCHEDULE TAB -->
       <div id="panel-schedule" class="tab-panel space-y-6">
         <!-- Add/Edit Event form -->
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
           <h2 id="schedule-form-title" class="text-base font-black text-white mb-1">Add Schedule Event</h2>
           <p class="text-xs text-zinc-500 mb-5">Manage the events shown on the public Schedule page.</p>
           <div id="schedule-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
@@ -446,7 +595,7 @@
       <!-- UPDATES TAB -->
       <div id="panel-updates" class="tab-panel space-y-6">
         <!-- Post Update form -->
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
           <h2 id="update-form-title" class="text-base font-black text-white mb-1">Post New Update</h2>
           <p class="text-xs text-zinc-500 mb-5">Appears in the "FSD-X Updates" card on every member's dashboard.</p>
           <div id="update-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
@@ -467,7 +616,7 @@
           </div>
           <div class="mb-4">
             <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Visibility</label>
-            <div class="flex gap-2">
+            <div class="flex flex-col sm:flex-row gap-2">
               <label class="flex-1 flex items-center gap-2.5 px-4 py-3 bg-black border border-white/10 rounded-xl cursor-pointer hover:border-white/20 transition has-[:checked]:border-green-500/40 has-[:checked]:bg-green-500/5">
                 <input type="radio" name="update-visibility" id="vis-all" value="all" checked class="accent-green-500">
                 <div>
@@ -513,7 +662,7 @@
 
       <!-- KEY MIGRATION -->
       <div id="panel-migrate" class="tab-panel space-y-6">
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
           <h2 class="text-base font-black text-white mb-1">Transfer Member Data</h2>
           <p class="text-xs text-zinc-500 mb-6">Migrates all KV data (journal, backtest sessions, settings) from one Whop key to another. Use when a member has duplicate accounts.</p>
           <div id="migrate-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
@@ -532,15 +681,15 @@
         </div>
 
         <!-- KV Key Lookup -->
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
           <h2 class="text-base font-black text-white mb-1">KV Key Lookup</h2>
           <p class="text-xs text-zinc-500 mb-5">Search all KV entries that contain a Whop key — confirms what data exists and where it's being used.</p>
-          <div class="flex gap-3 mb-4">
+          <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-4">
             <input id="kv-search-input" type="text" placeholder="Paste a Whop key to search…"
               onkeydown="if(event.key==='Enter')runKvLookup()"
               class="flex-1 bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700 font-mono">
             <button onclick="runKvLookup()" id="kv-search-btn"
-              class="px-5 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+              class="shrink-0 px-5 py-3 bg-zinc-800 hover:bg-zinc-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
               Search KV
             </button>
           </div>
@@ -591,7 +740,7 @@
               <span id="ms-status-label">Status</span>
               <svg class="w-3 h-3 ml-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
             </button>
-            <div id="ms-status-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
+            <div id="ms-status-menu" class="ms-menu hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="active" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Active</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="trialing" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Trialing</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="canceling" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Cancelling</span></label>
@@ -606,7 +755,7 @@
               <span id="ms-source-label">Source</span>
               <svg class="w-3 h-3 ml-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
             </button>
-            <div id="ms-source-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
+            <div id="ms-source-menu" class="ms-menu hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-source accent-green-500" value="Whop" onchange="updateMultiSelectLabel('source');renderRoster()"><span class="text-xs text-zinc-300">Whop</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-source accent-green-500" value="Manual" onchange="updateMultiSelectLabel('source');renderRoster()"><span class="text-xs text-zinc-300">Manual</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-source accent-green-500" value="LaunchPass" onchange="updateMultiSelectLabel('source');renderRoster()"><span class="text-xs text-zinc-300">LaunchPass</span></label>
@@ -619,7 +768,7 @@
               <span id="ms-access-label">Access Type</span>
               <svg class="w-3 h-3 ml-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
             </button>
-            <div id="ms-access-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[190px]">
+            <div id="ms-access-menu" class="ms-menu hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[190px]">
               <!-- Options injected by buildAccessTypeFilter() -->
             </div>
           </div>
@@ -629,7 +778,7 @@
         </div>
 
         <!-- Import diff modal -->
-        <div id="roster-diff-panel" class="hidden mb-5 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-5">
+        <div id="roster-diff-panel" class="hidden mb-5 border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-4 sm:p-5">
           <div class="flex items-center justify-between mb-3">
             <div class="text-sm font-black text-white">Import Preview</div>
             <div class="text-xs text-zinc-500" id="diff-summary"></div>
@@ -642,8 +791,8 @@
         </div>
 
         <!-- Table -->
-        <div class="border border-white/10 rounded-2xl overflow-hidden">
-          <div class="overflow-x-auto">
+        <div class="m-cards border border-white/10 rounded-2xl overflow-hidden">
+          <div class="tbl-scroll overflow-x-auto">
             <table class="w-full text-left min-w-[900px]">
               <thead><tr class="bg-zinc-950 border-b border-white/10 text-[10px] text-zinc-500 uppercase tracking-wider">
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortRoster('name')">Name / Discord <span id="sort-name" class="text-zinc-700">↕</span></th>
@@ -707,7 +856,7 @@
               <button onclick="payCalNext()" class="p-1.5 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
             </div>
           </div>
-          <div id="pay-cal-grid" class="px-5 pb-5"></div>
+          <div id="pay-cal-grid" class="px-3 sm:px-5 pb-5 overflow-x-auto"></div>
         </div>
 
         <!-- Revenue by Product -->
@@ -735,14 +884,14 @@
         </div>
 
         <!-- Full payments table -->
-        <div class="border border-white/10 rounded-2xl overflow-hidden">
+        <div class="m-cards border border-white/10 rounded-2xl overflow-hidden">
           <div class="px-4 py-3 border-b border-white/10 flex items-center justify-between">
             <div class="text-xs font-black text-white uppercase tracking-wider">Payment History</div>
             <select id="pf-status" onchange="renderPayments()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
               <option value="">All</option><option value="paid">Paid</option><option value="failed">Failed</option><option value="open">Open</option>
             </select>
           </div>
-          <div class="overflow-x-auto">
+          <div class="tbl-scroll overflow-x-auto">
             <table class="w-full text-left min-w-[700px]">
               <thead><tr class="bg-zinc-950 border-b border-white/10 text-[10px] text-zinc-500 uppercase tracking-wider">
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortPayments('date')">Date <span id="psort-date" class="text-zinc-400">↓</span></th>
@@ -799,34 +948,34 @@
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">Last Month</div><div class="text-3xl font-black text-zinc-600 mt-1">—</div></div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-3">
-          <div class="lg:col-span-2 border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="lg:col-span-2 border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
             <div class="flex items-center justify-between mb-3 flex-wrap gap-1">
               <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Visits &amp; Sources · Last 30 Days</div>
               <div id="traffic-trend-legend"></div>
             </div>
             <div id="traffic-trend" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
           </div>
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 flex flex-col">
             <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">Source Mix · This Month</div>
             <div id="traffic-sources" class="text-xs text-zinc-600 flex-1 flex items-center">Open this tab to load traffic…</div>
           </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
             <div class="flex items-baseline justify-between mb-4"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">By Day of Week · Last 30 Days</div><div class="text-xl font-black text-white" id="traffic-dow-total">—</div></div>
             <div id="traffic-dow" class="text-xs text-zinc-600">—</div>
           </div>
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
             <div class="flex items-baseline justify-between mb-4"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">By Hour · This Month <span class="text-zinc-600 normal-case tracking-normal">· CT</span></div><div class="text-xl font-black text-white" id="traffic-hours-total">—</div></div>
             <div id="traffic-hours" class="text-xs text-zinc-600">—</div>
           </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
             <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-4">Checkout Funnel · This Month</div>
             <div id="traffic-funnel" class="text-xs text-zinc-600">—</div>
           </div>
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
             <div class="flex items-center justify-between mb-4">
               <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Top Pages · This Month</div>
               <div class="text-[10px] text-zinc-600">public · non-members</div>
@@ -844,7 +993,7 @@
             <p class="text-xs text-zinc-600 mt-0.5">Member growth, churn patterns, and retention insights</p>
           </div>
         </div>
-        <div class="grid grid-cols-3 gap-4 mb-5" id="analytics-monthly"></div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5" id="analytics-monthly"></div>
         <div id="analytics-growth" class="mb-5"></div>
         <div id="analytics-churn" class="mb-5"></div>
       </div>
@@ -862,13 +1011,13 @@
         </div>
 
         <!-- Current state -->
-        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-3">// Currently Published</div>
           <div id="tr-current" class="text-xs text-zinc-500">Loading…</div>
         </div>
 
         <!-- Settings -->
-        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-4">// Settings</div>
           <div class="mb-4">
             <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Version label</label>
@@ -905,7 +1054,7 @@
         </div>
 
         <!-- Upload -->
-        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-4">// Import Strategy Export</div>
           <label for="tr-file" class="block border-2 border-dashed border-white/10 hover:border-green-500/40 rounded-2xl px-6 py-10 text-center cursor-pointer transition">
             <div class="text-3xl mb-2">📄</div>
@@ -917,7 +1066,7 @@
         </div>
 
         <!-- Preview -->
-        <div id="tr-preview" class="hidden bg-zinc-950 border border-white/10 rounded-2xl p-5">
+        <div id="tr-preview" class="hidden bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-4">// Preview</div>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5" id="tr-preview-stats"></div>
           <div id="tr-overlap-box" class="hidden border border-yellow-500/20 bg-yellow-500/5 rounded-xl px-4 py-3 text-[11px] text-yellow-300/80 mb-4"></div>
@@ -953,7 +1102,7 @@
         </div>
 
         <!-- Publish -->
-        <div id="tr-publish" class="hidden bg-zinc-950 border border-green-500/20 rounded-2xl p-5">
+        <div id="tr-publish" class="hidden bg-zinc-950 border border-green-500/20 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-green-500/70 font-bold mb-3">// Ready to Publish</div>
           <div id="tr-publish-summary" class="text-xs text-zinc-400 mb-4"></div>
           <button onclick="trDownload()" class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
@@ -991,7 +1140,7 @@
               <span id="hs-discord-label">Discord</span>
               <svg class="w-3 h-3 ml-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
             </button>
-            <div id="hs-discord-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[160px]">
+            <div id="hs-discord-menu" class="ms-menu hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[160px]">
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="hs-discord" value="" checked onchange="renderHistory2()" class="accent-green-500"><span class="text-xs text-zinc-300">All</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="hs-discord" value="yes" onchange="renderHistory2()" class="accent-green-500"><span class="text-xs text-zinc-300">Has Discord</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="hs-discord" value="no" onchange="renderHistory2()" class="accent-green-500"><span class="text-xs text-zinc-300">No Discord</span></label>
@@ -1004,7 +1153,7 @@
               <span id="hs-type-label">Type</span>
               <svg class="w-3 h-3 ml-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
             </button>
-            <div id="hs-type-menu" class="hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
+            <div id="hs-type-menu" class="ms-menu hidden absolute top-full mt-1 left-0 bg-zinc-900 border border-white/10 rounded-xl shadow-2xl z-50 py-1.5 min-w-[170px]">
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="hs-type" value="" checked onchange="renderHistory2()" class="accent-green-500"><span class="text-xs text-zinc-300">All</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="hs-type" value="never" onchange="renderHistory2()" class="accent-green-500"><span class="text-xs text-zinc-300">Never purchased</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="radio" name="hs-type" value="former" onchange="renderHistory2()" class="accent-green-500"><span class="text-xs text-yellow-400">Former members</span></label>
@@ -1012,21 +1161,21 @@
             </div>
           </div>
           <!-- Joined date range -->
-          <div class="flex items-center gap-1.5">
-            <span class="text-xs text-zinc-600">Joined</span>
-            <input type="date" id="hs-date-from" onchange="renderHistory2()" class="bg-zinc-900 border border-white/10 text-zinc-300 text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40">
-            <span class="text-xs text-zinc-600">to</span>
-            <input type="date" id="hs-date-to" onchange="renderHistory2()" class="bg-zinc-900 border border-white/10 text-zinc-300 text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40">
+          <div class="flex items-center gap-1.5 flex-wrap w-full sm:w-auto min-w-0">
+            <span class="text-xs text-zinc-600 shrink-0">Joined</span>
+            <input type="date" id="hs-date-from" onchange="renderHistory2()" class="flex-1 min-w-0 sm:flex-none bg-zinc-900 border border-white/10 text-zinc-300 text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40">
+            <span class="text-xs text-zinc-600 shrink-0">to</span>
+            <input type="date" id="hs-date-to" onchange="renderHistory2()" class="flex-1 min-w-0 sm:flex-none bg-zinc-900 border border-white/10 text-zinc-300 text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40">
           </div>
           <!-- Search -->
-          <input type="text" id="history-search" oninput="renderHistory2()" placeholder="Search name, email, Discord, key..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-56">
+          <input type="text" id="history-search" oninput="renderHistory2()" placeholder="Search name, email, Discord, key..." class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none placeholder-zinc-600 w-full sm:w-56 min-w-0">
           <button onclick="clearHistoryFilters()" class="text-xs text-zinc-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition">✕ Clear</button>
           <span id="history-filter-count" class="text-xs text-zinc-500 ml-1"></span>
         </div>
 
         <!-- Table -->
-        <div class="border border-white/10 rounded-2xl overflow-hidden">
-          <div class="overflow-x-auto">
+        <div class="m-cards border border-white/10 rounded-2xl overflow-hidden">
+          <div class="tbl-scroll overflow-x-auto">
             <table class="w-full text-left min-w-[800px]">
               <thead><tr class="bg-zinc-950 border-b border-white/10 text-[10px] text-zinc-500 uppercase tracking-wider">
                 <th class="px-4 py-3 cursor-pointer hover:text-zinc-300 select-none" onclick="sortHistory('name')">Name <span id="hsort-name" class="text-zinc-700">↕</span></th>
@@ -1051,9 +1200,9 @@
     </div><!-- end sidebar+content flex -->
 
   <!-- ── Add / Edit Member Modal ── -->
-  <div id="member-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4 py-8 overflow-y-auto">
-    <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-2xl shadow-2xl my-auto">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+  <div id="member-modal" class="hidden fixed inset-0 bg-black/80 z-[60] flex items-end sm:items-center justify-center px-0 sm:px-4 py-0 sm:py-8 overflow-y-auto">
+    <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full max-w-2xl shadow-2xl my-0 sm:my-auto max-h-[92vh] sm:max-h-none overflow-y-auto">
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10 sticky top-0 bg-zinc-950 z-10">
         <div>
           <div id="member-modal-title" class="text-sm font-black text-white">Add Member</div>
           <div class="text-[10px] text-zinc-500 mt-0.5">Manual roster entry</div>
@@ -1062,7 +1211,7 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
-      <div class="p-6 space-y-5">
+      <div class="p-4 sm:p-6 space-y-5">
         <div id="member-modal-msg" class="hidden rounded-xl px-4 py-3 text-xs border"></div>
 
         <!-- Identity -->
@@ -1190,12 +1339,12 @@
       </div>
     </div>
   </div>
-  <div id="day-detail-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-end sm:items-center justify-center px-0 sm:px-4">
+  <div id="day-detail-modal" class="hidden fixed inset-0 bg-black/80 z-[60] flex items-end sm:items-center justify-center px-0 sm:px-4">
 
   <!-- ── Edit History Modal ── -->
-  <div id="history-edit-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4 py-8 overflow-y-auto">
-    <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-lg shadow-2xl my-auto">
-      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+  <div id="history-edit-modal" class="hidden fixed inset-0 bg-black/80 z-[60] flex items-end sm:items-center justify-center px-0 sm:px-4 py-0 sm:py-8 overflow-y-auto">
+    <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full max-w-lg shadow-2xl my-0 sm:my-auto max-h-[92vh] sm:max-h-none overflow-y-auto">
+      <div class="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-white/10 sticky top-0 bg-zinc-950 z-10">
         <div class="text-sm font-black text-white">Edit History Entry</div>
         <button onclick="closeHistoryModal()" class="text-zinc-500 hover:text-white transition p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -1291,6 +1440,102 @@
       if (tab === 'traffic') loadTraffic();
       if (tab === 'history') { dedupeHistory(); renderHistory2(); }
       if (tab === 'trackrec') trInit();
+
+      // Mobile: name the section in the header and shut the drawer
+      const mt = document.getElementById('admin-mobile-title');
+      if (mt && activeBtn) mt.textContent = (activeBtn.textContent || 'Admin').trim();
+      closeAdminNav();
+      window.scrollTo(0, 0);
+    }
+
+    /* ─────────────────────────────────────────────
+       Mobile drawer + desktop collapse
+       Same mechanics as the main site's sidebar.
+       ───────────────────────────────────────────── */
+    function openAdminNav() {
+      const a = document.getElementById('admin-aside');
+      const b = document.getElementById('admin-nav-backdrop');
+      if (!a) return;
+      a.classList.remove('-translate-x-full');
+      if (b) b.classList.remove('hidden');
+      document.body.classList.add('admin-nav-open');
+    }
+    function closeAdminNav() {
+      const a = document.getElementById('admin-aside');
+      const b = document.getElementById('admin-nav-backdrop');
+      if (!a) return;
+      a.classList.add('-translate-x-full');
+      if (b) b.classList.add('hidden');
+      document.body.classList.remove('admin-nav-open');
+    }
+    function toggleAdminNav() {
+      const a = document.getElementById('admin-aside');
+      if (!a) return;
+      if (a.classList.contains('-translate-x-full')) openAdminNav(); else closeAdminNav();
+    }
+    function toggleAdminNavCollapse() {
+      const on = document.documentElement.classList.toggle('admin-nav-collapsed');
+      try { localStorage.setItem('fsdx_admin_nav_collapsed', on ? '1' : '0'); } catch (e) {}
+      const btn = document.getElementById('admin-collapse-btn');
+      if (btn) btn.title = on ? 'Expand menu' : 'Collapse menu';
+    }
+
+    // Wrap each nav button's text in a span so the label can hide while the
+    // icon stays, and give it a tooltip for the collapsed state.
+    function prepareAdminNavLabels() {
+      document.querySelectorAll('#admin-aside .nav-btn').forEach(function (el) {
+        Array.prototype.slice.call(el.childNodes).forEach(function (node) {
+          if (node.nodeType === 3 && node.textContent.trim()) {
+            const span = document.createElement('span');
+            span.className = 'nav-label';
+            span.textContent = node.textContent.trim();
+            node.parentNode.replaceChild(span, node);
+          }
+        });
+        const t = (el.textContent || '').trim();
+        if (t && !el.title) el.title = t;
+      });
+    }
+
+    // Esc closes the drawer; crossing back to desktop resets it
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAdminNav(); });
+    window.addEventListener('resize', function () { if (window.innerWidth >= 768) closeAdminNav(); });
+
+    /* ─────────────────────────────────────────────
+       Tables → cards on mobile
+       Copies each column's <th> text onto its <td> as data-label so the CSS
+       can stack rows into labelled cards. Re-runs automatically whenever a
+       renderer rewrites a tbody — no renderer changes needed.
+       ───────────────────────────────────────────── */
+    function labelCardTable(table) {
+      if (!table) return;
+      const heads = Array.prototype.map.call(table.querySelectorAll('thead th'), function (th) {
+        return (th.textContent || '').replace(/[↕↑↓]/g, '').trim();
+      });
+      table.querySelectorAll('tbody > tr').forEach(function (tr) {
+        const cells = tr.children;
+        // Empty-state rows use a colspan — leave those alone
+        if (cells.length === 1 && cells[0].hasAttribute('colspan')) return;
+        for (let i = 0; i < cells.length; i++) {
+          const td = cells[i];
+          const label = heads[i] || '';
+          td.setAttribute('data-label', label);
+          td.classList.toggle('card-title', i === 0);
+          td.classList.toggle('card-plain', i !== 0 && !label);
+        }
+      });
+    }
+    function labelAllCardTables() {
+      document.querySelectorAll('.m-cards table').forEach(labelCardTable);
+    }
+    function watchCardTables() {
+      labelAllCardTables();
+      document.querySelectorAll('.m-cards table tbody').forEach(function (tb) {
+        if (tb.dataset.cardWatched) return;
+        tb.dataset.cardWatched = '1';
+        new MutationObserver(function () { labelCardTable(tb.closest('table')); })
+          .observe(tb, { childList: true });
+      });
     }
 
     function fmtSince(iso) {
@@ -1407,7 +1652,7 @@
       return seg.charAt(0).toUpperCase() + seg.slice(1);
     }
     function trafficCard(label, value, sub) {
-      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center"><div class="text-xs text-zinc-500">${label}</div><div class="text-3xl font-black text-green-400 mt-1">${value}</div>${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}</div>`;
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-center"><div class="text-xs text-zinc-500">${label}</div><div class="text-3xl font-black text-green-400 mt-1">${value}</div>${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}</div>`;
     }
     async function loadTraffic() {
       const statsEl = document.getElementById('traffic-stats');
@@ -1432,7 +1677,7 @@
           upEl.textContent = 'Last updated ' + now + ' CT';
         }
       } catch (err) {
-        statsEl.innerHTML = '<div class="col-span-full border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-zinc-600 text-sm text-center">Couldn\'t load traffic. Make sure the worker is deployed with the /api/track and /api/admin/visits routes.</div>';
+        statsEl.innerHTML = '<div class="col-span-full border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-zinc-600 text-sm text-center">Couldn\'t load traffic. Make sure the worker is deployed with the /api/track and /api/admin/visits routes.</div>';
         const upEl = document.getElementById('traffic-updated');
         if (upEl) upEl.textContent = 'Update failed — check the worker deploy';
       }
@@ -2048,7 +2293,7 @@
           document.getElementById('current-sale-discount').textContent = s.discount;
           document.getElementById('current-sale-expires').textContent = s.expiresAt ? new Date(s.expiresAt).toLocaleString() : 'No expiry';
           document.getElementById('current-sale-applies').textContent = s.applies ? 'Applies to: ' + s.applies : '';
-          display.className = 'border border-red-500/40 bg-red-950/20 rounded-2xl p-5';
+          display.className = 'border border-red-500/40 bg-red-950/20 rounded-2xl p-4 sm:p-5';
           display.classList.remove('hidden');
           noSale.classList.add('hidden');
         } else {
@@ -2156,6 +2401,17 @@
       }
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('admin-content').classList.remove('hidden');
+
+      // Mobile / collapsed-sidebar wiring — safe to run before data loads
+      prepareAdminNavLabels();
+      watchCardTables();
+      closeAdminNav();
+      const mt0 = document.getElementById('admin-mobile-title');
+      const ab0 = document.querySelector('#admin-aside .nav-btn.active-nav');
+      if (mt0 && ab0) mt0.textContent = (ab0.textContent || 'Admin').trim();
+      const cbtn = document.getElementById('admin-collapse-btn');
+      if (cbtn) cbtn.title = document.documentElement.classList.contains('admin-nav-collapsed') ? 'Expand menu' : 'Collapse menu';
+
       loadData().then(() => {
         // Refresh site users set after member data loads
         siteUsers = new Set();
@@ -2338,7 +2594,7 @@
         return;
       }
       container.innerHTML = allScheduleEvents.map((ev, idx) => `
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2 mb-1">
               <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border ${ev.type === 'daily' ? 'text-green-400 border-green-500/30 bg-green-500/10' : ev.type === 'weekly' ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'}">${ev.type}</span>
@@ -4813,7 +5069,7 @@
         ['📈 Gained', '+'+gained, '#22c55e', 'New members this month'],
         ['📉 Lost', '-'+lost, lost>0?'#ef4444':'#71717a', 'Cancelled this month'],
         ['🧪 Trialed', trialed, '#60a5fa', 'New trials this month'],
-      ].map(([l,v,c,sub]) => `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5 text-center">
+      ].map(([l,v,c,sub]) => `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-center">
         <div class="text-xs text-zinc-500 mb-2">${l} — ${monthLabel}</div>
         <div class="text-3xl font-black mb-1" style="color:${c}">${v}</div>
         <div class="text-[10px] text-zinc-600">${sub}</div>
@@ -4846,7 +5102,7 @@
 
       const growthRows = Object.values(monthlyData);
       const maxVal = Math.max(...growthRows.map(r => Math.max(r.gained, r.lost)), 1);
-      const growthHtml = `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+      const growthHtml = `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
         <div class="text-xs font-black text-white uppercase tracking-wider mb-4">Member Growth — Last 6 Months</div>
         <div class="space-y-3">
           ${growthRows.map(r => `<div>
@@ -5428,13 +5684,13 @@
       while (cells.length % 7 !== 0) cells.push(null);
 
       // Header
-      let html = '<div class="grid grid-cols-7 border-b border-white/5 mb-1">' +
+      let html = '<div class="grid grid-cols-7 border-b border-white/5 mb-1 min-w-[560px] md:min-w-0">' +
         ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => `<div class="py-2 text-[10px] text-zinc-600 font-bold uppercase tracking-wider text-center">${d}</div>`).join('') +
         '</div>';
 
       // Weeks
       for (let r=0; r<cells.length/7; r++) {
-        html += '<div class="grid grid-cols-7 border-b border-white/[0.04] last:border-0">';
+        html += '<div class="grid grid-cols-7 border-b border-white/[0.04] last:border-0 min-w-[560px] md:min-w-0">';
         for (let c=0; c<7; c++) {
           const d = cells[r*7+c];
           if (!d) { html += '<div class="min-h-[70px] p-2"></div>'; continue; }
@@ -5995,8 +6251,8 @@
   </script>
 
   <!-- Update Whop Key Modal -->
-  <div id="update-key-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-    <div class="bg-zinc-900 border border-white/10 rounded-2xl p-6 w-full max-w-md shadow-2xl">
+  <div id="update-key-modal" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm px-0 sm:px-4">
+    <div class="bg-zinc-900 border border-white/10 rounded-t-2xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-md shadow-2xl max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between mb-4">
         <h3 class="text-white font-bold text-sm">Update Whop Key</h3>
         <button onclick="closeUpdateKey()" class="text-zinc-500 hover:text-white transition">
