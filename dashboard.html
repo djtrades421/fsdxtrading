@@ -7,6 +7,7 @@
   <title>FSD-X — VIP Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
+  <script src="filters.js"></script>
   <style>
     body { background-color: #000; }
     .mini-cal-day { min-height: 90px; height: 90px; }
@@ -110,6 +111,16 @@
 
         <!-- Announcement banner -->
         <div id="announcement-banner" class="hidden rounded-xl px-4 py-3 text-sm"></div>
+
+        <!-- FILTERS -->
+        <div class="flex items-center justify-between gap-3 flex-wrap">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[10px] uppercase tracking-widest text-zinc-600">Showing</span>
+            <div id="dash-account-filter"></div>
+            <span id="dash-filter-note" class="text-[10px] text-zinc-600"></span>
+          </div>
+          <a href="accounts.html" class="text-[10px] uppercase tracking-widest text-zinc-600 hover:text-green-400 transition">Manage accounts →</a>
+        </div>
 
         <!-- STAT CARDS -->
 
@@ -605,19 +616,20 @@
       wrap._uid = uid;
     }
 
-    async function loadJournalStats(whopKey) {
+    function renderJournalStats(trades) {
       try {
-        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) });
-        const data = await res.json();
-        const trades = Array.isArray(data.trades) ? data.trades : [];
         const statsTop = document.getElementById('stats-top');
 
         if (!trades.length) {
           statsTop.innerHTML =
-            statCard('Total Trades','—','#71717a','No trades yet') +
+            statCard('Total Trades','—','#71717a', dashTrades.length ? 'None for this filter' : 'No trades yet') +
             statCard('Win Rate','—','#71717a') +
-            statCard('Net P&L','—','#71717a');
+            statCard('Net P&L','—','#71717a') +
+            statCard('Profit Factor','—','#71717a');
           document.getElementById('chart-final-pnl').textContent = '—';
+          const wrap = document.getElementById('equity-chart-wrap');
+          if (wrap) wrap.innerHTML = '<div class="flex items-center justify-center h-full text-zinc-600 text-xs">' +
+            (dashTrades.length ? 'No trades match this filter.' : 'No trades yet.') + '</div>';
           return;
         }
 
@@ -642,6 +654,67 @@
       } catch(e) {
         console.error('Journal stats error:', e);
       }
+    }
+
+    // ── Dashboard data + account filter ──
+    // One fetch feeds the KPI cards, the equity curve and the mini calendar.
+    let dashTrades = [], dashAccountFilter = null;
+
+    function tradeOwner(t) { return t.accountName || t.accountType || 'Unassigned'; }
+
+    async function loadDashData(whopKey) {
+      try {
+        const [tr, sr] = await Promise.all([
+          fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) }),
+          fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-settings', key: whopKey }) })
+        ]);
+        const td = await tr.json(), sd = await sr.json();
+        dashTrades = Array.isArray(td.trades) ? td.trades : [];
+        const saved = Array.isArray(sd.accounts) ? sd.accounts : [];
+
+        // Saved accounts first, then anything that owns trades but was never saved.
+        const counts = {};
+        dashTrades.forEach(t => { const o = tradeOwner(t); counts[o] = (counts[o] || 0) + 1; });
+        const names = saved.map(a => a.name);
+        Object.keys(counts).forEach(o => { if (!names.includes(o)) names.push(o); });
+        const options = names.map(n => ({
+          value: n,
+          label: n,
+          hint: counts[n] ? String(counts[n]) : '0'
+        }));
+
+        if (!dashAccountFilter) {
+          dashAccountFilter = FSDXFilter.create({
+            mount: '#dash-account-filter',
+            label: 'Accounts',
+            options: options,
+            storageKey: 'fsdx_dash_accounts',
+            onChange: applyDashFilter
+          });
+        } else {
+          dashAccountFilter.setOptions(options, { silent: true });
+        }
+        applyDashFilter();
+      } catch (e) {
+        console.error('Dashboard data error:', e);
+        renderJournalStats([]);
+        buildMiniCal([]);
+      }
+    }
+
+    function applyDashFilter() {
+      const trades = (dashAccountFilter && !dashAccountFilter.isAll())
+        ? dashTrades.filter(t => dashAccountFilter.matches(tradeOwner(t)))
+        : dashTrades;
+
+      const note = document.getElementById('dash-filter-note');
+      if (note) {
+        note.textContent = (dashAccountFilter && !dashAccountFilter.isAll())
+          ? trades.length + ' of ' + dashTrades.length + ' trades'
+          : '';
+      }
+      renderJournalStats(trades);
+      buildMiniCal(trades);
     }
 
     async function loadAnnouncement(token) {
@@ -782,10 +855,9 @@
       }
 
       document.getElementById('access-grid').innerHTML = renderAccessGrid(tier);
-      if (whopKey) loadJournalStats(whopKey);
+      if (whopKey) loadDashData(whopKey);
       loadAnnouncement(token);
       loadUpdates(token);
-      if (whopKey) loadMiniCalTrades(whopKey);
     }
 
     // ── Economic Calendar ──
@@ -947,22 +1019,15 @@
       return s + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    async function loadMiniCalTrades(whopKey) {
-      try {
-        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) });
-        const data = await res.json();
-        const trades = Array.isArray(data.trades) ? data.trades : [];
-        miniByDate = {};
-        trades.forEach(t => {
-          if (!t.date) return;
-          if (!miniByDate[t.date]) miniByDate[t.date] = { pnl: 0, count: 0 };
-          miniByDate[t.date].pnl += parseFloat(t.netPnl) || 0;
-          miniByDate[t.date].count++;
-        });
-        renderMiniCal();
-      } catch(e) {
-        renderMiniCal();
-      }
+    function buildMiniCal(trades) {
+      miniByDate = {};
+      (trades || []).forEach(t => {
+        if (!t.date) return;
+        if (!miniByDate[t.date]) miniByDate[t.date] = { pnl: 0, count: 0 };
+        miniByDate[t.date].pnl += parseFloat(t.netPnl) || 0;
+        miniByDate[t.date].count++;
+      });
+      renderMiniCal();
     }
 
     function renderMiniCal() {
@@ -1068,6 +1133,5 @@
     initDashboard();
 
   </script>
-  <script src="nav-loader.js"></script>
 </body>
 </html>
