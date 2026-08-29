@@ -7,6 +7,7 @@
   <title>FSD-X — Journal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
+  <script src="filters.js"></script>
   <style>
     body { background-color: #000; }
     input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
@@ -82,20 +83,10 @@
               <span class="text-zinc-600 self-center text-xs">to</span>
               <input type="date" id="gf-to" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
             </div>
-            <select id="gf-result" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-              <option value="">All Results</option><option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
-            </select>
-            <select id="gf-account" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-              <option value="">All Accounts</option>
-              <option value="Funded">Funded</option><option value="Evaluation">Evaluation</option><option value="Personal">Personal</option>
-            </select>
-            <select id="gf-grade" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-              <option value="">All Grades</option>
-              <option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
-            </select>
-            <select id="gf-direction" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-              <option value="">All Directions</option><option value="LONG">Long</option><option value="SHORT">Short</option>
-            </select>
+            <div id="gf-result"></div>
+            <div id="gf-account"></div>
+            <div id="gf-grade"></div>
+            <div id="gf-direction"></div>
             <button onclick="clearGlobalFilters()" class="px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white text-xs rounded-lg transition">✕ Clear</button>
             <div id="gf-filter-badge" class="hidden self-center text-[10px] text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-0.5 font-bold"></div>
           </div>
@@ -652,7 +643,25 @@
     let editingId = null, detailId = null, currentTags = [];
     let tradeDir = 'LONG', pnlMode = 'price';
     let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
-    let gfResult = '', gfAccount = '', gfGrade = '', gfDirection = '';
+    // Multi-select filters (filters.js). Empty selection = no narrowing.
+    let fResult = null, fAccount = null, fGrade = null, fDirection = null;
+    let suppressFilterApply = false;
+
+    function initGlobalFilters() {
+      if (fResult) return;
+      fResult = FSDXFilter.create({ mount: '#gf-result', label: 'Results',
+        options: [{value:'WIN',label:'Win'},{value:'LOSS',label:'Loss'},{value:'BE',label:'BE'}],
+        onChange: applyGlobalFilters });
+      fAccount = FSDXFilter.create({ mount: '#gf-account', label: 'Accounts',
+        options: [{value:'Funded',label:'Funded'},{value:'Evaluation',label:'Evaluation'},{value:'Personal',label:'Personal'}],
+        onChange: applyGlobalFilters });
+      fGrade = FSDXFilter.create({ mount: '#gf-grade', label: 'Grades',
+        options: ['A+','A','B+','B','C+','C','D'].map(g => ({ value:g, label:g })),
+        onChange: applyGlobalFilters });
+      fDirection = FSDXFilter.create({ mount: '#gf-direction', label: 'Directions',
+        options: [{value:'LONG',label:'Long'},{value:'SHORT',label:'Short'}],
+        onChange: applyGlobalFilters });
+    }
 
     function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
 
@@ -725,25 +734,26 @@
     function updateFilterBadge() {
       const dr = document.getElementById('gf-daterange')?.value || 'all';
       const dateActive = dr !== 'all' ? 1 : 0;
-      const filterActive = ['gf-result','gf-account','gf-grade','gf-direction'].filter(id => document.getElementById(id)?.value !== '').length;
+      const filterActive = [fResult, fAccount, fGrade, fDirection].filter(f => f && !f.isAll()).length;
       const active = dateActive + filterActive;
       const badge = document.getElementById('gf-filter-badge');
       if (badge) { badge.textContent = active > 0 ? active + ' filter' + (active > 1 ? 's' : '') + ' active' : ''; badge.classList.toggle('hidden', active === 0); }
     }
 
     function applyGlobalFilters() {
-      gfResult = document.getElementById('gf-result').value;
-      gfAccount = document.getElementById('gf-account').value;
-      gfGrade = document.getElementById('gf-grade').value;
-      gfDirection = document.getElementById('gf-direction').value;
+      if (suppressFilterApply) return;
       const { from, to } = getDateRange();
+      // An account matches on either its name or its type, so a trade logged
+      // against "Funded" still shows when that generic bucket is picked.
+      const acctOk = t => !fAccount || fAccount.isAll() ||
+        fAccount.matches(t.accountName) || fAccount.matches(t.accountType);
       filteredTrades = allTrades.filter(t =>
-        (!gfResult    || t.result === gfResult) &&
-        (!gfAccount   || t.accountName === gfAccount || t.accountType === gfAccount) &&
-        (!gfGrade     || t.grade === gfGrade) &&
-        (!gfDirection || t.direction === gfDirection) &&
-        (!from        || (t.date && t.date >= from)) &&
-        (!to          || (t.date && t.date <= to))
+        (!fResult    || fResult.matches(t.result)) &&
+        acctOk(t) &&
+        (!fGrade     || fGrade.matches(t.grade)) &&
+        (!fDirection || fDirection.matches(t.direction)) &&
+        (!from       || (t.date && t.date >= from)) &&
+        (!to         || (t.date && t.date <= to))
       );
       updateFilterBadge();
       // Jump calendar to the filtered date range
@@ -752,13 +762,15 @@
     }
 
     function clearGlobalFilters() {
-      ['gf-result','gf-account','gf-grade','gf-direction'].forEach(id => document.getElementById(id).value = '');
+      // Reset all four without re-running the filter once per change.
+      suppressFilterApply = true;
+      [fResult, fAccount, fGrade, fDirection].forEach(f => f && f.setSelected([]));
+      suppressFilterApply = false;
       document.getElementById('gf-daterange').value = 'all';
       const customEl = document.getElementById('gf-custom-range');
       if (customEl) customEl.classList.add('hidden');
       if (document.getElementById('gf-from')) document.getElementById('gf-from').value = '';
       if (document.getElementById('gf-to')) document.getElementById('gf-to').value = '';
-      gfResult = gfAccount = gfGrade = gfDirection = '';
       filteredTrades = [...allTrades];
       updateFilterBadge();
       renderHistory(); renderCalendar(); renderStats();
@@ -2094,27 +2106,16 @@
     }
 
     function updateAccountFilter() {
-      const sel = document.getElementById('gf-account');
-      if (!sel) return;
-      const cur = sel.value;
-      sel.innerHTML = '<option value="">All Accounts</option>';
-      if (journalAccounts.length) {
-        // Group by type
-        const types = [...new Set(journalAccounts.map(a => a.accountType).filter(Boolean))];
-        journalAccounts.forEach(a => {
-          const opt = document.createElement('option');
-          opt.value = a.name;
-          opt.textContent = a.name + (a.accountType ? ' (' + a.accountType + ')' : '');
-          sel.appendChild(opt);
-        });
-      } else {
-        // Fallback to generic types
-        ['Funded','Evaluation','Personal'].forEach(t => {
-          const opt = document.createElement('option');
-          opt.value = t; opt.textContent = t; sel.appendChild(opt);
-        });
-      }
-      sel.value = cur;
+      if (!fAccount) return;
+      const opts = journalAccounts.length
+        ? journalAccounts.map(a => ({
+            value: a.name,
+            label: a.name,
+            hint: a.accountType || ''
+          }))
+        // No saved accounts yet — fall back to the generic buckets.
+        : ['Funded','Evaluation','Personal'].map(t => ({ value: t, label: t }));
+      fAccount.setOptions(opts, { silent: true });
     }
 
     function updateAccountDropdowns() {
@@ -2219,6 +2220,7 @@
       } catch(err) { console.error(err); }
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
+      initGlobalFilters();
       await loadSettings();
 
       // ── URL param support — from Account Tracker ──
