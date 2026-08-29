@@ -163,7 +163,9 @@ function prepareNavLabels(root) {
   fetch('nav.html')
     .then(r => r.text())
     .then(html => {
-      document.getElementById('nav-content').innerHTML = html;
+      var mount = document.getElementById('nav-content');
+      if (!mount) return;   // admin.html has its own sidebar — nothing to mount
+      mount.innerHTML = html;
       prepareNavLabels(document.getElementById('nav-content'));
       var cbtn = document.getElementById('nav-collapse-btn');
       if (cbtn) cbtn.title = document.documentElement.classList.contains('nav-collapsed')
