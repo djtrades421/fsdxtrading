@@ -1184,7 +1184,7 @@
             <span class="text-right text-zinc-400">${gavg>=0?'+':'-'}$${Math.abs(gavg).toFixed(2)}</span>
           </div>`;
         }).join('');
-        gradeEl.innerHTML = header + rows;
+        gradeEl.innerHTML = '<div class="overflow-x-auto"><div class="min-w-[360px]">' + header + rows + '</div></div>';
       }
 
       // ── Long vs Short — detailed ──
