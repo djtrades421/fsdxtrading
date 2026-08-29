@@ -70,14 +70,7 @@
 
           <!-- Global Filters -->
           <div class="flex flex-wrap gap-2 mb-4 pb-2 border-b border-white/5">
-            <select id="gf-daterange" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-              <option value="all">All Time</option>
-              <option value="today">Today</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="year">This Year</option>
-              <option value="custom">Custom Range</option>
-            </select>
+            <div id="gf-daterange"></div>
             <div id="gf-custom-range" class="hidden flex gap-2">
               <input type="date" id="gf-from" onchange="applyGlobalFilters()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
               <span class="text-zinc-600 self-center text-xs">to</span>
@@ -644,11 +637,26 @@
     let tradeDir = 'LONG', pnlMode = 'price';
     let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
     // Multi-select filters (filters.js). Empty selection = no narrowing.
-    let fResult = null, fAccount = null, fGrade = null, fDirection = null;
+    let fResult = null, fAccount = null, fGrade = null, fDirection = null, fDateRange = null;
     let suppressFilterApply = false;
 
     function initGlobalFilters() {
       if (fResult) return;
+      fDateRange = FSDXFilter.create({ mount: '#gf-daterange', label: 'All Time', mode: 'single',
+        options: [
+          { value:'all',   label:'All Time' },
+          { value:'today', label:'Today' },
+          { value:'week',  label:'This Week' },
+          { value:'month', label:'This Month' },
+          { value:'year',  label:'This Year' },
+          { value:'custom',label:'Custom Range' }
+        ],
+        onChange: function () {
+          // The custom from/to inputs only make sense for "Custom Range".
+          var custom = document.getElementById('gf-custom-range');
+          if (custom) custom.classList.toggle('hidden', fDateRange.getValue() !== 'custom');
+          applyGlobalFilters();
+        } });
       fResult = FSDXFilter.create({ mount: '#gf-result', label: 'Results',
         options: [{value:'WIN',label:'Win'},{value:'LOSS',label:'Loss'},{value:'BE',label:'BE'}],
         onChange: applyGlobalFilters });
@@ -709,7 +717,7 @@
     function getDateRange() {
       const now = new Date();
       const today = now.toISOString().slice(0,10);
-      const dr = document.getElementById('gf-daterange')?.value || 'all';
+      const dr = fDateRange ? fDateRange.getValue() : 'all';
       const customEl = document.getElementById('gf-custom-range');
       if (customEl) customEl.classList.toggle('hidden', dr !== 'custom');
       if (dr === 'today') return { from: today, to: today };
@@ -732,7 +740,7 @@
     }
 
     function updateFilterBadge() {
-      const dr = document.getElementById('gf-daterange')?.value || 'all';
+      const dr = fDateRange ? fDateRange.getValue() : 'all';
       const dateActive = dr !== 'all' ? 1 : 0;
       const filterActive = [fResult, fAccount, fGrade, fDirection].filter(f => f && !f.isAll()).length;
       const active = dateActive + filterActive;
@@ -766,7 +774,7 @@
       suppressFilterApply = true;
       [fResult, fAccount, fGrade, fDirection].forEach(f => f && f.setSelected([]));
       suppressFilterApply = false;
-      document.getElementById('gf-daterange').value = 'all';
+      if (fDateRange) fDateRange.setValue('all', { silent: true });
       const customEl = document.getElementById('gf-custom-range');
       if (customEl) customEl.classList.add('hidden');
       if (document.getElementById('gf-from')) document.getElementById('gf-from').value = '';
@@ -2069,7 +2077,7 @@
       const now = new Date();
       const dateStamp = (now.getMonth()+1).toString().padStart(2,'0')+' / '+now.getDate().toString().padStart(2,'0')+' / '+now.getFullYear();
       // Period label from date range filter
-      const dr = document.getElementById('gf-daterange')?.value||'all';
+      const dr = fDateRange ? fDateRange.getValue() : 'all';
       const periodMap = {today:'TODAY',week:'THIS WEEK',month:'THIS MONTH',year:'THIS YEAR',all:'ALL TIME',custom:'CUSTOM'};
       const periodLabel = periodMap[dr]||'ALL TIME';
       const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>FSD-X — P&L Card</title>
@@ -2228,7 +2236,7 @@
       const urlDate = params.get('date');
       const urlTab = params.get('tab') || (urlDate ? 'history' : 'calendar');
       if (urlDate) {
-        document.getElementById('gf-daterange').value = 'custom';
+        if (fDateRange) fDateRange.setValue('custom', { silent: true });
         const customRange = document.getElementById('gf-custom-range');
         if (customRange) customRange.classList.remove('hidden');
         document.getElementById('gf-from').value = urlDate;
