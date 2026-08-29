@@ -105,7 +105,7 @@
             <button onclick="switchSub('calendar')" id="sub-calendar" class="tab-btn active px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 transition mr-1 whitespace-nowrap">Calendar</button>
             <button onclick="switchSub('history')" id="sub-history" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">History</button>
             <button onclick="switchSub('stats')" id="sub-stats" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Stats</button>
-            <button onclick="switchSub('accounts')" id="sub-accounts" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Accounts</button>
+            <button onclick="switchSub('settings')" id="sub-settings" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Settings</button>
           </div>
         </div>
       </div>
@@ -278,51 +278,20 @@
           </div>
 
           <!-- ACCOUNTS -->
-          <div id="panel-accounts" class="sub-panel space-y-6">
+          <div id="panel-settings" class="sub-panel space-y-6">
 
-            <!-- My Accounts -->
-            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
-              <div class="text-xs text-zinc-500 uppercase tracking-wider mb-4">My Accounts</div>
-              <div id="accounts-list" class="space-y-2 mb-5"></div>
-              <!-- Add/Edit form -->
-              <div id="account-form" class="border border-white/10 bg-zinc-900/50 rounded-xl p-4 space-y-3">
-                <div class="text-xs text-zinc-400 font-bold mb-1" id="account-form-title">Add Account</div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Nickname <span class="text-red-500">*</span></label>
-                    <input id="af-name" type="text" placeholder="e.g. Apex Funded #1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                  </div>
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Account # <span class="text-amber-500/80">— required for auto-import</span></label>
-                    <input id="af-number" type="text" placeholder="e.g. FTDFYL50565079459" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                    <p class="text-[10px] text-zinc-600 mt-1">Must match the <span class="text-zinc-500 font-mono">Account</span> column in your Tradovate export so imports route here automatically.</p>
-                  </div>
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Account Size — Optional</label>
-                    <input id="af-size" type="number" placeholder="e.g. 50000" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                  </div>
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Type</label>
-                    <select id="af-type" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
-                      <option value="">Select...</option>
-                      <option value="Funded">Funded</option>
-                      <option value="Evaluation">Evaluation</option>
-                      <option value="Personal">Personal</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Commission — Optional</label>
-                    <input id="af-comm" type="number" step="0.01" min="0" placeholder="e.g. 0.37" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                    <p class="text-[10px] text-zinc-600 mt-1">All-in rate <span class="text-zinc-500">per side</span> (commission + exchange/NFA/clearing). Charged on entry <span class="text-zinc-500">and</span> exit — <span class="text-zinc-500">not</span> a round-turn figure. Common: $0.37–$0.85.</p>
-                  </div>
-                </div>
-                <div id="af-msg" class="hidden text-xs py-1.5 rounded-lg text-center"></div>
-                <div class="flex gap-2">
-                  <button onclick="saveAccount()" class="flex-1 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-lg transition" id="af-btn">+ Add Account</button>
-                  <button onclick="cancelEditAccount()" id="af-cancel" class="hidden px-4 py-2 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-lg transition">Cancel</button>
-                </div>
+            <!-- Accounts live on their own page now -->
+            <a href="accounts.html" class="flex items-center gap-3 border border-white/10 hover:border-green-500/30 bg-zinc-950/40 rounded-2xl px-6 py-4 transition group">
+              <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0">
+                <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
               </div>
-            </div>
+              <div class="min-w-0">
+                <div class="text-sm font-bold text-white group-hover:text-green-400 transition">Accounts, trackers &amp; imports</div>
+                <div class="text-xs text-zinc-500">Add or edit accounts, set up rule trackers, undo an import</div>
+              </div>
+              <svg class="w-3.5 h-3.5 text-zinc-600 ml-auto shrink-0 group-hover:text-green-400 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </a>
+
 
             <!-- Journal Defaults -->
             <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
@@ -355,44 +324,10 @@
               <button onclick="saveDefaults()" class="mt-4 w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-lg transition">Save Defaults</button>
             </div>
 
-            <!-- Recent Imports — undo a single upload -->
-            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
-              <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Recent Imports</div>
-              <div class="text-xs text-zinc-700 mb-4">Each upload is tracked separately. Remove one without touching anything else — useful when a batch went in at the wrong commission rate.</div>
-              <div id="import-batches"></div>
-            </div>
-
             <!-- Danger Zone -->
             <div class="border border-red-500/20 bg-red-950/10 rounded-2xl p-6">
               <div class="text-xs text-red-400 uppercase tracking-wider font-bold mb-1">Danger Zone</div>
-              <div class="text-xs text-zinc-600 mb-4">These actions are permanent and cannot be undone.</div>
-
-              <!-- Delete by account -->
-              <div class="py-4 border-t border-red-500/10">
-                <div class="text-sm font-bold text-white mb-0.5">Delete Trades by Account</div>
-                <div class="text-xs text-zinc-500 mb-3">Removes trades for one account only. Everything else in your journal is left alone.</div>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
-                  <div>
-                    <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Account</label>
-                    <select id="del-account" onchange="refreshDeletePreview()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-red-500/50">
-                      <option value="">Select account...</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">From — optional</label>
-                    <input type="date" id="del-from" onchange="refreshDeletePreview()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-red-500/50">
-                  </div>
-                  <div>
-                    <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">To — optional</label>
-                    <input type="date" id="del-to" onchange="refreshDeletePreview()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-red-500/50">
-                  </div>
-                </div>
-                <div id="del-preview" class="text-xs text-zinc-600 mb-3">Pick an account to see what would be removed.</div>
-                <button onclick="executeAccountDelete()" id="del-btn" disabled class="px-5 py-2.5 bg-zinc-900 border border-white/10 text-zinc-600 font-bold text-xs uppercase tracking-wider rounded-xl transition cursor-not-allowed">
-                  Delete These Trades
-                </button>
-                <div id="del-msg" class="hidden text-xs py-1.5 rounded-lg text-center mt-3"></div>
-              </div>
+              <div class="text-xs text-zinc-600 mb-4">This is permanent and cannot be undone. To remove one import or one account's trades, use <a href="accounts.html#imports" class="text-zinc-400 hover:text-green-400 underline underline-offset-2 transition">Accounts → Imports</a>.</div>
 
               <div class="flex items-center justify-between flex-wrap gap-4 py-4 border-t border-red-500/10">
                 <div>
@@ -830,7 +765,7 @@
     }
     // ── Sub tabs ──
     function switchSub(tab) {
-      ['calendar','history','stats','accounts'].forEach(t => {
+      ['calendar','history','stats','settings'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('sub-' + t);
         btn.classList.remove('active','text-green-400','border-green-500');
@@ -840,7 +775,7 @@
       document.getElementById('sub-' + tab).classList.add('active','text-green-400','border-green-500');
       document.getElementById('sub-' + tab).classList.remove('text-zinc-500','border-transparent');
       if (tab === 'stats') renderStats();
-      if (tab === 'accounts') { renderAccountsList(); updateDeleteAccountPicker(); refreshDeletePreview(); renderImportBatches(); }
+      if (tab === 'settings') renderDefaultsForm();
     }
 
     // ── Calendar ──
@@ -2151,13 +2086,6 @@
       applyDefaults();
     }
 
-    async function saveAccountsToKV() {
-      await fetch(JOURNAL_URL, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'save-settings', key: whopKey, payload: { accounts: journalAccounts } })
-      });
-    }
-
     async function saveDefaultsToKV() {
       await fetch(JOURNAL_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -2193,6 +2121,8 @@
       updateAccountNameSelect();
     }
 
+    // Accounts are managed on accounts.html; journal only reads them.
+
     function applyDefaults() {
       if (!journalDefaults) return;
       // Apply to log trade form if fields are empty
@@ -2208,116 +2138,11 @@
         document.getElementById('t-strategy').value = journalDefaults.strategy;
     }
 
-    function renderAccountsList() {
-      const el = document.getElementById('accounts-list');
-      if (!el) return;
-      // Load current defaults into form
+    function renderDefaultsForm() {
       document.getElementById('def-ticker').value = journalDefaults.ticker || '';
       document.getElementById('def-timeframe').value = journalDefaults.timeframe || '';
       document.getElementById('def-contracts').value = journalDefaults.contracts || '';
       document.getElementById('def-strategy').value = journalDefaults.strategy || '';
-      if (!journalAccounts.length) {
-        el.innerHTML = '<div class="text-xs text-zinc-600 py-2">No accounts added yet.</div>';
-        return;
-      }
-      el.innerHTML = journalAccounts.map((a, idx) => `
-        <div class="flex items-center justify-between border border-white/5 bg-zinc-900/40 rounded-xl px-4 py-3">
-          <div>
-            <div class="text-sm font-bold text-white flex items-center gap-2">
-              ${a.name}
-              ${a.accountNumber ? '' : '<span class="text-[10px] font-bold text-amber-500/90 bg-amber-500/10 border border-amber-500/25 rounded px-1.5 py-0.5" title="Add an Account # so Tradovate imports route here automatically">⚠ no auto-import</span>'}
-            </div>
-            <div class="text-xs text-zinc-500 mt-0.5">
-              ${a.accountType||''}${a.accountSize?' · $'+Number(a.accountSize).toLocaleString():''}${a.accountNumber?' · #'+a.accountNumber:''}${a.commissionRate!=null?' · $'+Number(a.commissionRate).toFixed(2)+'/side':''}
-            </div>
-          </div>
-          <div class="flex gap-2">
-            <button onclick="editAccount('${a.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
-            </button>
-            <button onclick="deleteAccount('${a.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-            </button>
-          </div>
-        </div>`).join('');
-    }
-
-    function editAccount(id) {
-      const a = journalAccounts.find(a => a.id === id);
-      if (!a) return;
-      editingAccountId = id;
-      document.getElementById('af-name').value = a.name || '';
-      document.getElementById('af-number').value = a.accountNumber || '';
-      document.getElementById('af-size').value = a.accountSize || '';
-      document.getElementById('af-type').value = a.accountType || '';
-      document.getElementById('af-comm').value = a.commissionRate != null ? a.commissionRate : '';
-      document.getElementById('account-form-title').textContent = 'Edit Account';
-      document.getElementById('af-btn').textContent = 'Save Changes';
-      document.getElementById('af-cancel').classList.remove('hidden');
-      document.getElementById('af-name').focus();
-    }
-
-    function cancelEditAccount() {
-      editingAccountId = null;
-      ['af-name','af-number','af-size','af-comm'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('af-type').value = '';
-      document.getElementById('account-form-title').textContent = 'Add Account';
-      document.getElementById('af-btn').textContent = '+ Add Account';
-      document.getElementById('af-cancel').classList.add('hidden');
-      document.getElementById('af-msg').classList.add('hidden');
-    }
-
-    // Account numbers are the join key for auto-import. Normalize so a value
-    // copied off-screen ("#FTDFYL...") still matches the raw CSV value.
-    function normAcctNum(s) { return (s || '').replace(/[#\s]/g, '').toUpperCase(); }
-
-    async function saveAccount() {
-      const name = document.getElementById('af-name').value.trim();
-      if (!name) { showAfMsg('Nickname is required.', 'error'); return; }
-      const acctNumber = normAcctNum(document.getElementById('af-number').value);
-      const acctSize = parseFloat(document.getElementById('af-size').value) || null;
-      const acctType = document.getElementById('af-type').value;
-      const commRaw = document.getElementById('af-comm').value;
-      const commissionRate = commRaw === '' ? null : Math.max(0, parseFloat(commRaw) || 0);
-
-      // A duplicate account # would make import routing pick whichever record
-      // happens to sit first in the array — silently wrong. Block it here.
-      if (acctNumber) {
-        const clash = journalAccounts.find(a => a.id !== editingAccountId && normAcctNum(a.accountNumber) === acctNumber);
-        if (clash) { showAfMsg('Account # already used by "' + clash.name + '".', 'error'); return; }
-      }
-
-      if (editingAccountId) {
-        const idx = journalAccounts.findIndex(a => a.id === editingAccountId);
-        if (idx >= 0) journalAccounts[idx] = { ...journalAccounts[idx], name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate };
-      } else {
-        if (journalAccounts.find(a => a.name === name)) { showAfMsg('Account with this name already exists.', 'error'); return; }
-        journalAccounts.push({ id: Date.now().toString(), name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate });
-      }
-      await saveAccountsToKV();
-      cancelEditAccount();
-      renderAccountsList();
-      updateAccountFilter();
-      updateAccountDropdowns();
-      showAfMsg('Saved!', 'success');
-    }
-
-    async function deleteAccount(id) {
-      const a = journalAccounts.find(a => a.id === id);
-      if (!a || !confirm(`Delete account "${a.name}"?`)) return;
-      journalAccounts = journalAccounts.filter(a => a.id !== id);
-      await saveAccountsToKV();
-      renderAccountsList();
-      updateAccountFilter();
-      updateAccountDropdowns();
-    }
-
-    function showAfMsg(msg, type) {
-      const el = document.getElementById('af-msg');
-      el.textContent = msg;
-      el.className = 'text-xs py-1.5 rounded-lg text-center ' + (type==='error'?'bg-red-500/10 text-red-400':'bg-green-500/10 text-green-400');
-      el.classList.remove('hidden');
-      setTimeout(() => el.classList.add('hidden'), 3000);
     }
 
     async function saveDefaults() {
@@ -2333,145 +2158,6 @@
       el.className = 'text-xs py-1.5 rounded-lg text-center bg-green-500/10 text-green-400';
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 3000);
-    }
-
-    // ── Clear All Trades ──
-    // ── Selective delete ──
-    // "Clear All" is the wrong tool for a bad import. These two let you undo one
-    // upload, or clear one account, without wiping the rest of the journal.
-
-    function tradesMatchingDeleteFilter() {
-      const name = document.getElementById('del-account')?.value || '';
-      if (!name) return [];
-      const from = document.getElementById('del-from')?.value || '';
-      const to = document.getElementById('del-to')?.value || '';
-      return allTrades.filter(t => {
-        const owner = t.accountName || t.accountType || '';
-        if (owner !== name) return false;
-        if (from && (t.date || '') < from) return false;
-        if (to && (t.date || '') > to) return false;
-        return true;
-      });
-    }
-
-    function refreshDeletePreview() {
-      const el = document.getElementById('del-preview');
-      const btn = document.getElementById('del-btn');
-      if (!el || !btn) return;
-      const name = document.getElementById('del-account').value;
-      const hits = tradesMatchingDeleteFilter();
-      if (!name) {
-        el.textContent = 'Pick an account to see what would be removed.';
-        el.className = 'text-xs text-zinc-600 mb-3';
-      } else if (!hits.length) {
-        el.textContent = 'No trades match — nothing would be removed.';
-        el.className = 'text-xs text-zinc-600 mb-3';
-      } else {
-        const pnl = hits.reduce((s, t) => s + (parseFloat(t.netPnl) || 0), 0);
-        const dates = hits.map(t => t.date).filter(Boolean).sort();
-        el.innerHTML = `<span class="text-red-400 font-bold">${hits.length} trade${hits.length !== 1 ? 's' : ''}</span> ` +
-          `totalling <span class="${pnl >= 0 ? 'text-green-400' : 'text-red-400'} font-bold">${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}</span>` +
-          (dates.length ? ` · ${dates[0]}${dates[0] !== dates[dates.length - 1] ? ' to ' + dates[dates.length - 1] : ''}` : '');
-        el.className = 'text-xs text-zinc-400 mb-3';
-      }
-      const on = hits.length > 0;
-      btn.disabled = !on;
-      btn.textContent = on ? `Delete ${hits.length} Trade${hits.length !== 1 ? 's' : ''}` : 'Delete These Trades';
-      btn.className = on
-        ? 'px-5 py-2.5 bg-red-950/40 hover:bg-red-950/70 border border-red-500/30 hover:border-red-500/50 text-red-400 font-bold text-xs uppercase tracking-wider rounded-xl transition'
-        : 'px-5 py-2.5 bg-zinc-900 border border-white/10 text-zinc-600 font-bold text-xs uppercase tracking-wider rounded-xl transition cursor-not-allowed';
-    }
-
-    function updateDeleteAccountPicker() {
-      const sel = document.getElementById('del-account');
-      if (!sel) return;
-      const cur = sel.value;
-      // Everything that actually owns trades, whether or not it's a saved account.
-      const owners = [...new Set(allTrades.map(t => t.accountName || t.accountType || '').filter(Boolean))].sort();
-      sel.innerHTML = '<option value="">Select account...</option>' +
-        owners.map(o => {
-          const n = allTrades.filter(t => (t.accountName || t.accountType || '') === o).length;
-          return `<option value="${esc(o)}">${esc(o)} (${n})</option>`;
-        }).join('');
-      sel.value = cur;
-    }
-
-    async function executeAccountDelete() {
-      const hits = tradesMatchingDeleteFilter();
-      if (!hits.length) return;
-      const name = document.getElementById('del-account').value;
-      if (!confirm(`Delete ${hits.length} trade${hits.length !== 1 ? 's' : ''} from "${name}"?\n\nEverything else in your journal is kept.`)) return;
-      const kill = new Set(hits.map(t => t.id));
-      await persistTrades(allTrades.filter(t => !kill.has(t.id)), `Deleted ${hits.length} trade${hits.length !== 1 ? 's' : ''} from ${name}.`, 'del-msg');
-    }
-
-    // ── Import batches ──
-    function renderImportBatches() {
-      const el = document.getElementById('import-batches');
-      if (!el) return;
-      const groups = {};
-      allTrades.forEach(t => {
-        if (!t.importBatch) return;
-        const g = groups[t.importBatch] || (groups[t.importBatch] = { label: t.importBatchLabel || 'Import', at: t.importedAt || '', n: 0, pnl: 0, accts: new Set() });
-        g.n++; g.pnl += parseFloat(t.netPnl) || 0;
-        if (t.accountName) g.accts.add(t.accountName);
-      });
-      const ids = Object.keys(groups).sort((a, b) => (groups[b].at || '').localeCompare(groups[a].at || ''));
-      const untagged = allTrades.filter(t => !t.importBatch).length;
-      if (!ids.length) {
-        el.innerHTML = `<div class="text-xs text-zinc-600 py-2">No tracked imports yet.${untagged ? ` ${untagged} trade${untagged !== 1 ? 's were' : ' was'} added before import tracking existed — use Delete by Account below for those.` : ''}</div>`;
-        return;
-      }
-      el.innerHTML = ids.map(id => {
-        const g = groups[id];
-        const when = g.at ? new Date(g.at).toLocaleString() : '';
-        return `<div class="flex items-center justify-between gap-3 border border-white/5 bg-zinc-900/40 rounded-xl px-4 py-3 mb-2">
-          <div class="min-w-0">
-            <div class="text-sm font-bold text-white truncate">${esc(g.label)}</div>
-            <div class="text-xs text-zinc-500 mt-0.5">${g.n} trade${g.n !== 1 ? 's' : ''} · <span class="${g.pnl >= 0 ? 'text-green-400' : 'text-red-400'}">${g.pnl >= 0 ? '+' : ''}$${g.pnl.toFixed(2)}</span>${g.accts.size ? ' · ' + esc([...g.accts].join(', ')) : ''}${when ? ' · ' + esc(when) : ''}</div>
-          </div>
-          <button onclick="deleteImportBatch('${esc(id)}')" class="shrink-0 px-3 py-2 bg-red-950/30 hover:bg-red-950/60 border border-red-500/25 hover:border-red-500/50 text-red-400 text-[11px] font-bold uppercase tracking-wider rounded-lg transition">Remove</button>
-        </div>`;
-      }).join('') + (untagged ? `<div class="text-[10px] text-zinc-600 mt-2">${untagged} older trade${untagged !== 1 ? 's are' : ' is'} not tied to a tracked import — use Delete by Account below.</div>` : '');
-    }
-
-    async function deleteImportBatch(id) {
-      const hits = allTrades.filter(t => t.importBatch === id);
-      if (!hits.length) return;
-      const label = hits[0].importBatchLabel || 'this import';
-      if (!confirm(`Remove all ${hits.length} trade${hits.length !== 1 ? 's' : ''} from "${label}"?\n\nNothing else in your journal is touched.`)) return;
-      await persistTrades(allTrades.filter(t => t.importBatch !== id), `Removed ${hits.length} trade${hits.length !== 1 ? 's' : ''} from that import.`, null);
-    }
-
-    // Shared save + re-render for both delete paths.
-    async function persistTrades(next, successMsg, msgElId) {
-      try {
-        await fetch(JOURNAL_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'save-all', key: whopKey, payload: { trades: next } })
-        });
-        allTrades = next;
-        filteredTrades = [...allTrades];
-        applyGlobalFilters();
-        renderCalendar(); renderHistory(); renderStats();
-        updateDeleteAccountPicker();
-        refreshDeletePreview();
-        renderImportBatches();
-        if (msgElId) {
-          const el = document.getElementById(msgElId);
-          if (el) {
-            el.textContent = '✅ ' + successMsg;
-            el.className = 'text-xs py-1.5 rounded-lg text-center mt-3 bg-green-500/10 text-green-400';
-            el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 4000);
-          }
-        } else {
-          alert('✅ ' + successMsg);
-        }
-      } catch (err) {
-        console.error(err);
-        alert('Delete failed. Please try again.');
-      }
     }
 
     function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
@@ -2503,7 +2189,6 @@
         allTrades = []; filteredTrades = [];
         cancelClearAll();
         renderCalendar(); renderHistory(); renderStats();
-        updateDeleteAccountPicker(); refreshDeletePreview(); renderImportBatches();
         // Show success
         const el = document.getElementById('def-msg');
         el.textContent = 'All trades deleted.';
