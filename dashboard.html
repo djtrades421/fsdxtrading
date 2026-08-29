@@ -55,12 +55,12 @@
     <div id="dashboard-content" class="hidden flex-1 flex flex-col">
 
       <!-- Header -->
-      <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 py-4 flex items-center justify-between">
-        <div>
+      <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 py-4 flex items-center justify-between gap-3 flex-wrap">
+        <div class="min-w-0">
           <h1 id="welcome-msg" class="text-lg font-black text-white">Good morning</h1>
           <p id="session-info" class="text-xs text-zinc-500 mt-0.5"></p>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
           <!-- Status pill with dropdown -->
           <div class="relative">
             <div id="status-card" class="flex items-center gap-2 px-3 py-1.5 border border-green-500/20 bg-green-500/5 rounded-lg cursor-pointer hover:border-green-500/40 hover:bg-green-500/10 transition" onclick="toggleAccess()">
