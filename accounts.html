@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Accounts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="nav-loader.js"></script>
+  <style>
+    body { background-color: #000; }
+    input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
+    .tracker-row { transition: all 0.2s; }
+    .expand-panel { display: none; }
+    .expand-panel.open { display: block; }
+    .expand-arrow { transition: transform 0.2s; }
+    .expand-arrow.open { transform: rotate(180deg); }
+    .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
+    .sub-panel { display: none; }
+    .sub-panel.active { display: block; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+    <div id="loading-screen" class="flex-1 flex items-center justify-center">
+      <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
+    </div>
+
+    <div id="page-content" class="hidden flex-1 flex flex-col">
+
+      <!-- Header -->
+      <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-0">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// VIP Members</div>
+          <div class="flex items-end justify-between gap-4 flex-wrap mb-4">
+            <div>
+              <h1 class="text-3xl font-black tracking-tight">Accounts</h1>
+              <p class="text-zinc-500 text-sm mt-1">Your accounts, rule trackers, and imports — all in one place</p>
+            </div>
+            <button onclick="openNewCard()" id="new-tracker-btn" class="hidden shrink-0 items-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              New Tracker
+            </button>
+          </div>
+
+          <!-- Tabs -->
+          <div class="flex -mb-px overflow-x-auto">
+            <button onclick="switchTab('registry')" id="tab-registry" class="tab-btn active px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 transition mr-1 whitespace-nowrap">My Accounts</button>
+            <button onclick="switchTab('trackers')" id="tab-trackers" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Trackers</button>
+            <button onclick="switchTab('imports')" id="tab-imports" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Imports</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="flex-1 px-6 md:px-10 py-8">
+        <div class="max-w-5xl mx-auto">
+
+          <!-- ══ MY ACCOUNTS ══ -->
+          <div id="panel-registry" class="sub-panel active space-y-6">
+
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+              <div class="flex items-center justify-between mb-4 gap-3">
+                <div class="text-xs text-zinc-500 uppercase tracking-wider">My Accounts</div>
+                <div id="accounts-count" class="text-[10px] text-zinc-600 uppercase tracking-wider"></div>
+              </div>
+              <div id="accounts-list" class="space-y-2 mb-5"></div>
+
+              <!-- Add/Edit form -->
+              <div id="account-form" class="border border-white/10 bg-zinc-900/50 rounded-xl p-4 space-y-3">
+                <div class="text-xs text-zinc-400 font-bold mb-1" id="account-form-title">Add Account</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Nickname <span class="text-red-500">*</span></label>
+                    <input id="af-name" type="text" placeholder="e.g. Apex Funded #1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Account # <span class="text-amber-500/80">— required for auto-import</span></label>
+                    <input id="af-number" type="text" placeholder="e.g. FTDFYL50565079459" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                    <p class="text-[10px] text-zinc-600 mt-1">Must match the <span class="text-zinc-500 font-mono">Account</span> column in your Tradovate export so imports route here automatically.</p>
+                  </div>
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Account Size — Optional</label>
+                    <input id="af-size" type="number" placeholder="e.g. 50000" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                  </div>
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Type</label>
+                    <select id="af-type" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
+                      <option value="">Select...</option>
+                      <option value="Funded">Funded</option>
+                      <option value="Evaluation">Evaluation</option>
+                      <option value="Personal">Personal</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs text-zinc-600 mb-1">Commission — Optional</label>
+                    <input id="af-comm" type="number" step="0.01" min="0" placeholder="e.g. 0.37" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+                    <p class="text-[10px] text-zinc-600 mt-1">All-in rate <span class="text-zinc-500">per side</span> (commission + exchange/NFA/clearing). Charged on entry <span class="text-zinc-500">and</span> exit — <span class="text-zinc-500">not</span> a round-turn figure. Common: $0.37–$0.85.</p>
+                  </div>
+                </div>
+                <div id="af-msg" class="hidden text-xs py-1.5 rounded-lg text-center"></div>
+                <div class="flex gap-2">
+                  <button onclick="saveAccount()" class="flex-1 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-lg transition" id="af-btn">+ Add Account</button>
+                  <button onclick="cancelEditAccount()" id="af-cancel" class="hidden px-4 py-2 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-lg transition">Cancel</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ══ TRACKERS ══ -->
+          <div id="panel-trackers" class="sub-panel space-y-3">
+
+            <!-- Empty state -->
+            <div id="tracker-empty" class="hidden text-center py-20">
+              <div class="text-5xl mb-4">📊</div>
+              <h3 class="text-xl font-black mb-2">No trackers yet</h3>
+              <p class="text-zinc-500 text-sm mb-6 max-w-md mx-auto">Set up a tracker for each account — eval progress, firm rules, and your personal discipline all tracked automatically from your journal.</p>
+              <button onclick="openNewCard()" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">+ New Tracker</button>
+            </div>
+
+            <!-- Tracker list -->
+            <div id="tracker-list" class="hidden space-y-3"></div>
+
+          </div>
+
+          <!-- ══ IMPORTS ══ -->
+          <div id="panel-imports" class="sub-panel space-y-6">
+
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+              <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Recent Imports</div>
+              <div class="text-xs text-zinc-700 mb-4">Each upload is tracked separately. Remove one without touching anything else — useful when a batch went in at the wrong commission rate.</div>
+              <div id="import-batches"></div>
+            </div>
+
+            <div class="border border-red-500/20 bg-red-950/10 rounded-2xl p-6">
+              <div class="text-xs text-red-400 uppercase tracking-wider font-bold mb-1">Danger Zone</div>
+              <div class="text-xs text-zinc-600 mb-4">This is permanent and cannot be undone.</div>
+              <div class="py-4 border-t border-red-500/10">
+                <div class="text-sm font-bold text-white mb-0.5">Delete Trades by Account</div>
+                <div class="text-xs text-zinc-500 mb-3">Removes trades for one account only. Everything else in your journal is left alone.</div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">Account</label>
+                    <select id="del-account" onchange="refreshDeletePreview()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-red-500/50">
+                      <option value="">Select account...</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">From — optional</label>
+                    <input type="date" id="del-from" onchange="refreshDeletePreview()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-red-500/50">
+                  </div>
+                  <div>
+                    <label class="block text-[10px] text-zinc-600 uppercase tracking-wider mb-1">To — optional</label>
+                    <input type="date" id="del-to" onchange="refreshDeletePreview()" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-red-500/50">
+                  </div>
+                </div>
+                <div id="del-preview" class="text-xs text-zinc-600 mb-3">Pick an account to see what would be removed.</div>
+                <button onclick="executeAccountDelete()" id="del-btn" disabled class="px-5 py-2.5 bg-zinc-900 border border-white/10 text-zinc-600 font-bold text-xs uppercase tracking-wider rounded-xl transition cursor-not-allowed">
+                  Delete These Trades
+                </button>
+                <div id="del-msg" class="hidden text-xs py-1.5 rounded-lg text-center mt-3"></div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- New/Edit Modal -->
+  <div id="tracker-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
+    <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-lg p-6 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-black" id="modal-title">New Tracker</h2>
+        <button onclick="closeModal()" class="text-zinc-500 hover:text-white transition">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+
+        <!-- Label -->
+        <div>
+          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Label <span class="text-red-500">*</span></label>
+          <input id="tc-label" type="text" placeholder="e.g. Apex Eval #1, Topstep Funded, All Evals"
+            class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+        </div>
+
+        <!-- Filter -->
+        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
+          <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Which Trades to Track</div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Account Type</label>
+              <select id="tc-type" onchange="updateNameDropdown()"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+                <option value="">Any Type</option>
+                <option value="Evaluation">Evaluation</option>
+                <option value="Funded">Funded</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Account Name</label>
+              <select id="tc-name"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+                <option value="">Any Account</option>
+              </select>
+            </div>
+          </div>
+          <div class="text-[10px] text-zinc-600">Leave both as "Any" to track all trades. Pick type only, name only, or both.</div>
+        </div>
+
+        <!-- Firm Rules -->
+        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
+          <div>
+            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Firm Rules</div>
+            <div class="text-[10px] text-zinc-600 mt-0.5">Hard limits set by your prop firm — breaching these ends your account</div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Account Size <span class="text-red-500">*</span></label>
+              <input id="tc-size" type="number" placeholder="50000"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Profit Target</label>
+              <input id="tc-target" type="number" placeholder="3000"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Firm Daily Loss Limit</label>
+              <input id="tc-firm-daily" type="number" placeholder="1000"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Max / Trailing DD</label>
+              <input id="tc-maxdd" type="number" placeholder="2500"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-zinc-600 mb-1.5">Drawdown Type</label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="setDDType('trailing')" id="dd-trailing"
+                class="py-2 border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-bold rounded-xl transition">Trailing</button>
+              <button type="button" onclick="setDDType('eod')" id="dd-eod"
+                class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">End of Day</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Rules -->
+        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
+          <div>
+            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">My Rules</div>
+            <div class="text-[10px] text-zinc-600 mt-0.5">Your personal trading rules — breaking these affects your discipline score</div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Personal Daily Loss Limit</label>
+              <input id="tc-personal-daily" type="number" placeholder="500"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+              <p class="text-[10px] text-zinc-700 mt-0.5">Your own limit, not the firm's</p>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Max Trades Per Day</label>
+              <input id="tc-max-trades" type="number" placeholder="3" min="1"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Max Consecutive Losses</label>
+              <input id="tc-max-consec" type="number" placeholder="2" min="1"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+              <p class="text-[10px] text-zinc-700 mt-0.5">Stop trading after this many in a row</p>
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Min Acceptable Grade</label>
+              <select id="tc-mingrade"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+                <option value="">Any grade</option>
+                <option value="A+">A+ only</option>
+                <option value="A">A+ / A</option>
+                <option value="B+">A+ / A / B+</option>
+                <option value="B">A+ through B</option>
+                <option value="C+">A+ through C+</option>
+                <option value="C">All grades</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Trade Window Start</label>
+              <input id="tc-window-start" type="time"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+            </div>
+            <div>
+              <label class="block text-xs text-zinc-600 mb-1">Trade Window End</label>
+              <input id="tc-window-end" type="time"
+                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+            </div>
+          </div>
+        </div>
+
+        <div id="modal-msg" class="hidden text-xs text-center py-2 rounded-lg"></div>
+      </div>
+
+      <div class="flex gap-3 mt-6">
+        <button onclick="closeModal()" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Cancel</button>
+        <button onclick="saveCard()" class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Tracker</button>
+      </div>
+      <div id="delete-btn-wrap" class="hidden mt-3 pt-3 border-t border-white/5">
+        <button onclick="deleteCard()" class="w-full py-2 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/5 rounded-xl transition font-bold">🗑 Delete Tracker</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
+
+    const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
+    const GRADE_ORDER = ['A+','A','B+','B','C+','C','D','F'];
+
+    let whopKey = null;
+    let journalTrades = [];
+    let journalAccounts = [];
+    let trackerCards = [];
+    let editingCardId = null;
+    let ddType_modal = 'trailing';
+
+    // ── Init ──
+    async function init() {
+      const token = localStorage.getItem('fsdx_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+      try {
+        const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', { headers: { 'Authorization': 'Bearer ' + token } });
+        const data = await res.json();
+        whopKey = data.user?.whopKey;
+      } catch(e) {}
+      if (!whopKey) { document.getElementById('loading-screen').innerHTML = '<p class="text-zinc-500 text-sm text-center px-6">Could not load your key. <a href="login.html" class="text-green-400">Log out and back in</a>.</p>'; return; }
+      await Promise.all([loadJournalData(), loadTrackerCards()]);
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('page-content').classList.remove('hidden');
+      const wanted = new URLSearchParams(location.search).get('tab') || (location.hash || '').replace('#', '');
+      switchTab(['registry','trackers','imports'].includes(wanted) ? wanted : 'registry');
+    }
+
+    // ── Tabs ──
+    function switchTab(tab) {
+      ['registry','trackers','imports'].forEach(t => {
+        const panel = document.getElementById('panel-' + t);
+        const btn = document.getElementById('tab-' + t);
+        if (panel) panel.classList.toggle('active', t === tab);
+        if (btn) {
+          btn.classList.toggle('active', t === tab);
+          btn.classList.toggle('border-green-500', t === tab);
+          btn.classList.toggle('border-transparent', t !== tab);
+        }
+      });
+      const btn = document.getElementById('new-tracker-btn');
+      if (btn) btn.classList.toggle('hidden', tab !== 'trackers');
+      if (tab === 'registry') renderAccountsList();
+      if (tab === 'trackers') renderList();
+      if (tab === 'imports') { updateDeleteAccountPicker(); refreshDeletePreview(); renderImportBatches(); }
+      if (location.hash !== '#' + tab) history.replaceState(null, '', '#' + tab);
+    }
+
+    async function loadJournalData() {
+      try {
+        const [tr, sr] = await Promise.all([
+          fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) }),
+          fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-settings', key: whopKey }) })
+        ]);
+        const td = await tr.json(); const sd = await sr.json();
+        journalTrades = Array.isArray(td.trades) ? td.trades : [];
+        journalAccounts = Array.isArray(sd.accounts) ? sd.accounts : [];
+      } catch(e) {}
+    }
+
+    async function loadTrackerCards() {
+      try {
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key:'tracker_settings:'+whopKey }) });
+        const data = await res.json();
+        trackerCards = Array.isArray(data.trades) ? data.trades : [];
+      } catch(e) { trackerCards = []; }
+    }
+
+    async function saveTrackerCards() {
+      await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ action:'save-all', key:'tracker_settings:'+whopKey, payload:{ trades: trackerCards } }) });
+    }
+
+    // ── Stats calculation ──
+    function getCardTrades(card) {
+      return journalTrades.filter(t => {
+        const typeMatch = !card.filterType || t.accountType === card.filterType;
+        const nameMatch = !card.filterName || t.accountName === card.filterName;
+        return typeMatch && nameMatch;
+      });
+    }
+
+    function calcStats(card) {
+      const trades = getCardTrades(card);
+      const today = new Date().toISOString().slice(0,10);
+
+      // P&L with numAccounts multiplier
+      const pnl = t => (parseFloat(t.netPnl)||0) * (t.numAccounts||1);
+      const totalPnl = trades.reduce((s,t) => s+pnl(t), 0);
+      const todayTrades = trades.filter(t => t.date === today);
+      const todayPnl = todayTrades.reduce((s,t) => s+pnl(t), 0);
+
+      // Win stats
+      const wins = trades.filter(t => t.result==='WIN').length;
+      const losses = trades.filter(t => t.result==='LOSS').length;
+      const wr = wins+losses > 0 ? Math.round(wins/(wins+losses)*100) : 0;
+      const tradingDays = new Set(trades.map(t=>t.date).filter(Boolean)).size;
+
+      // Drawdown — respects the account's DD type.
+      // Stable, transitive sort key (include exitTime; return 0 on tie).
+      const ddKey = t => (t.date||'') + ' ' + (t.entryTime||'') + ' ' + (t.exitTime||'');
+      const sorted = [...trades].sort((a,b) => { const ka=ddKey(a), kb=ddKey(b); return ka<kb?-1:ka>kb?1:0; });
+      let equity=0, peak=0, maxDD=0, currentDD=0, hwm=0;
+      if (card.ddType === 'eod') {
+        // End-of-day drawdown: measure drops against the high-water-mark of
+        // DAILY CLOSING balances. Intraday swings within a day do NOT count —
+        // this is what Lucid/Tradovate EOD-trailing accounts actually track.
+        const byDay = {};
+        sorted.forEach(t => { if (t.date) byDay[t.date] = (byDay[t.date]||0) + pnl(t); });
+        Object.keys(byDay).sort().forEach(d => {
+          equity += byDay[d];
+          if (equity > peak) { peak = equity; hwm = equity; }
+          currentDD = equity - peak;
+          if (currentDD < maxDD) maxDD = currentDD;
+        });
+      } else {
+        // Trailing drawdown: intraday peak-to-trough on the per-trade curve.
+        sorted.forEach(t => {
+          equity += pnl(t);
+          if (equity > peak) { peak = equity; hwm = equity; }
+          currentDD = equity - peak;
+          if (currentDD < maxDD) maxDD = currentDD;
+        });
+      }
+
+      // Consecutive losses (current streak)
+      let consecLosses = 0;
+      for (let i = sorted.length-1; i >= 0; i--) {
+        if (sorted[i].result === 'LOSS') consecLosses++;
+        else break;
+      }
+      // Max ever
+      let maxConsec = 0, cur = 0;
+      sorted.forEach(t => { if(t.result==='LOSS'){cur++;maxConsec=Math.max(maxConsec,cur);}else cur=0; });
+
+      // Today's trade count
+      const todayTradeCount = todayTrades.length;
+
+      // Trades outside trading window
+      const windowViolations = (card.windowStart && card.windowEnd) ? trades.filter(t => {
+        if (!t.entryTime) return false;
+        return t.entryTime < card.windowStart || t.entryTime > card.windowEnd;
+      }).length : 0;
+
+      // Grade discipline
+      const minGradeIdx = card.minGrade ? GRADE_ORDER.indexOf(card.minGrade) : -1;
+      const gradedTrades = trades.filter(t => t.grade);
+      const offGrade = minGradeIdx >= 0 ? gradedTrades.filter(t => {
+        const idx = GRADE_ORDER.indexOf(t.grade);
+        return idx > minGradeIdx;
+      }).length : 0;
+      const gradeScore = gradedTrades.length > 0
+        ? Math.round((gradedTrades.length - offGrade) / gradedTrades.length * 100)
+        : 100;
+
+      // Days where personal daily limit was breached
+      const personalDaily = parseFloat(card.personalDaily) || 0;
+      let dailyLimitBreaches = 0;
+      if (personalDaily > 0) {
+        const byDay = {};
+        trades.forEach(t => { if(t.date) byDay[t.date] = (byDay[t.date]||0) + pnl(t); });
+        dailyLimitBreaches = Object.values(byDay).filter(v => v < -personalDaily).length;
+      }
+
+      // Days where max trades was breached
+      const maxTradesPerDay = parseInt(card.maxTradesPerDay) || 0;
+      let tradeCountBreaches = 0;
+      if (maxTradesPerDay > 0) {
+        const byDay = {};
+        trades.forEach(t => { if(t.date) byDay[t.date] = (byDay[t.date]||0) + 1; });
+        tradeCountBreaches = Object.values(byDay).filter(v => v > maxTradesPerDay).length;
+      }
+
+      // Consecutive loss breaches
+      const maxConsecLimit = parseInt(card.maxConsecLosses) || 0;
+      const consecBreach = maxConsecLimit > 0 && consecLosses >= maxConsecLimit;
+
+      // Overall discipline score — weighted average of all personal rules
+      const scores = [gradeScore];
+      if (personalDaily > 0 && trades.length > 0) {
+        const dayCount = Object.keys((() => { const b={}; trades.forEach(t=>{if(t.date)b[t.date]=1;}); return b; })()).length;
+        scores.push(Math.round((dayCount - dailyLimitBreaches) / dayCount * 100));
+      }
+      if (maxTradesPerDay > 0 && trades.length > 0) {
+        const dayCount = Object.keys((() => { const b={}; trades.forEach(t=>{if(t.date)b[t.date]=1;}); return b; })()).length;
+        scores.push(Math.round((dayCount - tradeCountBreaches) / dayCount * 100));
+      }
+      if (windowViolations > 0 && trades.length > 0) scores.push(Math.round((trades.length - windowViolations) / trades.length * 100));
+      const disciplineScore = Math.round(scores.reduce((s,v)=>s+v,0)/scores.length);
+
+      // Firm rule statuses
+      const firmDaily = parseFloat(card.firmDaily) || 0;
+      const maxDDLimit = parseFloat(card.maxDD) || 0;
+      const target = parseFloat(card.profitTarget) || 0;
+      const todayLoss = Math.abs(Math.min(0, todayPnl));
+      const firmDailyPct = firmDaily > 0 ? Math.min(100, Math.round(todayLoss/firmDaily*100)) : null;
+      const personalDailyPct = personalDaily > 0 ? Math.min(100, Math.round(todayLoss/personalDaily*100)) : null;
+      const ddPct = maxDDLimit > 0 ? Math.min(100, Math.round(Math.abs(currentDD)/maxDDLimit*100)) : null;
+      const targetPct = target > 0 ? Math.min(100, Math.round(totalPnl/target*100)) : null;
+
+      // Remaining today
+      const firmDailyRemaining = firmDaily > 0 ? Math.max(0, firmDaily - todayLoss) : null;
+      const personalDailyRemaining = personalDaily > 0 ? Math.max(0, personalDaily - todayLoss) : null;
+      const ddRemaining = maxDDLimit > 0 ? Math.max(0, maxDDLimit - Math.abs(currentDD)) : null;
+
+      // Overall status
+      let status = 'green';
+      if (targetPct >= 100) status = 'complete';
+      else if ((ddPct||0) >= 80 || (firmDailyPct||0) >= 100) status = 'red';
+      else if ((ddPct||0) >= 50 || (firmDailyPct||0) >= 80 || consecBreach) status = 'yellow';
+
+      // Weekly grade breakdown (last 5 weeks)
+      const weeklyGrades = {};
+      trades.forEach(t => {
+        if (!t.date || !t.grade) return;
+        const d = new Date(t.date+'T00:00:00');
+        const week = d.getFullYear() + '-W' + String(Math.ceil((d.getDate() - d.getDay() + 1) / 7 + (new Date(d.getFullYear(),0,1).getDay()-1)/7)).padStart(2,'0');
+        if (!weeklyGrades[week]) weeklyGrades[week] = { good: 0, total: 0 };
+        weeklyGrades[week].total++;
+        if (minGradeIdx >= 0) {
+          if (GRADE_ORDER.indexOf(t.grade) <= minGradeIdx) weeklyGrades[week].good++;
+        } else weeklyGrades[week].good++;
+      });
+
+      // ── Violation trade lists ──
+      const pnl2 = t => (parseFloat(t.netPnl)||0) * (t.numAccounts||1);
+
+      // Off-grade trades
+      const offGradeTrades = minGradeIdx >= 0 ? gradedTrades.filter(t => GRADE_ORDER.indexOf(t.grade) > minGradeIdx) : [];
+
+      // Window violation trades
+      const windowViolationTrades = (card.windowStart && card.windowEnd) ? trades.filter(t => {
+        if (!t.entryTime) return false;
+        return t.entryTime < card.windowStart || t.entryTime > card.windowEnd;
+      }) : [];
+
+      // Personal daily limit breach days + trades
+      const personalDailyBreachTrades = [];
+      if (personalDaily > 0) {
+        const byDay = {};
+        sorted.forEach(t => { if(t.date) { if(!byDay[t.date]) byDay[t.date]=[]; byDay[t.date].push(t); } });
+        Object.entries(byDay).forEach(([date, dayTrades]) => {
+          const dayPnl = dayTrades.reduce((s,t) => s+pnl2(t), 0);
+          if (dayPnl < -personalDaily) personalDailyBreachTrades.push(...dayTrades);
+        });
+      }
+
+      // Over max trades per day
+      const overTradeTrades = [];
+      if (maxTradesPerDay > 0) {
+        const byDay = {};
+        sorted.forEach(t => { if(t.date) { if(!byDay[t.date]) byDay[t.date]=[]; byDay[t.date].push(t); } });
+        Object.entries(byDay).forEach(([date, dayTrades]) => {
+          if (dayTrades.length > maxTradesPerDay) overTradeTrades.push(...dayTrades.slice(maxTradesPerDay));
+        });
+      }
+
+      return {
+        trades, totalPnl, todayPnl, todayTradeCount, wins, losses, wr, tradingDays,
+        currentDD, maxDD, hwm, consecLosses, maxConsec,
+        gradeScore, offGrade, disciplineScore, windowViolations,
+        dailyLimitBreaches, tradeCountBreaches, consecBreach,
+        firmDailyPct, personalDailyPct, ddPct, targetPct,
+        firmDailyRemaining, personalDailyRemaining, ddRemaining,
+        status, target, firmDaily, personalDaily: parseFloat(card.personalDaily)||0,
+        maxDDLimit, maxConsecLimit,
+        offGradeTrades, windowViolationTrades, personalDailyBreachTrades, overTradeTrades
+      };
+    }
+
+    // ── Render ──
+    function renderList() {
+      const list = document.getElementById('tracker-list');
+      const empty = document.getElementById('tracker-empty');
+      if (!trackerCards.length) { empty.classList.remove('hidden'); list.classList.add('hidden'); return; }
+      empty.classList.add('hidden'); list.classList.remove('hidden');
+      list.innerHTML = trackerCards.map(card => renderRow(card)).join('');
+    }
+
+    function violationList(trades, label) {
+      if (!trades.length) return '';
+      const rows = trades.slice(0,10).map(t => {
+        const p = parseFloat(t.netPnl)||0;
+        const pCol = p>=0?'text-green-400':'text-red-400';
+        const sign = p>=0?'+':'-';
+        return `<a href="journal.html?date=${t.date}&tab=history" target="_blank"
+          class="flex items-center justify-between py-1.5 px-3 rounded-lg hover:bg-white/5 transition cursor-pointer group">
+          <div class="flex items-center gap-3 text-xs">
+            <span class="text-zinc-500 font-mono">${t.date||'—'}</span>
+            <span class="text-zinc-600 font-mono">${fmt12(t.entryTime)}</span>
+            <span class="text-zinc-300 font-bold">${t.ticker||'MNQ'}</span>
+            <span class="${t.direction==='LONG'?'text-green-400':'text-red-400'} font-bold">${t.direction||'—'}</span>
+            ${t.grade?`<span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-zinc-800 border border-white/10 text-zinc-300">${t.grade}</span>`:''}
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold ${pCol}">${sign}$${Math.abs(p).toFixed(0)}</span>
+            <svg class="w-3 h-3 text-zinc-600 group-hover:text-zinc-400 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+          </div>
+        </a>`;
+      }).join('');
+      const more = trades.length > 10 ? `<div class="text-[10px] text-zinc-600 px-3 pt-1">+${trades.length-10} more — view in journal</div>` : '';
+      return `<div class="mt-2 border border-white/5 bg-zinc-950/60 rounded-xl overflow-hidden">
+        <div class="px-3 py-2 border-b border-white/5 text-[10px] font-bold text-zinc-500 uppercase tracking-wider">${label}</div>
+        ${rows}${more}
+      </div>`;
+    }
+
+    function renderRow(card) {
+      const s = calcStats(card);
+      const filterLabel = [card.filterType, card.filterName].filter(Boolean).join(' · ') || 'All Trades';
+      const pnlCol = s.totalPnl >= 0 ? 'text-green-400' : 'text-red-400';
+      const pnlSign = s.totalPnl >= 0 ? '+' : '-';
+
+      const statusConfig = {
+        green:    { dot: 'bg-green-400',           badge: 'bg-green-500/10 text-green-400 border-green-500/20',   label: 'On Track' },
+        yellow:   { dot: 'bg-yellow-400',           badge: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20', label: 'Caution' },
+        red:      { dot: 'bg-red-400 animate-pulse', badge: 'bg-red-500/10 text-red-400 border-red-500/20',         label: 'At Risk' },
+        complete: { dot: 'bg-green-400',             badge: 'bg-green-500/20 text-green-300 border-green-400/30',   label: '✓ Target Hit' },
+      };
+      const sc = statusConfig[s.status] || statusConfig.green;
+
+      const discColor = s.disciplineScore >= 80 ? 'text-green-400' : s.disciplineScore >= 60 ? 'text-yellow-400' : 'text-red-400';
+      const wrColor = s.wr >= 55 ? 'text-green-400' : s.wr >= 45 ? 'text-zinc-300' : 'text-red-400';
+
+      // Mini progress bar — DD always red (any use is bad); target green and
+      // empty while underwater. Width clamped so a negative % never paints full.
+      const miniBar = (pct, warn) => {
+        if (pct === null) return '';
+        const col = warn ? '#ef4444' : '#22c55e';
+        const w = Math.max(0, Math.min(100, pct));
+        return `<div class="h-1 bg-white/5 rounded-full overflow-hidden w-16">
+          <div class="h-full rounded-full" style="width:${w}%;background:${col}"></div>
+        </div>`;
+      };
+
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden hover:border-white/20 transition">
+        <!-- Row header — always visible -->
+        <div class="px-5 py-4 cursor-pointer flex items-center gap-4" onclick="toggleExpand('${card.id}')">
+          <!-- Status dot + label -->
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <span class="w-2 h-2 rounded-full ${sc.dot} shrink-0"></span>
+            <div class="min-w-0">
+              <div class="text-sm font-black text-white truncate">${card.label}</div>
+              <div class="text-[10px] text-zinc-600">${filterLabel}</div>
+            </div>
+          </div>
+
+          <!-- Status badge -->
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${sc.badge} whitespace-nowrap hidden sm:block">${sc.label}</span>
+
+          <!-- P&L -->
+          <div class="text-right shrink-0">
+            <div class="text-sm font-black ${pnlCol}">${pnlSign}$${Math.abs(s.totalPnl).toFixed(0)}</div>
+            <div class="text-[10px] text-zinc-600">${s.trades.length} trades</div>
+          </div>
+
+          <!-- Progress bars -->
+          <div class="hidden md:flex flex-col gap-1 items-end shrink-0">
+            ${s.targetPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">Target</span>${miniBar(s.targetPct,false)}<span class="text-[10px] font-bold" style="color:${s.targetPct>=0?'#22c55e':'#ef4444'}">${s.targetPct}%</span></div>` : ''}
+            ${s.ddPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">DD</span>${miniBar(s.ddPct,true)}<span class="text-[10px] font-bold" style="color:${s.ddPct>0?'#ef4444':'#a1a1aa'}">${s.ddPct}%</span></div>` : ''}
+          </div>
+
+          <!-- Discipline + WR -->
+          <div class="hidden lg:flex gap-4 shrink-0">
+            <div class="text-center">
+              <div class="text-sm font-black ${discColor}">${s.disciplineScore}%</div>
+              <div class="text-[10px] text-zinc-600">Discipline</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm font-black ${wrColor}">${s.wr}%</div>
+              <div class="text-[10px] text-zinc-600">Win Rate</div>
+            </div>
+          </div>
+
+          <!-- Edit + expand -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="event.stopPropagation();openEditCard('${card.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            </button>
+            <svg class="w-4 h-4 text-zinc-500 expand-arrow" id="arrow-${card.id}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+          </div>
+        </div>
+
+        <!-- Expand panel -->
+        <div class="expand-panel border-t border-white/5" id="expand-${card.id}">
+          <div class="p-5 space-y-5">
+
+            <!-- Top stats row -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              ${statBox('Total P&L', (s.totalPnl>=0?'+':'-')+'$'+Math.abs(s.totalPnl).toFixed(2), s.totalPnl>=0?'#22c55e':'#ef4444')}
+              ${statBox('Today\'s P&L', (s.todayPnl>=0?'+':'-')+'$'+Math.abs(s.todayPnl).toFixed(2), s.todayPnl>=0?'#22c55e':'#ef4444')}
+              ${statBox('Win Rate', s.wr+'%', s.wr>=55?'#22c55e':s.wr>=45?'#e4e4e7':'#ef4444', s.wins+'W / '+s.losses+'L')}
+              ${statBox('Days Traded', s.tradingDays, '#e4e4e7')}
+            </div>
+
+            <!-- Firm Rules section -->
+            <div class="border border-white/5 bg-zinc-900/30 rounded-xl p-4 space-y-3">
+              <div class="text-xs font-black text-zinc-400 uppercase tracking-wider">⚡ Firm Rules</div>
+              ${accountAxisBar(s, card)}
+              <div class="space-y-3">
+                ${s.firmDailyPct !== null ? progressRow('Firm Daily Limit — Today', s.firmDailyPct, true, '$'+Math.abs(Math.min(0,s.todayPnl)).toFixed(0)+' used of $'+s.firmDaily.toFixed(0), s.firmDailyRemaining!==null?'$'+s.firmDailyRemaining.toFixed(0)+' remaining':'') : ''}
+                ${s.maxDDLimit > 0 ? `<div class="flex justify-between text-xs py-1 border-b border-white/5"><span class="text-zinc-500">High Water Mark</span><span class="text-white font-bold">${s.hwm>=0?'+':'-'}$${Math.abs(s.hwm).toFixed(2)}</span></div>` : ''}
+                ${s.maxDDLimit > 0 ? `<div class="flex justify-between text-xs py-1"><span class="text-zinc-500">Max Drawdown Reached</span><span class="text-red-400 font-bold">-$${Math.abs(s.maxDD).toFixed(2)}</span></div>` : ''}
+              </div>
+            </div>
+
+            <!-- My Rules section -->
+            <div class="border border-white/5 bg-zinc-900/30 rounded-xl p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="text-xs font-black text-zinc-400 uppercase tracking-wider">📋 My Rules</div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] text-zinc-500">Discipline Score</span>
+                  <span class="text-sm font-black ${s.disciplineScore>=80?'text-green-400':s.disciplineScore>=60?'text-yellow-400':'text-red-400'}">${s.disciplineScore}%</span>
+                </div>
+              </div>
+              <div class="space-y-2">
+                ${card.personalDaily ? ruleRow('Personal Daily Loss Limit', s.personalDailyPct!==null?s.personalDailyPct+'% used':'—', s.personalDailyRemaining!==null?'$'+s.personalDailyRemaining.toFixed(0)+' remaining today':'', s.personalDailyPct>=100) +
+                  (s.personalDailyBreachTrades.length ? violationList(s.personalDailyBreachTrades, 'Trades on breach days') : '') : ''}
+                ${card.maxTradesPerDay ? ruleRow('Max Trades Today', s.todayTradeCount+' / '+card.maxTradesPerDay, s.todayTradeCount>card.maxTradesPerDay?'⚠ Over limit':'Within limit', s.todayTradeCount>parseInt(card.maxTradesPerDay)) +
+                  (s.overTradeTrades.length ? violationList(s.overTradeTrades, 'Excess trades today') : '') : ''}
+                ${card.maxConsecLosses ? ruleRow('Consecutive Losses', s.consecLosses+' in a row (max '+card.maxConsecLosses+')', s.consecBreach?'⚠ Stop trading':'OK', s.consecBreach) : ''}
+                ${card.minGrade ? ruleRow('Min Grade Adherence', s.gradeScore+'% on plan', s.offGrade+' off-grade trade'+(s.offGrade!==1?'s':''), s.gradeScore<80) +
+                  (s.offGradeTrades.length ? violationList(s.offGradeTrades, 'Off-grade trades') : '') : ''}
+                ${card.windowStart && card.windowEnd ? ruleRow('Trading Window', fmt12(card.windowStart)+' – '+fmt12(card.windowEnd), s.windowViolations+' trade'+(s.windowViolations!==1?'s':'')+' outside window', s.windowViolations>0) +
+                  (s.windowViolationTrades.length ? violationList(s.windowViolationTrades, 'Trades outside window') : '') : ''}
+                ${!card.personalDaily && !card.maxTradesPerDay && !card.maxConsecLosses && !card.minGrade && !card.windowStart
+                  ? '<div class="text-xs text-zinc-600 py-2">No personal rules set — edit this tracker to add your rules.</div>' : ''}
+              </div>
+              ${s.dailyLimitBreaches > 0 || s.tradeCountBreaches > 0 ? `
+              <div class="border-t border-white/5 pt-3 text-xs text-zinc-500">
+                ${s.dailyLimitBreaches>0?'<span class="text-red-400 font-bold">'+s.dailyLimitBreaches+'</span> day'+(s.dailyLimitBreaches!==1?'s':'')+' breached personal daily limit · ':''}
+                ${s.tradeCountBreaches>0?'<span class="text-red-400 font-bold">'+s.tradeCountBreaches+'</span> day'+(s.tradeCountBreaches!==1?'s':'')+' exceeded max trades':''}
+              </div>` : ''}
+            </div>
+
+            <!-- Streak info -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              ${statBox('Current Loss Streak', s.consecLosses > 0 ? s.consecLosses+' in a row' : 'None', s.consecLosses>=(s.maxConsecLimit||999)?'#ef4444':s.consecLosses>0?'#f59e0b':'#22c55e')}
+              ${statBox('Max Loss Streak', s.maxConsec > 0 ? s.maxConsec+' in a row' : '—', '#71717a')}
+              ${statBox('Today\'s Trades', s.todayTradeCount+(card.maxTradesPerDay?' / '+card.maxTradesPerDay:''), s.todayTradeCount>=(parseInt(card.maxTradesPerDay)||999)?'#ef4444':'#e4e4e7')}
+            </div>
+
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function statBox(label, val, color, sub='') {
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
+        <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-1">${label}</div>
+        <div class="text-base font-black" style="color:${color}">${val}</div>
+        ${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}
+      </div>`;
+    }
+
+    function progressRow(label, pct, warn, used, remaining, fixedColor) {
+      const col = fixedColor || (warn ? (pct>=80?'#ef4444':pct>=50?'#f59e0b':'#22c55e') : '#22c55e');
+      const w = Math.max(0, Math.min(100, pct)); // clamp: never let a negative/over-100 pct paint a full bar
+      return `<div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-zinc-500">${label}</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] text-zinc-600">${used}</span>
+            <span class="text-xs font-bold" style="color:${col}">${pct}%</span>
+          </div>
+        </div>
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden mb-1">
+          <div class="h-full rounded-full transition-all" style="width:${w}%;background:${col}"></div>
+        </div>
+        ${remaining ? `<div class="text-[10px] text-zinc-600 text-right">${remaining}</div>` : ''}
+      </div>`;
+    }
+
+    // Profit-target bar: empty while underwater (no profit progress yet), the %
+    // shows your actual standing (e.g. -19%) in red. Once P&L is positive it
+    // fills green from the left toward target, and the % turns green.
+    function targetBar(s) {
+      const pnl = s.totalPnl;
+      const target = s.target;                         // > 0 (row only renders when target set)
+      const w = pnl > 0 ? Math.min(100, (pnl / target) * 100) : 0;  // empty when in the red
+      const col = pnl >= 0 ? '#22c55e' : '#ef4444';    // number red while in the red
+      const used = (pnl < 0 ? '-$'+Math.abs(pnl).toFixed(0) : '$'+pnl.toFixed(0)) + ' of $'+target.toFixed(0);
+      const remaining = s.targetPct >= 100 ? 'Hit ✓' : '$'+(target - pnl).toFixed(0)+' to go';
+
+      return `<div>
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-xs text-zinc-500">Profit Target</span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] text-zinc-600">${used}</span>
+            <span class="text-xs font-bold" style="color:${col}">${s.targetPct}%</span>
+          </div>
+        </div>
+        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden mb-1">
+          <div class="h-full rounded-full transition-all" style="width:${w}%;background:#22c55e"></div>
+        </div>
+        <div class="text-[10px] text-zinc-600 text-right">${remaining}</div>
+      </div>`;
+    }
+
+    // Unified account axis: liquidation floor (MLL) ── START ── profit target,
+    // with the live balance riding between them. One bar for profit + drawdown.
+    //   MLL      = start + peak P&L − DD limit   (trailing/EOD floor)
+    //   balance  = start + total P&L
+    //   target$  = start + profit target
+    // Renders only when accountSize, DD limit and profit target are all set.
+    function accountAxisBar(s, card) {
+      const start   = parseFloat(card.accountSize) || 0;
+      const ddLimit = s.maxDDLimit || 0;
+      const tgtPnl  = s.target || 0;
+      if (!start || !ddLimit || !tgtPnl) return '';
+
+      const balance   = start + s.totalPnl;
+      const mll       = start + Math.max(0, s.hwm) - ddLimit;  // floor never below start−DD
+      const targetBal = start + tgtPnl;
+      const span      = targetBal - mll;
+      if (span <= 0) return '';
+
+      const money = v => '$' + Math.round(v).toLocaleString();
+      const clampPct = v => Math.max(0, Math.min(100, (v - mll) / span * 100));
+      const startPct = clampPct(start);
+      const balPct   = clampPct(balance);
+      const cushion  = balance - mll;                 // room to liquidation
+      const remaining = Math.max(0, targetBal - balance);
+      const inProfit = balance >= start;
+      const breached = balance <= mll;
+
+      // Fill: green start→balance when up, red balance→start when below start.
+      const fill = inProfit
+        ? `<div class="absolute inset-y-0 rounded-full" style="left:${startPct}%;width:${Math.max(0,balPct-startPct)}%;background:linear-gradient(90deg,#16a34a,#22c55e)"></div>`
+        : `<div class="absolute inset-y-0 rounded-full" style="left:${balPct}%;width:${Math.max(0,startPct-balPct)}%;background:linear-gradient(90deg,#ef4444,#f87171)"></div>`;
+
+      const balColor = breached ? '#ef4444' : inProfit ? '#22c55e' : '#f59e0b';
+
+      return `<div class="pt-0.5 pb-1">
+        <div class="relative h-2.5 rounded-full bg-zinc-800/80 overflow-visible">
+          <!-- buffer zone below start (danger side) -->
+          <div class="absolute inset-y-0 left-0 rounded-l-full" style="width:${startPct}%;background:rgba(239,68,68,0.14)"></div>
+          <!-- target track above start -->
+          <div class="absolute inset-y-0 rounded-r-full" style="left:${startPct}%;right:0;background:rgba(34,197,94,0.10)"></div>
+          ${fill}
+          <!-- START marker -->
+          <div class="absolute top-1/2 -translate-y-1/2 w-[3px] h-4 rounded-full bg-zinc-300" style="left:calc(${startPct}% - 1.5px)"></div>
+          <!-- balance marker -->
+          <div class="absolute top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full border-2 border-zinc-950" style="left:calc(${balPct}% - 5px);background:${balColor};box-shadow:0 0 8px ${balColor}"></div>
+        </div>
+        <!-- START caption under marker -->
+        <div class="relative h-3 mt-0.5">
+          <span class="absolute text-[9px] font-bold uppercase tracking-wider text-zinc-500 -translate-x-1/2" style="left:${startPct}%">Start</span>
+        </div>
+        <!-- top labels: MLL / TARGET -->
+        <div class="flex items-center justify-between mt-1">
+          <span class="text-xs font-bold text-red-400">${money(mll)} <span class="text-[10px] text-zinc-500 font-medium">MLL</span></span>
+          <span class="text-xs font-bold text-green-400">${money(targetBal)} <span class="text-[10px] text-zinc-500 font-medium">TARGET</span></span>
+        </div>
+        <!-- bottom labels: cushion / balance / remaining -->
+        <div class="flex items-center justify-between mt-2">
+          <div class="text-left">
+            <div class="text-sm font-black" style="color:${cushion<=0?'#ef4444':'#e4e4e7'}">${money(Math.max(0,cushion))}</div>
+            <div class="text-[10px] text-zinc-600">${breached?'breached':'cushion'}</div>
+          </div>
+          <div class="text-center">
+            <div class="text-sm font-black text-white">${money(balance)}</div>
+            <div class="text-[10px] text-zinc-600">balance</div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black" style="color:${remaining<=0?'#22c55e':'#e4e4e7'}">${remaining<=0?'Hit ✓':money(remaining)}</div>
+            <div class="text-[10px] text-zinc-600">remaining</div>
+          </div>
+        </div>
+      </div>`;
+    }
+
+    function ruleRow(label, val, sub, breach) {
+      return `<div class="flex items-start justify-between py-2 border-b border-white/5 last:border-0">
+        <div>
+          <div class="text-xs text-zinc-400">${label}</div>
+          ${sub ? `<div class="text-[10px] ${breach?'text-red-400':'text-zinc-600'} mt-0.5">${sub}</div>` : ''}
+        </div>
+        <span class="text-xs font-bold ml-4 ${breach?'text-red-400':'text-zinc-300'} whitespace-nowrap">${val}</span>
+      </div>`;
+    }
+
+    function toggleExpand(id) {
+      const panel = document.getElementById('expand-'+id);
+      const arrow = document.getElementById('arrow-'+id);
+      if (!panel || !arrow) return;
+      const isOpen = panel.classList.contains('open');
+      panel.classList.toggle('open', !isOpen);
+      arrow.classList.toggle('open', !isOpen);
+    }
+
+    // ── Modal ──
+    function setDDType(type) {
+      ddType_modal = type;
+      document.getElementById('dd-trailing').className = 'py-2 border text-xs font-bold rounded-xl transition ' +
+        (type==='trailing'?'border-green-500/40 bg-green-500/10 text-green-400':'border-white/10 text-zinc-500');
+      document.getElementById('dd-eod').className = 'py-2 border text-xs font-bold rounded-xl transition ' +
+        (type==='eod'?'border-green-500/40 bg-green-500/10 text-green-400':'border-white/10 text-zinc-500');
+    }
+
+    function updateNameDropdown() {
+      const type = document.getElementById('tc-type').value;
+      const sel = document.getElementById('tc-name');
+      const cur = sel.value;
+      sel.innerHTML = '<option value="">Any Account</option>';
+      (type ? journalAccounts.filter(a => !a.accountType || a.accountType===type) : journalAccounts)
+        .forEach(a => {
+          const opt = document.createElement('option');
+          opt.value = a.name;
+          opt.textContent = a.name + (a.accountType&&!type?' ('+a.accountType+')':'');
+          sel.appendChild(opt);
+        });
+      if (cur) sel.value = cur;
+    }
+
+    function openNewCard() {
+      editingCardId = null;
+      document.getElementById('modal-title').textContent = 'New Tracker';
+      document.getElementById('delete-btn-wrap').classList.add('hidden');
+      document.getElementById('modal-msg').classList.add('hidden');
+      ['tc-label','tc-size','tc-target','tc-firm-daily','tc-maxdd','tc-personal-daily','tc-max-trades','tc-max-consec','tc-window-start','tc-window-end'].forEach(id => document.getElementById(id).value='');
+      document.getElementById('tc-type').value='';
+      document.getElementById('tc-mingrade').value='';
+      setDDType('trailing');
+      updateNameDropdown();
+      document.getElementById('tracker-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('tc-label').focus(), 50);
+    }
+
+    function openEditCard(id) {
+      const card = trackerCards.find(c=>c.id===id);
+      if (!card) return;
+      editingCardId = id;
+      document.getElementById('modal-title').textContent = 'Edit Tracker';
+      document.getElementById('delete-btn-wrap').classList.remove('hidden');
+      document.getElementById('modal-msg').classList.add('hidden');
+      document.getElementById('tc-label').value = card.label||'';
+      document.getElementById('tc-type').value = card.filterType||'';
+      document.getElementById('tc-size').value = card.accountSize||'';
+      document.getElementById('tc-target').value = card.profitTarget||'';
+      document.getElementById('tc-firm-daily').value = card.firmDaily||'';
+      document.getElementById('tc-maxdd').value = card.maxDD||'';
+      document.getElementById('tc-personal-daily').value = card.personalDaily||'';
+      document.getElementById('tc-max-trades').value = card.maxTradesPerDay||'';
+      document.getElementById('tc-max-consec').value = card.maxConsecLosses||'';
+      document.getElementById('tc-mingrade').value = card.minGrade||'';
+      document.getElementById('tc-window-start').value = card.windowStart||'';
+      document.getElementById('tc-window-end').value = card.windowEnd||'';
+      setDDType(card.ddType||'trailing');
+      updateNameDropdown();
+      document.getElementById('tc-name').value = card.filterName||'';
+      document.getElementById('tracker-modal').classList.remove('hidden');
+    }
+
+    function closeModal() { document.getElementById('tracker-modal').classList.add('hidden'); editingCardId=null; }
+
+    async function saveCard() {
+      const label = document.getElementById('tc-label').value.trim();
+      if (!label) { showModalMsg('Label is required.','error'); return; }
+      const accountSize = parseFloat(document.getElementById('tc-size').value)||null;
+      if (!accountSize) { showModalMsg('Account size is required.','error'); return; }
+      const card = {
+        id: editingCardId||(Date.now().toString()+Math.random().toString(36).slice(2)),
+        label,
+        filterType: document.getElementById('tc-type').value,
+        filterName: document.getElementById('tc-name').value,
+        accountSize,
+        profitTarget: parseFloat(document.getElementById('tc-target').value)||null,
+        firmDaily: parseFloat(document.getElementById('tc-firm-daily').value)||null,
+        maxDD: parseFloat(document.getElementById('tc-maxdd').value)||null,
+        ddType: ddType_modal,
+        personalDaily: parseFloat(document.getElementById('tc-personal-daily').value)||null,
+        maxTradesPerDay: parseInt(document.getElementById('tc-max-trades').value)||null,
+        maxConsecLosses: parseInt(document.getElementById('tc-max-consec').value)||null,
+        minGrade: document.getElementById('tc-mingrade').value,
+        windowStart: document.getElementById('tc-window-start').value,
+        windowEnd: document.getElementById('tc-window-end').value,
+        createdAt: new Date().toISOString()
+      };
+      if (editingCardId) { const idx=trackerCards.findIndex(c=>c.id===editingCardId); if(idx!==-1) trackerCards[idx]=card; }
+      else trackerCards.unshift(card);
+      await saveTrackerCards();
+      closeModal();
+      renderList();
+    }
+
+    async function deleteCard() {
+      if (!editingCardId||!confirm('Delete this tracker?')) return;
+      trackerCards = trackerCards.filter(c=>c.id!==editingCardId);
+      await saveTrackerCards();
+      closeModal();
+      renderList();
+    }
+
+    function showModalMsg(msg,type) {
+      const el=document.getElementById('modal-msg');
+      el.textContent=msg;
+      el.className='text-xs text-center py-2 rounded-lg '+(type==='error'?'bg-red-500/10 text-red-400':'bg-green-500/10 text-green-400');
+      el.classList.remove('hidden');
+    }
+
+    function fmt12(time) {
+      if (!time) return '—';
+      const [h, m] = time.split(':').map(Number);
+      if (isNaN(h)) return time;
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      return h12 + ':' + String(m).padStart(2,'0') + ' ' + ampm;
+    }
+
+
+    // ══════════════════════════════════════════════════════════
+    //  MY ACCOUNTS — the registry every other surface reads from
+    // ══════════════════════════════════════════════════════════
+    let editingAccountId = null;
+
+    function money(v) { return (v < 0 ? '-$' : '+$') + Math.abs(v).toFixed(2); }
+
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+    async function saveAccountsToKV() {
+      await fetch(JOURNAL_URL, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'save-settings', key: whopKey, payload: { accounts: journalAccounts } })
+      });
+    }
+
+    // Account numbers are the join key for auto-import. Normalize so a value
+    // copied off-screen ("#FTDFYL...") still matches the raw CSV value.
+    function normAcctNum(s) { return (s || '').replace(/[#\s]/g, '').toUpperCase(); }
+
+    // Live performance per account, straight off the journal.
+    function acctStats(a) {
+      const mine = journalTrades.filter(t => (t.accountName || '') === a.name);
+      const pnl = mine.reduce((s, t) => s + (parseFloat(t.netPnl) || 0) * (t.numAccounts || 1), 0);
+      const wins = mine.filter(t => t.result === 'WIN').length;
+      const losses = mine.filter(t => t.result === 'LOSS').length;
+      const wr = wins + losses > 0 ? Math.round(wins / (wins + losses) * 100) : null;
+      return { n: mine.length, pnl, wr };
+    }
+
+    function renderAccountsList() {
+      const el = document.getElementById('accounts-list');
+      if (!el) return;
+      const countEl = document.getElementById('accounts-count');
+      if (countEl) countEl.textContent = journalAccounts.length ? journalAccounts.length + (journalAccounts.length === 1 ? ' account' : ' accounts') : '';
+
+      if (!journalAccounts.length) {
+        el.innerHTML = `<div class="text-center py-10 px-4">
+          <div class="w-12 h-12 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mx-auto mb-4">
+            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
+          </div>
+          <div class="text-sm font-black text-white mb-1.5">Add your first account</div>
+          <p class="text-xs text-zinc-500 leading-relaxed max-w-sm mx-auto">One entry per prop account or personal account. Add the account number from your Tradovate export and imported trades route here on their own — then trackers and per-account stats light up.</p>
+        </div>`;
+        return;
+      }
+
+      el.innerHTML = journalAccounts.map(a => {
+        const st = acctStats(a);
+        const pnlCol = st.pnl >= 0 ? 'text-green-400' : 'text-red-400';
+        const meta = [
+          a.accountType || '',
+          a.accountSize ? '$' + Number(a.accountSize).toLocaleString() : '',
+          a.accountNumber ? '#' + esc(a.accountNumber) : '',
+          a.commissionRate != null ? '$' + Number(a.commissionRate).toFixed(2) + '/side' : ''
+        ].filter(Boolean).join(' · ');
+        return `
+        <div class="border border-white/5 bg-zinc-900/40 hover:border-white/10 rounded-xl px-4 py-3 transition">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <div class="text-sm font-bold text-white flex items-center gap-2 flex-wrap">
+                ${esc(a.name)}
+                ${a.accountNumber ? '' : '<span class="text-[10px] font-bold text-amber-500/90 bg-amber-500/10 border border-amber-500/25 rounded px-1.5 py-0.5" title="Add an Account # so Tradovate imports route here automatically">⚠ no auto-import</span>'}
+              </div>
+              <div class="text-xs text-zinc-500 mt-0.5 truncate">${meta || '<span class="text-zinc-700">No details set</span>'}</div>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <button onclick="editAccount('${esc(a.id)}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition" title="Edit">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+              </button>
+              <button onclick="deleteAccount('${esc(a.id)}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition" title="Delete">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2.5 pt-2.5 border-t border-white/5 text-[11px]">
+            ${st.n
+              ? `<span class="text-zinc-500 whitespace-nowrap">${st.n} trade${st.n !== 1 ? 's' : ''}</span>
+                 <span class="${pnlCol} font-bold whitespace-nowrap">${money(st.pnl)}</span>
+                 ${st.wr != null ? `<span class="text-zinc-500 whitespace-nowrap">${st.wr}% win</span>` : ''}
+                 <a href="journal.html?tab=history" class="ml-auto text-zinc-600 hover:text-green-400 transition whitespace-nowrap">View trades →</a>`
+              : `<span class="text-zinc-600">No trades logged to this account yet</span>`}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function editAccount(id) {
+      const a = journalAccounts.find(a => a.id === id);
+      if (!a) return;
+      editingAccountId = id;
+      document.getElementById('af-name').value = a.name || '';
+      document.getElementById('af-number').value = a.accountNumber || '';
+      document.getElementById('af-size').value = a.accountSize || '';
+      document.getElementById('af-type').value = a.accountType || '';
+      document.getElementById('af-comm').value = a.commissionRate != null ? a.commissionRate : '';
+      document.getElementById('account-form-title').textContent = 'Edit Account';
+      document.getElementById('af-btn').textContent = 'Save Changes';
+      document.getElementById('af-cancel').classList.remove('hidden');
+      document.getElementById('account-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById('af-name').focus();
+    }
+
+    function cancelEditAccount() {
+      editingAccountId = null;
+      ['af-name','af-number','af-size','af-comm'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('af-type').value = '';
+      document.getElementById('account-form-title').textContent = 'Add Account';
+      document.getElementById('af-btn').textContent = '+ Add Account';
+      document.getElementById('af-cancel').classList.add('hidden');
+      document.getElementById('af-msg').classList.add('hidden');
+    }
+
+    async function saveAccount() {
+      const name = document.getElementById('af-name').value.trim();
+      if (!name) { showAfMsg('Nickname is required.', 'error'); return; }
+      const acctNumber = normAcctNum(document.getElementById('af-number').value);
+      const acctSize = parseFloat(document.getElementById('af-size').value) || null;
+      const acctType = document.getElementById('af-type').value;
+      const commRaw = document.getElementById('af-comm').value;
+      const commissionRate = commRaw === '' ? null : Math.max(0, parseFloat(commRaw) || 0);
+
+      // A duplicate account # would make import routing pick whichever record
+      // happens to sit first in the array — silently wrong. Block it here.
+      if (acctNumber) {
+        const clash = journalAccounts.find(a => a.id !== editingAccountId && normAcctNum(a.accountNumber) === acctNumber);
+        if (clash) { showAfMsg('Account # already used by "' + clash.name + '".', 'error'); return; }
+      }
+
+      if (editingAccountId) {
+        const idx = journalAccounts.findIndex(a => a.id === editingAccountId);
+        if (idx >= 0) journalAccounts[idx] = { ...journalAccounts[idx], name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate };
+      } else {
+        if (journalAccounts.find(a => a.name === name)) { showAfMsg('Account with this name already exists.', 'error'); return; }
+        journalAccounts.push({ id: Date.now().toString(), name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate });
+      }
+      await saveAccountsToKV();
+      cancelEditAccount();
+      renderAccountsList();
+      showAfMsg('Saved!', 'success');
+    }
+
+    async function deleteAccount(id) {
+      const a = journalAccounts.find(a => a.id === id);
+      if (!a) return;
+      const st = acctStats(a);
+      const warn = st.n
+        ? `\n\n${st.n} trade${st.n !== 1 ? 's are' : ' is'} logged to it. The trades are kept — only the account entry is removed.`
+        : '';
+      if (!confirm(`Delete account "${a.name}"?` + warn)) return;
+      journalAccounts = journalAccounts.filter(a => a.id !== id);
+      await saveAccountsToKV();
+      renderAccountsList();
+    }
+
+    function showAfMsg(msg, type) {
+      const el = document.getElementById('af-msg');
+      el.textContent = msg;
+      el.className = 'text-xs py-1.5 rounded-lg text-center ' + (type === 'error' ? 'bg-red-500/10 text-red-400' : 'bg-green-500/10 text-green-400');
+      el.classList.remove('hidden');
+      setTimeout(() => el.classList.add('hidden'), 3000);
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  IMPORTS — undo one upload, or clear one account
+    // ══════════════════════════════════════════════════════════
+    function renderImportBatches() {
+      const el = document.getElementById('import-batches');
+      if (!el) return;
+      const groups = {};
+      journalTrades.forEach(t => {
+        if (!t.importBatch) return;
+        const g = groups[t.importBatch] || (groups[t.importBatch] = { label: t.importBatchLabel || 'Import', at: t.importedAt || '', n: 0, pnl: 0, accts: new Set() });
+        g.n++; g.pnl += parseFloat(t.netPnl) || 0;
+        if (t.accountName) g.accts.add(t.accountName);
+      });
+      const ids = Object.keys(groups).sort((a, b) => (groups[b].at || '').localeCompare(groups[a].at || ''));
+      const untagged = journalTrades.filter(t => !t.importBatch).length;
+      if (!ids.length) {
+        el.innerHTML = `<div class="text-xs text-zinc-600 py-2">No tracked imports yet.${untagged ? ` ${untagged} trade${untagged !== 1 ? 's were' : ' was'} added before import tracking existed — use Delete by Account below for those.` : ''}</div>`;
+        return;
+      }
+      el.innerHTML = ids.map(id => {
+        const g = groups[id];
+        const when = g.at ? new Date(g.at).toLocaleString() : '';
+        return `<div class="flex items-center justify-between gap-3 border border-white/5 bg-zinc-900/40 rounded-xl px-4 py-3 mb-2">
+          <div class="min-w-0">
+            <div class="text-sm font-bold text-white truncate">${esc(g.label)}</div>
+            <div class="text-xs text-zinc-500 mt-0.5">${g.n} trade${g.n !== 1 ? 's' : ''} · <span class="${g.pnl >= 0 ? 'text-green-400' : 'text-red-400'}">${money(g.pnl)}</span>${g.accts.size ? ' · ' + esc([...g.accts].join(', ')) : ''}${when ? ' · ' + esc(when) : ''}</div>
+          </div>
+          <button onclick="deleteImportBatch('${esc(id)}')" class="shrink-0 px-3 py-2 bg-red-950/30 hover:bg-red-950/60 border border-red-500/25 hover:border-red-500/50 text-red-400 text-[11px] font-bold uppercase tracking-wider rounded-lg transition">Remove</button>
+        </div>`;
+      }).join('') + (untagged ? `<div class="text-[10px] text-zinc-600 mt-2">${untagged} older trade${untagged !== 1 ? 's are' : ' is'} not tied to a tracked import — use Delete by Account below.</div>` : '');
+    }
+
+    async function deleteImportBatch(id) {
+      const hits = journalTrades.filter(t => t.importBatch === id);
+      if (!hits.length) return;
+      const label = hits[0].importBatchLabel || 'this import';
+      if (!confirm(`Remove all ${hits.length} trade${hits.length !== 1 ? 's' : ''} from "${label}"?\n\nNothing else in your journal is touched.`)) return;
+      await persistTrades(journalTrades.filter(t => t.importBatch !== id), `Removed ${hits.length} trade${hits.length !== 1 ? 's' : ''} from that import.`, null);
+    }
+
+    function tradesMatchingDeleteFilter() {
+      const name = document.getElementById('del-account')?.value || '';
+      if (!name) return [];
+      const from = document.getElementById('del-from')?.value || '';
+      const to = document.getElementById('del-to')?.value || '';
+      return journalTrades.filter(t => {
+        const owner = t.accountName || t.accountType || '';
+        if (owner !== name) return false;
+        if (from && (t.date || '') < from) return false;
+        if (to && (t.date || '') > to) return false;
+        return true;
+      });
+    }
+
+    function updateDeleteAccountPicker() {
+      const sel = document.getElementById('del-account');
+      if (!sel) return;
+      const cur = sel.value;
+      // Everything that actually owns trades, whether or not it's a saved account.
+      const owners = [...new Set(journalTrades.map(t => t.accountName || t.accountType || '').filter(Boolean))].sort();
+      sel.innerHTML = '<option value="">Select account...</option>' +
+        owners.map(o => {
+          const n = journalTrades.filter(t => (t.accountName || t.accountType || '') === o).length;
+          return `<option value="${esc(o)}">${esc(o)} (${n})</option>`;
+        }).join('');
+      sel.value = cur;
+    }
+
+    function refreshDeletePreview() {
+      const el = document.getElementById('del-preview');
+      const btn = document.getElementById('del-btn');
+      if (!el || !btn) return;
+      const name = document.getElementById('del-account').value;
+      const hits = tradesMatchingDeleteFilter();
+      if (!name) {
+        el.textContent = 'Pick an account to see what would be removed.';
+        el.className = 'text-xs text-zinc-600 mb-3';
+      } else if (!hits.length) {
+        el.textContent = 'No trades match — nothing would be removed.';
+        el.className = 'text-xs text-zinc-600 mb-3';
+      } else {
+        const pnl = hits.reduce((s, t) => s + (parseFloat(t.netPnl) || 0), 0);
+        const dates = hits.map(t => t.date).filter(Boolean).sort();
+        el.innerHTML = `<span class="text-red-400 font-bold">${hits.length} trade${hits.length !== 1 ? 's' : ''}</span> ` +
+          `totalling <span class="${pnl >= 0 ? 'text-green-400' : 'text-red-400'} font-bold">${money(pnl)}</span>` +
+          (dates.length ? ` · ${dates[0]}${dates[0] !== dates[dates.length - 1] ? ' to ' + dates[dates.length - 1] : ''}` : '');
+        el.className = 'text-xs text-zinc-400 mb-3';
+      }
+      const on = hits.length > 0;
+      btn.disabled = !on;
+      btn.textContent = on ? `Delete ${hits.length} Trade${hits.length !== 1 ? 's' : ''}` : 'Delete These Trades';
+      btn.className = on
+        ? 'px-5 py-2.5 bg-red-950/40 hover:bg-red-950/70 border border-red-500/30 hover:border-red-500/50 text-red-400 font-bold text-xs uppercase tracking-wider rounded-xl transition'
+        : 'px-5 py-2.5 bg-zinc-900 border border-white/10 text-zinc-600 font-bold text-xs uppercase tracking-wider rounded-xl transition cursor-not-allowed';
+    }
+
+    async function executeAccountDelete() {
+      const hits = tradesMatchingDeleteFilter();
+      if (!hits.length) return;
+      const name = document.getElementById('del-account').value;
+      if (!confirm(`Delete ${hits.length} trade${hits.length !== 1 ? 's' : ''} from "${name}"?\n\nEverything else in your journal is kept.`)) return;
+      const kill = new Set(hits.map(t => t.id));
+      await persistTrades(journalTrades.filter(t => !kill.has(t.id)), `Deleted ${hits.length} trade${hits.length !== 1 ? 's' : ''} from ${name}.`, 'del-msg');
+    }
+
+    // Shared save + re-render for both delete paths.
+    async function persistTrades(next, successMsg, msgElId) {
+      try {
+        await fetch(JOURNAL_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'save-all', key: whopKey, payload: { trades: next } })
+        });
+        journalTrades = next;
+        updateDeleteAccountPicker();
+        refreshDeletePreview();
+        renderImportBatches();
+        renderAccountsList();
+        renderList();
+        if (msgElId) {
+          const el = document.getElementById(msgElId);
+          if (el) {
+            el.textContent = '✅ ' + successMsg;
+            el.className = 'text-xs py-1.5 rounded-lg text-center mt-3 bg-green-500/10 text-green-400';
+            el.classList.remove('hidden');
+            setTimeout(() => el.classList.add('hidden'), 4000);
+          }
+        } else {
+          alert('✅ ' + successMsg);
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Delete failed. Please try again.');
+      }
+    }
+
+    init();
+  </script>
+  <script src="nav-loader.js"></script>
+</body>
+</html>
