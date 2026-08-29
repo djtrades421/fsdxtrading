@@ -250,11 +250,136 @@
     seq.forEach(function (s) { setTimeout(function () { show(s.a); }, s.delay); });
   }
 
+  // ══════════════════════════════════════════════════════════════════
+  //  LIVE FEED — polls the Worker and toasts anything new
+  // ══════════════════════════════════════════════════════════════════
+
+  var API = 'https://nexus-validator.dfuentes4211.workers.dev';
+  var POLL_MS = 30000;         // while the tab is visible
+  var CURSOR_KEY = 'fsdx_alert_cursor';
+  var timer = null, running = false, failures = 0;
+
+  function readCursor() {
+    try { return parseInt(localStorage.getItem(CURSOR_KEY) || '0', 10) || 0; } catch (e) { return 0; }
+  }
+  function writeCursor(ts) {
+    try { localStorage.setItem(CURSOR_KEY, String(ts)); } catch (e) {}
+  }
+
+  // Server shape → toast shape.
+  function toToast(a) {
+    var lines = [];
+    if (a.entry != null) lines.push(['Entry', a.entry]);
+    if (a.tp1 != null) lines.push(['TP1', a.tp1]);
+    if (a.tp2 != null) lines.push(['TP2', a.tp2]);
+    if (a.sl != null) lines.push(['SL', a.sl]);
+    if (a.orb != null) lines.push(['ORB', a.orb + ' pts']);
+    // Nothing structured? Show the first couple of detail lines from the text.
+    if (!lines.length && a.content) {
+      String(a.content).split('\n').slice(1, 4).forEach(function (l) {
+        var bits = l.split(':');
+        if (bits.length > 1 && bits[0].trim()) lines.push([bits[0].trim(), bits.slice(1).join(':').trim()]);
+      });
+    }
+    return {
+      id: a.id,
+      type: a.type || 'info',
+      dir: a.dir || '',
+      title: a.title || 'Scout Alert',
+      sub: a.symbol || '',
+      grade: a.grade || '',
+      lines: lines.slice(0, 5),
+      ttl: (a.type === 'breakout' || a.type === 'sl') ? 18000 : 12000
+    };
+  }
+
+  async function poll(firstRun) {
+    if (!running || document.hidden) return;
+    var token;
+    try { token = localStorage.getItem('fsdx_token'); } catch (e) {}
+    if (!token) { stop(); return; }
+
+    try {
+      var since = readCursor();
+      var res = await fetch(API + '/api/scout/feed?since=' + since + '&limit=20', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      // Logged out or expired — polling forever would be pointless noise.
+      if (res.status === 401) { stop(); return; }
+      if (!res.ok) throw new Error('status ' + res.status);
+      var data = await res.json();
+      failures = 0;
+
+      var list = Array.isArray(data.alerts) ? data.alerts : [];
+      // Oldest first so a burst arrives in the order it happened.
+      list.sort(function (a, b) { return (a.ts || 0) - (b.ts || 0); });
+
+      // On the very first poll of a session, catch up silently. Opening the
+      // site at noon should not fire every alert from the morning session.
+      if (firstRun && !since) {
+        if (list.length) writeCursor(list[list.length - 1].ts);
+        return;
+      }
+
+      list.forEach(function (a) {
+        show(toToast(a));
+        if (a.ts) writeCursor(Math.max(readCursor(), a.ts));
+      });
+    } catch (e) {
+      // Back off on repeated failures rather than hammering a sick endpoint.
+      failures++;
+    }
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    if (!running) return;
+    var wait = POLL_MS * Math.min(8, Math.pow(2, Math.max(0, failures - 1)));
+    timer = setTimeout(function () { poll(false).finally(schedule); }, wait);
+  }
+
+  function start(opts) {
+    if (running) return;
+    if (opts && opts.api) API = opts.api;
+    if (opts && opts.pollMs) POLL_MS = opts.pollMs;
+    running = true;
+    poll(true).finally(schedule);
+
+    // No point polling a tab nobody is looking at; catch up on return.
+    document.addEventListener('visibilitychange', function () {
+      if (!running) return;
+      if (document.hidden) { clearTimeout(timer); }
+      else { poll(false).finally(schedule); }
+    });
+  }
+
+  function stop() {
+    running = false;
+    clearTimeout(timer);
+  }
+
+  // Auto-start for logged-in members. Pages that shouldn't poll can call
+  // FSDXAlerts.stop() after load.
+  function autoStart() {
+    var token = null;
+    try { token = localStorage.getItem('fsdx_token'); } catch (e) {}
+    if (token) start();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', autoStart);
+  } else {
+    autoStart();
+  }
+
   window.FSDXAlerts = {
     show: show,
     demo: demo,
     clearAll: clearAll,
     setMuted: setMuted,
-    isMuted: isMuted
+    isMuted: isMuted,
+    start: start,
+    stop: stop,
+    // Testing helper: forget the cursor so the next poll re-toasts recent alerts.
+    resetCursor: function () { try { localStorage.removeItem(CURSOR_KEY); } catch (e) {} }
   };
 })();
