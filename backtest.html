@@ -276,14 +276,7 @@
               </div>
               <!-- BT Filters -->
               <div class="flex flex-wrap gap-2 mb-5 pb-4 border-b border-white/5">
-                <select id="gf-daterange" onchange="applyBtDateFilter()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-                  <option value="all">All Time</option>
-                  <option value="today">Today</option>
-                  <option value="week">This Week</option>
-                  <option value="month">This Month</option>
-                  <option value="year">This Year</option>
-                  <option value="custom">Custom Range</option>
-                </select>
+                <div id="gf-daterange"></div>
                 <div id="gf-custom-range" class="hidden flex gap-2">
                   <input type="date" id="gf-from" onchange="applyBtDateFilter()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
                   <span class="text-zinc-600 self-center text-xs">to</span>
@@ -2644,11 +2637,25 @@
     }
 
     // Multi-select filters (filters.js). Empty selection = no narrowing.
-    let btFResult = null, btFGrade = null, btFDirection = null;
+    let btFResult = null, btFGrade = null, btFDirection = null, btFDateRange = null;
     let suppressBtApply = false;
 
     function initBtFilters() {
       if (btFResult) return;
+      btFDateRange = FSDXFilter.create({ mount: '#gf-daterange', label: 'All Time', mode: 'single',
+        options: [
+          { value:'all',   label:'All Time' },
+          { value:'today', label:'Today' },
+          { value:'week',  label:'This Week' },
+          { value:'month', label:'This Month' },
+          { value:'year',  label:'This Year' },
+          { value:'custom',label:'Custom Range' }
+        ],
+        onChange: function () {
+          var custom = document.getElementById('gf-custom-range');
+          if (custom) custom.classList.toggle('hidden', btFDateRange.getValue() !== 'custom');
+          applyBtDateFilter();
+        } });
       btFResult = FSDXFilter.create({ mount: '#bt-f-result', label: 'Results',
         options: [{value:'WIN',label:'Win'},{value:'LOSS',label:'Loss'},{value:'BE',label:'BE'}],
         onChange: applyBtFilters });
@@ -2703,7 +2710,7 @@
 
     function updateBtFilterBadge() {
       const dropdownActive = [btFResult, btFGrade, btFDirection].filter(f => f && !f.isAll()).length;
-      const dateActive = (document.getElementById('gf-daterange')?.value || 'all') !== 'all' ? 1 : 0;
+      const dateActive = (btFDateRange ? btFDateRange.getValue() : 'all') !== 'all' ? 1 : 0;
       const active = dropdownActive + dateActive;
       const badge = document.getElementById('bt-filter-badge');
       if (badge) { badge.textContent = active>0 ? active+' filter'+(active>1?'s':'')+' active' : ''; badge.classList.toggle('hidden', active===0); }
@@ -2786,7 +2793,7 @@
     function getBtDateRange() {
       const now = new Date();
       const today = now.toISOString().slice(0,10);
-      const dr = document.getElementById('gf-daterange')?.value || 'all';
+      const dr = btFDateRange ? btFDateRange.getValue() : 'all';
       const customEl = document.getElementById('gf-custom-range');
       if (customEl) customEl.classList.toggle('hidden', dr !== 'custom');
       if (dr === 'today') return { from: today, to: today };
@@ -2813,7 +2820,7 @@
     }
 
     function clearBtDateFilter() {
-      document.getElementById('gf-daterange').value = 'all';
+      if (btFDateRange) btFDateRange.setValue('all', { silent: true });
       const customEl = document.getElementById('gf-custom-range');
       if (customEl) customEl.classList.add('hidden');
       const from = document.getElementById('gf-from');
