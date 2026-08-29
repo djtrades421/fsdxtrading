@@ -14,6 +14,11 @@
 //   f.setOptions([...]);   // repopulate (keeps any still-valid selection)
 //   f.getSelected();       // [] = all
 //
+// Pass mode:'single' for a one-of-many picker (date ranges, timezones). It
+// looks identical — same button, same panel — but shows radio dots, picks one
+// option, closes on choose, and exposes getValue()/setValue() so it can stand
+// in for a native <select>.
+//
 // Selection semantics: an EMPTY array means "everything". Checking every box
 // normalizes back to empty, so "all boxes ticked" and "no boxes ticked" are the
 // same state and the button always reads "All <label>" in that case. Callers
@@ -56,6 +61,14 @@
     var selected = new Set(readStore(cfg.storageKey) || cfg.selected || []);
     var onChange = typeof cfg.onChange === 'function' ? cfg.onChange : function () {};
     var align = cfg.align === 'right' ? 'right' : 'left';
+    var single = cfg.mode === 'single';
+    if (single) {
+      // A single picker always has exactly one value.
+      var start = cfg.value != null ? cfg.value
+                : (readStore(cfg.storageKey) || [])[0];
+      if (start == null && options.length) start = options[0].value;
+      selected = new Set(start == null ? [] : [start]);
+    }
 
     host.innerHTML =
       '<div class="relative inline-block" id="' + id + '">' +
@@ -71,7 +84,7 @@
         '<div data-role="panel" class="hidden absolute z-50 mt-1 min-w-[190px] max-w-[280px] ' +
           'bg-zinc-950 border border-white/10 rounded-xl shadow-2xl shadow-black/60 overflow-hidden ' +
           (align === 'right' ? 'right-0' : 'left-0') + '">' +
-          '<div data-role="all" class="px-3 py-2 border-b border-white/5 cursor-pointer hover:bg-white/5 transition"></div>' +
+          '<div data-role="all" class="' + (single ? 'hidden' : 'px-3 py-2 border-b border-white/5 cursor-pointer hover:bg-white/5 transition') + '"></div>' +
           '<div data-role="list" class="max-h-64 overflow-y-auto py-1"></div>' +
         '</div>' +
       '</div>';
@@ -85,6 +98,7 @@
     var list = root.querySelector('[data-role=list]');
 
     function normalize() {
+      if (single) return;
       // Every option ticked is the same as none ticked: "all".
       if (options.length && selected.size === options.length) selected.clear();
     }
@@ -92,11 +106,16 @@
     function values() { return Array.from(selected); }
 
     function row(checked, labelHtml, hintHtml) {
-      return '<span class="w-3.5 h-3.5 shrink-0 rounded border flex items-center justify-center transition ' +
-          (checked ? 'bg-green-500 border-green-500' : 'border-white/20') + '">' +
-          (checked ? '<svg class="w-2.5 h-2.5 text-black" fill="none" stroke="currentColor" stroke-width="3.5" ' +
-            'viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : '') +
-        '</span>' +
+      var box = single
+        ? '<span class="w-3.5 h-3.5 shrink-0 rounded-full border flex items-center justify-center transition ' +
+            (checked ? 'border-green-500' : 'border-white/20') + '">' +
+            (checked ? '<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span>' : '') + '</span>'
+        : '<span class="w-3.5 h-3.5 shrink-0 rounded border flex items-center justify-center transition ' +
+            (checked ? 'bg-green-500 border-green-500' : 'border-white/20') + '">' +
+            (checked ? '<svg class="w-2.5 h-2.5 text-black" fill="none" stroke="currentColor" stroke-width="3.5" ' +
+              'viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : '') +
+          '</span>';
+      return box +
         '<span class="min-w-0 flex-1 truncate">' + labelHtml + '</span>' +
         (hintHtml ? '<span class="shrink-0 text-[10px] text-zinc-600">' + hintHtml + '</span>' : '');
     }
@@ -105,7 +124,15 @@
       normalize();
 
       // Button label
-      if (!selected.size) {
+      if (single) {
+        var pick = options.find(function (o) { return selected.has(o.value); });
+        text.textContent = pick ? pick.label : (label || '');
+        // Highlight only when it differs from the default (first) option.
+        var isDefault = !pick || (options.length && options[0].value === pick.value);
+        btn.classList.toggle('text-green-400', !isDefault);
+        btn.classList.toggle('border-green-500/30', !isDefault);
+        btn.classList.toggle('text-zinc-400', isDefault);
+      } else if (!selected.size) {
         text.textContent = 'All ' + label;
         btn.classList.remove('text-green-400', 'border-green-500/30');
         btn.classList.add('text-zinc-400');
@@ -120,10 +147,15 @@
         btn.classList.remove('text-zinc-400');
       }
 
-      // "All" row — ticked when nothing is narrowed down
-      allRow.className = 'px-3 py-2 border-b border-white/5 cursor-pointer hover:bg-white/5 transition ' +
-        'flex items-center gap-2 text-xs ' + (selected.size ? 'text-zinc-400' : 'text-white font-bold');
-      allRow.innerHTML = row(!selected.size, 'All ' + esc(label), '');
+      // "All" row — ticked when nothing is narrowed down. Single pickers
+      // don't have one; paint() must not resurrect it.
+      if (single) {
+        allRow.className = 'hidden';
+      } else {
+        allRow.className = 'px-3 py-2 border-b border-white/5 cursor-pointer hover:bg-white/5 transition ' +
+          'flex items-center gap-2 text-xs ' + (selected.size ? 'text-zinc-400' : 'text-white font-bold');
+        allRow.innerHTML = row(!selected.size, 'All ' + esc(label), '');
+      }
 
       if (!options.length) {
         list.innerHTML = '<div class="px-3 py-3 text-xs text-zinc-600">Nothing to filter yet.</div>';
@@ -183,6 +215,14 @@
       var target = e.target.closest('[data-val]');
       if (!target) return;
       var v = target.getAttribute('data-val');
+      if (single) {
+        // One value at a time, and the panel closes on choose.
+        if (selected.has(v)) { close(); return; }
+        selected = new Set([v]);
+        commit();
+        close();
+        return;
+      }
       if (selected.has(v)) selected.delete(v);
       else selected.add(v);
       commit();
@@ -202,6 +242,15 @@
       // True when `value` passes the filter — the check every caller needs.
       matches: function (value) { return selected.size === 0 || selected.has(value); },
       setSelected: function (vals) { selected = new Set(vals || []); commit(); },
+      // <select>-style accessors for single mode.
+      getValue: function () { return values()[0] != null ? values()[0] : ''; },
+      setValue: function (v, opts) {
+        selected = new Set(v == null || v === '' ? [] : [v]);
+        normalize();
+        writeStore(cfg.storageKey, values());
+        paint();
+        if (!opts || opts.silent !== true) onChange(values());
+      },
       setOptions: function (next, opts) {
         options = (next || []).slice();
         // Drop selections that no longer exist (e.g. a deleted account).
