@@ -7,6 +7,7 @@
   <title>FSD-X — Backtest</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
+  <script src="filters.js"></script>
   <style>
     body { background-color: #000; }
     input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
@@ -288,16 +289,9 @@
                   <span class="text-zinc-600 self-center text-xs">to</span>
                   <input type="date" id="gf-to" onchange="applyBtDateFilter()" class="bg-zinc-900 border border-white/10 text-white text-xs px-3 py-1.5 rounded-lg focus:outline-none">
                 </div>
-                <select id="bt-f-result" onchange="applyBtFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-                  <option value="">All Results</option><option value="WIN">Win</option><option value="LOSS">Loss</option><option value="BE">BE</option>
-                </select>
-                <select id="bt-f-grade" onchange="applyBtFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-                  <option value="">All Grades</option>
-                  <option>A+</option><option>A</option><option>B+</option><option>B</option><option>C+</option><option>C</option><option>D</option>
-                </select>
-                <select id="bt-f-direction" onchange="applyBtFilters()" class="bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg focus:outline-none">
-                  <option value="">All Directions</option><option value="LONG">Long</option><option value="SHORT">Short</option>
-                </select>
+                <div id="bt-f-result"></div>
+                <div id="bt-f-grade"></div>
+                <div id="bt-f-direction"></div>
                 <button onclick="clearBtFilters()" class="text-xs text-zinc-500 hover:text-white border border-white/10 px-3 py-1.5 rounded-lg transition">✕ Clear</button>
                 <div id="bt-filter-badge" class="hidden self-center text-[10px] text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-0.5 font-bold"></div>
               </div>
@@ -2649,20 +2643,30 @@
       return trades;
     }
 
-    function getActiveBtFilters() {
-      const { from, to } = getBtDateRange();
-      const res = document.getElementById('bt-f-result')?.value || '';
-      const grade = document.getElementById('bt-f-grade')?.value || '';
-      const dir = document.getElementById('bt-f-direction')?.value || '';
-      return { from, to, res, grade, dir };
+    // Multi-select filters (filters.js). Empty selection = no narrowing.
+    let btFResult = null, btFGrade = null, btFDirection = null;
+    let suppressBtApply = false;
+
+    function initBtFilters() {
+      if (btFResult) return;
+      btFResult = FSDXFilter.create({ mount: '#bt-f-result', label: 'Results',
+        options: [{value:'WIN',label:'Win'},{value:'LOSS',label:'Loss'},{value:'BE',label:'BE'}],
+        onChange: applyBtFilters });
+      btFGrade = FSDXFilter.create({ mount: '#bt-f-grade', label: 'Grades',
+        options: ['A+','A','B+','B','C+','C','D'].map(g => ({ value:g, label:g })),
+        onChange: applyBtFilters });
+      btFDirection = FSDXFilter.create({ mount: '#bt-f-direction', label: 'Directions',
+        options: [{value:'LONG',label:'Long'},{value:'SHORT',label:'Short'}],
+        onChange: applyBtFilters });
     }
 
     function applyAllBtFilters() {
-      const { from, to, res, grade, dir } = getActiveBtFilters();
+      if (suppressBtApply) return;
+      const { from, to } = getBtDateRange();
       filteredBtTrades = btTrades.filter(t =>
-        (!res   || t.result === res) &&
-        (!grade || t.grade === grade) &&
-        (!dir   || t.direction === dir) &&
+        (!btFResult    || btFResult.matches(t.result)) &&
+        (!btFGrade     || btFGrade.matches(t.grade)) &&
+        (!btFDirection || btFDirection.matches(t.direction)) &&
         (!from  || (t.date && t.date >= from)) &&
         (!to    || (t.date && t.date <= to))
       );
@@ -2676,7 +2680,9 @@
     function applyBtFilters() { applyAllBtFilters(); }
 
     function clearBtFilters() {
-      ['bt-f-result','bt-f-grade','bt-f-direction'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+      suppressBtApply = true;
+      [btFResult, btFGrade, btFDirection].forEach(f => f && f.setSelected([]));
+      suppressBtApply = false;
       filteredBtTrades = [...btTrades];
       updateBtFilterBadge(); updateBtSummary();
       const sub = [...document.querySelectorAll('[id^="btsub-"]')].find(b=>b.classList.contains('active'))?.id?.replace('btsub-','')||'trades';
@@ -2696,7 +2702,7 @@
     }
 
     function updateBtFilterBadge() {
-      const dropdownActive = ['bt-f-result','bt-f-grade','bt-f-direction'].filter(id => document.getElementById(id)?.value !== '').length;
+      const dropdownActive = [btFResult, btFGrade, btFDirection].filter(f => f && !f.isAll()).length;
       const dateActive = (document.getElementById('gf-daterange')?.value || 'all') !== 'all' ? 1 : 0;
       const active = dropdownActive + dateActive;
       const badge = document.getElementById('bt-filter-badge');
@@ -2843,6 +2849,7 @@
       } catch(err) { console.error(err); }
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
+      initBtFilters();
       loadBtSessions();
     }
 
