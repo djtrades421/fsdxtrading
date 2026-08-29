@@ -69,10 +69,79 @@
     /* Sidebar: hide until hovered so it stays clean */
     '#sidebar-panel::-webkit-scrollbar-thumb { background: transparent; transition: background .2s; }',
     '#sidebar-panel:hover::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); }',
-    '#sidebar-panel:hover::-webkit-scrollbar-thumb:hover { background: rgba(74,222,128,0.35); }'
+    '#sidebar-panel:hover::-webkit-scrollbar-thumb:hover { background: rgba(74,222,128,0.35); }',
+
+    /* ── Collapsed sidebar (desktop only) ──
+       Pages set their own md:pl-64 on <main>, so the override needs
+       !important to win against the utility class. */
+    '@media (min-width: 768px) {',
+    '  #sidebar-panel, main { transition: width .18s ease, padding-left .18s ease; }',
+    '  html.nav-collapsed #sidebar-panel { width: 4.5rem !important; padding-left: .625rem !important; padding-right: .625rem !important; }',
+    '  html.nav-collapsed main { padding-left: 4.5rem !important; }',
+    '  html.nav-collapsed #nav-content .nav-label,',
+    '  html.nav-collapsed #nav-content .nav-sec,',
+    '  html.nav-collapsed #nav-content .nav-sub,',
+    '  html.nav-collapsed #nav-wordmark { display: none !important; }',
+    '  html.nav-collapsed #nav-mark { display: block !important; }',
+    '  html.nav-collapsed #nav-content .flex.flex-col.gap-2\\.5 { padding-left: 0 !important; }',
+    '  html.nav-collapsed #nav-content a, html.nav-collapsed #nav-content button {',
+    '    justify-content: center; gap: 0 !important; padding-left: .25rem; padding-right: .25rem;',
+    '  }',
+    '  html.nav-collapsed #nav-content svg { width: 1.15rem !important; height: 1.15rem !important; }',
+    '  html.nav-collapsed #nav-avatar { margin: 0 auto; }',
+    '  html.nav-collapsed #nav-collapse-btn { margin: 0 auto; }',
+    '  html.nav-collapsed #nav-collapse-icon { transform: rotate(180deg); }',
+    '  html.nav-collapsed .vip-only.rounded-xl { border: 0 !important; background: transparent !important; }',
+    '  html.nav-collapsed #nav-user-btn > svg { display: none; }',
+    /* Section headings are hidden, so mark the groups with a rule instead. */
+    '  html.nav-collapsed #nav-content nav > div + div { border-top: 1px solid rgba(255,255,255,.07); padding-top: .55rem; }',
+    '}'
   ].join('\n');
   (document.head || document.documentElement).appendChild(css);
 })();
+
+// ── Collapsed-sidebar state ──
+// Applied before the nav renders so a collapsed sidebar never flashes open.
+(function () {
+  try {
+    if (localStorage.getItem('fsdx_nav_collapsed') === '1') {
+      document.documentElement.classList.add('nav-collapsed');
+    }
+  } catch (e) {}
+})();
+
+function toggleNavCollapse() {
+  var on = document.documentElement.classList.toggle('nav-collapsed');
+  try { localStorage.setItem('fsdx_nav_collapsed', on ? '1' : '0'); } catch (e) {}
+  var btn = document.getElementById('nav-collapse-btn');
+  if (btn) btn.title = on ? 'Expand menu' : 'Collapse menu';
+}
+
+// Wrap each nav item's text in a span so the label can be hidden while the
+// icon stays. Done here rather than in nav.html so every link stays readable.
+function prepareNavLabels(root) {
+  root.querySelectorAll('a, button').forEach(function (el) {
+    if (el.id === 'nav-collapse-btn') return;
+    Array.prototype.slice.call(el.childNodes).forEach(function (node) {
+      if (node.nodeType === 3 && node.textContent.trim()) {
+        var span = document.createElement('span');
+        span.className = 'nav-label';
+        span.textContent = node.textContent;
+        node.parentNode.replaceChild(span, node);
+      } else if (node.nodeType === 1 && !/^(svg|img)$/i.test(node.tagName) &&
+                 !node.classList.contains('nav-label') && node.id !== 'nav-avatar') {
+        node.classList.add('nav-label');
+      }
+    });
+    // Hovering an icon-only row should still say what it is. The member card
+    // is skipped — its name isn't loaded yet at this point.
+    if (el.id === 'nav-user-btn') return;
+    var text = (el.textContent || '')
+      .replace(/[\u21b3\u2197]/g, ' ')   // strip the ↳ and ↗ markers
+      .trim().replace(/\s+/g, ' ');
+    if (text && !el.title) el.title = text;
+  });
+}
 
 (function() {
   // Show skeleton immediately to prevent flash
@@ -95,6 +164,10 @@
     .then(r => r.text())
     .then(html => {
       document.getElementById('nav-content').innerHTML = html;
+      prepareNavLabels(document.getElementById('nav-content'));
+      var cbtn = document.getElementById('nav-collapse-btn');
+      if (cbtn) cbtn.title = document.documentElement.classList.contains('nav-collapsed')
+        ? 'Expand menu' : 'Collapse menu';
 
       // Highlight active page
       const fullPath = window.location.pathname === '/' ? '/index.html' : window.location.pathname;
@@ -126,6 +199,8 @@
         const tierEl = document.getElementById('nav-tier');
         if (avatar) avatar.textContent = name.charAt(0).toUpperCase();
         if (username) username.textContent = name;
+        var userBtn = document.getElementById('nav-user-btn');
+        if (userBtn) userBtn.title = name + ' — profile';
         const whopStatus = localStorage.getItem('fsdx_whop_status') || '';
         const plan = localStorage.getItem('fsdx_plan') || '';
         // Base name: "VIP Plus" / "VIP Pro" when known, else "VIP"
