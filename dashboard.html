@@ -68,7 +68,7 @@
               <span id="status-tier" class="text-xs font-black text-green-400">VIP</span>
               <svg id="access-chevron" class="w-3 h-3 text-green-400/60 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
             </div>
-            <div id="access-details" class="absolute right-0 top-full mt-2 w-80 border border-white/10 bg-zinc-950 shadow-2xl rounded-2xl overflow-hidden z-50" style="display:none;">
+            <div id="access-details" class="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-2rem)] border border-white/10 bg-zinc-950 shadow-2xl rounded-2xl overflow-hidden z-50" style="display:none;">
               <div class="p-5">
                 <div class="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b border-white/5">
                   <div id="expand-status-badge" class="px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border"></div>
@@ -90,7 +90,7 @@
               <span id="updates-new-dot" class="hidden w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></span>
               <svg id="updates-pill-chevron" class="w-3 h-3 text-zinc-500 transition-transform shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
             </div>
-            <div id="updates-panel" class="absolute right-0 top-full mt-2 w-96 border border-white/10 bg-zinc-950 shadow-2xl rounded-2xl overflow-hidden z-50" style="display:none;">
+            <div id="updates-panel" class="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-2rem)] border border-white/10 bg-zinc-950 shadow-2xl rounded-2xl overflow-hidden z-50" style="display:none;">
               <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">
                 <div class="text-xs font-black text-white uppercase tracking-wider">FSD-X Updates</div>
                 <span id="updates-new-badge" class="hidden px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-bold">New</span>
@@ -119,7 +119,7 @@
             <div id="dash-account-filter"></div>
             <span id="dash-filter-note" class="text-[10px] text-zinc-600"></span>
           </div>
-          <a href="accounts.html" class="text-[10px] uppercase tracking-widest text-zinc-600 hover:text-green-400 transition">Manage accounts →</a>
+          <a href="accounts.html" class="ml-auto text-[10px] uppercase tracking-widest text-zinc-600 hover:text-green-400 transition">Manage accounts →</a>
         </div>
 
         <!-- STAT CARDS -->
@@ -261,12 +261,42 @@
       chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
     }
 
+    // These header panels are 320-384px wide and anchored to the right edge of
+    // their pill. On a narrow phone that pushes the left half off-screen, so on
+    // small viewports they get pinned to the viewport instead.
+    function positionHeaderPanel(panel, anchor) {
+      if (!panel || !anchor) return;
+      if (window.innerWidth >= 640) {
+        panel.style.position = '';
+        panel.style.left = panel.style.right = panel.style.top = panel.style.width = '';
+        return;
+      }
+      const r = anchor.getBoundingClientRect();
+      panel.style.position = 'fixed';
+      panel.style.left = '16px';
+      panel.style.right = '16px';
+      panel.style.width = 'auto';
+      panel.style.top = Math.round(r.bottom + 8) + 'px';
+    }
+
+    function repositionOpenHeaderPanels() {
+      [['updates-panel','updates-pill'], ['access-details','status-card']].forEach(function (pair) {
+        const panel = document.getElementById(pair[0]);
+        if (panel && panel.style.display === 'block') {
+          positionHeaderPanel(panel, document.getElementById(pair[1]));
+        }
+      });
+    }
+    window.addEventListener('resize', repositionOpenHeaderPanels);
+    window.addEventListener('orientationchange', repositionOpenHeaderPanels);
+
     function toggleUpdatesPill() {
       const panel = document.getElementById('updates-panel');
       const chevron = document.getElementById('updates-pill-chevron');
       const isOpen = panel.style.display !== 'none' && panel.style.display !== '';
       panel.style.display = isOpen ? 'none' : 'block';
       chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+      if (!isOpen) positionHeaderPanel(panel, document.getElementById('updates-pill'));
     }
 
     async function loadUpdates(token) {
@@ -320,6 +350,7 @@
       const isOpen = details.style.display !== 'none' && details.style.display !== '';
       details.style.display = isOpen ? 'none' : 'block';
       chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+      if (!isOpen) positionHeaderPanel(details, document.getElementById('status-card'));
     }
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
