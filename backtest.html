@@ -302,13 +302,13 @@
                 <div id="bt-filter-badge" class="hidden self-center text-[10px] text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-0.5 font-bold"></div>
               </div>
               <!-- BT sub tabs -->
-              <div class="flex items-center justify-between border-b border-white/10 mb-5">
-                <div class="flex">
+              <div class="flex items-center justify-between gap-2 flex-wrap border-b border-white/10 mb-5">
+                <div class="flex overflow-x-auto max-w-full">
                   <button onclick="btSub('trades')" id="btsub-trades" class="tab-btn active px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 mr-1">Trades</button>
                   <button onclick="btSub('stats')" id="btsub-stats" class="tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 mr-1">Stats</button>
-                  <button onclick="btSub('calendar')" id="btsub-calendar" class="tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300">Calendar</button>
+                  <button onclick="btSub('calendar')" id="btsub-calendar" class="tab-btn px-4 py-2.5 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 whitespace-nowrap">Calendar</button>
                 </div>
-                <div class="flex items-center gap-2 pb-1">
+                <div class="flex items-center gap-2 pb-1 shrink-0">
                   <button onclick="exportBtCSV()" class="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-lg transition">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                     ↓ CSV
@@ -1279,7 +1279,7 @@
             <span class="text-right text-zinc-400">${gavg>=0?'+':'-'}$${Math.abs(gavg).toFixed(2)}</span>
           </div>`;
         }).join('');
-        gradeEl.innerHTML = header + rows;
+        gradeEl.innerHTML = '<div class="overflow-x-auto"><div class="min-w-[360px]">' + header + rows + '</div></div>';
       }
 
       // ── Long vs Short — detailed ──
@@ -2307,14 +2307,14 @@
         const grades=['A+','A','B+','B','C+','C','D','F'];
         const maxGP=Math.max(...grades.map(g=>{const gt=trades.filter(t=>t.grade===g);return gt.length?Math.abs(gt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0)):0;}));
         const header=`<div class="grid gap-2 py-2 border-b border-white/10 mb-1 text-[10px] text-zinc-600 uppercase tracking-wider" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem"><span>Grade</span><span></span><span class="text-right">Trades</span><span class="text-right">Win %</span><span class="text-right">Net P&L</span><span class="text-right">Avg P&L</span></div>`;
-        gradeEl.innerHTML=header+grades.map(g=>{
+        gradeEl.innerHTML='<div class="overflow-x-auto"><div class="min-w-[360px]">'+header+grades.map(g=>{
           const gt=trades.filter(t=>t.grade===g);
           if(!gt.length) return `<div class="grid gap-2 py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem"><span class="text-zinc-600 font-bold">${g}</span><div></div><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span><span class="text-right text-zinc-700">—</span></div>`;
           const gw=gt.filter(t=>t.result==='WIN').length,gd=gw+gt.filter(t=>t.result==='LOSS').length;
           const gwr=gd?Math.round(gw/gd*100):0,gp=gt.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0),gavg=gp/gt.length;
           const barW=maxGP>0?Math.round(Math.abs(gp)/maxGP*100):0,col=gp>=0?'#22c55e':'#ef4444';
           return `<div class="grid gap-2 items-center py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem"><span class="font-black" style="color:${col}">${g}</span><div class="h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${barW}%;background:${col};opacity:0.75"></div></div><span class="text-right text-zinc-400">${gt.length}t</span><span class="text-right font-bold ${gwr>=50?'text-green-400':'text-red-400'}">${gwr}%</span><span class="text-right font-black" style="color:${col}">${gp>=0?'+':'-'}$${Math.abs(gp).toFixed(2)}</span><span class="text-right text-zinc-400">${gavg>=0?'+':'-'}$${Math.abs(gavg).toFixed(2)}</span></div>`;
-        }).join('');
+        }).join('')+'</div></div>';
       }
 
       // ── Long vs Short ──
