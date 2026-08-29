@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Alerts</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="nav-loader.js"></script>
-  <script src="filters.js"></script>
-  <script src="alerts.js"></script>
+  <script src="nav-loader.js?v=2"></script>
+  <script src="filters.js?v=2"></script>
+  <script src="alerts.js?v=2"></script>
   <style>
     body { background-color: #000; }
     .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
@@ -309,28 +309,46 @@
     async function loadFeed() {
       const token = localStorage.getItem('fsdx_token');
       try {
+        // Without a timeout a stalled request leaves "Loading alerts…" forever.
+        const ctl = new AbortController();
+        const bail = setTimeout(() => ctl.abort(), 12000);
         const res = await fetch(API + '/api/scout/feed?limit=100', {
-          headers: { 'Authorization': 'Bearer ' + token }
+          headers: { 'Authorization': 'Bearer ' + token }, signal: ctl.signal
         });
+        clearTimeout(bail);
+        if (res.status === 401) throw new Error('Session expired — log out and back in');
         if (!res.ok) throw new Error('status ' + res.status);
         const data = await res.json();
         allAlerts = Array.isArray(data.alerts) ? data.alerts : [];
       } catch (e) {
         allAlerts = [];
+        console.error('[alerts] feed load failed:', e);
         document.getElementById('feed-list').innerHTML =
-          '<div class="text-center py-16 text-zinc-600 text-xs">Could not load alerts. Refresh to try again.</div>';
+          '<div class="text-center py-16"><div class="text-sm font-black text-white mb-1.5">Could not load alerts</div>' +
+          '<p class="text-xs text-zinc-500">' + esc(e && e.message ? e.message : 'Network error') + '</p></div>';
         return;
       }
       renderFeed();
     }
 
     // ── Init ──
+    function showFatal(where, err) {
+      console.error('[alerts] ' + where + ':', err);
+      const el = document.getElementById('feed-list');
+      if (el) el.innerHTML = '<div class="text-center py-16"><div class="text-sm font-black text-white mb-1.5">' +
+        'Something went wrong loading this page</div><p class="text-xs text-zinc-500">' + esc(where) + ': ' +
+        esc(err && err.message ? err.message : String(err)) + '</p></div>';
+    }
+
     async function init() {
       const token = localStorage.getItem('fsdx_token');
       if (!token) { window.location.href = 'login.html'; return; }
 
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
+
+      if (typeof FSDXFilter === 'undefined') { showFatal('filters.js did not load', new Error('FSDXFilter missing')); return; }
+      if (typeof FSDXAlerts === 'undefined') { showFatal('alerts.js did not load', new Error('FSDXAlerts missing')); return; }
 
       fWhen = FSDXFilter.create({ mount:'#f-when', label:'Today', mode:'single', value:'today',
         options:[{value:'today',label:'Today'},{value:'week',label:'Last 7 days'},{value:'all',label:'All (14 days)'}],
@@ -342,13 +360,16 @@
       fGrade = FSDXFilter.create({ mount:'#f-grade', label:'Grades',
         options:['A+','A','B+','B','C+','C','D'].map(g => ({ value:g, label:g })), onChange: renderFeed });
 
-      paintSettings();
+      // A failure painting settings must not stop the feed from loading.
+      try { paintSettings(); } catch (e) { console.error('[alerts] paintSettings:', e); }
+
       const wanted = (location.hash || '').replace('#','');
       switchTab(wanted === 'settings' ? 'settings' : 'feed');
-      await loadFeed();
+
+      try { await loadFeed(); } catch (e) { showFatal('loadFeed', e); }
     }
 
-    init();
+    init().catch(e => showFatal('init', e));
   </script>
 </body>
 </html>
