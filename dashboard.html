@@ -191,12 +191,7 @@
                   <option value="tomorrow">Tomorrow</option>
                   <option value="week" selected>This Week</option>
                 </select>
-                <select id="cal-currency" onchange="renderCalendar()" class="bg-black border border-white/10 text-white text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40 transition">
-                  <option value="">All Currencies</option>
-                  <option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option>
-                  <option value="JPY">JPY</option><option value="CAD">CAD</option><option value="AUD">AUD</option>
-                  <option value="CHF">CHF</option><option value="NZD">NZD</option><option value="CNY">CNY</option>
-                </select>
+                <div id="cal-currency"></div>
                 <select id="cal-tz" onchange="renderCalendar()" class="bg-black border border-white/10 text-white text-xs px-2 py-1.5 rounded-lg focus:outline-none focus:border-green-500/40 transition">
                   <option value="America/New_York">ET</option>
                   <option value="America/Chicago" selected>CT</option>
@@ -855,6 +850,7 @@
       }
 
       document.getElementById('access-grid').innerHTML = renderAccessGrid(tier);
+      initCalFilters();
       if (whopKey) loadDashData(whopKey);
       loadAnnouncement(token);
       loadUpdates(token);
@@ -862,6 +858,18 @@
 
     // ── Economic Calendar ──
     let calEvents = [];
+    let calCurrency = null;
+
+    function initCalFilters() {
+      if (calCurrency) return;
+      calCurrency = FSDXFilter.create({
+        mount: '#cal-currency',
+        label: 'Currencies',
+        options: ['USD','EUR','GBP','JPY','CAD','AUD','CHF','NZD','CNY'].map(c => ({ value: c, label: c })),
+        storageKey: 'fsdx_cal_currencies',
+        onChange: renderCalendar
+      });
+    }
     let calImpact = new Set(['High', 'Medium', 'Low']);
 
     function toggleImpact(level) {
@@ -917,7 +925,7 @@
       if (!body || !calEvents.length) return;
       const tz = document.getElementById('cal-tz')?.value || 'America/Chicago';
       const dateFilter = document.getElementById('cal-date')?.value || 'week';
-      const currency = document.getElementById('cal-currency')?.value || '';
+      // calCurrency is a multi-select (filters.js); empty = every currency.
       const todayStr = todayInTz('America/Chicago');
       const nowCT = new Date(new Date().toLocaleString('en-US',{timeZone:'America/Chicago'}));
       const tmrCT = new Date(nowCT); tmrCT.setDate(tmrCT.getDate()+1);
@@ -926,7 +934,7 @@
       if (dateFilter === 'today') filtered = filtered.filter(e => e.date === todayStr);
       else if (dateFilter === 'tomorrow') filtered = filtered.filter(e => e.date === tmrStr);
       filtered = filtered.filter(e => calImpact.has(e.impact));
-      if (currency) filtered = filtered.filter(e => e.country === currency);
+      if (calCurrency && !calCurrency.isAll()) filtered = filtered.filter(e => calCurrency.matches(e.country));
       if (!filtered.length) { body.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">No events found.</div>'; return; }
 
       // Find next upcoming event (matching Nexus logic)
