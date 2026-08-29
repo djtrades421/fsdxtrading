@@ -23,6 +23,9 @@
   var STACK_ID = 'fsdx-alert-stack';
   var SEEN_KEY = 'fsdx_alert_seen';
   var MUTE_KEY = 'fsdx_alert_muted';
+  var ON_KEY = 'fsdx_alert_enabled';
+  var TYPES_KEY = 'fsdx_alert_types';
+  var ALL_TYPES = ['breakout','brewing','vwap','level','tp','sl','info'];
   var MAX_VISIBLE = 3;
 
   // Type drives the accent colour and icon. Direction wins where it applies —
@@ -73,6 +76,34 @@
 
   function isMuted() {
     try { return localStorage.getItem(MUTE_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  // Alerts are on unless the member turned them off — an unset value is "on".
+  function isEnabled() {
+    try { return localStorage.getItem(ON_KEY) !== '0'; } catch (e) { return true; }
+  }
+
+  function setEnabled(on) {
+    try { localStorage.setItem(ON_KEY, on ? '1' : '0'); } catch (e) {}
+    if (on) { start(); } else { stop(); clearAll(); }
+  }
+
+  // Same rule: nothing stored means every type is on.
+  function getTypes() {
+    try {
+      var raw = localStorage.getItem(TYPES_KEY);
+      if (!raw) return ALL_TYPES.slice();
+      var v = JSON.parse(raw);
+      return Array.isArray(v) ? v : ALL_TYPES.slice();
+    } catch (e) { return ALL_TYPES.slice(); }
+  }
+
+  function setTypes(list) {
+    try { localStorage.setItem(TYPES_KEY, JSON.stringify(list || [])); } catch (e) {}
+  }
+
+  function typeAllowed(type) {
+    return getTypes().indexOf(type || 'info') !== -1;
   }
 
   function styles() {
@@ -149,6 +180,10 @@
 
   function show(a) {
     if (!a) return null;
+    // Settings gate everything except an explicit demo, which is how the
+    // settings page shows you what an alert looks like.
+    if (!a.force && !isEnabled()) return null;
+    if (!a.force && !typeAllowed(a.type)) return null;
     if (a.id && alreadySeen(a.id)) return null;
     markSeen(a.id);
 
@@ -238,14 +273,14 @@
     var now = Date.now();
     var seq = [
       { delay: 0, a: { type:'brewing', dir:'BULL', title:'BULL Setup Brewing', sub:'MNQ1! · 12 pts from ORB High',
-          lines:[['HTF','Bullish'],['ORB','62.5 pts'],['Watch close above','20146.00']], id:'demo-'+now+'-1' } },
+          lines:[['HTF','Bullish'],['ORB','62.5 pts'],['Watch close above','20146.00']], id:'demo-'+now+'-1', force:true } },
       { delay: 2600, a: { type:'vwap', dir:'BULL', title:'BULL VWAP Confirmed', sub:'MNQ1! · watch for close confirmation',
-          lines:[['ORB High','20146.00'],['VWAP','20138.75']], id:'demo-'+now+'-2' } },
+          lines:[['ORB High','20146.00'],['VWAP','20138.75']], id:'demo-'+now+'-2', force:true } },
       { delay: 5200, a: { type:'breakout', dir:'BULL', title:'BULL ORB Breakout', sub:'MNQ1!', grade:'A+',
           lines:[['Entry','20147.50'],['TP1','20197.50'],['TP2','20247.50'],['SL','20072.50'],['ORB','62.5 pts']],
-          id:'demo-'+now+'-3', ttl: 16000 } },
+          id:'demo-'+now+'-3', ttl:16000, force:true } },
       { delay: 8200, a: { type:'tp', dir:'BULL', title:'TP1 Hit — BULL', sub:'MNQ1! · Grade A+',
-          lines:[['Price','20197.50']], id:'demo-'+now+'-4' } }
+          lines:[['Price','20197.50']], id:'demo-'+now+'-4', force:true } }
     ];
     seq.forEach(function (s) { setTimeout(function () { show(s.a); }, s.delay); });
   }
@@ -295,6 +330,7 @@
 
   async function poll(firstRun) {
     if (!running || document.hidden) return;
+    if (!isEnabled()) return;
     var token;
     try { token = localStorage.getItem('fsdx_token'); } catch (e) {}
     if (!token) { stop(); return; }
@@ -363,7 +399,7 @@
   function autoStart() {
     var token = null;
     try { token = localStorage.getItem('fsdx_token'); } catch (e) {}
-    if (token) start();
+    if (token && isEnabled()) start();
   }
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', autoStart);
@@ -377,6 +413,10 @@
     clearAll: clearAll,
     setMuted: setMuted,
     isMuted: isMuted,
+    isEnabled: isEnabled,
+    setEnabled: setEnabled,
+    getTypes: getTypes,
+    setTypes: setTypes,
     start: start,
     stop: stop,
     // Testing helper: forget the cursor so the next poll re-toasts recent alerts.
