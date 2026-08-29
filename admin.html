@@ -1836,7 +1836,7 @@
       'plan_mhrt4tqPQYjNH': 'Plus Lifetime',   // $209 (legacy lifetime price)
       // ── FSD-X Trading Pro  (Pro has no lifetime) ──
       'plan_l0KkbipfcgnAp': 'Pro Monthly',     // $129.99
-      'plan_RYMEBnqYNmFEZ': 'Pro Quarterly',   // $349 (14-day free trial)
+      'plan_RYMEBnqYNmFEZ': 'Pro Quarterly',   // $349 (30-day free trial)
       'plan_1CAj5BxdzpT1W': 'Pro Yearly',      // $1,299 — live plan ID from the Annual checkout button (verify in Whop)
       // ── Other products / legacy tiers ──
       'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
@@ -4434,9 +4434,14 @@
           } catch(e) {}
         }
 
-        // Trial leaver — left within 14 days AND spent $0
+        // Trial leaver — left within the trial window AND spent $0.
+        // TRIAL_DAYS moved to 30 on 2026-08-29 (was 14). The spend === 0 guard is what
+        // actually does the work: anyone who stayed past their trial got charged, so they
+        // fail the spend test regardless of which trial length they signed up under.
+        // That keeps pre-change members classified correctly against this wider window.
+        const TRIAL_DAYS = 30;
         const spendAmt = parseFloat(r['Platform spend (USD)'] || '0') || 0;
-        const trialLeaver = !!(tenureDays !== null && tenureDays <= 14 && spendAmt === 0 && (leftStr || churnedStr));
+        const trialLeaver = !!(tenureDays !== null && tenureDays <= TRIAL_DAYS && spendAmt === 0 && (leftStr || churnedStr));
 
         return {
           id: r['Member ID'] || (Date.now() + Math.random()).toString(36),
