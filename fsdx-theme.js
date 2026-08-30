@@ -176,9 +176,13 @@
      overflows and the sticky block lands mid-list with items scrolling behind it.
      Letting the wrapper grow puts it back at the true bottom. */
   aside#sidebar-panel #nav-content{ height:auto !important; min-height:100%; flex:0 0 auto !important; }
+  /* the aside's own 24px bottom padding sits BELOW the sticky footer, so scrolled
+     items show through that strip — hand the padding to the footer instead */
+  aside#sidebar-panel{ padding-bottom:0 !important; }
   aside#sidebar-panel #nav-content > *:last-child{
     margin-top:auto !important;
-    padding-bottom:10px;
+    margin-bottom:0 !important;
+    padding-bottom:24px !important;
     background:${S.slate[950]} !important;
     box-shadow:0 -14px 22px -12px ${hexA(S.black,.95)};
   }
