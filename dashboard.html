@@ -948,6 +948,64 @@
       } catch(e) {}
     }
 
+    /* ══════════════════════════════════════════════════════════════════════
+       First-run checklist
+
+       Site-only. Everything to do with the membership itself — TradingView
+       username, claiming the indicators, Discord access — is handled at Whop
+       checkout, so repeating any of it here would just create a second place
+       to give a different answer.
+
+       Shown once. Dismissal is stored on the account rather than in
+       localStorage, so it does not come back when they open the site on their
+       phone.
+       ══════════════════════════════════════════════════════════════════════ */
+    let _profileUser = null;
+
+    function maybeShowWelcome(user, firstName) {
+      if (!user || user.onboardingDismissed) return;
+
+      const modal = document.getElementById('welcome-modal');
+      if (!modal) return;
+
+      document.getElementById('wm-greeting').textContent = firstName
+        ? `Welcome in, ${firstName}.`
+        : 'Welcome in.';
+
+      /* A member who already has a password needs neither step 1 nor the
+         caveat on 2FA. Renumber so they never see a list starting at 2. */
+      const needsPassword = user.hasPassword === false;
+      const pwStep = document.getElementById('wm-step-password');
+      if (pwStep) pwStep.classList.toggle('hidden', !needsPassword);
+
+      const twofaNote = document.getElementById('wm-2fa-note');
+      if (twofaNote) twofaNote.classList.toggle('hidden', !needsPassword);
+
+      document.getElementById('wm-n-2fa').textContent = needsPassword ? '2' : '1';
+      document.getElementById('wm-n-tools').textContent = needsPassword ? '3' : '2';
+
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeWelcome() {
+      const modal = document.getElementById('welcome-modal');
+      if (modal) modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    /* Close first, then record it. The modal is informational, so a failed
+       write costs them one extra sighting — never a stuck overlay on a page
+       they just paid for. */
+    function dismissWelcome() {
+      closeWelcome();
+      fetch(`${API}/api/auth/onboarding`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('fsdx_token')}` },
+        body: JSON.stringify({ dismissed: true })
+      }).catch(() => {});
+    }
+
     async function initDashboard() {
       const token = localStorage.getItem('fsdx_token');
       if (!token) { window.location.href = 'login.html'; return; }
@@ -959,6 +1017,7 @@
         const res = await fetch(`${API}/api/auth/profile`, { headers:{'Authorization':`Bearer ${token}`} });
         const data = await res.json();
         if (data.user) {
+          _profileUser = data.user;
           whopKey = data.user.whopKey;
           tier = data.user.tier || 'pro';
           memberPlan = data.user.plan || null;
@@ -992,6 +1051,10 @@
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('dashboard-content').classList.remove('hidden');
       document.getElementById('welcome-msg').textContent = getGreeting() + ', ' + firstName;
+
+      // First-run checklist. Only for members who are actually in — a pending
+      // account has already returned above and gets the unlock panel instead.
+      maybeShowWelcome(_profileUser, firstName);
 
       const now = new Date();
       // Today's date stays in the VIEWER's timezone — that's their "today".
@@ -1500,5 +1563,70 @@
     initDashboard();
 
   </script>
+  <!-- ── First-run checklist ────────────────────────────────────────────── -->
+  <div id="welcome-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div class="w-full max-w-md bg-zinc-950 border border-white/10 rounded-2xl p-6 sm:p-7 my-8">
+
+      <div class="mb-5">
+        <div class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-green-500/10 border border-green-500/20 mb-3">
+          <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        </div>
+        <h2 id="wm-greeting" class="text-lg font-black text-white">Welcome in.</h2>
+        <p class="text-zinc-500 text-xs mt-1">Your membership is handled. A couple of things on the site side.</p>
+      </div>
+
+      <!-- Set a password — hidden for anyone who already has one -->
+      <div id="wm-step-password" class="hidden border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
+        <div class="flex items-start gap-2.5">
+          <span class="text-green-400 font-black text-xs mt-0.5">1</span>
+          <div>
+            <div class="text-xs font-bold text-white">Set a password</div>
+            <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
+              You signed in with Whop, which was only there to get you set up. A password gives you a
+              normal login — and you can switch Whop sign-in off entirely once you have one.
+              <a href="profile.html" class="text-green-400 hover:underline font-bold">Set one in your profile &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2FA -->
+      <div class="border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
+        <div class="flex items-start gap-2.5">
+          <span id="wm-n-2fa" class="text-green-400 font-black text-xs mt-0.5">1</span>
+          <div>
+            <div class="text-xs font-bold text-white">Turn on two-factor</div>
+            <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
+              An authenticator code on top of your password.<span id="wm-2fa-note" class="hidden"> Needs a password first.</span>
+              <a href="profile.html" class="text-green-400 hover:underline font-bold">Enable it in your profile &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- What's in here -->
+      <div class="border border-white/10 bg-black/40 rounded-xl p-4 mb-5">
+        <div class="flex items-start gap-2.5">
+          <span id="wm-n-tools" class="text-green-400 font-black text-xs mt-0.5">2</span>
+          <div>
+            <div class="text-xs font-bold text-white">Have a look around</div>
+            <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
+              <a href="playbook.html" class="text-green-400 hover:underline font-bold">Playbook</a> for today's rules and session clock,
+              <a href="backtest.html" class="text-green-400 hover:underline font-bold">Backtest</a> for the historical sessions, and
+              <a href="alerts.html" class="text-green-400 hover:underline font-bold">Scout Alerts</a> for live signals.
+              Your dashboard fills in once you start logging trades.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="dismissWelcome()" id="wm-done-btn"
+        class="w-full py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+        Got it
+      </button>
+
+    </div>
+  </div>
+
 </body>
 </html>
