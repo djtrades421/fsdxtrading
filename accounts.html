@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Accounts</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
   <script src="tracker-core.js"></script>
   <script src="alerts.js"></script>
@@ -599,7 +600,7 @@
       if (!trades.length) return '';
       const rows = trades.slice(0,10).map(t => {
         const p = parseFloat(t.netPnl)||0;
-        const pCol = p>=0?'text-green-400':'text-red-400';
+        const pCol = p>=0?'text-emerald-400':'text-red-400';
         const sign = p>=0?'+':'-';
         return `<a href="journal.html?date=${t.date}&tab=history" target="_blank"
           class="flex items-center justify-between py-1.5 px-3 rounded-lg hover:bg-white/5 transition cursor-pointer group">
@@ -607,7 +608,7 @@
             <span class="text-zinc-500 font-mono">${t.date||'—'}</span>
             <span class="text-zinc-600 font-mono">${fmt12(t.entryTime)}</span>
             <span class="text-zinc-300 font-bold">${t.ticker||'MNQ'}</span>
-            <span class="${t.direction==='LONG'?'text-green-400':'text-red-400'} font-bold">${t.direction||'—'}</span>
+            <span class="${t.direction==='LONG'?'text-emerald-400':'text-red-400'} font-bold">${t.direction||'—'}</span>
             ${t.grade?`<span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-zinc-800 border border-white/10 text-zinc-300">${t.grade}</span>`:''}
           </div>
           <div class="flex items-center gap-2">
@@ -642,7 +643,7 @@
           </div>
           <div class="text-[11px] text-zinc-500 mt-1.5">Edit this tracker and pick a matching account, or set both filters to “Any”.</div>
         </div>` : '';
-      const pnlCol = s.totalPnl >= 0 ? 'text-green-400' : 'text-red-400';
+      const pnlCol = s.totalPnl >= 0 ? 'text-emerald-400' : 'text-red-400';
       const pnlSign = s.totalPnl >= 0 ? '+' : '-';
 
       const statusConfig = {
@@ -653,8 +654,8 @@
       };
       const sc = statusConfig[s.status] || statusConfig.green;
 
-      const discColor = s.disciplineScore >= 80 ? 'text-green-400' : s.disciplineScore >= 60 ? 'text-yellow-400' : 'text-red-400';
-      const wrColor = s.wr >= 55 ? 'text-green-400' : s.wr >= 45 ? 'text-zinc-300' : 'text-red-400';
+      const discColor = s.disciplineScore >= 80 ? 'text-emerald-400' : s.disciplineScore >= 60 ? 'text-yellow-400' : 'text-red-400';
+      const wrColor = s.wr >= 55 ? 'text-emerald-400' : s.wr >= 45 ? 'text-zinc-300' : 'text-red-400';
 
       // Mini progress bar — DD always red (any use is bad); target green and
       // empty while underwater. Width clamped so a negative % never paints full.
@@ -745,7 +746,7 @@
                 <div class="text-xs font-black text-zinc-400 uppercase tracking-wider">📋 My Rules</div>
                 <div class="flex items-center gap-2">
                   <span class="text-[10px] text-zinc-500">Discipline Score</span>
-                  <span class="text-sm font-black ${s.disciplineScore>=80?'text-green-400':s.disciplineScore>=60?'text-yellow-400':'text-red-400'}">${s.disciplineScore}%</span>
+                  <span class="text-sm font-black ${s.disciplineScore>=80?'text-emerald-400':s.disciplineScore>=60?'text-yellow-400':'text-red-400'}">${s.disciplineScore}%</span>
                 </div>
               </div>
               <div class="space-y-2">
@@ -885,7 +886,7 @@
         <!-- top labels: MLL / TARGET -->
         <div class="flex items-center justify-between mt-1">
           <span class="text-xs font-bold text-red-400">${money(mll)} <span class="text-[10px] text-zinc-500 font-medium">MLL</span></span>
-          <span class="text-xs font-bold text-green-400">${money(targetBal)} <span class="text-[10px] text-zinc-500 font-medium">TARGET</span></span>
+          <span class="text-xs font-bold text-emerald-400">${money(targetBal)} <span class="text-[10px] text-zinc-500 font-medium">TARGET</span></span>
         </div>
         <!-- bottom labels: cushion / balance / remaining -->
         <div class="flex items-center justify-between mt-2">
@@ -1030,7 +1031,7 @@
     function showModalMsg(msg,type) {
       const el=document.getElementById('modal-msg');
       el.textContent=msg;
-      el.className='text-xs text-center py-2 rounded-lg '+(type==='error'?'bg-red-500/10 text-red-400':'bg-green-500/10 text-green-400');
+      el.className='text-xs text-center py-2 rounded-lg '+(type==='error'?'bg-red-500/10 text-red-400':'bg-emerald-500/10 text-emerald-400');
       el.classList.remove('hidden');
     }
 
@@ -1093,7 +1094,7 @@
 
       el.innerHTML = journalAccounts.map(a => {
         const st = acctStats(a);
-        const pnlCol = st.pnl >= 0 ? 'text-green-400' : 'text-red-400';
+        const pnlCol = st.pnl >= 0 ? 'text-emerald-400' : 'text-red-400';
         const meta = [
           a.accountType || '',
           a.accountSize ? '$' + Number(a.accountSize).toLocaleString() : '',
@@ -1202,7 +1203,7 @@
     function showAfMsg(msg, type) {
       const el = document.getElementById('af-msg');
       el.textContent = msg;
-      el.className = 'text-xs py-1.5 rounded-lg text-center ' + (type === 'error' ? 'bg-red-500/10 text-red-400' : 'bg-green-500/10 text-green-400');
+      el.className = 'text-xs py-1.5 rounded-lg text-center ' + (type === 'error' ? 'bg-red-500/10 text-red-400' : 'bg-emerald-500/10 text-emerald-400');
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 3000);
     }
@@ -1232,7 +1233,7 @@
         return `<div class="flex items-center justify-between gap-3 border border-white/5 bg-zinc-900/40 rounded-xl px-4 py-3 mb-2">
           <div class="min-w-0">
             <div class="text-sm font-bold text-white truncate">${esc(g.label)}</div>
-            <div class="text-xs text-zinc-500 mt-0.5">${g.n} trade${g.n !== 1 ? 's' : ''} · <span class="${g.pnl >= 0 ? 'text-green-400' : 'text-red-400'}">${money(g.pnl)}</span>${g.accts.size ? ' · ' + esc([...g.accts].join(', ')) : ''}${when ? ' · ' + esc(when) : ''}</div>
+            <div class="text-xs text-zinc-500 mt-0.5">${g.n} trade${g.n !== 1 ? 's' : ''} · <span class="${g.pnl >= 0 ? 'text-emerald-400' : 'text-red-400'}">${money(g.pnl)}</span>${g.accts.size ? ' · ' + esc([...g.accts].join(', ')) : ''}${when ? ' · ' + esc(when) : ''}</div>
           </div>
           <button onclick="deleteImportBatch('${esc(id)}')" class="shrink-0 px-3 py-2 bg-red-950/30 hover:bg-red-950/60 border border-red-500/25 hover:border-red-500/50 text-red-400 text-[11px] font-bold uppercase tracking-wider rounded-lg transition">Remove</button>
         </div>`;
@@ -1291,7 +1292,7 @@
         const pnl = hits.reduce((s, t) => s + (parseFloat(t.netPnl) || 0), 0);
         const dates = hits.map(t => t.date).filter(Boolean).sort();
         el.innerHTML = `<span class="text-red-400 font-bold">${hits.length} trade${hits.length !== 1 ? 's' : ''}</span> ` +
-          `totalling <span class="${pnl >= 0 ? 'text-green-400' : 'text-red-400'} font-bold">${money(pnl)}</span>` +
+          `totalling <span class="${pnl >= 0 ? 'text-emerald-400' : 'text-red-400'} font-bold">${money(pnl)}</span>` +
           (dates.length ? ` · ${dates[0]}${dates[0] !== dates[dates.length - 1] ? ' to ' + dates[dates.length - 1] : ''}` : '');
         el.className = 'text-xs text-zinc-400 mb-3';
       }
