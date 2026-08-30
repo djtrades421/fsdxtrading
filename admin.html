@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Admin Panel</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
   <style>
     body { background-color: #000; overflow-x: hidden; }
@@ -1635,8 +1636,8 @@
       const el = document.getElementById('traffic-stats'); if(!el) return;
       const card = (label,val,sub,delta)=>{
         let dl='';
-        if(delta!=null && isFinite(delta)){ const up=delta>=0; dl=`<div class="text-[10px] mt-0.5 ${up?'text-green-400':'text-red-400'}">${up?'▲':'▼'} ${Math.abs(delta)}% vs last mo</div>`; }
-        return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">${label}</div><div class="text-3xl font-black text-green-400 mt-1">${val}</div>${sub?`<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>`:''}${dl}</div>`;
+        if(delta!=null && isFinite(delta)){ const up=delta>=0; dl=`<div class="text-[10px] mt-0.5 ${up?'text-emerald-400':'text-red-400'}">${up?'▲':'▼'} ${Math.abs(delta)}% vs last mo</div>`; }
+        return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">${label}</div><div class="text-3xl font-black text-emerald-400 mt-1">${val}</div>${sub?`<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>`:''}${dl}</div>`;
       };
       const mo=d.month||0, lm=d.lastMonth||0;
       const delta = lm ? Math.round((mo-lm)/lm*100) : null;
@@ -1682,7 +1683,7 @@
       daily.forEach(d=>{ const dt=new Date(d.day+'T12:00:00Z'); agg[dt.getUTCDay()]+=d.total||0; });
       const order=[1,2,3,4,5,6,0]; const max=Math.max(1,...agg); const sum=agg.reduce((a,b)=>a+b,0);
       const dt2=document.getElementById('traffic-dow-total'); if(dt2) dt2.textContent=sum.toLocaleString();
-      el.innerHTML='<div class="flex items-end gap-1.5" style="height:118px">'+order.map(i=>{ const v=agg[i]; const pct=v?Math.max(Math.round(v/max*100),4):2; return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${names[i]}: ${v}"><div class="text-[11px] font-semibold text-zinc-300 mb-1" style="height:14px">${v||''}</div><div class="w-full ${v?'bg-green-500/60':'bg-white/5'} rounded-t" style="height:${pct}%"></div><div class="text-[11px] text-zinc-400 mt-1.5">${names[i]}</div></div>`; }).join('')+'</div>';
+      el.innerHTML='<div class="flex items-end gap-1.5" style="height:118px">'+order.map(i=>{ const v=agg[i]; const pct=v?Math.max(Math.round(v/max*100),4):2; return `<div class="flex-1 flex flex-col items-center justify-end h-full" title="${names[i]}: ${v}"><div class="text-[11px] font-semibold text-zinc-300 mb-1" style="height:14px">${v||''}</div><div class="w-full ${v?'bg-emerald-500/60':'bg-white/5'} rounded-t" style="height:${pct}%"></div><div class="text-[11px] text-zinc-400 mt-1.5">${names[i]}</div></div>`; }).join('')+'</div>';
     }
 
     function trafficHours(monthHours){
@@ -1711,7 +1712,7 @@
       const total = ent.reduce((s,[,v])=>s+v,0);
       if(!ent.length || !total){ el.innerHTML='<span class="text-zinc-600 text-xs">No page visits recorded yet this month.</span>'; return; }
       const top = ent.slice(0,10);
-      el.innerHTML = top.map(([k,v])=>{ const pct=Math.round(v/total*100); const isChk=(k==='/checkout-started'); return `<div class="mb-3.5"><div class="flex justify-between items-baseline text-[14px] mb-1.5"><span class="${isChk?'text-amber-400':'text-zinc-100'} font-semibold">${prettyPath(k)}</span><span class="text-zinc-400 text-sm"><span class="text-white font-bold text-[15px]">${v.toLocaleString()}</span> · ${pct}%</span></div><div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full ${isChk?'bg-amber-400/70':'bg-green-500/70'} rounded-full" style="width:${Math.max(pct,2)}%"></div></div></div>`; }).join('') + (ent.length>10?`<div class="text-[11px] text-zinc-600 mt-2">+${ent.length-10} more page${ent.length-10>1?'s':''}</div>`:'');
+      el.innerHTML = top.map(([k,v])=>{ const pct=Math.round(v/total*100); const isChk=(k==='/checkout-started'); return `<div class="mb-3.5"><div class="flex justify-between items-baseline text-[14px] mb-1.5"><span class="${isChk?'text-amber-400':'text-zinc-100'} font-semibold">${prettyPath(k)}</span><span class="text-zinc-400 text-sm"><span class="text-white font-bold text-[15px]">${v.toLocaleString()}</span> · ${pct}%</span></div><div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full ${isChk?'bg-amber-400/70':'bg-emerald-500/70'} rounded-full" style="width:${Math.max(pct,2)}%"></div></div></div>`; }).join('') + (ent.length>10?`<div class="text-[11px] text-zinc-600 mt-2">+${ent.length-10} more page${ent.length-10>1?'s':''}</div>`:'');
     }
 
     // ── Site Traffic ──
@@ -1732,7 +1733,7 @@
       return seg.charAt(0).toUpperCase() + seg.slice(1);
     }
     function trafficCard(label, value, sub) {
-      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-center"><div class="text-xs text-zinc-500">${label}</div><div class="text-3xl font-black text-green-400 mt-1">${value}</div>${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}</div>`;
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-center"><div class="text-xs text-zinc-500">${label}</div><div class="text-3xl font-black text-emerald-400 mt-1">${value}</div>${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}</div>`;
     }
     async function loadTraffic() {
       const statsEl = document.getElementById('traffic-stats');
@@ -1817,7 +1818,7 @@
     function showAdminMsg(id, text, type) {
       const el = document.getElementById(id);
       el.textContent = text;
-      el.className = `rounded-xl px-4 py-3 text-xs border ${type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-green-950/40 border-green-500/30 text-green-400'}`;
+      el.className = `rounded-xl px-4 py-3 text-xs border ${type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-emerald-950/40 border-emerald-500/30 text-emerald-400'}`;
     }
 
     function renderMembers(members) {
@@ -2024,8 +2025,8 @@
           const prodNet = prodPaid.reduce((s,p) => s + netOf(p), 0);
           const prodGross = prodPaid.reduce((s,p) => s + p.amount, 0);
           const spendHtml = prodPaid.length
-            ? `<div>Spent <span class="text-green-400">$${prodNet.toFixed(2)} net</span>${Math.abs(prodGross-prodNet)>0.005?` <span class="text-zinc-600">($${prodGross.toFixed(2)} gross)</span>`:''}</div>`
-            : (parseFloat(spend) > 0 ? `<div>Spent <span class="text-green-400">$${parseFloat(spend).toFixed(2)}</span> <span class="text-zinc-600">gross</span></div>` : '');
+            ? `<div>Spent <span class="text-emerald-400">$${prodNet.toFixed(2)} net</span>${Math.abs(prodGross-prodNet)>0.005?` <span class="text-zinc-600">($${prodGross.toFixed(2)} gross)</span>`:''}</div>`
+            : (parseFloat(spend) > 0 ? `<div>Spent <span class="text-emerald-400">$${parseFloat(spend).toFixed(2)}</span> <span class="text-zinc-600">gross</span></div>` : '');
 
           const statusColor = status === 'active' ? 'text-green-400 border-green-500/20 bg-green-500/10'
             : status === 'completed' ? 'text-purple-400 border-purple-500/20 bg-purple-500/10'
@@ -2063,7 +2064,7 @@
         html += '<div class="space-y-1.5">';
         payments.forEach(p => {
           const date = p.paidAt ? p.paidAt.split('T')[0].split(' ')[0] : '—';
-          const statusColor = p.status === 'paid' || p.status === 'succeeded' ? 'text-green-400' : 'text-red-400';
+          const statusColor = p.status === 'paid' || p.status === 'succeeded' ? 'text-emerald-400' : 'text-red-400';
           // Whop's CSV writes "open" for an unpaid invoice, but their UI calls a
           // failed attempt "Failed". Match their labelling so the two agree.
           const statusLabel = (p.status === 'paid' || p.status === 'succeeded') ? 'Paid'
@@ -2646,7 +2647,7 @@
     function showUpdateMsg(text, type) {
       const el = document.getElementById('update-msg');
       el.textContent = text;
-      el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-green-500/10 border-green-500/30 text-green-400');
+      el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-emerald-500/10 border-emerald-500/30 text-emerald-400');
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 3000);
     }
@@ -2802,7 +2803,7 @@
     function showScheduleMsg(text, type) {
       const el = document.getElementById('schedule-msg');
       el.textContent = text;
-      el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-green-500/10 border-green-500/30 text-green-400');
+      el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400');
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 3000);
     }
@@ -3172,7 +3173,7 @@
       if (!text) return;
       const el = document.getElementById('member-modal-msg');
       el.textContent = text;
-      el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-green-500/10 border-green-500/30 text-green-400');
+      el.className = 'rounded-xl px-4 py-3 text-xs border ' + (type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400');
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 3000);
     }
@@ -3368,7 +3369,7 @@
     function showMigrateMsg(text, type) {
       const el = document.getElementById('migrate-msg');
       el.textContent = text;
-      el.className = 'rounded-xl px-4 py-3 text-xs mb-5 border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-green-500/10 border-green-500/30 text-green-400');
+      el.className = 'rounded-xl px-4 py-3 text-xs mb-5 border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-emerald-500/10 border-emerald-500/30 text-emerald-400');
       el.classList.remove('hidden');
     }
 
@@ -3419,7 +3420,7 @@
     function showUpdateKeyMsg(text, type) {
       const el = document.getElementById('update-key-msg');
       el.textContent = text;
-      el.className = 'rounded-lg px-3 py-2 text-xs border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-green-500/10 border-green-500/30 text-green-400');
+      el.className = 'rounded-lg px-3 py-2 text-xs border ' + (type==='error'?'bg-red-950/40 border-red-500/30 text-red-400':'bg-emerald-500/10 border-emerald-500/30 text-emerald-400');
       el.classList.remove('hidden');
     }
 
@@ -3784,7 +3785,7 @@
           <td class="px-4 py-3 text-zinc-400">${r.email||'—'}</td>
           <td class="px-4 py-3">${r.discordName ? `<span class="text-indigo-400">${r.discordName}</span>` : '<span class="text-zinc-700">—</span>'}</td>
           <td class="px-4 py-3 text-zinc-500">${flag} ${location||'—'}</td>
-          <td class="px-4 py-3 ${spend>0?'text-green-400 font-bold':'text-zinc-700'}">$${spend.toFixed(2)}</td>
+          <td class="px-4 py-3 ${spend>0?'text-emerald-400 font-bold':'text-zinc-700'}">$${spend.toFixed(2)}</td>
           <td class="px-4 py-3 text-zinc-500">${r.joined ? fmtDate(r.joined) : '—'}</td>
           <td class="px-4 py-3 text-zinc-400">${r.leftDate ? fmtDate(r.leftDate) : '—'}</td>
           <td class="px-4 py-3">${typeBadge}</td>
@@ -4604,7 +4605,7 @@
           <div class="flex items-center gap-3 shrink-0">
             <span class="text-zinc-600 text-[10px]">${info.role}</span>
             <span class="text-zinc-600 text-[10px]">${p.rows.length} rows</span>
-            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${info.ok ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}">${info.ok ? 'detected' : 'skipped'}</span>
+            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${info.ok ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">${info.ok ? 'detected' : 'skipped'}</span>
           </div>
         </div>`;
       }).join('');
@@ -4739,7 +4740,7 @@
           Cancelled ones still get archived to History. To add someone new, import a Users export or use <span class="text-white font-bold">+ Add Member</span>.
         </div>`] : []),
         ...diff.newItems.map(d => `<div class="flex items-start gap-3 p-2 rounded-lg ${noAdd ? 'bg-zinc-800/30 border border-white/5' : 'bg-green-500/5 border border-green-500/15'}">
-          <span class="text-[10px] font-black ${noAdd ? 'text-zinc-500' : 'text-green-400'} uppercase mt-0.5 shrink-0">${newLabel}</span>
+          <span class="text-[10px] font-black ${noAdd ? 'text-zinc-500' : 'text-emerald-400'} uppercase mt-0.5 shrink-0">${newLabel}</span>
           <div class="text-xs"><span class="text-white font-bold">${d.item.name || d.item.discordName || d.item.whopUsername || d.item.email}</span>
           <span class="text-zinc-500 ml-2">${d.item.email || d.item.whopKey || ''}</span>
           <span class="ml-2 text-zinc-600">${d.item.status} · ${d.item.accessType}</span></div>
@@ -5190,15 +5191,15 @@
               <span class="text-xs text-zinc-500 w-20">${r.label}</span>
               <div class="flex-1 mx-3 space-y-1">
                 <div class="flex items-center gap-2">
-                  <div class="h-2 rounded-full bg-green-400/60" style="width:${Math.round(r.gained/maxVal*100)}%;min-width:${r.gained?4:0}px"></div>
-                  <span class="text-[10px] text-green-400">+${r.gained}</span>
+                  <div class="h-2 rounded-full bg-emerald-400/60" style="width:${Math.round(r.gained/maxVal*100)}%;min-width:${r.gained?4:0}px"></div>
+                  <span class="text-[10px] text-emerald-400">+${r.gained}</span>
                 </div>
                 <div class="flex items-center gap-2">
                   <div class="h-2 rounded-full bg-red-400/60" style="width:${Math.round(r.lost/maxVal*100)}%;min-width:${r.lost?4:0}px"></div>
                   <span class="text-[10px] text-red-400">-${r.lost}</span>
                 </div>
               </div>
-              <span class="text-xs font-bold ${r.gained-r.lost>=0?'text-green-400':'text-red-400'} w-10 text-right">${r.gained-r.lost>=0?'+':''}${r.gained-r.lost}</span>
+              <span class="text-xs font-bold ${r.gained-r.lost>=0?'text-emerald-400':'text-red-400'} w-10 text-right">${r.gained-r.lost>=0?'+':''}${r.gained-r.lost}</span>
             </div>
           </div>`).join('')}
         </div>
@@ -5660,7 +5661,7 @@
                 <div class="text-[10px] text-zinc-600 mt-0.5">${p.billingReason==='subscription_create'?'🆕 New subscriber':p.billingReason==='subscription_cycle'?'🔄 Renewal':'1️⃣ One-time'}${p.description?` · <span class="text-zinc-500">${p.description.replace(/^FSD-X (Trading )?/,'')}</span>`:''}</div>
               </div>
               <div class="text-right shrink-0 ml-3">
-                <div class="text-sm font-black text-green-400">+$${netOf(p).toFixed(2)}</div>
+                <div class="text-sm font-black text-emerald-400">+$${netOf(p).toFixed(2)}</div>
                 ${p.netAmount!==null&&p.netAmount!==undefined&&Math.abs(p.netAmount-p.amount)>0.005 ? `<div class="text-[9px] text-zinc-500">$${p.amount.toFixed(2)} gross</div>` : ''}
                 ${p.currency && p.currency.toLowerCase() !== 'usd' ? `<div class="text-[9px] text-zinc-500">${p.nativeAmount.toFixed(2)} ${p.currency.toUpperCase()}</div>` : ''}
                 <div class="text-[10px] text-zinc-600">${p.paidAt?p.paidAt.slice(11,16):''}</div>
@@ -5783,7 +5784,7 @@
 
           const hasActivity = renewals.length > 0 || payments;
           html += `<div class="min-h-[80px] p-2 border-r border-white/[0.04] last:border-0 ${isToday?'bg-green-500/5':''} ${hasActivity?'cursor-pointer hover:bg-white/[0.03]':''} transition group" ${hasActivity?`onclick="openDayModal('${ds}')"`:''}">`;
-          html += `<div class="text-[10px] font-bold mb-1.5 ${isToday?'text-green-400':isPast?'text-zinc-600':'text-zinc-400'} group-hover:text-white transition">${dsDisplay}</div>`;
+          html += `<div class="text-[10px] font-bold mb-1.5 ${isToday?'text-emerald-400':isPast?'text-zinc-600':'text-zinc-400'} group-hover:text-white transition">${dsDisplay}</div>`;
 
           // Renewals coming up
           if (renewals.length > 0) {
@@ -5796,7 +5797,7 @@
 
           // Actual payments that day
           if (payments) {
-            if (payments.paid > 0) html += `<div class="text-[9px] font-bold text-green-400 mt-0.5">+$${payments.amount.toFixed(0)} (${payments.paid})</div>`;
+            if (payments.paid > 0) html += `<div class="text-[9px] font-bold text-emerald-400 mt-0.5">+$${payments.amount.toFixed(0)} (${payments.paid})</div>`;
             if (payments.failed > 0) html += `<div class="text-[9px] font-bold text-red-400 mt-0.5">✗ ${payments.failed} failed</div>`;
           }
 
@@ -5980,7 +5981,7 @@
               <div class="pay-email trunc text-zinc-500">${r.email}</div>
               <div class="pay-plan trunc text-zinc-600 text-[10px]">${r.planName||r.accessType||''}${discounted ? `<span class="ml-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">discounted</span>` : ''}</div>
               <div class="pay-price whitespace-nowrap" title="${priceSource}">
-                <div class="text-green-400/80 text-[10px] font-bold">${discounted ? `<span class="text-zinc-600 font-normal line-through mr-1">$${listPrice.toFixed(2)}</span>` : ''}$${price.toFixed(2)}</div>
+                <div class="text-emerald-400/80 text-[10px] font-bold">${discounted ? `<span class="text-zinc-600 font-normal line-through mr-1">$${listPrice.toFixed(2)}</span>` : ''}$${price.toFixed(2)}</div>
                 ${upRatio !== null ? `<div class="text-zinc-600 text-[9px]">≈$${(price*upRatio).toFixed(2)} after fees</div>` : ''}
               </div>
               <div class="pay-date text-zinc-500 whitespace-nowrap">${fmtDate(r.renewal)}</div>
@@ -6024,7 +6025,7 @@
                   <span class="text-zinc-600 text-[10px]">${v.count} sale${v.count!==1?'s':''}</span>
                 </div>
                 <div class="text-right shrink-0 whitespace-nowrap">
-                  <span class="text-green-400 font-black">$${v.net.toFixed(2)}</span>
+                  <span class="text-emerald-400 font-black">$${v.net.toFixed(2)}</span>
                   ${Math.abs(v.gross-v.net)>0.005 ? `<span class="text-zinc-600 text-[10px] ml-1.5">$${v.gross.toFixed(2)} gross</span>` : ''}
                 </div>
               </div>
@@ -6072,7 +6073,7 @@
         return;
       }
       tbody.innerHTML = filtered.map(p => {
-        const statusCfg = { paid: 'bg-green-500/10 text-green-400 border-green-500/20', open: 'bg-red-950/30 text-red-400 border-red-500/20', failed: 'bg-red-950/30 text-red-400 border-red-500/20' };
+        const statusCfg = { paid: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', open: 'bg-red-950/30 text-red-400 border-red-500/20', failed: 'bg-red-950/30 text-red-400 border-red-500/20' };
         const sc = statusCfg[p.status] || 'bg-zinc-800 text-zinc-500 border-white/10';
         const reasonLabel = { subscription_create: '🆕 New', subscription_cycle: '🔄 Renewal', one_time: '1️⃣ One-time' };
         return `<tr class="hover:bg-white/[0.02] transition">
@@ -6080,7 +6081,7 @@
           <td class="px-4 py-3"><div class="text-white font-bold">${p.customerName||'—'}</div><div class="text-zinc-500 text-[10px]">${p.email}</div></td>
           <td class="px-4 py-3 text-zinc-400">${p.discordName||'—'}</td>
           <td class="px-4 py-3 text-zinc-300 max-w-[180px] truncate" title="${p.description||''}">${(p.description||'—').replace(/^FSD-X (Trading )?/,'')}</td>
-          <td class="px-4 py-3 font-bold ${p.status==='paid'?'text-green-400':'text-zinc-400'}">$${(p.status==='paid'?netOf(p):p.amount).toFixed(2)}${p.status==='paid'&&p.netAmount!==null&&p.netAmount!==undefined&&Math.abs(p.netAmount-p.amount)>0.005?`<div class="text-[10px] font-normal text-zinc-600">$${p.amount.toFixed(2)} gross</div>`:''}</td>
+          <td class="px-4 py-3 font-bold ${p.status==='paid'?'text-emerald-400':'text-zinc-400'}">$${(p.status==='paid'?netOf(p):p.amount).toFixed(2)}${p.status==='paid'&&p.netAmount!==null&&p.netAmount!==undefined&&Math.abs(p.netAmount-p.amount)>0.005?`<div class="text-[10px] font-normal text-zinc-600">$${p.amount.toFixed(2)} gross</div>`:''}</td>
           <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${sc}">${p.status}</span></td>
           <td class="px-4 py-3 text-zinc-500">${reasonLabel[p.billingReason]||p.billingReason||'—'}</td>
           <td class="px-4 py-3 text-red-400/80 text-[10px] max-w-[200px] truncate" title="${p.failureReason||''}">${p.failureReason||'—'}</td>
@@ -6398,7 +6399,7 @@
           ${trCard('Days', s.days)}
           ${trCard('Win Rate', s.winRate.toFixed(1) + '%')}
           ${trCard('Profit Factor', s.pf.toFixed(2))}
-          ${trCard('Net', trMoney(s.net), s.net >= 0 ? 'text-green-400' : 'text-red-400')}
+          ${trCard('Net', trMoney(s.net), s.net >= 0 ? 'text-emerald-400' : 'text-red-400')}
         </div>
         <div class="mt-3 text-[11px] text-zinc-600">
           ${m.inception || '?'} &rarr; ${m.last_trade_date || '?'} &middot; $${m.risk_profile || '?'} risk profile &middot; commissions $${Number(m.commission_rt||0).toFixed(2)} RT/contract &middot; generated ${m.generated || '?'}
@@ -6525,7 +6526,7 @@
         trCard('New Trades', fresh.length, 'text-green-400') +
         trCard('Already Published', dupes.length, 'text-zinc-500') +
         trCard('New Days', s.days) +
-        trCard('Net (new)', trMoney(s.net), s.net >= 0 ? 'text-green-400' : 'text-red-400');
+        trCard('Net (new)', trMoney(s.net), s.net >= 0 ? 'text-emerald-400' : 'text-red-400');
 
       const box = document.getElementById('tr-overlap-box');
       if (dupes.length) {
@@ -6544,11 +6545,11 @@
         const isNew = !pubDates.has(t.date);
         return `<tr class="border-b border-white/5">
           <td class="px-3 py-1.5 text-zinc-300">${t.date}</td>
-          <td class="px-2 py-1.5 font-bold ${t.dir==='LONG'?'text-green-400':'text-red-400'}">${t.dir}</td>
+          <td class="px-2 py-1.5 font-bold ${t.dir==='LONG'?'text-emerald-400':'text-red-400'}">${t.dir}</td>
           <td class="px-2 py-1.5 text-zinc-400">${t.grade || '—'}</td>
           <td class="px-2 py-1.5 text-right text-zinc-500">${t.contracts}</td>
           <td class="px-2 py-1.5 text-zinc-500">${t.exit_reason}</td>
-          <td class="px-3 py-1.5 text-right font-bold ${t.pnl>=0?'text-green-400':'text-red-400'}">${trMoney(t.pnl)}</td>
+          <td class="px-3 py-1.5 text-right font-bold ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${trMoney(t.pnl)}</td>
           <td class="px-3 py-1.5 text-right">${isNew
             ? '<span class="text-green-400 font-bold">NEW</span>'
             : '<span class="text-zinc-600">published</span>'}</td>
@@ -6597,7 +6598,7 @@
           ${trCard('Days', s.days)}
           ${trCard('Win Rate', s.winRate.toFixed(1) + '%')}
           ${trCard('Profit Factor', s.pf.toFixed(2))}
-          ${trCard('Net', trMoney(s.net), s.net >= 0 ? 'text-green-400' : 'text-red-400')}
+          ${trCard('Net', trMoney(s.net), s.net >= 0 ? 'text-emerald-400' : 'text-red-400')}
         </div>
         <span class="text-zinc-500">${mode === 'replace'
           ? 'Full rebuild from this export.'
