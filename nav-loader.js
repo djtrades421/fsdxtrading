@@ -121,7 +121,7 @@
   if (document.getElementById('fsdx-search-js')) return;
   var sc = document.createElement('script');
   sc.id = 'fsdx-search-js';
-  sc.src = 'fsdx-search.js';
+  sc.src = 'fsdx-search.js?v=20260830';
   sc.defer = true;
   (document.head || document.documentElement).appendChild(sc);
 })();
@@ -146,7 +146,7 @@ window.fsdxRequireKey = window.fsdxRequireKey || function (o) {
   if (document.getElementById('fsdx-account-js')) return;
   var sc = document.createElement('script');
   sc.id = 'fsdx-account-js';
-  sc.src = 'fsdx-account.js';
+  sc.src = 'fsdx-account.js?v=20260830';
   sc.defer = true;
   (document.head || document.documentElement).appendChild(sc);
 })();
@@ -223,7 +223,7 @@ function prepareNavLabels(root) {
     </div>`;
   }
 
-  fetch('nav.html')
+  fetch('nav.html?v=20260830')
     .then(r => r.text())
     .then(html => {
       var mount = document.getElementById('nav-content');
