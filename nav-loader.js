@@ -89,7 +89,13 @@
     '  }',
     '  html.nav-collapsed #nav-content svg { width: 1.15rem !important; height: 1.15rem !important; }',
     '  html.nav-collapsed #nav-avatar { margin: 0 auto; }',
-    '  html.nav-collapsed #nav-collapse-btn { margin: 0 auto; }',
+    /* Collapsed: the expand button is the only way back, so make it a full-width
+       target in the footer rather than a faint outline next to the logo. */
+    '  html.nav-collapsed #nav-collapse-btn {',
+    '    justify-content: center; padding-left: 0 !important; padding-right: 0 !important;',
+    '    height: 2.25rem; background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.25); color: #4ade80;',
+    '  }',
+    '  html.nav-collapsed #nav-collapse-btn:hover { background: rgba(74,222,128,.16); border-color: rgba(74,222,128,.45); }',
     '  html.nav-collapsed #nav-collapse-icon { transform: rotate(180deg); }',
     '  html.nav-collapsed .vip-only.rounded-xl { border: 0 !important; background: transparent !important; }',
     '  html.nav-collapsed #nav-user-btn > svg { display: none; }',
