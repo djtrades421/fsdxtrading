@@ -127,6 +127,21 @@
 })();
 
 // ── Pending-account helper (locked-tool panel) ──
+/* fsdx-account.js is deferred, so it executes AFTER the page's own inline
+   script has started. Every tool page calls fsdxIsPending() right after its
+   profile fetch resolves — and a fast (or mocked, or cached) profile response
+   can beat the deferred script. When that happened the gate silently did
+   nothing and the page unlocked. So the DECISION lives here, in a blocking
+   script that is always defined first; only the PANEL comes from the deferred
+   file, and a lock raised before it lands is replayed when it does. */
+window.fsdxIsPending = window.fsdxIsPending || function (whopKey) {
+  return !whopKey;
+};
+window.fsdxRequireKey = window.fsdxRequireKey || function (o) {
+  /* Real renderer not here yet — remember the request and let it replay. */
+  window.__fsdxLockPending = o || {};
+};
+
 (function () {
   if (document.getElementById('fsdx-account-js')) return;
   var sc = document.createElement('script');
