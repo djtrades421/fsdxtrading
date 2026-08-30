@@ -374,6 +374,18 @@
   style.textContent = css;
   document.head.appendChild(style);
 
+  /* Self-check. In DevTools console, type:  FSDX_THEME
+     If it prints an object, this file ran. If it says "not defined",
+     the browser never loaded fsdx-theme.js (404, cache, or a stale deploy). */
+  window.FSDX_THEME = {
+    version: 'v3',
+    palette: PAL,
+    layout: document.documentElement.getAttribute('data-fx') || 'base',
+    cssInjected: true,
+    tailwindSeen: typeof window.tailwind === 'object' && !!window.tailwind.config,
+    accent: S.mark
+  };
+
   /* ---------- 4. Active nav link ------------------------------------------
      nav.html is injected async by nav-loader.js, so watch for it.
   ------------------------------------------------------------------------ */
