@@ -7,7 +7,6 @@
   <title>FSD-X — VIP Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
-  <script src="tracker-core.js"></script>
   <script src="filters.js"></script>
   <script src="alerts.js"></script>
   <style>
@@ -142,9 +141,6 @@
 
           <!-- KPI cards -->
           <div id="stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
-
-          <!-- ACCOUNT TRACKERS — drawdown headroom + target progress -->
-          <div id="tracker-strip" class="hidden"></div>
 
         </div>
 
@@ -838,125 +834,6 @@
     }
 
 
-    /* ─────────────────────────────────────────────
-       Account tracker strip
-       Reads the same tracker cards as accounts.html#trackers and runs the same
-       drawdown math (tracker-core.js). Respects the account filter above it:
-       pick one account and you get that account's DD and target, not the pile.
-       ───────────────────────────────────────────── */
-    let dashTrackerCards = [];
-
-    async function loadTrackerCards(whopKey) {
-      try {
-        const res = await fetch(JOURNAL_URL, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'get-trades', key: 'tracker_settings:' + whopKey })
-        });
-        const data = await res.json();
-        dashTrackerCards = Array.isArray(data.trades) ? data.trades : [];
-      } catch (e) { dashTrackerCards = []; }
-    }
-
-    function money(v) {
-      const sign = v < 0 ? '-' : '';
-      return sign + '$' + Math.abs(v).toFixed(2);
-    }
-
-    function meter(pct, tone) {
-      const w = Math.max(0, Math.min(100, pct || 0));
-      return `<div class="h-1.5 rounded-full bg-white/[0.06] overflow-hidden mt-1.5">
-        <div class="h-full rounded-full transition-all" style="width:${w}%;background:${tone}"></div>
-      </div>`;
-    }
-
-    function renderTrackerStrip(filteredTrades) {
-      const el = document.getElementById('tracker-strip');
-      if (!el || typeof FSDXTracker === 'undefined') return;
-
-      if (!dashTrackerCards.length) { el.classList.add('hidden'); el.innerHTML = ''; return; }
-
-      // Summaries are computed against the FILTERED trades, so selecting one
-      // account in the filter above narrows these to that account.
-      const filtering = !!(dashAccountFilter && !dashAccountFilter.isAll());
-      const rows = dashTrackerCards
-        .map(c => FSDXTracker.summary(c, filteredTrades))
-        .filter(r => !filtering || r.tradeCount > 0);
-
-      if (!rows.length) { el.classList.add('hidden'); el.innerHTML = ''; return; }
-      el.classList.remove('hidden');
-
-      const TONE = {
-        green:    { dot: '#22c55e', text: 'text-green-400',  label: 'On track' },
-        yellow:   { dot: '#eab308', text: 'text-yellow-400', label: 'Watch' },
-        red:      { dot: '#ef4444', text: 'text-red-400',    label: 'At risk' },
-        complete: { dot: '#3b82f6', text: 'text-blue-400',   label: 'Target hit' }
-      };
-
-      const cards = rows.map(r => {
-        const tone = TONE[r.status] || TONE.green;
-        // Colour the DD bar by how close it is to the limit, not by card status
-        const ddTone = (r.ddPct || 0) >= 80 ? '#ef4444' : (r.ddPct || 0) >= 50 ? '#eab308' : '#22c55e';
-        const pnlCol = r.totalPnl >= 0 ? 'text-green-400' : 'text-red-400';
-
-        return `<a href="accounts.html#trackers" class="block border border-white/10 bg-zinc-950/40 hover:border-white/20 rounded-xl p-3.5 transition min-w-0">
-          <div class="flex items-center gap-2 mb-2.5 min-w-0">
-            <span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:${tone.dot}"></span>
-            <span class="text-xs font-bold text-white truncate">${r.label}</span>
-            <span class="text-[9px] uppercase tracking-wider ${tone.text} ml-auto shrink-0">${tone.label}</span>
-          </div>
-
-          <div class="flex items-baseline justify-between gap-2 mb-2">
-            <span class="text-[10px] text-zinc-500 uppercase tracking-wider">Net P&L</span>
-            <span class="text-sm font-black ${pnlCol} tabular-nums">${r.totalPnl >= 0 ? '+' : ''}${money(r.totalPnl).replace('-','')}</span>
-          </div>
-
-          ${r.ddLimit > 0 ? `
-            <div class="mb-2">
-              <div class="flex items-baseline justify-between gap-2">
-                <span class="text-[10px] text-zinc-500 uppercase tracking-wider">DD headroom</span>
-                <span class="text-[11px] font-bold text-white tabular-nums">${money(r.ddRemaining)}<span class="text-zinc-600 font-normal"> / ${money(r.ddLimit)}</span></span>
-              </div>
-              ${meter(r.ddPct, ddTone)}
-              <div class="text-[9px] text-zinc-600 mt-1">Current DD ${money(r.currentDD)} · worst ${money(r.maxDD)}</div>
-            </div>` : ''}
-
-          ${r.target > 0 ? `
-            <div>
-              <div class="flex items-baseline justify-between gap-2">
-                <span class="text-[10px] text-zinc-500 uppercase tracking-wider">Target</span>
-                <span class="text-[11px] font-bold text-white tabular-nums">${r.targetPct}%<span class="text-zinc-600 font-normal"> of ${money(r.target)}</span></span>
-              </div>
-              ${meter(r.targetPct, r.targetPct >= 100 ? '#3b82f6' : '#22c55e')}
-            </div>` : ''}
-
-          ${r.ddLimit <= 0 && r.target <= 0
-            ? '<div class="text-[10px] text-zinc-600">No limits set — add them on the tracker page.</div>' : ''}
-        </a>`;
-      }).join('');
-
-      // Combined line only makes sense across several accounts
-      const combined = rows.length > 1 ? (() => {
-        const net = rows.reduce((s, r) => s + r.totalPnl, 0);
-        const head = rows.filter(r => r.ddLimit > 0).reduce((s, r) => s + r.ddRemaining, 0);
-        const anyDD = rows.some(r => r.ddLimit > 0);
-        const tightest = rows.filter(r => r.ddLimit > 0).sort((a, b) => a.ddRemaining - b.ddRemaining)[0];
-        return `<div class="flex items-center gap-x-5 gap-y-1 flex-wrap text-[11px] mt-3 px-1">
-          <span class="text-[10px] uppercase tracking-widest text-zinc-600">Combined</span>
-          <span class="text-zinc-500">Net <span class="font-bold ${net >= 0 ? 'text-green-400' : 'text-red-400'} tabular-nums">${net >= 0 ? '+' : ''}${money(net).replace('-','')}</span></span>
-          ${anyDD ? `<span class="text-zinc-500">DD headroom <span class="font-bold text-white tabular-nums">${money(head)}</span></span>` : ''}
-          ${tightest ? `<span class="text-zinc-500">Tightest <span class="font-bold text-white">${tightest.label}</span> at <span class="font-bold text-white tabular-nums">${money(tightest.ddRemaining)}</span></span>` : ''}
-        </div>`;
-      })() : '';
-
-      el.innerHTML = `
-        <div class="flex items-center justify-between gap-3 mb-2.5">
-          <span class="text-[10px] uppercase tracking-widest text-zinc-600">Account Trackers${filtering ? ' — filtered' : ''}</span>
-          <a href="accounts.html#trackers" class="text-[10px] uppercase tracking-widest text-zinc-600 hover:text-green-400 transition">Manage trackers →</a>
-        </div>
-        <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-3">${cards}</div>
-        ${combined}`;
-    }
-
     // ── Dashboard data + account filter ──
     // One fetch feeds the KPI cards, the equity curve and the mini calendar.
     let dashTrades = [], dashAccountFilter = null;
@@ -971,7 +848,6 @@
         ]);
         const td = await tr.json(), sd = await sr.json();
         dashTrades = Array.isArray(td.trades) ? td.trades : [];
-        await loadTrackerCards(whopKey);
         const saved = Array.isArray(sd.accounts) ? sd.accounts : [];
 
         // Saved accounts first, then anything that owns trades but was never saved.
@@ -1016,7 +892,6 @@
           : '';
       }
       renderJournalStats(trades);
-      renderTrackerStrip(trades);
       buildMiniCal(trades);
     }
 
