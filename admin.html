@@ -776,11 +776,15 @@
         <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
           <div>
             <h2 class="text-sm font-black text-white">Member Roster</h2>
-            <p class="text-xs text-zinc-600 mt-0.5">Select multiple CSVs at once — users, memberships, payments all detected automatically</p>
+            <p class="text-xs text-zinc-600 mt-0.5">Sync Whop pulls members and payments straight from the API — no export needed. CSV import still works for legacy and Discord rosters.</p>
+            <p id="whop-sync-stamp" class="text-xs text-zinc-700 mt-0.5 hidden"></p>
           </div>
           <div class="flex gap-2 flex-wrap">
             <input type="file" id="roster-import-input" accept=".csv" class="hidden" multiple onchange="handleMultiImport(this.files)">
-            <button onclick="document.getElementById('roster-import-input').click()" class="flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+            <button id="whop-sync-btn" onclick="syncFromWhop()" class="flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition disabled:opacity-60 disabled:cursor-not-allowed">
+              ⟳ Sync Whop
+            </button>
+            <button onclick="document.getElementById('roster-import-input').click()" class="flex items-center gap-1.5 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-bold text-xs rounded-xl transition">
               ↑ Import CSV
             </button>
             <button onclick="openAddMemberModal()" class="flex items-center gap-1.5 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-white/10 text-white font-bold text-xs rounded-xl transition">
@@ -2840,6 +2844,23 @@
         btn.textContent = '⟳ Updating roster...';
         const incoming = memData.data || [];
 
+        // The worker sends product titles, not plan labels — PLAN_MAP lives here
+        // and stays the single source of truth for naming. Relabel before the
+        // merge so synced rows read identically to CSV-imported ones.
+        incoming.forEach(item => {
+          const ids = item.planIds && item.planIds.length ? item.planIds : [item.planId].filter(Boolean);
+          const labels = [...new Set(ids.map(id => planLabelFromId(id)).filter(Boolean))];
+          if (labels.length) {
+            item.accessType = labels.join(' → ');
+            item.planName = item.accessType;
+          }
+          // An active membership on a lifetime plan is lifetime, not a renewal.
+          if (/lifetime/i.test(item.accessType || '') && item.status === 'active') {
+            item.status = 'lifetime';
+            item.renewal = '';
+            item.tvRenew = '';
+          }
+        });
 
         // Resurrect from history first
         const ACTIVE_STATUSES = new Set(['active', 'trialing', 'lifetime', 'yearly', 'canceling']);
@@ -2855,7 +2876,22 @@
           if (!alreadyInRoster) {
             const histEntry = historyData[histIdx];
             historyData.splice(histIdx, 1);
-            rosterData.push({ ...histEntry, ...item, leftDate: '', churnedDate: '', archivedAt: '' });
+            // `...item` last would overwrite the history record with API blanks.
+            // The memberships API carries no Discord handle, country or spend,
+            // so a returning member would come back stripped of everything we
+            // only ever knew from the CSV era. Whop wins on live state; the
+            // history record wins on the fields Whop doesn't have.
+            rosterData.push({
+              ...histEntry,
+              ...item,
+              discordName: item.discordName || histEntry.discordName || '',
+              discordId:   item.discordId   || histEntry.discordId   || '',
+              country:     item.country     || histEntry.country     || '',
+              spend:       item.spend       || histEntry.spend       || '',
+              tvUsername:  item.tvUsername  || histEntry.tvUsername  || '',
+              notes:       histEntry.notes  || '',
+              leftDate: '', churnedDate: '', archivedAt: '',
+            });
           }
         });
 
@@ -2873,20 +2909,66 @@
 
           if (existIdx >= 0) {
             const existing = rosterData[existIdx];
-            // Don't overwrite manual entries' custom fields
+            const isManual = existing.manualEntry === true;
+
+            // A hand-added record — legacy lifetime, Discord-only, comped access —
+            // is not governed by Whop. A dead Whop trial must never archive one.
+            const nextStatus = (isManual && item.status === 'cancelled')
+              ? existing.status
+              : item.status;
+            const dead = nextStatus === 'cancelled';
+
             rosterData[existIdx] = {
               ...existing,
-              status: item.status,
+
+              // ── Whop is authoritative from here down. ──
+              // This is the part that changed when the CSV went away. A blank
+              // from the API is a real value: it means "no renewal coming",
+              // not "no data". The old `item.renewal || existing.renewal`
+              // fallback is what kept churned members in the revenue forecast
+              // with a stale date forever.
+              status: nextStatus,
+              renewal: dead ? '' : item.renewal,
+              tvRenew: dead ? '' : item.tvRenew,
+              tvRemoval: dead ? 'Removed' : item.tvRemoval,
+              churnedDate: item.churnedDate,
+              cancelingDate: item.cancelingDate,
+              cancelAtPeriodEnd: item.cancelAtPeriodEnd,
+              leftDate: dead ? (existing.leftDate || item.churnedDate || '') : '',
               accessType: item.accessType,
               planName: item.planName,
-              renewal: item.renewal || existing.renewal,
-              churnedDate: item.churnedDate || existing.churnedDate,
-              cancelReason: item.cancelReason || existing.cancelReason,
-              spend: item.spend || existing.spend,
-              whopKey: item.whopKey || existing.whopKey,
-              discordName: item.discordName || existing.discordName,
-              discordId: item.discordId || existing.discordId,
-              country: item.country || existing.country,
+              planId: item.planId,
+              planIds: item.planIds,
+              productId: item.productId,
+              membershipId: item.membershipId,
+              userId: item.userId,
+              email: item.email || existing.email || '',
+              whopUsername: item.whopUsername || existing.whopUsername || '',
+              // A blank license_key is legitimate — products without software
+              // licensing don't issue one. Keep whatever we already had.
+              whopKey: item.whopKey || existing.whopKey || '',
+
+              // ── Not carried by the memberships API. Whatever CSV history or
+              // a manual edit put here is still the only source, so preserve it. ──
+              name: isManual ? (existing.name || item.name) : (item.name || existing.name),
+              discordName: existing.discordName || '',
+              discordId: existing.discordId || '',
+              country: existing.country || '',
+              spend: existing.spend || '',
+              tvUsername: existing.tvUsername || '',
+              cancelReason: existing.cancelReason || '',
+              notes: existing.notes || '',
+
+              // ── Pricing. An explicit admin override survives every sync. ──
+              renewalPrice: item.renewalPrice || existing.renewalPrice || 0,
+              initialPrice: item.initialPrice || existing.initialPrice || 0,
+              billingAmount: existing.billingAmountManual
+                ? existing.billingAmount
+                : (item.renewalPrice || existing.billingAmount || 0),
+              billingAmountManual: existing.billingAmountManual || false,
+              billingCycle: existing.billingCycle || '',
+              manualEntry: existing.manualEntry || false,
+
               source_detail: 'whop_api',
               lastSynced: new Date().toISOString(),
             };
@@ -2930,7 +3012,23 @@
         await savePaymentsToKV();
 
         renderRoster();
-        btn.textContent = `✓ Synced (${incoming.length} members, ${payData.count} payments)`;
+        renderPayments();
+
+        // A truncated pull is a partial roster — say so instead of letting it
+        // look like a clean sync.
+        const partial = memData.truncated || payData.truncated;
+        const stamp = document.getElementById('whop-sync-stamp');
+        if (stamp) {
+          stamp.textContent = (partial ? '⚠ Partial sync — page cap hit. ' : 'Last synced ')
+            + new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
+            + ` · ${incoming.length} members · ${newPayments.length} new payments`;
+          stamp.classList.remove('hidden');
+        }
+        try { localStorage.setItem('fsdx_whop_last_sync', new Date().toISOString()); } catch(e) {}
+
+        btn.textContent = partial
+          ? `⚠ Partial (${incoming.length} members)`
+          : `✓ Synced (${incoming.length} members, ${payData.count} payments)`;
         setTimeout(() => { btn.textContent = '⟳ Sync Whop'; btn.disabled = false; }, 4000);
 
       } catch(err) {
