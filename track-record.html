@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-fx="a">
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
@@ -7,6 +7,7 @@
   <title>FSD-X — Live Track Record</title>
   <meta name="description" content="Knightfall MK1 — the current version of FSD-X ORB PRO. Every setup it has signaled on MNQ since May 1, 2026: wins and losses, posted after the close, on the $400 risk profile. Not a signal feed." />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
   <script src="analytics.js"></script>
   <style>
@@ -104,7 +105,7 @@
               <div class="flex gap-4 text-sm flex-wrap items-center">
                 <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="cal-monthly" class="font-black">&mdash;</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">NET P&amp;L</span><span id="cal-net" class="font-black">&mdash;</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="cal-wr" class="font-black text-green-400">&mdash;</span></div>
+                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="cal-wr" class="font-black text-emerald-400">&mdash;</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="cal-days" class="font-black text-zinc-400">&mdash;</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">TRADES</span><span id="cal-trades" class="font-black text-zinc-400">&mdash;</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">GREEN / RED DAYS</span><span id="cal-grd" class="font-black">&mdash;</span></div>
@@ -284,14 +285,14 @@
 
     function renderStats() {
       const s = stats(TRADES);
-      const netCls = s.net >= 0 ? 'text-green-400' : 'text-red-400';
+      const netCls = s.net >= 0 ? 'text-emerald-400' : 'text-red-400';
       document.getElementById('stat-cards').innerHTML =
         card('Net P&L', money(s.net), netCls) +
         card('Win Rate', s.winRate.toFixed(1) + '%', 'text-white') +
-        card('Profit Factor', s.pf.toFixed(2), s.pf >= 1 ? 'text-green-400' : 'text-red-400') +
+        card('Profit Factor', s.pf.toFixed(2), s.pf >= 1 ? 'text-emerald-400' : 'text-red-400') +
         card('Trades', s.n, 'text-white') +
-        card('Wins / Losses', `<span class="text-green-400">${s.wins}</span> <span class="text-zinc-700">/</span> <span class="text-red-400">${s.losses}</span>`) +
-        card('Avg Win', money(s.avgW), 'text-green-400') +
+        card('Wins / Losses', `<span class="text-emerald-400">${s.wins}</span> <span class="text-zinc-700">/</span> <span class="text-red-400">${s.losses}</span>`) +
+        card('Avg Win', money(s.avgW), 'text-emerald-400') +
         card('Avg Loss', money(s.avgL), 'text-red-400') +
         card('Trading Days', s.days, 'text-white');
     }
@@ -323,7 +324,7 @@
       const finalEl = document.getElementById('chart-final-pnl');
       if (finalEl) {
         finalEl.textContent = (finalPnl >= 0 ? '+' : '-') + '$' + Math.abs(finalPnl).toFixed(2);
-        finalEl.className = 'text-2xl font-black mt-1 ' + (isPos ? 'text-green-400' : 'text-red-400');
+        finalEl.className = 'text-2xl font-black mt-1 ' + (isPos ? 'text-emerald-400' : 'text-red-400');
       }
 
       const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -530,18 +531,18 @@
       // Monthly P&L
       const mEl = document.getElementById('cal-monthly');
       mEl.textContent = inMonth.length ? money(ms.net) : '—';
-      mEl.className = 'font-black ' + (!inMonth.length ? 'text-zinc-400' : ms.net >= 0 ? 'text-green-400' : 'text-red-400');
+      mEl.className = 'font-black ' + (!inMonth.length ? 'text-zinc-400' : ms.net >= 0 ? 'text-emerald-400' : 'text-red-400');
 
       // Net P&L — all-time running total across the whole record
       const allNet = TRADES.reduce((a,t) => a + t.pnl, 0);
       const netEl = document.getElementById('cal-net');
       netEl.textContent = TRADES.length ? money(allNet) : '—';
-      netEl.className = 'font-black ' + (!TRADES.length ? 'text-zinc-400' : allNet >= 0 ? 'text-green-400' : 'text-red-400');
+      netEl.className = 'font-black ' + (!TRADES.length ? 'text-zinc-400' : allNet >= 0 ? 'text-emerald-400' : 'text-red-400');
 
       // Win rate / days / trades — for the month in view
       const wrEl = document.getElementById('cal-wr');
       wrEl.textContent = inMonth.length ? ms.winRate.toFixed(1) + '%' : '—';
-      wrEl.className = 'font-black ' + (inMonth.length && ms.winRate >= 50 ? 'text-green-400' : 'text-red-400');
+      wrEl.className = 'font-black ' + (inMonth.length && ms.winRate >= 50 ? 'text-emerald-400' : 'text-red-400');
       document.getElementById('cal-days').textContent = inMonth.length ? ms.days + ' day' + (ms.days !== 1 ? 's' : '') + ' traded' : '—';
       document.getElementById('cal-trades').textContent = inMonth.length ? ms.n + ' trade' + (ms.n !== 1 ? 's' : '') : '—';
 
@@ -551,7 +552,7 @@
       const greenDays = Object.values(dayNets).filter(v => v >= 0).length;
       const grdEl = document.getElementById('cal-grd');
       grdEl.innerHTML = inMonth.length
-        ? `<span class="text-green-400">${greenDays}</span><span class="text-zinc-700"> / </span><span class="text-red-400">${ms.days - greenDays}</span>`
+        ? `<span class="text-emerald-400">${greenDays}</span><span class="text-zinc-700"> / </span><span class="text-red-400">${ms.days - greenDays}</span>`
         : '—';
 
       const daysInMonth = new Date(y, mo + 1, 0).getDate();
@@ -597,7 +598,7 @@
               const body = document.createElement('div');
               body.className = 'mt-auto';
               const pnlDiv = document.createElement('div');
-              pnlDiv.className = 'text-sm font-black ' + (net >= 0 ? 'text-green-400' : 'text-red-400');
+              pnlDiv.className = 'text-sm font-black ' + (net >= 0 ? 'text-emerald-400' : 'text-red-400');
               pnlDiv.textContent = money(net);
               body.appendChild(pnlDiv);
               const countDiv = document.createElement('div');
@@ -618,7 +619,7 @@
         wkLabel.textContent = 'WK';
         wc.appendChild(wkLabel);
         const wcInner = document.createElement('div');
-        wcInner.className = 'text-sm font-black ' + (rowHas ? (rowNet >= 0 ? 'text-green-400' : 'text-red-400') : 'text-zinc-700');
+        wcInner.className = 'text-sm font-black ' + (rowHas ? (rowNet >= 0 ? 'text-emerald-400' : 'text-red-400') : 'text-zinc-700');
         wcInner.textContent = rowHas ? money(rowNet) : '—';
         wc.appendChild(wcInner);
         row.appendChild(wc);
@@ -634,17 +635,17 @@
       el.innerHTML = `
         <div class="flex items-baseline justify-between mb-3">
           <div class="text-sm font-black text-white">${fmtDate(key)}</div>
-          <div class="text-sm font-black ${net>=0?'text-green-400':'text-red-400'}">${money(net)}</div>
+          <div class="text-sm font-black ${net>=0?'text-emerald-400':'text-red-400'}">${money(net)}</div>
         </div>
         <div class="space-y-1.5">` +
         list.map(t => `
           <div class="flex items-center gap-3 bg-black/40 border border-white/5 rounded-lg px-3 py-2 text-xs">
-            <span class="font-bold ${t.dir==='LONG'?'text-green-400':'text-red-400'} w-12">${t.dir}</span>
+            <span class="font-bold ${t.dir==='LONG'?'text-emerald-400':'text-red-400'} w-12">${t.dir}</span>
             <span class="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 font-bold text-[10px]">${t.grade||'—'}</span>
             <span class="text-zinc-600 text-[11px]">${t.contracts}c</span>
             <span class="text-zinc-500 text-[11px] hidden sm:inline">${t.entry_time} → ${t.exit_time}</span>
             <span class="text-zinc-500 text-[11px] flex-1 truncate">${t.exit_reason}</span>
-            <span class="font-black ${t.pnl>=0?'text-green-400':'text-red-400'}">${money(t.pnl)}</span>
+            <span class="font-black ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${money(t.pnl)}</span>
           </div>`).join('') + '</div>';
       el.classList.remove('hidden');
     }
@@ -669,8 +670,8 @@
       document.getElementById('grade-table').innerHTML = keys.map(k => {
         const s = stats(g[k]);
         return bar(`Grade ${k}`,
-          `${s.wins}/${s.n} &middot; ${s.winRate.toFixed(0)}% &middot; <span class="${s.net>=0?'text-green-400':'text-red-400'}">${money(s.net)}</span>`,
-          s.winRate, s.winRate >= 50 ? 'bg-green-500' : 'bg-red-500');
+          `${s.wins}/${s.n} &middot; ${s.winRate.toFixed(0)}% &middot; <span class="${s.net>=0?'text-emerald-400':'text-red-400'}">${money(s.net)}</span>`,
+          s.winRate, s.winRate >= 50 ? 'bg-emerald-500' : 'bg-red-500');
       }).join('') || '<div class="text-zinc-600 text-xs">No data.</div>';
     }
 
@@ -682,8 +683,8 @@
       document.getElementById('exit-table').innerHTML = keys.map(k => {
         const s = stats(e[k]);
         return bar(k,
-          `${s.n} trade${s.n>1?'s':''} &middot; <span class="${s.net>=0?'text-green-400':'text-red-400'}">${money(s.net)}</span>`,
-          100 * s.n / total, s.net >= 0 ? 'bg-green-500' : 'bg-red-500');
+          `${s.n} trade${s.n>1?'s':''} &middot; <span class="${s.net>=0?'text-emerald-400':'text-red-400'}">${money(s.net)}</span>`,
+          100 * s.n / total, s.net >= 0 ? 'bg-emerald-500' : 'bg-red-500');
       }).join('');
     }
 
@@ -704,13 +705,13 @@
       document.getElementById('log-body').innerHTML = list.map(t => `
         <tr class="tr-row border-b border-white/5">
           <td class="px-5 py-2.5 text-zinc-300 whitespace-nowrap">${fmtShort(t.date)}</td>
-          <td class="px-3 py-2.5"><span class="font-bold ${t.dir==='LONG'?'text-green-400':'text-red-400'}">${t.dir}</span></td>
+          <td class="px-3 py-2.5"><span class="font-bold ${t.dir==='LONG'?'text-emerald-400':'text-red-400'}">${t.dir}</span></td>
           <td class="px-3 py-2.5"><span class="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 font-bold text-[10px]">${t.grade||'—'}</span></td>
           <td class="px-3 py-2.5 text-right text-zinc-400">${t.contracts}</td>
           <td class="px-3 py-2.5 text-right text-zinc-400 tabular-nums">${t.entry.toLocaleString()}</td>
           <td class="px-3 py-2.5 text-right text-zinc-400 tabular-nums">${t.exit.toLocaleString()}</td>
           <td class="px-3 py-2.5 text-zinc-500 whitespace-nowrap">${t.exit_reason}</td>
-          <td class="px-5 py-2.5 text-right font-black tabular-nums ${t.pnl>=0?'text-green-400':'text-red-400'}">${money2(t.pnl)}</td>
+          <td class="px-5 py-2.5 text-right font-black tabular-nums ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${money2(t.pnl)}</td>
         </tr>`).join('') ||
         '<tr><td colspan="8" class="px-5 py-8 text-center text-zinc-600 text-xs">No trades match that filter.</td></tr>';
     }
