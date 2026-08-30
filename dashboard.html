@@ -206,7 +206,9 @@
               </div>
               <div class="cal-header-stats flex gap-4 text-sm flex-wrap items-center">
                 <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="mini-cal-monthly" class="font-black">—</span></div>
+                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="mini-cal-wr" class="font-black text-green-400">—</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="mini-cal-days" class="font-black text-zinc-400">—</span></div>
+                <div><span class="text-zinc-500 text-xs mr-1.5">TRADES</span><span id="mini-cal-trades" class="font-black text-zinc-400">—</span></div>
                 <a href="journal.html" class="text-[10px] text-zinc-500 hover:text-green-400 transition font-bold ml-2">Open Journal →</a>
               </div>
             </div>
@@ -1318,9 +1320,11 @@
       miniByDate = {};
       (trades || []).forEach(t => {
         if (!t.date) return;
-        if (!miniByDate[t.date]) miniByDate[t.date] = { pnl: 0, count: 0 };
+        if (!miniByDate[t.date]) miniByDate[t.date] = { pnl: 0, count: 0, wins: 0, losses: 0 };
         miniByDate[t.date].pnl += parseFloat(t.netPnl) || 0;
         miniByDate[t.date].count++;
+        if (t.result === 'WIN') miniByDate[t.date].wins++;
+        else if (t.result === 'LOSS') miniByDate[t.date].losses++;
       });
       renderMiniCal();
     }
@@ -1330,19 +1334,42 @@
       const titleEl = document.getElementById('mini-cal-title');
       if (titleEl) titleEl.textContent = months[miniCalMonth] + ' ' + miniCalYear;
 
-      // Monthly stats
-      let monthPnl = 0, monthDays = 0;
+      /* Header stats — all scoped to the month being displayed.
+         The journal's version mixes scopes (its NET P&L / WIN RATE / TRADES are
+         all-time while MONTHLY / DAYS are month-only). That works there because
+         the calendar is the whole page. Here the KPI cards above already show the
+         all-time figures, so repeating them would put two identical numbers on
+         one screen and invite reading them as month values. */
+      let monthPnl = 0, monthDays = 0, monthTrades = 0, monthWins = 0, monthLosses = 0;
       Object.keys(miniByDate).forEach(ds => {
         const d = new Date(ds + 'T00:00:00');
         if (d.getFullYear() === miniCalYear && d.getMonth() === miniCalMonth) {
-          monthPnl += miniByDate[ds].pnl;
+          const day = miniByDate[ds];
+          monthPnl += day.pnl;
           monthDays++;
+          monthTrades += day.count;
+          monthWins += day.wins;
+          monthLosses += day.losses;
         }
       });
+      const decided = monthWins + monthLosses;
+      const monthWr = decided ? Math.round(monthWins / decided * 100) : null;
+
       const mEl = document.getElementById('mini-cal-monthly');
       if (mEl) { mEl.textContent = fmtMiniFull(monthPnl); mEl.className = 'font-black ' + (monthPnl >= 0 ? 'text-green-400' : 'text-red-400'); }
+
+      const wrEl = document.getElementById('mini-cal-wr');
+      if (wrEl) {
+        wrEl.textContent = monthWr !== null ? monthWr + '%' : '—';
+        wrEl.className = 'font-black ' + (monthWr === null ? 'text-zinc-500'
+          : monthWr >= 55 ? 'text-green-400' : monthWr >= 45 ? 'text-zinc-300' : 'text-red-400');
+      }
+
       const dEl = document.getElementById('mini-cal-days');
       if (dEl) { dEl.textContent = monthDays + ' day' + (monthDays !== 1 ? 's' : '') + ' traded'; }
+
+      const tEl = document.getElementById('mini-cal-trades');
+      if (tEl) { tEl.textContent = monthTrades + ' trade' + (monthTrades !== 1 ? 's' : ''); }
 
       const grid = document.getElementById('mini-cal-grid');
       if (!grid) return;
