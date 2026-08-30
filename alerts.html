@@ -359,6 +359,32 @@
       const token = localStorage.getItem('fsdx_token');
       if (!token) { window.location.href = 'login.html'; return; }
 
+      /* No Whop key yet → show the unlock panel instead of an empty feed.
+         Fail-safe: if the profile call itself fails we leave whopKey undefined
+         and DO NOT lock, so a transient API blip never shuts out a paying
+         member. Only a profile that comes back with no key locks the page. */
+      let whopKey, profileOk = false;
+      try {
+        const pres = await fetch(API + '/api/auth/profile', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        const pdata = await pres.json();
+        if (pdata && pdata.user) {
+          profileOk = true;
+          whopKey = pdata.user.whopKey;
+          localStorage.setItem('fsdx_whop_status', pdata.user.whopStatus || '');
+        }
+      } catch (e) { console.error('[alerts] profile load failed:', e); }
+
+      if (profileOk && typeof fsdxIsPending === 'function' && fsdxIsPending(whopKey)) {
+        fsdxRequireKey({ title: 'Scout Alerts', perks: [
+          'Every Scout setup as it fires, on the site',
+          'Filter by type, direction and grade',
+          'Browser alerts with your own minimum grade'
+        ]});
+        return;
+      }
+
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
 
