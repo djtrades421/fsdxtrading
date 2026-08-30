@@ -13,7 +13,7 @@
     body { background-color: #000; }
     input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
     .tab-btn { border-bottom: 2px solid transparent; transition: all 0.15s; }
-    .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
+    .tab-btn.active { color: #FF6B1F; border-bottom-color: #FF6B1F; }
     .tab-btn:hover:not(.active) { color: #fff; }
     .panel { display: none; }
     .panel.active { display: block; }
@@ -61,7 +61,8 @@
 
           <!-- Tabs -->
           <div class="flex gap-0 border-b border-white/0 overflow-x-auto -mx-1 px-1">
-            <button class="tab-btn active px-5 py-3 text-xs font-bold tracking-widest uppercase whitespace-nowrap" data-tab="rules">Rules</button>
+            <button class="tab-btn active px-5 py-3 text-xs font-bold tracking-widest uppercase whitespace-nowrap" data-tab="today">Today</button>
+            <button class="tab-btn px-5 py-3 text-xs font-bold tracking-widest uppercase whitespace-nowrap" data-tab="rules">Rules</button>
             <button class="tab-btn px-5 py-3 text-xs font-bold tracking-widest uppercase whitespace-nowrap" data-tab="checklist">Checklist</button>
             <button class="tab-btn px-5 py-3 text-xs font-bold tracking-widest uppercase whitespace-nowrap" data-tab="setups">Setups</button>
             <button class="tab-btn px-5 py-3 text-xs font-bold tracking-widest uppercase whitespace-nowrap" data-tab="goals">Goals</button>
@@ -80,8 +81,54 @@
             ✓ Checklist auto-reset for today's session
           </div>
 
+          <!-- ── TODAY PANEL ── -->
+          <div class="panel active" id="panel-today">
+
+            <!-- three numbers worth knowing before the bell -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+              <div class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3">
+                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500">Pre-session checks</div>
+                <div class="text-xl font-black mt-1"><span id="td-check-done">0</span><span class="text-zinc-600 text-sm font-bold"> / <span id="td-check-total">0</span></span></div>
+                <div class="h-1 rounded bg-white/5 mt-2 overflow-hidden"><div id="td-check-bar" class="h-full rounded bg-green-500" style="width:0%"></div></div>
+              </div>
+              <div class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3">
+                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500">Risk per trade</div>
+                <div class="text-xl font-black mt-1 text-green-400" id="td-risk">$400</div>
+                <div class="text-[10px] text-zinc-600 mt-1" id="td-risk-sub">Balanced &middot; 50K</div>
+              </div>
+              <div class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3">
+                <div class="text-[10px] font-bold tracking-widest uppercase text-zinc-500">Session window</div>
+                <div class="text-xl font-black mt-1" id="td-session">&mdash;</div>
+                <div class="text-[10px] text-zinc-600 mt-1" id="td-session-sub">Nasdaq ORB &middot; 8:30 AM CT</div>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <div class="text-sm font-bold text-white">Pre-session checklist</div>
+                <div class="text-xs text-zinc-500 mt-0.5">Resets automatically at the open</div>
+              </div>
+              <div class="flex items-center gap-3">
+                <span id="check-progress" class="text-xs font-bold text-emerald-400"></span>
+                <button id="btn-reset-checks" class="bg-zinc-800 text-zinc-400 text-xs font-bold px-3 py-1.5 rounded-lg">&#8634; Reset</button>
+              </div>
+            </div>
+            <div id="checklist-items" class="space-y-2"></div>
+            <div id="checklist-empty-tick" class="hidden text-center py-10 text-zinc-600 text-sm">
+              No checklist items yet. <a href="playbook.html#checklist" class="text-green-400 hover:text-green-300 font-semibold">Add some &rarr;</a>
+            </div>
+
+            <div class="border-t border-white/10 mt-8 pt-5">
+              <div class="flex items-center justify-between mb-3">
+                <div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase">Rules for this session</div>
+                <a href="playbook.html#rules" class="text-xs text-green-400 hover:text-green-300 font-semibold">Manage rules &rarr;</a>
+              </div>
+              <div id="today-rules"></div>
+            </div>
+          </div>
+
           <!-- ── RULES PANEL ── -->
-          <div class="panel active" id="panel-rules">
+          <div class="panel" id="panel-rules">
             <div class="flex items-center justify-between mb-4">
               <div>
                 <div class="text-sm font-bold text-white">Daily Rules</div>
@@ -93,6 +140,14 @@
             <!-- Add/Edit form -->
             <div id="rule-form" class="hidden mb-4 bg-zinc-900 border border-white/10 rounded-xl p-4">
               <div id="rule-form-title" class="text-[10px] font-bold tracking-widest text-zinc-400 uppercase mb-3">ADD RULE</div>
+              <select id="rule-phase" class="w-full bg-black border border-white/10 text-zinc-300 text-xs px-3 py-2 rounded-lg outline-none focus:border-green-500/50 mb-2">
+                <option value="window">Before the bell</option>
+                <option value="size">Sizing &amp; risk</option>
+                <option value="bad">When it goes wrong</option>
+                <option value="good">When it goes right</option>
+                <option value="eod">End of day</option>
+                <option value="unsorted">Unsorted</option>
+              </select>
               <textarea id="rule-input" rows="2" placeholder="e.g. No trades after 11 AM CST" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg outline-none focus:border-green-500/50 placeholder-zinc-600"></textarea>
               <div class="flex gap-2 mt-3">
                 <button id="rule-cancel" class="flex-1 bg-zinc-800 text-zinc-400 text-xs font-bold py-2 rounded-lg">Cancel</button>
@@ -112,17 +167,10 @@
             <div class="flex items-center justify-between mb-2">
               <div>
                 <div class="text-sm font-bold text-white">Pre-Trade Checklist</div>
-                <div class="text-xs text-zinc-500 mt-0.5">Tick off before entering a trade</div>
+                <div class="text-xs text-zinc-500 mt-0.5">The items that appear on Today, before every session</div>
               </div>
-              <div class="flex items-center gap-3">
-                <span id="check-progress" class="text-xs font-bold text-green-400"></span>
-                <button id="btn-reset-checks" class="bg-zinc-800 text-zinc-400 text-xs font-bold px-3 py-1.5 rounded-lg">↺ Reset</button>
-              </div>
+              <a href="playbook.html#today" class="text-xs text-green-400 hover:text-green-300 font-semibold">Tick off on Today →</a>
             </div>
-
-            <!-- Tick-off items -->
-            <div id="checklist-items" class="space-y-2 mb-6"></div>
-            <div id="checklist-empty-tick" class="hidden text-center py-8 text-zinc-600 text-sm">No items yet — add some below.</div>
 
             <!-- Manage section -->
             <div class="border-t border-white/10 pt-5 mt-2">
@@ -390,23 +438,96 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 // ── Helpers ──
 function pbId() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
 function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function renderAll() { renderRules(); renderChecklist(); renderSetups(); renderGoals(); }
+function renderAll() { renderRules(); renderTodayRules(); renderChecklist(); renderSetups(); renderGoals(); renderToday(); }
 
 // ════ RULES ════
+// Rules are grouped by WHEN they apply, so a hard stop reads differently from a
+// preference. Existing rules have no group and land in "Unsorted" until moved.
+const PHASES = [
+  { k:'window', n:'Before the bell',    d:'When you are allowed to trade at all', c:'#6FB4F2' },
+  { k:'size',   n:'Sizing & risk',      d:'How much is on the table',             c:'#F5B21F' },
+  { k:'bad',    n:'When it goes wrong', d:'Loss protocol',                        c:'#E2534B' },
+  { k:'good',   n:'When it goes right', d:'Protecting a green week',              c:'#2FBF7E' },
+  { k:'eod',    n:'End of day',         d:'Closing the session',                  c:'#A2AEBF' },
+  { k:'unsorted', n:'Unsorted',         d:'Pick a phase so these show up on Today', c:'#647E9C' },
+];
+const phaseOf = r => PHASES.some(p => p.k === r.group) ? r.group : 'unsorted';
+const phaseMeta = k => PHASES.find(p => p.k === k) || PHASES[PHASES.length - 1];
+
+function groupOpen(k) {
+  try { return localStorage.getItem('fsdx_pbgrp_' + k) !== '0'; } catch (e) { return true; }
+}
+function toggleGroup(k) {
+  try { localStorage.setItem('fsdx_pbgrp_' + k, groupOpen(k) ? '0' : '1'); } catch (e) {}
+  renderRules();
+}
+function setRulePhase(id, k) {
+  const r = pbData.rules.find(x => x.id === id);
+  if (!r) return;
+  r.group = k;
+  renderRules(); renderTodayRules(); scheduleSave();
+}
+
+function phaseSelect(r) {
+  return '<select onchange="setRulePhase(\'' + r.id + '\', this.value)" onclick="event.stopPropagation()" '
+    + 'class="bg-black border border-white/10 text-zinc-400 text-[10px] rounded-md px-1.5 py-1 outline-none focus:border-green-500/50">'
+    + PHASES.map(p => '<option value="' + p.k + '"' + (p.k === phaseOf(r) ? ' selected' : '') + '>' + p.n + '</option>').join('')
+    + '</select>';
+}
+
 function renderRules() {
   const list = document.getElementById('rules-list');
   const empty = document.getElementById('rules-empty');
-  if (!pbData.rules.length) { list.innerHTML=''; empty.classList.remove('hidden'); return; }
+  if (!pbData.rules.length) { list.innerHTML = ''; empty.classList.remove('hidden'); return; }
   empty.classList.add('hidden');
-  list.innerHTML = pbData.rules.map(r => `
-    <div class="bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 flex items-start gap-3">
-      <div class="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0 mt-2"></div>
-      <div class="flex-1 text-sm text-zinc-200 leading-relaxed">${esc(r.text)}</div>
-      <div class="flex gap-1 shrink-0">
-        <button onclick="editRule('${r.id}')" class="text-zinc-500 hover:text-zinc-300 text-xs px-1.5 py-1">✏️</button>
-        <button onclick="deleteRule('${r.id}')" class="text-red-500/70 hover:text-red-400 text-sm font-bold px-1.5 py-1">✕</button>
-      </div>
-    </div>`).join('');
+
+  list.innerHTML = PHASES.map(p => {
+    const rs = pbData.rules.filter(r => phaseOf(r) === p.k);
+    if (!rs.length) return '';
+    const open = groupOpen(p.k);
+    return '<div class="border border-white/10 rounded-xl overflow-hidden mb-2 bg-zinc-900/40">'
+      + '<button onclick="toggleGroup(\'' + p.k + '\')" class="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-white/[0.03] transition">'
+      +   '<span class="w-5 h-5 rounded-md flex items-center justify-center text-[10px] font-black shrink-0" '
+      +        'style="background:' + p.c + '22;color:' + p.c + '">' + rs.length + '</span>'
+      +   '<span class="flex-1 min-w-0"><span class="text-xs font-bold text-white">' + p.n + '</span>'
+      +     '<span class="block text-[10px] text-zinc-600">' + p.d + '</span></span>'
+      +   '<svg class="w-3 h-3 shrink-0 text-zinc-600 transition-transform" style="transform:rotate(' + (open ? 90 : 0) + 'deg)" '
+      +        'fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">'
+      +     '<path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>'
+      + '</button>'
+      + (open ? '<div class="border-t border-white/10 divide-y divide-white/5">' + rs.map(r =>
+            '<div class="px-4 py-3 flex items-start gap-3">'
+          +   '<div class="flex-1 text-sm text-zinc-200 leading-relaxed">' + esc(r.text) + '</div>'
+          +   '<div class="flex items-center gap-1.5 shrink-0">' + phaseSelect(r)
+          +     '<button onclick="editRule(\'' + r.id + '\')" class="text-zinc-600 hover:text-zinc-300 text-xs px-1.5 py-1" title="Edit">&#9998;</button>'
+          +     '<button onclick="deleteRule(\'' + r.id + '\')" class="text-zinc-700 hover:text-red-400 text-sm font-bold px-1.5 py-1" title="Delete">&times;</button>'
+          +   '</div></div>').join('') + '</div>' : '')
+      + '</div>';
+  }).join('');
+}
+
+// Today shows the rules for the phase you are actually in, not all of them.
+function renderTodayRules() {
+  const host = document.getElementById('today-rules');
+  if (!host) return;
+  if (!pbData.rules.length) {
+    host.innerHTML = '<div class="text-xs text-zinc-600 py-2">No rules yet. '
+      + '<a href="playbook.html#rules" class="text-green-400 hover:text-green-300 font-semibold">Add your first &rarr;</a></div>';
+    return;
+  }
+  host.innerHTML = PHASES.filter(p => p.k !== 'unsorted').map(p => {
+    const rs = pbData.rules.filter(r => phaseOf(r) === p.k);
+    if (!rs.length) return '';
+    return '<div class="mb-3">'
+      + '<div class="flex items-center gap-2 mb-1.5">'
+      +   '<span class="w-1.5 h-1.5 rounded-full" style="background:' + p.c + '"></span>'
+      +   '<span class="text-[10px] font-bold tracking-widest uppercase" style="color:' + p.c + '">' + p.n + '</span>'
+      + '</div>'
+      + rs.map(r => '<div class="text-xs text-zinc-400 leading-relaxed pl-3.5 py-1">' + esc(r.text) + '</div>').join('')
+      + '</div>';
+  }).join('') || '<div class="text-xs text-zinc-600 py-2">Your rules have no phase yet — '
+      + '<a href="playbook.html#rules" class="text-green-400 hover:text-green-300 font-semibold">sort them on the Rules tab</a> '
+      + 'and they will show up here.</div>';
 }
 
 function editRule(id) {
@@ -414,16 +535,18 @@ function editRule(id) {
   const r = pbData.rules.find(x => x.id === id);
   if (!r) return;
   document.getElementById('rule-input').value = r.text;
+  document.getElementById('rule-phase').value = phaseOf(r);
   document.getElementById('rule-form-title').textContent = 'EDIT RULE';
   document.getElementById('rule-form').classList.remove('hidden');
 }
 function deleteRule(id) {
   pbData.rules = pbData.rules.filter(r => r.id !== id);
-  renderRules(); scheduleSave();
+  renderRules(); renderTodayRules(); scheduleSave();
 }
 document.getElementById('btn-add-rule').onclick = () => {
   editingRule = null;
   document.getElementById('rule-input').value = '';
+  document.getElementById('rule-phase').value = 'window';
   document.getElementById('rule-form-title').textContent = 'ADD RULE';
   document.getElementById('rule-form').classList.remove('hidden');
   document.getElementById('rule-input').focus();
@@ -432,11 +555,66 @@ document.getElementById('rule-cancel').onclick = () => { document.getElementById
 document.getElementById('rule-save').onclick = () => {
   const text = document.getElementById('rule-input').value.trim();
   if (!text) return;
-  if (editingRule) { const r = pbData.rules.find(x=>x.id===editingRule); if(r) r.text=text; }
-  else pbData.rules.push({ id: pbId(), text });
+  if (editingRule) { const r = pbData.rules.find(x=>x.id===editingRule); if(r){ r.text=text; r.group=document.getElementById('rule-phase').value; } }
+  else pbData.rules.push({ id: pbId(), text, group: document.getElementById('rule-phase').value });
   document.getElementById('rule-form').classList.add('hidden');
-  editingRule = null; renderRules(); scheduleSave();
+  editingRule = null; renderRules(); renderTodayRules(); scheduleSave();
 };
+
+
+// ════ TODAY ════
+// Three numbers worth knowing before the bell. All sourced locally — no new
+// endpoint. Wiring the third card to real journal P&L is the next step.
+function renderToday() {
+  // 1. checks
+  const today = new Date().toISOString().slice(0,10);
+  const checked = (pbData.checkState && pbData.checkState.date === today)
+    ? (pbData.checkState.checked || {}) : {};
+  const total = pbData.checklist.length;
+  const done = pbData.checklist.filter(c => checked[c.id]).length;
+  const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  setTxt('td-check-done', done); setTxt('td-check-total', total);
+  const bar = document.getElementById('td-check-bar');
+  if (bar) {
+    const pct = total ? Math.round(done / total * 100) : 0;
+    bar.style.width = pct + '%';
+    bar.className = 'h-full rounded ' + (pct === 100 ? 'bg-emerald-500' : pct > 0 ? 'bg-amber-400' : 'bg-zinc-700');
+  }
+
+  // 2. risk — whatever is selected on the Risk Profiles tab
+  const rp = pbData.riskProfile || {};
+  const risk = rp.risk || '400', acct = (rp.acct || '50k').toUpperCase();
+  const LABEL = {250:'Conservative',400:'Balanced',500:'Aggressive',650:'High',850:'Very high',1000:'Max'};
+  setTxt('td-risk', '$' + risk);
+  setTxt('td-risk-sub', (LABEL[risk] || '') + ' \u00b7 ' + acct);
+
+  renderSessionClock();
+}
+
+// 3. session window — 8:30 AM CT open, ORB formed 15 minutes later
+function renderSessionClock() {
+  const el = document.getElementById('td-session'), sub = document.getElementById('td-session-sub');
+  if (!el) return;
+  const now = new Date();
+  const ct = new Date(now.toLocaleString('en-US', { timeZone: 'America/Chicago' }));
+  const mins = ct.getHours() * 60 + ct.getMinutes();
+  const OPEN = 8 * 60 + 30, ORB = OPEN + 15, CLOSE = 15 * 60;
+  const weekday = ct.getDay() >= 1 && ct.getDay() <= 5;
+  const fmt = m => { const h = Math.floor(m / 60), mm = m % 60;
+    return h > 0 ? h + 'h ' + mm + 'm' : mm + 'm'; };
+
+  if (!weekday)      { el.textContent = 'Closed';   el.className = 'text-xl font-black mt-1 text-zinc-500';
+                       sub.textContent = 'Weekend \u00b7 next session Monday 8:30 AM CT'; }
+  else if (mins < OPEN) { el.textContent = 'in ' + fmt(OPEN - mins); el.className = 'text-xl font-black mt-1 text-zinc-300';
+                       sub.textContent = 'Opens 8:30 AM CT'; }
+  else if (mins < ORB)  { el.textContent = 'Forming'; el.className = 'text-xl font-black mt-1 text-amber-400';
+                       sub.textContent = 'ORB box closes in ' + fmt(ORB - mins) + ' \u00b7 no trades yet'; }
+  else if (mins < CLOSE){ el.textContent = 'Open';    el.className = 'text-xl font-black mt-1 text-emerald-400';
+                       sub.textContent = fmt(CLOSE - mins) + ' left in the window'; }
+  else               { el.textContent = 'Closed';   el.className = 'text-xl font-black mt-1 text-zinc-500';
+                       sub.textContent = 'Window is closed \u2014 charts stay closed'; }
+}
+setInterval(renderSessionClock, 30000);
 
 // ════ CHECKLIST ════
 function renderChecklist() {
@@ -456,7 +634,7 @@ function renderChecklist() {
     emptyTick.classList.add('hidden');
     items.innerHTML = pbData.checklist.map(c => `
       <div onclick="toggleCheck('${c.id}')" class="check-item ${checked[c.id]?'checked':''} bg-zinc-900 border border-white/10 rounded-xl px-4 py-3 flex items-center gap-3 cursor-pointer">
-        <div class="w-5 h-5 rounded border-2 ${checked[c.id]?'border-green-500 bg-green-500':'border-zinc-600'} shrink-0 flex items-center justify-center transition-all">
+        <div class="w-5 h-5 rounded border-2 ${checked[c.id]?'border-emerald-500 bg-emerald-500':'border-zinc-600'} shrink-0 flex items-center justify-center transition-all">
           ${checked[c.id]?'<svg class="w-3 h-3 text-black" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>':''}
         </div>
         <div class="flex-1 text-sm ${checked[c.id]?'text-zinc-500 line-through':'text-zinc-200'} leading-relaxed transition-all">${esc(c.text)}</div>
@@ -479,6 +657,7 @@ function renderChecklist() {
 }
 
 function toggleCheck(id) {
+  setTimeout(renderToday, 0);
   const today = new Date().toISOString().slice(0,10);
   if (!pbData.checkState.date || pbData.checkState.date !== today) pbData.checkState = { date: today, checked: {} };
   if (pbData.checkState.checked[id]) delete pbData.checkState.checked[id];
@@ -849,10 +1028,34 @@ document.getElementById('goal-save').onclick = () => {
         b.classList.remove('border-white/10','bg-zinc-900','text-zinc-300');
         b.classList.add('active','border-green-500/40','bg-green-500/10','text-green-400');
         state[key]=b.dataset[key]; render();
+        // remember the choice so the Today card can show it
+        try {
+          pbData.riskProfile = { acct: state.acct, risk: state.risk };
+          if (typeof renderToday === 'function') renderToday();
+          if (typeof scheduleSave === 'function') scheduleSave();
+        } catch (e) {}
       });
     });
   }
-  wire('.rp-acct','acct'); wire('.rp-risk','risk'); wire('.rp-tf','tf'); wire('.rp-dll','dll'); render();
+  wire('.rp-acct','acct'); wire('.rp-risk','risk'); wire('.rp-tf','tf'); wire('.rp-dll','dll');
+  // re-apply whatever was picked last time
+  try {
+    var saved = (window.pbData && pbData.riskProfile) || null;
+    if (saved) {
+      ['acct','risk'].forEach(function(k){
+        if (!saved[k]) return;
+        var btn = document.querySelector('.rp-'+k+'[data-'+k+'="'+saved[k]+'"]');
+        if (btn && !btn.disabled) { state[k] = saved[k];
+          document.querySelectorAll('.rp-'+k).forEach(function(x){ if(x.disabled) return;
+            x.classList.remove('active','border-green-500/40','bg-green-500/10','text-green-400');
+            x.classList.add('border-white/10','bg-zinc-900','text-zinc-300'); });
+          btn.classList.remove('border-white/10','bg-zinc-900','text-zinc-300');
+          btn.classList.add('active','border-green-500/40','bg-green-500/10','text-green-400');
+        }
+      });
+    }
+  } catch (e) {}
+  render();
 })();
 </script>
 </body>
