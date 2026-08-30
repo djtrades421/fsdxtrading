@@ -49,16 +49,16 @@
               <h1 class="text-3xl font-black tracking-tight">Accounts</h1>
               <p class="text-zinc-500 text-sm mt-1">Your accounts, rule trackers, and imports — all in one place</p>
             </div>
-            <button onclick="openNewCard()" id="new-tracker-btn" class="hidden shrink-0 items-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            <button onclick="openNewCard()" id="new-tracker-btn" class="inline-flex shrink-0 items-center justify-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
               New Tracker
             </button>
           </div>
 
           <!-- Tabs -->
           <div class="flex -mb-px overflow-x-auto">
-            <button onclick="switchTab('registry')" id="tab-registry" class="tab-btn active px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 transition mr-1 whitespace-nowrap">My Accounts</button>
-            <button onclick="switchTab('trackers')" id="tab-trackers" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Trackers</button>
+            <button onclick="switchTab('registry')" id="tab-registry" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">My Accounts</button>
+            <button onclick="switchTab('trackers')" id="tab-trackers" class="tab-btn active px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-green-500 text-green-400 transition mr-1 whitespace-nowrap">Trackers</button>
             <button onclick="switchTab('imports')" id="tab-imports" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Imports</button>
           </div>
         </div>
@@ -69,7 +69,7 @@
         <div class="max-w-5xl mx-auto">
 
           <!-- ══ MY ACCOUNTS ══ -->
-          <div id="panel-registry" class="sub-panel active space-y-6">
+          <div id="panel-registry" class="sub-panel space-y-6">
 
             <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
               <div class="flex items-center justify-between mb-4 gap-3">
@@ -121,7 +121,7 @@
           </div>
 
           <!-- ══ TRACKERS ══ -->
-          <div id="panel-trackers" class="sub-panel space-y-3">
+          <div id="panel-trackers" class="sub-panel active space-y-3">
 
             <!-- Empty state -->
             <div id="tracker-empty" class="hidden text-center py-20">
@@ -357,7 +357,7 @@
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
       const wanted = new URLSearchParams(location.search).get('tab') || (location.hash || '').replace('#', '');
-      switchTab(['registry','trackers','imports'].includes(wanted) ? wanted : 'registry');
+      switchTab(['registry','trackers','imports'].includes(wanted) ? wanted : 'trackers');
     }
 
     // ── Tabs ──
@@ -373,7 +373,12 @@
         }
       });
       const btn = document.getElementById('new-tracker-btn');
-      if (btn) btn.classList.toggle('hidden', tab !== 'trackers');
+      if (btn) {
+        // `hidden` wins over inline-flex while set; toggling both keeps the
+        // button laid out as a flex row every time it reappears.
+        btn.classList.toggle('hidden', tab !== 'trackers');
+        btn.classList.toggle('inline-flex', tab === 'trackers');
+      }
       if (tab === 'registry') renderAccountsList();
       if (tab === 'trackers') renderList();
       if (tab === 'imports') { updateDeleteAccountPicker(); refreshDeletePreview(); renderImportBatches(); }
@@ -406,12 +411,11 @@
     }
 
     // ── Stats calculation ──
+    // Shared with the dashboard strip — see tracker-core.js. Matching is
+    // case/whitespace-insensitive and falls back to accountType when a trade
+    // has no accountName, which is how the rest of the app defines an owner.
     function getCardTrades(card) {
-      return journalTrades.filter(t => {
-        const typeMatch = !card.filterType || t.accountType === card.filterType;
-        const nameMatch = !card.filterName || t.accountName === card.filterName;
-        return typeMatch && nameMatch;
-      });
+      return FSDXTracker.cardTrades(card, journalTrades);
     }
 
     function calcStats(card) {
@@ -622,6 +626,22 @@
     function renderRow(card) {
       const s = calcStats(card);
       const filterLabel = [card.filterType, card.filterName].filter(Boolean).join(' · ') || 'All Trades';
+
+      // A card matching nothing while the journal has trades is a stale filter
+      // (renamed account, or trades saved under another name) — say so loudly
+      // rather than rendering a confident $0.
+      const unmatched = s.trades.length === 0 && journalTrades.length > 0 && (card.filterType || card.filterName);
+      const ownerList = unmatched ? FSDXTracker.ownersIn(journalTrades) : [];
+      const unmatchedBanner = unmatched ? `
+        <div class="mx-5 mb-4 border border-yellow-500/25 bg-yellow-500/[0.06] rounded-xl px-4 py-3">
+          <div class="text-xs font-bold text-yellow-400 mb-1">No trades match this tracker</div>
+          <div class="text-[11px] text-zinc-400 leading-relaxed">
+            It's looking for <span class="text-white font-bold">${esc(filterLabel)}</span>,
+            but none of your ${journalTrades.length} journal trades are filed under that.
+            ${ownerList.length ? 'Your trades are under: ' + ownerList.map(o => `<span class="text-white font-bold">${esc(o.name)}</span> <span class="text-zinc-600">(${o.count})</span>`).join(', ') + '.' : ''}
+          </div>
+          <div class="text-[11px] text-zinc-500 mt-1.5">Edit this tracker and pick a matching account, or set both filters to “Any”.</div>
+        </div>` : '';
       const pnlCol = s.totalPnl >= 0 ? 'text-green-400' : 'text-red-400';
       const pnlSign = s.totalPnl >= 0 ? '+' : '-';
 
@@ -655,7 +675,7 @@
             <span class="w-2 h-2 rounded-full ${sc.dot} shrink-0"></span>
             <div class="min-w-0">
               <div class="text-sm font-black text-white truncate">${card.label}</div>
-              <div class="text-[10px] text-zinc-600">${filterLabel}</div>
+              <div class="text-[10px] ${unmatched ? 'text-yellow-500/80' : 'text-zinc-600'}">${filterLabel}${unmatched ? ' · no matching trades' : ''}</div>
             </div>
           </div>
 
@@ -697,6 +717,7 @@
 
         <!-- Expand panel -->
         <div class="expand-panel border-t border-white/5" id="expand-${card.id}">
+          ${unmatchedBanner ? '<div class="pt-4"></div>' + unmatchedBanner : ''}
           <div class="p-5 space-y-5">
 
             <!-- Top stats row -->
