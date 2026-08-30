@@ -287,9 +287,16 @@
     }
     window.addEventListener('DOMContentLoaded', handleWhopReturn);
 
-    // If already logged in, redirect to dashboard
+    /* If already logged in, redirect to dashboard.
+       NOT while a Whop sign-in is coming back, though. This check races
+       handleWhopReturn(): on success it can fire before the handoff code is
+       exchanged, stranding the member on their OLD session (so a keyless
+       account stays keyless), and on failure it hides the error banner
+       before anyone can read it. A Whop return always wins. */
+    const whopReturning = /(^|[#&?])whop=/.test(location.hash) ||
+                          new URLSearchParams(location.search).has('whop');
     const existingToken = localStorage.getItem('fsdx_token');
-    if (existingToken) {
+    if (existingToken && !whopReturning) {
       fetch(`${API}/api/auth/me`, {
         headers: { 'Authorization': `Bearer ${existingToken}` }
       }).then(r => r.json()).then(d => {
