@@ -119,6 +119,7 @@
             <div class="hidden md:flex items-center gap-2 shrink-0">
               <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
               <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Market Sessions</span>
+              <span class="text-[9px] text-zinc-600 normal-case tracking-normal">each city's local time</span>
             </div>
             <div id="market-sessions" class="grid grid-cols-3 gap-2 sm:gap-4 w-full md:w-auto md:ml-auto md:flex md:items-center"></div>
           </div>
@@ -145,10 +146,10 @@
         </div>
 
         <!-- EQUITY CURVE + ECONOMIC CALENDAR -->
-        <div class="grid xl:grid-cols-3 gap-4 xl:gap-6 items-start">
+        <div class="grid xl:grid-cols-3 gap-4 xl:gap-6 xl:h-[500px]">
 
           <!-- Equity curve — two thirds -->
-          <div class="xl:col-span-2 min-w-0 border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
+          <div class="xl:col-span-2 min-w-0 flex flex-col border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
             <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
               <div class="min-w-0">
                 <div class="flex items-center gap-2">
@@ -160,14 +161,14 @@
               </div>
               <div id="eq-range" class="flex gap-1 shrink-0 bg-black/40 border border-white/10 rounded-xl p-1"></div>
             </div>
-            <div id="equity-chart-wrap" class="relative mt-3" style="height:260px">
+            <div id="equity-chart-wrap" class="relative mt-3 flex-1 min-h-[260px]">
               <div class="flex items-center justify-center h-full text-zinc-600 text-xs">Loading chart...</div>
             </div>
           </div>
 
           <!-- ECONOMIC CALENDAR — one third, beside the curve -->
-          <div class="min-w-0 border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-            <div class="px-4 sm:px-5 py-4 border-b border-white/10">
+          <div class="min-w-0 flex flex-col border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+            <div class="px-4 sm:px-5 py-4 border-b border-white/10 shrink-0">
               <div class="flex items-center justify-between gap-3 mb-3">
                 <h3 class="text-sm font-black text-white shrink-0 flex items-center gap-2">
                   <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
@@ -186,7 +187,7 @@
                 </div>
               </div>
             </div>
-            <div id="cal-body" class="max-h-[300px] xl:max-h-[360px] overflow-y-auto">
+            <div id="cal-body" class="flex-1 min-h-0 max-h-[300px] xl:max-h-none overflow-y-auto">
               <div class="text-center py-8 text-zinc-600 text-xs">Loading calendar...</div>
             </div>
           </div>
@@ -522,7 +523,12 @@
       }).formatToParts(d).forEach(x => parts[x.type] = x.value);
       let h = parseInt(parts.hour, 10);
       if (h === 24) h = 0;                       // some engines emit 24 for midnight
-      return { h, m: parseInt(parts.minute, 10), wd: parts.weekday };
+      const m = parseInt(parts.minute, 10);
+      // 24h is kept for the open/close arithmetic; 12h is only for display.
+      const h12 = h % 12 === 0 ? 12 : h % 12;
+      return { h, m, wd: parts.weekday,
+               clock: h12 + ':' + String(m).padStart(2, '0'),
+               ampm: h < 12 ? 'AM' : 'PM' };
     }
 
     function sessionState(s, now) {
@@ -541,7 +547,7 @@
 
       return {
         label: s.label, isOpen, until,
-        time: String(p.h).padStart(2, '0') + ':' + String(p.m).padStart(2, '0'),
+        clock: p.clock, ampm: p.ampm,
         closesIn: isOpen ? closeMin - nowMin : null
       };
     }
@@ -577,7 +583,7 @@
             <span class="text-[9px] uppercase tracking-wider ${st.isOpen ? 'text-zinc-300' : 'text-zinc-600'} truncate">${st.label}</span>
           </div>
           <div class="flex items-baseline gap-2 md:gap-1.5">
-            <span class="text-xs font-black ${st.isOpen ? 'text-white' : 'text-zinc-500'} tabular-nums">${st.time}</span>
+            <span class="text-xs font-black ${st.isOpen ? 'text-white' : 'text-zinc-500'} tabular-nums whitespace-nowrap">${st.clock}<span class="text-[9px] font-bold ${st.isOpen ? 'text-zinc-400' : 'text-zinc-600'} ml-0.5">${st.ampm}</span></span>
             ${sub}
           </div>
         </div>`;
@@ -674,7 +680,7 @@
         }
       }
 
-      const W = wrap.clientWidth || 700, H = 260;
+      const W = wrap.clientWidth || 700, H = wrap.clientHeight || 260;
       const PAD_L=62, PAD_R=20, PAD_T=14, PAD_B=34, CW=W-PAD_L-PAD_R, CH=H-PAD_T-PAD_B;
       const equities = points.map(p=>p.equity);
       const rawMin=Math.min(...equities), rawMax=Math.max(...equities), rng=rawMax-rawMin||1;
