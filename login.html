@@ -339,8 +339,10 @@
           localStorage.setItem('fsdx_tier', data.tier || 'pro');
           localStorage.setItem('fsdx_plan', data.plan || '');
           localStorage.setItem('fsdx_whop_status', data.whopStatus || '');
-          // No key yet → send them to the guide rather than a dashboard of locked tools.
-          window.location.href = data.pending ? 'setup.html' : 'dashboard.html';
+          /* Pending accounts go to the dashboard too — that is where the
+             "add your key" panel lives. Sending them to setup.html would be a
+             page of instructions with nowhere to actually enter the key. */
+          window.location.href = 'dashboard.html';
         } else if (data.inactive) {
           // Membership inactive — show friendly message with clickable link
           const el = document.getElementById('login-msg');
@@ -380,6 +382,8 @@
         if (data.success) {
           localStorage.setItem('fsdx_token', data.token);
           localStorage.setItem('fsdx_name', data.firstName || '');
+          localStorage.setItem('fsdx_tier', data.tier || 'pro');
+          localStorage.setItem('fsdx_whop_status', data.whopStatus || '');
           window.location.href = 'dashboard.html';
         } else {
           errEl.textContent = data.error || 'Invalid code. Try again.';
