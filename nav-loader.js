@@ -126,6 +126,16 @@
   (document.head || document.documentElement).appendChild(sc);
 })();
 
+// ── Pending-account helper (locked-tool panel) ──
+(function () {
+  if (document.getElementById('fsdx-account-js')) return;
+  var sc = document.createElement('script');
+  sc.id = 'fsdx-account-js';
+  sc.src = 'fsdx-account.js';
+  sc.defer = true;
+  (document.head || document.documentElement).appendChild(sc);
+})();
+
 // ── Collapsible nav groups (Option B) ──
 // "The Site" is shut for members and open for visitors; the choice is remembered.
 function toggleNavGroup(id) {
@@ -231,6 +241,34 @@ function prepareNavLabels(root) {
         var grp = activeInGroup.closest('.nav-group');
         if (grp && !grp.classList.contains('open')) grp.classList.add('open');
       }
+
+      // Pending accounts (no Whop key yet) get an extra nav item pointing at setup.
+      // Deliberately ADDITIVE — nothing is hidden, so this can never lock anyone out
+      // of something that works today. Admin accounts are exempt.
+      (function () {
+        try {
+          if (!localStorage.getItem('fsdx_token')) return;
+          if (localStorage.getItem('fsdx_admin') === 'true') return;
+          fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', {
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('fsdx_token') }
+          })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              if (!d || !d.user || d.user.whopKey) return;   // fail open
+              var host = document.querySelector('#nav-content .vip-only .flex.flex-col.gap-2\\.5');
+              if (!host || document.getElementById('nav-finish-setup')) return;
+              var a = document.createElement('a');
+              a.id = 'nav-finish-setup';
+              a.href = 'setup.html';
+              a.className = 'nav-link text-green-400 hover:text-green-300 font-bold transition text-sm flex items-center gap-2';
+              a.innerHTML = '<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">'
+                + '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>'
+                + '<span class="nav-label">Finish setup</span>';
+              host.insertBefore(a, host.firstChild);
+            })
+            .catch(function () { /* fail open */ });
+        } catch (e) {}
+      })();
 
       // Show VIP section if logged in
       const token = localStorage.getItem('fsdx_token');
