@@ -259,6 +259,35 @@
       notconfigured: 'Whop sign-in is not switched on yet. Use your email below for now.'
     };
 
+    /* One auto-retry per browser session, checked and claimed in a single call
+       so it cannot be raced. If sessionStorage is unavailable we cannot count
+       attempts, so we refuse the retry rather than risk an endless bounce. */
+    function claimWhopRetry() {
+      try {
+        if (sessionStorage.getItem('fsdx_whop_retried')) return false;
+        sessionStorage.setItem('fsdx_whop_retried', '1');
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
+    function clearWhopRetry() {
+      try { sessionStorage.removeItem('fsdx_whop_retried'); } catch (e) {}
+    }
+
+    /* A dead-end error message makes the member guess. Give them the door. */
+    function addRetryButton(msgId) {
+      const el = document.getElementById(msgId);
+      if (!el || el.querySelector('.whop-retry-btn')) return;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'whop-retry-btn mt-2.5 w-full py-2 bg-white hover:bg-zinc-200 '
+                    + 'text-black font-black text-[11px] uppercase tracking-wider rounded-lg transition';
+      btn.textContent = 'Try again with Whop';
+      btn.onclick = whopStart;
+      el.appendChild(btn);
+    }
+
     async function handleWhopReturn() {
       const params = new URLSearchParams((location.hash || '').replace(/^#/, ''));
       const code = params.get('whop');
@@ -267,13 +296,32 @@
       const qs = new URLSearchParams(location.search);
       const qErr = qs.get('whop');
       if (qErr) {
+        history.replaceState(null, '', location.pathname);
+
+        /* `state` means the CSRF value did not survive the round trip. The
+           usual cause is benign and self-correcting: a brand-new member signs
+           in to Whop *during* the authorization, Whop restarts the request,
+           and our original state never comes back. That is the default path
+           for every new signup — they created their Whop account at checkout
+           moments earlier — so failing them here fails almost everyone once.
+
+           Retry once, quietly. The second attempt runs with them already
+           signed in to Whop, so nothing interrupts it. This does not weaken
+           the CSRF check: we are starting a fresh authorization, not
+           accepting the rejected one. */
+        if (qErr === 'state' && claimWhopRetry()) {
+          showMsg('login-msg', 'Finishing sign-in…', 'success');
+          whopStart();
+          return;
+        }
+
         // `d` carries Whop's own error code when there is one — shown so a
         // failure can be diagnosed without reading worker logs.
         const detail = qs.get('d');
         showMsg('login-msg',
           (WHOP_ERRORS[qErr] || 'Whop sign-in did not complete. Please try again.')
           + (detail ? ' [' + detail + ']' : ''), 'error');
-        history.replaceState(null, '', location.pathname);
+        if (qErr !== 'denied') addRetryButton('login-msg');
         return;
       }
       if (!code) return;
@@ -294,6 +342,7 @@
         });
         const data = await res.json();
         if (data.success) {
+          clearWhopRetry();   // a clean run re-arms the retry for next time
           localStorage.setItem('fsdx_token', data.token);
           localStorage.setItem('fsdx_name', data.firstName || '');
           localStorage.setItem('fsdx_tier', data.tier || 'pro');
@@ -303,10 +352,12 @@
         } else {
           btns.forEach(b => b.disabled = false);
           showMsg('login-msg', data.error || 'Sign-in failed. Please try again.', 'error');
+          addRetryButton('login-msg');
         }
       } catch (e) {
         btns.forEach(b => b.disabled = false);
         showMsg('login-msg', 'Connection error. Please try again.', 'error');
+        addRetryButton('login-msg');
       }
     }
     window.addEventListener('DOMContentLoaded', handleWhopReturn);
