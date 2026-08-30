@@ -35,7 +35,7 @@
           <svg class="w-8 h-8 text-green-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
         </div>
         <h1 class="text-2xl font-black text-white tracking-tight">VIP Member Area</h1>
-        <p class="text-zinc-500 text-sm mt-1">Login, or create an account in seconds</p>
+        <p class="text-zinc-500 text-sm mt-1">If you bought through Whop, use <span class="text-zinc-300">Continue with Whop</span> — that's your account.</p>
       </div>
 
       <!-- CARD -->
@@ -53,12 +53,19 @@
           <div id="panel-login" class="tab-panel active space-y-4">
             <div id="login-msg" class="hidden rounded-xl px-4 py-3 text-xs leading-relaxed"></div>
 
-            <!-- One-click: Whop tells us who they are and hands over the key. -->
+            <!-- One-click: Whop tells us who they are and hands over the key.
+                 The button alone reads as jargon to anyone who doesn't already
+                 know Whop is where their membership lives — say so plainly. -->
             <button onclick="whopStart()" type="button"
               class="w-full py-3.5 bg-white hover:bg-zinc-200 text-black font-black text-xs uppercase tracking-wider rounded-xl transition flex items-center justify-center gap-2">
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               Continue with Whop
             </button>
+            <p class="text-center text-[11px] text-zinc-500 leading-relaxed -mt-1">
+              <span class="text-zinc-300 font-bold">The fastest way in.</span>
+              Whop is where your membership and billing live. Approve there and you land
+              straight on your dashboard — no password, no license key to find.
+            </p>
             <div class="flex items-center gap-3 text-[10px] uppercase tracking-widest text-zinc-700">
               <div class="flex-1 h-px bg-white/10"></div>or use your email<div class="flex-1 h-px bg-white/10"></div>
             </div>
@@ -79,6 +86,13 @@
               class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-green-500/10">
               Login to Dashboard
             </button>
+            <!-- Accounts created through Whop have passwordHash: null, so the
+                 email form below will never work for them until they set one.
+                 Without this line that reads as "my password is wrong". -->
+            <p class="text-center text-[11px] text-zinc-600 leading-relaxed">
+              Signed up through Whop? You don't have a password yet — use the button at the top.
+              You can set one later from your profile.
+            </p>
             <p class="text-center text-xs text-zinc-600">Don't have an account? <button onclick="switchTab('signup')" class="text-green-400 hover:underline">Sign up →</button></p>
           </div>
 
@@ -110,7 +124,11 @@
               <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
               Continue with Whop
             </button>
-            <p class="text-center text-[11px] text-zinc-600 -mt-1">Already subscribed? This sets everything up for you — no key to find.</p>
+            <p class="text-center text-[11px] text-zinc-500 leading-relaxed -mt-1">
+              <span class="text-zinc-300 font-bold">Do this one.</span>
+              Whop is where your membership and billing live. Approve there and your account
+              is created and connected in one step — no key to find, no password to pick.
+            </p>
             <div class="flex items-center gap-3 text-[10px] uppercase tracking-widest text-zinc-700">
               <div class="flex-1 h-px bg-white/10"></div>or sign up manually<div class="flex-1 h-px bg-white/10"></div>
             </div>
