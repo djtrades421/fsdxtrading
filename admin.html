@@ -779,8 +779,12 @@
             <p class="text-xs text-zinc-600 mt-0.5">Sync Whop pulls members and payments straight from the API — no export needed. CSV import still works for legacy and Discord rosters.</p>
             <p id="whop-sync-stamp" class="text-xs text-zinc-700 mt-0.5 hidden"></p>
           </div>
-          <div class="flex gap-2 flex-wrap">
+          <div class="flex items-center gap-2 flex-wrap">
             <input type="file" id="roster-import-input" accept=".csv" class="hidden" multiple onchange="handleMultiImport(this.files)">
+            <label class="flex items-center gap-1.5 text-[11px] text-zinc-500 select-none cursor-pointer">
+              <input type="checkbox" id="roster-auto" onchange="toggleRosterAuto()" class="accent-green-500">
+              Auto-sync (15m)
+            </label>
             <button id="whop-sync-btn" onclick="syncFromWhop()" class="flex items-center gap-1.5 px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition disabled:opacity-60 disabled:cursor-not-allowed">
               ⟳ Sync Whop
             </button>
@@ -1514,6 +1518,7 @@
       const activeBtn = document.getElementById('tab-' + tab);
       if (activeBtn) activeBtn.classList.add('active-nav');
       if (tab !== 'traffic') stopTrafficAuto();
+      if (tab !== 'roster') stopRosterAuto();
       if (tab === 'announce') loadCurrentAnnouncement();
       if (tab === 'sales') { loadCurrentSale(); loadFounderSpots(); }
       if (tab === 'updates') loadAdminUpdates();
@@ -2812,12 +2817,66 @@
       setTimeout(() => el.classList.add('hidden'), 3000);
     }
 
+    /* ── WHOP AUTO-SYNC ────────────────────────────────────────────────────
+       Same shape as the traffic tab's auto-refresh, but a much longer
+       interval. A sync is not a cheap read: it pages every membership and
+       every payment on the company, then writes three KV records. 60s would
+       hammer Whop for no benefit — nothing about a subscription changes that
+       fast. 15 minutes is well inside "I cancelled and want to see it".
+
+       Auto runs also limit the payments pull with `since`, so a background
+       tick isn't re-paging years of payment history every time. The manual
+       button stays a full backfill.
+       ──────────────────────────────────────────────────────────────────── */
+    let rosterAutoTimer = null;
+    const ROSTER_AUTO_MS = 15 * 60 * 1000;
+
+    function toggleRosterAuto() {
+      const on = document.getElementById('roster-auto')?.checked;
+      if (on) {
+        if (rosterAutoTimer) clearInterval(rosterAutoTimer);
+        rosterAutoTimer = setInterval(() => {
+          // Only sync while the roster tab is actually on screen and the
+          // browser tab is in the foreground.
+          const panel = document.getElementById('panel-roster');
+          if (!panel || !panel.classList.contains('active')) return;
+          if (document.hidden) return;
+          syncFromWhop({ auto: true });
+        }, ROSTER_AUTO_MS);
+      } else if (rosterAutoTimer) {
+        clearInterval(rosterAutoTimer);
+        rosterAutoTimer = null;
+      }
+    }
+
+    function stopRosterAuto() {
+      if (rosterAutoTimer) { clearInterval(rosterAutoTimer); rosterAutoTimer = null; }
+      const cb = document.getElementById('roster-auto');
+      if (cb) cb.checked = false;
+    }
+
     // ── WHOP API SYNC ──
-    async function syncFromWhop() {
+    let _whopSyncing = false;
+
+    async function syncFromWhop({ auto = false } = {}) {
+      // A 15-minute timer can still land on top of a slow manual sync.
+      if (_whopSyncing) return;
+      _whopSyncing = true;
+
       const btn = document.getElementById('whop-sync-btn');
       const token = localStorage.getItem('fsdx_token') || '';
       btn.textContent = '⟳ Syncing...';
       btn.disabled = true;
+
+      // Background ticks only need payments since the last successful sync.
+      // The 3-day cushion covers a payment that settles late or a missed tick.
+      let paymentsSince = null;
+      if (auto) {
+        try {
+          const last = localStorage.getItem('fsdx_whop_last_sync');
+          if (last) paymentsSince = new Date(new Date(last).getTime() - 3 * 24 * 60 * 60 * 1000).toISOString();
+        } catch(e) {}
+      }
 
       try {
         // 1. Pull memberships
@@ -2835,7 +2894,7 @@
         const payRes = await fetch(`${API}/api/admin/whop-sync`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ type: 'payments' })
+          body: JSON.stringify(paymentsSince ? { type: 'payments', since: paymentsSince } : { type: 'payments' })
         });
         const payData = await payRes.json();
         if (!payData.success) throw new Error(payData.error || 'Payment sync failed');
@@ -3021,7 +3080,11 @@
         if (stamp) {
           stamp.textContent = (partial ? '⚠ Partial sync — page cap hit. ' : 'Last synced ')
             + new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
-            + ` · ${incoming.length} members · ${newPayments.length} new payments`;
+            + (auto ? ' (auto)' : '')
+            + ` · ${incoming.length} members · ${newPayments.length} new payments`
+            // Whop's raw count, before dedupe. Without this, "0 new payments"
+            // can't be told apart from "the payments pull returned nothing".
+            + ` · ${payData.count} returned`;
           stamp.classList.remove('hidden');
         }
         try { localStorage.setItem('fsdx_whop_last_sync', new Date().toISOString()); } catch(e) {}
@@ -3033,9 +3096,24 @@
 
       } catch(err) {
         console.error('[sync]', err);
+        // A background tick that fails shouldn't leave a red button sitting
+        // there with no explanation — put the reason in the stamp, where it
+        // survives longer than the button text does.
+        const stamp = document.getElementById('whop-sync-stamp');
+        if (stamp) {
+          stamp.textContent = `✗ ${auto ? 'Auto-sync' : 'Sync'} failed `
+            + new Date().toLocaleString('en-US', { timeZone: 'America/Chicago' })
+            + ' — ' + (err.message || 'unknown error');
+          stamp.classList.remove('hidden');
+        }
         btn.textContent = '✗ ' + (err.message || 'Sync failed');
         btn.style.background = '#ef4444';
         setTimeout(() => { btn.textContent = '⟳ Sync Whop'; btn.style.background = ''; btn.disabled = false; }, 6000);
+      } finally {
+        // Release as soon as the work is done. Tying this to the button-reset
+        // timer above would keep the guard up for another 4 seconds after the
+        // sync finished, and block a legitimate follow-up click.
+        _whopSyncing = false;
       }
     }
 
