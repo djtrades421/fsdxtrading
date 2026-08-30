@@ -92,6 +92,13 @@
             </div>
             <div id="twofa-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4 border"></div>
 
+            <!-- Which door this actually protects.
+                 2FA here guards email + password sign-in. Continue with Whop is
+                 authenticated by Whop, so a code we hold cannot gate it — saying
+                 otherwise would sell false security to the people most likely to
+                 turn this on. Filled in by renderTwoFactorScope(). -->
+            <div id="twofa-scope" class="hidden rounded-xl px-4 py-3 text-xs mb-4 border border-white/10 bg-zinc-900/60 text-zinc-400 leading-relaxed"></div>
+
             <!-- Setup flow (hidden until needed) -->
             <div id="twofa-setup" class="hidden space-y-4 mt-4">
               <div class="border border-white/10 bg-zinc-900/60 rounded-xl p-4">
@@ -142,13 +149,36 @@
             <div id="twofa-actions" class="mt-4"></div>
           </div>
 
+          <!-- Sign in with Whop card -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <h2 class="text-sm font-black text-white">Sign in with Whop</h2>
+                <p class="text-zinc-500 text-xs mt-1">Used once to set your account up. You can close this door when you no longer need it.</p>
+              </div>
+              <div id="whoplogin-badge" class="hidden px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider"></div>
+            </div>
+            <div id="whoplogin-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4 border"></div>
+            <div id="whoplogin-note" class="rounded-xl px-4 py-3 text-xs mb-4 border border-white/10 bg-zinc-900/60 text-zinc-400 leading-relaxed"></div>
+            <div id="whoplogin-actions"></div>
+          </div>
+
           <!-- Change password card -->
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
-            <h2 class="text-sm font-black text-white mb-5">Change Password</h2>
+            <h2 id="password-heading" class="text-sm font-black text-white mb-5">Change Password</h2>
             <div id="password-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
 
+            <!-- Shown only to accounts created through Sign in with Whop, which
+                 have no password at all. Without this the card reads as broken:
+                 Current Password can never be filled in. -->
+            <div id="no-password-note" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border border-white/10 bg-zinc-900/60 text-zinc-400 leading-relaxed">
+              <span class="text-white font-bold block mb-0.5">You don't have a password yet</span>
+              You signed in with Whop, so there's nothing to replace — just pick a password below.
+              Continue with Whop keeps working either way.
+            </div>
+
             <div class="space-y-4">
-              <div>
+              <div id="current-password-row">
                 <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Current Password</label>
                 <div class="relative">
                   <input type="password" id="current-password" placeholder="••••••••••"
@@ -244,6 +274,25 @@
   <script>
     const API = 'https://nexus-validator.dfuentes4211.workers.dev';
     let currentUser = null;
+    // Accounts created through Sign in with Whop have no password. Default to
+    // true so a failed profile load never hides the current-password field on
+    // someone who does have one.
+    let _hasPassword = true;
+
+    /* Reshape the password card for an account that has never had a password:
+       no "current password" field, an explanation, and a heading that matches
+       what the button actually does. */
+    function renderPasswordCard(hasPassword) {
+      _hasPassword = hasPassword;
+      const row = document.getElementById('current-password-row');
+      const note = document.getElementById('no-password-note');
+      const heading = document.getElementById('password-heading');
+      const btn = document.getElementById('password-btn');
+      if (row) row.classList.toggle('hidden', !hasPassword);
+      if (note) note.classList.toggle('hidden', hasPassword);
+      if (heading) heading.textContent = hasPassword ? 'Change Password' : 'Set a Password';
+      if (btn) btn.textContent = hasPassword ? 'Update Password' : 'Set Password';
+    }
 
     function toggleMobileMenu() {
       document.getElementById('sidebar-panel').classList.toggle('-translate-x-full');
@@ -350,7 +399,9 @@
       const newPw = document.getElementById('new-password').value;
       const confirmPw = document.getElementById('confirm-password').value;
 
-      if (!currentPw || !newPw || !confirmPw) return showMsg('password-msg', 'Please fill in all fields.', 'error');
+      // An account with no password has no "current" one to give.
+      if (_hasPassword && !currentPw) return showMsg('password-msg', 'Please enter your current password.', 'error');
+      if (!newPw || !confirmPw) return showMsg('password-msg', 'Please fill in all fields.', 'error');
       if (newPw !== confirmPw) return showMsg('password-msg', 'New passwords do not match.', 'error');
       if (newPw.length < 8) return showMsg('password-msg', 'Password must be at least 8 characters.', 'error');
       if (!/[A-Z]/.test(newPw)) return showMsg('password-msg', 'Password must include an uppercase letter.', 'error');
@@ -369,7 +420,14 @@
         });
         const data = await res.json();
         if (data.success) {
-          showMsg('password-msg', 'Password updated! Please log in again.', 'success');
+          showMsg('password-msg', data.wasFirstPassword
+            ? 'Password set. You can now sign in with your email or with Whop. Please log in again.'
+            : 'Password updated! Please log in again.', 'success');
+          _hasPassword = true;
+          // Turning Whop sign-in off only becomes possible once a password
+          // exists — reflect that immediately instead of after a reload.
+          renderWhopLogin(currentUser?.whopLoginEnabled !== false, true);
+          renderTwoFactorScope(currentUser?.twoFactorEnabled || false, true);
           document.getElementById('current-password').value = '';
           document.getElementById('new-password').value = '';
           document.getElementById('confirm-password').value = '';
@@ -380,7 +438,7 @@
       } catch (err) {
         showMsg('password-msg', 'Connection error. Please try again.', 'error');
       }
-      btn.disabled = false; btn.textContent = 'Update Password';
+      btn.disabled = false; btn.textContent = _hasPassword ? 'Update Password' : 'Set Password';
     }
 
 
@@ -468,6 +526,110 @@
       btn.disabled = false; btn.textContent = 'Disable 2FA';
     }
 
+    const WHOP_2FA_URL = 'https://help.whop.com/en/articles/10416242-how-to-enable-2fa-two-factor-authentication';
+
+    /* Sign in with Whop is a bootstrap, not a login method: it creates the
+       account and pulls the license key once. Once a password exists, leaving
+       it open means 2FA guards one of two entrances — so let the member close
+       it. Turning it off without a password would be a permanent lockout, so
+       that combination is blocked here and again on the worker. */
+    function renderWhopLogin(enabled, hasPassword) {
+      const badge = document.getElementById('whoplogin-badge');
+      const note = document.getElementById('whoplogin-note');
+      const actions = document.getElementById('whoplogin-actions');
+      if (!badge || !note || !actions) return;
+
+      badge.classList.remove('hidden');
+      badge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider '
+        + (enabled
+            ? 'bg-green-500/10 border border-green-500/20 text-green-400'
+            : 'bg-zinc-800 border border-white/10 text-zinc-500');
+      badge.textContent = enabled ? '● On' : '○ Off';
+
+      if (!enabled) {
+        note.innerHTML = `<span class="text-white font-bold block mb-0.5">Switched off</span>
+          Continue with Whop won't work for this account. Sign in with your email and password.
+          Your membership and renewals are unaffected — they still come from Whop.`;
+        actions.innerHTML = `<button onclick="setWhopLogin(true)" id="whoplogin-btn"
+          class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 hover:border-green-500/30 text-zinc-300 hover:text-green-400 font-bold text-xs rounded-xl transition">Turn back on</button>`;
+        return;
+      }
+
+      if (!hasPassword) {
+        note.innerHTML = `<span class="text-white font-bold block mb-0.5">This is your only way in</span>
+          Set a password below first. Turning this off without one would lock you out of your account.`;
+        actions.innerHTML = `<button disabled
+          class="px-4 py-2 bg-zinc-900/50 border border-white/5 text-zinc-600 font-bold text-xs rounded-xl cursor-not-allowed">Turn off</button>`;
+        return;
+      }
+
+      note.innerHTML = `<span class="text-white font-bold block mb-0.5">You have a password now</span>
+        Turning this off closes the Whop door, so email and password becomes the only way in —
+        and two-factor then covers your whole account. You can switch it back on any time.`;
+      actions.innerHTML = `<button onclick="setWhopLogin(false)" id="whoplogin-btn"
+        class="px-4 py-2 border border-white/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 font-bold text-xs rounded-xl transition">Turn off Whop sign-in</button>`;
+    }
+
+    async function setWhopLogin(enabled) {
+      if (!enabled && !confirm('Turn off Sign in with Whop?\n\nYou will only be able to sign in with your email and password. You can turn it back on from this page.')) return;
+
+      const btn = document.getElementById('whoplogin-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
+      try {
+        const res = await fetch(`${API}/api/auth/whop-login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('fsdx_token')}` },
+          body: JSON.stringify({ enabled })
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentUser.whopLoginEnabled = data.whopLoginEnabled;
+          renderWhopLogin(data.whopLoginEnabled, _hasPassword);
+          showMsg('whoplogin-msg', data.whopLoginEnabled
+            ? 'Sign in with Whop is back on.'
+            : 'Sign in with Whop is off. Use your email and password from now on.', 'success');
+        } else {
+          renderWhopLogin(currentUser.whopLoginEnabled !== false, _hasPassword);
+          showMsg('whoplogin-msg', data.error || 'Could not update the setting.', 'error');
+        }
+      } catch (err) {
+        renderWhopLogin(currentUser.whopLoginEnabled !== false, _hasPassword);
+        showMsg('whoplogin-msg', 'Connection error. Please try again.', 'error');
+      }
+    }
+
+    /* Say plainly which sign-in method this 2FA covers.
+
+       There are two doors into an account and they are secured in different
+       places. The code below guards email + password. Continue with Whop is
+       authenticated by Whop before we ever see the member, so our code cannot
+       stand in front of it — the honest fix is to point them at Whop's own 2FA
+       rather than let them believe one switch covers both. */
+    function renderTwoFactorScope(enabled, hasPassword) {
+      const el = document.getElementById('twofa-scope');
+      if (!el) return;
+      const whopLink = `<a href="${WHOP_2FA_URL}" target="_blank" rel="noopener"
+                          class="text-green-400 hover:underline font-bold">turn on 2FA in your Whop account</a>`;
+
+      if (!hasPassword) {
+        // Whop is their only way in, so 2FA here would guard a door they never use.
+        el.innerHTML = `<span class="text-white font-bold block mb-0.5">You sign in with Whop</span>
+          This code protects email and password sign-in, which your account doesn't use yet.
+          To secure the way you actually log in, ${whopLink}.
+          Set a password below if you'd rather have both.`;
+      } else if (enabled) {
+        el.innerHTML = `<span class="text-white font-bold block mb-0.5">Covers email sign-in</span>
+          Your password login now asks for a code. Continue with Whop is verified by Whop
+          instead, so it won't ask — ${whopLink} to protect that door too.`;
+      } else {
+        el.innerHTML = `<span class="text-white font-bold block mb-0.5">Covers email sign-in</span>
+          This protects logging in with your email and password. Continue with Whop is
+          verified by Whop, so also ${whopLink}.`;
+      }
+      el.classList.remove('hidden');
+    }
+
     function render2FAActions(enabled) {
       const badge = document.getElementById('twofa-badge');
       const actions = document.getElementById('twofa-actions');
@@ -544,7 +706,10 @@
         document.getElementById('account-created').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '—';
         document.getElementById('account-key').textContent = currentUser.whopKey ? currentUser.whopKey.slice(0, 8) + '••••••••' : '—';
 
+        renderPasswordCard(currentUser.hasPassword !== false);
         render2FAActions(currentUser.twoFactorEnabled || false);
+        renderTwoFactorScope(currentUser.twoFactorEnabled || false, currentUser.hasPassword !== false);
+        renderWhopLogin(currentUser.whopLoginEnabled !== false, currentUser.hasPassword !== false);
         document.getElementById('loading-screen').classList.add('hidden');
         document.getElementById('page-content').classList.remove('hidden');
 
