@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
+  <script src="fsdx-account.js"></script>
   <script src="filters.js"></script>
   <script src="alerts.js"></script>
   <style>
@@ -246,7 +247,7 @@
                 <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">Open TradingView</div><div class="text-xs text-zinc-500">Launch your charts</div></div>
                 <svg class="w-3.5 h-3.5 text-zinc-600 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
               </a>
-              <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgnjgbimklpmdadcngj" target="_blank" class="flex items-center gap-3 p-3 bg-black border border-white/5 hover:border-green-500/30 rounded-xl transition group">
+              <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgngbimklpmdadcngj" target="_blank" class="flex items-center gap-3 p-3 bg-black border border-white/5 hover:border-green-500/30 rounded-xl transition group">
                 <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
                 <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">FSD-X Nexus 2.0</div><div class="text-xs text-zinc-500">Chrome extension — journal, AI, optimizer</div></div>
                 <svg class="w-3.5 h-3.5 text-zinc-600 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
@@ -977,6 +978,16 @@
           localStorage.setItem('fsdx_whop_status', data.user.whopStatus || '');
         }
       } catch(e) { tier = localStorage.getItem('fsdx_tier') || 'pro'; memberPlan = localStorage.getItem('fsdx_plan') || null; }
+
+      // No Whop key yet → show the unlock panel instead of an empty dashboard.
+      if (typeof fsdxIsPending === 'function' && fsdxIsPending(whopKey)) {
+        fsdxRequireKey({ title: 'your Dashboard', perks: [
+          'Live P&L, win rate and equity curve across your accounts',
+          'Economic calendar and market sessions',
+          'Your journal summary at a glance'
+        ]});
+        return;
+      }
 
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('dashboard-content').classList.remove('hidden');
