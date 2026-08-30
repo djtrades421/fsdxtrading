@@ -97,7 +97,6 @@
     '  }',
     '  html.nav-collapsed #nav-collapse-btn:hover { background: rgba(74,222,128,.16); border-color: rgba(74,222,128,.45); }',
     '  html.nav-collapsed #nav-collapse-icon { transform: rotate(180deg); }',
-    '  html.nav-collapsed .vip-only.rounded-xl { border: 0 !important; background: transparent !important; }',
     '  html.nav-collapsed #nav-user-btn > svg { display: none; }',
     /* Section headings are hidden, so mark the groups with a rule instead. */
     '  html.nav-collapsed #nav-content nav > div + div { border-top: 1px solid rgba(255,255,255,.07); padding-top: .55rem; }',
@@ -195,6 +194,9 @@ function prepareNavLabels(root) {
         // Show all vip-only elements
         document.querySelectorAll('#nav-content .vip-only').forEach(el => {
           el.classList.remove('hidden');
+          // Buttons in the footer are laid out as flex rows; `hidden` removed
+          // their display, so restore it rather than leaving them inline.
+          if (el.tagName === 'BUTTON') el.classList.add('flex');
         });
         // Hide member login button
         const loginBtn = document.getElementById('nav-login-btn');
@@ -214,8 +216,8 @@ function prepareNavLabels(root) {
         // Base name: "VIP Plus" / "VIP Pro" when known, else "VIP"
         const planName = plan === 'pro' ? 'VIP Pro' : plan === 'plus' ? 'VIP Plus' : 'VIP';
         let tierText;
-        if (tier === 'trial') tierText = planName + ' Trial';
-        else if (whopStatus === 'completed') tierText = planName + ' Lifetime';
+        if (tier === 'trial') tierText = planName + ' · Trial';
+        else if (whopStatus === 'completed') tierText = planName + ' · Lifetime';
         else tierText = plan ? planName : 'VIP Member';
         if (tierEl) tierEl.textContent = tierText;
       }
