@@ -48,7 +48,7 @@
     {t:'Getting Started', u:'setup.html',       g:'Site', kw:'setup install tradingview access onboarding'},
     {t:'Live Sessions',   u:'schedule.html',    g:'Site', kw:'schedule 8:30 morning room gameplan monday'},
     {t:'Knowledge Base',  u:'knowledge.html',   g:'Site', kw:'guides docs walkthrough videos help'},
-    {t:'Affiliates',      u:'affiliates.html',  g:'Site', kw:'apex prop firm partners discount'},
+    {t:'Prop Firm Discounts', u:'affiliates.html', g:'Site', kw:'apex bulenox tradeday e8 fundednext affiliate partners discount code djfsdx promo funding eval'},
     {t:'Contact & Help',  u:'contact.html',     g:'Site', kw:'support ticket email'},
     {t:'FAQ',             u:'faq.html',         g:'Site', kw:'questions answers'},
     {t:'Disclosures',     u:'disclosures.html', g:'Site', kw:'legal risk cftc privacy terms'},
