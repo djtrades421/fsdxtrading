@@ -7,6 +7,7 @@
   <title>FSD-X — Accounts</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="nav-loader.js"></script>
+  <script src="tracker-core.js"></script>
   <script src="alerts.js"></script>
   <style>
     body { background-color: #000; }
@@ -429,32 +430,12 @@
       const wr = wins+losses > 0 ? Math.round(wins/(wins+losses)*100) : 0;
       const tradingDays = new Set(trades.map(t=>t.date).filter(Boolean)).size;
 
-      // Drawdown — respects the account's DD type.
-      // Stable, transitive sort key (include exitTime; return 0 on tie).
+      // Drawdown — respects the account's DD type. Lives in tracker-core.js so
+      // the dashboard status strip runs the exact same math (see FSDXTracker).
       const ddKey = t => (t.date||'') + ' ' + (t.entryTime||'') + ' ' + (t.exitTime||'');
       const sorted = [...trades].sort((a,b) => { const ka=ddKey(a), kb=ddKey(b); return ka<kb?-1:ka>kb?1:0; });
-      let equity=0, peak=0, maxDD=0, currentDD=0, hwm=0;
-      if (card.ddType === 'eod') {
-        // End-of-day drawdown: measure drops against the high-water-mark of
-        // DAILY CLOSING balances. Intraday swings within a day do NOT count —
-        // this is what Lucid/Tradovate EOD-trailing accounts actually track.
-        const byDay = {};
-        sorted.forEach(t => { if (t.date) byDay[t.date] = (byDay[t.date]||0) + pnl(t); });
-        Object.keys(byDay).sort().forEach(d => {
-          equity += byDay[d];
-          if (equity > peak) { peak = equity; hwm = equity; }
-          currentDD = equity - peak;
-          if (currentDD < maxDD) maxDD = currentDD;
-        });
-      } else {
-        // Trailing drawdown: intraday peak-to-trough on the per-trade curve.
-        sorted.forEach(t => {
-          equity += pnl(t);
-          if (equity > peak) { peak = equity; hwm = equity; }
-          currentDD = equity - peak;
-          if (currentDD < maxDD) maxDD = currentDD;
-        });
-      }
+      const _dd = FSDXTracker.drawdown(card, trades);
+      const currentDD = _dd.currentDD, maxDD = _dd.maxDD, hwm = _dd.hwm;
 
       // Consecutive losses (current streak)
       let consecLosses = 0;
