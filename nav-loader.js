@@ -115,6 +115,39 @@
   } catch (e) {}
 })();
 
+// ── Command palette (⌘K) ──
+// Loaded from here so no page has to add a script tag of its own.
+(function () {
+  if (document.getElementById('fsdx-search-js')) return;
+  var sc = document.createElement('script');
+  sc.id = 'fsdx-search-js';
+  sc.src = 'fsdx-search.js';
+  sc.defer = true;
+  (document.head || document.documentElement).appendChild(sc);
+})();
+
+// ── Collapsible nav groups (Option B) ──
+// "The Site" is shut for members and open for visitors; the choice is remembered.
+function toggleNavGroup(id) {
+  var g = document.getElementById(id);
+  if (!g) return;
+  var open = g.classList.toggle('open');
+  var b = g.querySelector('.nav-ghead');
+  if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+  try { localStorage.setItem('fsdx_navgrp_' + id, open ? '1' : '0'); } catch (e) {}
+}
+
+function applyNavGroupState(id, defaultOpen) {
+  var g = document.getElementById(id);
+  if (!g) return;
+  var saved = null;
+  try { saved = localStorage.getItem('fsdx_navgrp_' + id); } catch (e) {}
+  var open = saved === null ? defaultOpen : saved === '1';
+  g.classList.toggle('open', open);
+  var b = g.querySelector('.nav-ghead');
+  if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
 function toggleNavCollapse() {
   var on = document.documentElement.classList.toggle('nav-collapsed');
   try { localStorage.setItem('fsdx_nav_collapsed', on ? '1' : '0'); } catch (e) {}
@@ -187,6 +220,17 @@ function prepareNavLabels(root) {
           link.classList.add('text-green-400', 'font-bold');
         }
       });
+
+      // "The Site" starts shut for members, open for visitors
+      const loggedIn = !!localStorage.getItem('fsdx_token');
+      applyNavGroupState('nav-group-site', !loggedIn);
+
+      // never hide the page you're on inside a shut group
+      var activeInGroup = document.querySelector('#nav-content .nav-group .nav-link.fx-active, #nav-content .nav-group .nav-link.font-bold');
+      if (activeInGroup) {
+        var grp = activeInGroup.closest('.nav-group');
+        if (grp && !grp.classList.contains('open')) grp.classList.add('open');
+      }
 
       // Show VIP section if logged in
       const token = localStorage.getItem('fsdx_token');
