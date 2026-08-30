@@ -287,6 +287,30 @@
 
           <figure class="mt-8 rounded-2xl overflow-hidden border border-white/5 bg-black">
             <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold flex items-center justify-between">
+              <span>// Watch — Fully Automated ORB Strategy on MNQ</span>
+            </div>
+            <div id="at-video" class="aspect-video bg-black relative group cursor-pointer" onclick="playAutoTraderVideo()"
+                 role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playAutoTraderVideo();}"
+                 aria-label="Play video: Fully Automated ORB Strategy on MNQ futures">
+              <img src="https://img.youtube.com/vi/Cm42q3xSFoM/maxresdefault.jpg"
+                   onerror="this.onerror=null;this.src='https://img.youtube.com/vi/Cm42q3xSFoM/hqdefault.jpg';"
+                   alt="FSD-X ORB Auto Trader running on a Micro E-mini Nasdaq chart"
+                   class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
+              <div class="absolute inset-0 flex items-center justify-center z-20">
+                <svg viewBox="0 0 68 48" class="w-[58px] h-[41px] drop-shadow-lg" aria-hidden="true">
+                  <path d="M66.52 7.74a8 8 0 0 0-5.63-5.66C56.1.94 34 .94 34 .94s-22.1 0-26.89 1.14a8 8 0 0 0-5.63 5.66C.5 12.55.5 24 .5 24s0 11.45.98 16.26a8 8 0 0 0 5.63 5.66C11.9 47.06 34 47.06 34 47.06s22.1 0 26.89-1.14a8 8 0 0 0 5.63-5.66C67.5 35.45 67.5 24 67.5 24s0-11.45-.98-16.26z" fill="#f00" fill-opacity="0.9"></path>
+                  <path d="M27 34V14l18 10-18 10z" fill="#fff"></path>
+                </svg>
+              </div>
+              <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition z-10"></div>
+            </div>
+          </figure>
+          <p class="mt-3 text-[11px] text-zinc-600 leading-relaxed max-w-2xl">
+            ⚠ Video is for educational purposes only. Any trades shown are presented for illustrative purposes and should not be expected to be replicated in a live trading account. Futures trading involves substantial risk of loss. Past performance is not necessarily indicative of future results.
+          </p>
+
+          <figure class="mt-6 rounded-2xl overflow-hidden border border-white/5 bg-black">
+            <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold flex items-center justify-between">
               <span>// Live on Demo — TradingView · MNQ 5m</span>
             </div>
             <img src="Screenshot%202026-06-21%20142909.png" alt="FSD-X ORB Auto-Trader running on a Micro E-mini Nasdaq 5-minute chart, status panel showing position, P&amp;L, trades and win rate" class="w-full object-cover" / width="1815" height="686" loading="lazy" decoding="async">
@@ -514,6 +538,17 @@
   </main>
 
   <script>
+    // ===== Click-to-load YouTube (keeps the YT player off the initial page load) =====
+    function playAutoTraderVideo() {
+      const el = document.getElementById('at-video');
+      if (!el || el.dataset.loaded === '1') return;
+      el.dataset.loaded = '1';
+      el.innerHTML = '<iframe class="absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/Cm42q3xSFoM?autoplay=1&rel=0" title="Fully Automated ORB Strategy | MNQ Futures" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+      el.classList.remove('cursor-pointer', 'group');
+      el.removeAttribute('role');
+      el.removeAttribute('tabindex');
+    }
+
     function toggleMobileMenu() {
       const sidebar = document.getElementById('sidebar-panel');
       if (sidebar.classList.contains('-translate-x-full')) {
