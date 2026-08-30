@@ -248,7 +248,6 @@ function prepareNavLabels(root) {
       (function () {
         try {
           if (!localStorage.getItem('fsdx_token')) return;
-          if (localStorage.getItem('fsdx_admin') === 'true') return;
           fetch('https://nexus-validator.dfuentes4211.workers.dev/api/auth/profile', {
             headers: { 'Authorization': 'Bearer ' + localStorage.getItem('fsdx_token') }
           })
@@ -300,6 +299,7 @@ function prepareNavLabels(root) {
         let tierText;
         if (tier === 'trial') tierText = planName + ' · Trial';
         else if (whopStatus === 'completed') tierText = planName + ' · Lifetime';
+        else if (tier === 'pending' || whopStatus === 'pending') tierText = 'Setup incomplete';
         else tierText = plan ? planName : 'VIP Member';
         if (tierEl) tierEl.textContent = tierText;
       }
@@ -318,5 +318,9 @@ function navLogout() {
   localStorage.removeItem('fsdx_name');
   localStorage.removeItem('fsdx_tier');
   localStorage.removeItem('fsdx_plan');
+  // These two used to survive logout. fsdx_admin in particular leaked an admin
+  // session into whatever account signed in next on the same browser.
+  localStorage.removeItem('fsdx_whop_status');
+  localStorage.removeItem('fsdx_admin');
   window.location.href = 'index.html';
 }
