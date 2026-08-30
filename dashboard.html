@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — VIP Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
   <script src="filters.js"></script>
   <script src="alerts.js"></script>
@@ -206,7 +207,7 @@
               </div>
               <div class="cal-header-stats flex gap-4 text-sm flex-wrap items-center">
                 <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="mini-cal-monthly" class="font-black">—</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="mini-cal-wr" class="font-black text-green-400">—</span></div>
+                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="mini-cal-wr" class="font-black text-emerald-400">—</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="mini-cal-days" class="font-black text-zinc-400">—</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">TRADES</span><span id="mini-cal-trades" class="font-black text-zinc-400">—</span></div>
                 <a href="journal.html" class="text-[10px] text-zinc-500 hover:text-green-400 transition font-bold ml-2">Open Journal →</a>
@@ -692,7 +693,7 @@
       const uid = 'eq' + Date.now();
 
       const finalEl = document.getElementById('chart-final-pnl');
-      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-2xl font-black mt-1 '+(isPos?'text-green-400':'text-red-400'); }
+      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-2xl font-black mt-1 '+(isPos?'text-emerald-400':'text-red-400'); }
 
       const legendEl = document.getElementById('chart-legend');
       if (legendEl) {
@@ -1386,13 +1387,13 @@
       const monthWr = decided ? Math.round(monthWins / decided * 100) : null;
 
       const mEl = document.getElementById('mini-cal-monthly');
-      if (mEl) { mEl.textContent = fmtMiniFull(monthPnl); mEl.className = 'font-black ' + (monthPnl >= 0 ? 'text-green-400' : 'text-red-400'); }
+      if (mEl) { mEl.textContent = fmtMiniFull(monthPnl); mEl.className = 'font-black ' + (monthPnl >= 0 ? 'text-emerald-400' : 'text-red-400'); }
 
       const wrEl = document.getElementById('mini-cal-wr');
       if (wrEl) {
         wrEl.textContent = monthWr !== null ? monthWr + '%' : '—';
         wrEl.className = 'font-black ' + (monthWr === null ? 'text-zinc-500'
-          : monthWr >= 55 ? 'text-green-400' : monthWr >= 45 ? 'text-zinc-300' : 'text-red-400');
+          : monthWr >= 55 ? 'text-emerald-400' : monthWr >= 45 ? 'text-zinc-300' : 'text-red-400');
       }
 
       const dEl = document.getElementById('mini-cal-days');
@@ -1453,7 +1454,7 @@
 
             if (data) {
               const pnlDiv = document.createElement('div');
-              pnlDiv.className = 'text-sm font-black ' + (data.pnl >= 0 ? 'text-green-400' : 'text-red-400');
+              pnlDiv.className = 'text-sm font-black ' + (data.pnl >= 0 ? 'text-emerald-400' : 'text-red-400');
               pnlDiv.textContent = fmtMiniShort(data.pnl);
               cell.appendChild(pnlDiv);
 
@@ -1470,7 +1471,7 @@
         const wc = document.createElement('div');
         wc.className = 'mini-cal-day p-3 flex flex-col items-end justify-start bg-zinc-950/30';
         const wcInner = document.createElement('div');
-        wcInner.className = 'text-sm font-black ' + (rowPnl >= 0 ? 'text-green-400' : 'text-red-400');
+        wcInner.className = 'text-sm font-black ' + (rowPnl >= 0 ? 'text-emerald-400' : 'text-red-400');
         wcInner.textContent = rowPnl !== 0 ? fmtMiniShort(rowPnl) : '—';
         wc.appendChild(wcInner);
         row.appendChild(wc);
