@@ -41,6 +41,13 @@
     + '#fsdx-lock li{font-size:12.5px;color:#A2AEBF;padding:5px 0 5px 20px;position:relative}'
     + '#fsdx-lock li:before{content:"";position:absolute;left:4px;top:12px;width:5px;height:5px;'
     +   'border-radius:50%;background:#FF6B1F}'
+    + '#fsdx-lock .whop{width:100%;background:#fff;color:#000;font-size:12px;font-weight:800;border:0;'
+    +   'border-radius:9px;padding:12px 18px;cursor:pointer;margin-bottom:14px;text-transform:uppercase;'
+    +   'letter-spacing:.06em}'
+    + '#fsdx-lock .whop:hover{background:#e4e4e7}'
+    + '#fsdx-lock .or{display:flex;align-items:center;gap:10px;font-size:10px;text-transform:uppercase;'
+    +   'letter-spacing:.16em;color:#3F4A57;margin-bottom:14px}'
+    + '#fsdx-lock .or:before,#fsdx-lock .or:after{content:"";flex:1;height:1px;background:rgba(120,160,210,.14)}'
     + '#fsdx-lock .row{display:flex;gap:8px;margin-bottom:10px}'
     + '#fsdx-lock input{flex:1;background:#05080D;border:1px solid rgba(120,160,210,.18);border-radius:9px;'
     +   'padding:11px 13px;color:#E6EAF0;font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;outline:none}'
@@ -90,6 +97,8 @@
       +     (o.title ? '<strong style="color:#E6EAF0">' + o.title + '</strong>' : 'the member tools') + '.</p>'
       +   (perks ? '<ul>' + perks + '</ul>' : '')
       +   '<div class="msg" id="fsdx-lock-msg"></div>'
+      +   '<button class="whop" id="fsdx-lock-whop">Continue with Whop</button>'
+      +   '<div class="or">or paste it yourself</div>'
       +   '<div class="row">'
       +     '<input id="fsdx-lock-key" placeholder="Paste your Whop key" autocomplete="off" spellcheck="false">'
       +     '<button id="fsdx-lock-btn">Unlock</button>'
@@ -99,6 +108,13 @@
       +     'Full walkthrough on <a href="setup.html">Getting Started</a>.<br>'
       +     'Not subscribed yet? <a href="memberships.html">See membership options</a>.</div>'
       + '</div>';
+
+    var whopBtn = document.getElementById('fsdx-lock-whop');
+    if (whopBtn) whopBtn.addEventListener('click', function () {
+      /* Same OAuth entry point the login page uses. It reads the membership
+         off Whop directly, so the member never has to find the key at all. */
+      window.location.href = API + '/api/auth/whop/start?next=dashboard.html';
+    });
 
     var btn = document.getElementById('fsdx-lock-btn');
     var input = document.getElementById('fsdx-lock-key');
