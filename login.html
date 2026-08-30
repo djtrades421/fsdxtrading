@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Member Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <style>
     body { background-color: #000; }
     .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
@@ -228,7 +229,7 @@
     function showMsg(id, msg, type) {
       const el = document.getElementById(id);
       el.textContent = msg;
-      el.classList.remove('hidden','bg-red-950/40','border-red-500/30','text-red-400','bg-green-950/40','border-green-500/30','text-green-400','border');
+      el.classList.remove('hidden','bg-red-950/40','border-red-500/30','text-red-400','bg-emerald-950/40','border-emerald-500/30','text-emerald-400','border');
       el.classList.add('border');
       if (type === 'error') {
         el.classList.add('bg-red-950/40','border-red-500/30','text-red-400');
