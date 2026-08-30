@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
+  <script src="fsdx-account.js"></script>
   <script src="alerts.js"></script>
   <style>
     body { background-color: #000; }
@@ -85,6 +86,7 @@
         </div>
 
         <!-- INPUT panel -->
+        <div id="importer-lock" class="hidden"></div>
         <div id="input-panel">
           <div class="flex gap-1 mb-3">
             <button onclick="setInputMode('file')" id="tab-file" class="px-4 py-2 text-xs font-bold rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 transition">↑ Upload File</button>
@@ -1796,6 +1798,19 @@
     // arriving from an open session lands straight on "add to this session".
     let pendingSessionId = null;
     loadAuth().then(async () => {
+      // No Whop key yet → nothing here can save, so explain rather than no-op.
+      if (typeof fsdxIsPending === 'function' && fsdxIsPending(whopKey)) {
+        // hide the importer UI, then render the lock in its place
+        ['input-panel','options-panel','results-panel'].forEach(function(id){
+          var el = document.getElementById(id); if (el) el.classList.add('hidden');
+        });
+        fsdxRequireKey({ into: 'importer-lock', title: 'the Trade Importer', perks: [
+          'Import Tradovate and broker CSVs straight into your journal',
+          'Overlapping uploads only add new trades',
+          'Send trades to the journal or a backtest session'
+        ]});
+        return;
+      }
       await loadJournalAccounts();
       const qs = new URLSearchParams(window.location.search);
       const dest = qs.get('dest');
