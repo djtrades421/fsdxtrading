@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
+  <script src="fsdx-account.js"></script>
   <script src="alerts.js"></script>
   <script src="filters.js"></script>
   <style>
@@ -2221,7 +2222,7 @@
         const data = await res.json();
         whopKey = data.user?.whopKey;
       } catch(err) {}
-      if (!whopKey) { document.getElementById('loading-screen').innerHTML='<p class="text-zinc-500 text-sm text-center px-6">Could not load your key. <a href="login.html" class="text-green-400">Log out and back in</a>.</p>'; return; }
+      if (fsdxIsPending(whopKey)) { fsdxRequireKey({ title: 'Trade Journal', perks: ['Log every trade on a calendar with P&L and win rate', 'Grade breakdowns across your sessions', 'Syncs with Nexus and the Trade Importer'] }); return; }
       try {
         const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'get-trades',key:whopKey}) });
         const data = await res.json();
