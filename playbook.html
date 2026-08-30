@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Playbook</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
   <script src="alerts.js"></script>
   <style>
@@ -528,7 +529,7 @@ function renderSetups() {
   list.innerHTML = pbData.setups.map(s => `
     <div class="bg-zinc-900 border border-white/10 rounded-xl p-4">
       <div class="flex items-center justify-between mb-3">
-        <div class="text-sm font-bold text-green-400 tracking-wide">${esc(s.name)}</div>
+        <div class="text-sm font-bold text-emerald-400 tracking-wide">${esc(s.name)}</div>
         <div class="flex gap-1">
           <button onclick="editSetup('${s.id}')" class="text-zinc-500 hover:text-zinc-300 text-xs px-1.5 py-1">✏️</button>
           <button onclick="deleteSetup('${s.id}')" class="text-red-500/70 hover:text-red-400 text-sm font-bold px-1.5 py-1">✕</button>
@@ -676,7 +677,7 @@ document.getElementById('goal-save').onclick = () => {
         '<td class="py-2 px-3 text-zinc-300">'+x.n+'</td>'+
         '<td class="py-2 px-3 text-zinc-300">'+x.win+'%</td>'+
         '<td class="py-2 px-3 text-zinc-300">'+x.pf+'</td>'+
-        '<td class="py-2 px-3 text-green-400/90">'+fmt(x.net)+'</td></tr>';
+        '<td class="py-2 px-3 text-emerald-400/90">'+fmt(x.net)+'</td></tr>';
     }
     return '<div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Performance by Grade \u00b7 7-Year</div>'+
       '<div class="overflow-x-auto border border-white/10 rounded-xl"><table class="w-full text-xs text-left" style="min-width:420px">'+
@@ -691,7 +692,7 @@ document.getElementById('goal-save').onclick = () => {
         '<div>'+
           item('Total Trades',D.trades)+
           item('Wins / Losses',D.wins+' / '+D.losses+(D.be?(' / '+D.be+' BE'):''))+
-          item('Expected Value','$'+D.ev+' / trade','text-green-400')+
+          item('Expected Value','$'+D.ev+' / trade','text-emerald-400')+
           item('Avg Win / Avg Loss','$'+D.avgwin+' / -$'+Math.abs(D.avgloss))+
           item('Max Consec. W / L',D.mcw+' / '+D.mcl)+
         '</div>'+
@@ -712,7 +713,7 @@ document.getElementById('goal-save').onclick = () => {
         '<td class="py-2 px-3 text-zinc-300">'+y.trades+'</td>'+
         '<td class="py-2 px-3 text-zinc-400">'+y.wins+' / '+y.losses+'</td>'+
         '<td class="py-2 px-3 text-zinc-300">'+y.win+'%</td>'+
-        '<td class="py-2 px-3 text-green-400/90">'+fmt(y.net)+'</td>'+
+        '<td class="py-2 px-3 text-emerald-400/90">'+fmt(y.net)+'</td>'+
         '<td class="py-2 px-3 text-zinc-400">'+(y.dd!=null?fmt(y.dd):'\u2014')+'</td></tr>';
     }
     return '<div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Annual Ledger \u00b7 Backtest</div>'+
@@ -756,7 +757,7 @@ document.getElementById('goal-save').onclick = () => {
     if(deep){
       html+=sectionHead('Trading Funded','Daily-Driver Performance','What it looks like to actually trade this profile once funded \u2014 full 7-year record. The window toggle above adjusts the eval planner.')+
       '<div class="grid grid-cols-2 md:grid-cols-4 gap-3">'+
-        card('Net P&L (7yr)',fmt(deep.net),'text-green-400')+
+        card('Net P&L (7yr)',fmt(deep.net),'text-emerald-400')+
         card('Max Drawdown',fmt(deep.maxdd),'text-zinc-300')+
         card('Win Rate',deep.win+'%','text-white')+
         card('Profit Factor',deep.pf,'text-white')+
@@ -778,7 +779,7 @@ document.getElementById('goal-save').onclick = () => {
       const dd=(RP_DATA[state.acct]||{})[r]; const d=dd&&dd[state.tf]; if(!d) continue;
       const e=d.eval[state.dll],sel=(r===state.risk),col=passColor(e.passrate);
       rows+='<tr class="'+(sel?'bg-green-500/10 ':'')+'border-b border-white/5">'+
-        '<td class="py-2.5 px-3 font-bold '+(sel?'text-green-400':'text-white')+'">$'+r+'</td>'+
+        '<td class="py-2.5 px-3 font-bold '+(sel?'text-emerald-400':'text-white')+'">$'+r+'</td>'+
         '<td class="py-2.5 px-3 font-bold" style="color:'+col+'">'+e.passrate+'%</td>'+
         '<td class="py-2.5 px-3 text-zinc-300">'+(e.median!=null?e.median+'d':'\u2014')+'</td>'+
         '<td class="py-2.5 px-3 text-zinc-400">'+(e.fast!=null?e.fast+'d':'\u2014')+'</td>'+
@@ -798,8 +799,8 @@ document.getElementById('goal-save').onclick = () => {
       const g=(RP_DEEP[state.acct]||{})[r]; if(!g) continue;
       const sel=(r===state.risk);
       rows+='<tr class="'+(sel?'bg-green-500/10 ':'')+'border-b border-white/5">'+
-        '<td class="py-2.5 px-3 font-bold '+(sel?'text-green-400':'text-white')+'">$'+r+'</td>'+
-        '<td class="py-2.5 px-3 text-green-400/90">'+fmt(g.net)+'</td>'+
+        '<td class="py-2.5 px-3 font-bold '+(sel?'text-emerald-400':'text-white')+'">$'+r+'</td>'+
+        '<td class="py-2.5 px-3 text-emerald-400/90">'+fmt(g.net)+'</td>'+
         '<td class="py-2.5 px-3 text-zinc-400">'+fmt(g.maxdd)+'</td>'+
         '<td class="py-2.5 px-3 text-zinc-300">'+g.win+'%</td>'+
         '<td class="py-2.5 px-3 text-zinc-300">'+g.pf+'</td>'+
@@ -828,7 +829,7 @@ document.getElementById('goal-save').onclick = () => {
         '<td class="py-2 px-3 text-green-400">'+y.pass+'</td>'+
         '<td class="py-2 px-3 '+(y.fail>0?'text-red-400':'text-zinc-600')+'">'+y.fail+'</td>'+
         '<td class="py-2 px-3" style="color:'+col+'">'+(rate!=null?rate+'%':'\u2014')+'</td>'+
-        '<td class="py-2 px-3 text-green-400/90">'+fmt(y.net)+'</td>'+
+        '<td class="py-2 px-3 text-emerald-400/90">'+fmt(y.net)+'</td>'+
         '<td class="py-2 px-3 whitespace-nowrap">'+lastCell+'</td></tr>';
     }
     let noteHtml='<div class="text-[10px] text-zinc-600 leading-relaxed mt-2">Each year restarts the eval clock on Jan 1 \u2014 evals run back-to-back within the year (a new one begins the day after a pass or fail), so every row is the standalone count for someone starting that year. * = the year\u2019s final eval carried into the next year; the Last Eval column shows when it started and finished.'+(anyProg?' \u201cIn progress\u201d = an eval still running at the end of the data.':'')+'</div>';
