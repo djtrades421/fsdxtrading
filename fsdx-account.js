@@ -11,10 +11,8 @@
    SAFETY
    - Purely additive. It only renders in a state where the page ALREADY
      refuses to load, so nothing that works today can start failing.
-   - Admin bypass: admin.html falls back to 'FSDX-OWNER' when the profile has
-     no whopKey, so the owner account may legitimately have none. Anyone with
-     localStorage.fsdx_admin === 'true' is never treated as pending.
-   - Fails open. If we cannot tell, the member is treated as fully signed up.
+   - No client-side admin bypass. fsdx_admin survives navLogout(), so it would
+     leak across accounts in the same browser and silently disable the gate.
 
    Load after nav-loader.js (nav-loader injects it automatically).
    ========================================================================== */
@@ -23,13 +21,13 @@
 
   var API = 'https://nexus-validator.dfuentes4211.workers.dev';
 
-  function isAdmin() {
-    try { return localStorage.getItem('fsdx_admin') === 'true'; } catch (e) { return false; }
-  }
-
-  /* The whole point: never lock out someone who isn't demonstrably keyless. */
+  /* Pending == the profile came back with no Whop key. Nothing else.
+     There is deliberately NO localStorage admin bypass here: fsdx_admin is a
+     client-side flag that survives navLogout(), so a burner account created in
+     a browser that had ever touched admin.html would silently skip the gate.
+     The owner account does not need a bypass anyway — a MASTER_KEYS value is
+     stored as a real whopKey, so it is never pending. */
   function isPending(whopKey) {
-    if (isAdmin()) return false;
     return !whopKey;
   }
 
