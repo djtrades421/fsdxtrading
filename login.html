@@ -159,9 +159,10 @@
               <div id="password-match-msg" class="hidden mt-1 text-[11px]"></div>
             </div>
             <div>
-              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Whop License Key</label>
+              <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Whop License Key <span class="text-zinc-600 font-normal normal-case tracking-normal">— optional</span></label>
               <input type="text" id="signup-key" placeholder="Paste your key from Whop Software tab"
                 class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 font-mono tracking-wider">
+            <p class="text-[11px] text-zinc-600 mt-1.5 leading-relaxed">Don't have it yet? Leave this blank — create your account now and add the key later to unlock the member tools.</p>
             </div>
             <button onclick="handleSignup()" id="signup-btn"
               class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-green-500/10">
@@ -338,7 +339,8 @@
           localStorage.setItem('fsdx_tier', data.tier || 'pro');
           localStorage.setItem('fsdx_plan', data.plan || '');
           localStorage.setItem('fsdx_whop_status', data.whopStatus || '');
-          window.location.href = 'dashboard.html';
+          // No key yet → send them to the guide rather than a dashboard of locked tools.
+          window.location.href = data.pending ? 'setup.html' : 'dashboard.html';
         } else if (data.inactive) {
           // Membership inactive — show friendly message with clickable link
           const el = document.getElementById('login-msg');
@@ -408,7 +410,7 @@
       const key       = document.getElementById('signup-key').value.trim();
 
       const confirm = document.getElementById('signup-password-confirm').value;
-      if (!firstName || !email || !password || !confirm || !key) return showMsg('signup-msg', 'Please fill in all required fields.', 'error');
+      if (!firstName || !email || !password || !confirm) return showMsg('signup-msg', 'Please fill in all required fields.', 'error');
       const pwError = validatePassword(password);
       if (pwError) return showMsg('signup-msg', pwError, 'error');
       if (password !== confirm) return showMsg('signup-msg', 'Passwords do not match.', 'error');
