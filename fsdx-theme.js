@@ -132,12 +132,8 @@
 
   html{
     -webkit-text-size-adjust:100%;
-    background-color:${S.black} !important;
-    background-image:
-      radial-gradient(1100px 640px at 88% -6%, ${S.glowA}, transparent 62%),
-      radial-gradient(900px 700px at 2% 104%, ${S.glowB}, transparent 62%),
-      linear-gradient(168deg,${S.ground[0]} 0%,${S.ground[1]} 46%,${S.ground[2]} 100%) !important;
-    background-attachment:fixed !important;
+    background-color:${S.ground[1]} !important;
+    background-image:none !important;
   }
 
   body{
@@ -145,8 +141,9 @@
     background:transparent !important;
   }
 
-  /* fixed grid wash — sits above panels so the pattern reads across the page */
-  body::after{
+  /* Grid wash is OFF — the ground is a solid colour.
+     To bring the grid back, put data-fx-grid="on" on the <html> tag. */
+  [data-fx-grid="on"] body::after{
     content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;
     background-image:
       linear-gradient(${S.grid} 1px,transparent 1px),
@@ -170,16 +167,28 @@
   .bg-zinc-900{ background-color:${hexA(S.slate[900],.74)} !important; }
 
   aside#sidebar-panel{
-    background:linear-gradient(180deg,${hexA(S.slate[950],.97)},${hexA(S.black,.97)}) !important;
-    backdrop-filter:blur(10px);
+    background:${S.slate[950]} !important;
     border-right:1px solid var(--fx-line) !important;
     box-shadow:18px 0 48px -30px rgba(0,0,0,.9);
   }
-  aside#sidebar-panel .sticky{ background:${hexA(S.slate[950],.95)} !important; backdrop-filter:blur(10px); }
+  /* Pinned nav footer.
+     nav.html gives #nav-content a fixed h-full, so on a logged-in (VIP) menu the list
+     overflows and the sticky block lands mid-list with items scrolling behind it.
+     Letting the wrapper grow puts it back at the true bottom. */
+  aside#sidebar-panel #nav-content{ height:auto !important; min-height:100%; flex:0 0 auto !important; }
+  aside#sidebar-panel #nav-content > *:last-child{
+    margin-top:auto !important;
+    padding-bottom:10px;
+    background:${S.slate[950]} !important;
+    box-shadow:0 -14px 22px -12px ${hexA(S.black,.95)};
+  }
+  /* the Logout button ships without flex, so its icon and label never line up */
+  aside#sidebar-panel button[onclick*="navLogout"]:not(.hidden){
+    display:flex !important; align-items:center; gap:.5rem;
+  }
 
   header.md\\:hidden{
-    background:${hexA(S.slate[950],.93)} !important;
-    backdrop-filter:blur(10px);
+    background:${S.slate[950]} !important;
     border-bottom:1px solid var(--fx-line) !important;
   }
 
@@ -287,7 +296,7 @@
   [data-fx="c"] .rounded-2xl{ border-radius:6px !important; }
   [data-fx="c"] .rounded-xl { border-radius:5px !important; }
   [data-fx="c"] .rounded-lg { border-radius:4px !important; }
-  [data-fx="c"] body::after{
+  [data-fx="c"][data-fx-grid="on"] body::after{
     background-size:44px 44px;
     background-image:
       linear-gradient(${S.grid.replace(/[\d.]+\)$/, '.06)')} 1px,transparent 1px),
