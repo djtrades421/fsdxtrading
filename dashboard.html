@@ -963,7 +963,10 @@
     let _profileUser = null;
 
     function maybeShowWelcome(user, firstName) {
-      if (!user || user.onboardingDismissed) return;
+      if (!user) return;
+      // ?welcome=1 forces it back for testing without clearing the stored flag.
+      const forced = new URLSearchParams(location.search).get('welcome') === '1';
+      if (user.onboardingDismissed && !forced) return;
 
       const modal = document.getElementById('welcome-modal');
       if (!modal) return;
@@ -972,17 +975,47 @@
         ? `Welcome in, ${firstName}.`
         : 'Welcome in.';
 
-      /* A member who already has a password needs neither step 1 nor the
-         caveat on 2FA. Renumber so they never see a list starting at 2. */
+      /* The account step is always about the same idea — Whop sign-in was a
+         bootstrap and there is one action left to finish the handover. Which
+         action depends on where they are, so the step changes rather than
+         vanishing. Hiding it once they had a password meant nobody was ever
+         told they could close the Whop door. */
       const needsPassword = user.hasPassword === false;
-      const pwStep = document.getElementById('wm-step-password');
-      if (pwStep) pwStep.classList.toggle('hidden', !needsPassword);
+      const whopOn = user.whopLoginEnabled !== false;
+
+      const title = document.getElementById('wm-step-account-title');
+      const bodyEl = document.getElementById('wm-step-account-body');
+      const acct = document.getElementById('wm-step-account');
+
+      if (needsPassword) {
+        title.textContent = 'Set a password';
+        bodyEl.innerHTML = 'You signed in with Whop, which was only there to get you set up. '
+          + 'A password gives you a normal login, lets you turn on two-factor, and lets you '
+          + 'switch Whop sign-in off for good. '
+          + '<a href="profile.html" class="text-green-400 hover:underline font-bold">Set one in your profile &rarr;</a>';
+        acct.classList.remove('hidden');
+      } else if (whopOn) {
+        title.textContent = 'Switch Whop sign-in off';
+        bodyEl.innerHTML = "You've got a password, so Whop has done its job — it was only there to "
+          + 'set the account up. Turning it off means your email and password is the only way in, '
+          + 'and two-factor then covers the whole account. '
+          + '<a href="profile.html" class="text-green-400 hover:underline font-bold">Do it in your profile &rarr;</a>';
+        acct.classList.remove('hidden');
+      } else {
+        acct.classList.add('hidden');
+      }
 
       const twofaNote = document.getElementById('wm-2fa-note');
       if (twofaNote) twofaNote.classList.toggle('hidden', !needsPassword);
 
-      document.getElementById('wm-n-2fa').textContent = needsPassword ? '2' : '1';
-      document.getElementById('wm-n-tools').textContent = needsPassword ? '3' : '2';
+      /* Number whatever is actually on screen, in order. Hardcoded numbers go
+         wrong the moment a step hides — and steps here hide by design. */
+      let n = 0;
+      modal.querySelectorAll('[data-wm-step]').forEach(step => {
+        if (step.classList.contains('hidden')) return;
+        const num = step.querySelector('.wm-num');
+        if (num) num.textContent = String(++n);
+      });
 
       modal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
@@ -1572,28 +1605,56 @@
           <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
         </div>
         <h2 id="wm-greeting" class="text-lg font-black text-white">Welcome in.</h2>
-        <p class="text-zinc-500 text-xs mt-1">Your membership is handled. A couple of things on the site side.</p>
+        <p class="text-zinc-500 text-xs mt-1">A few things to set up before tomorrow's open.</p>
       </div>
 
-      <!-- Set a password — hidden for anyone who already has one -->
-      <div id="wm-step-password" class="hidden border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
+      <!-- 1. Indicators. The reason they bought. Whop-side, documented on setup.html. -->
+      <div data-wm-step class="border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
         <div class="flex items-start gap-2.5">
-          <span class="text-green-400 font-black text-xs mt-0.5">1</span>
+          <span class="wm-num text-green-400 font-black text-xs mt-0.5">1</span>
           <div>
-            <div class="text-xs font-bold text-white">Set a password</div>
+            <div class="text-xs font-bold text-white">Claim your indicators on Whop</div>
             <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
-              You signed in with Whop, which was only there to get you set up. A password gives you a
-              normal login — and you can switch Whop sign-in off entirely once you have one.
-              <a href="profile.html" class="text-green-400 hover:underline font-bold">Set one in your profile &rarr;</a>
+              ORB PRO is invite-only, so it has to be claimed before it shows up in your TradingView
+              scripts. You'll need your TradingView <em>username</em>, not your email.
+              <a href="https://whop.com/joined/dj-trades-fsdx/" target="_blank" rel="noopener"  class="text-green-400 hover:underline font-bold">Claim on Whop &rarr;</a> <a href="setup.html#step-2" class="text-zinc-600 hover:text-zinc-400">walkthrough</a>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 2FA -->
-      <div class="border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
+      <!-- 2. Discord, also claimed through Whop -->
+      <div data-wm-step class="border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
         <div class="flex items-start gap-2.5">
-          <span id="wm-n-2fa" class="text-green-400 font-black text-xs mt-0.5">1</span>
+          <span class="wm-num text-green-400 font-black text-xs mt-0.5">2</span>
+          <div>
+            <div class="text-xs font-bold text-white">Claim your Discord access on Whop</div>
+            <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
+              Same place — claim it on your Whop membership and authorize Discord. That's what gets you
+              into the live trade room, 8:30 AM CT every market morning.
+              <a href="https://whop.com/joined/dj-trades-fsdx/" target="_blank" rel="noopener"  class="text-green-400 hover:underline font-bold">Claim on Whop &rarr;</a> <a href="setup.html#step-1" class="text-zinc-600 hover:text-zinc-400">walkthrough</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Finish the handover from Whop. Text is set by maybeShowWelcome():
+           "Set a password" first, then "Switch Whop sign-in off" once they
+           have one. Hidden only when both are already done. -->
+      <div id="wm-step-account" data-wm-step class="hidden border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
+        <div class="flex items-start gap-2.5">
+          <span class="wm-num text-green-400 font-black text-xs mt-0.5">3</span>
+          <div>
+            <div id="wm-step-account-title" class="text-xs font-bold text-white">Set a password</div>
+            <div id="wm-step-account-body" class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. 2FA -->
+      <div data-wm-step class="border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
+        <div class="flex items-start gap-2.5">
+          <span class="wm-num text-green-400 font-black text-xs mt-0.5">4</span>
           <div>
             <div class="text-xs font-bold text-white">Turn on two-factor</div>
             <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
@@ -1604,10 +1665,10 @@
         </div>
       </div>
 
-      <!-- What's in here -->
-      <div class="border border-white/10 bg-black/40 rounded-xl p-4 mb-5">
+      <!-- 5. What's in here -->
+      <div data-wm-step class="border border-white/10 bg-black/40 rounded-xl p-4 mb-5">
         <div class="flex items-start gap-2.5">
-          <span id="wm-n-tools" class="text-green-400 font-black text-xs mt-0.5">2</span>
+          <span class="wm-num text-green-400 font-black text-xs mt-0.5">5</span>
           <div>
             <div class="text-xs font-bold text-white">Have a look around</div>
             <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
