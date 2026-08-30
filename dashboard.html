@@ -951,16 +951,96 @@
       document.getElementById('welcome-msg').textContent = getGreeting() + ', ' + firstName;
 
       const now = new Date();
+      // Today's date stays in the VIEWER's timezone — that's their "today".
       const dateStr = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-      const dow = now.getDay(), hour = now.getHours();
+
+      /* ── Next session ────────────────────────────────────────────────────
+         The session is a single real-world moment: 8:30 AM Central, weekdays.
+         We resolve that moment to an exact instant, then render it in the
+         VIEWER's own timezone — so a New York member reads 9:30 AM EDT and a
+         Chicago member reads 8:30 AM CDT for the same session.
+
+         The old code compared the viewer's local hour against 8:30 as though
+         it were CT, which told a London member 30 minutes before a session
+         that the next one was tomorrow.
+         ─────────────────────────────────────────────────────────────────── */
+      const SESSION_TZ = 'America/Chicago';
+      const SESSION_H = 8, SESSION_M = 30;
+
+      // Milliseconds a timezone is offset from UTC at a given instant.
+      function tzOffsetMs(date, tz) {
+        const p = {};
+        new Intl.DateTimeFormat('en-US', {
+          timeZone: tz, hour12: false, year: 'numeric', month: '2-digit',
+          day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
+        }).formatToParts(date).forEach(x => p[x.type] = x.value);
+        let hh = parseInt(p.hour, 10);
+        if (hh === 24) hh = 0;
+        const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, hh, +p.minute, +p.second);
+        return asUTC - (Math.floor(date.getTime() / 1000) * 1000);
+      }
+
+      // The exact instant at which a wall clock in `tz` reads y-mo-d h:mi.
+      // Iterated because the offset itself depends on the instant (DST).
+      function instantAt(y, mo, d, h, mi, tz) {
+        let guess = Date.UTC(y, mo, d, h, mi);
+        for (let i = 0; i < 4; i++) {
+          const next = Date.UTC(y, mo, d, h, mi) - tzOffsetMs(new Date(guess), tz);
+          if (next === guess) break;
+          guess = next;
+        }
+        return new Date(guess);
+      }
+
+      function ymdIn(date, tz) {
+        const p = {};
+        new Intl.DateTimeFormat('en-US', {
+          timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short'
+        }).formatToParts(date).forEach(x => p[x.type] = x.value);
+        return { y: +p.year, mo: +p.month - 1, d: +p.day,
+                 wd: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday) };
+      }
+
+      // Next weekday 8:30 AM CT that hasn't happened yet.
+      function nextSessionInstant() {
+        const base = ymdIn(now, SESSION_TZ);
+        for (let i = 0; i < 10; i++) {
+          const probe = new Date(Date.UTC(base.y, base.mo, base.d + i, 12, 0));
+          const day = ymdIn(probe, SESSION_TZ);
+          if (day.wd === 0 || day.wd === 6) continue;            // weekends off
+          const inst = instantAt(day.y, day.mo, day.d, SESSION_H, SESSION_M, SESSION_TZ);
+          if (inst.getTime() > now.getTime()) return inst;
+        }
+        return null;
+      }
+
       function getNextSession() {
-        const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-        if (dow >= 1 && dow <= 5 && (hour < 8 || (hour === 8 && now.getMinutes() < 30))) return 'Today · 8:30 AM CT';
-        let daysAhead = 1, next = (dow + daysAhead) % 7;
-        while (next === 0 || next === 6) { daysAhead++; next = (dow + daysAhead) % 7; }
-        const nextDate = new Date(now); nextDate.setDate(now.getDate() + daysAhead);
-        const label = daysAhead === 1 ? 'Tomorrow' : days[next] + ', ' + nextDate.toLocaleDateString('en-US',{month:'short',day:'numeric'});
-        return label + ' · 8:30 AM CT';
+        const inst = nextSessionInstant();
+        if (!inst) return '—';
+
+        // Time on the VIEWER's clock, with their zone abbreviation
+        const time = inst.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        // Zone abbreviation uses the BROWSER's locale, not en-US: a London member
+        // on en-GB gets "BST" where en-US would only say "GMT+1". The clock itself
+        // stays en-US 12-hour so it matches the rest of the site.
+        let abbr = '';
+        try {
+          abbr = (new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' })
+            .formatToParts(inst).find(x => x.type === 'timeZoneName') || {}).value || '';
+        } catch (e) {}
+        const clock = time + (abbr ? ' ' + abbr : '');
+
+        // Today / Tomorrow judged on the VIEWER's calendar, since the time
+        // shown is theirs — 8:30 CT can land on the next local day out east.
+        const key = dt => dt.toLocaleDateString('en-CA');   // YYYY-MM-DD, local
+        const todayKey = key(now);
+        const tomorrowKey = key(new Date(now.getTime() + 864e5));
+        const instKey = key(inst);
+
+        if (instKey === todayKey)    return 'Today · ' + clock;
+        if (instKey === tomorrowKey) return 'Tomorrow · ' + clock;
+        return inst.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
+               + ' · ' + clock;
       }
       document.getElementById('session-info').textContent = dateStr + '  ·  Next Session: ' + getNextSession();
 
