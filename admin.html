@@ -368,10 +368,14 @@
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 mb-4">
           <div>
             <h2 class="text-sm font-black text-white">Member Accounts</h2>
+            <p id="members-updated" class="text-xs text-zinc-600 mt-0.5"></p>
           </div>
-          <input type="text" id="member-search" placeholder="Search by email or name..."
-            oninput="filterMembers()"
-            class="bg-black border border-white/10 text-white text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-600 w-full sm:w-56">
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <input type="text" id="member-search" placeholder="Search by email or name..."
+              oninput="filterMembers()"
+              class="bg-black border border-white/10 text-white text-xs px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-600 flex-1 sm:w-56">
+            <button onclick="loadData()" class="shrink-0 px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">↻ Refresh</button>
+          </div>
         </div>
         <div class="grid grid-cols-3 gap-3 mb-4">
           <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-3 text-center">
@@ -1525,6 +1529,10 @@
       if (activeBtn) activeBtn.classList.add('active-nav');
       if (tab !== 'traffic') stopTrafficAuto();
       if (tab !== 'roster') stopRosterAuto();
+      // Members was the only tab that never refetched. It loaded once at init,
+      // so a member who signed up while the admin page sat open simply never
+      // appeared — the data was stale, not missing.
+      if (tab === 'members') loadData();
       if (tab === 'announce') loadCurrentAnnouncement();
       if (tab === 'sales') { loadCurrentSale(); loadFounderSpots(); }
       if (tab === 'updates') loadAdminUpdates();
@@ -2212,6 +2220,12 @@
       document.getElementById('stat-total').textContent = allMembers.length;
       document.getElementById('stat-vip').textContent = allMembers.filter(m => m.tier === 'pro').length;
       document.getElementById('stat-trial').textContent = allMembers.filter(m => m.tier === 'trial').length;
+
+      const upEl = document.getElementById('members-updated');
+      if (upEl) {
+        upEl.textContent = 'Updated ' + new Date().toLocaleTimeString('en-US',
+          { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit', second: '2-digit' }) + ' CT';
+      }
 
       renderMembers(allMembers);
     }
@@ -3078,6 +3092,12 @@
         await saveRosterToKV();
         await saveHistoryToKV();
         await savePaymentsToKV();
+
+        // The roster's SITE column is computed from allMembers, which only
+        // loadData() populates. Without this, a member who created their site
+        // account since the page opened syncs into the roster showing no site
+        // account — the same staleness that hides them from the Members tab.
+        try { await loadData(); } catch (e) { console.error('[sync] member refresh failed', e); }
 
         renderRoster();
         renderPayments();
