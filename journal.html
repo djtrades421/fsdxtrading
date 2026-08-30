@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Journal</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
   <script src="alerts.js"></script>
   <script src="filters.js"></script>
@@ -110,7 +111,7 @@
               <div class="cal-header-stats flex gap-4 text-sm flex-wrap items-center">
                 <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="cal-monthly" class="font-black">—</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">NET P&amp;L</span><span id="cal-yearly" class="font-black">—</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="cal-wr" class="font-black text-green-400">—</span></div>
+                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="cal-wr" class="font-black text-emerald-400">—</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="cal-days-traded" class="font-black text-zinc-400">—</span></div>
                 <div><span class="text-zinc-500 text-xs mr-1.5">TRADES</span><span id="cal-trades" class="font-black text-zinc-400">—</span></div>
                 <div class="flex items-center gap-2 ml-2">
@@ -675,9 +676,9 @@
     function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
 
     // ── Helpers ──
-    const pnlColor = p => p > 0 ? 'text-green-400' : p < 0 ? 'text-red-400' : 'text-zinc-400';
+    const pnlColor = p => p > 0 ? 'text-emerald-400' : p < 0 ? 'text-red-400' : 'text-zinc-400';
     const pnlColorStyle = p => p > 0 ? '#22c55e' : p < 0 ? '#ef4444' : '#71717a';
-    const resultBadge = r => r === 'WIN' ? 'bg-green-500/10 text-green-400 border-green-500/20' : r === 'LOSS' ? 'bg-red-950/30 text-red-400 border-red-500/20' : 'bg-zinc-800 text-zinc-400 border-white/10';
+    const resultBadge = r => r === 'WIN' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : r === 'LOSS' ? 'bg-red-950/30 text-red-400 border-red-500/20' : 'bg-zinc-800 text-zinc-400 border-white/10';
     const fmt = n => { const p = parseFloat(n)||0; return (p>=0?'+':'-')+' $'+Math.abs(p).toFixed(2); };
     const fmtShort = n => { const p=parseFloat(n)||0; const abs=Math.abs(p); const sign=p>=0?'+':'-'; if(abs>=1000) return sign+'$'+(abs/1000).toFixed(abs>=10000?0:1)+'K'; return sign+'$'+abs.toFixed(0); };
     const fmtFull = n => { const p=parseFloat(n)||0; const sign=p>=0?'+':'-'; return sign+'$'+Math.abs(p).toFixed(2); };
@@ -827,10 +828,10 @@
       const wr = decided ? Math.round(wins/decided*100) : null;
       const mEl = document.getElementById('cal-monthly');
       mEl.textContent = fmtFull(monthPnl);
-      mEl.className = 'font-black ' + (monthPnl>=0?'text-green-400':'text-red-400');
+      mEl.className = 'font-black ' + (monthPnl>=0?'text-emerald-400':'text-red-400');
       const yEl = document.getElementById('cal-yearly');
       yEl.textContent = fmtFull(netPnl);
-      yEl.className = 'font-black ' + (netPnl>=0?'text-green-400':'text-red-400');
+      yEl.className = 'font-black ' + (netPnl>=0?'text-emerald-400':'text-red-400');
       document.getElementById('cal-wr').textContent = wr !== null ? wr+'%' : '—';
       const daysEl = document.getElementById('cal-days-traded');
       if (daysEl) daysEl.textContent = monthDaysTraded + ' day' + (monthDaysTraded!==1?'s':'') + ' traded';
@@ -878,7 +879,7 @@
             if (data) {
               // P&L — large and bold
               const pnlDiv = document.createElement('div');
-              pnlDiv.className = 'text-sm font-black ' + (data.pnl >= 0 ? 'text-green-400' : 'text-red-400');
+              pnlDiv.className = 'text-sm font-black ' + (data.pnl >= 0 ? 'text-emerald-400' : 'text-red-400');
               pnlDiv.textContent = fmtShort(data.pnl);
               cell.appendChild(pnlDiv);
               // Trade count
@@ -908,7 +909,7 @@
         const wc = document.createElement('div');
         wc.className = 'cal-day p-4 flex flex-col items-end justify-start bg-zinc-950/30';
         const wcInner = document.createElement('div');
-        wcInner.className = 'text-sm font-black ' + (rowPnl >= 0 ? 'text-green-400' : 'text-red-400');
+        wcInner.className = 'text-sm font-black ' + (rowPnl >= 0 ? 'text-emerald-400' : 'text-red-400');
         wcInner.textContent = rowPnl !== 0 ? fmtShort(rowPnl) : '—';
         wc.appendChild(wcInner);
         row.appendChild(wc);
@@ -983,7 +984,7 @@
         return `<tr class="hover:bg-white/[0.02] transition cursor-pointer" onclick="showDetail('${t.id}')">
           <td class="px-4 py-3 text-zinc-400 text-xs">${t.date||'—'}</td>
           <td class="px-4 py-3 text-white font-bold">${t.ticker||'MNQ'}</td>
-          <td class="px-4 py-3"><span class="text-xs font-bold ${t.direction==='LONG'?'text-green-400':'text-red-400'}">${t.direction||'—'}</span></td>
+          <td class="px-4 py-3"><span class="text-xs font-bold ${t.direction==='LONG'?'text-emerald-400':'text-red-400'}">${t.direction||'—'}</span></td>
           <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-zinc-800 text-zinc-300 border-white/10">${t.grade||'—'}</span></td>
           <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result||'—'}</span></td>
           <td class="px-4 py-3 text-xs ${pnlColor(tp1)}">${tp1!==0?fmt(tp1):'—'}</td>
@@ -993,7 +994,7 @@
           <td class="px-4 py-3">${t.chartUrl?`<a href="${t.chartUrl}" target="_blank" onclick="event.stopPropagation()" class="text-zinc-500 hover:text-green-400 text-xs transition">View ↗</a>`:'<span class="text-zinc-700 text-xs">—</span>'}</td>
           <td class="px-4 py-3" onclick="event.stopPropagation()">
             <div class="flex gap-2">
-              <button onclick="openEditModal('${t.id}')" class="text-zinc-600 hover:text-green-400 text-xs">✏️</button>
+              <button onclick="openEditModal('${t.id}')" class="text-zinc-600 hover:text-emerald-400 text-xs">✏️</button>
               <button onclick="confirmDelete('${t.id}')" class="text-zinc-600 hover:text-red-400 text-xs">🗑️</button>
             </div>
           </td>
@@ -1116,13 +1117,13 @@
           `<div class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0 text-xs">
             <span class="text-zinc-500">${label}</span><span class="font-bold ${col}">${val}</span></div>`;
         runnerEl.innerHTML =
-          statLine('TP1 hit rate', tp1Rate+'%', tp1Rate>=50?'text-green-400':'text-red-400') +
-          statLine('TP2 hit rate', tp2Rate+'%', tp2Rate>=50?'text-green-400':'text-red-400') +
-          statLine('Runner → Win', rWin, 'text-green-400') +
+          statLine('TP1 hit rate', tp1Rate+'%', tp1Rate>=50?'text-emerald-400':'text-red-400') +
+          statLine('TP2 hit rate', tp2Rate+'%', tp2Rate>=50?'text-emerald-400':'text-red-400') +
+          statLine('Runner → Win', rWin, 'text-emerald-400') +
           statLine('Runner → BE', rBE, 'text-zinc-400') +
           statLine('Runner → Loss', rLoss, 'text-red-400') +
-          statLine('Avg TP1 P&L', avgTp1 ? (avgTp1>=0?'+':'-')+'$'+Math.abs(avgTp1).toFixed(2) : '—', avgTp1>=0?'text-green-400':'text-red-400') +
-          statLine('Avg TP2 P&L', avgTp2 ? (avgTp2>=0?'+':'-')+'$'+Math.abs(avgTp2).toFixed(2) : '—', avgTp2>=0?'text-green-400':'text-red-400');
+          statLine('Avg TP1 P&L', avgTp1 ? (avgTp1>=0?'+':'-')+'$'+Math.abs(avgTp1).toFixed(2) : '—', avgTp1>=0?'text-emerald-400':'text-red-400') +
+          statLine('Avg TP2 P&L', avgTp2 ? (avgTp2>=0?'+':'-')+'$'+Math.abs(avgTp2).toFixed(2) : '—', avgTp2>=0?'text-emerald-400':'text-red-400');
       }
 
       // ── Trade Summary ──
@@ -1132,11 +1133,11 @@
           `<div class="flex justify-between items-center py-1.5 border-b border-white/5 last:border-0">
             <span class="text-zinc-500">${label}</span><span class="font-bold ${cls}">${val}</span></div>`;
         row2El.innerHTML =
-          sl('Wins / Losses / BE', `<span class="text-green-400">${wins.length}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${losses.length}</span> <span class="text-zinc-600">/</span> <span class="text-zinc-400">${bes.length}</span>`) +
-          sl('Avg Win / Loss', `<span class="text-green-400">+$${avgWin.toFixed(2)}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">-$${avgLoss.toFixed(2)}</span>`) +
-          sl('Best / Worst', `<span class="text-green-400">${best>0?'+$'+best.toFixed(2):'—'}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${worst<0?'-$'+Math.abs(worst).toFixed(2):'—'}</span>`) +
+          sl('Wins / Losses / BE', `<span class="text-emerald-400">${wins.length}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${losses.length}</span> <span class="text-zinc-600">/</span> <span class="text-zinc-400">${bes.length}</span>`) +
+          sl('Avg Win / Loss', `<span class="text-emerald-400">+$${avgWin.toFixed(2)}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">-$${avgLoss.toFixed(2)}</span>`) +
+          sl('Best / Worst', `<span class="text-emerald-400">${best>0?'+$'+best.toFixed(2):'—'}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${worst<0?'-$'+Math.abs(worst).toFixed(2):'—'}</span>`) +
           sl('Avg Duration', avgDur) +
-          sl('Gross P&L', `<span class="${netPnl>=0?'text-green-400':'text-red-400'}">${netPnl>=0?'+':'-'}$${Math.abs(netPnl).toFixed(2)}</span>`);
+          sl('Gross P&L', `<span class="${netPnl>=0?'text-emerald-400':'text-red-400'}">${netPnl>=0?'+':'-'}$${Math.abs(netPnl).toFixed(2)}</span>`);
       }
 
       // ── Commissions ──
@@ -1149,7 +1150,7 @@
         commEl.innerHTML =
           sl('Total paid', totalCommissions ? '-$'+totalCommissions.toFixed(2) : '—', 'text-red-400') +
           sl('Avg per trade', '$'+avgComm.toFixed(2)) +
-          sl('Net after fees', (netPnl-totalCommissions>=0?'+':'-')+'$'+Math.abs(netPnl-totalCommissions).toFixed(2), netPnl-totalCommissions>=0?'text-green-400':'text-red-400');
+          sl('Net after fees', (netPnl-totalCommissions>=0?'+':'-')+'$'+Math.abs(netPnl-totalCommissions).toFixed(2), netPnl-totalCommissions>=0?'text-emerald-400':'text-red-400');
       }
 
       // ── Contracts ──
@@ -1193,7 +1194,7 @@
           const gavg = gp/gt.length;
           const barW = maxGradePnl>0 ? Math.round(Math.abs(gp)/maxGradePnl*100) : 0;
           const col = gp>=0?'#22c55e':'#ef4444';
-          const wrCol = gwr>=50?'text-green-400':'text-red-400';
+          const wrCol = gwr>=50?'text-emerald-400':'text-red-400';
           return `<div class="grid gap-2 items-center py-2.5 border-b border-white/5 last:border-0 text-xs" style="grid-template-columns:3rem 1fr 4rem 4rem 5rem 5rem">
             <span class="font-black" style="color:${col}">${g}</span>
             <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
@@ -1224,7 +1225,7 @@
             </div>
             <div class="space-y-1.5 text-xs">
               <div class="flex justify-between"><span class="text-zinc-500">Net P&L</span><span class="font-black" style="color:${p>=0?'#22c55e':'#ef4444'}">${p>=0?'+':'-'}$${Math.abs(p).toFixed(2)}</span></div>
-              <div class="flex justify-between"><span class="text-zinc-500">Avg Win</span><span class="text-green-400 font-bold">+$${aw.toFixed(2)}</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Avg Win</span><span class="text-emerald-400 font-bold">+$${aw.toFixed(2)}</span></div>
               <div class="flex justify-between"><span class="text-zinc-500">Avg Loss</span><span class="text-red-400 font-bold">-$${al.toFixed(2)}</span></div>
             </div>
           </div>`;
@@ -1325,7 +1326,7 @@
       const uid = 'eq' + Date.now();
 
       const finalEl = document.getElementById('chart-final-pnl');
-      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-2xl font-black '+(isPos?'text-green-400':'text-red-400'); }
+      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-2xl font-black '+(isPos?'text-emerald-400':'text-red-400'); }
 
       const legendEl = document.getElementById('chart-legend');
       if (legendEl) {
@@ -1700,13 +1701,13 @@
       const tp1Disp = document.getElementById('t-manual-tp1-display');
       if (tp1Disp) {
         tp1Disp.textContent = tp1 !== 0 ? (tp1>=0?'+':'')+' $'+Math.abs(tp1).toFixed(2) : '—';
-        tp1Disp.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp1>0?'text-green-400':tp1<0?'text-red-400':'text-zinc-500');
+        tp1Disp.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp1>0?'text-emerald-400':tp1<0?'text-red-400':'text-zinc-500');
       }
       // Update TP2 display
       const tp2Disp = document.getElementById('t-manual-tp2-display');
       if (tp2Disp) {
         tp2Disp.textContent = tp2 !== 0 ? (tp2>=0?'+':'')+' $'+Math.abs(tp2).toFixed(2) : '—';
-        tp2Disp.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp2>0?'text-green-400':tp2<0?'text-red-400':'text-zinc-500');
+        tp2Disp.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp2>0?'text-emerald-400':tp2<0?'text-red-400':'text-zinc-500');
       }
       const net = tp1 + tp2;
       // Show total result bar and outcome buttons when there's data
@@ -1718,7 +1719,7 @@
         if (outcomeRow) outcomeRow.classList.remove('hidden');
         if (totalEl) {
           const autoResult = net > 0 ? 'WIN' : net < 0 ? 'LOSS' : 'BE';
-          const col = net > 0 ? 'text-green-400' : net < 0 ? 'text-red-400' : 'text-zinc-400';
+          const col = net > 0 ? 'text-emerald-400' : net < 0 ? 'text-red-400' : 'text-zinc-400';
           totalEl.textContent = (net>=0?'+':'')+' $'+Math.abs(net).toFixed(2) + (net > 0 ? ' ✓ Win' : net < 0 ? ' ✗ Loss' : ' — BE');
           totalEl.className = 'text-xl font-black ' + col;
           // Auto-set outcome and net P&L
@@ -1788,11 +1789,11 @@
       const tp2El = document.getElementById('t-tp2-pnl');
       const totEl = document.getElementById('t-total-pnl');
       tp1El.textContent = tp1Pnl!==0?(tp1Pnl>=0?'+':'')+' $'+Math.abs(tp1Pnl).toFixed(2):'—';
-      tp1El.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp1Pnl>0?'text-green-400':tp1Pnl<0?'text-red-400':'text-zinc-500');
+      tp1El.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp1Pnl>0?'text-emerald-400':tp1Pnl<0?'text-red-400':'text-zinc-500');
       tp2El.textContent = tp2Pnl!==0?(tp2Pnl>=0?'+':'')+' $'+Math.abs(tp2Pnl).toFixed(2):'—';
-      tp2El.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp2Pnl>0?'text-green-400':tp2Pnl<0?'text-red-400':'text-zinc-500');
+      tp2El.className = 'px-3 py-2 bg-zinc-900 border border-white/5 rounded-xl text-sm ' + (tp2Pnl>0?'text-emerald-400':tp2Pnl<0?'text-red-400':'text-zinc-500');
       totEl.textContent = (tp1Pnl!==0||tp2Pnl!==0)?(total>=0?'+':'')+' $'+Math.abs(total).toFixed(2):'—';
-      totEl.className = 'text-lg font-black ' + (total>0?'text-green-400':total<0?'text-red-400':'text-zinc-400');
+      totEl.className = 'text-lg font-black ' + (total>0?'text-emerald-400':total<0?'text-red-400':'text-zinc-400');
     }
 
     // ── Tags ──
@@ -1808,7 +1809,7 @@
     }
     function renderTags() {
       document.getElementById('tags-container').innerHTML = currentTags.map((t,i) =>
-        `<span class="tag-pill">${t}<button onclick="removeTag(${i})" class="ml-1 text-green-600 hover:text-red-400 transition">×</button></span>`
+        `<span class="tag-pill">${t}<button onclick="removeTag(${i})" class="ml-1 text-emerald-600 hover:text-red-400 transition">×</button></span>`
       ).join('');
     }
     function removeTag(i) { currentTags.splice(i,1); renderTags(); }
