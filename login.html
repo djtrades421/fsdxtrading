@@ -256,6 +256,7 @@
       userinfo:      'Whop signed you in but did not share your account details. Try again, or use your email below.',
       noemail:       'Whop did not share an email address, so we could not create your account. Sign up with your email below instead.',
       keyinuse:      'Your Whop membership is already linked to a different site account. Contact fsdxteam@gmail.com and we will merge them.',
+      whopoff:       'Sign in with Whop is switched off for your account. Use your email and password below. You can switch it back on from your profile.',
       notconfigured: 'Whop sign-in is not switched on yet. Use your email below for now.'
     };
 
@@ -321,7 +322,9 @@
         showMsg('login-msg',
           (WHOP_ERRORS[qErr] || 'Whop sign-in did not complete. Please try again.')
           + (detail ? ' [' + detail + ']' : ''), 'error');
-        if (qErr !== 'denied') addRetryButton('login-msg');
+        // No retry button when they deliberately backed out, or when the door
+        // is switched off — retrying is guaranteed to fail again.
+        if (qErr !== 'denied' && qErr !== 'whopoff') addRetryButton('login-msg');
         return;
       }
       if (!code) return;
