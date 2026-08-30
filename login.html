@@ -246,9 +246,15 @@
       const code = params.get('whop');
 
       // Error path comes back on the query string, not the hash.
-      const qErr = new URLSearchParams(location.search).get('whop');
+      const qs = new URLSearchParams(location.search);
+      const qErr = qs.get('whop');
       if (qErr) {
-        showMsg('login-msg', WHOP_ERRORS[qErr] || 'Whop sign-in did not complete. Please try again.', 'error');
+        // `d` carries Whop's own error code when there is one — shown so a
+        // failure can be diagnosed without reading worker logs.
+        const detail = qs.get('d');
+        showMsg('login-msg',
+          (WHOP_ERRORS[qErr] || 'Whop sign-in did not complete. Please try again.')
+          + (detail ? ' [' + detail + ']' : ''), 'error');
         history.replaceState(null, '', location.pathname);
         return;
       }
