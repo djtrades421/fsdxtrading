@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Trade Importer</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
   <script src="alerts.js"></script>
   <style>
@@ -561,7 +562,7 @@
       document.getElementById('options-panel').classList.remove('hidden');
       document.getElementById('error-msg').classList.add('hidden');
       document.getElementById('format-badge').innerHTML = loadedFiles.length > 1
-        ? `<div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-green-500/10 border-green-500/30 text-green-400"><span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>${ok.length} File${ok.length !== 1 ? 's' : ''} Loaded \u2713</div>`
+        ? `<div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold border bg-emerald-500/10 border-emerald-500/30 text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>${ok.length} File${ok.length !== 1 ? 's' : ''} Loaded \u2713</div>`
         : getFormatBadgeHTML(detectedMode);
       document.getElementById('format-badge').className = '';
       document.getElementById('format-info').outerHTML = `<div id="format-info">${loadedFiles.length > 1 ? getMultiFileInfoHTML() : getFormatInfoHTML(detectedMode)}</div>`;
@@ -636,12 +637,12 @@
         const bad = !!f.error;
         return `<div class="flex items-center justify-between gap-3 py-1 border-b border-white/5 last:border-0">
           <div class="text-[11px] ${bad ? 'text-zinc-600 line-through' : 'text-zinc-300'} truncate">${esc(f.name)}</div>
-          <div class="text-[10px] shrink-0 ${bad ? 'text-red-400' : 'text-green-400'}">${bad ? esc(f.error) : esc(labels[f.mode] || f.mode)}</div>
+          <div class="text-[10px] shrink-0 ${bad ? 'text-red-400' : 'text-emerald-400'}">${bad ? esc(f.error) : esc(labels[f.mode] || f.mode)}</div>
         </div>`;
       }).join('');
       const okCount = loadedFiles.filter(f => !f.error).length;
-      return `<div class="rounded-xl px-4 py-3 text-xs border bg-green-500/5 border-green-500/20">
-        <div class="font-bold text-green-400 mb-2">Bulk import — ${okCount} of ${loadedFiles.length} file${loadedFiles.length !== 1 ? 's' : ''} ready</div>
+      return `<div class="rounded-xl px-4 py-3 text-xs border bg-emerald-500/5 border-emerald-500/20">
+        <div class="font-bold text-emerald-400 mb-2">Bulk import — ${okCount} of ${loadedFiles.length} file${loadedFiles.length !== 1 ? 's' : ''} ready</div>
         ${rows}
         <p class="text-[10px] text-zinc-500 mt-2">Each file is parsed on its own terms and routed by its account #. Identical trades appearing in more than one file are dropped automatically.</p>
       </div>`;
@@ -1202,7 +1203,7 @@
         return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-white/5 last:border-0">
           <div class="min-w-0">
             <div class="text-[11px] font-mono text-zinc-500 truncate">${esc(id)}</div>
-            <div class="text-xs font-bold ${acct ? 'text-green-400' : 'text-amber-400'} truncate">
+            <div class="text-xs font-bold ${acct ? 'text-emerald-400' : 'text-amber-400'} truncate">
               ${acct ? '→ ' + esc(acct.name) : '⚠ no matching account'}
             </div>
           </div>
@@ -1374,15 +1375,15 @@
         const grossSum = trades.reduce((s, t) => s + (parseFloat(t.grossPnl) || parseFloat(t.netPnl)), 0);
         const feeSum = trades.reduce((s, t) => s + (parseFloat(t.fees) || 0), 0);
         if (feeSum > 0) {
-          noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Tradovate import note</span> — Gross P&L <span class="text-zinc-300 font-mono">$${grossSum.toFixed(2)}</span> − commissions <span class="text-red-400 font-mono">$${feeSum.toFixed(2)}</span> = net <span class="${(grossSum - feeSum) >= 0 ? 'text-green-400' : 'text-red-400'} font-mono font-bold">$${(grossSum - feeSum).toFixed(2)}</span>. Fees estimated at your commission rate (not in the CSV). Win/Loss is graded on net P&L. Set commission to 0 to import gross.`;
+          noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Tradovate import note</span> — Gross P&L <span class="text-zinc-300 font-mono">$${grossSum.toFixed(2)}</span> − commissions <span class="text-red-400 font-mono">$${feeSum.toFixed(2)}</span> = net <span class="${(grossSum - feeSum) >= 0 ? 'text-emerald-400' : 'text-red-400'} font-mono font-bold">$${(grossSum - feeSum).toFixed(2)}</span>. Fees estimated at your commission rate (not in the CSV). Win/Loss is graded on net P&L. Set commission to 0 to import gross.`;
         } else {
           noteEl.innerHTML = `<span class="font-bold text-zinc-300">ℹ️ Tradovate import note</span> — Showing <span class="font-bold text-zinc-300">gross</span> P&L (commission set to 0). Tradovate's Total P/L also subtracts commissions & exchange fees, which aren't in the Orders CSV — enter your per-side rate on the previous screen to match your net. Grade column will be blank.`;
         }
       }
 
       // Preview
-      const resultBadge = r => r === 'WIN' ? 'text-green-400 bg-green-500/10 border-green-500/20' : r === 'LOSS' ? 'text-red-400 bg-red-950/20 border-red-500/20' : 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
-      const dirColor = d => d === 'LONG' ? 'text-green-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-500';
+      const resultBadge = r => r === 'WIN' ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' : r === 'LOSS' ? 'text-red-400 bg-red-950/20 border-red-500/20' : 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
+      const dirColor = d => d === 'LONG' ? 'text-emerald-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-500';
 
       document.getElementById('preview-body').innerHTML = trades.slice(0, 10).map(t => `
         <tr class="hover:bg-white/[0.02] transition">
@@ -1393,7 +1394,7 @@
           <td class="px-4 py-2.5 font-black ${dirColor(t.direction)}">${t.direction || '—'}</td>
           <td class="px-4 py-2.5"><span class="px-1.5 py-0.5 rounded text-[10px] font-black border bg-zinc-800 text-zinc-300 border-white/10">${t.grade || '—'}</span></td>
           <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result}</span></td>
-          <td class="px-4 py-2.5 font-mono font-bold ${parseFloat(t.netPnl) >= 0 ? 'text-green-400' : 'text-red-400'}">${parseFloat(t.netPnl) >= 0 ? '+' : ''}$${parseFloat(t.netPnl).toFixed(2)}</td>
+          <td class="px-4 py-2.5 font-mono font-bold ${parseFloat(t.netPnl) >= 0 ? 'text-emerald-400' : 'text-red-400'}">${parseFloat(t.netPnl) >= 0 ? '+' : ''}$${parseFloat(t.netPnl).toFixed(2)}</td>
           <td class="px-4 py-2.5 text-zinc-500">${t.contracts}c</td>
         </tr>
       `).join('');
@@ -1410,7 +1411,7 @@
       const isPos = finalPnl >= 0;
       const uid = 'mini' + Date.now();
       const finalEl = document.getElementById('mini-final-pnl');
-      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-lg font-black '+(isPos?'text-green-400':'text-red-400'); }
+      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-lg font-black '+(isPos?'text-emerald-400':'text-red-400'); }
       const W = wrap.clientWidth || 700, H = 160;
       const PL=50,PR=16,PT=12,PB=28,CW=W-PL-PR,CH=H-PT-PB;
       const eqs = points.map(p=>p.equity);
@@ -1745,7 +1746,7 @@
       const el = document.getElementById(elId);
       if (!el) return;
       el.textContent = msg;
-      el.className = 'text-xs text-center py-2 rounded-lg ' + (type==='error'?'bg-red-500/10 text-red-400':'bg-green-500/10 text-green-400');
+      el.className = 'text-xs text-center py-2 rounded-lg ' + (type==='error'?'bg-red-500/10 text-red-400':'bg-emerald-500/10 text-emerald-400');
       el.classList.remove('hidden');
       setTimeout(() => el.classList.add('hidden'), 4000);
     }
