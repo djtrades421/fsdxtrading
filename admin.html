@@ -2993,7 +2993,10 @@
               churnedDate: item.churnedDate,
               cancelingDate: item.cancelingDate,
               cancelAtPeriodEnd: item.cancelAtPeriodEnd,
-              leftDate: dead ? (existing.leftDate || item.churnedDate || '') : '',
+              // Whop's churn date wins over a stored one. Rows synced before
+              // the future-date guard landed carry a leftDate that never
+              // happened, and preferring `existing` here would keep it forever.
+              leftDate: dead ? (item.churnedDate || existing.leftDate || '') : '',
               accessType: item.accessType,
               planName: item.planName,
               planId: item.planId,
