@@ -811,7 +811,11 @@
 
 
         <!-- Filters -->
-        <div class="flex gap-2 mb-4 flex-wrap items-center">
+        <!-- relative + z-[60] lifts the whole filter row above the roster table.
+             The table's thead is sticky, which gives it its own stacking context,
+             and the dropdowns' own z-50 can't beat it from a sibling subtree —
+             the open menu was rendering underneath the header and first rows. -->
+        <div class="relative z-[60] flex gap-2 mb-4 flex-wrap items-center">
           <!-- Status -->
           <div class="relative" id="ms-status-wrap">
             <button type="button" onclick="toggleMultiSelect('status')" class="flex items-center gap-1.5 bg-zinc-900 border border-white/10 text-zinc-400 text-xs px-3 py-1.5 rounded-lg hover:border-white/20 transition min-w-[90px]" id="ms-status-btn">
@@ -822,8 +826,10 @@
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="active" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Active</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="trialing" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Trialing</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="canceling" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Cancelling</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="past_due" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Past Due</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="lifetime" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Lifetime</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="legacy" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Legacy</span></label>
+              <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="inactive" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Inactive</span></label>
               <label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer"><input type="checkbox" class="rf-ms rf-ms-status accent-green-500" value="cancelled" onchange="updateMultiSelectLabel('status');renderRoster()"><span class="text-xs text-zinc-300">Cancelled</span></label>
             </div>
           </div>
