@@ -165,4 +165,17 @@
 
   window.fsdxIsPending = isPending;
   window.fsdxRequireKey = renderLock;
+
+  /* nav-loader.js defines a stub renderer so the gate can never be lost to a
+     load-order race. If a page locked before this file arrived, the request is
+     sitting in __fsdxLockPending — draw it now. */
+  if (window.__fsdxLockPending) {
+    var queued = window.__fsdxLockPending;
+    window.__fsdxLockPending = null;
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () { renderLock(queued); });
+    } else {
+      renderLock(queued);
+    }
+  }
 })();
