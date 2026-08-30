@@ -630,16 +630,37 @@
       return trades.filter(t => (t.date || '') >= cutoff);
     }
 
-    // The chart sizes itself off its container, and the container width now
-    // changes at the xl breakpoint — so redraw on resize instead of going stale.
+    /* The chart is drawn into a fixed viewBox sized to its container. If the
+       container changes size without a redraw, the SVG stretches and every unit
+       inside it — padding, stroke widths, label type — scales with it.
+
+       A window resize listener is not enough: collapsing the sidebar widens the
+       content area by ~120px and fires no resize event, which left the curve
+       rendered at the old width and scaled up ~18%. Watch the element instead. */
     let _eqResizeTimer = null;
-    window.addEventListener('resize', function () {
+    function scheduleEquityRedraw() {
       clearTimeout(_eqResizeTimer);
       _eqResizeTimer = setTimeout(function () {
         const wrap = document.getElementById('equity-chart-wrap');
-        if (wrap && wrap._trades && wrap._trades.length) drawEquityCurve(wrap._trades);
-      }, 180);
-    });
+        if (!wrap || !wrap._trades || !wrap._trades.length) return;
+        // Only redraw when the box genuinely differs from what we drew for.
+        if (Math.abs(wrap.clientWidth - (wrap._drawnW || 0)) < 2 &&
+            Math.abs(wrap.clientHeight - (wrap._drawnH || 0)) < 2) return;
+        drawEquityCurve(wrap._trades);
+      }, 120);
+    }
+
+    function watchEquitySize() {
+      const wrap = document.getElementById('equity-chart-wrap');
+      if (!wrap || wrap._sizeWatched) return;
+      wrap._sizeWatched = true;
+      if (typeof ResizeObserver !== 'undefined') {
+        // Redrawing only rewrites the wrap's children, never its own box,
+        // so this cannot feed itself.
+        new ResizeObserver(scheduleEquityRedraw).observe(wrap);
+      }
+      window.addEventListener('resize', scheduleEquityRedraw);   // fallback
+    }
 
     function drawEquityCurve(allTrades) {
       const wrap = document.getElementById('equity-chart-wrap');
@@ -683,7 +704,12 @@
       }
 
       const W = wrap.clientWidth || 700, H = wrap.clientHeight || 260;
-      const PAD_L=62, PAD_R=20, PAD_T=14, PAD_B=34, CW=W-PAD_L-PAD_R, CH=H-PAD_T-PAD_B;
+      // Left pad only needs to clear the widest y-label ("-$1.2K" ≈ 40px at 11px
+      // type); right pad just keeps the last point off the edge. The old 62/20
+      // left a visible dead band down both sides of the plot.
+      const NARROW = W < 480;
+      const PAD_L = NARROW ? 40 : 46, PAD_R = NARROW ? 6 : 10;
+      const PAD_T = 14, PAD_B = 34, CW = W-PAD_L-PAD_R, CH = H-PAD_T-PAD_B;
       const equities = points.map(p=>p.equity);
       const rawMin=Math.min(...equities), rawMax=Math.max(...equities), rng=rawMax-rawMin||1;
       const dataMin=rawMin-rng*0.15, dataMax=rawMax+rng*0.15, dataRange=dataMax-dataMin;
@@ -743,7 +769,7 @@
 
       const gridLines=yTicks.map(v=>{const y=toY(v);if(y<PAD_T-2||y>PAD_T+CH+2)return '';const isZero=Math.abs(v)<step*0.01;
         return `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
-          <text x="${(PAD_L-10).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.85)':'rgba(255,255,255,0.7)'}" font-size="11" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${fmtY(v)}</text>`;}).join('');
+          <text x="${(PAD_L-8).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.85)':'rgba(255,255,255,0.7)'}" font-size="11" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${fmtY(v)}</text>`;}).join('');
 
       const xLabels=xDates.map(d=>{const idx=points.findIndex(p=>p.date===d);if(idx<0)return '';const x=toX(idx);
         return `<text x="${x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${fmtX(d)}</text>`;}).join('');
@@ -797,8 +823,11 @@
       </svg>
       <div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:11px;white-space:nowrap;font-family:ui-monospace,monospace;color:#e4e4e7;box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>`;
 
-      // Store refs for crosshair
+      // Store refs for crosshair, and the size this render was built for —
+      // the ResizeObserver below compares against it.
       wrap._uid = uid;
+      wrap._drawnW = W;
+      wrap._drawnH = H;
     }
 
     function renderJournalStats(trades) {
@@ -1123,6 +1152,7 @@
       document.getElementById('access-grid').innerHTML = renderAccessGrid(tier);
       initCalFilters();
       renderEqRangePills();
+      watchEquitySize();
       if (whopKey) loadDashData(whopKey);
       loadAnnouncement(token);
       loadUpdates(token);
