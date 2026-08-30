@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Session Recaps</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js"></script>
   <script src="nav-loader.js"></script>
   <style>
     body { background-color: #000; }
@@ -79,7 +80,7 @@
     function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
 
     const gradeColor = g => {
-      if (['A+','A'].includes(g)) return 'bg-green-500/10 text-green-400 border-green-500/25';
+      if (['A+','A'].includes(g)) return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/25';
       if (['B+','B'].includes(g)) return 'bg-blue-500/10 text-blue-400 border-blue-500/25';
       if (['C+','C'].includes(g)) return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/25';
       if (g === 'D') return 'bg-red-500/10 text-red-400 border-red-500/25';
@@ -89,7 +90,7 @@
     const resultColor = r => {
       if (!r) return 'text-zinc-500';
       const rl = r.toLowerCase();
-      if (rl.includes('win')) return 'text-green-400';
+      if (rl.includes('win')) return 'text-emerald-400';
       if (rl.includes('loss')) return 'text-red-400';
       if (rl.includes('be') || rl.includes('scratch')) return 'text-yellow-400';
       return 'text-zinc-400';
@@ -98,12 +99,12 @@
     const resultBg = r => {
       if (!r) return 'bg-zinc-900 border-white/5';
       const rl = r.toLowerCase();
-      if (rl.includes('win')) return 'bg-green-500/10 border-green-500/20';
+      if (rl.includes('win')) return 'bg-emerald-500/10 border-emerald-500/20';
       if (rl.includes('loss')) return 'bg-red-500/10 border-red-500/20';
       return 'bg-yellow-500/10 border-yellow-500/20';
     };
 
-    const dirColor = d => d === 'LONG' ? 'text-green-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-400';
+    const dirColor = d => d === 'LONG' ? 'text-emerald-400' : d === 'SHORT' ? 'text-red-400' : 'text-zinc-400';
 
     function renderSetup(s, idx) {
       const parts = [];
