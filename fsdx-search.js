@@ -27,7 +27,6 @@
     {t:'Scout Alerts',    u:'alerts.html',    g:'Workspace', vip:1, kw:'signals discord webhook live'},
     {t:'Trade Importer',  u:'converter.html', g:'Workspace', vip:1, kw:'csv upload tradovate convert'},
     {t:'My Profile',      u:'profile.html',   g:'Workspace', vip:1, kw:'account password email settings'},
-    {t:'Session Recaps',  u:'recaps.html',    g:'Workspace', vip:1, kw:'review morning notes'},
 
     // products — these used to be the ↳ sub-links
     {t:'The System',            u:'suite.html',                g:'Products', kw:'suite tools overview indicators'},
