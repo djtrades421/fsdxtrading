@@ -525,11 +525,17 @@
       // each weekday. The halt is simply the gap between close and open, so it
       // needs no break entry.
       { label: 'Globex',   tz: 'America/Chicago',  open: [17, 0], close: [16, 0],  openDays: [0, 1, 2, 3, 4] },
-      { label: 'London',   tz: 'Europe/London',    open: [8, 0],  close: [16, 30], openDays: [1, 2, 3, 4, 5] },
-      { label: 'New York', tz: 'America/New_York', open: [9, 30], close: [16, 0],  openDays: [1, 2, 3, 4, 5] },
-      // TSE moved its close to 15:30 JST in Nov 2024 and breaks for lunch.
-      { label: 'Tokyo',    tz: 'Asia/Tokyo',       open: [9, 0],  close: [15, 30], openDays: [1, 2, 3, 4, 5],
-        breaks: [[[11, 30], [12, 30]]] }
+      // The three classic trading sessions — the liquidity window around each
+      // financial centre's business day, NOT that city's stock exchange hours.
+      // Each is defined in its OWN local time so the hours stay put and the
+      // browser resolves DST; pegging them to a fixed UTC offset (as some
+      // session tables do) makes them drift an hour twice a year.
+      { label: 'Tokyo',    tz: 'Asia/Tokyo',       open: [9, 0],  close: [18, 0], openDays: [1, 2, 3, 4, 5] },
+      { label: 'London',   tz: 'Europe/London',    open: [8, 0],  close: [17, 0], openDays: [1, 2, 3, 4, 5] },
+      // 17:00 ET is the forex rollover and the CME daily close — so the NY
+      // session and the Globex halt end together, which is the behaviour to
+      // preserve if these hours are ever edited.
+      { label: 'New York', tz: 'America/New_York', open: [8, 0],  close: [17, 0], openDays: [1, 2, 3, 4, 5] }
     ];
     const _WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
