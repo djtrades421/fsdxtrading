@@ -838,6 +838,14 @@
           tp2Pnl: 0,
           tp2Contracts: 0,
           contracts: entryQty.toString(),
+          // Dedup identity at full precision. entryTime/exitTime are only
+          // HH:MM, so two campaigns that open AND close inside the same minute
+          // (same account, same size) produce an identical tradeKey and the
+          // second one is silently dropped as a duplicate. Fill timestamps are
+          // second-resolution, so key on those plus the weighted prices.
+          // Deliberately excludes P&L — a re-import at a corrected commission
+          // rate is still the same trade.
+          dedupeKey: [acctId, first.ts, last.ts, entryPriceStr, exitPriceStr, entryQty].join('|'),
           // Provide every alias the journal/backtest editors look for.
           entryPrice: entryPriceStr,
           entry: entryPriceStr,
@@ -1118,7 +1126,10 @@
       const deduped = [];
       let dupes = 0;
       all.forEach(t => {
-        const key = tradeKey(t);
+        // Prefer the parser's full-precision key when it set one (Tradovate).
+        // tradeKey() only resolves to the minute and will collapse two real
+        // trades that open and close inside the same minute.
+        const key = t.dedupeKey || tradeKey(t);
         if (seen.has(key)) { dupes++; return; }
         seen.add(key);
         deduped.push(t);
