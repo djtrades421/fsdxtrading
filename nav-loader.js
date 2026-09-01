@@ -207,10 +207,25 @@ function prepareNavLabels(root) {
 }
 
 (function() {
-  // Show skeleton immediately to prevent flash
-  const navContent = document.getElementById('nav-content');
-  if (navContent) {
-    navContent.innerHTML = `<div class="animate-pulse space-y-3 pt-2 flex-1">
+  // ── The intermittent blank sidebar ──
+  // Every page loads this file from <head> with NO defer, but #nav-content is
+  // in the <body>. On a cold cache the fetch below is slow enough that the
+  // parser reaches the mount first and everything works. On a warm cache the
+  // response can arrive before the parser gets there — `mount` is null, the
+  // old code hit `if (!mount) return;` and gave up silently. No error, no nav,
+  // and a refresh reshuffles the timing enough to "fix" it. That is the bug.
+  //
+  // So: never mount before the DOM is ready, and tell a missing mount
+  // (admin.html, which has its own sidebar) apart from one that simply hasn't
+  // been parsed yet.
+  function domReady() {
+    return new Promise(function (resolve) {
+      if (document.readyState !== 'loading') return resolve();
+      document.addEventListener('DOMContentLoaded', function () { resolve(); }, { once: true });
+    });
+  }
+
+  var SKELETON = `<div class="animate-pulse space-y-3 pt-2 flex-1">
       <div class="h-2 bg-white/5 rounded w-16 mb-5"></div>
       <div class="h-2.5 bg-white/5 rounded w-3/4"></div>
       <div class="h-2.5 bg-white/5 rounded w-2/3"></div>
@@ -221,10 +236,39 @@ function prepareNavLabels(root) {
       <div class="h-2.5 bg-white/5 rounded w-3/4"></div>
       <div class="h-2.5 bg-white/5 rounded w-1/2"></div>
     </div>`;
+
+  // Show skeleton to prevent flash — as soon as there is something to show it in.
+  var navContent = document.getElementById('nav-content');
+  if (navContent) navContent.innerHTML = SKELETON;
+  else domReady().then(function () {
+    var el = document.getElementById('nav-content');
+    if (el && !el.innerHTML.trim()) el.innerHTML = SKELETON;
+  });
+
+  // fetch() resolves on 404 and 500 — it only rejects on network failure. An
+  // error page or a truncated response would sail straight through .then and
+  // blank the nav just as thoroughly, so check the status and the body, and
+  // give a flaky network one retry before giving up.
+  function loadNavHtml(attempt) {
+    return fetch('nav.html?v=20260830')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.text();
+      })
+      .then(function (html) {
+        if (!html || html.trim().length < 50) throw new Error('nav.html came back empty');
+        return html;
+      })
+      .catch(function (err) {
+        if (attempt >= 2) throw err;
+        console.warn('[nav] load attempt ' + (attempt + 1) + ' failed, retrying:', err.message);
+        return new Promise(function (res) { setTimeout(res, 200 * (attempt + 1)); })
+          .then(function () { return loadNavHtml(attempt + 1); });
+      });
   }
 
-  fetch('nav.html?v=20260830')
-    .then(r => r.text())
+  Promise.all([loadNavHtml(0), domReady()])
+    .then(function (r) { return r[0]; })
     .then(html => {
       var mount = document.getElementById('nav-content');
       if (!mount) return;   // admin.html has its own sidebar — nothing to mount
@@ -319,7 +363,46 @@ function prepareNavLabels(root) {
         if (tierEl) tierEl.textContent = tierText;
       }
     })
-    .catch(err => console.error('[nav] Failed to load nav.html:', err));
+    .catch(function (err) {
+      console.error('[nav] Failed to load nav.html:', err);
+      // Both retries lost. A blank sidebar strands a member with no way out of
+      // whatever page they are on, so render plain links rather than nothing.
+      // VIP links are shown only when a session exists — same rule as the real
+      // nav — so this never advertises member tools to a logged-out visitor.
+      domReady().then(function () {
+        var mount = document.getElementById('nav-content');
+        if (!mount) return;
+        var vip = [];
+        try { if (localStorage.getItem('fsdx_token')) vip = [
+          ['dashboard.html', 'Dashboard'], ['journal.html', 'Journal'],
+          ['accounts.html', 'Accounts'], ['playbook.html', 'Playbook'],
+          ['backtest.html', 'Backtest'], ['alerts.html', 'Scout Alerts'],
+          ['converter.html', 'Trade Importer'], ['profile.html', 'Profile']
+        ]; } catch (e) {}
+        var site = [
+          ['index.html', 'Home'], ['suite.html', 'The System'],
+          ['autotrader.html', 'ORB Auto-Trader'], ['results.html', 'Results'],
+          ['memberships.html', 'Membership'], ['knowledge.html', 'Knowledge Base'],
+          ['contact.html', 'Contact & Help']
+        ];
+        var link = function (l) {
+          return '<a href="' + l[0] + '" class="block py-1.5 text-xs text-zinc-400 hover:text-white transition">' + l[1] + '</a>';
+        };
+        var head = function (t) {
+          return '<div class="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-bold mt-4 mb-1.5">' + t + '</div>';
+        };
+        mount.innerHTML =
+          '<div class="flex flex-col h-full">'
+          + '<div class="text-xl font-black tracking-tight text-orange-500 mb-1">FSD-X</div>'
+          + '<div class="text-[9px] uppercase tracking-[0.3em] text-zinc-600 mb-3">Trading</div>'
+          + (vip.length ? head('Workspace') + vip.map(link).join('') : '')
+          + head('The Site') + site.map(link).join('')
+          + '<div class="mt-auto pt-4 border-t border-white/10">'
+          + '<div class="text-[10px] text-zinc-500 mb-2">Menu didn\'t load.</div>'
+          + '<button onclick="location.reload()" class="w-full text-[11px] border border-white/10 rounded px-2 py-1.5 text-zinc-300 hover:bg-white/5 transition">Retry</button>'
+          + '</div></div>';
+      });
+    });
 })();
 
 function navLogout() {
