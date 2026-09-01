@@ -53,7 +53,15 @@
 
   function create(cfg) {
     var host = typeof cfg.mount === 'string' ? document.querySelector(cfg.mount) : cfg.mount;
-    if (!host) return null;
+    if (!host) {
+      // Same failure shape as the blank-sidebar bug: a missing mount used to
+      // return null in silence, so the control simply never appeared and every
+      // caller's `if (!filter)` guard quietly did nothing. Callers still get
+      // null — say so, so a renamed id or a page script moved into <head>
+      // shows up in the console instead of as a missing dropdown.
+      console.warn('[filters] mount not found, filter not created:', cfg.mount);
+      return null;
+    }
 
     var id = 'fsdxf-' + (++seq);
     var label = cfg.label || 'All';
