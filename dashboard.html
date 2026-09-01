@@ -121,9 +121,9 @@
             <div class="hidden md:flex items-center gap-2 shrink-0">
               <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
               <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Market Sessions</span>
-              <span class="text-[9px] text-zinc-600 normal-case tracking-normal">each city's local time</span>
+              <span class="text-[9px] text-zinc-600 normal-case tracking-normal">each market's local time</span>
             </div>
-            <div id="market-sessions" class="grid grid-cols-3 gap-2 sm:gap-4 w-full md:w-auto md:ml-auto md:flex md:items-center"></div>
+            <div id="market-sessions" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 w-full md:w-auto md:ml-auto md:flex md:items-center"></div>
           </div>
         </div>
 
@@ -513,10 +513,23 @@
        Times come from Intl with a timeZone, so DST is handled for us —
        no offset table to go stale twice a year.
        ───────────────────────────────────────────── */
+    // `openDays` lists the weekdays a session STARTS on (0=Sun). A session
+    // whose close is at or before its open wraps past midnight, so it finishes
+    // on the following calendar day — Globex opens Sun–Thu and each of those
+    // sessions ends the next afternoon, which is why Friday isn't an open day
+    // even though Friday afternoon trades.
+    // `breaks` are intraday halts: trading stops but the session hasn't ended.
     const SESSIONS = [
-      { label: 'London',   tz: 'Europe/London',    open: [8, 0],  close: [16, 30] },
-      { label: 'New York', tz: 'America/New_York', open: [9, 30], close: [16, 0]  },
-      { label: 'Tokyo',    tz: 'Asia/Tokyo',       open: [9, 0],  close: [15, 0]  }
+      // CME Globex — the session that actually matters for NQ/MNQ. Sunday
+      // 17:00 CT straight through to Friday 16:00 CT, halting 16:00–17:00 CT
+      // each weekday. The halt is simply the gap between close and open, so it
+      // needs no break entry.
+      { label: 'Globex',   tz: 'America/Chicago',  open: [17, 0], close: [16, 0],  openDays: [0, 1, 2, 3, 4] },
+      { label: 'London',   tz: 'Europe/London',    open: [8, 0],  close: [16, 30], openDays: [1, 2, 3, 4, 5] },
+      { label: 'New York', tz: 'America/New_York', open: [9, 30], close: [16, 0],  openDays: [1, 2, 3, 4, 5] },
+      // TSE moved its close to 15:30 JST in Nov 2024 and breaks for lunch.
+      { label: 'Tokyo',    tz: 'Asia/Tokyo',       open: [9, 0],  close: [15, 30], openDays: [1, 2, 3, 4, 5],
+        breaks: [[[11, 30], [12, 30]]] }
     ];
     const _WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
@@ -540,20 +553,52 @@
       const nowMin = p.h * 60 + p.m;
       const openMin = s.open[0] * 60 + s.open[1];
       const closeMin = s.close[0] * 60 + s.close[1];
-      let wd = _WD.indexOf(p.wd);
-      const isOpen = wd >= 1 && wd <= 5 && nowMin >= openMin && nowMin < closeMin;
+      const wd = _WD.indexOf(p.wd);
+      const days = s.openDays || [1, 2, 3, 4, 5];
+      const wraps = closeMin <= openMin;
 
-      // Minutes until the next open, skipping the weekend
-      let until = openMin - nowMin;
-      if (until <= 0) { until += 1440; wd = (wd + 1) % 7; }
-      let guard = 0;
-      while ((wd === 0 || wd === 6) && guard++ < 8) { until += 1440; wd = (wd + 1) % 7; }
+      // For a wrapping session, any time before the close belongs to the
+      // session that opened YESTERDAY — that's what makes Friday afternoon
+      // Globex open (it's Thursday's session) while Friday 17:00 is not.
+      const sessionDay = (wraps && nowMin < closeMin) ? (wd + 6) % 7 : wd;
+      let isOpen = days.indexOf(sessionDay) !== -1 && (wraps
+        ? (nowMin >= openMin || nowMin < closeMin)
+        : (nowMin >= openMin && nowMin < closeMin));
 
-      return {
-        label: s.label, isOpen, until,
-        clock: p.clock, ampm: p.ampm,
-        closesIn: isOpen ? closeMin - nowMin : null
-      };
+      // Intraday halt (TSE lunch). Trading stops but the session is still
+      // running, so the countdown targets the reopen, not tomorrow's open.
+      let reopenIn = null;
+      if (isOpen && s.breaks) {
+        for (const [a, b] of s.breaks) {
+          const bs = a[0] * 60 + a[1], be = b[0] * 60 + b[1];
+          if (nowMin >= bs && nowMin < be) { isOpen = false; reopenIn = be - nowMin; break; }
+        }
+      }
+
+      // Minutes until the next open, skipping days this session doesn't trade.
+      let until;
+      if (reopenIn !== null) {
+        until = reopenIn;
+      } else {
+        until = openMin - nowMin;
+        let d = wd;
+        if (until <= 0) { until += 1440; d = (d + 1) % 7; }
+        let guard = 0;
+        while (days.indexOf(d) === -1 && guard++ < 8) { until += 1440; d = (d + 1) % 7; }
+      }
+
+      // Next stop, which for Tokyo before lunch is the break rather than 15:30.
+      let closesIn = null;
+      if (isOpen) {
+        closesIn = closeMin - nowMin;
+        if (closesIn <= 0) closesIn += 1440;      // wrapping session
+        if (s.breaks) s.breaks.forEach(([a]) => {
+          const bs = a[0] * 60 + a[1];
+          if (bs > nowMin && bs - nowMin < closesIn) closesIn = bs - nowMin;
+        });
+      }
+
+      return { label: s.label, isOpen, until, clock: p.clock, ampm: p.ampm, closesIn };
     }
 
     function fmtMins(mins) {
@@ -570,7 +615,7 @@
       if (!el) return;
       const now = new Date();
       const states = SESSIONS.map(s => sessionState(s, now));
-      // Only the soonest-to-open session gets a countdown — three at once is noise
+      // Only the soonest-to-open session gets a countdown — four at once is noise
       let nextIdx = -1, best = Infinity;
       states.forEach((st, i) => { if (!st.isOpen && st.until < best) { best = st.until; nextIdx = i; } });
 
