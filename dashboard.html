@@ -824,8 +824,29 @@
         return `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
           <text x="${(PAD_L-8).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.85)':'rgba(255,255,255,0.7)'}" font-size="11" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${fmtY(v)}</text>`;}).join('');
 
-      const xLabels=xDates.map(d=>{const idx=points.findIndex(p=>p.date===d);if(idx<0)return '';const x=toX(idx);
-        return `<text x="${x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${fmtX(d)}</text>`;}).join('');
+      // Dates are sampled evenly across the DATE list, but each label is placed
+      // at the x of that date's first trade — and trades are not spread evenly
+      // across days. A day with one trade sits right next to the next day's,
+      // so the labels collide ("Aug 24Aug 25Aug 27"). Measure each label and
+      // drop any that would touch the one before it.
+      const xLabelPts=xDates.map(d=>{const idx=points.findIndex(p=>p.date===d);if(idx<0)return null;
+        const txt=fmtX(d);return {x:toX(idx),txt,w:txt.length*5.6+10};}).filter(Boolean);
+
+      const keptLabels=[];
+      xLabelPts.forEach((L,i)=>{
+        const prev=keptLabels[keptLabels.length-1];
+        const clash=prev&&(L.x-prev.x)<(prev.w+L.w)/2;
+        if(!clash){keptLabels.push(L);return;}
+        // The last label anchors the right end of the range, so when it is the
+        // one colliding, evict whatever it overlaps instead of dropping it.
+        if(i===xLabelPts.length-1){
+          while(keptLabels.length&&(L.x-keptLabels[keptLabels.length-1].x)<(keptLabels[keptLabels.length-1].w+L.w)/2) keptLabels.pop();
+          keptLabels.push(L);
+        }
+      });
+
+      const xLabels=keptLabels.map(L=>
+        `<text x="${L.x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${L.txt}</text>`).join('');
 
       const hoverRects=points.slice(1).map((p,i)=>{const x=toX(i+1),prevX=toX(i),sliceW=Math.max(8,x-prevX);
         const col=p.result==='WIN'?'#22c55e':p.result==='LOSS'?'#ef4444':'#a1a1aa';
