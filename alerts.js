@@ -202,6 +202,31 @@
     setTimeout(function () { if (node.parentNode) node.parentNode.removeChild(node); }, 240);
   }
 
+  // How long ago the alert FIRED, not when it reached the browser. Polling
+  // catches up on a burst after the tab was hidden, so a toast appearing now
+  // can easily be for a setup from twenty minutes ago — which is the whole
+  // reason this is on the card instead of only in the feed.
+  // Wording is kept identical to whenText() in alerts.html so the toast and
+  // Scout history never describe the same alert two different ways.
+  var STALE_MS = 10 * 60 * 1000;   // past this the age is amber, not grey
+
+  function whenText(ts) {
+    var d = new Date(ts), diff = Date.now() - ts;
+    if (diff < 60000) return 'just now';
+    if (diff < 3600000) return Math.floor(diff / 60000) + 'm ago';
+    if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ' +
+           d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  }
+
+  // Exact local time, for the tooltip — "18m ago" is the glanceable answer,
+  // but reconciling against a chart needs the clock time.
+  function whenExact(ts) {
+    var d = new Date(ts);
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) + ' · ' +
+           d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', second: '2-digit' });
+  }
+
   function show(a) {
     if (!a) return null;
     // Settings gate everything except an explicit demo, which is how the
@@ -228,6 +253,11 @@
       if (victim && victim.parentNode) victim.parentNode.removeChild(victim);
     }
 
+    // Only real alerts carry a fire time. A hand-built toast without one shows
+    // no age rather than a misleading "just now".
+    var ts = Number(a.ts) || 0;
+    var age = ts ? { ts: ts, text: whenText(ts), stale: (Date.now() - ts) > STALE_MS } : null;
+
     var ttl = a.ttl === 0 ? 0 : (a.ttl || 12000);
     var node = document.createElement('div');
     node.className = 'fsdx-toast';
@@ -253,6 +283,8 @@
           '</span>' +
           '<span style="font-size:12.5px;font-weight:800;letter-spacing:.01em;min-width:0;flex:1 1 auto;' +
             'white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + esc(a.title || 'Scout Alert') + '</span>' +
+          (age ? '<span title="' + esc(whenExact(age.ts)) + '" style="flex:0 0 auto;font-size:10px;font-weight:600;' +
+            'white-space:nowrap;color:' + (age.stale ? '#f59e0b' : '#71717a') + '">' + esc(age.text) + '</span>' : '') +
           (a.grade ? '<span style="flex:0 0 auto;font-size:10px;font-weight:900;padding:.1rem .4rem;border-radius:.35rem;' +
             'color:' + accent + ';background:' + accent + '1a;border:1px solid ' + accent + '40">' + esc(a.grade) + '</span>' : '') +
         '</div>' +
@@ -297,15 +329,19 @@
   function demo() {
     var now = Date.now();
     var seq = [
+      // Staggered fire times so the demo also shows what the age label does —
+      // the first card is deliberately stale enough to come out amber.
       { delay: 0, a: { type:'brewing', dir:'BULL', title:'BULL Setup Brewing', sub:'MNQ1! · 12 pts from ORB High',
-          lines:[['HTF','Bullish'],['ORB','62.5 pts'],['Watch close above','20146.00']], id:'demo-'+now+'-1', force:true } },
+          lines:[['HTF','Bullish'],['ORB','62.5 pts'],['Watch close above','20146.00']],
+          ts: now - 22 * 60000, id:'demo-'+now+'-1', force:true } },
       { delay: 2600, a: { type:'vwap', dir:'BULL', title:'BULL VWAP Confirmed', sub:'MNQ1! · watch for close confirmation',
-          lines:[['ORB High','20146.00'],['VWAP','20138.75']], id:'demo-'+now+'-2', force:true } },
+          lines:[['ORB High','20146.00'],['VWAP','20138.75']],
+          ts: now - 6 * 60000, id:'demo-'+now+'-2', force:true } },
       { delay: 5200, a: { type:'breakout', dir:'BULL', title:'BULL ORB Breakout', sub:'MNQ1!', grade:'A+',
           lines:[['Entry','20147.50'],['TP1','20197.50'],['TP2','20247.50'],['SL','20072.50'],['ORB','62.5 pts']],
-          id:'demo-'+now+'-3', ttl:16000, force:true } },
+          ts: now - 2 * 60000, id:'demo-'+now+'-3', ttl:16000, force:true } },
       { delay: 8200, a: { type:'tp', dir:'BULL', title:'TP1 Hit — BULL', sub:'MNQ1! · Grade A+',
-          lines:[['Price','20197.50']], id:'demo-'+now+'-4', force:true } }
+          lines:[['Price','20197.50']], ts: now, id:'demo-'+now+'-4', force:true } }
     ];
     seq.forEach(function (s) { setTimeout(function () { show(s.a); }, s.delay); });
   }
@@ -349,6 +385,10 @@
       sub: a.symbol || '',
       grade: a.grade || '',
       lines: lines.slice(0, 5),
+      // When the alert fired. The toast can appear well after this — a burst
+      // caught up on return shows each card's real age instead of implying
+      // everything just happened.
+      ts: a.ts || 0,
       ttl: (a.type === 'breakout' || a.type === 'sl') ? 18000 : 12000
     };
   }
