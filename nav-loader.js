@@ -9,9 +9,32 @@
   try {
     // Only count non-members: skip if a logged-in session exists
     if (localStorage.getItem('fsdx_token')) return;
-    // Skip admin/login/member-tool pages — we want marketing traffic only
+    // Count marketing pages only — an ALLOWLIST, deliberately.
+    //
+    // This was a denylist (/admin|login|reset|dashboard|profile|journal|
+    // tracker|playbook/) and it failed open: accounts, backtest, converter and
+    // alerts were never in it, so a logged-out visitor bouncing off the login
+    // redirect on those pages was logged as public traffic. That inflates
+    // Visits and drags down every conversion rate under it.
+    //
+    // The `tracker` entry also matched nothing — there is no tracker.html, the
+    // tracker UI lives at accounts.html#trackers. The guard was written for a
+    // page that later moved, and stopped covering it in silence.
+    //
+    // An allowlist fails the safe way instead: a NEW page is not counted until
+    // it is added here. Undercounting a marketing page is easy to spot and fix;
+    // a gated page quietly polluting the funnel is not.
+    var PUBLIC_PAGES = [
+      'index', 'suite', 'autotrader', 'results', 'track-record', 'memberships',
+      'knowledge', 'faq', 'contact', 'schedule', 'disclosures', 'affiliates',
+      'setup', 'welcome', '404'
+    ];
+
     var rawPath = location.pathname || '/';
-    if (/admin|login|reset|dashboard|profile|journal|tracker|playbook/.test(rawPath.toLowerCase())) return;
+    // Works for "/", "/suite", "/suite.html" and "/a/b/suite.html" alike.
+    var page = (rawPath.toLowerCase().split('?')[0].split('#')[0].split('/').pop() || '').replace(/\.html$/, '');
+    if (!page) page = 'index';
+    if (PUBLIC_PAGES.indexOf(page) === -1) return;
 
     // One ping per page per session
     var pgKey = rawPath.toLowerCase().split('?')[0].split('#')[0];
