@@ -83,6 +83,95 @@
   <meta property="og:url" content="https://www.fsdxtrading.com/results.html" />
   <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image.png" />
   <script src="analytics.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "@id": "https://www.fsdxtrading.com/results.html#backtest",
+  "name": "FSD-X ORB PRO (Knightfall) — 7-Year Backtest Research Dataset",
+  "description": "Hypothetical simulated backtest of the FSD-X ORB PRO opening range breakout strategy on MNQ futures, June 2019 to August 2026, on the $400 base risk profile with grade-based dynamic sizing. These are simulated results, not actual trading, and are gross of commissions, fees and slippage. Past performance is not necessarily indicative of future results. FSD-X ORB PRO has been running since 2025; Knightfall is the current updated version of the same system, not a separate or new strategy.",
+  "url": "https://www.fsdxtrading.com/results.html",
+  "creator": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  },
+  "publisher": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  },
+  "license": "https://www.fsdxtrading.com/disclosures.html",
+  "temporalCoverage": "2019-06-18/2026-08-07",
+  "measurementTechnique": "Historical simulation (backtest) of the published strategy rules",
+  "about": {
+    "@id": "https://www.fsdxtrading.com/#membership"
+  },
+  "variableMeasured": [
+    {
+      "@type": "PropertyValue",
+      "name": "Simulated win rate",
+      "value": "63.03",
+      "unitText": "percent"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Profit factor (simulated)",
+      "value": "1.73"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Total simulated trades",
+      "value": "1109"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Winning / losing trades (simulated)",
+      "value": "699 / 410"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Hypothetical net P&L (MNQ, $400 risk)",
+      "value": "104230",
+      "unitCode": "USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Max drawdown (simulated)",
+      "value": "-2250",
+      "unitCode": "USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Expected value per trade (simulated)",
+      "value": "93.99",
+      "unitCode": "USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Average win / average loss (simulated)",
+      "value": "354 / -348",
+      "unitCode": "USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Max consecutive wins / losses (simulated)",
+      "value": "12 / 5"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Monthly Sharpe (simulated)",
+      "value": "1.091"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Profitable months (simulated)",
+      "value": "73 of 84"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Backtest period",
+      "value": "2019-2026, 8 calendar years"
+    }
+  ]
+}
+  </script>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
@@ -118,6 +207,36 @@
               ↗ View Full Trade Log — 1,109 Trades · Updated August 2026
             </a>
             <p class="text-zinc-600 text-[10px] leading-relaxed">⚠ All data on this page reflects hypothetical simulated backtest results, not actual trading. Past performance is not necessarily indicative of future results. Figures are gross of costs — they exclude commissions, fees, and slippage, which vary by broker and reduce net performance. Results shown are from a specific risk profile and are not typical.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ TRUST STRIP ═══
+           Mirrors the homepage strip. A visitor who lands here from a search
+           result or an AI citation never sees the homepage, so without this the
+           evidence pages carry no social proof at all.
+           The "★ 5.0 Verified on Whop" tile is deliberately NOT repeated here:
+           it invites a skeptic to go verify a rating built on four reviews,
+           which is exactly the rebuttal it earned in a Sept 2026 ChatGPT review.
+           The provenance tile replaces it — it answers the question that review
+           actually got wrong. ═══ -->
+      <section class="px-6 md:px-12 py-6 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="text-2xl font-black text-white">Since 2025</div>
+            <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">ORB PRO running</div>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-white">1,100+</div>
+            <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Trades · 7-yr backtest</div>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-white">300+</div>
+            <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Discord Members</div>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-white">8:30 CT</div>
+            <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Live room · Mon–Fri</div>
           </div>
         </div>
       </section>
@@ -753,7 +872,7 @@
       }
     })();
   </script>
-  <script src="nav-loader.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20260901"></script>
 <script>
 (function(){
   const RP_DATA = {"50k":{"250":{"7yr":{"strat":{"trades":1109,"net":70530,"maxdd":-1500,"maxdd_intra":-1526,"win":63.03,"pf":1.73,"ev":63.6},"eval":{"off":{"completed":26,"passes":26,"fails":0,"passrate":100,"median":89,"avg":108,"fast":36,"slow":276},"on":{"completed":26,"passes":26,"fails":0,"passrate":100,"median":89,"avg":108,"fast":36,"slow":276}}},"2yr":{"strat":{"trades":366,"net":22586,"maxdd":-1055,"maxdd_intra":-1174,"win":61.75,"pf":1.73,"ev":61.71},"eval":{"off":{"completed":9,"passes":9,"fails":0,"passrate":100,"median":85,"avg":89,"fast":53,"slow":120},"on":{"completed":9,"passes":9,"fails":0,"passrate":100,"median":85,"avg":89,"fast":53,"slow":120}}}},"400":{"7yr":{"strat":{"trades":1109,"net":104230,"maxdd":-2250,"maxdd_intra":-2276,"win":63.03,"pf":1.73,"ev":93.99},"eval":{"off":{"completed":39,"passes":37,"fails":2,"passrate":95,"median":61,"avg":69,"fast":23,"slow":267},"on":{"completed":39,"passes":37,"fails":2,"passrate":95,"median":61,"avg":69,"fast":23,"slow":267}}},"2yr":{"strat":{"trades":366,"net":35537,"maxdd":-1526,"maxdd_intra":-1581,"win":61.75,"pf":1.77,"ev":97.1},"eval":{"off":{"completed":12,"passes":12,"fails":0,"passrate":100,"median":60,"avg":61,"fast":25,"slow":116},"on":{"completed":12,"passes":12,"fails":0,"passrate":100,"median":60,"avg":61,"fast":25,"slow":116}}}},"500":{"7yr":{"strat":{"trades":1109,"net":110414,"maxdd":-2352,"maxdd_intra":-2468,"win":63.03,"pf":1.72,"ev":99.56},"eval":{"off":{"completed":43,"passes":40,"fails":3,"passrate":93,"median":54,"avg":63,"fast":19,"slow":267},"on":{"completed":43,"passes":40,"fails":3,"passrate":93,"median":54,"avg":63,"fast":19,"slow":267}}},"2yr":{"strat":{"trades":366,"net":40354,"maxdd":-1595,"maxdd_intra":-1832,"win":61.75,"pf":1.79,"ev":110.26},"eval":{"off":{"completed":13,"passes":13,"fails":0,"passrate":100,"median":54,"avg":58,"fast":22,"slow":116},"on":{"completed":13,"passes":13,"fails":0,"passrate":100,"median":54,"avg":58,"fast":22,"slow":116}}}},"650":{"7yr":{"strat":{"trades":1109,"net":145106,"maxdd":-3000,"maxdd_intra":-3039,"win":63.03,"pf":1.71,"ev":130.84},"eval":{"off":{"completed":66,"passes":48,"fails":18,"passrate":73,"median":37,"avg":45,"fast":7,"slow":253},"on":{"completed":67,"passes":49,"fails":18,"passrate":73,"median":37,"avg":44,"fast":7,"slow":253}}},"2yr":{"strat":{"trades":366,"net":51592,"maxdd":-2334,"maxdd_intra":-2570,"win":61.75,"pf":1.75,"ev":140.96},"eval":{"off":{"completed":22,"passes":17,"fails":5,"passrate":77,"median":29,"avg":34,"fast":10,"slow":91},"on":{"completed":22,"passes":17,"fails":5,"passrate":77,"median":29,"avg":34,"fast":10,"slow":91}}}},"850":{"7yr":{"strat":{"trades":1109,"net":209488,"maxdd":-4500,"maxdd_intra":-4565,"win":63.03,"pf":1.72,"ev":188.9},"eval":{"off":{"completed":121,"passes":71,"fails":50,"passrate":59,"median":17,"avg":24,"fast":3,"slow":234},"on":{"completed":117,"passes":65,"fails":52,"passrate":56,"median":17,"avg":24,"fast":3,"slow":234}}},"2yr":{"strat":{"trades":366,"net":72868,"maxdd":-3063,"maxdd_intra":-3418,"win":61.75,"pf":1.79,"ev":199.09},"eval":{"off":{"completed":36,"passes":25,"fails":11,"passrate":69,"median":15,"avg":21,"fast":5,"slow":60},"on":{"completed":37,"passes":20,"fails":17,"passrate":54,"median":13,"avg":19,"fast":5,"slow":49}}}},"1000":{"7yr":{"strat":{"trades":1109,"net":242908,"maxdd":-5250,"maxdd_intra":-5315,"win":63.03,"pf":1.72,"ev":219.03},"eval":{"off":{"completed":155,"passes":80,"fails":75,"passrate":52,"median":13,"avg":19,"fast":2,"slow":228},"on":{"completed":154,"passes":77,"fails":77,"passrate":50,"median":12,"avg":19,"fast":2,"slow":228}}},"2yr":{"strat":{"trades":366,"net":83132,"maxdd":-3578,"maxdd_intra":-3618,"win":61.75,"pf":1.77,"ev":227.14},"eval":{"off":{"completed":44,"passes":26,"fails":18,"passrate":59,"median":13,"avg":17,"fast":4,"slow":48},"on":{"completed":47,"passes":25,"fails":22,"passrate":53,"median":12,"avg":17,"fast":5,"slow":48}}}}},"100k":{"250":{"7yr":{"strat":{"trades":1109,"net":70530,"maxdd":-1500,"maxdd_intra":-1526,"win":63.03,"pf":1.73,"ev":63.6},"eval":{"off":{"completed":16,"passes":16,"fails":0,"passrate":100,"median":196,"avg":225,"fast":118,"slow":534},"on":{"completed":16,"passes":16,"fails":0,"passrate":100,"median":196,"avg":225,"fast":118,"slow":534}}},"2yr":{"strat":{"trades":366,"net":22586,"maxdd":-1055,"maxdd_intra":-1174,"win":61.75,"pf":1.73,"ev":61.71},"eval":{"off":{"completed":5,"passes":5,"fails":0,"passrate":100,"median":184,"avg":177,"fast":141,"slow":217},"on":{"completed":5,"passes":5,"fails":0,"passrate":100,"median":184,"avg":177,"fast":141,"slow":217}}}},"400":{"7yr":{"strat":{"trades":1109,"net":104230,"maxdd":-2250,"maxdd_intra":-2276,"win":63.03,"pf":1.73,"ev":93.99},"eval":{"off":{"completed":21,"passes":21,"fails":0,"passrate":100,"median":140,"avg":146,"fast":60,"slow":308},"on":{"completed":21,"passes":21,"fails":0,"passrate":100,"median":140,"avg":146,"fast":60,"slow":308}}},"2yr":{"strat":{"trades":366,"net":35537,"maxdd":-1526,"maxdd_intra":-1581,"win":61.75,"pf":1.77,"ev":97.1},"eval":{"off":{"completed":6,"passes":6,"fails":0,"passrate":100,"median":116,"avg":121,"fast":60,"slow":201},"on":{"completed":6,"passes":6,"fails":0,"passrate":100,"median":116,"avg":121,"fast":60,"slow":201}}}},"500":{"7yr":{"strat":{"trades":1109,"net":110414,"maxdd":-2352,"maxdd_intra":-2468,"win":63.03,"pf":1.72,"ev":99.56},"eval":{"off":{"completed":22,"passes":22,"fails":0,"passrate":100,"median":132,"avg":139,"fast":39,"slow":310},"on":{"completed":22,"passes":22,"fails":0,"passrate":100,"median":132,"avg":139,"fast":39,"slow":310}}},"2yr":{"strat":{"trades":366,"net":40354,"maxdd":-1595,"maxdd_intra":-1832,"win":61.75,"pf":1.79,"ev":110.26},"eval":{"off":{"completed":7,"passes":7,"fails":0,"passrate":100,"median":100,"avg":106,"fast":67,"slow":167},"on":{"completed":7,"passes":7,"fails":0,"passrate":100,"median":100,"avg":106,"fast":67,"slow":167}}}},"650":{"7yr":{"strat":{"trades":1109,"net":145106,"maxdd":-3000,"maxdd_intra":-3039,"win":63.03,"pf":1.71,"ev":130.84},"eval":{"off":{"completed":27,"passes":26,"fails":1,"passrate":96,"median":91,"avg":97,"fast":34,"slow":277},"on":{"completed":27,"passes":26,"fails":1,"passrate":96,"median":93,"avg":97,"fast":34,"slow":277}}},"2yr":{"strat":{"trades":366,"net":51592,"maxdd":-2334,"maxdd_intra":-2570,"win":61.75,"pf":1.75,"ev":140.96},"eval":{"off":{"completed":9,"passes":9,"fails":0,"passrate":100,"median":69,"avg":77,"fast":34,"slow":123},"on":{"completed":9,"passes":9,"fails":0,"passrate":100,"median":69,"avg":77,"fast":34,"slow":123}}}},"850":{"7yr":{"strat":{"trades":1109,"net":209488,"maxdd":-4500,"maxdd_intra":-4565,"win":63.03,"pf":1.72,"ev":188.9},"eval":{"off":{"completed":43,"passes":31,"fails":12,"passrate":72,"median":57,"avg":63,"fast":20,"slow":267},"on":{"completed":43,"passes":32,"fails":11,"passrate":74,"median":57,"avg":63,"fast":20,"slow":267}}},"2yr":{"strat":{"trades":366,"net":72868,"maxdd":-3063,"maxdd_intra":-3418,"win":61.75,"pf":1.79,"ev":199.09},"eval":{"off":{"completed":13,"passes":12,"fails":1,"passrate":92,"median":60,"avg":60,"fast":22,"slow":116},"on":{"completed":13,"passes":12,"fails":1,"passrate":92,"median":60,"avg":60,"fast":22,"slow":116}}}},"1000":{"7yr":{"strat":{"trades":1109,"net":242908,"maxdd":-5250,"maxdd_intra":-5315,"win":63.03,"pf":1.72,"ev":219.03},"eval":{"off":{"completed":67,"passes":40,"fails":27,"passrate":60,"median":34,"avg":46,"fast":11,"slow":254},"on":{"completed":65,"passes":41,"fails":24,"passrate":63,"median":38,"avg":45,"fast":10,"slow":254}}},"2yr":{"strat":{"trades":366,"net":83132,"maxdd":-3578,"maxdd_intra":-3618,"win":61.75,"pf":1.77,"ev":227.14},"eval":{"off":{"completed":21,"passes":14,"fails":7,"passrate":67,"median":36,"avg":38,"fast":20,"slow":74},"on":{"completed":20,"passes":14,"fails":6,"passrate":70,"median":36,"avg":39,"fast":20,"slow":74}}}}},"150k":{"250":{"7yr":{"strat":{"trades":1109,"net":70530,"maxdd":-1500,"maxdd_intra":-1526,"win":63.03,"pf":1.73,"ev":63.6},"eval":{"off":{"completed":11,"passes":11,"fails":0,"passrate":100,"median":298,"avg":325,"fast":183,"slow":625},"on":{"completed":11,"passes":11,"fails":0,"passrate":100,"median":298,"avg":325,"fast":183,"slow":625}}},"2yr":{"strat":{"trades":366,"net":22586,"maxdd":-1055,"maxdd_intra":-1174,"win":61.75,"pf":1.73,"ev":61.71},"eval":{"off":{"completed":3,"passes":3,"fails":0,"passrate":100,"median":284,"avg":263,"fast":183,"slow":323},"on":{"completed":3,"passes":3,"fails":0,"passrate":100,"median":284,"avg":263,"fast":183,"slow":323}}}},"400":{"7yr":{"strat":{"trades":1109,"net":104230,"maxdd":-2250,"maxdd_intra":-2276,"win":63.03,"pf":1.73,"ev":93.99},"eval":{"off":{"completed":15,"passes":15,"fails":0,"passrate":100,"median":192,"avg":226,"fast":119,"slow":591},"on":{"completed":15,"passes":15,"fails":0,"passrate":100,"median":192,"avg":226,"fast":119,"slow":591}}},"2yr":{"strat":{"trades":366,"net":35537,"maxdd":-1526,"maxdd_intra":-1581,"win":61.75,"pf":1.77,"ev":97.1},"eval":{"off":{"completed":5,"passes":5,"fails":0,"passrate":100,"median":150,"avg":161,"fast":119,"slow":214},"on":{"completed":5,"passes":5,"fails":0,"passrate":100,"median":150,"avg":161,"fast":119,"slow":214}}}},"500":{"7yr":{"strat":{"trades":1109,"net":110414,"maxdd":-2352,"maxdd_intra":-2468,"win":63.03,"pf":1.72,"ev":99.56},"eval":{"off":{"completed":15,"passes":15,"fails":0,"passrate":100,"median":206,"avg":216,"fast":104,"slow":570},"on":{"completed":15,"passes":15,"fails":0,"passrate":100,"median":206,"avg":216,"fast":104,"slow":570}}},"2yr":{"strat":{"trades":366,"net":40354,"maxdd":-1595,"maxdd_intra":-1832,"win":61.75,"pf":1.79,"ev":110.26},"eval":{"off":{"completed":5,"passes":5,"fails":0,"passrate":100,"median":121,"avg":145,"fast":104,"slow":207},"on":{"completed":5,"passes":5,"fails":0,"passrate":100,"median":121,"avg":145,"fast":104,"slow":207}}}},"650":{"7yr":{"strat":{"trades":1109,"net":145106,"maxdd":-3000,"maxdd_intra":-3039,"win":63.03,"pf":1.71,"ev":130.84},"eval":{"off":{"completed":19,"passes":19,"fails":0,"passrate":100,"median":165,"avg":157,"fast":60,"slow":317},"on":{"completed":19,"passes":19,"fails":0,"passrate":100,"median":165,"avg":157,"fast":60,"slow":317}}},"2yr":{"strat":{"trades":366,"net":51592,"maxdd":-2334,"maxdd_intra":-2570,"win":61.75,"pf":1.75,"ev":140.96},"eval":{"off":{"completed":5,"passes":5,"fails":0,"passrate":100,"median":111,"avg":131,"fast":60,"slow":202},"on":{"completed":5,"passes":5,"fails":0,"passrate":100,"median":111,"avg":131,"fast":60,"slow":202}}}},"850":{"7yr":{"strat":{"trades":1109,"net":209488,"maxdd":-4500,"maxdd_intra":-4565,"win":63.03,"pf":1.72,"ev":188.9},"eval":{"off":{"completed":27,"passes":26,"fails":1,"passrate":96,"median":96,"avg":103,"fast":34,"slow":276},"on":{"completed":27,"passes":26,"fails":1,"passrate":96,"median":96,"avg":103,"fast":34,"slow":276}}},"2yr":{"strat":{"trades":366,"net":72868,"maxdd":-3063,"maxdd_intra":-3418,"win":61.75,"pf":1.79,"ev":199.09},"eval":{"off":{"completed":9,"passes":9,"fails":0,"passrate":100,"median":78,"avg":81,"fast":34,"slow":145},"on":{"completed":9,"passes":9,"fails":0,"passrate":100,"median":78,"avg":81,"fast":34,"slow":145}}}},"1000":{"7yr":{"strat":{"trades":1109,"net":242908,"maxdd":-5250,"maxdd_intra":-5315,"win":63.03,"pf":1.72,"ev":219.03},"eval":{"off":{"completed":32,"passes":29,"fails":3,"passrate":91,"median":78,"avg":88,"fast":26,"slow":269},"on":{"completed":32,"passes":29,"fails":3,"passrate":91,"median":78,"avg":88,"fast":26,"slow":269}}},"2yr":{"strat":{"trades":366,"net":83132,"maxdd":-3578,"maxdd_intra":-3618,"win":61.75,"pf":1.77,"ev":227.14},"eval":{"off":{"completed":10,"passes":10,"fails":0,"passrate":100,"median":77,"avg":78,"fast":26,"slow":118},"on":{"completed":10,"passes":10,"fails":0,"passrate":100,"median":77,"avg":78,"fast":26,"slow":118}}}}}};
