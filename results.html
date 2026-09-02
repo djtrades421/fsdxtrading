@@ -83,13 +83,12 @@
   <meta property="og:url" content="https://www.fsdxtrading.com/results.html" />
   <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image.png" />
   <script src="analytics.js"></script>
-  <script type="application/ld+json">
-{
+  <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@type": "Dataset",
   "@id": "https://www.fsdxtrading.com/results.html#backtest",
   "name": "FSD-X ORB PRO (Knightfall) — 7-Year Backtest Research Dataset",
-  "description": "Hypothetical simulated backtest of the FSD-X ORB PRO opening range breakout strategy on MNQ futures, June 2019 to August 2026, on the $400 base risk profile with grade-based dynamic sizing. These are simulated results, not actual trading, and are gross of commissions, fees and slippage. Past performance is not necessarily indicative of future results. FSD-X ORB PRO has been running since 2025; Knightfall is the current updated version of the same system, not a separate or new strategy.",
+  "description": "Hypothetical simulated backtest of the FSD-X ORB PRO opening range breakout strategy on MNQ futures, June 2019 to August 2026, on the $400 base risk profile with grade-based dynamic sizing. These are simulated results, not actual trading, and are gross of commissions, fees and slippage. Past performance is not necessarily indicative of future results. FSD-X ORB PRO has been running since 2025; Knightfall is the current updated version of the same system, not a separate or new strategy. Performance is broken out by direction: longs 63.1% win / 1.74 profit factor, shorts 62.9% win / 1.72 profit factor, so the simulated edge is not dependent on a long bias.",
   "url": "https://www.fsdxtrading.com/results.html",
   "creator": {
     "@id": "https://www.fsdxtrading.com/#organization"
@@ -168,10 +167,53 @@
       "@type": "PropertyValue",
       "name": "Backtest period",
       "value": "2019-2026, 8 calendar years"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Long trades (simulated)",
+      "value": "659"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Long win rate (simulated)",
+      "value": "63.1",
+      "unitText": "percent"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Long profit factor (simulated)",
+      "value": "1.74"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Long net P&L (simulated)",
+      "value": "62552",
+      "unitCode": "USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Short trades (simulated)",
+      "value": "450"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Short win rate (simulated)",
+      "value": "62.9",
+      "unitText": "percent"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Short profit factor (simulated)",
+      "value": "1.72"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Short net P&L (simulated)",
+      "value": "41678",
+      "unitCode": "USD"
     }
   ]
-}
-  </script>
+}</script>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
@@ -535,6 +577,66 @@
             </div>
           </div>
         </section>
+
+        <!-- DIRECTION SPLIT — added 2026-09-02.
+             Answers the "is this just long-biased?" question directly. A 7-year
+             backtest on an index that rose over the period can look strong purely
+             from longs; publishing the split is how a reader rules that out.
+             Static and $400-only: the direction breakdown is not in RP_DEEP, and
+             it cannot be derived for the other risk profiles from the $400 export,
+             so it is labelled rather than wired to the profile toggle. -->
+        <section class="py-10 lg:py-12 px-6 md:px-12 border-t border-white/5">
+          <div class="max-w-5xl mx-auto">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+              <div class="p-5 border-b border-white/5 bg-zinc-950">
+                <h3 class="text-sm font-black tracking-tight text-zinc-400">// PERFORMANCE BY DIRECTION — SIMULATED</h3>
+                <p class="text-[10px] text-zinc-600 mt-1.5">Hypothetical backtest &middot; $400 risk profile &middot; grade-based dynamic sizing &middot; gross of costs &middot; 1,109 trades, Jun 2019 &ndash; Aug 2026</p>
+              </div>
+              <div class="overflow-x-auto w-full no-scrollbar">
+                <table class="w-full text-left text-sm min-w-[620px]">
+                  <thead>
+                    <tr class="border-b border-white/5 bg-zinc-900/20 text-zinc-500 uppercase text-xs tracking-wider">
+                      <th class="p-4 pl-6">Direction</th><th class="p-4">Trades</th><th class="p-4">W / L</th><th class="p-4">Win Rate</th><th class="p-4">Profit Factor</th><th class="p-4">EV / Trade</th><th class="p-4 pr-6 text-right">Net P&amp;L</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-white/5 text-zinc-300">
+                    <tr class="hover:bg-zinc-900/10 transition">
+                      <td class="p-4 pl-6 font-sans font-black text-white text-base">Long</td><td class="p-4">659</td><td class="p-4">416 / 243</td>
+                      <td class="p-4 text-green-400 font-bold">63.1%</td><td class="p-4">1.74</td><td class="p-4">$94.92</td>
+                      <td class="p-4 pr-6 text-right text-white font-bold">$62,552</td>
+                    </tr>
+                    <tr class="hover:bg-zinc-900/10 transition">
+                      <td class="p-4 pl-6 font-sans font-black text-white text-base">Short</td><td class="p-4">450</td><td class="p-4">283 / 167</td>
+                      <td class="p-4 text-green-400 font-bold">62.9%</td><td class="p-4">1.72</td><td class="p-4">$92.62</td>
+                      <td class="p-4 pr-6 text-right text-white font-bold">$41,678</td>
+                    </tr>
+                    <tr class="bg-zinc-900/20">
+                      <td class="p-4 pl-6 font-sans font-black text-zinc-400 text-base">All</td><td class="p-4 text-zinc-400">1,109</td><td class="p-4 text-zinc-400">699 / 410</td>
+                      <td class="p-4 text-zinc-400 font-bold">63.03%</td><td class="p-4 text-zinc-400">1.73</td><td class="p-4 text-zinc-400">$93.99</td>
+                      <td class="p-4 pr-6 text-right text-zinc-400 font-bold">$104,230</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="p-5 border-t border-white/5 bg-zinc-950/60">
+                <p class="text-xs text-zinc-400 leading-relaxed">
+                  <span class="text-white font-semibold">The split is close to even.</span>
+                  Longs win 63.1% at a 1.74 profit factor; shorts win 62.9% at 1.72. Expectancy per trade differs
+                  by $2.30. Longs are the larger share of the sample (659 of 1,109) because the framework takes
+                  whichever way the range breaks, and over this period more breaks resolved upward &mdash;
+                  but a short setup performed about as well as a long one when it appeared.
+                </p>
+                <p class="text-[10px] text-zinc-600 leading-relaxed mt-3">
+                  &#9888; Simulated backtest results, not actual trading. Direction figures are shown on the $400 risk
+                  profile and do not change with the profile selector above. Gross of commissions, fees and slippage,
+                  which vary by broker and reduce net performance. Past performance is not necessarily indicative of
+                  future results. Results shown are from a specific risk profile and are not typical.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
 
         <!-- ANNUAL LEDGER -->
         <section class="pb-16 px-6 md:px-12">
