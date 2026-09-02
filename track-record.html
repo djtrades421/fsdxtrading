@@ -25,6 +25,31 @@
     .tr-row:hover { background: rgba(255,255,255,0.02); }
     #equity-chart-wrap svg { display: block; overflow: visible; }
   </style>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "@id": "https://www.fsdxtrading.com/track-record.html#live",
+  "name": "FSD-X ORB PRO (Knightfall) — Live Signal Record",
+  "description": "Every setup the FSD-X ORB PRO (Knightfall) strategy has signaled on MNQ since public tracking began on 1 May 2026 — wins and losses, nothing removed. Published on the $400 risk profile and posted after the close. This records what the strategy signaled, not any individual's fills or account P&L. Important context: FSD-X ORB PRO has been running since 2025 and Knightfall is an updated version of that same system, not a new or separate strategy. 1 May 2026 is the date public tracking began, not the date the strategy started. The separate 7-year backtest on the research page is simulated and is not blended with this live record. Futures trading involves substantial risk of loss; past performance is not necessarily indicative of future results.",
+  "url": "https://www.fsdxtrading.com/track-record.html",
+  "creator": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  },
+  "publisher": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  },
+  "license": "https://www.fsdxtrading.com/disclosures.html",
+  "temporalCoverage": "2026-05-01/..",
+  "measurementTechnique": "Recorded strategy signals, published after each session close",
+  "about": {
+    "@id": "https://www.fsdxtrading.com/#membership"
+  },
+  "isBasedOn": {
+    "@id": "https://www.fsdxtrading.com/results.html#backtest"
+  }
+}
+  </script>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
@@ -72,6 +97,36 @@
           </div>
         </div>
       </div>
+
+      <!-- ═══ TRUST STRIP ═══
+           Mirrors the homepage strip. A visitor who lands here from a search
+           result or an AI citation never sees the homepage, so without this the
+           evidence pages carry no social proof at all.
+           The "★ 5.0 Verified on Whop" tile is deliberately NOT repeated here:
+           it invites a skeptic to go verify a rating built on four reviews,
+           which is exactly the rebuttal it earned in a Sept 2026 ChatGPT review.
+           The provenance tile replaces it — it answers the question that review
+           actually got wrong. ═══ -->
+      <section class="px-6 md:px-12 py-6 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="text-2xl font-black text-white">Since 2025</div>
+            <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">ORB PRO running</div>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-white">1,100+</div>
+            <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Trades · 7-yr backtest</div>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-white">300+</div>
+            <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Discord Members</div>
+          </div>
+          <div>
+            <div class="text-2xl font-black text-white">8:30 CT</div>
+            <div class="text-[11px] text-zinc-500 uppercase tracking-wider mt-1">Live room · Mon–Fri</div>
+          </div>
+        </div>
+      </section>
 
       <div class="flex-1 px-6 md:px-10 py-8">
         <div class="max-w-7xl mx-auto space-y-8">
