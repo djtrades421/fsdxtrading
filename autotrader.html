@@ -30,19 +30,42 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "FSD-X Knightfall Auto-Trader",
+  "@id": "https://www.fsdxtrading.com/autotrader.html#autotrader",
+  "name": "FSD-X Knightfall Auto Trader",
   "applicationCategory": "FinanceApplication",
   "operatingSystem": "Web (TradingView)",
-  "description": "Automated execution layer for the FSD-X ORB engine. Routes signals to your own broker through a third-party automation service you configure and control.",
-  "publisher": {
-    "@id": "https://www.fsdxtrading.com/#organization"
-  },
+  "description": "The hands-off execution layer of the FSD-X system. It runs the identical signals and trades as the manual Knightfall MK1 script and routes each one to the member's own broker through a third-party automation bridge the member configures and controls. It is not copy trading and not a managed account. IMPORTANT: the Auto Trader is one of twelve components included in the FSD-X Trading Membership \u2014 it is not sold separately and has no price of its own. The membership price covers the entire system: five TradingView indicators, this Auto Trader, the member web platform (dashboard, trade journal, broker CSV importer, backtest workspace, prop-account tracker), the daily 8:30 AM CT live trade room, the training library and the VIP Discord.",
+  "publisher": { "@id": "https://www.fsdxtrading.com/#organization" },
+  "isPartOf": { "@id": "https://www.fsdxtrading.com/#membership" },
+  "softwareRequirements": "A paid TradingView plan (webhook alerts), an automation bridge such as PickMyTrade or TradersPost, and a supported broker such as Tradovate.",
   "offers": {
     "@type": "Offer",
+    "name": "Included with the FSD-X Trading Membership",
     "price": "129.00",
     "priceCurrency": "USD",
-    "url": "https://www.fsdxtrading.com/memberships.html"
+    "url": "https://www.fsdxtrading.com/memberships.html",
+    "availability": "https://schema.org/InStock",
+    "itemOffered": { "@id": "https://www.fsdxtrading.com/#membership" },
+    "description": "This is the price of the complete FSD-X membership, not of the Auto Trader on its own. The same $129/month unlocks all twelve membership components."
   }
+}</script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.fsdxtrading.com/#organization",
+  "name": "FSD-X Trading",
+  "alternateName": ["FSDX Trading", "FSD-X"],
+  "url": "https://www.fsdxtrading.com/",
+  "logo": "https://www.fsdxtrading.com/logo.png",
+  "image": "https://www.fsdxtrading.com/og-image.png",
+  "description": "Independent trading software provider. Rules-based opening range breakout (ORB) tools for NQ and MNQ futures traders, sold as one membership that includes the indicator suite, a hands-off auto trader, a member web platform with journaling and backtest logging, a daily live trade room and the VIP community.",
+  "founder": { "@type": "Person", "name": "DJ Trades" },
+  "email": "fsdxteam@gmail.com",
+  "sameAs": [
+    "https://www.youtube.com/@FSD-XTrading",
+    "https://www.instagram.com/fsdx_trading/"
+  ]
 }
   </script>
 </head>
