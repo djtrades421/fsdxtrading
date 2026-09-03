@@ -1878,6 +1878,7 @@
         // Fall back to KV stored timestamps for members not in roster
         let renewalDate = '—';
         let cancelWarning = '';
+        let renewalTimeStr = '';   // time of day the charge fires; '' if unknown
 
         // Try to match this member in rosterData by email or whopKey
         const rosterMatch = rosterData.find(r =>
@@ -1895,6 +1896,7 @@
               const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
               renewalDate = months[mo-1] + ' ' + d + ', ' + y;
             }
+            renewalTimeStr = renewalTimeText(rosterMatch);
             if (['canceling','trial_cancelled'].includes(rosterMatch.status)) {
               cancelWarning = '<span class="ml-1 text-[9px] text-yellow-500 font-bold uppercase">cancels</span>';
             }
@@ -1906,6 +1908,8 @@
             renewalDate = 'Never';
           } else if (renewalTs) {
             renewalDate = new Date(renewalTs * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            // whopRenewalEnd is a real unix timestamp — this time is exact.
+            renewalTimeStr = renewalTimeText(m);
           } else {
             renewalDate = '—';
           }
@@ -1940,7 +1944,7 @@
             </span>
           </td>
           <td class="px-5 py-3.5">${statusBadge}</td>
-          <td class="px-5 py-3.5 text-zinc-400 text-xs">${renewalDate}${cancelWarning}</td>
+          <td class="px-5 py-3.5 text-zinc-400 text-xs">${renewalDate}${cancelWarning}${renewalTimeStr ? `<div class="text-[9px] text-zinc-600">${renewalTimeStr}</div>` : ''}</td>
           <td class="px-5 py-3.5 text-zinc-500 text-xs">${lastLogin}</td>
           <td class="px-5 py-3.5 text-zinc-500 text-xs">${new Date(m.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
           <td class="px-5 py-3.5 text-right">
@@ -3684,6 +3688,77 @@
         if (!y || !m || !d) return dateStr;
         return m + '/' + d + '/' + y;
       } catch(e) { return dateStr; }
+    }
+
+    // ── Renewal time of day ──
+    // Whop's membership row shows only a date, but the charge fires at the
+    // anniversary instant of the subscription: TJ Clark paid Aug 5 at 1:29 PM
+    // and renews Sep 4 at 1:29 PM. Three sources, best first:
+    //
+    //   1. A real timestamp — a unix renewal-end field, or a `renewal` string
+    //      carrying a time (the CSV era shipped "2026-05-26 10:31:18 -0500";
+    //      fmtDate above already strips it). Authoritative.
+    //   2. The time of day of this member's most recent recurring charge. That
+    //      IS the instant Whop bills on, so it's right in practice — but it is
+    //      inferred from payment history, so it renders labelled "est".
+    //   3. Nothing.
+    //
+    // Never guesses. With no source it returns null and every caller renders
+    // exactly what it did before this function existed. Formatting is pinned to
+    // America/Chicago to match fmtSince and the rest of the panel.
+    function renewalTime(r) {
+      if (!r) return null;
+      const fmt = (dt) => (dt && !isNaN(dt))
+        ? dt.toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' })
+        : null;
+
+      // 1. Exact.
+      const ts = r.whopRenewalEnd || r.whopExpiresAt || r.renewalEnd || r.renewalTs || null;
+      if (ts) {
+        const t = fmt(new Date(ts * 1000));
+        if (t) return { time: t, exact: true };
+      }
+      const raw = (r.renewal || '').trim();
+      if (/\d{1,2}:\d{2}/.test(raw)) {
+        // "2026-05-26 10:31:18 -0500" → "2026-05-26T10:31:18-05:00"
+        const norm = raw.replace(' ', 'T').replace(/\s*([+-]\d{2}):?(\d{2})$/, '$1:$2');
+        const t = fmt(new Date(norm));
+        if (t) return { time: t, exact: true };
+      }
+
+      // 2. Derived from the last recurring charge. Same email / Discord matching
+      //    as lastRecurringPrice(), so a member the price lookup can find is a
+      //    member this can find.
+      const em = (r.email || '').toLowerCase();
+      const dn = (r.discordName || '').toLowerCase();
+      if (!em && !dn) return null;
+      const pays = (typeof paymentsData !== 'undefined' && Array.isArray(paymentsData)) ? paymentsData : [];
+      const hits = pays.filter(p => {
+        if (!p || p.status !== 'paid' || !p.paidAt) return false;
+        if (p.billingReason !== 'subscription_cycle' && p.billingReason !== 'subscription_create') return false;
+        const pe = (p.email || '').toLowerCase();
+        const pd = (p.discordName || '').toLowerCase();
+        return (em && pe === em) || (dn && pd === dn);
+      }).sort((a, b) => new Date(b.paidAt || 0) - new Date(a.paidAt || 0));
+      if (!hits.length) return null;
+      const t = fmt(new Date(hits[0].paidAt));
+      return t ? { time: t, exact: false } : null;
+    }
+
+    // Plain string, '' when no time can be sourced.
+    function renewalTimeText(r) {
+      const rt = renewalTime(r);
+      return rt ? rt.time : '';
+    }
+
+    // Small muted time line under a renewal date. '' when no time is available.
+    function renewalTimeLabel(r, cls) {
+      const rt = renewalTime(r);
+      if (!rt) return '';
+      const title = rt.exact
+        ? 'Renewal time from Whop'
+        : 'Estimated — this member is charged at this time of day, taken from their last renewal';
+      return `<div class="${cls || 'text-[9px] text-zinc-600'}" title="${title}">${rt.time}${rt.exact ? '' : '<span class="text-zinc-700 ml-0.5">est</span>'}</div>`;
     }
 
     // ── KV storage keys ──
@@ -5850,7 +5925,16 @@
       document.getElementById('day-modal-title').textContent = dateLabel;
       document.getElementById('day-modal-sub').textContent = isPast
         ? (dayPayments.length ? '$'+totalCollected.toFixed(2)+' net collected'+(Math.abs(totalGross-totalCollected)>0.005?' ($'+totalGross.toFixed(2)+' gross)':'')+' · '+dayPayments.length+' transaction'+(dayPayments.length!==1?'s':'') : 'No transactions')
-        : (dayRenewals.length ? dayRenewals.length+' renewal'+(dayRenewals.length!==1?'s':'')+' expected' : 'No activity');
+        : (dayRenewals.length
+            ? dayRenewals.length+' renewal'+(dayRenewals.length!==1?'s':'')+' expected'
+              // When every renewal that day fires at the same time — which is
+              // always true of a single one — put it in the subtitle so the
+              // answer is there without reading the rows.
+              + (() => {
+                  const times = [...new Set(dayRenewals.map(r => renewalTimeText(r)).filter(Boolean))];
+                  return (times.length === 1 && times.length === dayRenewals.length) ? ' · ' + times[0] : '';
+                })()
+            : 'No activity');
 
       let html = '';
 
@@ -5907,7 +5991,10 @@
                 <div class="text-xs text-zinc-500 mt-0.5">${r.email||'—'}</div>
                 <div class="text-[10px] text-zinc-600 mt-0.5">${r.planName||r.accessType||''}</div>
               </div>
-              <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 shrink-0 ml-3">${r.planName||r.accessType}</span>
+              <div class="text-right shrink-0 ml-3">
+                <span class="inline-block text-[10px] font-bold px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">${r.planName||r.accessType}</span>
+                ${renewalTimeLabel(r, 'text-[10px] text-zinc-500 mt-1')}
+              </div>
             </div>`).join('')}
           </div>
         </div>`;
@@ -6198,7 +6285,7 @@
                 <div class="text-emerald-400/80 text-[10px] font-bold">${discounted ? `<span class="text-zinc-600 font-normal line-through mr-1">$${listPrice.toFixed(2)}</span>` : ''}$${price.toFixed(2)}</div>
                 ${upRatio !== null ? `<div class="text-zinc-600 text-[9px]">≈$${(price*upRatio).toFixed(2)} after fees</div>` : ''}
               </div>
-              <div class="pay-date text-zinc-500 whitespace-nowrap">${fmtDate(r.renewal)}</div>
+              <div class="pay-date text-zinc-500 whitespace-nowrap">${fmtDate(r.renewal)}${renewalTimeLabel(r)}</div>
               <div class="pay-days"><span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${daysLeft<=3?'bg-red-500/10 text-red-400':daysLeft<=7?'bg-yellow-500/10 text-yellow-400':'bg-white/5 text-zinc-400'}">${daysLeft}d</span></div>
             </div>`;
           }).join('');
