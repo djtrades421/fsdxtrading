@@ -211,6 +211,17 @@
       "name": "Short net P&L (simulated)",
       "value": "41678",
       "unitCode": "USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Median trade (simulated)",
+      "value": "260",
+      "unitCode": "USD"
+    },
+    {
+      "@type": "PropertyValue",
+      "name": "Profit factor by year (simulated)",
+      "value": "2019 2.40, 2020 1.41, 2021 1.83, 2022 1.74, 2023 1.61, 2024 1.75, 2025 1.84, 2026 1.96"
     }
   ]
 }</script>
@@ -562,6 +573,7 @@
               <div class="flex justify-between"><span class="text-zinc-500">Total Trade Count:</span><span class="text-white font-bold text-base">1,109</span></div>
               <div class="flex justify-between"><span class="text-zinc-500">Wins / Losses:</span><span class="text-zinc-400">699 / 410</span></div>
               <div class="flex justify-between"><span class="text-zinc-500">Expected Value:</span><span class="text-zinc-300">$93.99 / trade</span></div>
+              <div class="flex justify-between"><span class="text-zinc-500">Median Trade:</span><span class="text-zinc-300">$260.00</span></div>
               <div class="flex justify-between"><span class="text-zinc-500">Avg Win / Avg Loss:</span><span class="text-zinc-400">$354 / -$348</span></div>
               <div class="flex justify-between"><span class="text-zinc-500">Max Consec. Wins:</span><span class="text-emerald-400 font-bold">12</span></div>
               <div class="flex justify-between"><span class="text-zinc-500">Max Consec. Losses:</span><span class="text-zinc-400">5</span></div>
@@ -645,44 +657,44 @@
               <h3 class="text-sm font-black tracking-tight text-zinc-400">// MULTI-YEAR ANNUAL LEDGER — BACKTEST DATA</h3>
             </div>
             <div class="overflow-x-auto w-full no-scrollbar">
-              <table class="w-full text-left text-sm min-w-[650px]">
+              <table class="w-full text-left text-sm min-w-[720px]">
                 <thead>
                   <tr class="border-b border-white/5 bg-zinc-900/20 text-zinc-500 uppercase text-xs tracking-wider">
-                    <th class="p-4 pl-6">Year</th><th class="p-4">Trades</th><th class="p-4">Wins</th><th class="p-4">Losses</th><th class="p-4">Win Rate</th><th class="p-4 pr-6 text-right">Net Return</th>
+                    <th class="p-4 pl-6">Year</th><th class="p-4">Trades</th><th class="p-4">Wins</th><th class="p-4">Losses</th><th class="p-4">Win Rate</th><th class="p-4">Profit Factor</th><th class="p-4 pr-6 text-right">Net Return</th>
                   </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5 text-zinc-300">
                   <tr class="hover:bg-zinc-900/10 transition">
                     <td class="p-5 pl-6 text-white font-black text-base">2019 <span class="text-[10px] text-zinc-600 font-normal">PARTIAL</span></td><td class="p-5">8</td><td class="p-5">6</td><td class="p-5">2</td>
-                    <td class="p-5 text-white font-bold">75.0%</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$764</td>
+                    <td class="p-5 text-white font-bold">75.0%</td><td class="p-5 text-zinc-300">2.40</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$764</td>
                   </tr>
                   <tr class="hover:bg-zinc-900/10 transition">
                     <td class="p-5 pl-6 text-white font-black text-base">2020</td><td class="p-5">130</td><td class="p-5">79</td><td class="p-5">51</td>
-                    <td class="p-5 text-white font-bold">60.8%</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$7,364</td>
+                    <td class="p-5 text-white font-bold">60.8%</td><td class="p-5 text-zinc-300">1.41</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$7,364</td>
                   </tr>
                   <tr class="hover:bg-zinc-900/10 transition">
                     <td class="p-5 pl-6 text-white font-black text-base">2021</td><td class="p-5">146</td><td class="p-5">97</td><td class="p-5">49</td>
-                    <td class="p-5 text-white font-bold">66.4%</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$14,662</td>
+                    <td class="p-5 text-white font-bold">66.4%</td><td class="p-5 text-zinc-300">1.83</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$14,662</td>
                   </tr>
                   <tr class="hover:bg-zinc-900/10 transition">
                     <td class="p-5 pl-6 text-white font-black text-base">2022</td><td class="p-5">195</td><td class="p-5">126</td><td class="p-5">69</td>
-                    <td class="p-5 text-white font-bold">64.6%</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$20,192</td>
+                    <td class="p-5 text-white font-bold">64.6%</td><td class="p-5 text-zinc-300">1.74</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$20,192</td>
                   </tr>
                   <tr class="hover:bg-zinc-900/10 transition">
                     <td class="p-5 pl-6 text-white font-black text-base">2023</td><td class="p-5">173</td><td class="p-5">103</td><td class="p-5">70</td>
-                    <td class="p-5 text-white font-bold">59.5%</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$14,312</td>
+                    <td class="p-5 text-white font-bold">59.5%</td><td class="p-5 text-zinc-300">1.61</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$14,312</td>
                   </tr>
                   <tr class="hover:bg-zinc-900/10 transition">
                     <td class="p-5 pl-6 text-white font-black text-base">2024</td><td class="p-5">173</td><td class="p-5">109</td><td class="p-5">64</td>
-                    <td class="p-5 text-white font-bold">63.0%</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$16,135</td>
+                    <td class="p-5 text-white font-bold">63.0%</td><td class="p-5 text-zinc-300">1.75</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$16,135</td>
                   </tr>
                   <tr class="hover:bg-zinc-900/10 transition">
                     <td class="p-5 pl-6 text-white font-black text-base">2025</td><td class="p-5">187</td><td class="p-5">117</td><td class="p-5">70</td>
-                    <td class="p-5 text-white font-bold">62.6%</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$18,931</td>
+                    <td class="p-5 text-white font-bold">62.6%</td><td class="p-5 text-zinc-300">1.84</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$18,931</td>
                   </tr>
                   <tr class="hover:bg-zinc-900/10 transition">
                     <td class="p-5 pl-6 text-white font-black text-base">2026 <span class="text-[10px] text-zinc-600 font-normal">PARTIAL</span></td><td class="p-5">97</td><td class="p-5">62</td><td class="p-5">35</td>
-                    <td class="p-5 text-white font-bold">63.9%</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$11,870</td>
+                    <td class="p-5 text-white font-bold">63.9%</td><td class="p-5 text-zinc-300">1.96</td><td class="p-5 pr-6 text-right text-emerald-400/90 font-black text-base">$11,870</td>
                   </tr>
                 </tbody>
               </table>
