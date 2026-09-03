@@ -22,6 +22,78 @@
   <meta property="og:url" content="https://www.fsdxtrading.com/schedule.html" />
   <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image.png" />
   <script src="analytics.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.fsdxtrading.com/#organization",
+  "name": "FSD-X Trading",
+  "alternateName": ["FSDX Trading", "FSD-X"],
+  "url": "https://www.fsdxtrading.com/",
+  "logo": "https://www.fsdxtrading.com/logo.png",
+  "image": "https://www.fsdxtrading.com/og-image.png",
+  "description": "Independent trading software provider. Rules-based opening range breakout (ORB) tools for NQ and MNQ futures traders, sold as one membership that includes the indicator suite, a hands-off auto trader, a member web platform with journaling and backtest logging, a daily live trade room and the VIP community.",
+  "founder": { "@type": "Person", "name": "DJ Trades" },
+  "email": "fsdxteam@gmail.com",
+  "sameAs": [
+    "https://www.youtube.com/@FSD-XTrading",
+    "https://www.instagram.com/fsdx_trading/"
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": "https://www.fsdxtrading.com/schedule.html#liveroom",
+  "name": "FSD-X Live Trade Room",
+  "serviceType": "Live trading session",
+  "description": "A live session every market morning at 8:30 AM CT covering the Nasdaq (NQ/MNQ) opening range breakout, plus a weekly Monday gameplan session. Members watch each setup grade in real time and trade the open alongside the community rather than alone. The live room is one of twelve components included in the FSD-X Trading Membership and is not sold separately. Educational only — all trades presented are hypothetical and should not be expected to be replicated in a live trading account.",
+  "provider": {
+    "@id": "https://www.fsdxtrading.com/#organization"
+  },
+  "isRelatedTo": {
+    "@id": "https://www.fsdxtrading.com/#membership"
+  },
+  "url": "https://www.fsdxtrading.com/schedule.html",
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Futures traders trading the Nasdaq open, including prop-firm evaluation and funded traders"
+  },
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "name": "Member Discord voice and screen share",
+    "serviceLocation": {
+      "@type": "VirtualLocation",
+      "name": "FSD-X Discord — member live room"
+    }
+  },
+  "hoursAvailable": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "https://schema.org/Monday",
+      "https://schema.org/Tuesday",
+      "https://schema.org/Wednesday",
+      "https://schema.org/Thursday",
+      "https://schema.org/Friday"
+    ],
+    "opens": "08:30",
+    "closes": "10:00"
+  },
+  "offers": {
+    "@type": "Offer",
+    "name": "Included with the FSD-X Trading Membership",
+    "price": "129.00",
+    "priceCurrency": "USD",
+    "url": "https://www.fsdxtrading.com/memberships.html",
+    "availability": "https://schema.org/InStock",
+    "itemOffered": {
+      "@id": "https://www.fsdxtrading.com/#membership"
+    },
+    "description": "This is the price of the complete FSD-X membership, not of the live room on its own."
+  }
+}
+  </script>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
