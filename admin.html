@@ -3708,8 +3708,10 @@
     // America/Chicago to match fmtSince and the rest of the panel.
     function renewalTime(r) {
       if (!r) return null;
+      // Always stamped CT. This column sits next to dates and dollar figures,
+      // so an unlabelled time invites the reader to supply their own zone.
       const fmt = (dt) => (dt && !isNaN(dt))
-        ? dt.toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' })
+        ? dt.toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }) + ' CT'
         : null;
 
       // 1. Exact.
@@ -3755,10 +3757,13 @@
     function renewalTimeLabel(r, cls) {
       const rt = renewalTime(r);
       if (!rt) return '';
+      // "≈" for an estimate, matching the "≈$10.88 after fees" line directly
+      // above it in this same column. An abbreviation like "est" cannot be used
+      // here — next to a clock time it reads as Eastern, not estimated.
       const title = rt.exact
-        ? 'Renewal time from Whop'
-        : 'Estimated — this member is charged at this time of day, taken from their last renewal';
-      return `<div class="${cls || 'text-[9px] text-zinc-600'}" title="${title}">${rt.time}${rt.exact ? '' : '<span class="text-zinc-700 ml-0.5">est</span>'}</div>`;
+        ? 'Renewal time from Whop (Central Time)'
+        : 'Approximate (Central Time) — this member is charged at this time of day, taken from their last renewal';
+      return `<div class="${cls || 'text-[9px] text-zinc-600'}" title="${title}">${rt.exact ? '' : '≈'}${rt.time}</div>`;
     }
 
     // ── KV storage keys ──
