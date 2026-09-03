@@ -27,38 +27,261 @@
   "@context": "https://schema.org",
   "@type": "Product",
   "@id": "https://www.fsdxtrading.com/#membership",
-  "name": "FSD-X Membership — ORB PRO (Knightfall MK1)",
-  "description": "Rules-based opening range breakout framework for NQ/MNQ futures. Includes the ORB PRO (Knightfall MK1) signal engine, Volume indicator, Stack V1, Scout, Nexus 2.0 Chrome extension, the TradingView Auto-Trader, and daily live trade room access.",
+  "name": "FSD-X Trading Membership",
+  "alternateName": [
+    "FSD-X Full Membership",
+    "FSD-X Trading Ecosystem Membership"
+  ],
+  "description": "One membership that covers the entire FSD-X system at a single price. It is not a single indicator. Included: the ORB PRO (Knightfall MK1) signal engine, the Knightfall Auto Trader for hands-off execution, the Stack V1 multi-timeframe trend filter, the ORB Volume engine, Scout automated alerts, the Nexus 2.0 Chrome side-panel journal and TradingView strategy optimizer, the FSD-X member web platform (dashboard, trade journal, broker CSV importer, backtest workspace, prop-account tracker, written playbook), the daily live trade room at 8:30 AM CT with a weekly Monday gameplan session, a monthly 30-minute one-on-one call, the full setup and training video library, and the VIP Discord channels. There are no tiers and no upsells inside the membership — every component below is included in every plan.",
   "brand": {
     "@id": "https://www.fsdxtrading.com/#organization"
   },
   "image": "https://www.fsdxtrading.com/og-image.png",
-  "category": "Trading software",
-  "offers": [
+  "category": "Trading software and education",
+  "url": "https://www.fsdxtrading.com/memberships.html",
+  "isAccessibleForFree": false,
+  "additionalProperty": [
     {
-      "@type": "Offer",
-      "name": "Monthly",
-      "price": "129.00",
-      "priceCurrency": "USD",
-      "url": "https://www.fsdxtrading.com/memberships.html",
-      "availability": "https://schema.org/InStock"
+      "@type": "PropertyValue",
+      "name": "What the price covers",
+      "value": "The subscription price covers the complete membership — all five TradingView indicators, the Auto Trader, the member web platform, the live trade room, the monthly one-on-one call, the training library and the VIP Discord. No component listed is sold or priced separately, and none is an add-on."
     },
     {
-      "@type": "Offer",
-      "name": "Quarterly",
-      "price": "349.00",
-      "priceCurrency": "USD",
-      "url": "https://www.fsdxtrading.com/memberships.html",
-      "availability": "https://schema.org/InStock"
+      "@type": "PropertyValue",
+      "name": "Included components",
+      "value": "12"
     },
     {
-      "@type": "Offer",
-      "name": "Annual",
-      "price": "1299.00",
-      "priceCurrency": "USD",
-      "url": "https://www.fsdxtrading.com/memberships.html",
-      "availability": "https://schema.org/InStock"
+      "@type": "PropertyValue",
+      "name": "Primary market",
+      "value": "Nasdaq futures — NQ and MNQ — on the 8:30 AM CT opening range breakout"
     }
+  ],
+  "hasPart": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "FSD-X ORB PRO (Knightfall MK1)",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web (TradingView)",
+      "description": "The flagship signal engine and the core of the system. Grades every opening range breakout A+ through F as it forms, takes only A+ through C, and publishes the entry, stop and target for each graded setup. Live signals and the full backtester ship in one invite-only script. Included with the membership; not sold separately.",
+      "isPartOf": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/suite.html"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "FSD-X Knightfall Auto Trader",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web (TradingView)",
+      "description": "Hands-off execution layer running the identical signals and trades as the manual Knightfall MK1 script. Routes each signal to the member's own broker through a third-party automation bridge the member configures and controls. A NinjaTrader-native version is in development. Included with the membership; not sold separately.",
+      "isPartOf": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/autotrader.html"
+    },
+    {
+      "@type": "WebApplication",
+      "name": "FSD-X Member Platform",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web browser",
+      "browserRequirements": "Requires JavaScript",
+      "description": "A full trader workspace hosted on fsdxtrading.com and included with the membership. Dashboard with live P&L, win rate, equity curve, market-session clocks and an economic calendar; a trade journal with a calendar view and grade breakdowns; a broker trade importer that ingests Tradovate order exports and TradingView strategy exports, deduplicates across overlapping files and computes commissions; a backtest workspace that turns an imported CSV into stats, an equity curve and a calendar; a multi-account prop-firm tracker with trailing and end-of-day drawdown rules; and the written playbook. Included with the membership; not sold separately.",
+      "isPartOf": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/platform.html",
+      "featureList": [
+        "Member dashboard — P&L, win rate, equity curve, economic calendar, market session clocks",
+        "Trade journal with calendar view, grade breakdowns and per-trade detail",
+        "Broker CSV importer — Tradovate order exports and TradingView strategy exports",
+        "Cross-file duplicate detection and commission-accurate P&L on import",
+        "Backtest workspace — logged backtest sessions with stats, equity curve and calendar",
+        "Multi-account prop-firm tracker with trailing and EOD drawdown rules",
+        "Written playbook — entries, stops, targets and grading rules"
+      ]
+    },
+    {
+      "@type": "Service",
+      "name": "FSD-X Live Trade Room",
+      "serviceType": "Live trading session",
+      "description": "A live session every market morning at 8:30 AM CT for the Nasdaq opening range breakout, plus a weekly Monday gameplan session. Members watch the setups grade in real time and trade the open alongside the community. Educational only — trades shown are hypothetical and should not be expected to be replicated in a live account. Included with the membership; not sold separately.",
+      "provider": {
+        "@id": "https://www.fsdxtrading.com/#organization"
+      },
+      "isRelatedTo": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/schedule.html",
+      "hoursAvailable": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "https://schema.org/Monday",
+          "https://schema.org/Tuesday",
+          "https://schema.org/Wednesday",
+          "https://schema.org/Thursday",
+          "https://schema.org/Friday"
+        ],
+        "opens": "08:30",
+        "closes": "10:00"
+      }
+    },
+    {
+      "@type": "Service",
+      "name": "FSD-X Monthly 1-on-1 Call",
+      "serviceType": "One-to-one coaching session",
+      "description": "A 30-minute one-on-one session each month covering the member's own journal, their grading and execution, and the mornings costing them money. Educational only — FSD-X is not a broker, commodity trading advisor or investment adviser and does not give personalised investment advice. Included with the membership; not sold separately.",
+      "provider": {
+        "@id": "https://www.fsdxtrading.com/#organization"
+      },
+      "isRelatedTo": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "FSD-X Nexus 2.0",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Chrome extension",
+      "description": "A Chrome side panel that sits next to the TradingView chart — trade journal, TradingView strategy optimizer and analyzer in one place, with no tab switching. Included with the membership; not sold separately.",
+      "isPartOf": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/suite.html"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "FSD-X Stack V1",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web (TradingView)",
+      "description": "Multi-timeframe trend confirmation. Checks whether the lower and higher timeframes agree on direction before a breakout is taken, filtering out low-quality mornings. Included with the membership; not sold separately.",
+      "isPartOf": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/suite.html"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "FSD-X ORB Volume",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web (TradingView)",
+      "description": "Breakout volume companion — session volume clusters and expansion confirmation on the candles that decide whether a breakout has participation behind it. Included with the membership; not sold separately.",
+      "isPartOf": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/suite.html"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "FSD-X Scout",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "description": "Automated alert stream that posts graded setups to the member alert feed and the VIP Discord channels as they form. Included with the membership; not sold separately.",
+      "isPartOf": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/suite.html"
+    },
+    {
+      "@type": "CreativeWorkSeries",
+      "name": "FSD-X Setup & Training Library",
+      "description": "Video walkthroughs covering installation, calibration and live usage of the FSD-X suite, the Auto Trader setup guide, the default settings reference table, and the ORB playbook cheat sheet. Educational content only. Included with the membership.",
+      "isPartOf": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/knowledge.html"
+    },
+    {
+      "@type": "Service",
+      "name": "FSD-X VIP Discord Channels",
+      "serviceType": "Trading community",
+      "description": "Member-only Discord channels — the ORB PRO room, daily graded signals, setup walkthroughs, Auto Trader support and funded-trader channels. Included with the membership; not sold separately.",
+      "provider": {
+        "@id": "https://www.fsdxtrading.com/#organization"
+      },
+      "isRelatedTo": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      }
+    },
+    {
+      "@type": "Service",
+      "name": "FSD-X Published Performance Research",
+      "serviceType": "Strategy performance documentation",
+      "description": "Two separately published, never-blended records available to members and the public: a seven-year simulated backtest of the strategy on MNQ (2019–2026), and a live signal record published after each session close with wins and losses included. Both are documented on fsdxtrading.com rather than only summarised.",
+      "provider": {
+        "@id": "https://www.fsdxtrading.com/#organization"
+      },
+      "isRelatedTo": {
+        "@id": "https://www.fsdxtrading.com/#membership"
+      },
+      "url": "https://www.fsdxtrading.com/results.html"
+    }
+  ],
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "USD",
+    "lowPrice": "108.25",
+    "highPrice": "129.00",
+    "offerCount": "3",
+    "url": "https://www.fsdxtrading.com/memberships.html",
+    "description": "Every plan below unlocks the complete membership — all twelve components listed in hasPart. The plans differ only in billing period, not in what is included.",
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Monthly — full membership",
+        "price": "129.00",
+        "priceCurrency": "USD",
+        "url": "https://www.fsdxtrading.com/memberships.html",
+        "availability": "https://schema.org/InStock",
+        "itemOffered": {
+          "@id": "https://www.fsdxtrading.com/#membership"
+        },
+        "description": "$129 per month for the complete membership — every indicator, the Auto Trader, the member platform, the live trade room, the monthly one-on-one call, the training library and the VIP Discord. It is not the price of a single indicator."
+      },
+      {
+        "@type": "Offer",
+        "name": "Quarterly — full membership",
+        "price": "349.00",
+        "priceCurrency": "USD",
+        "url": "https://www.fsdxtrading.com/memberships.html",
+        "availability": "https://schema.org/InStock",
+        "itemOffered": {
+          "@id": "https://www.fsdxtrading.com/#membership"
+        },
+        "description": "$349 per quarter for the complete membership — identical contents to the monthly plan."
+      },
+      {
+        "@type": "Offer",
+        "name": "Annual — full membership",
+        "price": "1299.00",
+        "priceCurrency": "USD",
+        "url": "https://www.fsdxtrading.com/memberships.html",
+        "availability": "https://schema.org/InStock",
+        "itemOffered": {
+          "@id": "https://www.fsdxtrading.com/#membership"
+        },
+        "description": "$1,299 per year for the complete membership — identical contents to the monthly plan, at the lowest recurring rate."
+      }
+    ]
+  }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.fsdxtrading.com/#organization",
+  "name": "FSD-X Trading",
+  "alternateName": ["FSDX Trading", "FSD-X"],
+  "url": "https://www.fsdxtrading.com/",
+  "logo": "https://www.fsdxtrading.com/logo.png",
+  "image": "https://www.fsdxtrading.com/og-image.png",
+  "description": "Independent trading software provider. Rules-based opening range breakout (ORB) tools for NQ and MNQ futures traders, sold as one membership that includes the indicator suite, a hands-off auto trader, a member web platform with journaling and backtest logging, a daily live trade room and the VIP community.",
+  "founder": { "@type": "Person", "name": "DJ Trades" },
+  "email": "fsdxteam@gmail.com",
+  "sameAs": [
+    "https://www.youtube.com/@FSD-XTrading",
+    "https://www.instagram.com/fsdx_trading/"
   ]
 }
   </script>
@@ -166,16 +389,20 @@
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">FSD-X Nexus 2.0</span> — trading journal + TradingView strategy optimizer, in one Chrome side panel</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Member Dashboard</span> — your live P&amp;L, win rate, equity curve, and economic calendar in one place</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Trade Journal</span> — log every trade on a calendar with P&amp;L, win rate, and grade breakdowns</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Broker Trade Importer</span> — upload your Tradovate order exports or TradingView strategy exports; commissions applied, duplicates skipped when files overlap</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">The Playbook</span> — the full written rule set: entries, stops, targets, and trade grading</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Backtest Workspace</span> — import any backtest CSV and get stats, calendar, and equity curve automatically</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Account Tracker</span> — track multiple prop-firm accounts and drawdown in one view</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Strategy Optimizer Pro</span> — automated backtesting engine</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">SCOUT</span> — live Discord alert streams</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Live Trade Room</span> — we go live every market morning at 8:30 AM CT · trade the open with the community, not alone</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Monthly 1-on-1 Call</span> — a 30-minute session each month on your own journal, grading, and execution. Educational only; not personalised investment advice.</div></div>
+              <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">Setup &amp; Training Library</span> — video walkthroughs, the Auto Trader guide, the default-settings table, and the ORB playbook cheat sheet</div></div>
               <div class="flex items-start gap-2 text-zinc-300"><span class="text-green-400 shrink-0 mt-0.5">✓</span><div><span class="text-white font-semibold">VIP Discord channels</span> — the ORB PRO room, daily signals, setup walkthroughs, and funded-trader channels</div></div>
             </div>
-            <div class="mt-5 pt-4 border-t border-white/5 text-center">
+            <div class="mt-5 pt-4 border-t border-white/5 text-center flex flex-wrap justify-center gap-x-5 gap-y-2">
               <a href="suite.html" class="text-xs text-zinc-500 hover:text-green-400 transition">View full suite breakdown &rarr;</a>
+              <a href="platform.html" class="text-xs text-zinc-500 hover:text-green-400 transition">See the member platform &rarr;</a>
             </div>
           </div>
 
