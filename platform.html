@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X Member Platform — Dashboard, Trade Journal, CSV Import &amp; Backtest Logging</title>
+  <meta name="description" content="The FSD-X membership includes a full trader platform on this site: dashboard, trade journal, broker CSV importer for Tradovate and TradingView exports, a backtest workspace, and a multi-account prop-firm tracker. Included with every plan — not an add-on." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FSD-X Member Platform — the workspace included with the membership" />
+  <meta property="og:description" content="Dashboard, trade journal, broker CSV importer, backtest workspace and multi-account prop-firm tracker — all included with the FSD-X membership at no extra cost." />
+  <meta property="og:image" content="https://www.fsdxtrading.com/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FSD-X Member Platform — the workspace included with the membership" />
+  <meta name="twitter:description" content="Dashboard, trade journal, broker CSV importer, backtest workspace and multi-account prop-firm tracker — all included with the FSD-X membership at no extra cost." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <style>
+    body { background-color: #000; }
+  </style>
+  <link rel="canonical" href="https://www.fsdxtrading.com/platform.html" />
+  <meta property="og:url" content="https://www.fsdxtrading.com/platform.html" />
+  <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image.png" />
+  <script src="analytics.js"></script>
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": "https://www.fsdxtrading.com/#organization",
+  "name": "FSD-X Trading",
+  "alternateName": ["FSDX Trading", "FSD-X"],
+  "url": "https://www.fsdxtrading.com/",
+  "logo": "https://www.fsdxtrading.com/logo.png",
+  "image": "https://www.fsdxtrading.com/og-image.png",
+  "description": "Independent trading software provider. Rules-based opening range breakout (ORB) tools for NQ and MNQ futures traders, sold as one membership that includes the indicator suite, a hands-off auto trader, a member web platform with journaling and backtest logging, a daily live trade room and the VIP community.",
+  "founder": { "@type": "Person", "name": "DJ Trades" },
+  "email": "fsdxteam@gmail.com",
+  "sameAs": [
+    "https://www.youtube.com/@FSD-XTrading",
+    "https://www.instagram.com/fsdx_trading/"
+  ]
+}
+  </script>
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "@id": "https://www.fsdxtrading.com/platform.html#platform",
+  "name": "FSD-X Member Platform",
+  "alternateName": ["FSD-X Trader Workspace", "FSD-X Member Dashboard"],
+  "applicationCategory": "FinanceApplication",
+  "applicationSubCategory": "Trade journal and backtest workspace",
+  "operatingSystem": "Web browser",
+  "browserRequirements": "Requires JavaScript",
+  "url": "https://www.fsdxtrading.com/platform.html",
+  "description": "A full trader workspace hosted on fsdxtrading.com and included with the FSD-X Trading Membership at no extra cost. Members get a dashboard with P&L, win rate, equity curve, market-session clocks and an economic calendar; a trade journal with a calendar view and grade breakdowns; a broker trade importer that reads Tradovate order exports and TradingView strategy exports, deduplicates across overlapping files and applies real per-contract commissions; a backtest workspace that turns an imported CSV into stats, an equity curve and a calendar; a multi-account prop-firm tracker with trailing and end-of-day drawdown rules; a Scout alert feed; and the written playbook. The platform is one of twelve components of the membership and is not sold or priced separately.",
+  "publisher": { "@id": "https://www.fsdxtrading.com/#organization" },
+  "isPartOf": { "@id": "https://www.fsdxtrading.com/#membership" },
+  "isAccessibleForFree": false,
+  "featureList": [
+    "Member dashboard — P&L, win rate, equity curve with range filters, economic calendar, London/New York/Tokyo session clocks",
+    "Trade journal — calendar view, per-trade detail, grade filtering, tags, multi-account support",
+    "Broker trade importer — Tradovate order exports and TradingView strategy exports",
+    "Flat-to-flat campaign accounting with real per-contract commissions applied on import",
+    "Cross-file duplicate detection at fill-timestamp resolution, so re-uploading an overlapping export adds only new trades",
+    "Backtest workspace — logged backtest sessions kept separate from live trades, each with stats, equity curve and calendar",
+    "Multi-account prop-firm tracker — trailing and end-of-day drawdown rules, per-account headroom and target progress",
+    "Account registry — nickname, account number, size, type and commission rate per prop account",
+    "Scout alert feed — graded setups delivered as they form",
+    "The written playbook — entry, stop, target and grading rules in full"
+  ],
+  "offers": {
+    "@type": "Offer",
+    "name": "Included with the FSD-X Trading Membership",
+    "price": "129.00",
+    "priceCurrency": "USD",
+    "url": "https://www.fsdxtrading.com/memberships.html",
+    "availability": "https://schema.org/InStock",
+    "itemOffered": { "@id": "https://www.fsdxtrading.com/#membership" },
+    "description": "This is the price of the complete FSD-X membership, not of the platform on its own. The platform is included with every plan alongside the indicator suite, the Auto Trader, the live trade room, the monthly one-on-one call and the VIP Discord."
+  }
+}
+  </script>
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "FSD-X Trading", "item": "https://www.fsdxtrading.com/" },
+    { "@type": "ListItem", "position": 2, "name": "The System", "item": "https://www.fsdxtrading.com/suite.html" },
+    { "@type": "ListItem", "position": 3, "name": "Member Platform", "item": "https://www.fsdxtrading.com/platform.html" }
+  ]
+}
+  </script>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+    <div class="w-full flex-1">
+
+      <!-- ═══ HERO ═══ -->
+      <section class="pt-12 pb-10 md:pt-20 md:pb-14 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Included With Every Membership</div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+            The membership isn't just an indicator.<br class="hidden md:block" />
+            It comes with the platform too.
+          </h1>
+          <p class="mt-5 text-zinc-400 text-sm md:text-base max-w-3xl leading-relaxed">
+            Most people describe FSD-X as a TradingView script. That's the part you see from the outside.
+            Behind the login there's a full trader workspace built into this site — a dashboard, a trade
+            journal, a broker importer that reads your prop-account exports, a backtest workspace, and a
+            multi-account drawdown tracker. It's included with every plan at no extra cost, and it isn't
+            sold separately.
+          </p>
+
+          <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
+              <div class="text-2xl font-black text-white">7</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Member tools on this site</div>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
+              <div class="text-2xl font-black text-white">2</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Broker export formats read</div>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
+              <div class="text-2xl font-black text-white">$0</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Extra cost — included</div>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
+              <div class="text-2xl font-black text-white">12</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Components in the membership</div>
+            </div>
+          </div>
+
+          <div class="mt-7 flex flex-wrap gap-3">
+            <a href="memberships.html" class="px-5 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl transition">Start Your 30-Day Free Trial →</a>
+            <a href="suite.html" class="px-5 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs rounded-xl transition">See the indicator suite</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ THE TOOLS ═══ -->
+      <section class="py-12 md:py-16 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto space-y-6">
+
+          <div>
+            <div class="text-[10px] text-green-400 uppercase tracking-widest mb-3">// What's behind the login</div>
+            <h2 class="text-2xl md:text-3xl font-black text-white">Seven tools, one login, no extra charge</h2>
+            <p class="text-zinc-400 text-sm mt-3 max-w-2xl leading-relaxed">
+              These live at fsdxtrading.com and open in a browser. Nothing to install, and nothing here is a
+              separate subscription. Member pages are behind a login, which is why they don't show up in a
+              search result — this page is the public description of them.
+            </p>
+          </div>
+
+          <!-- Dashboard -->
+          <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">01 — Dashboard</span>
+            </div>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Where the morning starts</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                One glance surface for your own numbers. Net P&amp;L, win rate and an equity curve you can
+                scope to 7, 30 or 90 days or all time, drawn from the trades in your journal — not from
+                anyone else's results. Alongside it, an economic calendar for the day and a session strip
+                showing London, New York and Tokyo in each city's own local time, so you know what's open
+                before the 8:30 bell.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Net P&amp;L, win rate and trade count, filtered by account</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Equity curve with All-Time / 90D / 30D / 7D range pills</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Economic calendar for the session ahead</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> London / New York / Tokyo session clocks with open-close countdowns</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Mini trade calendar for the month</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Works on mobile</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Journal -->
+          <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">02 — Trade Journal</span>
+            </div>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Every trade on a calendar, filed by grade</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                Log trades by hand or let the importer fill them in. Each one carries its date, direction,
+                entry, exit, contracts, account and P&amp;L, and — because this is an ORB system — the grade
+                the setup carried. Filtering by grade is the point: it's how you find out whether your B and
+                C mornings are actually paying for themselves in your own account, rather than in a backtest.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Calendar view with per-day P&amp;L</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Per-trade detail with notes and tags</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Grade breakdown — see your own results by A+ / A / B+ / B / C</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Multi-account support</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Duplicate warning before a trade is saved twice</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> CSV export</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Importer -->
+          <div class="border border-green-500/20 bg-zinc-950/60 rounded-2xl overflow-hidden shadow-lg shadow-green-500/5">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0"></span>
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">03 — Trade Importer</span>
+            </div>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Upload your broker CSV. It does the accounting.</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                Copy-trading five or ten prop accounts means five or ten separate logins and five or ten
+                separate order exports. Drop the files in and the importer does the rest: it rebuilds each
+                position flat-to-flat, applies your real per-contract commission for that account, and works
+                out the net. Upload overlapping files — a week that partly covers last week — and only the
+                new trades are added. Duplicates are matched on fill timestamps down to the second, so two
+                scalps that opened and closed inside the same minute are correctly counted as two trades,
+                not one.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Reads Tradovate order exports</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Reads TradingView strategy exports</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Flat-to-flat position accounting, not raw fills</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Per-account commission rates applied automatically</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Overlapping uploads add only what's new</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Batch imports can be removed again in one click</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backtest workspace -->
+          <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">04 — Backtest Workspace</span>
+            </div>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Your own backtests, logged and kept</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                Deliberately separate from your live journal, so testing never contaminates your real
+                numbers. Start a session, import a backtest CSV from TradingView, and the workspace turns it
+                into stats, an equity curve and a calendar automatically. Sessions are saved, named and
+                comparable — which is what you need if you're going to change a setting and find out whether
+                it actually helped, rather than remembering that it felt better.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Named, saved backtest sessions</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Import any backtest CSV — stats generated for you</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Equity curve and calendar per session</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Kept entirely apart from your live trade journal</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accounts -->
+          <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">05 — Accounts &amp; Drawdown Trackers</span>
+            </div>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Built for people running more than one eval</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                Register each prop account with its nickname, account number, size, type and commission
+                rate, then attach a tracker to it. The tracker models the firm's rules — trailing or
+                end-of-day drawdown — and shows headroom and progress toward the target for each account
+                separately. If a tracker stops matching anything because an account was renamed, it says so
+                on the card instead of quietly reporting zero.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Account registry with per-account live stats</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Trailing and end-of-day drawdown rule support</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Headroom and target progress per account</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Combined totals across accounts</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Import history, with delete-by-account</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Warns you when a tracker's filter has gone stale</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerts + Playbook -->
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+              <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+                <span class="text-xs font-bold text-green-400 uppercase tracking-widest">06 — Scout Alerts</span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-lg font-black text-white mb-3">The alert feed</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                  Graded setups arrive in your member alert feed and in the VIP Discord channels as they
+                  form, so a setup doesn't need you staring at the chart at 8:30 to reach you.
+                </p>
+              </div>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+              <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+                <span class="text-xs font-bold text-green-400 uppercase tracking-widest">07 — The Playbook</span>
+              </div>
+              <div class="p-6">
+                <h3 class="text-lg font-black text-white mb-3">The rules, written down</h3>
+                <p class="text-zinc-400 text-sm leading-relaxed">
+                  The full written rule set — how entries are taken, where stops and targets go, and exactly
+                  what separates an A+ from a C. The reference you go back to when a morning didn't look
+                  like the ones in the videos.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Context -->
+          <div class="border border-white/10 bg-zinc-950/30 rounded-2xl p-6 md:p-8">
+            <div class="text-[10px] text-green-400 uppercase tracking-widest mb-3">// Where this sits</div>
+            <h3 class="text-xl font-black text-white mb-3">One of twelve things the membership covers</h3>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+              The platform on this page is included with the membership — not an upsell, not a separate
+              subscription, and not a different tier. The same membership covers the indicator suite, the
+              hands-off Auto Trader, the live trade room every market morning, the monthly 1-on-1 call,
+              the training library and the VIP Discord channels. One price, all of it.
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <a href="suite.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Indicator suite →</a>
+              <a href="autotrader.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Auto Trader →</a>
+              <a href="schedule.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Live trade room →</a>
+              <a href="knowledge.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Training library →</a>
+              <a href="results.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Backtest research →</a>
+              <a href="track-record.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Live track record →</a>
+              <a href="memberships.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">What's in the membership →</a>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-zinc-500 leading-relaxed max-w-3xl">
+            The platform is a record-keeping and analysis workspace. Any figures it displays are your own
+            imported or manually logged trade data — FSD-X does not verify, audit, or represent them as
+            actual account results, and nothing shown in the platform is a projection or a guarantee of
+            future performance.
+          </p>
+
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TRIAL CTA BAND -->
+    <section class="py-12 px-6 md:px-12 border-t border-white/10 bg-gradient-to-b from-zinc-950/40 to-black">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-2xl md:text-3xl font-black text-white leading-tight">The tools and the workspace, in one membership.</h2>
+        <p class="text-zinc-400 text-sm mt-3 leading-relaxed max-w-xl mx-auto">Start the 30-day free trial and the whole platform opens with it — dashboard, journal, importer, backtests and trackers.</p>
+        <div class="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="memberships.html" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">
+            Start Your 30-Day Free Trial →
+          </a>
+          <a href="results.html" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl font-medium text-white">
+            See the backtest data
+          </a>
+        </div>
+        <p class="text-[11px] text-zinc-500 mt-4">$129/mo after trial · Cancel anytime in one click via Whop</p>
+        <p class="text-[11px] text-zinc-400 mt-3 max-w-xl mx-auto leading-relaxed">
+          Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not necessarily indicative of future results.
+        </p>
+      </div>
+    </section>
+
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Vendor Verification Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">FSD-X is an independent software provider. Our tools generate algorithmic chart signals for educational and analytical purposes, and the optional Auto-Trader routes those signals to your own broker through a third-party automation service that you configure and control. FSD-X is not a broker, futures commission merchant, commodity trading advisor, or investment adviser. We do not manage accounts, place trades on your behalf, hold customer funds, or provide personalized investment or financial advice. You are solely responsible for every order placed in your account.</p>
+        </div>
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Risk Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
+        </div>
+        <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+          <a href="index.html" class="hover:text-green-400 transition">Home</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="platform.html" class="hover:text-green-400 transition">Member Platform</a>
+          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="track-record.html" class="hover:text-green-400 transition">Live Track Record</a>
+          <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
+          <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
+          <a href="knowledge.html" class="hover:text-green-400 transition">Knowledge Base</a>
+          <a href="affiliates.html" class="hover:text-green-400 transition">Prop Firm Discounts</a>
+          <a href="faq.html" class="hover:text-green-400 transition">FAQ</a>
+          <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+          <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
+        </nav>
+
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
+          <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
+          <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      sidebar.classList.toggle('-translate-x-full');
+    }
+  </script>
+
+  <script src="nav-loader.js?v=20260901"></script>
+</body>
+</html>
