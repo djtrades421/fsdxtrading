@@ -924,7 +924,7 @@
         <div class="border border-white/10 bg-zinc-950/40 rounded-2xl mb-5 overflow-hidden">
           <div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-white/[0.02] transition" onclick="toggleSection('upcoming-body','upcoming-arrow')">
             <div class="flex items-center gap-2">
-              <span class="text-xs font-black text-white uppercase tracking-wider">⏰ Renewals in Next 14 Days</span>
+              <span class="text-xs font-black text-white uppercase tracking-wider">⏰ Renewals in Next <span id="upcoming-window">30</span> Days</span>
               <span id="upcoming-count" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"></span>
             </div>
             <svg id="upcoming-arrow" class="w-4 h-4 text-zinc-500 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
@@ -6164,10 +6164,19 @@
       const upcomingCount = document.getElementById('upcoming-count');
       if (upcomingEl) {
         const now = new Date();
-        const in14 = new Date(now.getTime() + 14*24*60*60*1000);
+        // Widened from 14 to 30 on 2026-09-03, to match the 30-day trial.
+        // At 14 days this panel could not see a single trial-to-paid conversion
+        // until the trial was already more than half over — the first renewal a
+        // trial member has is 30 days out by definition. The heading and the
+        // empty-state string are both driven off this constant so the three
+        // places that used to hardcode 14 can no longer drift apart.
+        const RENEWAL_WINDOW_DAYS = 30;
+        const winEl = document.getElementById('upcoming-window');
+        if (winEl) winEl.textContent = RENEWAL_WINDOW_DAYS;
+        const windowEnd = new Date(now.getTime() + RENEWAL_WINDOW_DAYS*24*60*60*1000);
         const upcoming = rosterData.filter(r => {
           if (!isRenewalDue(r)) return false;
-          try { const rd = new Date(r.renewal); return rd >= now && rd <= in14; } catch(e) { return false; }
+          try { const rd = new Date(r.renewal); return rd >= now && rd <= windowEnd; } catch(e) { return false; }
         }).sort((a,b) => new Date(a.renewal) - new Date(b.renewal));
         if (upcomingCount) upcomingCount.textContent = upcoming.length ? upcoming.length + ' upcoming' : '';
         if (upcoming.length) {
@@ -6190,7 +6199,7 @@
                 ${upRatio !== null ? `<div class="text-zinc-600 text-[9px]">≈$${(price*upRatio).toFixed(2)} after fees</div>` : ''}
               </div>
               <div class="pay-date text-zinc-500 whitespace-nowrap">${fmtDate(r.renewal)}</div>
-              <div class="pay-days"><span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${daysLeft<=3?'bg-red-500/10 text-red-400':'bg-yellow-500/10 text-yellow-400'}">${daysLeft}d</span></div>
+              <div class="pay-days"><span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${daysLeft<=3?'bg-red-500/10 text-red-400':daysLeft<=7?'bg-yellow-500/10 text-yellow-400':'bg-white/5 text-zinc-400'}">${daysLeft}d</span></div>
             </div>`;
           }).join('');
           // Auto-expand if there are renewals
@@ -6198,7 +6207,7 @@
           const arrow = document.getElementById('upcoming-arrow');
           if (body) { body.classList.remove('hidden'); if(arrow) arrow.style.transform='rotate(180deg)'; }
         } else {
-          upcomingEl.textContent = 'No renewals in the next 14 days.';
+          upcomingEl.textContent = 'No renewals in the next ' + RENEWAL_WINDOW_DAYS + ' days.';
         }
       }
 
