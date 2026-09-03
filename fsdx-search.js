@@ -34,6 +34,7 @@
     {t:'Stack V1',              u:'suite.html#tool-stack',     g:'Products', kw:'trend mtf timeframe confirmation'},
     {t:'Volume Indicator',      u:'suite.html#tool-volume',    g:'Products', kw:'volume engine breakout companion'},
     {t:'Nexus 2.0',             u:'suite.html#tool-nexus',     g:'Products', kw:'chrome extension journal optimizer sidepanel'},
+    {t:'Member Platform',       u:'platform.html',             g:'Products', kw:'dashboard journal importer csv import backtest workspace tracker accounts playbook workspace included'},
     {t:'ORB Auto-Trader',       u:'autotrader.html',           g:'Products', kw:'automation pickmytrade tradovate hands off at'},
 
     // proof
