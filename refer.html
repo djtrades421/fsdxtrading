@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Refer and Earn</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20260905"></script>
+  <script src="fsdx-account.js"></script>
+  <style>
+    body { background-color: #000; }
+    .faq-body { display:none; }
+    .faq.open .faq-body { display:block; }
+    .faq.open .faq-chev { transform:rotate(90deg); }
+  </style>
+</head>
+
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <div id="loading-screen" class="flex-1 flex items-center justify-center">
+      <div class="text-center">
+        <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4"></div>
+        <p class="text-zinc-500 text-sm">Verifying access...</p>
+      </div>
+    </div>
+
+    <div id="bounty-content" class="hidden flex-1 flex flex-col">
+
+      <!-- ══════════════ HERO ══════════════ -->
+      <section class="pt-12 pb-10 md:pt-16 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Member Program</div>
+          <h1 class="text-3xl md:text-5xl font-black tracking-tight">Refer &amp; Earn</h1>
+          <p class="mt-4 text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
+            You already talk about this stuff. Now it pays. Every trader who joins
+            through your link pays you <span class="text-green-400 font-bold">30% of their membership</span>
+            &mdash; not once, but every month they stay.
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-x-8 gap-y-5">
+            <div class="border-l-2 border-green-500 pl-4">
+              <div class="text-xl font-black text-white tabular-nums">30%</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Recurring commission</div>
+            </div>
+            <div class="border-l-2 border-green-500 pl-4">
+              <div class="text-xl font-black text-white">Every cycle</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">For as long as they stay</div>
+            </div>
+            <div class="border-l-2 border-green-500 pl-4">
+              <div class="text-xl font-black text-white tabular-nums">4</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Referrals &rarr; your seat is free</div>
+            </div>
+          </div>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a href="https://whop.com/dj-trades-fsdx/affiliates" target="_blank" rel="noopener noreferrer"
+               class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+              Open my affiliate page &rarr;
+            </a>
+            <a href="#how" class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
+              How it works
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ TWO WAYS ══════════════ -->
+      <section class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">Two ways to use it</h2>
+          <p class="text-xs text-zinc-600 mt-1">Same payout. Your call what it does.</p>
+
+          <div class="grid md:grid-cols-2 gap-4 mt-6">
+
+            <div class="border border-white/10 bg-zinc-950 rounded-2xl p-6 hover:border-green-500/30 transition">
+              <div class="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-4">
+                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <h3 class="text-base font-black text-white">Take the cash</h3>
+              <p class="text-xs text-zinc-500 mt-2 leading-relaxed">
+                Commission lands in your Whop balance. Withdraw it to your bank whenever you want.
+                It keeps arriving every billing cycle for as long as that member stays subscribed.
+              </p>
+              <div class="mt-4 pt-4 border-t border-white/5 text-[11px] text-zinc-600">
+                Nothing to set up. Whop tracks and pays it.
+              </div>
+            </div>
+
+            <div class="border border-green-500/25 bg-green-500/[0.03] rounded-2xl p-6">
+              <div class="w-10 h-10 rounded-xl bg-green-500/10 border border-green-500/20 flex items-center justify-center mb-4">
+                <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </div>
+              <h3 class="text-base font-black text-white">Cover your seat</h3>
+              <p class="text-xs text-zinc-500 mt-2 leading-relaxed">
+                Four active monthly referrals pay out more than your own membership costs &mdash; and
+                they keep paying every month those four stay subscribed. Get there and your seat is
+                free for as long as they stick around, not just once.
+              </p>
+              <div class="mt-4 pt-4 border-t border-green-500/10 text-[11px] text-green-400/70 font-bold">
+                4 referrals &times; 30% = 120% of your membership &nbsp;&middot;&nbsp; covered, every month
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ THE LADDER ══════════════ -->
+      <section class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">What it adds up to</h2>
+          <p class="text-xs text-zinc-600 mt-1">Every active referral pays you 30% of what they pay, every month. It stacks.</p>
+
+          <div class="mt-6 grid grid-cols-2 md:grid-cols-5 gap-3">
+
+            <div class="border border-white/10 bg-black rounded-2xl p-5">
+              <div class="text-[10px] font-black text-zinc-600 uppercase tracking-widest">1 referral</div>
+              <div class="text-2xl font-black text-white tabular-nums mt-2">30%</div>
+              <div class="text-[10.5px] text-zinc-500 mt-1 leading-snug">of your membership, covered</div>
+            </div>
+
+            <div class="border border-white/10 bg-black rounded-2xl p-5">
+              <div class="text-[10px] font-black text-zinc-600 uppercase tracking-widest">2 referrals</div>
+              <div class="text-2xl font-black text-white tabular-nums mt-2">60%</div>
+              <div class="text-[10.5px] text-zinc-500 mt-1 leading-snug">more than half your bill</div>
+            </div>
+
+            <div class="border border-white/10 bg-black rounded-2xl p-5">
+              <div class="text-[10px] font-black text-zinc-600 uppercase tracking-widest">3 referrals</div>
+              <div class="text-2xl font-black text-white tabular-nums mt-2">90%</div>
+              <div class="text-[10.5px] text-zinc-500 mt-1 leading-snug">nearly all of it</div>
+            </div>
+
+            <div class="border border-green-500/30 bg-green-500/[0.05] rounded-2xl p-5">
+              <div class="text-[10px] font-black text-green-400 uppercase tracking-widest">4 referrals</div>
+              <div class="text-2xl font-black text-green-400 tabular-nums mt-2">120%</div>
+              <div class="text-[10.5px] text-zinc-300 mt-1 leading-snug font-bold">your seat is free</div>
+            </div>
+
+            <div class="border border-white/10 bg-black rounded-2xl p-5">
+              <div class="text-[10px] font-black text-zinc-600 uppercase tracking-widest">8 referrals</div>
+              <div class="text-2xl font-black text-white tabular-nums mt-2">240%</div>
+              <div class="text-[10.5px] text-zinc-500 mt-1 leading-snug">your seat, plus income on top</div>
+            </div>
+
+          </div>
+
+          <div class="mt-5 border border-white/10 bg-zinc-950 rounded-2xl p-5">
+            <p class="text-[11.5px] text-zinc-400 leading-relaxed">
+              Those percentages assume your referrals are on the same billing term you are. Someone
+              who joins on a longer term pays more up front, so your commission on them is larger &mdash;
+              it just arrives on their billing schedule instead of monthly.
+            </p>
+            <p class="text-[10.5px] text-zinc-600 leading-relaxed mt-3 pt-3 border-t border-white/5">
+              Illustration only, not a forecast. What you actually earn depends entirely on how many
+              people join through your link and how long they stay. Most members refer nobody, and
+              commission stops when a referred member cancels.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ HOW IT WORKS ══════════════ -->
+      <section id="how" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10 scroll-mt-6">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">How it works</h2>
+          <p class="text-xs text-zinc-600 mt-1">Four steps. Whop handles the tracking and the money.</p>
+
+          <div class="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <div class="border border-white/10 bg-zinc-950 rounded-2xl p-5">
+              <div class="text-[10px] font-black text-green-400 tracking-widest">STEP 01</div>
+              <h3 class="text-sm font-black text-white mt-2">Grab your link</h3>
+              <p class="text-[11.5px] text-zinc-500 mt-2 leading-relaxed">
+                Hit the button above. It opens your FSD-X affiliate page on Whop with your link
+                already generated &mdash; copy it and you're done. Log in first if it asks.
+              </p>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950 rounded-2xl p-5">
+              <div class="text-[10px] font-black text-green-400 tracking-widest">STEP 02</div>
+              <h3 class="text-sm font-black text-white mt-2">Share it</h3>
+              <p class="text-[11.5px] text-zinc-500 mt-2 leading-relaxed">
+                Your prop firm group chat, a YouTube description, a Discord you're already in,
+                the trader friend who keeps asking what you're running.
+              </p>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950 rounded-2xl p-5">
+              <div class="text-[10px] font-black text-green-400 tracking-widest">STEP 03</div>
+              <h3 class="text-sm font-black text-white mt-2">They join</h3>
+              <p class="text-[11.5px] text-zinc-500 mt-2 leading-relaxed">
+                Whop tags the signup to your link automatically. Nothing for them to type,
+                nothing for you to claim.
+              </p>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950 rounded-2xl p-5">
+              <div class="text-[10px] font-black text-green-400 tracking-widest">STEP 04</div>
+              <h3 class="text-sm font-black text-white mt-2">You get paid</h3>
+              <p class="text-[11.5px] text-zinc-500 mt-2 leading-relaxed">
+                Commission posts to your Whop balance after a 30-day holding period, then
+                repeats each cycle they renew.
+              </p>
+            </div>
+
+          </div>
+
+          <div class="mt-5 border border-green-500/25 bg-green-500/[0.03] rounded-2xl p-5">
+            <div class="text-xs font-black text-white">Heads up: the rate column will look blank</div>
+            <p class="text-[11.5px] text-zinc-400 mt-1 leading-relaxed">
+              In your Whop dashboard, the <span class="text-zinc-200 font-bold">Affiliate rate</span>
+              column shows the <em>public</em> rate &mdash; and we've deliberately switched the public
+              rate off, so that only members earn on referrals. It will show blank or a dash.
+              <span class="text-green-400 font-bold">Blank does not mean zero.</span> You're on 30%,
+              and your commission will appear in your balance normally.
+            </p>
+          </div>
+
+          <div class="mt-4 border border-white/10 bg-zinc-950 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4">
+            <div class="flex-1">
+              <div class="text-xs font-black text-white">Free trials count &mdash; on day 31</div>
+              <p class="text-[11.5px] text-zinc-500 mt-1 leading-relaxed">
+                Someone you refer starts on the free trial like everyone else. Your commission
+                begins when their first real payment goes through, not when they sign up.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ RATE REVIEW ══════════════ -->
+      <section class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">30% is the starting rate</h2>
+          <p class="text-xs text-zinc-600 mt-1">It isn't a ceiling.</p>
+
+          <div class="mt-6 grid md:grid-cols-5 gap-4">
+
+            <div class="md:col-span-3 border border-green-500/25 bg-green-500/[0.03] rounded-2xl p-6">
+              <p class="text-sm text-zinc-300 leading-relaxed">
+                If you're steadily bringing in members who stick around, we'll raise your rate
+                &mdash; up to <span class="text-green-400 font-bold">50%</span>. We come to you.
+                You don't have to apply, hit a target, or climb anything.
+              </p>
+              <p class="text-xs text-zinc-500 leading-relaxed mt-4">
+                There's no tier chart here on purpose. We're not going to publish a number and have
+                people chase it &mdash; that's how you end up with twenty signups who all cancel in
+                month two. We look at who's actually helping, and we adjust. If you think you're one
+                of them and we haven't noticed, just
+                <a href="contact.html" class="text-green-400 hover:text-green-300 font-bold">tell us</a>.
+              </p>
+            </div>
+
+            <div class="md:col-span-2 border border-white/10 bg-zinc-950 rounded-2xl p-6">
+              <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-4">What we look at</div>
+              <div class="space-y-3">
+                <div class="flex gap-3">
+                  <span class="text-green-500 font-black text-xs mt-0.5">&#10003;</span>
+                  <p class="text-[11.5px] text-zinc-400 leading-relaxed"><span class="text-white font-bold">Members who stay.</span> Ten who last a year beats thirty who churn out.</p>
+                </div>
+                <div class="flex gap-3">
+                  <span class="text-green-500 font-black text-xs mt-0.5">&#10003;</span>
+                  <p class="text-[11.5px] text-zinc-400 leading-relaxed"><span class="text-white font-bold">How you talk about it.</span> Honest, specific, commission disclosed.</p>
+                </div>
+                <div class="flex gap-3">
+                  <span class="text-green-500 font-black text-xs mt-0.5">&#10003;</span>
+                  <p class="text-[11.5px] text-zinc-400 leading-relaxed"><span class="text-white font-bold">Consistency.</span> A steady trickle counts for more than one lucky post.</p>
+                </div>
+              </div>
+              <p class="text-[10.5px] text-zinc-600 leading-relaxed mt-5 pt-4 border-t border-white/5">
+                Rate changes are at our discretion and aren't promised to anyone. Nothing here is a
+                guarantee that your rate will change.
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ RULES ══════════════ -->
+      <section class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">The rules</h2>
+          <p class="text-xs text-zinc-600 mt-1">Short list. Break one and the link gets shut off.</p>
+
+          <div class="mt-6 grid md:grid-cols-2 gap-x-8 gap-y-4">
+            <div class="flex gap-3">
+              <span class="text-green-500 font-black text-xs mt-0.5">&#10003;</span>
+              <div>
+                <div class="text-xs font-bold text-white">Say you're an affiliate</div>
+                <p class="text-[11.5px] text-zinc-500 mt-1 leading-relaxed">If you post the link publicly, disclose that you earn a commission. Required by law, not just by us.</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-green-500 font-black text-xs mt-0.5">&#10003;</span>
+              <div>
+                <div class="text-xs font-bold text-white">Use our numbers, not invented ones</div>
+                <p class="text-[11.5px] text-zinc-500 mt-1 leading-relaxed">Everything on the Live Track Record and Results pages is fair game. Don't promise income, guaranteed wins, or a funded account.</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-red-500/70 font-black text-xs mt-0.5">&#10007;</span>
+              <div>
+                <div class="text-xs font-bold text-white">No paid ads on our name</div>
+                <p class="text-[11.5px] text-zinc-500 mt-1 leading-relaxed">Don't bid on "FSD-X", "Knightfall" or "ORB PRO" in Google or Meta ads. You'd be buying traffic that was already coming to us.</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-red-500/70 font-black text-xs mt-0.5">&#10007;</span>
+              <div>
+                <div class="text-xs font-bold text-white">No self-referrals</div>
+                <p class="text-[11.5px] text-zinc-500 mt-1 leading-relaxed">Your own account, an alt, a family member on your card. Whop flags it and the commission gets reversed.</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-red-500/70 font-black text-xs mt-0.5">&#10007;</span>
+              <div>
+                <div class="text-xs font-bold text-white">No spam</div>
+                <p class="text-[11.5px] text-zinc-500 mt-1 leading-relaxed">Cold DMs, comment dumps, or posting the link in servers that didn't ask for it. It reflects on us, not just you.</p>
+              </div>
+            </div>
+            <div class="flex gap-3">
+              <span class="text-red-500/70 font-black text-xs mt-0.5">&#10007;</span>
+              <div>
+                <div class="text-xs font-bold text-white">Don't resell or repackage</div>
+                <p class="text-[11.5px] text-zinc-500 mt-1 leading-relaxed">This is for sending people to us. It isn't a licence to bundle, rebrand, or sell access to the scripts.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ FAQ ══════════════ -->
+      <section class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider mb-6">Questions</h2>
+          <div id="faq-list" class="divide-y divide-white/5 border-y border-white/5 max-w-3xl"></div>
+        </div>
+      </section>
+
+      <!-- ══════════════ CTA ══════════════ -->
+      <section class="py-14 md:py-20 px-6 md:px-12">
+        <div class="max-w-3xl mx-auto text-center">
+          <h2 class="text-2xl md:text-3xl font-black text-white tracking-tight">Your link already exists.</h2>
+          <p class="text-sm text-zinc-500 mt-3 leading-relaxed max-w-xl mx-auto">
+            Nothing to apply for and nothing to sign. It's sitting in your Whop dashboard
+            waiting for you to copy it.
+          </p>
+          <a href="https://whop.com/dj-trades-fsdx/affiliates" target="_blank" rel="noopener noreferrer"
+             class="inline-block mt-7 px-8 py-4 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+            Open my affiliate page &rarr;
+          </a>
+          <p class="text-[11px] text-zinc-700 mt-5">
+            Trouble finding it? <a href="contact.html" class="text-green-400/80 hover:text-green-400 font-bold">Message us</a> and we'll send it over.
+          </p>
+        </div>
+      </section>
+
+      <!-- ══════════════ DISCLAIMER ══════════════ -->
+      <footer class="px-6 md:px-12 py-8 border-t border-white/10 bg-zinc-950">
+        <div class="max-w-5xl mx-auto">
+          <p class="text-[10.5px] text-zinc-600 leading-relaxed">
+            Refer and Earn is a referral commission program operated through Whop. Commission is paid on
+            membership revenue actually collected and stops if a referred member cancels, refunds, or
+            charges back. Percentages shown on this page describe the commission rate only &mdash; they
+            are illustrations, not earnings claims or projections. Individual results vary and most
+            participants earn nothing. Participation does not make you an employee, agent, or
+            representative of FSD-X Trading, and you may not speak on our behalf. FSD-X Trading is an
+            independent software provider, not a broker, dealer, or investment adviser. Futures trading
+            involves substantial risk of loss. See
+            <a href="disclosures.html" class="text-green-400/80 hover:text-green-400 font-bold">Disclosures</a>
+            for full terms. We may change or end this program at any time.
+          </p>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+<script>
+  /* ─────────── access gate: members only ─────────── */
+  (function () {
+    var token = null;
+    try { token = localStorage.getItem('fsdx_token'); } catch (e) {}
+    if (!token) { window.location.href = 'login.html'; return; }
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('bounty-content').classList.remove('hidden');
+    });
+  })();
+
+  /* ─────────── FAQ ─────────── */
+  var FAQ = [
+    ['Do I have to be a member to earn?',
+     'Yes. It is a member benefit. If your membership lapses, the link stops earning.'],
+    ['Is the commission one time or every month?',
+     'Every month. As long as the person you referred keeps paying, you keep getting paid. The day they cancel, it stops.'],
+    ['What if they join on quarterly or annual?',
+     'You still get 30% of whatever they pay. A longer term is a bigger payment, so it is a bigger commission — it just lands on their billing schedule instead of every month.'],
+    ['When does the money actually show up?',
+     'There is a 30-day holding period between their payment and your commission clearing. That window covers refunds and chargebacks. After that it posts to your Whop balance and you can withdraw it.'],
+    ['What about the free trial?',
+     'Trials do not pay commission. Yours starts on their first real charge — day 31.'],
+    ['Can I run ads to my link?',
+     'You can run your own content and your own ads, but not on our brand terms — no bidding on FSD-X, Knightfall or ORB PRO. And whatever you run has to disclose that you earn a commission and cannot promise income or results.'],
+    ['Does referring someone cost them anything?',
+     'No. They pay the same price they would have anyway. Any active sale still applies to them.'],
+    ['Whop shows a blank rate — am I earning nothing?',
+     'You are on 30%. That column displays the public rate, which we keep switched off so only members earn. A blank there is expected and does not mean zero. Your commission still tracks and still pays.'],
+    ['What does my link look like?',
+     'It ends in ?a=YOURUSERNAME — that tag is what credits the referral to you. Copy the whole link with the copy button and share it unaltered. Shortening or trimming it breaks the tracking.'],
+    ['The button did not take me to my link.',
+     'Make sure you are logged into the Whop account that holds your FSD-X membership. If it still does not land right, go to whop.com, open your dashboard, click Affiliate, then Refer buyers, find FSD-X Trading Pro and hit View assets — same page, longer route.'],
+    ['How do I see who signed up?',
+     'Your Whop affiliate dashboard shows clicks, conversions, pending commission and cleared balance. We do not gatekeep that data — it is yours.'],
+    ['Can my rate go up?',
+     'Yes. 30% is where everyone starts, and we will raise it to as much as 50% for people who are consistently bringing in members who stay. It is a judgement call, not a formula, and it is not promised to anyone — but if you are doing the work we would rather pay you properly than lose you.'],
+    ['Can I lose commission I have already earned?',
+     'Only if the referral refunds, charges back, or turns out to be a self-referral. Otherwise once it clears, it is yours.']
+  ];
+
+  function buildFaq() {
+    document.getElementById('faq-list').innerHTML = FAQ.map(function (f) {
+      return ''
+        + '<div class="faq py-4 cursor-pointer" onclick="this.classList.toggle(\'open\')">'
+        +   '<div class="flex items-start gap-3">'
+        +     '<svg class="faq-chev w-3 h-3 mt-1 shrink-0 text-green-500 transition-transform" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>'
+        +     '<div class="flex-1">'
+        +       '<div class="text-xs font-bold text-white">' + f[0] + '</div>'
+        +       '<div class="faq-body text-[11.5px] text-zinc-500 mt-2 leading-relaxed">' + f[1] + '</div>'
+        +     '</div>'
+        +   '</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    buildFaq();
+  });
+</script>
+
+</body>
+</html>
