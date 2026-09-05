@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — How-To Guide</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20260901"></script>
+  <script src="fsdx-account.js"></script>
+  <script src="alerts.js?v=20260901"></script>
+  <style>
+    body { background-color: #000; }
+    .step-pill { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:999px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); font-size:10px; font-weight:900; color:#22c55e; flex-shrink:0; }
+    .kbd { display:inline-block; padding:1px 6px; border-radius:5px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); font-size:11px; font-weight:700; color:#fff; }
+    .howto-toc a.active { color:#22c55e; }
+    details > summary { list-style:none; cursor:pointer; }
+    details > summary::-webkit-details-marker { display:none; }
+    details[open] .chev { transform: rotate(90deg); }
+    .chev { transition: transform .15s; }
+    html { scroll-behavior: smooth; }
+    section[id] { scroll-margin-top: 90px; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <!-- ═══ Header ═══ -->
+    <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 py-5">
+      <div class="max-w-4xl mx-auto flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
+        </div>
+        <div>
+          <h1 class="text-base font-black text-white">How-To Guide</h1>
+          <p class="text-xs text-zinc-500">Step-by-step for every tool in your workspace</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 px-6 md:px-10 py-8">
+      <div class="max-w-4xl mx-auto space-y-6">
+
+        <!-- ═══ Intro ═══ -->
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
+          <p class="text-sm text-zinc-400 leading-relaxed">
+            Everything in your workspace, explained end to end. Each tool gets its own section &mdash; what it does,
+            how to run it, and the parts people usually miss. Start anywhere.
+          </p>
+        </div>
+
+        <!-- ═══ Contents ═══ -->
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="text-xs font-black text-white uppercase tracking-wider mb-4">Contents</div>
+          <div class="howto-toc grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <a href="#importer" class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group">
+              <div class="w-7 h-7 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+                <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-white group-hover:text-green-400 transition">Trade Importer</div>
+                <div class="text-[11px] text-zinc-500">Get any CSV into the platform</div>
+              </div>
+            </a>
+
+            <a href="#backtest" class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group">
+              <div class="w-7 h-7 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+                <svg class="w-3.5 h-3.5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-white group-hover:text-green-400 transition">Backtest</div>
+                <div class="text-[11px] text-zinc-500">Sessions, filters and analytics</div>
+              </div>
+            </a>
+
+            <!-- Placeholders — swap the div for an <a href="#..."> as each section is written -->
+            <div class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/20 opacity-40">
+              <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                <span class="text-zinc-500 text-[10px] font-black">DB</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-zinc-400">Dashboard</div>
+                <div class="text-[11px] text-zinc-600">Coming soon</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/20 opacity-40">
+              <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                <span class="text-zinc-500 text-[10px] font-black">JR</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-zinc-400">Journal</div>
+                <div class="text-[11px] text-zinc-600">Coming soon</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/20 opacity-40">
+              <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                <span class="text-zinc-500 text-[10px] font-black">AC</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-zinc-400">Accounts</div>
+                <div class="text-[11px] text-zinc-600">Coming soon</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/20 opacity-40">
+              <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                <span class="text-zinc-500 text-[10px] font-black">PB</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-zinc-400">Playbook</div>
+                <div class="text-[11px] text-zinc-600">Coming soon</div>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/20 opacity-40">
+              <div class="w-7 h-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
+                <span class="text-zinc-500 text-[10px] font-black">AL</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-zinc-400">Alerts</div>
+                <div class="text-[11px] text-zinc-600">Coming soon</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- ══════════════════════════════════════════════════════════════
+             TRADE IMPORTER
+             ══════════════════════════════════════════════════════════════ -->
+        <section id="importer" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-black text-white">Trade Importer</h2>
+              <p class="text-[11px] text-zinc-500">converter.html &middot; Universal CSV importer</p>
+            </div>
+            <a href="converter.html" class="px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-[11px] font-bold hover:bg-green-500/20 transition shrink-0">Open &rarr;</a>
+          </div>
+
+          <div class="p-5 space-y-6">
+
+            <!-- What it does -->
+            <div>
+              <p class="text-sm text-zinc-400 leading-relaxed">
+                The importer takes a trade CSV, works out what format it is, and turns it into structured trades the
+                rest of the platform can read. It is <span class="text-white font-semibold">not FSD-X specific</span> &mdash;
+                any TradingView strategy export works, and so does live order history from Tradovate. If you are testing
+                another system, you can analyze it here too.
+              </p>
+            </div>
+
+            <!-- Supported formats -->
+            <div>
+              <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3">What it accepts</div>
+              <div class="space-y-2">
+                <div class="flex items-start gap-3 p-3 rounded-xl border border-green-500/15 bg-green-500/[0.03]">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-green-500/10 border border-green-500/30 text-green-400 shrink-0 mt-0.5">FX</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">FSD-X ORB Pro</span> &mdash; a TradingView strategy export of ORB PRO / Knightfall.
+                    Pulls the grade (A+ / A / B+ / B / C+ / C), direction and contract count straight out of the signal text.
+                    Both the older and the newer TradingView export layouts are handled.
+                  </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/30">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-blue-500/10 border border-blue-500/30 text-blue-400 shrink-0 mt-0.5">TV</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">TradingView Strategy</span> &mdash; any strategy backtest, exported from the
+                    <span class="text-zinc-300">List of Trades</span> tab in the Strategy Tester. Prices, P&amp;L, direction and
+                    timestamps map over automatically. The grade column stays blank, since only ORB PRO writes grades into its signals.
+                  </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/30">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-purple-500/10 border border-purple-500/30 text-purple-400 shrink-0 mt-0.5">TD</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">Tradovate Live Orders</span>
+                    <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 uppercase ml-1">Beta</span>
+                    &mdash; your real fills. Export from <span class="text-zinc-300">Account &rarr; Orders</span>.
+                    Entries and exits are paired up for you.
+                  </div>
+                </div>
+                <div class="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-black/30">
+                  <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-zinc-500/10 border border-zinc-500/30 text-zinc-400 shrink-0 mt-0.5">JR</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">FSD-X Journal export</span> &mdash; a CSV you previously exported out of the platform.
+                    Already paired, so it comes back in as-is. Useful for moving data between sessions or restoring a backup.
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-600 mt-3">
+                You don't pick the format. It's detected from the file, and the badge at the top of Conversion Options tells you what it found.
+                If that badge says something you didn't expect, stop &mdash; you've probably grabbed the wrong export.
+              </p>
+            </div>
+
+            <!-- Steps -->
+            <div>
+              <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3">Running an import</div>
+              <div class="space-y-4">
+
+                <div class="flex gap-3">
+                  <span class="step-pill">1</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">Get your file in.</span> Two ways.
+                    <span class="text-zinc-300">Upload File</span> takes a drag-and-drop or a file picker.
+                    <span class="text-zinc-300">Paste CSV</span> takes raw text &mdash; useful when you're copying out of a
+                    spreadsheet. If you paste, <span class="text-white font-semibold">include the header row</span> or nothing
+                    will be detected.
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <span class="step-pill">2</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">Drop several files at once if you need to.</span>
+                    This is built for prop traders. Each prop account is its own login, so a normal export session means five or
+                    ten separate CSVs. Drop them all together &mdash; each file is detected on its own terms, and trades route to
+                    the matching account by account number. Identical trades appearing in more than one file are dropped
+                    automatically so you don't double count.
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <span class="step-pill">3</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">Set your Conversion Options.</span>
+                    <span class="text-zinc-300">Ticker</span> overrides whatever was auto-detected.
+                    <span class="text-zinc-300">Date From</span> and <span class="text-zinc-300">Date To</span> trim the range &mdash;
+                    leave them alone to take everything. They pre-fill from the file, so most of the time you don't touch them.
+                    <br><br>
+                    <span class="text-zinc-300">Commission per side</span> only appears for Tradovate imports, because that's the
+                    only case where commissions aren't already in the file. It's an all-in rate &mdash; commission plus exchange,
+                    NFA and clearing &mdash; deducted per contract on both entry and exit, so your imported P&amp;L lines up with
+                    Tradovate's Total P/L. Common range is $0.37&ndash;$0.85. Set it to 0 if you want gross.
+                    <br><br>
+                    Hit <span class="kbd">Convert &rarr;</span>.
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <span class="step-pill">4</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">Check the preview before you commit.</span>
+                    You get a cumulative P&amp;L curve and the first ten trades &mdash; date, entry and exit time, ticker,
+                    direction, grade, result, net P&amp;L, contracts. Thirty seconds here saves you cleaning up a bad import later.
+                    Two things worth eyeballing: does the trade count look right, and did the grades come through.
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <span class="step-pill">5</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">Choose where it goes.</span> This is the decision that matters most.
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+                      <div class="p-3 rounded-xl border border-green-500/20 bg-green-500/[0.04]">
+                        <div class="text-xs font-bold text-white mb-1">&#128211; Journal</div>
+                        <div class="text-[11px] text-zinc-500 leading-relaxed">
+                          Your real trading history. Feeds your main stats, your dashboard and your account tracking.
+                          Live fills belong here.
+                        </div>
+                      </div>
+                      <div class="p-3 rounded-xl border border-indigo-500/20 bg-indigo-500/[0.04]">
+                        <div class="text-xs font-bold text-white mb-1">&#129514; Backtest</div>
+                        <div class="text-[11px] text-zinc-500 leading-relaxed">
+                          A walled-off session with its own stats. Nothing touches your journal.
+                          Simulated or historical data belongs here.
+                        </div>
+                      </div>
+                    </div>
+                    <div class="mt-3 text-[11px] text-yellow-300/70 border border-yellow-500/20 bg-yellow-500/5 rounded-xl p-3 leading-relaxed">
+                      Rule of thumb: if the trades were never actually filled in a real account, send them to Backtest.
+                      Mixing backtest data into your journal contaminates your real numbers, and untangling it afterwards is a chore.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <span class="step-pill">6</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">Fill in the destination details.</span>
+                    <br><br>
+                    <span class="text-zinc-300">Going to Journal:</span> pick an account and an account type
+                    (Funded / Evaluation / Personal). The account picker is a <span class="text-white font-semibold">fallback only</span> &mdash;
+                    trades that already matched a saved account number routed themselves and won't be overwritten. Account type
+                    auto-fills once you choose an account.
+                    <br><br>
+                    <span class="text-zinc-300">Going to Backtest:</span> either merge into an existing session, or create a new one.
+                    A new session needs a name; ticker, strategy and start date are optional but make the session list far easier to
+                    read six months from now.
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <span class="step-pill">7</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    <span class="text-white font-bold">Handle duplicates if it asks.</span>
+                    If some of these trades are already saved, you get three choices:
+                    <span class="text-zinc-300">Skip Duplicates</span> imports only what's new &mdash; the safe default for a routine
+                    top-up. <span class="text-zinc-300">Replace Existing</span> overwrites the saved copies, which is what you want
+                    when you're re-importing at a corrected commission rate.
+                    <span class="text-zinc-300">Import Everything Anyway</span> keeps both copies &mdash; rarely what you want.
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Download CSV -->
+            <div class="border border-white/5 bg-black/30 rounded-xl p-4">
+              <div class="text-xs font-bold text-white mb-1">&darr; Download CSV</div>
+              <p class="text-[11px] text-zinc-500 leading-relaxed">
+                Instead of importing, you can download the converted file. It's the cleaned, paired, standardized version of
+                whatever you fed in. Handy for sharing a set of trades in Discord, keeping an offline backup, or importing
+                manually later.
+              </p>
+            </div>
+
+            <!-- Worked example -->
+            <div class="border border-green-500/20 bg-green-500/[0.04] rounded-xl p-4">
+              <div class="text-xs font-black text-green-400 uppercase tracking-wider mb-2">// Try it — the 7-year backtest</div>
+              <p class="text-[12px] text-zinc-400 leading-relaxed mb-3">
+                The fastest way to learn the importer is to run real data through it. The full ORB PRO backtest is
+                downloadable &mdash; 1,118 trades, June 2019 through September 2026, on MNQ. It's the same data behind the
+                <a href="results.html" class="text-green-400 underline hover:text-green-300">Research Data</a> page,
+                so you can verify it yourself instead of taking the summary.
+              </p>
+              <a href="https://drive.google.com/file/d/1tq8BsI68ImJyCjjLO-ZwEn-70EUTFtfO/view?usp=drive_link" target="_blank" rel="noopener"
+                 class="inline-block px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-[11px] font-bold hover:bg-green-500/20 transition mb-3">
+                Download the CSV &rarr;
+              </a>
+              <div class="text-[11px] text-zinc-500 leading-relaxed space-y-1">
+                <div>Drop it in &mdash; you should see the green <span class="text-green-400 font-bold">FSD-X ORB Pro (New Format) &#10003;</span> badge.</div>
+                <div>Dates fill themselves in. There's no commission field on this one &mdash; the published backtest is gross of
+                commissions, fees and slippage, and the file carries commissions at zero, so your numbers match the site exactly.</div>
+                <div>Hit Convert, choose <span class="text-zinc-300">Backtest</span>, then <span class="text-zinc-300">Create New Session</span>.
+                Name it something like "ORB PRO 7 Year", ticker MNQ, strategy ORB PRO.</div>
+                <div>Then head to the Backtest page and start slicing it. Section below covers that.</div>
+              </div>
+            </div>
+
+            <!-- Gotchas -->
+            <details class="border border-white/5 bg-black/30 rounded-xl">
+              <summary class="px-4 py-3 flex items-center gap-2">
+                <svg class="chev w-3 h-3 text-zinc-500" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                <span class="text-xs font-bold text-white">Common problems</span>
+              </summary>
+              <div class="px-4 pb-4 pt-1 space-y-3 text-[11px] text-zinc-500 leading-relaxed">
+                <div><span class="text-zinc-300 font-bold">Nothing detected on a paste.</span> The header row is missing. Copy it again including the column names.</div>
+                <div><span class="text-zinc-300 font-bold">Grades came through blank on an ORB PRO file.</span> You exported a summary tab rather than List of Trades, or the strategy's signal text was edited. Grades are read out of the signal.</div>
+                <div><span class="text-zinc-300 font-bold">Imported P&amp;L doesn't match Tradovate.</span> Commission rate. Re-import at the corrected rate and pick <span class="text-zinc-300">Replace Existing</span> so you don't end up with two copies.</div>
+                <div><span class="text-zinc-300 font-bold">Backtest trades ended up in your journal.</span> Wrong destination at step 5. Delete them out of the journal and re-import to a Backtest session.</div>
+                <div><span class="text-zinc-300 font-bold">Only some trades imported.</span> Check Date From / Date To &mdash; they may have been narrowed on a previous run.</div>
+              </div>
+            </details>
+
+          </div>
+        </section>
+
+
+        <!-- ══════════════════════════════════════════════════════════════
+             BACKTEST
+             ══════════════════════════════════════════════════════════════ -->
+        <section id="backtest" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+            </div>
+            <div class="flex-1">
+              <h2 class="text-sm font-black text-white">Backtest</h2>
+              <p class="text-[11px] text-zinc-500">backtest.html &middot; Sessions and performance analytics</p>
+            </div>
+            <a href="backtest.html" class="px-3 py-1.5 rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 text-[11px] font-bold hover:bg-green-500/20 transition shrink-0">Open &rarr;</a>
+          </div>
+
+          <div class="p-5 space-y-6">
+
+            <div>
+              <p class="text-sm text-zinc-400 leading-relaxed">
+                Backtest is where trade data goes to be examined. It's the same analytics engine as your journal, pointed at
+                data that isn't your live record. Every session is sealed off &mdash; its own trades, its own stats, its own
+                equity curve &mdash; so you can hold ten strategies side by side without them bleeding into each other.
+              </p>
+            </div>
+
+            <!-- Two views -->
+            <div>
+              <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3">Two views, don't mix them up</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="p-4 rounded-xl border border-white/5 bg-black/30">
+                  <div class="text-xs font-bold text-white mb-1">The main view</div>
+                  <div class="text-[11px] text-zinc-500 leading-relaxed">
+                    Everything across all your logged trades, with Calendar, History, Stats and Backtest tabs.
+                    Broad look at the whole picture.
+                  </div>
+                </div>
+                <div class="p-4 rounded-xl border border-white/5 bg-black/30">
+                  <div class="text-xs font-bold text-white mb-1">Backtest Sessions</div>
+                  <div class="text-[11px] text-zinc-500 leading-relaxed">
+                    One strategy, one dataset, isolated. Open a session and every stat on screen describes
+                    that session only. This is where the real work happens.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Creating a session -->
+            <div>
+              <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3">Creating a session</div>
+              <div class="space-y-4">
+                <div class="flex gap-3">
+                  <span class="step-pill">1</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    Three ways in: hit <span class="kbd">+ New Session</span> on the Backtest page, create one during an import
+                    from the Trade Importer, or create one from the Nexus extension.
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <span class="step-pill">2</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    Fill in <span class="text-zinc-300">Session Name</span> (required),
+                    <span class="text-zinc-300">Ticker</span>, <span class="text-zinc-300">Account Size</span>,
+                    <span class="text-zinc-300">Strategy</span> and <span class="text-zinc-300">Start Date</span>.
+                    Only the name is mandatory, but account size is what makes drawdown numbers mean anything, so fill it in.
+                  </div>
+                </div>
+                <div class="flex gap-3">
+                  <span class="step-pill">3</span>
+                  <div class="text-[12px] text-zinc-400 leading-relaxed">
+                    Get trades into it &mdash; import a CSV through the Trade Importer, use
+                    <span class="kbd">&uarr; Import</span> inside the session, or log trades by hand with
+                    <span class="kbd">+ Log Trade</span>.
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-600 mt-3">
+                Name sessions so you'll recognize them later. "ORB PRO 7 Year &mdash; default settings" beats "test 3".
+                When you're comparing two variants of the same strategy, put the difference in the name.
+              </p>
+            </div>
+
+            <!-- Filters -->
+            <div>
+              <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3">Filters — the actual point</div>
+              <p class="text-[12px] text-zinc-400 leading-relaxed mb-3">
+                Headline numbers tell you almost nothing. Filters are how you find out where performance actually comes from.
+                They stack, and <span class="kbd">&#10005; Clear</span> resets everything.
+              </p>
+              <div class="space-y-2 text-[12px] text-zinc-400 leading-relaxed">
+                <div class="flex gap-2"><span class="text-green-400 shrink-0">&rsaquo;</span><div><span class="text-white font-bold">Result</span> &mdash; Win / Loss / BE. Isolate the losers and look for what they have in common.</div></div>
+                <div class="flex gap-2"><span class="text-green-400 shrink-0">&rsaquo;</span><div><span class="text-white font-bold">Account type</span> &mdash; Funded / Evaluation / Personal.</div></div>
+                <div class="flex gap-2"><span class="text-green-400 shrink-0">&rsaquo;</span><div><span class="text-white font-bold">Grade</span> &mdash; A+ through D. The single most useful filter on ORB PRO data. Pull A+ only, note the numbers, then pull C only and compare. That gap is the filtering doing its job.</div></div>
+                <div class="flex gap-2"><span class="text-green-400 shrink-0">&rsaquo;</span><div><span class="text-white font-bold">Direction</span> &mdash; Long / Short. Tells you whether the edge is symmetrical or leaning one way.</div></div>
+                <div class="flex gap-2"><span class="text-green-400 shrink-0">&rsaquo;</span><div><span class="text-white font-bold">Date range</span> &mdash; Today, This Week, This Month, All Time, or Custom. Custom is how you go year by year.</div></div>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div>
+              <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-3">Inside a session</div>
+              <div class="space-y-3">
+                <div class="p-3 rounded-xl border border-white/5 bg-black/30">
+                  <div class="text-xs font-bold text-white mb-1">Trades</div>
+                  <div class="text-[11px] text-zinc-500 leading-relaxed">Every trade in the session &mdash; date, ticker, direction, grade, result, net P&amp;L, tags, and a chart link where one exists.</div>
+                </div>
+                <div class="p-3 rounded-xl border border-white/5 bg-black/30">
+                  <div class="text-xs font-bold text-white mb-1">Stats</div>
+                  <div class="text-[11px] text-zinc-500 leading-relaxed">The full analytics set. Breakdown below.</div>
+                </div>
+                <div class="p-3 rounded-xl border border-white/5 bg-black/30">
+                  <div class="text-xs font-bold text-white mb-1">Calendar</div>
+                  <div class="text-[11px] text-zinc-500 leading-relaxed">
+                    Mon&ndash;Fri grid with a weekly column, so you see the shape of a month rather than a number.
+                    Where losing streaks and dead patches become obvious. Walk back through years of months here.
+                  </div>
+                </div>
+              </div>
+              <p class="text-[11px] text-zinc-600 mt-3">
+                <span class="kbd">&darr; CSV</span> exports the session &mdash; filters applied. Export an A+-only view and you get an A+-only file.
+                <span class="kbd">&uarr; Import</span> adds more trades to the session you're already in.
+              </p>
+            </div>
+
+            <!-- Stats reference -->
+            <details class="border border-white/5 bg-black/30 rounded-xl">
+              <summary class="px-4 py-3 flex items-center gap-2">
+                <svg class="chev w-3 h-3 text-zinc-500" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                <span class="text-xs font-bold text-white">What every stat panel shows</span>
+              </summary>
+              <div class="px-4 pb-4 pt-1 space-y-2 text-[11px] text-zinc-500 leading-relaxed">
+                <div><span class="text-zinc-300 font-bold">Cumulative P&amp;L</span> &mdash; the equity curve. Shape matters more than the endpoint: a steady climb and a spiky one that finishes level are very different systems.</div>
+                <div><span class="text-zinc-300 font-bold">Outcome Breakdown</span> &mdash; wins, losses, breakevens as proportions.</div>
+                <div><span class="text-zinc-300 font-bold">Runner Stats</span> &mdash; how the TP2 runner portion performed. Whether letting it run is paying for itself.</div>
+                <div><span class="text-zinc-300 font-bold">Trade Summary</span> &mdash; counts, averages, the headline aggregates.</div>
+                <div><span class="text-zinc-300 font-bold">Commissions &amp; Fees</span> &mdash; total cost drag. On a high-frequency system this is bigger than people expect.</div>
+                <div><span class="text-zinc-300 font-bold">Contracts</span> &mdash; position sizing distribution across the sample.</div>
+                <div><span class="text-zinc-300 font-bold">By Grade</span> &mdash; performance split A+ through D. On ORB PRO data, start here.</div>
+                <div><span class="text-zinc-300 font-bold">Long vs Short</span> &mdash; directional split.</div>
+                <div><span class="text-zinc-300 font-bold">Day of Week</span> &mdash; which sessions carry the results and which drag.</div>
+                <div><span class="text-zinc-300 font-bold">Time of Day</span> &mdash; entry-time distribution and how each window performed.</div>
+                <div><span class="text-zinc-300 font-bold">Drawdown Metrics</span> and <span class="text-zinc-300 font-bold">Drawdown From Peak</span> &mdash; worst-case depth and how long recovery took. On an eval account this decides whether a strategy is survivable, regardless of what the net number says. Don't skip it.</div>
+                <div class="pt-1"><span class="text-zinc-300 font-bold">By Account</span> appears in the main view rather than inside a session, since a session is a single dataset.</div>
+              </div>
+            </details>
+
+            <!-- Manual logging -->
+            <details class="border border-white/5 bg-black/30 rounded-xl">
+              <summary class="px-4 py-3 flex items-center gap-2">
+                <svg class="chev w-3 h-3 text-zinc-500" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                <span class="text-xs font-bold text-white">Logging a trade by hand</span>
+              </summary>
+              <div class="px-4 pb-4 pt-1 space-y-3 text-[11px] text-zinc-500 leading-relaxed">
+                <p>For replay work, or a setup you took that no export will ever contain. <span class="kbd">+ Log Trade</span> opens the form.</p>
+                <p>Fill in date, entry and exit time, ticker, and direction. Ticker sets the tick value &mdash; MNQ is $0.50 a tick &mdash; or you can enter a custom $/point.</p>
+                <p><span class="text-zinc-300 font-bold">P&amp;L Entry Mode</span> is the choice to make. <span class="text-zinc-300">By Price</span> means you enter prices and the platform does the math &mdash; use this, it catches mistakes. <span class="text-zinc-300">Manual $</span> means you type the dollar figure yourself, for when you only have the number.</p>
+                <p>Enter total contracts, entry price, stop price, and commissions. Then TP1 &mdash; exit price and contracts out. TP2 is the runner and is optional. P&amp;L calculates as you go, and the result classifies itself from the total.</p>
+              </div>
+            </details>
+
+            <!-- Editing/deleting -->
+            <div class="border border-red-500/15 bg-red-500/[0.03] rounded-xl p-4">
+              <div class="text-xs font-bold text-white mb-1">Editing and deleting sessions</div>
+              <p class="text-[11px] text-zinc-500 leading-relaxed">
+                <span class="text-zinc-300">Edit Session</span> changes the name, ticker, account size, strategy or start date &mdash;
+                the trades stay put. <span class="text-red-400 font-bold">Delete Session &amp; All Trades</span> does exactly what it says,
+                and there's no undo. Export to CSV first if there's any chance you'll want it back.
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+
+        <!-- ═══ Footer ═══ -->
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5 text-center">
+          <p class="text-[12px] text-zinc-500 leading-relaxed">
+            More guides on the way &mdash; Dashboard, Journal, Accounts, Playbook and Alerts.
+            Something unclear or missing? <a href="contact.html" class="text-green-400 underline hover:text-green-300">Let us know</a>
+            and it gets written up.
+          </p>
+        </div>
+
+        <div class="text-[10px] text-zinc-700 text-center leading-relaxed pb-4">
+          Educational and analytical tools only. Any trades or data shown are illustrative.
+          Futures trading involves substantial risk of loss and is not suitable for every investor.
+          Past performance is not indicative of future results.
+          See our <a href="disclosures.html" class="underline hover:text-zinc-500">Disclosures</a>.
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ── Auth gate — same pattern as the rest of the workspace ──
+    (function () {
+      const token = localStorage.getItem('fsdx_token');
+      if (!token) { window.location.href = 'login.html'; return; }
+    })();
+
+    // ── Highlight the section you're reading in the Contents list ──
+    (function () {
+      const links = [...document.querySelectorAll('.howto-toc a[href^="#"]')];
+      if (!links.length || !('IntersectionObserver' in window)) return;
+      const byId = {};
+      links.forEach(a => { byId[a.getAttribute('href').slice(1)] = a; });
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          const a = byId[e.target.id];
+          if (a) a.classList.toggle('active', e.isIntersecting);
+        });
+      }, { rootMargin: '-80px 0px -70% 0px' });
+      Object.keys(byId).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) obs.observe(el);
+      });
+    })();
+  </script>
+</body>
+</html>
