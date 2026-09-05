@@ -260,26 +260,48 @@
     <div class="w-full flex-1">
 
       <!-- PAGE HEADER -->
-      <section class="pt-12 pb-10 lg:pt-20 lg:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div>
-            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Backtest Research Data</div>
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">Backtest Research</h1>
-            <div class="mt-3 flex flex-wrap items-center gap-2">
-              <span class="text-[10px] bg-green-500/10 border border-green-500/30 text-green-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Knightfall MK1</span>
-              <span class="text-[10px] text-zinc-500">Last updated August 8, 2026</span>
-            </div>
-            <p class="mt-4 text-zinc-400 text-xs max-w-2xl leading-relaxed">
-              Simulated parameter analysis for FSD-X ORB PRO (Knightfall MK1) tracking 1,109 total execution cycles from June 18, 2019 to August 7, 2026. Calculated utilizing a grade-based risk model — risk is scaled dynamically by setup grade. <span class="text-zinc-600">Hypothetical results — past performance is not indicative of future results.</span>
-            </p>
+      <section class="pt-14 pb-12 lg:pt-24 lg:pb-16 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl mx-auto">
+
+          <!-- Eyebrow + version badge on one line, like the track record page -->
+          <div class="flex flex-wrap items-center gap-3 mb-5">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold">// Backtest Research Data</div>
+            <span class="text-[10px] bg-green-500/10 border border-green-500/30 text-green-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Knightfall MK1</span>
           </div>
-          <div class="flex flex-col gap-3 self-start md:self-auto w-full sm:w-auto">
-            <a href=" https://drive.google.com/file/d/1urnI2KdX6s10g-PwTmfI2PTjuZoMfuMi/view?usp=drive_link" target="_blank" rel="noopener noreferrer"
-              class="flex items-center justify-center text-center gap-2 px-4 py-2.5 bg-green-500/10 border border-green-500/30 hover:bg-green-500/20 text-green-400 text-xs font-bold rounded-xl transition">
-              ↗ View Full Trade Log — 1,109 Trades · Updated August 2026
+
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-[1.1]">Backtest Research</h1>
+
+          <p class="mt-5 text-zinc-400 text-sm max-w-3xl leading-relaxed">
+            Simulated parameter analysis for FSD-X ORB PRO (Knightfall MK1) tracking 1,109 total execution cycles from
+            June 18, 2019 to August 7, 2026. Calculated utilizing a grade-based risk model &mdash; risk is scaled
+            dynamically by setup grade.
+            <span class="text-zinc-600">Hypothetical results &mdash; past performance is not indicative of future results.</span>
+          </p>
+
+          <!-- Meta strip — spreads the facts across the header instead of burying them in prose -->
+          <div class="mt-7 flex flex-wrap gap-x-8 gap-y-3 text-[11px]">
+            <div><span class="text-zinc-600 uppercase tracking-wider">Instrument</span> <span class="text-white font-bold ml-1">MNQ</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Trades</span> <span class="text-white font-bold ml-1">1,109</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Period</span> <span class="text-white font-bold ml-1">Jun 18, 2019 &ndash; Aug 7, 2026</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Risk model</span> <span class="text-white font-bold ml-1">Grade-based dynamic</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Last updated</span> <span class="text-green-400 font-bold ml-1">Aug 8, 2026</span></div>
+          </div>
+
+          <!-- Download CTA — full width underneath, no longer squeezed into a side column -->
+          <div class="mt-8">
+            <a href="https://drive.google.com/file/d/1urnI2KdX6s10g-PwTmfI2PTjuZoMfuMi/view?usp=drive_link" target="_blank" rel="noopener noreferrer"
+              class="inline-flex items-center gap-2 px-5 py-3 bg-green-500/10 border border-green-500/30 hover:bg-green-500/20 text-green-400 text-xs font-bold rounded-xl transition">
+              &#8599; View Full Trade Log &mdash; 1,109 Trades
             </a>
-            <p class="text-zinc-600 text-[10px] leading-relaxed">⚠ All data on this page reflects hypothetical simulated backtest results, not actual trading. Past performance is not necessarily indicative of future results. Figures are gross of costs — they exclude commissions, fees, and slippage, which vary by broker and reduce net performance. Results shown are from a specific risk profile and are not typical.</p>
           </div>
+
+          <p class="mt-6 text-zinc-600 text-[10px] max-w-3xl leading-relaxed">
+            &#9888; All data on this page reflects hypothetical simulated backtest results, not actual trading.
+            Past performance is not necessarily indicative of future results. Figures are gross of costs &mdash; they
+            exclude commissions, fees, and slippage, which vary by broker and reduce net performance. Results shown are
+            from a specific risk profile and are not typical.
+          </p>
+
         </div>
       </section>
 
