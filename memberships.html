@@ -369,6 +369,56 @@
         })();
       </script>
 
+      <!-- PRO MEMBERSHIP CAP (memberships.html) -->
+      <div id="cap-section-mem" class="hidden px-6 md:px-12 pt-6">
+        <div class="max-w-5xl mx-auto">
+          <div id="cap-box-mem" class="rounded-2xl border border-white/[0.13] bg-white/[0.025] px-5 py-4">
+            <div class="flex items-baseline justify-between gap-4 mb-2.5">
+              <span id="cap-label-mem" class="text-[11px] font-bold uppercase tracking-[0.13em] text-zinc-400">Pro spots remaining</span>
+              <span id="cap-num-mem" class="font-mono text-lg font-bold text-green-400 tabular-nums whitespace-nowrap leading-none">&mdash;</span>
+            </div>
+            <div class="h-1 rounded-full bg-white/[0.08] overflow-hidden">
+              <div id="cap-fill-mem" class="h-full rounded-full bg-green-400 transition-all duration-300" style="width:0%"></div>
+            </div>
+            <p id="cap-sub-mem" class="mt-2.5 text-[11.5px] text-zinc-500 leading-relaxed">Membership is capped so support and the live room stay workable. One person runs this.</p>
+          </div>
+        </div>
+      </div>
+      <script>
+        (async function() {
+          try {
+            const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/member-cap');
+            const data = await res.json();
+            const mc = data.memberCap;
+            if (!mc || mc.active === false) return;
+
+            const total = Number(mc.total) || 0;
+            if (!total) return;
+            const left = Math.max(0, Math.min(Number(mc.remaining) || 0, total));
+
+            const box  = document.getElementById('cap-box-mem');
+            const num  = document.getElementById('cap-num-mem');
+            const fill = document.getElementById('cap-fill-mem');
+
+            if (left === 0) {
+              document.getElementById('cap-label-mem').textContent = 'Membership is full';
+              document.getElementById('cap-sub-mem').textContent = 'Signups are closed until a spot opens. Join the waitlist and you get first refusal.';
+              box.className  = box.className.replace('border-white/[0.13] bg-white/[0.025]', 'border-red-500/45 bg-red-500/[0.06]');
+              num.className  = num.className.replace('text-green-400', 'text-red-400');
+              fill.className = fill.className.replace('bg-green-400', 'bg-red-500');
+            } else if (left <= 30) {
+              box.className  = box.className.replace('border-white/[0.13] bg-white/[0.025]', 'border-amber-500/45 bg-amber-500/[0.05]');
+              num.className  = num.className.replace('text-green-400', 'text-amber-400');
+              fill.className = fill.className.replace('bg-green-400', 'bg-amber-500');
+            }
+
+            num.innerHTML = left + ' <span class="text-xs text-zinc-500 font-normal">/ ' + total + '</span>';
+            fill.style.width = Math.round(((total - left) / total) * 100) + '%';
+            document.getElementById('cap-section-mem').classList.remove('hidden');
+          } catch(e) { /* no cap set — stays hidden */ }
+        })();
+      </script>
+
       <!-- PRICING CARDS -->
       <section class="py-12 px-6 md:px-12">
         <div class="max-w-5xl mx-auto">
