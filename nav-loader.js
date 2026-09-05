@@ -273,7 +273,7 @@ function prepareNavLabels(root) {
   // blank the nav just as thoroughly, so check the status and the body, and
   // give a flaky network one retry before giving up.
   function loadNavHtml(attempt) {
-    return fetch('nav.html?v=20260830')
+    return fetch('nav.html?v=20260905')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
@@ -400,13 +400,14 @@ function prepareNavLabels(root) {
           ['dashboard.html', 'Dashboard'], ['journal.html', 'Journal'],
           ['accounts.html', 'Accounts'], ['playbook.html', 'Playbook'],
           ['backtest.html', 'Backtest'], ['alerts.html', 'Scout Alerts'],
-          ['converter.html', 'Trade Importer'], ['profile.html', 'Profile']
+          ['converter.html', 'Trade Importer'], ['refer.html', 'Refer & Earn'],
+          ['profile.html', 'Profile']
         ]; } catch (e) {}
         var site = [
           ['index.html', 'Home'], ['suite.html', 'The System'],
           ['autotrader.html', 'ORB Auto-Trader'], ['results.html', 'Results'],
           ['memberships.html', 'Membership'], ['knowledge.html', 'Knowledge Base'],
-          ['contact.html', 'Contact & Help']
+          ['partners.html', 'Partner Program'], ['contact.html', 'Contact & Help']
         ];
         var link = function (l) {
           return '<a href="' + l[0] + '" class="block py-1.5 text-xs text-zinc-400 hover:text-white transition">' + l[1] + '</a>';
