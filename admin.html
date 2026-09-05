@@ -453,6 +453,41 @@
             </div>
           </div>
 
+          <!-- ===== Pro Membership Cap ===== -->
+          <div class="border border-green-500/30 bg-green-500/[0.04] rounded-2xl p-4 sm:p-6">
+            <div class="flex items-start justify-between gap-3 mb-1">
+              <h2 class="text-base font-black text-white">Pro Membership Cap</h2>
+              <span id="mc-state-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0">&mdash;</span>
+            </div>
+            <p class="text-zinc-500 text-xs mb-5">Controls the live spots-left counter on the homepage. Counts <span class="text-zinc-300 font-semibold">Pro memberships only</span> &mdash; Legacy and standalone products sit outside it. When <span class="text-zinc-300 font-semibold">Remaining</span> hits 0 the counter shows &ldquo;full&rdquo; and points at the waitlist. Update it as members join or leave.</p>
+
+            <div id="mc-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Total Spots</label>
+                  <input type="number" min="1" id="mc-total-input" placeholder="300"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Remaining</label>
+                  <input type="number" min="0" id="mc-remaining-input" placeholder="261"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+              </div>
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="checkbox" id="mc-active-input" class="accent-green-500 w-4 h-4">
+                <span class="text-sm text-zinc-300">Show the counter on the homepage</span>
+              </label>
+              <p class="text-zinc-600 text-[11px] -mt-1">Leave this off and the page says nothing about capacity &mdash; no cap, no counter.</p>
+              <div class="flex gap-3 pt-1">
+                <button onclick="saveMemberCap()" id="mc-save-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Cap</button>
+                <button onclick="loadMemberCap()" id="mc-reload-btn" class="px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Reload</button>
+              </div>
+            </div>
+          </div>
+
           <!-- Live Sale Display -->
           <div id="current-sale-display" class="hidden border rounded-2xl p-4 sm:p-5">
             <div class="flex items-start justify-between gap-3 mb-4">
@@ -1534,7 +1569,7 @@
       // appeared — the data was stale, not missing.
       if (tab === 'members') loadData();
       if (tab === 'announce') loadCurrentAnnouncement();
-      if (tab === 'sales') { loadCurrentSale(); loadFounderSpots(); }
+      if (tab === 'sales') { loadCurrentSale(); loadFounderSpots(); loadMemberCap(); }
       if (tab === 'updates') loadAdminUpdates();
       if (tab === 'schedule') loadAdminSchedule();
       if (tab === 'roster') { cleanRosterNotes(); renderRoster(); }
@@ -2392,6 +2427,67 @@
       }
       btn.disabled = false; btn.textContent = 'Save Spots';
     }
+
+    // ===== Pro Membership Cap =====
+    // Manual counter. Total + Remaining are set by hand here; nothing is derived
+    // from the roster sync, because trials and cancellations make a derived count
+    // jump around and the sync only runs while this page is open.
+    async function loadMemberCap() {
+      const badge = document.getElementById('mc-state-badge');
+      try {
+        const res = await fetch(`${API}/api/member-cap`);
+        const data = await res.json();
+        const mc = data.memberCap;
+        if (mc) {
+          document.getElementById('mc-total-input').value = mc.total ?? '';
+          document.getElementById('mc-remaining-input').value = mc.remaining ?? '';
+          document.getElementById('mc-active-input').checked = mc.active !== false;
+          if (mc.active === false) {
+            badge.textContent = 'Hidden'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0';
+          } else if ((mc.remaining ?? 0) <= 0) {
+            badge.textContent = 'Full'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/15 text-red-400 shrink-0';
+          } else {
+            badge.textContent = mc.remaining + ' of ' + mc.total + ' left'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-green-500/15 text-green-400 shrink-0';
+          }
+        } else {
+          document.getElementById('mc-active-input').checked = false;
+          badge.textContent = 'Not set up'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0';
+        }
+      } catch(e) {
+        badge.textContent = 'Load error'; badge.className = 'text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-red-500/15 text-red-400 shrink-0';
+      }
+    }
+
+    async function saveMemberCap() {
+      const total = parseInt(document.getElementById('mc-total-input').value, 10);
+      const remaining = parseInt(document.getElementById('mc-remaining-input').value, 10);
+      const active = document.getElementById('mc-active-input').checked;
+      if (!Number.isFinite(total) || total < 1) { showAdminMsg('mc-msg', 'Enter a valid Total (1 or more).', 'error'); return; }
+      if (!Number.isFinite(remaining) || remaining < 0) { showAdminMsg('mc-msg', 'Enter a valid Remaining (0 or more).', 'error'); return; }
+      if (remaining > total) { showAdminMsg('mc-msg', 'Remaining can’t be more than Total.', 'error'); return; }
+
+      const btn = document.getElementById('mc-save-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/member-cap`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ total, remaining, active })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showAdminMsg('mc-msg', active ? `Saved — ${remaining} of ${total} spots showing on the homepage.` : 'Saved — counter is hidden.', 'success');
+          loadMemberCap();
+        } else {
+          showAdminMsg('mc-msg', data.error || 'Failed to save.', 'error');
+        }
+      } catch(e) {
+        showAdminMsg('mc-msg', 'Network error.', 'error');
+      }
+      btn.disabled = false; btn.textContent = 'Save Cap';
+    }
+
 
     async function loadCurrentSale() {
       const token = localStorage.getItem('fsdx_token') || '';
