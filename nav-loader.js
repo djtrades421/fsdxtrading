@@ -273,7 +273,7 @@ function prepareNavLabels(root) {
   // blank the nav just as thoroughly, so check the status and the body, and
   // give a flaky network one retry before giving up.
   function loadNavHtml(attempt) {
-    return fetch('nav.html?v=20260905')
+    return fetch('nav.html?v=20260906')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
