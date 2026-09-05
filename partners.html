@@ -480,9 +480,10 @@
     }).join('');
   }
 
-  /* Same Formspree endpoint the contact page uses. Applications are tagged by
-     the hidden _subject field so they sort out of normal support mail. */
-  var FORMSPREE_ID = 'mjgzkeyr';
+  /* Dedicated "Partner Applications" Formspree form — separate from the contact
+     form so applications never mix with support mail. The hidden _subject field
+     labels them in the inbox. */
+  var FORMSPREE_ID = 'mqpkdakw';
 
   document.addEventListener('DOMContentLoaded', function () {
     buildFaq();
