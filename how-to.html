@@ -6,6 +6,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — How-To Guide</title>
   <meta name="robots" content="noindex, nofollow" />
+  <script>
+    // ── Auth gate — VIP members only, same pattern as the rest of the workspace.
+    //    Runs before the body renders so the content never flashes to a logged-out visitor.
+    (function () {
+      try {
+        if (!localStorage.getItem('fsdx_token')) { window.location.replace('login.html'); }
+      } catch (e) { window.location.replace('login.html'); }
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20260901"></script>
@@ -766,12 +775,6 @@
   </main>
 
   <script>
-    // ── Auth gate — same pattern as the rest of the workspace ──
-    (function () {
-      const token = localStorage.getItem('fsdx_token');
-      if (!token) { window.location.href = 'login.html'; return; }
-    })();
-
     // ── Highlight the section you're reading in the Contents list ──
     (function () {
       const links = [...document.querySelectorAll('.howto-toc a[href^="#"]')];
