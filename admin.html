@@ -1475,6 +1475,21 @@
   </div>
   <div id="day-detail-modal" class="hidden fixed inset-0 bg-black/80 z-[60] flex items-end sm:items-center justify-center px-0 sm:px-4">
 
+  
+    <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between px-5 py-4 border-b border-white/10 shrink-0">
+        <div>
+          <div id="day-modal-title" class="text-sm font-black text-white"></div>
+          <div id="day-modal-sub" class="text-xs text-zinc-500 mt-0.5"></div>
+        </div>
+        <button onclick="closeDayModal()" class="text-zinc-500 hover:text-white transition p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div id="day-modal-content" class="overflow-y-auto flex-1 p-5 space-y-4"></div>
+    </div>
+  </div>
+
   <!-- ── Edit History Modal ── -->
   <div id="history-edit-modal" class="hidden fixed inset-0 bg-black/80 z-[60] flex items-end sm:items-center justify-center px-0 sm:px-4 py-0 sm:py-8 overflow-y-auto">
     <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full max-w-lg shadow-2xl my-0 sm:my-auto max-h-[92vh] sm:max-h-none overflow-y-auto">
@@ -1535,19 +1550,7 @@
       </div>
     </div>
   </div>
-    <div class="bg-zinc-950 border border-white/10 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[85vh] flex flex-col">
-      <div class="flex items-center justify-between px-5 py-4 border-b border-white/10 shrink-0">
-        <div>
-          <div id="day-modal-title" class="text-sm font-black text-white"></div>
-          <div id="day-modal-sub" class="text-xs text-zinc-500 mt-0.5"></div>
-        </div>
-        <button onclick="closeDayModal()" class="text-zinc-500 hover:text-white transition p-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-      <div id="day-modal-content" class="overflow-y-auto flex-1 p-5 space-y-4"></div>
-    </div>
-  </div>
+
 
   <script>
     const API = 'https://nexus-validator.dfuentes4211.workers.dev';
