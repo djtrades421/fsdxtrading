@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Nexus 2.0 User Guide</title>
+  <meta name="description" content="Complete guide to the FSD-X Nexus 2.0 Chrome extension — strategy optimizer, AI chart and news analysis, trade journal, backtest sessions, playbook and prop firm tools." />
+  <meta name="robots" content="noindex, follow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20260906"></script>
+  <script src="fsdx-account.js"></script>
+  <script src="alerts.js?v=20260901"></script>
+  <style>
+    body { background-color: #000; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .step-pill { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:999px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); font-size:10px; font-weight:900; color:#22c55e; flex-shrink:0; }
+    html { scroll-behavior: smooth; }
+    section[id] { scroll-margin-top: 24px; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 py-5">
+      <div class="max-w-4xl mx-auto flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 01-.657.643 48.39 48.39 0 01-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 01-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 00-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 01-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 00.657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 01-.349-1.003c0-1.035 1.007-1.875 2.25-1.875s2.25.84 2.25 1.875c0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 005.427-.63 48.05 48.05 0 00.582-4.717.532.532 0 00-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.369 0 .713.128 1.003.349.283.215.604.401.959.401v0a.656.656 0 00.658-.663 48.422 48.422 0 00-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 01-.61-.58v0z"/></svg>
+        </div>
+        <div class="flex-1">
+          <h1 class="text-base font-black text-white">Nexus 2.0 User Guide</h1>
+          <p class="text-xs text-zinc-500">FSD-X Nexus Chrome extension &middot; Version 2.0.46</p>
+        </div>
+        <a href="how-to.html" class="hidden sm:block px-3 py-1.5 rounded-lg border border-white/10 text-zinc-400 text-[11px] font-bold hover:text-white hover:border-white/20 transition shrink-0">&larr; All guides</a>
+      </div>
+    </div>
+
+    <div class="flex-1 px-6 md:px-10 py-8">
+      <div class="max-w-4xl mx-auto space-y-5">
+
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
+          <p class="text-sm text-zinc-400 leading-relaxed">
+            The all-in-one trading toolkit that sits in your browser next to your charts &mdash; strategy optimizer,
+            AI analysis, trade journal, backtest sessions, playbook and prop firm tools.
+          </p>
+        </div>
+
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="text-xs font-black text-white uppercase tracking-wider mb-4">Contents</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><a href="#start" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">1</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Getting started</span></a><a href="#tools" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">2</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Tools</span></a><a href="#analysis" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">3</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Analysis</span></a><a href="#journal" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">4</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Journal</span></a><a href="#backtest" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">5</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Backtest</span></a><a href="#playbook" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">6</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Playbook</span></a><a href="#limits" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">7</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Daily limits</span></a><a href="#tips" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">8</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Tips &amp; best practices</span></a></div>
+        </div>
+
+        <section id="start" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">1</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Getting started</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Nexus runs as a Chrome side panel. Install it from the Chrome Web Store, then click the extension icon in your toolbar to open the panel. It stays open alongside TradingView or any other page. The expand icon in the top-right switches to full-window mode, which is worth using for the stats and chart views.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Activating Pro</div>
+            <div class="space-y-4">
+              <div class="flex gap-3"><span class="step-pill">1</span><div class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-bold">Purchase a licence</span> at <span class="font-mono text-zinc-300">whop.com/dj-trades-fsdx/fsd-x-nexus/</span></div></div>
+              <div class="flex gap-3"><span class="step-pill">2</span><div class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-bold">Click the KEY button</span> in the top-right corner of Nexus.</div></div>
+              <div class="flex gap-3"><span class="step-pill">3</span><div class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-bold">Paste your licence key</span> and click Validate.</div></div>
+              <div class="flex gap-3"><span class="step-pill">4</span><div class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-bold">Done</span> &mdash; all Pro features unlock immediately.</div></div>
+            </div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">What is free and what needs Pro</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Free for everyone</div><div class="text-[11px] text-zinc-500 leading-relaxed">Strategy Optimizer and Position Size Calculator. Both work with any TradingView strategy &mdash; you do not need ORB PRO.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Requires Pro</div><div class="text-[11px] text-zinc-500 leading-relaxed">Chart Analyzer, News Scanner, Flow Reader, Watchlist, Eval Sim, Strategy Analyzer, Risk Planner, Journal, Backtest and Playbook.</div></div>
+            </div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">The five tabs</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Nexus is organised into <span class="text-white font-semibold">TOOLS</span>, <span class="text-white font-semibold">ANALYSIS</span>, <span class="text-white font-semibold">JOURNAL</span>, <span class="text-white font-semibold">BACKTEST</span> and <span class="text-white font-semibold">PLAYBOOK</span>. Each has its own sub-tabs across the top.</p>
+          </div>
+        </section>
+
+        <section id="tools" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">2</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Tools</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Optimizer &mdash; SETUP | RESULTS</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-500 align-middle">Free</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Automates testing TradingView strategy parameters. It scans through input combinations and tracks results in real time, so you are not sitting there nudging one number at a time.</p>
+            <div class="space-y-4">
+              <div class="flex gap-3"><span class="step-pill">1</span><div class="text-[12px] text-zinc-400 leading-relaxed">Open your TradingView chart with your strategy applied.</div></div>
+              <div class="flex gap-3"><span class="step-pill">2</span><div class="text-[12px] text-zinc-400 leading-relaxed">Go to <span class="text-zinc-300">TOOLS &rsaquo; OPTIMIZER &rsaquo; SETUP</span> and click Scan Inputs.</div></div>
+              <div class="flex gap-3"><span class="step-pill">3</span><div class="text-[12px] text-zinc-400 leading-relaxed">Set the range and step size for each parameter to test.</div></div>
+              <div class="flex gap-3"><span class="step-pill">4</span><div class="text-[12px] text-zinc-400 leading-relaxed">Click Run Optimizer. Results appear under RESULTS as the scan runs.</div></div>
+              <div class="flex gap-3"><span class="step-pill">5</span><div class="text-[12px] text-zinc-400 leading-relaxed">Sort by Net Profit, Win Rate, Profit Factor or Max Drawdown.</div></div>
+              <div class="flex gap-3"><span class="step-pill">6</span><div class="text-[12px] text-zinc-400 leading-relaxed">Click Apply on any result to push those settings straight to your chart.</div></div>
+            </div>
+            <div class="border border-green-500/25 bg-green-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">Works with any TradingView strategy</div><div class="text-[11.5px] text-zinc-400 leading-relaxed">It does not require FSD-X ORB PRO, and it is free. If you build your own scripts this is worth having on its own.</div></div></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Position Size Calculator &mdash; POS CALC</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-500 align-middle">Free</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Work out your exact position size from your risk parameters. Handles futures and forex, with optional partial exit targets.</p>
+            <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left min-w-[480px]"><thead><tr class="border-b border-white/5"><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Field</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">What it is</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Account Size</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Your total account balance.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Risk Amount ($)</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">The dollar amount you are willing to risk.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Stop Loss (pts/pips)</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Distance from entry to your stop.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">TP1 / TP2</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Optional profit targets with partial exit percentages.</td></tr></tbody></table></div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-zinc-300">Outputs:</span> contracts or lots, actual dollar risk, P&amp;L per leg, total P&amp;L, and R:R ratio.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-zinc-300">Supported:</span> MNQ, NQ, ES, MES, CL, GC, RTY, M2K, ZB, ZN and more, plus all major forex pairs in standard, mini and micro lots.</p></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Watchlist &amp; News Calendar &mdash; MY LIST | NEWS</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Add tickers to monitor at a glance &mdash; up to <span class="text-white font-semibold">10</span>. Use SCAN to run AI sentiment across every ticker on the list at once.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">The economic calendar</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">A live calendar powered by ForexFactory data, loaded automatically when you open the NEWS sub-tab.</p>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Date</div><div class="text-[11px] text-zinc-500 leading-relaxed">Today / Tomorrow / This Week / custom date picker.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Currency</div><div class="text-[11px] text-zinc-500 leading-relaxed">All, USD, EUR, GBP, JPY, CAD, AUD, CHF, NZD.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Timezone</div><div class="text-[11px] text-zinc-500 leading-relaxed">Auto-detects yours. ET, CT, MT, PT, GMT, CET, JST, AEST, GST, SGT available.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Impact</div><div class="text-[11px] text-zinc-500 leading-relaxed">High / Medium / Low, each toggled on or off.</div></div>
+            </div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Each row shows time, currency, impact dots, event, forecast and previous. The next upcoming event is highlighted in green. Click FF to open ForexFactory for live actual values once an event releases.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-red-400">Red dots</span> = high impact &nbsp;&middot;&nbsp; <span class="text-yellow-400">yellow</span> = medium &nbsp;&middot;&nbsp; <span class="text-zinc-500">grey</span> = low.</p></div></div>
+          </div>
+        </section>
+
+        <section id="analysis" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">3</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Analysis</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Chart Analyzer &mdash; UPLOAD | ANALYSIS</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Upload a chart screenshot and get an AI technical breakdown &mdash; price action and trend direction, key support and resistance, liquidity zones and order blocks, and a directional bias of bullish, bearish or neutral.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">You can upload a higher timeframe chart alongside your primary one for confluence. Nexus cross-references both and gives a combined read. Works with general technical analysis and with the ORB PRO indicator.</p></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">News Scanner &mdash; SCANNER | RESULTS</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Enter any ticker and get AI sentiment based on real-time headlines. Returns bullish, bearish or neutral with a summary of what is driving it.</p>
+            <div class="space-y-4">
+              <div class="flex gap-3"><span class="step-pill">1</span><div class="text-[12px] text-zinc-400 leading-relaxed">Go to <span class="text-zinc-300">ANALYSIS &rsaquo; NEWS</span>.</div></div>
+              <div class="flex gap-3"><span class="step-pill">2</span><div class="text-[12px] text-zinc-400 leading-relaxed">Enter a ticker symbol &mdash; MNQ, AAPL, SPY.</div></div>
+              <div class="flex gap-3"><span class="step-pill">3</span><div class="text-[12px] text-zinc-400 leading-relaxed">Click Scan News.</div></div>
+              <div class="flex gap-3"><span class="step-pill">4</span><div class="text-[12px] text-zinc-400 leading-relaxed">Review the summary and the headlines with their sentiment tags.</div></div>
+            </div></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Flow Reader &mdash; INPUT | READING</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Paste options flow data and get an AI read on smart-money positioning. Works with flow data from any service.</p>
+            <div class="space-y-4">
+              <div class="flex gap-3"><span class="step-pill">1</span><div class="text-[12px] text-zinc-400 leading-relaxed">Go to <span class="text-zinc-300">ANALYSIS &rsaquo; FLOW</span>.</div></div>
+              <div class="flex gap-3"><span class="step-pill">2</span><div class="text-[12px] text-zinc-400 leading-relaxed">Paste your options flow data into the input field.</div></div>
+              <div class="flex gap-3"><span class="step-pill">3</span><div class="text-[12px] text-zinc-400 leading-relaxed">Click Analyze Flow.</div></div>
+              <div class="flex gap-3"><span class="step-pill">4</span><div class="text-[12px] text-zinc-400 leading-relaxed">Review the read on direction, conviction and notable activity.</div></div>
+            </div></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Eval Sim &mdash; EVAL SIM</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Runs Monte Carlo simulations on your trade data to estimate your probability of passing a prop firm evaluation.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Where it gets your trades</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Nexus Journal</div><div class="text-[11px] text-zinc-500 leading-relaxed">Pulls your logged trades in automatically.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">CSV upload</div><div class="text-[11px] text-zinc-500 leading-relaxed">Any trade history CSV.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Screenshot upload</div><div class="text-[11px] text-zinc-500 leading-relaxed">AI reads the trade data out of an image.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">ORB PRO backtest CSV</div><div class="text-[11px] text-zinc-500 leading-relaxed">With grade filtering, so you can simulate only your best setups.</div></div>
+            </div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-zinc-300">Firm presets:</span> Apex Trader Funding, TopStep, MyFundedFutures, E8 Markets, or fully custom parameters.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-zinc-300">Outputs:</span> pass rate by contract size, a simulation chart, AI insights and recommendations.</p></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Strategy Analyzer &mdash; STRATEGY</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">A deep-dive on your trading patterns to find where your edge actually lives. Breaks down performance by day of week, long vs short, win and loss streaks, and a consistency score. ORB PRO mode adds win rate and P&amp;L by grade. It generates three to four insights per run, and you can export the results to CSV.</p></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Risk Planner &mdash; RISK PLANNER</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Enter your account parameters and see your maximum daily loss and total drawdown in dollars, an aggressiveness rating for your current settings, a risk spectrum from aggressive to conservative sizing, and a DD Protection Ladder showing when to scale down and how much runway remains at each level.</p></div></div>
+          </div>
+        </section>
+
+        <section id="journal" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">4</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Journal</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Your live trade journal, inside the browser. Five sub-tabs: <span class="text-white font-semibold">CALENDAR</span>, <span class="text-white font-semibold">LOG TRADE</span>, <span class="text-white font-semibold">HISTORY</span>, <span class="text-white font-semibold">STATS</span> and <span class="text-white font-semibold">ACCOUNTS</span>.</p>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Log Trade</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Record a trade in full. Two entry modes: <span class="text-zinc-300">BY PRICE</span> enters entry, TP1, TP2 and stop prices and Nexus calculates the P&amp;L; <span class="text-zinc-300">MANUAL $</span> takes the dollar P&amp;L directly for each leg.</p>
+            <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left min-w-[480px]"><thead><tr class="border-b border-white/5"><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Field</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">What it is</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Date</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Trade date.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Entry / Exit Time</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Session start and end.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Ticker</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">MNQ, NQ, ES and so on.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Account Type</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Funded, Evaluation or Personal.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"># of Accounts</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">How many accounts this trade was taken on.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Direction</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Long or short.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Timeframe</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Chart timeframe used.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Grade</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Your quality self-assessment, A+ through F.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Contracts</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Contracts per account.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">TP1 / TP2</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Partial exit targets with contract allocation.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Stop Loss</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Stop price level.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Chart URL</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Optional TradingView screenshot link.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Notes</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Free text.</td></tr></tbody></table></div></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">History &amp; trade detail</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Every logged trade in a sortable list. Filter by ALL / WINS / LOSSES / BE, sort by date or net P&amp;L by clicking a column header, and export to CSV any time.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Click any row to open the full trade detail &mdash; a read-only view of every field, with an edit button (pencil) that reopens it in Log Trade, and a delete button that removes it after confirmation.</p></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Stats &amp; P&amp;L card</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Full performance breakdown, filtered by period (Today / This Week / This Month / All Time / Custom) and by account type.</p>
+            <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left min-w-[480px]"><thead><tr class="border-b border-white/5"><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Metric</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">What it shows</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Total Trades</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Trades in the selected period.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Win Rate</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Wins &divide; (wins + losses). Breakeven trades are excluded from the denominator.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Net P&amp;L</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Total profit or loss for the period.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Profit Factor</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Gross profit divided by gross loss.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Cumulative P&amp;L</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Running P&amp;L over time.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Outcome Breakdown</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Win / loss / BE counts and percentages.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Runner Stats</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">TP1 hit rate, runner usage and outcomes, average TP1 P&amp;L.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Day of Week</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">P&amp;L and win rate by trading day.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Time of Day</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">P&amp;L and win rate by entry hour.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Trade Summary</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Average win and loss, best and worst trade, average duration.</td></tr></tbody></table></div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">The CARD button generates a shareable P&amp;L card for the current filter selection &mdash; opens in a new tab, ready to screenshot.</p></div></div>
+            <div class="border border-white/5 bg-black/20 rounded-xl overflow-hidden"><div class="px-4 py-2.5 border-b border-white/5 bg-black/40"><span class="text-xs font-black text-white">Calendar &amp; Accounts</span><span class="ml-2 text-[8.5px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-green-500/15 border border-green-500/30 text-green-400 align-middle">Pro</span></div><div class="p-4 space-y-3">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">CALENDAR gives you the month laid out day by day. ACCOUNTS is where you set up the accounts your trades are tagged to, which is what makes the account-type filters and per-account breakdowns work.</p></div></div>
+          </div>
+        </section>
+
+        <section id="backtest" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">5</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Backtest</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Backtest sessions inside the extension, with the same four views as the journal &mdash; <span class="text-white font-semibold">CALENDAR</span>, <span class="text-white font-semibold">LOG TRADE</span>, <span class="text-white font-semibold">HISTORY</span> and <span class="text-white font-semibold">STATS</span> &mdash; but kept completely separate from your live trades.</p>
+            <div class="border border-green-500/25 bg-green-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">Why it is separate</div><div class="text-[11.5px] text-zinc-400 leading-relaxed">Backtest and replay trades do not belong in your live journal. Mixing them makes every stat on your journal wrong and untangling it afterwards is a chore. Sessions created here also appear on the site&rsquo;s Backtest page, so you can start one in the extension and analyse it on a full screen later.</div></div>
+          </div>
+        </section>
+
+        <section id="playbook" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">6</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Playbook</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Your trading plan, synced with the Playbook on the site. Four sub-tabs.</p>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">RULES</div><div class="text-[11px] text-zinc-500 leading-relaxed">Rules you hold yourself to, grouped by stage &mdash; before the bell, sizing and risk, when it goes wrong, when it goes right, end of day.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">CHECKLIST</div><div class="text-[11px] text-zinc-500 leading-relaxed">The pre-session items you tick off before the open. Resets automatically each session.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">SETUPS</div><div class="text-[11px] text-zinc-500 leading-relaxed">Named setups with their conditions, one per line.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">GOALS</div><div class="text-[11px] text-zinc-500 leading-relaxed">Weekly and monthly targets.</div></div>
+            </div>
+            <div class="border border-green-500/25 bg-green-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">It syncs both ways</div><div class="text-[11.5px] text-zinc-400 leading-relaxed">What you write here shows up in the Playbook on fsdxtrading.com and vice versa. Set your rules once, see them wherever you are working.</div></div>
+          </div>
+        </section>
+
+        <section id="limits" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">7</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Daily limits</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">The AI features are metered per day. Limits are enforced server-side and reset at midnight UTC.</p>
+            <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left min-w-[360px]"><thead><tr class="border-b border-white/5"><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Feature</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Runs per day</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Chart Analyzer</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-mono">5</span></td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">News Scanner</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-mono">5</span></td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Eval Sim</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-mono">5</span></td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Flow Reader</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-mono">10</span></td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Watchlist scan</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-mono">3</span></td></tr></tbody></table></div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">The watchlist itself holds up to <span class="text-white font-semibold">10</span> tickers.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Everything else &mdash; the journal, backtest, playbook, optimizer, position size calculator, risk planner and the economic calendar &mdash; is unmetered.</p>
+          </div>
+        </section>
+
+        <section id="tips" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">8</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Tips &amp; best practices</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Journalling</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Log trades immediately after closing</div><div class="text-[11px] text-zinc-500 leading-relaxed">Details fade fast.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Always fill in Grade and Notes</div><div class="text-[11px] text-zinc-500 leading-relaxed">The Strategy Analyzer needs them to produce anything meaningful.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Add your chart link to every trade</div><div class="text-[11px] text-zinc-500 leading-relaxed">So you can review the setup from the trade detail view later.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Use Exit Time</div><div class="text-[11px] text-zinc-500 leading-relaxed">So your stats show accurate session durations.</div></div>
+            </div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">The calendar</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Check it before every session</div><div class="text-[11px] text-zinc-500 leading-relaxed">High-impact events can invalidate ORB setups. Knightfall has no news filter by design &mdash; this is your job.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Use the Tomorrow filter the night before</div><div class="text-[11px] text-zinc-500 leading-relaxed">Plan around what is coming.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">The next-event marker updates live</div><div class="text-[11px] text-zinc-500 leading-relaxed">So you always know what is next.</div></div>
+            </div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Eval Sim</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Run at least 30 trades</div><div class="text-[11px] text-zinc-500 leading-relaxed">Below that the simulation is not telling you much.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Use the grade filter in ORB PRO mode</div><div class="text-[11px] text-zinc-500 leading-relaxed">To simulate only your best setups.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Test multiple contract sizes</div><div class="text-[11px] text-zinc-500 leading-relaxed">To find the pass rate versus risk sweet spot.</div></div>
+            </div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">General</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Keep Nexus pinned alongside your charts</div><div class="text-[11px] text-zinc-500 leading-relaxed">It is a side panel &mdash; it is meant to sit there.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Daily AI limits reset at midnight UTC</div><div class="text-[11px] text-zinc-500 leading-relaxed">Not at your local midnight.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Use the expand icon</div><div class="text-[11px] text-zinc-500 leading-relaxed">Full-window mode is much better for stats and charts.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="text-xs font-black text-white uppercase tracking-wider mb-3">Support &amp; licence</div>
+          <div class="text-[12px] text-zinc-400 leading-relaxed space-y-2">
+            <div>Purchase a Pro licence at <span class="font-mono text-green-400">whop.com/dj-trades-fsdx/fsd-x-nexus/</span></div>
+            <div>Email: <a href="contact.html" class="text-green-400 underline hover:text-green-300">get in touch</a> &nbsp;&middot;&nbsp; Or ask in the VIP support channel.</div>
+          </div>
+        </div>
+
+        <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-4">
+          <p class="text-[10.5px] text-yellow-300/65 leading-relaxed">
+            &#9888; FSD-X Nexus is AI-powered and can make mistakes. Always verify signals and analysis before making trading
+            decisions. Nothing in this tool constitutes financial or investment advice. Futures trading involves substantial
+            risk of loss and is not suitable for every investor. Past performance is not necessarily indicative of future results.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      if (sidebar) sidebar.classList.toggle('-translate-x-full');
+    }
+  </script>
+</body>
+</html>
