@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Auto-Trader Setup Guide</title>
+  <meta name="description" content="Complete setup guide for the FSD-X ORB Auto-Trader on TradingView — strategy settings, PickMyTrade connection, end-of-day flatten, demo testing and troubleshooting." />
+  <meta name="robots" content="noindex, follow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20260906"></script>
+  <script src="fsdx-account.js"></script>
+  <script src="alerts.js?v=20260901"></script>
+  <style>
+    body { background-color: #000; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .step-pill { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:999px; background:rgba(34,197,94,0.15); border:1px solid rgba(34,197,94,0.3); font-size:10px; font-weight:900; color:#22c55e; flex-shrink:0; }
+    .kbd { display:inline-block; padding:1px 6px; border-radius:5px; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); font-size:11px; font-weight:700; color:#fff; }
+    html { scroll-behavior: smooth; }
+    section[id] { scroll-margin-top: 24px; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 py-5">
+      <div class="max-w-4xl mx-auto flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+        </div>
+        <div class="flex-1">
+          <h1 class="text-base font-black text-white">Auto-Trader Setup Guide</h1>
+          <p class="text-xs text-zinc-500">FSD-X ORB Auto-Trader on TradingView &middot; Guide version 2.0</p>
+        </div>
+        <a href="how-to.html" class="hidden sm:block px-3 py-1.5 rounded-lg border border-white/10 text-zinc-400 text-[11px] font-bold hover:text-white hover:border-white/20 transition shrink-0">&larr; All guides</a>
+      </div>
+    </div>
+
+    <div class="flex-1 px-6 md:px-10 py-8">
+      <div class="max-w-4xl mx-auto space-y-5">
+
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
+          <p class="text-sm text-zinc-400 leading-relaxed">
+            Everything you need to set up, run and monitor your auto-trader. Work through it in order &mdash;
+            each piece depends on the one before it. If you have already set this up and just want the summary,
+            jump to the <a href="#checklist" class="text-green-400 underline hover:text-green-300">quick-start checklist</a>.
+          </p>
+        </div>
+
+        <div class="border border-green-500/20 bg-green-500/[0.04] rounded-2xl p-5">
+          <div class="text-[10px] font-black text-green-400 uppercase tracking-widest mb-2">// What&rsquo;s new in version 2.0</div>
+          <p class="text-[12.5px] text-zinc-400 leading-relaxed">
+            The auto-trader now handles your end-of-day flatten itself. It closes any open position at the session end
+            and on shortened half-day sessions, and your execution service follows automatically. PickMyTrade&rsquo;s
+            Close All becomes a backstop rather than your primary close.
+          </p>
+          <p class="text-[12.5px] text-zinc-400 leading-relaxed mt-3">
+            Also in this release: end-of-day exits now fill exactly at the flatten time, the half-day calendar stops new
+            entries once the early close is reached, and every preset-locked setting shows its active value right in its
+            label &mdash; so you can see at a glance what the strategy is actually running.
+          </p>
+          <p class="text-[12.5px] text-zinc-400 leading-relaxed mt-3">
+            Update the strategy on your chart, then read Sections <a href="#settings" class="text-green-400 underline hover:text-green-300">3</a>,
+            <a href="#eod" class="text-green-400 underline hover:text-green-300">5</a> and
+            <a href="#rules" class="text-green-400 underline hover:text-green-300">8</a>. Your TradingView alert and
+            PickMyTrade JSON are unchanged &mdash; nothing needs rebuilding.
+          </p>
+        </div>
+
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
+          <div class="text-xs font-black text-white uppercase tracking-wider mb-4">Contents</div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2"><a href="#what" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">1</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">What this is</span></a><a href="#before" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">2</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Before you begin</span></a><a href="#settings" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">3</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Strategy settings</span></a><a href="#pmt" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">4</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Connecting PickMyTrade</span></a><a href="#eod" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">5</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">End of day</span></a><a href="#demo" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">6</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Testing on demo</span></a><a href="#daily" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">7</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Daily use</span></a><a href="#rules" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">8</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">The rules</span></a><a href="#trouble" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">9</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Troubleshooting</span></a><a href="#checklist" class="flex items-center gap-2.5 p-2.5 rounded-lg border border-white/5 bg-black/30 hover:border-green-500/30 hover:bg-green-500/5 transition group"><span class="w-5 h-5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[9px] font-black flex items-center justify-center shrink-0">10</span><span class="text-[11.5px] font-bold text-zinc-400 group-hover:text-green-400 transition">Quick-start checklist</span></a></div>
+        </div>
+
+        <section id="what" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">1</span>
+            </div>
+            <h2 class="text-sm font-black text-white">What this is &amp; how it works</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">The FSD-X ORB Auto-Trader is an automated opening range breakout system for futures. It watches the open, takes graded breakout setups, and manages a stop and target for each trade &mdash; hands-free.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Three pieces working together</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">1 &middot; The FSD-X strategy</div><div class="text-[11px] text-zinc-500 leading-relaxed">Runs on your TradingView chart. It decides when to enter, at what stop and target, when to exit, and when to flatten at the end of the day.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">2 &middot; PickMyTrade (PMT)</div><div class="text-[11px] text-zinc-500 leading-relaxed">The bridge. It catches the strategy&rsquo;s signals and routes orders to your broker.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">3 &middot; Tradovate</div><div class="text-[11px] text-zinc-500 leading-relaxed">Your broker, where the trade actually executes.</div></div>
+            </div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">The flow is always <span class="text-white font-semibold">Strategy &rarr; PickMyTrade &rarr; Tradovate</span>. Each link has to be set up correctly and the order of the steps matters, so work through this guide in sequence.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">How the strategy talks to PickMyTrade</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Your TradingView alert is set to <span class="text-zinc-300">Order fills only</span>. Every time the strategy fills an order &mdash; an entry, a stop, a target, or the end-of-day close &mdash; TradingView sends PickMyTrade a message containing your current position state.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">PickMyTrade reads that state and makes your broker account match it. Go long, it opens a long. Go flat, it closes the position and cancels the resting bracket. This is why the strategy can flatten you at the end of the day without any extra configuration.</p>
+          </div>
+        </section>
+
+        <section id="before" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">2</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Before you begin</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">This guide assumes the FSD-X strategy is already on your TradingView chart &mdash; getting access to the strategy is handled separately. Before setting up automation you need:</p>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">A TradingView paid plan</div><div class="text-[11px] text-zinc-500 leading-relaxed">Essential or higher. Automation uses webhook alerts, which the free plan does not support.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">A PickMyTrade account</div><div class="text-[11px] text-zinc-500 leading-relaxed">Connected to Tradovate.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">A Tradovate sim / demo account</div><div class="text-[11px] text-zinc-500 leading-relaxed">For setup and testing. Do not use a live or funded account until Section 6 is complete.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">The strategy on your chart</div><div class="text-[11px] text-zinc-500 leading-relaxed">On the correct symbol and timeframe you were provided.</div></div>
+            </div>
+            <div class="border border-yellow-500/25 bg-yellow-500/[0.06] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">&ldquo;Automated&rdquo; means the clicking is automated</div><div class="text-[11.5px] text-yellow-300/75 leading-relaxed">It does not mean you can walk away and ignore it. You still check on it daily. Section 7 covers what to look at, and it matters.</div></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">2.1 &nbsp; Set up your chart to match the backtest</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">The FSD-X backtest was run with the chart configured a specific way. Your live chart must match, or your prices and opening range will not line up with what was tested. Both settings are in the bottom-right toolbar.</p>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">B-ADJ (back-adjustment) &rarr; OFF</div><div class="text-[11px] text-zinc-500 leading-relaxed">Back-adjustment shifts historical prices to smooth contract rolls. An ORB keys off real traded prices, so leave it off &mdash; the button should look flat, not highlighted.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Session &rarr; ETH (Electronic Trading Hours)</div><div class="text-[11px] text-zinc-500 leading-relaxed">The backtest measured the opening range on ETH data, not RTH.</div></div>
+            </div>
+            <div class="border border-yellow-500/25 bg-yellow-500/[0.06] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">If your levels do not match other members</div><div class="text-[11.5px] text-yellow-300/75 leading-relaxed">A mismatched B-ADJ or session setting is almost always the reason. An ORB is built entirely on exact prices and the session&rsquo;s opening range &mdash; B-ADJ on shifts your history, and RTH anchors your range to a different time. Either one pulls your live behaviour away from the tested behaviour.</div></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">2.2 &nbsp; Use the continuous contract &mdash; MNQ1!</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Load the continuous front-month symbol, the one ending in <span class="text-zinc-300">1!</span> &mdash; for example <code class="px-1.5 py-0.5 rounded bg-black/60 border border-white/10 text-green-400 font-mono text-[11px]">MNQ1!</code>. Do not use a dated contract such as MNQU6, and not the plain index symbol.</p>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Why continuous</div><div class="text-[11px] text-zinc-500 leading-relaxed">It stitches every contract together, so your chart carries full price history. The strategy and its backtest need that &mdash; a dated contract only has data for its own short lifespan.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">It follows the front month</div><div class="text-[11px] text-zinc-500 leading-relaxed">So you never switch charts when contracts roll.</div></div>
+            </div>
+            <div class="border border-yellow-500/25 bg-yellow-500/[0.06] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">The chart rule is universal; the bridge rule depends on your service</div><div class="text-[11.5px] text-yellow-300/75 leading-relaxed">Your chart is always MNQ1!, whatever bridge you use.<br><br><span class="text-white font-semibold">PickMyTrade:</span> the TradingView Symbol field must also be MNQ1! &mdash; not MNQ, not a dated contract. See Section 4.2.<br><span class="text-white font-semibold">Other bridges:</span> some accept the continuous symbol, others require the exact front-month contract and need updating at each roll. Check their docs.</div></div>
+            <div class="border border-green-500/25 bg-green-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">Using a different bridge?</div><div class="text-[11.5px] text-zinc-400 leading-relaxed">This guide is written for PickMyTrade. Others (TradersPost and similar) follow the same flow &mdash; Strategy &rarr; Bridge &rarr; Broker &mdash; so the core ideas apply. Check your service&rsquo;s docs for its alert message format, how it places a bracket, how it maps the contract symbol, and how it reads position state.</div></div>
+          </div>
+        </section>
+
+        <section id="settings" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">3</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Strategy settings</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Open the settings with the gear icon next to the strategy name on your chart. These are the ones that matter.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">3.1 &nbsp; Take Profit Target &mdash; TP1 or TP2</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">TP1</div><div class="text-[11px] text-zinc-500 leading-relaxed">The first, closer target. Hits more often. <span class="text-zinc-300">Recommended starting point.</span></div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">TP2</div><div class="text-[11px] text-zinc-500 leading-relaxed">Further out. Larger winners, less often. If a setup has no valid TP2 the strategy uses TP1 automatically.</div></div>
+            </div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">The whole position exits at one target, in full. Start with TP1.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">3.2 &nbsp; Exit Handling &mdash; Bracket vs Strategy-Managed</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Bracket &mdash; recommended</div><div class="text-[11px] text-zinc-500 leading-relaxed">Your stop and target are sent with the entry, so PickMyTrade rests them at the broker. They are protected even if your internet drops or a signal is missed, because the orders are already parked and waiting. This guide assumes Bracket.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Strategy-Managed &mdash; fallback only</div><div class="text-[11px] text-zinc-500 leading-relaxed">No resting orders. The strategy watches the market and sends a close when your stop or target is reached. If your connection hiccups at the wrong moment that exit may not get through. Use only if your broker cannot support bracket orders.</div></div>
+            </div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">3.3 &nbsp; The EOD / session close settings</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">On the <span class="text-zinc-300">MNQ NY Session</span> preset these are locked to tested values and your boxes are ignored &mdash; every member flattens at the same time as the backtest. You do not need to change anything.</p>
+            <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left min-w-[520px]"><thead><tr class="border-b border-white/5"><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Setting</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Locked value</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">What it does</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Flatten By</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-mono">15:30 CT</span></td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Closes any open position at this time each day.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Half-Day Calendar</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-mono">On</span></td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Detects shortened sessions from a built-in CME date list.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Early-Close Flatten</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-mono">11:50 CT</span></td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">The flatten time used on those half-days instead of 15:30.</td></tr></tbody></table></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">3.4 &nbsp; Reading the settings panel &mdash; what the preset locks</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Most inputs are locked by the Instrument Preset. That is deliberate: it keeps every member on the same tested numbers, so your levels, grades and exits match the room and the backtest. Locked inputs are labelled so you can see the active value without guessing:</p>
+            <div class="p-3 rounded-xl bg-black/60 border border-white/10 font-mono text-[11.5px] text-zinc-300">Flatten By (HHMM CT) &nbsp;&middot;&nbsp; <span class="text-green-400">MNQ: 1530</span> &nbsp;&middot;&nbsp; <span class="text-zinc-500">Custom only</span></div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">MNQ: 1530</div><div class="text-[11px] text-zinc-500 leading-relaxed">The value actually running while the preset is MNQ NY Session.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Custom only</div><div class="text-[11px] text-zinc-500 leading-relaxed">The box is editable only if you switch the preset to Custom (Advanced).</div></div>
+            </div>
+            <div class="border border-red-500/25 bg-red-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">A locked box will still accept your typing &mdash; and still ignore it</div><div class="text-[11.5px] text-red-300/75 leading-relaxed">TradingView cannot grey out or hide an input, so a locked box looks editable. Type 1545 into Flatten By on the MNQ preset and the box will show 1545, but the strategy still flattens at 15:30.<br><br>If a change appears to do nothing, check the label. If it reads <span class="text-white font-semibold">Custom only</span>, the preset is in charge and the MNQ: value is what is running.</div></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Settings that are yours to set</div>
+            <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left min-w-[420px]"><thead><tr class="border-b border-white/5"><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Setting</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Notes</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Risk Per Trade ($)</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Scale to your account size. Drives contract count.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Take Profit Target</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">TP1 or TP2. Start with TP1.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Exit Handling</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Bracket recommended &mdash; see 3.2.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Minimum Grade</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Raising it takes fewer, higher-graded setups.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Max Trades Per Session</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">3 matches the backtest. Changing it changes your results.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Static Sizing</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Off by default. On increases drawdown.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">+1 Contract After a Loss</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Off by default. A different risk profile &mdash; read the tooltip.</td></tr></tbody></table></div>
+            <div class="border border-red-500/25 bg-red-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">Do not switch the preset to Custom (Advanced) to change one setting</div><div class="text-[11.5px] text-red-300/75 leading-relaxed">Custom mode unlocks every Custom-only input at once, using whatever values happen to be sitting in your boxes. That changes your stops, grades and entry filters all at the same time and desyncs you from the room.<br><br>Custom (Advanced) is for running the strategy on a different instrument, and it needs verifying in the Strategy Tester first. Leave the preset on MNQ NY Session.</div></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">3.5 &nbsp; What the strategy trades</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Session</div><div class="text-[11px] text-zinc-500 leading-relaxed">Roughly 8:30 AM to 3:30 PM Central. New entries stop earlier in the afternoon; positions are flat by day&rsquo;s end.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Real breakouts only</div><div class="text-[11px] text-zinc-500 leading-relaxed">It waits for a candle to close beyond the level before entering, which filters out false breakouts, and skips setups where the opening range is too small.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Quality-based sizing</div><div class="text-[11px] text-zinc-500 leading-relaxed">Stronger setups get more contracts, weaker ones fewer. Varying contract counts between trades is normal and by design.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="pmt" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">4</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Connecting to PickMyTrade</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">This is where most setup issues happen. The goal: PickMyTrade places your stop and target as a bracket at Tradovate on every entry.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">4.1 &nbsp; Confirm the strategy is exposing your levels</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">The strategy publishes two values for PMT to read: <code class="px-1.5 py-0.5 rounded bg-black/60 border border-white/10 text-green-400 font-mono text-[11px]">SL_value</code> (your stop) and <code class="px-1.5 py-0.5 rounded bg-black/60 border border-white/10 text-green-400 font-mono text-[11px]">TP_value</code> (your target). Verify they exist before touching PMT.</p>
+            <div class="space-y-4">
+              <div class="flex gap-3"><span class="step-pill">1</span><div class="text-[12px] text-zinc-400 leading-relaxed">Open the Data Window &mdash; the icon on the right-hand toolbar, or press the <span class="kbd">~</span> key.</div></div>
+              <div class="flex gap-3"><span class="step-pill">2</span><div class="text-[12px] text-zinc-400 leading-relaxed">Scroll to your strategy&rsquo;s section. You should see SL_value and TP_value listed.</div></div>
+              <div class="flex gap-3"><span class="step-pill">3</span><div class="text-[12px] text-zinc-400 leading-relaxed">Out of a trade they read empty (n/a) &mdash; correct. In a trade they show live prices.</div></div>
+            </div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">If those names do not appear, the strategy is not loaded correctly. Reload it before continuing.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">4.2 &nbsp; Set the TradingView Symbol &mdash; MNQ1!</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">In PMT&rsquo;s alert builder find the <span class="text-zinc-300">TradingView Symbol</span> field. Type <span class="font-mono">mnq</span> and select <code class="px-1.5 py-0.5 rounded bg-black/60 border border-white/10 text-green-400 font-mono text-[11px]">MNQ1!</code> from the dropdown. Not plain MNQ, not MNQU6.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">This must match your chart. The alerts come from the MNQ1! chart, so PMT needs to listen for MNQ1!. PMT then routes to the current front-month contract at Tradovate, and because the continuous symbol tracks the front month you never rebuild the alert at a roll.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">4.3 &nbsp; Set the Stop Loss &amp; Take Profit in PickMyTrade</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Set <span class="text-zinc-300">Stop Loss &amp; Take Profit Mode</span> to &ldquo;Price (From TradingView).&rdquo; Two boxes appear. Enter these exactly:</p>
+            <div class="p-4 rounded-xl bg-black/60 border border-white/10 font-mono text-[12px] space-y-2"><div><span class="text-zinc-500">Stop Loss box:</span> &nbsp; <span class="text-green-400">{{plot("SL_value")}}</span></div><div><span class="text-zinc-500">Take Profit box:</span> &nbsp; <span class="text-green-400">{{plot("TP_value")}}</span></div></div>
+            <div class="border border-red-500/25 bg-red-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">The most common mistake: extra braces</div><div class="text-[11.5px] text-red-300/75 leading-relaxed">Each entry ends in exactly <span class="text-white font-semibold">two</span> closing braces. Never three.<br><br><span class="font-mono text-emerald-400">Correct: &nbsp;{{plot("SL_value")}}</span><br><span class="font-mono text-red-400">Wrong: &nbsp;&nbsp;&nbsp;{{plot("SL_value")}}}</span> &nbsp;&larr; extra brace; it fails silently.<br><br>Two things cause it: the box auto-adds a brace as you type, or you pasted on top of existing text. Clear the box completely (select all, delete) before entering the value, then confirm the end reads close-quote, close-paren, two braces, nothing more.</div></div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Confirm your account and token fields are correct &mdash; PMT fills these for you &mdash; then let PMT generate the alert JSON and copy it.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">4.4 &nbsp; Create the alert in TradingView</div>
+            <div class="space-y-4">
+              <div class="flex gap-3"><span class="step-pill">1</span><div class="text-[12px] text-zinc-400 leading-relaxed">On the chart, click the Alerts icon (alarm clock) &rarr; <span class="text-zinc-300">Create Alert</span>.</div></div>
+              <div class="flex gap-3"><span class="step-pill">2</span><div class="text-[12px] text-zinc-400 leading-relaxed">Condition: select the FSD-X strategy, with the trigger set to <span class="text-zinc-300">Order fills only</span>.</div></div>
+              <div class="flex gap-3"><span class="step-pill">3</span><div class="text-[12px] text-zinc-400 leading-relaxed">Message: paste the JSON that PickMyTrade generated.</div></div>
+              <div class="flex gap-3"><span class="step-pill">4</span><div class="text-[12px] text-zinc-400 leading-relaxed">Notifications &rarr; Webhook URL: enable it and paste PickMyTrade&rsquo;s webhook URL.</div></div>
+              <div class="flex gap-3"><span class="step-pill">5</span><div class="text-[12px] text-zinc-400 leading-relaxed">Click <span class="kbd">Create</span>.</div></div>
+            </div>
+            <div class="border border-red-500/25 bg-red-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">Order fills only is required &mdash; do not change it</div><div class="text-[11.5px] text-red-300/75 leading-relaxed">This is the setting that lets the strategy manage your position, including the end-of-day flatten. Every strategy fill sends PMT your current position state. Change it and entries, exits and the EOD close all stop reaching your broker.</div></div>
+            <div class="border border-yellow-500/25 bg-yellow-500/[0.06] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">The &ldquo;line 9&rdquo; warning is normal</div><div class="text-[11.5px] text-yellow-300/75 leading-relaxed">After pasting PMT&rsquo;s JSON, TradingView may show a red warning such as &ldquo;Expected property name&hellip; at line 9.&rdquo; This is cosmetic &mdash; TradingView validates the raw template before live values are filled in. When the alert fires the placeholder becomes a real price, which is valid.<br><br>If TradingView lets you save, save it, then confirm on demo (Section 6). The live result is what matters.</div></div>
+          </div>
+        </section>
+
+        <section id="eod" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">5</span>
+            </div>
+            <h2 class="text-sm font-black text-white">End of day: how your position gets closed</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div class="border border-green-500/25 bg-green-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">The strategy closes your position. PickMyTrade&rsquo;s Close All is now your backstop.</div><div class="text-[11.5px] text-zinc-400 leading-relaxed">Previously your end-of-day flatten was handled entirely by PMT&rsquo;s Close All. The auto-trader now does it directly.</div></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">5.1 &nbsp; What actually happens at 15:30 CT</div>
+            <div class="space-y-4">
+              <div class="flex gap-3"><span class="step-pill">1</span><div class="text-[12px] text-zinc-400 leading-relaxed">At 15:30 Central the strategy closes any open position.</div></div>
+              <div class="flex gap-3"><span class="step-pill">2</span><div class="text-[12px] text-zinc-400 leading-relaxed">That produces an order fill, and your alert is set to Order fills only &mdash; so TradingView sends PickMyTrade a message.</div></div>
+              <div class="flex gap-3"><span class="step-pill">3</span><div class="text-[12px] text-zinc-400 leading-relaxed">The message reports your position as flat.</div></div>
+              <div class="flex gap-3"><span class="step-pill">4</span><div class="text-[12px] text-zinc-400 leading-relaxed">PickMyTrade makes your broker account match: it closes the position at Tradovate and cancels the resting bracket orders.</div></div>
+            </div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">This happens on its own. It needs no configuration beyond the alert you already built in Section 4.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">5.2 &nbsp; Half-days are handled too</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">On listed half-days, CME equity-index futures close around 12:00&ndash;12:15 CT and never print a 15:30 bar. The strategy carries a built-in CME date list and flattens at <span class="text-white font-semibold">11:50 CT</span> on those days instead.</p>
+            <div class="border border-yellow-500/25 bg-yellow-500/[0.06] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">This is the part a fixed clock in PickMyTrade cannot do</div><div class="text-[11.5px] text-yellow-300/75 leading-relaxed">A Close All set to 15:30 CT fires after the market has already closed on a half-day, so it cannot protect you. The auto-trader&rsquo;s built-in calendar is what covers those days &mdash; which is why Bracket mode is now safe on shortened sessions.</div></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">5.3 &nbsp; Setting PickMyTrade&rsquo;s Close All as a backstop</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Keep PMT&rsquo;s Close All configured. It costs nothing and covers the rare case where TradingView drops an alert or a webhook fails to deliver. The only rule: <span class="text-white font-semibold">set it later than 15:30 CT</span>. 15:45 CT is a good choice.</p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">In PMT&rsquo;s Active Trading Time settings, set the To Time and select Close All. PMT uses Eastern Time, so use the &ldquo;Your time&rdquo; readout to confirm what you have chosen reads as the Central time you intended.</p>
+            <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left min-w-[560px]"><thead><tr class="border-b border-white/5"><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Your PMT Close All</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">What happens</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Verdict</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-white font-semibold">Later than 15:30 CT</span></td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Strategy flattens at 15:30. PMT finds a flat account and does nothing.</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-emerald-400">Correct &mdash; this is the intent</span></td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Exactly 15:30 CT</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Both fire in the same minute. The position still only closes once.</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-yellow-400">Harmless, but no margin</span></td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Earlier than 15:30 CT</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">PMT closes you first. You exit earlier than the strategy was tested on.</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed"><span class="text-red-400">Avoid</span></td></tr></tbody></table></div>
+            <div class="border border-green-500/25 bg-green-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">Already set up? One setting to move</div><div class="text-[11.5px] text-zinc-400 leading-relaxed">If your PMT Close All is currently set to 15:30 CT, move it to 15:45 CT so the auto-trader stays clearly primary and PMT is purely a failsafe. Either way the position only closes once, so there is no urgency. Your alert and JSON are unaffected.</div></div>
+          </div>
+        </section>
+
+        <section id="demo" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">6</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Testing on demo</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div class="border border-red-500/25 bg-red-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">Do not point this at a funded account until you have watched it work on sim.</div><div class="text-[11.5px] text-red-300/75 leading-relaxed"></div></div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Let a trade fire, or wait for one during a session, then check:</p>
+            <div class="space-y-4">
+              <div class="flex gap-3"><span class="step-pill">1</span><div class="text-[12px] text-zinc-400 leading-relaxed">In Tradovate you should see the position open, plus a resting stop order and a resting target order.</div></div>
+              <div class="flex gap-3"><span class="step-pill">2</span><div class="text-[12px] text-zinc-400 leading-relaxed">Those two prices should match the SL and TP lines on your chart.</div></div>
+              <div class="flex gap-3"><span class="step-pill">3</span><div class="text-[12px] text-zinc-400 leading-relaxed">Watch a complete cycle &mdash; an entry that closes on its stop or target and leaves you flat with no leftover orders.</div></div>
+              <div class="flex gap-3"><span class="step-pill">4</span><div class="text-[12px] text-zinc-400 leading-relaxed">Watch the end-of-day flatten. At 15:30 CT the position should close and the bracket should clear. Check your PMT log for the message that arrived at 15:30 &mdash; that is the strategy&rsquo;s flatten reaching the broker.</div></div>
+            </div>
+            <div class="border border-green-500/25 bg-green-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">If the bracket appears at the correct prices and the 15:30 flatten lands, your setup is working.</div><div class="text-[11.5px] text-zinc-400 leading-relaxed"></div></div>
+          </div>
+        </section>
+
+        <section id="daily" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">7</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Daily use &amp; what to watch</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div class="border border-red-500/25 bg-red-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">&ldquo;Automated&rdquo; is not &ldquo;unattended&rdquo;</div><div class="text-[11.5px] text-red-300/75 leading-relaxed">The system removes the emotion and the manual clicking. It does not remove you. Anyone who sets this up and walks away for a week eventually meets a nasty surprise &mdash; a broker disconnect, an odd fill, a stuck order &mdash; discovered days later with real money already gone.<br><br>Check it once a day. It takes about a minute. You are not watching every tick, just confirming it is alive and behaving.</div></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">What to look at in your PickMyTrade log</div>
+            <div class="space-y-2">
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Entries fired and placed orders</div><div class="text-[11px] text-zinc-500 leading-relaxed">With no rejects.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Correct side and quantity</div><div class="text-[11px] text-zinc-500 leading-relaxed">A long signal became a buy, at the contract count you expected.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">Stop and target rested at the right prices</div><div class="text-[11px] text-zinc-500 leading-relaxed">Compare them to the lines on your chart.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">A message arrived at 15:30 CT</div><div class="text-[11px] text-zinc-500 leading-relaxed">And left you flat.</div></div>
+              <div class="p-3 rounded-xl border border-white/5 bg-black/30"><div class="text-xs font-bold text-white mb-1">No rejects or disconnects</div><div class="text-[11px] text-zinc-500 leading-relaxed">These are what break automation, and they hide in the log.</div></div>
+            </div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">In your first sessions also watch the 8:30 AM Central open &mdash; the busiest, highest-slippage moment of the day. Fills are at their worst there. Normal, but be aware.</p>
+          </div>
+        </section>
+
+        <section id="rules" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">8</span>
+            </div>
+            <h2 class="text-sm font-black text-white">The rules</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Half-days are handled &mdash; with one exception</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">As of v2.0 the auto-trader&rsquo;s early-close calendar flattens you at 11:50 CT on listed half-days, so you no longer need to switch the bot off for the day after Thanksgiving, Christmas Eve and similar sessions.</p>
+            <div class="border border-red-500/25 bg-red-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">The exception: July 2027</div><div class="text-[11.5px] text-red-300/75 leading-relaxed">The calendar is maintained yearly from CME&rsquo;s published holiday schedule, and years where July 4th falls on a weekend are the hard ones to pin down in advance. July 2027 currently has no entry.<br><br><span class="text-white font-semibold">Sit out the first week of July 2027</span> unless you have confirmed the calendar has been updated. These are thin, low-quality sessions anyway.</div></div>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Slippage is normal</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Your entries will not land exactly at the price shown on the chart. The strategy waits for a candle to close beyond the level &mdash; this is what filters out false breakouts &mdash; so by the time you are filled price has moved slightly. That difference is the cost of a higher-quality entry.</p>
+            <div class="text-[10px] font-black text-zinc-500 uppercase tracking-widest mt-1">Stay on demo until you trust it</div>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Run sim for your first sessions. Move to a funded account only after you have watched the system handle real conditions: entries, a full exit cycle, and an end-of-day flatten.</p>
+            <div class="border border-red-500/25 bg-red-500/[0.05] rounded-xl p-4"><div class="text-xs font-black text-white mb-1.5">Keep your credentials private</div><div class="text-[11.5px] text-red-300/75 leading-relaxed">Your PickMyTrade token and account ID are embedded in your alert setup. Anyone who obtains them could send orders to your account. Never share screenshots of your JSON or exported alert logs &mdash; they contain your token. If you ever have, regenerate the token in PickMyTrade immediately.</div></div>
+          </div>
+        </section>
+
+        <section id="trouble" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">9</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Troubleshooting</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left min-w-[640px]"><thead><tr class="border-b border-white/5"><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Problem</th><th class="p-3 text-[9.5px] uppercase tracking-wider text-zinc-600 font-black text-left">Cause / fix</th></tr></thead><tbody><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">PMT will not save, or a &ldquo;line 9&rdquo; JSON error</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Usually cosmetic. If TradingView lets you save, save it and test on demo. If a field really is the issue, check the SL/TP placeholders end in two braces, not three.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">SL_value / TP_value missing from the Data Window</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">The current strategy is not loaded on the chart. Reload it, save, and re-check.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Chart history looks short, or levels do not match other members</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">You are likely on a dated contract instead of MNQ1!. Switch the chart (Section 2.2) and set PMT&rsquo;s symbol to match. Also re-check B-ADJ off and Session = ETH.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Order did not place at all</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Check the webhook URL, token and account, that the symbol is MNQ1! in both chart and PMT, that the alert Condition is Order fills only, and that you are inside PMT&rsquo;s Active Trading Time window.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Position held overnight</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Check your alert Condition is Order fills only &mdash; if it was changed, the strategy&rsquo;s flatten never reaches PMT. Then check PMT&rsquo;s Active Trading Time backstop is set and enabled.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Exit fired at 15:30 when my PMT Close All is set later</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Working as designed. The strategy owns the flatten; PMT is the backstop. See Section 5.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Fills are not at the signal price</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Normal slippage &mdash; the strategy enters on a confirmed closed breakout candle, so price has already moved. Expected.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Bracket placed but SL/TP look off</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Compare the resting orders in Tradovate to the SL/TP lines on your chart. If they differ, re-check the two PMT placeholder boxes.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">The log shows a double action at the same minute</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Your PMT Close All is set to the same time as the strategy&rsquo;s flatten. Harmless &mdash; the position only closes once &mdash; but move PMT to 15:45 CT.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">I changed a setting and nothing happened</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Check the setting&rsquo;s label. If it reads &ldquo;Custom only&rdquo;, it is locked by the MNQ NY Session preset and the &ldquo;MNQ:&rdquo; value on that same label is what is running. See Section 3.4.</td></tr><tr class="border-b border-white/5"><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">I set Flatten By to a different time but it still exits at 15:30</td><td class="p-3 text-[11.5px] text-zinc-400 align-top leading-relaxed">Flatten By is locked to 1530 on the MNQ preset. That is the tested session end and the value the room runs. See Section 3.4.</td></tr></tbody></table></div>
+          </div>
+        </section>
+
+        <section id="checklist" class="border border-white/5 bg-zinc-950/40 rounded-2xl overflow-hidden">
+          <div class="border-b border-white/5 bg-black/30 px-5 py-4 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+              <span class="text-green-400 text-xs font-black">10</span>
+            </div>
+            <h2 class="text-sm font-black text-white">Quick-start checklist</h2>
+          </div>
+          <div class="p-5 space-y-5">
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed">Tick these off as you go &mdash; they save on this device.</p>
+            <div class="space-y-2">
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Strategy loaded on chart, no red errors</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Chart symbol = <span class="font-mono text-zinc-300">MNQ1!</span> &mdash; not a dated contract</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Chart set to match the backtest: <span class="text-zinc-300">B-ADJ = OFF</span>, <span class="text-zinc-300">Session = ETH</span></span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Instrument Preset = <span class="text-zinc-300">MNQ NY Session</span></span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Take Profit Target set (TP1 to start)</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Exit Handling = <span class="text-zinc-300">Bracket</span></span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">EOD settings left at defaults &mdash; the strategy handles the flatten</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Understand the <span class="font-mono text-zinc-300">MNQ:</span> label tag &mdash; those inputs are locked by the preset</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Understand which settings are locked: labels reading &ldquo;Custom only&rdquo; are set by the preset</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed"><span class="font-mono text-zinc-300">SL_value</span> and <span class="font-mono text-zinc-300">TP_value</span> visible in the Data Window</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">PMT TradingView Symbol = <span class="font-mono text-zinc-300">MNQ1!</span>, matching the chart</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">PMT SL/TP mode = Price (From TradingView), both boxes set, <span class="text-zinc-300">two braces</span></span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">TradingView alert: Condition = <span class="text-zinc-300">Order fills only</span>, PMT JSON pasted, webhook URL set</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">PMT Active Trading Time &rarr; Close All at <span class="text-zinc-300">15:45 CT</span>, as a backstop</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Tested on demo &mdash; bracket lands at correct prices</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Tested on demo &mdash; 15:30 flatten closes the position and clears the bracket</span></label>
+              <label class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-white/[0.02] transition cursor-pointer"><input type="checkbox" class="mt-0.5 w-4 h-4 shrink-0 accent-green-500 rounded"/><span class="text-[12px] text-zinc-400 leading-relaxed">Read Section 8: sit out the first week of July 2027</span></label>
+            </div>
+          </div>
+        </section>
+
+        <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-5">
+          <div class="text-[10px] font-black text-yellow-400/90 uppercase tracking-widest mb-2">// Disclaimer</div>
+          <div class="text-[10.5px] text-yellow-300/65 leading-relaxed space-y-3">
+            <p>FSD-X and the ORB Auto-Trader are provided as tools for educational and informational purposes only. Nothing in
+            this product or documentation constitutes financial, investment, tax, or trading advice, or a recommendation to buy
+            or sell any financial instrument.</p>
+            <p><span class="font-bold">Trading futures involves substantial risk of loss and is not suitable for every investor.</span>
+            You may lose some or all of your capital. You are solely responsible for your own trading decisions, your account,
+            your risk management, and monitoring the software&rsquo;s operation.</p>
+            <p><span class="font-bold">Hypothetical and simulated performance results have inherent limitations.</span> Unlike an
+            actual performance record, simulated results do not represent actual trading and may not account for factors such as
+            slippage, commissions, and real-time execution. Because trades have not actually been executed, results may have
+            under- or over-compensated for the impact of certain market factors. Past performance &mdash; whether actual,
+            backtested, or simulated &mdash; is not indicative of future results. No representation is made that any account will
+            or is likely to achieve results similar to those shown.</p>
+            <p><span class="font-bold">This software is provided &ldquo;as is,&rdquo; without warranty of any kind.</span> We do not
+            guarantee uptime, order execution, connectivity, or the performance of any third-party service including TradingView,
+            PickMyTrade, or your broker. You are responsible for testing the system on a simulated account before risking real
+            capital, and for ensuring compliance with the rules of your broker or any funded/evaluation account you use.</p>
+            <p>By using this product, you acknowledge and accept these terms and agree that FSD-X and its operators are not liable
+            for any losses, damages, or costs arising from its use.</p>
+          </div>
+        </div>
+
+        <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5 text-center">
+          <p class="text-[12px] text-zinc-500 leading-relaxed">
+            Stuck on something this guide does not cover?
+            <a href="contact.html" class="text-green-400 underline hover:text-green-300">Get in touch</a>
+            or ask in the VIP support channel &mdash; and it gets added here.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      if (sidebar) sidebar.classList.toggle('-translate-x-full');
+    }
+    // Checklist ticks persist on this device only.
+    (function () {
+      const boxes = document.querySelectorAll('#checklist input[type="checkbox"]');
+      boxes.forEach(function (b, i) {
+        try { b.checked = localStorage.getItem('fsdx_at_chk_' + i) === '1'; } catch (e) {}
+        b.addEventListener('change', function () {
+          try { localStorage.setItem('fsdx_at_chk_' + i, b.checked ? '1' : '0'); } catch (e) {}
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
