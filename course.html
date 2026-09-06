@@ -364,6 +364,8 @@ const COURSE = [
       <h4>The seven states</h4>
       <p>The state comes from three things on the 4-hour chart: price, a fast EMA and a slow EMA. Where price
       sits relative to both, and where the two EMAs sit relative to each other.</p>
+      <p class="text-zinc-500">The dashboard prints these in lower case with an arrow &mdash;
+      <em>strong bull &uarr;</em>, <em>weak bear &searr;</em> &mdash; so they're written that way here too.</p>
       <ul>
         <li><strong>STRONG BULL</strong> &mdash; price above both EMAs, fast above slow. Everything lined
         up.</li>
@@ -385,10 +387,10 @@ const COURSE = [
       <p>The state is calculated from the <strong>last completed 4-hour candle</strong>. Not the one forming.
       So the state you see is settled &mdash; it won't flicker as price moves through your session.</p>
       <p><strong>But the system also watches the forming candle.</strong> If the still-open 4H would produce a
-      different state, the dashboard appends <strong>[SHIFT?]</strong>.</p>
+      different state, the dashboard appends <strong>[shift?]</strong>.</p>
 
       <div class="callout">
-        <p style="margin:0 0 .6rem 0"><strong>[SHIFT?] is a heads-up, not a change.</strong></p>
+        <p style="margin:0 0 .6rem 0"><strong>[shift?] is a heads-up, not a change.</strong></p>
         <ul style="margin:0">
           <li>The state has not changed. Grading still uses the confirmed one.</li>
           <li>It means: if the 4H closed right now, the state would be different.</li>
@@ -396,7 +398,7 @@ const COURSE = [
           <li>Nothing is real until the 4H candle closes.</li>
         </ul>
       </div>
-      <p>Watching for a flip: <strong>[SHIFT?] is the warning. The close is the event.</strong></p>
+      <p>Watching for a flip: <strong>[shift?] is the warning. The close is the event.</strong></p>
     `
   },
   {
@@ -588,7 +590,7 @@ const COURSE = [
     id: 'dashboard', section: 'system', title: 'The dashboard', mins: 7,
     body: `
       <p>The trend state row is covered in <strong>The trend read</strong> &mdash; states, the closed-candle
-      rule, and [SHIFT?]. This chapter is everything else on the panel.</p>
+      rule, and [shift?]. This chapter is everything else on the panel.</p>
 
       <h4>The reason line</h4>
       <p>Bottom of the dashboard. One line saying why the setup is or isn't valid.</p>
@@ -1076,7 +1078,7 @@ const COURSE = [
       <p>MNQ1!, B-ADJ off, ETH, 5-minute. Ten seconds.</p>
 
       <h4>Read the trend state</h4>
-      <p>And look for <strong>[SHIFT?]</strong>. If it's showing, a state change is brewing on the 4-hour.
+      <p>And look for <strong>[shift?]</strong>. If it's showing, a state change is brewing on the 4-hour.
       Doesn't change today's rules; changes what you expect next.</p>
 
       <h4>8:30 to 8:45 &mdash; the range builds</h4>
