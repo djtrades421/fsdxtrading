@@ -602,6 +602,29 @@ const COURSE = [
       answer hit a rail, floor or cap. Floor or cap means neither measurement won on merit and the clamp
       decided. A capped stop is the system telling you the morning was wider than it wants to trade.</p>
 
+
+      <div class="grid sm:grid-cols-2 gap-3 my-4">
+      <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
+        <img src="ch-stop-target-struct.png" alt="Dashboard showing a stop set by the structure leg, tagged struct" class="w-full" loading="lazy">
+        <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5"></div>
+      </div>
+
+      <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
+        <img src="ch-stop-target-vol.png" alt="Dashboard showing a stop set by the volatility leg, tagged vol" class="w-full" loading="lazy">
+        <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5"></div>
+      </div>
+
+      </div>
+      <p class="text-zinc-500"><strong>Left:</strong> <em>struct</em> &mdash; the structure leg won.
+      <strong>Right:</strong> <em>vol</em> &mdash; the volatility leg won. Same system, different mornings.
+      That tag is worth a glance every time; it tells you whether the stop is sitting behind something real or
+      just sized to how much the market is moving.</p>
+      <div class="callout-warn">
+        <p style="margin:0"><strong>Read that tag carefully.</strong> <em>vol</em> here means
+        <strong>volatility</strong> &mdash; how much the market is moving. It is not the volume read, which is
+        the separate <em>Vol</em> row up in Market Context. Two different measurements, three shared
+        letters.</p>
+      </div>
       <h4>The target</h4>
       <p>The stop comes first. Everything about the target is measured from it.</p>
       <ul>
@@ -615,6 +638,11 @@ const COURSE = [
       <p>It then takes the <strong>highest-scoring level that clears the minimum distance</strong>. Not the
       nearest one &mdash; the best one far enough away to be worth it.</p>
       <p>TP2 works the same way against the higher requirement, and has to sit clear of TP1.</p>
+      <div class="rounded-xl overflow-hidden border border-white/10 bg-black my-4">
+        <img src="ch-stop-target-vol.png" alt="Chart showing entry, stop loss, TP1, TP2 and the 50% line all plotted" class="w-full" loading="lazy">
+        <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">Everything plotted before entry &mdash; stop, TP1, TP2, and the 50% marker between entry and TP1. The dashboard names the source of each: here TP1 is a round number and TP2 is the weekly high.</div>
+      </div>
+
 
       <div class="callout-warn">
         <p style="margin:0 0 .6rem 0"><strong>When the pool is empty.</strong> Some mornings nothing
@@ -624,6 +652,11 @@ const COURSE = [
         <p style="margin:0">That's why a fallback target is labelled something like <strong>0.8R ORB</strong>
         rather than a round number. It's the nearest workable multiple, not a preset. You still get a defined
         target &mdash; it just came from the range rather than a level.</p>
+      </div>
+
+      <div class="rounded-xl overflow-hidden border border-white/10 bg-black my-4">
+        <img src="ch-stop-target-fallback.png" alt="Dashboard showing TP1 from higher timeframe support and TP2 from a 2R ORB fallback" class="w-full" loading="lazy">
+        <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">Both kinds at once. <strong>TP1</strong> found a real level &mdash; 4-hour S/R. <strong>TP2</strong> found nothing in range and fell back to <em>2R ORB</em>, a multiple of the opening range.</div>
       </div>
       <p><strong>Nothing beyond 200 points is considered,</strong> however good it looks out there.</p>
     `
