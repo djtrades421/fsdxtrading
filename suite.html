@@ -235,26 +235,26 @@
                 <div class="grid sm:grid-cols-2 gap-4">
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white text-xs font-bold mb-1">A+ To F Automated Grading</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Evaluates entries using higher timeframe dual EMA crossover alignment, volume expansion averages, and optimal open range point balances (70-100 pts by default) to filter out low-quality chops.</p>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Every setup is scored before you enter, on three things: whether the higher-timeframe EMAs agree on direction, whether volume expanded against its recent average, and whether the opening range is a workable size (70–100 pts by default). Weak mornings score low so you can leave them alone.</p>
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Confluence Support/Resistance Targets</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Ditches static targets. Scans for real structural execution parameters like Previous Day High/Low, Weekly High/Low, lookback swing levels, and Fair Value Gaps (imbalance zones).</p>
+                    <div class="text-white text-xs font-bold mb-1">Confluence Support/Resistance Targets</div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">The target isn't a fixed number of points. The script looks for a real level ahead of price to aim at — previous day high/low, weekly high/low, recent swing levels, and fair value gaps.</p>
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white text-xs font-bold mb-1">Structure-Based Target Fallbacks</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">When no clear S/R confluences exist at a minimum R:R, the script intelligently deploys realistic math bounds utilizing 0.5x, 1x, or 2x the calculated ORB sizing.</p>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Some mornings there's no clean level sitting inside the minimum R:R. When that happens the target falls back to a multiple of the opening range itself — 0.5x, 1x or 2x — so you still get a defined target instead of an open trade.</p>
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white text-xs font-bold mb-1">Advanced On-Chart P&L Analytics</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Real-time on-screen dashboard displays granular data metrics: dollar-value performance by setup grade, total profit factors, best/worst winning streaks, and maximum tracking period drawdowns.</p>
+                    <p class="text-zinc-500 text-xs leading-relaxed">A dashboard sits on the chart showing how the system has done over the period you're looking at — dollar results broken out by grade, profit factor, best and worst streaks, and the deepest drawdown.</p>
                   </div>
                 </div>
                 <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl flex items-start gap-3">
                   <span class="text-green-400 text-sm mt-0.5">📊</span>
                   <div class="text-xs">
                     <span class="text-white font-semibold block mb-0.5">Data-Driven Strategy Refinement</span>
-                    <p class="text-zinc-500 leading-relaxed">Includes a Quality-Only dashboard toggle allowing you to view exclusively A+, A, and B+ setup history. If lower-tier grades are showing negative historic metrics, you can quickly filter them out to preserve capital during erratic sessions.</p>
+                    <p class="text-zinc-500 leading-relaxed">A Quality-Only toggle shows just the A+, A and B+ history. If the lower grades are running negative over the period you're looking at, you can see it at a glance and tighten which grades you're willing to take.</p>
                   </div>
                 </div>
                 <!-- Screenshot -->
@@ -305,22 +305,22 @@
                 <div class="grid sm:grid-cols-3 gap-4 text-xs">
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white font-bold mb-1">7-Timeframe MTF Table</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Evaluates EMA trends simultaneously across 1m, 5m, 15m, 30m, 1h, 4h, and Daily horizons to call automated BULL STACK or BEAR STACK triggers when 60%+ of intervals align perfectly.</p>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Reads the EMA trend on seven timeframes at once — 1m, 5m, 15m, 30m, 1h, 4h and Daily. When 60% or more point the same way it calls a BULL STACK or BEAR STACK, so you can see whether the whole board agrees before you pick a side.</p>
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white font-bold mb-1">Volume Point of Control</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Plots continuous institutional POC levels over customizable lookback bounds to confirm structural buyer control or identify overhead distribution blockades.</p>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Plots the POC — the price where the most volume traded over the lookback you set. It's the level the session actually fought over, so it tells you whether price is working above it or stuck underneath it.</p>
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
                     <div class="text-white font-bold mb-1">Classic Prior-Period Pivots</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Generates automated math pivots (PP, R1, R2, S1, S2) derived from prior Daily, Weekly, or Monthly ranges to map absolute baseline resistance boundaries.</p>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Plots the standard pivots (PP, R1, R2, S1, S2) off the prior day, week or month. Simple, widely watched levels — useful precisely because plenty of other traders are looking at the same ones.</p>
                   </div>
                 </div>
                 <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl flex items-start gap-3">
                   <span class="text-green-400 text-sm mt-0.5">💡</span>
                   <div class="text-xs">
                     <span class="text-white font-semibold block mb-0.5">Execution Playbook Recommendation</span>
-                    <p class="text-zinc-500 leading-relaxed">High-conviction entries are confirmed when price clears the open range breakout level while trading above the session POC and PP lines amidst a clean 6/7 or 7/7 Matrix Stack Score alignment. Scale down or skip completely during mixed stack conditions.</p>
+                    <p class="text-zinc-500 leading-relaxed">The strongest entries line up: price clears the opening range level, holds above the session POC and the pivot, and the stack reads 6/7 or 7/7 in the same direction. When the timeframes are mixed, size down or sit the morning out.</p>
                   </div>
                 </div>
                 <!-- Screenshot -->
@@ -333,7 +333,7 @@
                 <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
                 <div>
                   <div class="text-[10px] text-green-500 uppercase tracking-widest mb-3">// CALIBRATION OPTIONS</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">Includes fast/slow length inputs (20/50 system recommended), customizable transition zone percentages for precise flat/chop detection, and selective level visibility keys.</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Fast and slow EMA lengths (20/50 is the recommended pair), an adjustable band that decides when a timeframe counts as flat rather than trending, and switches for which levels show on the chart.</p>
                 </div>
                 <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
                   <div class="flex justify-between text-xs"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">TradingView</span></div>
@@ -391,16 +391,16 @@
                 </div>
                 <div class="grid sm:grid-cols-3 gap-4 text-xs">
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Participation Sync</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Instantly spot if institution order blocks are backing the breakout structural transition or staying sidelined.</p>
+                    <div class="text-white font-bold mb-1">Volume Behind The Breakout</div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Shows whether the breakout candle traded on heavier volume than the session average, or whether the move happened on almost nothing.</p>
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Momentum Drainage</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Track if fluid capital volumes sustain expansion all the way to target milestones or dry up prematurely.</p>
+                    <div class="text-white font-bold mb-1">Does It Hold To Target</div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Track whether volume keeps up as price runs toward the target, or dries up partway there — the usual tell before a move stalls out.</p>
                   </div>
                   <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
-                    <div class="text-white font-bold mb-1">Spike Location Tracking</div>
-                    <p class="text-zinc-500 text-xs leading-relaxed">Pinpoint exactly where severe liquidity imbalances flush throughout standard RTH execution sessions.</p>
+                    <div class="text-white font-bold mb-1">Where The Spikes Landed</div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Marks where the outsized volume bars printed through the regular session, so you can see which candles actually did the work in the move.</p>
                   </div>
                 </div>
                 <!-- Screenshot -->
@@ -413,7 +413,7 @@
                 <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
                 <div>
                   <div class="text-[10px] text-green-500 uppercase tracking-widest mb-3">// CONFIGURATION COMPATIBILITY</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">Designed exclusively to map right over the top of lower pane tracking monitors. Locks directly into precision sync modes whenever the main execution suite is active.</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Runs in the lower pane under your price chart and lines up with the ORB window the main indicator draws, so the volume bars and the breakout candle read together.</p>
                 </div>
                 <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
                   <div class="flex justify-between text-xs"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">TradingView</span></div>
@@ -502,7 +502,7 @@
               <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[180px] xl:min-h-auto">
                 <div>
                   <div class="text-[10px] text-green-500 uppercase tracking-widest mb-3">// LIVE PROVISIONS</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">Acquire access straight from the official web store dashboard array. Completely standalone workspace assistant pipeline architecture.</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Install from the Chrome Web Store and unlock it with your member key. It runs on its own — only the Strategy Optimizer needs TradingView open.</p>
                 </div>
                 <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
                   <div class="flex justify-between text-xs"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">Google Chrome</span></div>
