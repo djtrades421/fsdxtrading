@@ -90,7 +90,7 @@
             </div>
             <div class="border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
               <div class="text-green-400 text-lg font-black tabular-nums" id="stat-runtime">—</div>
-              <div class="text-zinc-500 text-[10px] uppercase tracking-wider font-bold mt-0.5">Total runtime</div>
+              <div class="text-zinc-500 text-[10px] uppercase tracking-wider font-bold mt-0.5">Read time</div>
             </div>
             <div class="border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
               <div class="text-green-400 text-lg font-black tabular-nums" id="stat-sections">—</div>
@@ -102,6 +102,9 @@
             </div>
           </div>
         </div>
+
+        <!-- ═══ Watch banner — rendered if PLAYLIST_URL is set ═══ -->
+        <div id="watch-banner"></div>
 
         <!-- ═══ Contents — rendered ═══ -->
         <div id="contents" class="mb-14"></div>
@@ -141,17 +144,23 @@
    the contents list, the numbering, the runtime total, the progress counter —
    is derived from this array. Nothing else in the file needs touching.
 
-     { id, section, title, mins, video, body }
+     { id, section, title, mins, body }
 
      id      unique slug, becomes the anchor (#ch-your-rules)
      section which part it belongs to (must match a SECTIONS key)
      title   chapter title
-     mins    runtime estimate, used for the total
-     video   YouTube/Vimeo embed URL, or null for "coming soon"
-     body    HTML string — the chapter copy
+     mins    read-time estimate, used for the total
+     body    HTML string — the chapter copy. null renders a "coming soon" stub.
 
    To add a whole new section: add a key to SECTIONS and use it on a chapter.
+
+   This is the WRITTEN course. The video version lives as a single YouTube
+   playlist — set PLAYLIST_URL below. Deliberately not embedded per chapter:
+   reading it and watching it is the same content twice.
    ========================================================================= */
+
+// YouTube playlist URL for the video version. null hides the watch banner.
+const PLAYLIST_URL = null;
 
 const SECTIONS = {
   before:  { label: 'Before you trade', blurb: 'Decide these before you open a chart.' },
@@ -163,7 +172,7 @@ const COURSE = [
 
   /* ---------------------------------------------------------------- BEFORE */
   {
-    id: 'your-rules', section: 'before', title: 'Your rules and your trading plan', mins: 4, video: null,
+    id: 'your-rules', section: 'before', title: 'Your rules and your trading plan', mins: 4,
     body: `
       <p>Before anything else: write down what you will and won't do. Then do that.</p>
       <p>Not because rules are virtuous. Because the alternative is deciding under pressure, and nobody
@@ -208,7 +217,7 @@ const COURSE = [
     `
   },
   {
-    id: 'what-to-expect', section: 'before', title: 'What to expect', mins: 6, video: null,
+    id: 'what-to-expect', section: 'before', title: 'What to expect', mins: 6,
     body: `
       <p>Three scales. The career, the months, the trades. Same message at each.</p>
 
@@ -266,7 +275,7 @@ const COURSE = [
 
   /* ---------------------------------------------------------------- SYSTEM */
   {
-    id: 'chart-setup', section: 'system', title: 'Get the chart right', mins: 2, video: null,
+    id: 'chart-setup', section: 'system', title: 'Get the chart right', mins: 2,
     body: `
       <p>Four settings. Wrong on any one and your levels won't match the backtest or anyone else in the room.
       These are the same settings the Auto-Trader needs — same logic underneath, same chart required.</p>
@@ -296,23 +305,23 @@ const COURSE = [
       </div>
     `
   },
-  { id: 'what-its-doing', section: 'system', title: 'What the system is doing', mins: 1, video: null, body: null },
-  { id: 'breakout',       section: 'system', title: 'What counts as a breakout', mins: 2, video: null, body: null },
-  { id: 'trend-read',     section: 'system', title: 'The trend read', mins: 4, video: null, body: null },
-  { id: 'reading-grade',  section: 'system', title: 'Reading the grade', mins: 5, video: null, body: null },
-  { id: 'keeps-you-out',  section: 'system', title: 'What keeps you out', mins: 4, video: null, body: null },
-  { id: 'stop-target',    section: 'system', title: 'Stop and target', mins: 5, video: null, body: null },
-  { id: 'sizing',         section: 'system', title: 'Sizing', mins: 3, video: null, body: null },
-  { id: 'dashboard',      section: 'system', title: 'The dashboard', mins: 5, video: null, body: null },
+  { id: 'what-its-doing', section: 'system', title: 'What the system is doing', mins: 1, body: null },
+  { id: 'breakout',       section: 'system', title: 'What counts as a breakout', mins: 2, body: null },
+  { id: 'trend-read',     section: 'system', title: 'The trend read', mins: 4, body: null },
+  { id: 'reading-grade',  section: 'system', title: 'Reading the grade', mins: 5, body: null },
+  { id: 'keeps-you-out',  section: 'system', title: 'What keeps you out', mins: 4, body: null },
+  { id: 'stop-target',    section: 'system', title: 'Stop and target', mins: 5, body: null },
+  { id: 'sizing',         section: 'system', title: 'Sizing', mins: 3, body: null },
+  { id: 'dashboard',      section: 'system', title: 'The dashboard', mins: 5, body: null },
 
   /* --------------------------------------------------------------- RUNNING */
-  { id: 'risk-profile',   section: 'running', title: 'Your risk profile and drawdown protocol', mins: 5, video: null, body: null },
-  { id: 'like-a-job',     section: 'running', title: 'Treat it like a job', mins: 4, video: null, body: null },
-  { id: 'journaling',     section: 'running', title: 'Journaling', mins: 4, video: null, body: null },
-  { id: 'backtesting',    section: 'running', title: 'Backtesting', mins: 4, video: null, body: null },
-  { id: 'prop-accounts',  section: 'running', title: 'Running prop accounts', mins: 4, video: null, body: null },
-  { id: 'monthly-review', section: 'running', title: 'Your monthly review', mins: 4, video: null, body: null },
-  { id: 'your-morning',   section: 'running', title: 'Your morning, start to finish', mins: 5, video: null, body: null }
+  { id: 'risk-profile',   section: 'running', title: 'Your risk profile and drawdown protocol', mins: 5, body: null },
+  { id: 'like-a-job',     section: 'running', title: 'Treat it like a job', mins: 4, body: null },
+  { id: 'journaling',     section: 'running', title: 'Journaling', mins: 4, body: null },
+  { id: 'backtesting',    section: 'running', title: 'Backtesting', mins: 4, body: null },
+  { id: 'prop-accounts',  section: 'running', title: 'Running prop accounts', mins: 4, body: null },
+  { id: 'monthly-review', section: 'running', title: 'Your monthly review', mins: 4, body: null },
+  { id: 'your-morning',   section: 'running', title: 'Your morning, start to finish', mins: 5, body: null }
 ];
 
 /* ---------------------------------------------------------------- RENDER */
@@ -408,19 +417,6 @@ function renderChapters() {
           </button>
         </div>
 
-        ${c.video ? `
-        <div class="px-5 sm:px-7 pt-5">
-          <div class="rounded-xl overflow-hidden border border-white/10 bg-black aspect-video">
-            <iframe src="${c.video}" class="w-full h-full" frameborder="0" allowfullscreen loading="lazy"></iframe>
-          </div>
-        </div>` : `
-        <div class="px-5 sm:px-7 pt-5">
-          <div class="rounded-xl border border-dashed border-white/10 bg-black/40 aspect-video flex flex-col items-center justify-center gap-2">
-            <svg class="w-8 h-8 text-zinc-700" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
-            <div class="text-zinc-600 text-xs font-bold uppercase tracking-wider">Video coming soon</div>
-          </div>
-        </div>`}
-
         <div class="px-5 sm:px-7 py-6 prose-fsdx text-sm text-zinc-400">${c.body}</div>
       </section>`;
   });
@@ -437,6 +433,25 @@ function renderChapters() {
   });
 }
 
+function renderWatchBanner() {
+  const el = document.getElementById('watch-banner');
+  if (!PLAYLIST_URL) { el.innerHTML = ''; return; }
+  el.innerHTML = `
+    <a href="${PLAYLIST_URL}" target="_blank" rel="noopener"
+       class="group flex items-center gap-4 border border-green-500/25 bg-green-500/[0.05] hover:border-green-500/45 rounded-2xl px-5 py-4 mb-10 transition">
+      <span class="w-9 h-9 rounded-lg bg-green-500/10 border border-green-500/25 flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 2.25-4.5 2.25v-4.5z"/></svg>
+      </span>
+      <span class="flex-1 min-w-0">
+        <span class="block text-sm font-bold text-white group-hover:text-green-400 transition">Prefer to watch?</span>
+        <span class="block text-zinc-400 text-xs mt-0.5">
+          The whole course as a video playlist. Same material &mdash; pick whichever way you learn better.
+        </span>
+      </span>
+      <span class="text-green-400 text-xs font-bold shrink-0">Watch &rarr;</span>
+    </a>`;
+}
+
 function renderStats() {
   const read = readSet();
   const total = COURSE.reduce((a, c) => a + (c.mins || 0), 0);
@@ -447,7 +462,7 @@ function renderStats() {
   document.getElementById('stat-progress').textContent = `${read.size}/${COURSE.length}`;
 }
 
-function renderAll() { renderContents(); renderChapters(); renderStats(); }
+function renderAll() { renderWatchBanner(); renderContents(); renderChapters(); renderStats(); }
 renderAll();
 </script>
 </body>
