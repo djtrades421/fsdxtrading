@@ -13,6 +13,19 @@
   <script src="alerts.js?v=20260901"></script>
   <style>
     body { background-color: #000; }
+
+    /* Floating dropdowns sit over live content. fsdx-theme.js forces every
+       .bg-zinc-950 to 84% opacity site-wide, which reads fine on flat sections
+       but leaves these panels competing with the equity curve and calendar
+       behind them. ID selectors outrank the theme's class rule, so this wins
+       without touching the global look. Blur the backdrop and deepen the tint —
+       keeps the glass feel, restores legibility. */
+    #updates-panel, #access-details {
+      backdrop-filter: blur(18px) saturate(130%);
+      -webkit-backdrop-filter: blur(18px) saturate(130%);
+      box-shadow: inset 0 0 0 9999px rgba(4, 9, 17, 0.60),
+                  0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
+    }
     .mini-cal-day { min-height: 90px; height: 90px; }
     .mini-cal-day-win  { background: rgba(34,197,94,0.09); border-left: 2px solid rgba(34,197,94,0.45) !important; }
     .mini-cal-day-loss { background: rgba(239,68,68,0.09); border-left: 2px solid rgba(239,68,68,0.4) !important; }
