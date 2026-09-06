@@ -305,23 +305,771 @@ const COURSE = [
       </div>
     `
   },
-  { id: 'what-its-doing', section: 'system', title: 'What the system is doing', mins: 1, body: null },
-  { id: 'breakout',       section: 'system', title: 'What counts as a breakout', mins: 2, body: null },
-  { id: 'trend-read',     section: 'system', title: 'The trend read', mins: 4, body: null },
-  { id: 'reading-grade',  section: 'system', title: 'Reading the grade', mins: 5, body: null },
-  { id: 'keeps-you-out',  section: 'system', title: 'What keeps you out', mins: 4, body: null },
-  { id: 'stop-target',    section: 'system', title: 'Stop and target', mins: 5, body: null },
-  { id: 'sizing',         section: 'system', title: 'Sizing', mins: 3, body: null },
-  { id: 'dashboard',      section: 'system', title: 'The dashboard', mins: 5, body: null },
+  {
+    id: 'what-its-doing', section: 'system', title: 'What the system is doing', mins: 1,
+    body: `
+      <p>Every morning it does the same three things: build the opening range, wait for a breakout, and
+      score that breakout before you're in it. The score becomes a grade, <strong>A+ down to F</strong>.
+      You trade A+ through C and leave the rest alone.</p>
+
+      <h4>Four things go into the score</h4>
+      <p>In order of how much they decide:</p>
+      <ul>
+        <li><strong>Trend.</strong> The higher-timeframe read &mdash; 4-hour by default. The heaviest of the
+        four, and the only one that can score nothing at all.</li>
+        <li><strong>Opening range size.</strong> This morning's range against its own average over the last 5
+        sessions. No fixed point target &mdash; what counts as a good range moves with the market.</li>
+        <li><strong>Volume.</strong> The breakout candle against its recent average. Did anyone show up for
+        the move.</li>
+        <li><strong>Volatility.</strong> How today's range compares to its own normal. The lightest of the
+        four.</li>
+      </ul>
+
+      <h4>What you trade</h4>
+      <p>A+ &middot; A &middot; B+ &middot; B &middot; C+ &middot; C. D and F still print &mdash; so you can
+      see the morning was judged and rejected, not missed.</p>
+    `
+  },
+  {
+    id: 'breakout', section: 'system', title: 'What counts as a breakout', mins: 2,
+    body: `
+      <p>Before anything gets graded, it has to qualify as a breakout. Four conditions, all required.</p>
+      <ul>
+        <li><strong>The candle opens inside the range.</strong> A candle already outside doesn't count.</li>
+        <li><strong>It closes outside</strong> &mdash; above the high for a long, below the low for a short.
+        Wicks through don't count. The close does.</li>
+        <li><strong>The close is on the right side of VWAP.</strong> Above for a long, below for a short. If
+        price breaks out but sits the wrong side of VWAP, it won't fire.</li>
+        <li><strong>There's no live breakout already</strong> in that direction.</li>
+      </ul>
+
+      <h4>How the trigger resets</h4>
+      <p>Once price <strong>closes back inside the range</strong>, the trigger clears and the system can take
+      a fresh breakout that direction. Coming back into the box isn't enough on its own &mdash; it has to
+      close inside.</p>
+
+      <div class="callout-warn">
+        <p style="margin:0"><strong>One thing that doesn't reset.</strong> If a breakout was blocked by a
+        filter, that warning stays up for the session. It won't flip back to a green light just because price
+        re-entered the range on its way to the stop. Deliberate &mdash; it stops you getting a false all-clear
+        on a morning already judged.</p>
+      </div>
+    `
+  },
+  {
+    id: 'trend-read', section: 'system', title: 'The trend read', mins: 4,
+    body: `
+      <p>The heaviest input in the grade, so it gets its own chapter before the grading one.</p>
+
+      <h4>The seven states</h4>
+      <p>The state comes from three things on the 4-hour chart: price, a fast EMA and a slow EMA. Where price
+      sits relative to both, and where the two EMAs sit relative to each other.</p>
+      <ul>
+        <li><strong>STRONG BULL</strong> &mdash; price above both EMAs, fast above slow. Everything lined
+        up.</li>
+        <li><strong>WEAK BULL</strong> &mdash; EMAs still bullish, but price has slipped below the fast one.
+        Trend intact, momentum fading.</li>
+        <li><strong>TRANSITION BULL</strong> &mdash; price has pushed above both EMAs, but the EMAs haven't
+        crossed yet. Price is leading; the trend hasn't confirmed.</li>
+        <li><strong>WEAK BEAR</strong> &mdash; price above the fast EMA but below the slow.</li>
+        <li><strong>STRONG BEAR</strong> &mdash; price below both, fast below slow.</li>
+        <li><strong>TRANSITION BEAR</strong> &mdash; price below both, EMAs still bullish. Mirror of
+        transition bull.</li>
+        <li><strong>RANGING</strong> &mdash; none of the above holds cleanly.</li>
+      </ul>
+      <p>Two things to take from that. <strong>Transition</strong> means price moved first and the EMAs
+      haven't caught up &mdash; which is why it's its own state, not a trend. <strong>Weak</strong> means
+      price and the EMAs disagree &mdash; the trend is there, but price is fighting it.</p>
+
+      <h4>It runs on the closed 4-hour candle</h4>
+      <p>The state is calculated from the <strong>last completed 4-hour candle</strong>. Not the one forming.
+      So the state you see is settled &mdash; it won't flicker as price moves through your session.</p>
+      <p><strong>But the system also watches the forming candle.</strong> If the still-open 4H would produce a
+      different state, the dashboard appends <strong>[SHIFT?]</strong>.</p>
+
+      <div class="callout">
+        <p style="margin:0 0 .6rem 0"><strong>[SHIFT?] is a heads-up, not a change.</strong></p>
+        <ul style="margin:0">
+          <li>The state has not changed. Grading still uses the confirmed one.</li>
+          <li>It means: if the 4H closed right now, the state would be different.</li>
+          <li>It can appear and disappear repeatedly as that candle moves. Normal.</li>
+          <li>Nothing is real until the 4H candle closes.</li>
+        </ul>
+      </div>
+      <p>Watching for a flip: <strong>[SHIFT?] is the warning. The close is the event.</strong></p>
+    `
+  },
+  {
+    id: 'reading-grade', section: 'system', title: 'Reading the grade', mins: 5,
+    body: `
+      <h4>The one rule: wait for the candle to close</h4>
+      <p>The system grades <strong>live</strong>. The score recalculates as the 5-minute candle builds, so the
+      letter on your screen is provisional until that candle closes.</p>
+      <p>It can move a long way. A setup sitting at <strong>F</strong> mid-candle can close <strong>A+</strong>.
+      One showing a comfortable <strong>A</strong> can bleed down to a <strong>C</strong>. Neither is the
+      system changing its mind &mdash; it's volume and range still coming in.</p>
+      <div class="callout">
+        <p style="margin:0"><strong>Nothing is locked until the 5-minute candle closes.</strong> No decisions
+        off a grade on an open candle. If you take a trade off a letter you saw with two minutes left on the
+        bar, you didn't take the setup the system graded.</p>
+      </div>
+
+      <h4>The colours</h4>
+      <ul>
+        <li><strong>Lime &mdash; A+ and A.</strong> The best the system offers.</li>
+        <li><strong>Green &mdash; B+ and B.</strong> Solid.</li>
+        <li><strong>Yellow &mdash; C+ and C.</strong> Tradeable, bottom of the range.</li>
+        <li><strong>Orange &mdash; D.</strong> Not taken.</li>
+        <li><strong>Red &mdash; F.</strong> Not taken.</li>
+      </ul>
+      <p>Watching the colour shift through the candle tells you as much as the final letter. A grade that
+      climbs into the close is a different morning from one that was A the whole way and slid at the end.</p>
+
+      <h4>The candle colour is the confirmation</h4>
+      <p>The fastest read on the chart, and the habit worth building.</p>
+      <p><strong>When the system validates a setup, it colours the breakout candle itself</strong> in that
+      grade's colour. Lime, green or yellow.</p>
+      <p><strong>No colour change means the system is not taking the trade.</strong></p>
+      <ul>
+        <li>D and F never colour the candle. Expected &mdash; they're not valid grades.</li>
+        <li>But an <strong>A, B or C with no colour</strong> means something else flagged it. Counter-trend is
+        the usual one. It can also be price closing too far outside the range, an opening range that came in
+        too small, or another filter. The next chapter has the full list.</li>
+      </ul>
+      <p>The grade letter prints either way. So you can end up looking at a perfectly respectable letter under
+      a candle that never changed colour &mdash; and that combination is the whole tell.</p>
+      <p><strong>Letter tells you the quality. Colour tells you whether it's valid.</strong> Two different
+      questions. The dashboard gives the specific reason.</p>
+      <p><strong>You're free to take it. The system isn't.</strong> Nothing stops you clicking it. Just be
+      honest with yourself that you're taking that trade, not the system.</p>
+
+      <h4>Why counter-trend setups behave this way</h4>
+      <p>Because trend can score nothing, a setup fighting the higher timeframe tops out at B+ &mdash; and
+      only with a perfect range, perfect volume and perfect volatility behind it. So on those mornings a
+      respectable letter with no candle colour is the normal outcome, not a fault.</p>
+      <p><strong>Which is why the trend read matters more than the letter.</strong> The grade is a summary.
+      The trend state drives most of it and decides whether the setup is valid at all.</p>
+
+      <h4>You can override it</h4>
+      <p>The minimum grade is a setting, and nothing stops you taking a trade by hand. Just know what you're
+      overriding &mdash; the backtest was run on the defaults. Step off them and you're trading a different
+      system than the one the numbers describe.</p>
+    `
+  },
+  {
+    id: 'keeps-you-out', section: 'system', title: 'What keeps you out', mins: 4,
+    body: `
+      <p>Most mornings the system says no. Here's the list, so you can look at a blocked setup and know which
+      one it was.</p>
+
+      <h4>The filters</h4>
+      <ul>
+        <li><strong>Minimum opening range &mdash; 45 points.</strong> Tighter than that and the morning is
+        skipped. A range that small doesn't produce a breakout worth trading.</li>
+        <li><strong>Maximum close outside the range &mdash; 50 points.</strong> If the breakout candle closes
+        more than 50 points past the level, it's gone too far. You'd be entering after the move instead of on
+        it.</li>
+        <li><strong>Minimum close outside the range.</strong> Off by default. Set it if you want the candle to
+        clear the level by a certain amount before it counts.</li>
+        <li><strong>VWAP alignment.</strong> The close has to be on the correct side of VWAP. Not a setting
+        &mdash; it's built into what counts as a breakout.</li>
+        <li><strong>Opens inside the range.</strong> A candle already outside doesn't qualify.</li>
+        <li><strong>One breakout per direction,</strong> until price closes back inside.</li>
+        <li><strong>Minimum grade &mdash; C.</strong> D and F never qualify.</li>
+        <li><strong>Maximum trades per session &mdash; 3.</strong></li>
+      </ul>
+
+      <h4>The counter-trend filter</h4>
+      <p>The one that surprises people, so it's worth understanding rather than memorising.</p>
+      <p>The system reads the higher timeframe and asks whether your breakout agrees with it. If it doesn't,
+      the bar goes up &mdash; and in some conditions the trade is off entirely.</p>
+      <ul>
+        <li><strong>With the trend</strong> &mdash; normal requirements.</li>
+        <li><strong>Against a strong trend</strong> &mdash; the setup needs a materially better score than it
+        would with the trend. Some get through. Most don't.</li>
+        <li><strong>In a ranging market</strong> &mdash; no trade, either direction, any grade. When the
+        higher timeframe has no opinion, a breakout has nothing behind it.</li>
+        <li><strong>Against a weakly opposing trend</strong> &mdash; also no trade. This is the one that
+        catches people, because a weak opposing trend feels like the <em>safest</em> counter-trend setup. The
+        data says otherwise.</li>
+      </ul>
+      <p>That last pair is why you'll see a decent grade with no candle colour on a chop day. Nothing's broken
+      &mdash; the trend read doesn't support it.</p>
+
+      <h4>And you can still take it</h4>
+      <p><strong>The system plots your entry, stop and both targets on every graded breakout &mdash;
+      including the ones it won't trade.</strong> That's deliberate.</p>
+      <p>If you like a setup the system passed on, you have the levels to trade it. Nothing stops you.</p>
+      <p>Just be clear which you're doing:</p>
+      <ul>
+        <li><strong>Following the system</strong> means taking what it validates and leaving what it doesn't.
+        That's what the backtest measures.</li>
+        <li><strong>Taking your own trades</strong> with the system's levels is a different thing. Legitimate
+        &mdash; but your results stop being comparable to the published data.</li>
+      </ul>
+      <p>Pick one on purpose. The trouble starts when someone thinks they're doing the first while actually
+      doing the second.</p>
+    `
+  },
+  {
+    id: 'stop-target', section: 'system', title: 'Stop and target', mins: 5,
+    body: `
+      <h4>The stop</h4>
+      <p>The system measures two ways on every setup.</p>
+      <ul>
+        <li><strong>Structure</strong> &mdash; where price has actually been turning.</li>
+        <li><strong>Volatility</strong> &mdash; how much this market is moving right now.</li>
+      </ul>
+      <p><strong>It takes the tighter of the two.</strong> Not an average, not a judgment call.</p>
+      <p><strong>Then the rails.</strong> Clamped between <strong>75 and 175 points</strong>. Nothing tighter,
+      nothing wider.</p>
+      <p><strong>The dashboard tells you which one set it</strong> &mdash; structure, volatility, or, if the
+      answer hit a rail, floor or cap. Floor or cap means neither measurement won on merit and the clamp
+      decided. A capped stop is the system telling you the morning was wider than it wants to trade.</p>
+
+      <h4>The target</h4>
+      <p>The stop comes first. Everything about the target is measured from it.</p>
+      <ul>
+        <li><strong>TP1 needs at least 1R</strong> by default. Whatever your stop distance is, TP1 has to be
+        at least that far out.</li>
+        <li><strong>TP2 needs at least 1.5R.</strong></li>
+      </ul>
+      <p><strong>How it picks.</strong> The system builds a pool of real levels ahead of price &mdash;
+      previous day high and low, weekly high and low, swing levels, fair value gaps, 4-hour S/R. Each is
+      scored on how meaningful it is, and round numbers score extra.</p>
+      <p>It then takes the <strong>highest-scoring level that clears the minimum distance</strong>. Not the
+      nearest one &mdash; the best one far enough away to be worth it.</p>
+      <p>TP2 works the same way against the higher requirement, and has to sit clear of TP1.</p>
+
+      <div class="callout-warn">
+        <p style="margin:0"><strong>When the pool is empty.</strong> Some mornings nothing worthwhile sits in
+        range. Then it falls back to a multiple of the opening range. You still get a defined target &mdash;
+        it just came from the range rather than a level.</p>
+      </div>
+      <p><strong>Nothing beyond 200 points is considered,</strong> however good it looks out there.</p>
+    `
+  },
+  {
+    id: 'sizing', section: 'system', title: 'Sizing', mins: 3,
+    body: `
+      <h4>The system sizes for you</h4>
+      <p>You set one number &mdash; risk per trade. Everything after that is automatic and live.</p>
+      <p>It works out the stop distance for the setup, converts that to dollars per contract, and divides your
+      risk number by it to get your maximum. Then the grade decides how much of that maximum you actually
+      take.</p>
+      <ul>
+        <li><strong>A+, A and B+</strong> &mdash; full size.</li>
+        <li><strong>B</strong> &mdash; 75%.</li>
+        <li><strong>C+ and C</strong> &mdash; 50%.</li>
+      </ul>
+      <p>A valid setup never rounds down to nothing, so a C still gets at least one contract.</p>
+      <p><strong>It stays inside your number.</strong> Contracts are whole units, so rounding can put you
+      slightly over or under. It won't run away from you &mdash; a $400 profile doesn't become a $600
+      trade.</p>
+
+      <h4>Your risk number changes how much of this you see</h4>
+      <ul>
+        <li><strong>$250</strong> &mdash; mostly 1 contract, sometimes 2. The grading is still working, but
+        there's no room for it to show up in the contract count.</li>
+        <li><strong>$400</strong> &mdash; the dynamic starts to appear. Full, 75% and 50% become three
+        different numbers.</li>
+        <li><strong>$500&ndash;650 and up</strong> &mdash; you see the full spread between an A+ and a C.</li>
+      </ul>
+      <p>Worth understanding before deciding the smaller profile is just "the same system, smaller." At the
+      low end you're getting the filtering but very little of the sizing.</p>
+      <p><strong>Which number is yours</strong> is the drawdown protocol chapter.</p>
+    `
+  },
+  {
+    id: 'dashboard', section: 'system', title: 'The dashboard', mins: 5,
+    body: `
+      <p>The trend state row is covered in <strong>The trend read</strong> &mdash; states, the closed-candle
+      rule, and [SHIFT?]. This chapter is everything else on the panel.</p>
+
+      <h4>The reason line</h4>
+      <p>Bottom of the dashboard. One line saying why the setup is or isn't valid.</p>
+      <ul>
+        <li><strong>"All factors solid"</strong> &mdash; nothing flagged</li>
+        <li><strong>"Weak: &hellip;"</strong> &mdash; valid, but inputs scored low. Names them worst-first:
+        ORB size, Med vol, Low vol, Very low vol</li>
+        <li><strong>"&#9888; ORB under 45 pts"</strong> &mdash; range too small</li>
+        <li><strong>"&#9888; Over 50 pts"</strong> &mdash; breakout closed too far outside the range</li>
+        <li><strong>"&#9888; Under X pts"</strong> &mdash; didn't clear the range by enough (only if you've
+        set a minimum)</li>
+        <li><strong>"Ranging &mdash; no trade"</strong> &mdash; higher timeframe has no direction</li>
+        <li><strong>"Counter-trend HTF"</strong> &mdash; fighting a weakly opposing trend. Blocked.</li>
+        <li><strong>"Trend turn &mdash; shorts blocked"</strong> &mdash; trend turning; shorts aren't taken in
+        that state</li>
+        <li><strong>"Trend turn &mdash; score under 60"</strong> &mdash; turning trend, long possible, score
+        didn't clear</li>
+        <li><strong>"Below quality bar"</strong> &mdash; against a strong trend and the score didn't justify
+        it</li>
+        <li><strong>"Early trend-turn long"</strong> &mdash; taken, but flagged as an early call</li>
+      </ul>
+      <p>Orange means blocked. The grade's own colour means live.</p>
+
+      <h4>TAKE TRADE / NO TRADE</h4>
+      <p>The same signal as the candle colour, in words. If the candle didn't colour, this says NO TRADE and
+      the reason line says why.</p>
+      <div class="callout">
+        <p style="margin:0">Three places tell you one thing: the <strong>candle colour</strong>, the
+        <strong>verdict cell</strong>, and the <strong>reason line</strong>. If they ever seem to disagree,
+        you're reading a grade on a candle that hasn't closed.</p>
+      </div>
+
+      <h4>The rest of the panel</h4>
+      <p>Key levels (previous day high and low, weekly high and low), today's opening range size against its
+      recent average, the volume read, your entry, stop and both targets with their R multiples, and the
+      recommended contract count for your risk setting.</p>
+      <p>Everything on it is derived from the chapters above. Nothing on the dashboard is a separate opinion
+      &mdash; it's the same decision, displayed.</p>
+    `
+  },
 
   /* --------------------------------------------------------------- RUNNING */
-  { id: 'risk-profile',   section: 'running', title: 'Your risk profile and drawdown protocol', mins: 5, body: null },
-  { id: 'like-a-job',     section: 'running', title: 'Treat it like a job', mins: 4, body: null },
-  { id: 'journaling',     section: 'running', title: 'Journaling', mins: 4, body: null },
-  { id: 'backtesting',    section: 'running', title: 'Backtesting', mins: 4, body: null },
-  { id: 'prop-accounts',  section: 'running', title: 'Running prop accounts', mins: 4, body: null },
-  { id: 'monthly-review', section: 'running', title: 'Your monthly review', mins: 4, body: null },
-  { id: 'your-morning',   section: 'running', title: 'Your morning, start to finish', mins: 5, body: null }
+  {
+    id: 'risk-profile', section: 'running', title: 'Your risk profile and drawdown protocol', mins: 5,
+    body: `
+      <p>You picked an approach in <strong>What to expect</strong>. You've now seen how the system sizes. This
+      is where you put a number on it.</p>
+
+      <h4>Where this system fits</h4>
+      <p>Be realistic about what it is. It isn't built for big months &mdash; any month that looks like one is
+      an outlier, not the plan.</p>
+      <p><strong>What it's built for is repeatability at low per-trade risk</strong>, which is what makes it
+      suit running across several accounts.</p>
+      <p>Long stretches will be unremarkable. That's the trade: smaller swings in exchange for something still
+      running after a bad month. If you need it to be exciting, this isn't it.</p>
+
+      <h4>Picking your number</h4>
+      <p>Three things decide it, and only one is arithmetic.</p>
+      <ul>
+        <li><strong>Account size.</strong> The obvious one.</li>
+        <li><strong>Risk tolerance.</strong> What you can lose in a morning without it changing how you trade
+        the next one.</li>
+        <li><strong>Your psychology.</strong> Be honest. The right size is the one you can still follow the
+        rules at.</li>
+      </ul>
+      <p>The backtest research on the site runs every risk profile side by side. Use it to see what aggressive
+      and conservative actually looked like across seven years &mdash; then pick. That's your decision, not
+      the system's.</p>
+
+      <h4>Your drawdown protocol</h4>
+      <p>Account health changes one thing: <strong>how much you size.</strong></p>
+      <p>Not which setups you take. Not your window. Not your grades. Those were settled in Chapter 1, and a
+      bad week doesn't get a vote.</p>
+
+      <p><strong>A worked example.</strong> A $50,000 account with $2,000 of drawdown, running the $400
+      profile.</p>
+      <table>
+        <thead><tr><th>Account state</th><th>Risk profile</th></tr></thead>
+        <tbody>
+          <tr><td>Clear, or normal operating range</td><td>$400</td></tr>
+          <tr><td>~$1,000 into drawdown</td><td>$250</td></tr>
+          <tr><td>Recovered to ~$500 down</td><td>back to $400</td></tr>
+        </tbody>
+      </table>
+      <p>Half size when you're half way down. Back up as you rebuild room. Nothing more complicated.</p>
+      <p><em>The account size is an example. The number that matters is the $2,000 you can lose &mdash; a
+      trader with a $2,000 live account is in exactly the same seat.</em></p>
+
+      <h4>Choosing your own trigger</h4>
+      <p>$1,000 isn't special. What matters is that the number exists before you need it.</p>
+      <ul>
+        <li><strong>Dollar-based.</strong> $500 down, $800, $1,000. Earlier protects more and gives up more
+        upside.</li>
+        <li><strong>Streak-based.</strong> After two losses in a row, or three. Some people read a streak
+        better than a balance.</li>
+      </ul>
+      <p>Both work. Which suits you is a psychology question, not a maths one &mdash; the right trigger is the
+      one you'll actually honour on the morning it fires.</p>
+
+      <h4>Market conditions count too</h4>
+      <p>Drawdown isn't the only reason to size down. If conditions plainly aren't suiting the system &mdash;
+      chop, no follow-through, ranges that die at the open &mdash; reducing until it straightens out is
+      legitimate.</p>
+      <p>The line to hold: <strong>conditions change your size, not your rules.</strong> Same setups, same
+      window, same grades. Just smaller.</p>
+
+      <h4>What this does, and what it doesn't</h4>
+      <p>At $400 risk against a $2,000 limit, roughly <strong>five losing trades</strong> ends the account.
+      Step down to $250 at $1,000 down and you get roughly <strong>six or seven</strong>.</p>
+      <div class="callout-warn">
+        <p style="margin:0">That's worth having. It is not a rescue. <strong>If the profile was too big for
+        the account to start with, a step-down buys you a trade or two &mdash; not a different outcome.</strong>
+        The protocol extends a viable account. It doesn't fix an unviable one.</p>
+      </div>
+      <p>Which is why the profile choice comes first and the protocol second.</p>
+
+      <h4>If you're running accounts as expendable</h4>
+      <p>None of this applies. If you decided you're fine failing accounts and you run enough that one doesn't
+      matter, keep your size and let it play out. That's coherent.</p>
+      <p>What isn't coherent is having a step-down protocol in your plan and ignoring it because today feels
+      like it'll come back.</p>
+    `
+  },
+  {
+    id: 'like-a-job', section: 'running', title: 'Treat it like a job', mins: 4,
+    body: `
+      <h4>Clock in, clock out</h4>
+      <p>You have a window. When it's done, you're done. Close the platform.</p>
+      <p>Not "I'll keep half an eye on it." Close it.</p>
+      <p><strong>The longer you sit on the charts, the more likely you are to take a trade.</strong> That
+      isn't discipline failing, it's exposure &mdash; a screen in front of you long enough will eventually
+      show you something that looks like a setup.</p>
+      <p>And the trade you take in hour four isn't the one you'd have taken in hour one. Mental fatigue is
+      real and it arrives before you notice it. Same chart, less of you reading it.</p>
+
+      <h4>Don't chase it back</h4>
+      <p>The worst version of staying late is staying late to win money back.</p>
+      <p><strong>One loss today is recoverable.</strong> The ordinary cost of a system that loses roughly four
+      trades in ten.</p>
+      <p><strong>Several losses in one day takes far longer to undo</strong> &mdash; and they're rarely all
+      the system's. The first was the setup. The second and third were you.</p>
+      <p>The system caps you at three trades a session for a reason. Your own daily stop should sit at or
+      below that.</p>
+
+      <h4>Get good at losing</h4>
+      <p>Not a figure of speech. It's a skill, it's learnable, and it's most of the job.</p>
+      <ul>
+        <li>The market opens again tomorrow.</li>
+        <li>Conditions that don't suit the system now will suit it again. Markets cycle.</li>
+        <li>A setup you missed is not a setup you lost.</li>
+      </ul>
+      <p>There are always other trades. The trader who believes that sits out a bad morning comfortably. The
+      one who doesn't goes looking.</p>
+
+      <h4>You will make mistakes</h4>
+      <p>Not might. Will.</p>
+      <p>You'll hit buy instead of sell. Load five contracts instead of one. Fat-finger a stop. Everyone does,
+      including people who've been at this for years.</p>
+      <div class="callout">
+        <p style="margin:0 0 .6rem 0"><strong>The mistake isn't the problem. Repeating it is.</strong></p>
+        <ul style="margin:0">
+          <li>Log it properly, in the journal &mdash; not just mentally.</li>
+          <li>Work out what made it possible.</li>
+          <li>Change something so it's harder to do next time.</li>
+        </ul>
+      </div>
+      <p>That loop is the difference between a trader who improves and one who has the same year ten
+      times.</p>
+
+      <h4>Serious, not intense</h4>
+      <p>Treating it like a job doesn't mean grinding harder. It means showing up on time, doing the work, and
+      leaving.</p>
+      <p>Most people who fail at this aren't lazy. They're overcommitted &mdash; too many hours, too many
+      trades, too much of themselves in every one.</p>
+    `
+  },
+  {
+    id: 'journaling', section: 'running', title: 'Journaling', mins: 4,
+    body: `
+      <h4>Log it before you close the laptop</h4>
+      <p>Every day. Green, red, flat. Whether you feel like it or not.</p>
+      <p>The days you least want to write up are the ones worth writing up.</p>
+
+      <h4>Where matters less than whether</h4>
+      <ul>
+        <li><strong>The journal on the site</strong> &mdash; calendar view, filters by grade, imports your
+        broker CSV.</li>
+        <li><strong>Nexus</strong> &mdash; same idea, in the side panel next to your chart.</li>
+        <li><strong>Anything else.</strong> A spreadsheet, a notebook, another service. Plenty of good ones
+        exist.</li>
+      </ul>
+      <p>We built ours so it's already there and so it files by grade. But a spreadsheet you actually fill in
+      beats a better tool you don't.</p>
+
+      <h4>What to write down</h4>
+      <p>The numbers are the easy part &mdash; date, direction, entry, exit, contracts, grade.</p>
+      <p>The rest is what makes it worth doing:</p>
+      <ul>
+        <li><strong>What you took, and why.</strong></li>
+        <li><strong>Did you follow your rules?</strong> Yes or no. This is the important field.</li>
+        <li><strong>What went well.</strong> Not only what went wrong.</li>
+        <li><strong>What went badly.</strong> Honestly.</li>
+        <li><strong>How you felt.</strong> Rushed, hesitant, confident, bored. It's data &mdash; patterns show
+        up here long before they show up in the P&amp;L.</li>
+      </ul>
+
+      <h4>Following your rules is the win</h4>
+      <p>The part that takes longest to believe.</p>
+      <div class="callout">
+        <p style="margin:0"><strong>If you followed your rules, it was a good day. Win or lose.</strong></p>
+      </div>
+      <p>A trade taken correctly &mdash; right grade, right window, right size, confluences lined up, you felt
+      good about it &mdash; that lost, is still a trade you'd take again tomorrow. That's a win in the only
+      column that compounds.</p>
+      <p>And the reverse holds. A trade you took outside your rules that happened to pay is <strong>not</strong>
+      a win. It's a bad habit that just got rewarded, which is worse than one that got punished &mdash; you'll
+      do it again.</p>
+      <p>Judge the decision, not the outcome. You only control one of them.</p>
+      <p><strong>One caveat.</strong> This only works if the rules are worth following. "I followed my rules"
+      is no defence for rules invented on a bad Tuesday. That's why Chapter 1 asks you to test them
+      first.</p>
+
+      <h4>Don't get high on the wins</h4>
+      <p>Won? Good. Note it, take it, move on.</p>
+      <p>Confidence after a good run is exactly when sizes creep, rules get bent, and "just this once" turns
+      up. The market has a reliable way of finding people right about then.</p>
+      <p>Green days need journaling as much as red ones. Often more &mdash; that's where the habits that cost
+      you later get formed.</p>
+    `
+  },
+  {
+    id: 'backtesting', section: 'running', title: 'Backtesting', mins: 4,
+    body: `
+      <h4>This applies to any strategy</h4>
+      <p>Including ones that aren't ours.</p>
+      <p>If you're going to put money behind a set of rules, you should know how those rules behaved before
+      you did. True here and true everywhere else.</p>
+
+      <h4>What you're looking for</h4>
+      <p>Not "does it make money." That's the least useful question.</p>
+      <ul>
+        <li><strong>How does it behave?</strong> What the good stretches look like, what the bad ones look
+        like, how long each lasts.</li>
+        <li><strong>When does it struggle?</strong> Which conditions, which months, which kind of market.</li>
+        <li><strong>Why does it do what it does?</strong> A rule you can't explain is a rule you'll abandon
+        the first time it costs you.</li>
+      </ul>
+      <p>You're building the ability to recognise a <em>normal</em> bad patch. That's the point.</p>
+
+      <h4>Sample size</h4>
+      <p>A working minimum: <strong>100 to 200 trades, across two to three years.</strong></p>
+      <p>The years matter more than the trade count. Two to three gets you through different regimes &mdash;
+      trending, ranging, quiet, violent &mdash; and a system that only works in one of them will show you.</p>
+      <div class="callout-warn">
+        <p style="margin:0"><strong>One caveat.</strong> 100 trades is enough to see how something
+        <em>behaves</em>. It isn't enough to pin down its win rate. At a true 63%, a 100-trade sample can
+        easily print anywhere from the mid-50s to the low 70s on chance alone. Treat a small sample as a
+        description of behaviour, not proof of an edge &mdash; and be most suspicious of your own results when
+        the number looks great.</p>
+      </div>
+
+      <h4>How to do it</h4>
+      <ul>
+        <li><strong>TradingView bar replay.</strong> Free, manual, slow, and the most instructive.</li>
+        <li><strong>NinjaTrader Market Replay.</strong> Tick-level, if you want execution detail.</li>
+        <li><strong>Dedicated replay tools.</strong> Several good ones exist.</li>
+        <li><strong>The backtest workspace on the site.</strong> Import a CSV, get stats, an equity curve and
+        a calendar back.</li>
+      </ul>
+      <p>The manual ones are worth the time even though they're slower. <strong>Screen time is the thing
+      that's actually transferring.</strong> You start seeing the patterns before the indicator names
+      them.</p>
+
+      <h4>Stick to one instrument</h4>
+      <p>Learn one properly.</p>
+      <p>You can trade several eventually. But each has its own character &mdash; how it opens, how it moves,
+      what a normal range looks like &mdash; and that takes screen time to absorb. Split across three and you
+      know none of them well.</p>
+
+      <h4>The work is already partly done</h4>
+      <p>The backtest research on the site lays out seven years across every risk profile, broken down by
+      year, month, weekday, grade and drawdown.</p>
+      <p>Use it. Then do your own anyway. Reading someone else's data and building your own conviction are
+      different things, and only one of them holds up at 9am on a red morning.</p>
+    `
+  },
+  {
+    id: 'prop-accounts', section: 'running', title: 'Running prop accounts', mins: 4,
+    body: `
+      <h4>Why stacking suits a system like this</h4>
+      <ul>
+        <li>Per-account risk stays small. At the $250 profile there's very little on the table in any one
+        account.</li>
+        <li>The same signals run everywhere. You're not managing ten strategies &mdash; you're running one,
+        ten times.</li>
+        <li>Adding an account doesn't change the risk on the others.</li>
+      </ul>
+      <p>Scale comes from the number of accounts, not from sizing any single one up. That's the shape this
+      system fits.</p>
+
+      <h4>The part that gets glossed over</h4>
+      <div class="callout-warn">
+        <p style="margin:0 0 .6rem 0">Stacking is not diversification. <strong>It's leverage.</strong></p>
+        <p style="margin:0">Every account takes the same trades at the same moment. A losing streak doesn't
+        hit one account &mdash; it hits all of them, on the same mornings, in the same order.</p>
+      </div>
+      <p>Ten accounts running one system is one position, ten times over. Size for that, and don't mistake the
+      account count for spread risk.</p>
+
+      <h4>Before the open, every day</h4>
+      <ul>
+        <li><strong>Check every balance.</strong> Where does each account sit against its limit?</li>
+        <li><strong>Apply your protocol per account.</strong> They won't all be in the same state. One near
+        its line and one clear are two different sizes.</li>
+        <li><strong>Confirm they're in sync.</strong> If you're copying trades across accounts, check before
+        the open &mdash; not after a fill goes to nine of ten.</li>
+      </ul>
+
+      <h4>Know your own firm's rules</h4>
+      <p>Profit targets, drawdown type &mdash; trailing, static or end-of-day &mdash; and daily loss limits
+      all vary by firm, and they change. Whatever numbers you've seen quoted, including in this course, are
+      one firm's terms at one point in time.</p>
+      <p>Read yours. The rules that end an account are the ones worth knowing exactly.</p>
+    `
+  },
+  {
+    id: 'monthly-review', section: 'running', title: 'Your monthly review', mins: 4,
+    body: `
+      <p>Once a month, an hour. Not during a trading day.</p>
+
+      <h4>Ask them in this order</h4>
+      <p>P&amp;L last. On purpose.</p>
+      <ul>
+        <li><strong>Did I follow my rules?</strong> Count it from the journal &mdash; trades you took versus
+        trades the system validated.</li>
+        <li><strong>Did I trade my plan?</strong> Window, size, grades, daily stop.</li>
+        <li><strong>How did it feel?</strong> Rushed months and calm months look different in a journal long
+        before they look different in a P&amp;L.</li>
+        <li><strong>What does the grade breakdown say?</strong> Where the money came from, and where it
+        went.</li>
+        <li><strong>What was the P&amp;L?</strong></li>
+      </ul>
+
+      <h4>Then put the month in one of four boxes</h4>
+      <table>
+        <thead><tr><th></th><th>Followed the rules</th><th>Broke the rules</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Green</strong></td><td>Good month. Repeat it.</td><td>The dangerous one.</td></tr>
+          <tr><td><strong>Red</strong></td><td>Also a good month.</td><td>The one that needs work.</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li><strong>Green, followed the rules.</strong> Nothing to fix. Do it again.</li>
+        <li><strong>Red, followed the rules.</strong> Also a good month. You took the setups you were meant
+        to, at the size you meant to, and the market didn't pay this time. That's the 37%. Change
+        nothing.</li>
+        <li><strong>Green, broke the rules.</strong> The one to worry about. You got paid for something you
+        shouldn't have done, so you'll do it again &mdash; and the next one won't pay. A green month can hide
+        a worse process than a red one.</li>
+        <li><strong>Red, broke the rules.</strong> The only box that calls for action, and the action is about
+        you, not the system.</li>
+      </ul>
+
+      <h4>A red month doesn't make you a bad trader</h4>
+      <p>Worth saying plainly, because most people don't believe it.</p>
+      <p>You can take good setups all month and have them not work. That isn't a mistake, it's the
+      distribution. A trader who follows a tested plan through a red month is doing the job correctly.</p>
+      <p>The question was never <em>did I make money this month</em>. It's <em>did I do the thing that makes
+      money over time, and can I keep doing it</em>.</p>
+
+      <h4>When to actually change something</h4>
+      <p>Rarely. And almost never off one month.</p>
+      <ul>
+        <li><strong>One month isn't data.</strong> Fifteen or twenty trades tells you very little.</li>
+        <li><strong>A rule you broke isn't a rule that failed.</strong> Fix the following before you touch the
+        rule.</li>
+        <li><strong>If you do change something, change one thing,</strong> and give it enough months to mean
+        anything.</li>
+      </ul>
+      <p>The instinct after a red month is to adjust. Usually the right move is to run the same plan again and
+      add a month to your sample.</p>
+    `
+  },
+  {
+    id: 'your-morning', section: 'running', title: 'Your morning, start to finish', mins: 5,
+    body: `
+      <p>Everything from the chapters before this, in the order you actually do it.</p>
+
+      <h4>Before the open &mdash; read your rules</h4>
+      <p>Thirty seconds, before you're on the charts.</p>
+
+      <h4>Do your own analysis first</h4>
+      <p>The indicator will have an opinion. Form yours before you see it.</p>
+      <ul>
+        <li><strong>Top down.</strong> Start higher and work down to the timeframe you trade.</li>
+        <li>Whatever you use &mdash; levels, fundamentals, the wider market.</li>
+        <li><strong>Land on a bias before you look at the grade.</strong></li>
+      </ul>
+      <p><strong>Then compare.</strong> Does your read agree with the trend state or not?</p>
+      <ul>
+        <li><strong>Agree</strong> &mdash; nothing to think about. Trade the plan.</li>
+        <li><strong>Disagree</strong> &mdash; that's information, not a conflict to resolve. Sometimes you're
+        seeing something the higher timeframe hasn't caught yet. Sometimes you're talking yourself into a
+        trade. Knowing which is the skill.</li>
+        <li>Either way the system only takes what it validates. Your disagreement doesn't change what fires
+        &mdash; it changes how closely you're watching.</li>
+      </ul>
+      <p>Doing it the other way round &mdash; reading the grade, then forming an opinion &mdash; isn't
+      analysis. It's agreeing with a number.</p>
+
+      <h4>News &mdash; check it before anything else</h4>
+      <p>The system has no news filter. That's deliberate: it grades price structure and nothing else. Nobody
+      is watching the calendar for you.</p>
+      <p><strong>Where to look:</strong> Nexus, in the side panel next to your chart. Your member dashboard,
+      with impact filters. Or Forex Factory, free and probably already open.</p>
+      <p><strong>What you're looking for.</strong> Red folder events &mdash; high impact &mdash; anywhere near
+      the open, or near whatever window you trade.</p>
+      <ul>
+        <li><strong>Red folder at or just after the open.</strong> Consider standing down, or waiting ten to
+        fifteen minutes for the first reaction to settle.</li>
+        <li><strong>A breakout that fires just before a release.</strong> Know it's coming. That setup was
+        graded on price structure a release can invalidate in seconds.</li>
+        <li><strong>Nothing on the calendar.</strong> Trade the morning normally.</li>
+      </ul>
+      <div class="callout-warn">
+        <p style="margin:0"><strong>Check your prop firm's rules.</strong> Plenty of firms restrict or
+        prohibit trading around high-impact news and scheduled speeches, and a violation can cost the account
+        outright &mdash; far more than the trade was worth. Rules differ by firm and change. Read yours rather
+        than assuming.</p>
+      </div>
+
+      <h4>Review your accounts</h4>
+      <ul>
+        <li><strong>Check balances.</strong> Where does each account sit against its limit?</li>
+        <li><strong>Apply your drawdown protocol.</strong> Read the balance, act on the thresholds you already
+        wrote.</li>
+        <li><strong>Copy trading?</strong> Confirm the accounts are in sync before the open, not after.</li>
+      </ul>
+
+      <h4>Check your chart</h4>
+      <p>MNQ1!, B-ADJ off, ETH, 5-minute. Ten seconds.</p>
+
+      <h4>Read the trend state</h4>
+      <p>And look for <strong>[SHIFT?]</strong>. If it's showing, a state change is brewing on the 4-hour.
+      Doesn't change today's rules; changes what you expect next.</p>
+
+      <h4>8:30 to 8:45 &mdash; the range builds</h4>
+      <p>Nothing to do. Three candles form the range. The box is set when the 8:40 candle closes.</p>
+      <p>Don't pre-judge it. A range that looks too tight at 8:35 often isn't by 8:45.</p>
+
+      <h4>The breakout</h4>
+      <ul>
+        <li><strong>Wait for the 5-minute candle to close.</strong> Every time. The grade is provisional until
+        then and can move several letters.</li>
+        <li><strong>Read the letter.</strong> Quality.</li>
+        <li><strong>Read the candle colour.</strong> Validity. Coloured means the system is taking it. Not
+        coloured means it isn't.</li>
+        <li><strong>Read the reason line</strong> if it's blocked. It names which filter caught it.</li>
+      </ul>
+      <p>That's the whole read. Three things, in that order.</p>
+
+      <h4>In the trade</h4>
+      <p>Entry, stop and both targets were set before you were in. The work was done in the seconds before
+      entry &mdash; there's nothing to manage or improve once you're live.</p>
+
+      <h4>The clock</h4>
+      <ul>
+        <li><strong>12:45 CT</strong> &mdash; no new entries after this, whatever prints.</li>
+        <li><strong>15:30 CT</strong> &mdash; everything flattens. Around 11:50 on half-days; the script knows
+        the calendar.</li>
+      </ul>
+
+      <h4>When your window closes</h4>
+      <p>Close the platform.</p>
+
+      <h4>After the close</h4>
+      <p>Log it. Date, direction, entry, exit, contracts, grade &mdash; <strong>and whether you followed your
+      rules.</strong></p>
+      <div class="callout">
+        <p style="margin:0">That last field is what makes the monthly review possible. Without it you can only
+        ask <em>did I make money</em>. With it you can ask <em>did I make money because of my process or in
+        spite of it</em> &mdash; and those need opposite responses.</p>
+      </div>
+    `
+  }
 ];
 
 /* ---------------------------------------------------------------- RENDER */
