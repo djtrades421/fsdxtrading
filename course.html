@@ -542,9 +542,13 @@ const COURSE = [
       <p>TP2 works the same way against the higher requirement, and has to sit clear of TP1.</p>
 
       <div class="callout-warn">
-        <p style="margin:0"><strong>When the pool is empty.</strong> Some mornings nothing worthwhile sits in
-        range. Then it falls back to a multiple of the opening range. You still get a defined target &mdash;
-        it just came from the range rather than a level.</p>
+        <p style="margin:0 0 .6rem 0"><strong>When the pool is empty.</strong> Some mornings nothing
+        worthwhile sits in range. Then the target comes from the opening range itself: the system steps
+        outward from the range edge in tenths &mdash; 0.5R, 0.6R, 0.7R and so on up to 2R &mdash; and takes the
+        <em>first</em> one that clears your minimum distance without going past the 200-point cap.</p>
+        <p style="margin:0">That's why a fallback target is labelled something like <strong>0.8R ORB</strong>
+        rather than a round number. It's the nearest workable multiple, not a preset. You still get a defined
+        target &mdash; it just came from the range rather than a level.</p>
       </div>
       <p><strong>Nothing beyond 200 points is considered,</strong> however good it looks out there.</p>
     `
@@ -581,7 +585,7 @@ const COURSE = [
     `
   },
   {
-    id: 'dashboard', section: 'system', title: 'The dashboard', mins: 5,
+    id: 'dashboard', section: 'system', title: 'The dashboard', mins: 7,
     body: `
       <p>The trend state row is covered in <strong>The trend read</strong> &mdash; states, the closed-candle
       rule, and [SHIFT?]. This chapter is everything else on the panel.</p>
@@ -617,10 +621,54 @@ const COURSE = [
         you're reading a grade on a candle that hasn't closed.</p>
       </div>
 
+      <h4>The colour key</h4>
+
+      <p><strong>5D avg row.</strong> The colour is on the average, but it's telling you about
+      <em>today's</em> range &mdash; how close this morning is to the recent norm. Easy to misread.</p>
+      <ul>
+        <li><strong>Green</strong> &mdash; today's range is inside the ideal band around the average. Best
+        case.</li>
+        <li><strong>Yellow</strong> &mdash; outside the band, either smaller or larger. Still tradeable, and
+        it'll usually show up as <em>Weak: ORB size</em> in the reason line.</li>
+        <li><strong>Red</strong> &mdash; today is far bigger than normal. Rare, and a warning: your stop and
+        target both stretch with the range.</li>
+      </ul>
+
+      <p><strong>Vol row.</strong> The breakout candle against its recent average.</p>
+      <ul>
+        <li><strong>high</strong> &mdash; 1.7&times; or more. Lime.</li>
+        <li><strong>med-high</strong> &mdash; 1.5&times; and up. Faded lime.</li>
+        <li><strong>med</strong> &mdash; 0.5&times; and up. Yellow. Covers a wide span, so read the number
+        next to it, not just the colour.</li>
+        <li><strong>low</strong> &mdash; 0.3&times; and up. Orange.</li>
+        <li><strong>very low</strong> &mdash; under 0.3&times;. Red. Almost nobody showed up for that
+        move.</li>
+      </ul>
+
+      <p><strong>Grade colours</strong> match the candle: lime for A+ and A, green for B+ and B, yellow for
+      C+ and C, orange for D, red for F.</p>
+
+      <h4>The stop row tells you which leg won</h4>
+      <p>Next to the stop price you'll see a short tag:</p>
+      <ul>
+        <li><strong>struct</strong> &mdash; the structure leg set it. Price has been turning somewhere
+        specific.</li>
+        <li><strong>vol</strong> &mdash; the volatility leg set it. That's <em>volatility</em>, not volume.</li>
+        <li><strong>floor</strong> or <strong>cap</strong> &mdash; neither leg won. The stop hit the 75 or 175
+        rail and the clamp decided. A cap in particular is the system saying conditions were wider than it
+        wants to trade.</li>
+      </ul>
+
+      <h4>Before the breakout</h4>
+      <p>Until a breakout registers, the panel reads <strong>Waiting for breakout&hellip;</strong></p>
+      <p>One case is worth knowing. If price clears the range but sits the wrong side of VWAP, no breakout is
+      recorded at all &mdash; so there's no grade, no levels, and nothing to explain. The panel now says
+      <strong>&#9888; Wrong side of VWAP</strong> instead, because otherwise you'd be watching price trade
+      outside the box while the dashboard appeared to be doing nothing.</p>
+
       <h4>The rest of the panel</h4>
-      <p>Key levels (previous day high and low, weekly high and low), today's opening range size against its
-      recent average, the volume read, your entry, stop and both targets with their R multiples, and the
-      recommended contract count for your risk setting.</p>
+      <p>Key levels (previous day high and low, weekly high and low), your entry, stop and both targets with
+      their R multiples, and the recommended contract count for your risk setting.</p>
       <p>Everything on it is derived from the chapters above. Nothing on the dashboard is a separate opinion
       &mdash; it's the same decision, displayed.</p>
     `
