@@ -6,7 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Auto-Trader Setup Guide</title>
   <meta name="description" content="Complete setup guide for the FSD-X ORB Auto-Trader on TradingView — strategy settings, PickMyTrade connection, end-of-day flatten, demo testing and troubleshooting." />
-  <meta name="robots" content="noindex, follow" />
+  <meta name="robots" content="noindex, nofollow" />
+  <script>
+    // ── Auth gate — VIP members only, same pattern as the rest of the workspace.
+    //    Runs before the body renders so the content never flashes to a logged-out visitor.
+    (function () {
+      try {
+        if (!localStorage.getItem('fsdx_token')) { window.location.replace('login.html'); }
+      } catch (e) { window.location.replace('login.html'); }
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20260906"></script>
