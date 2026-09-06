@@ -350,8 +350,8 @@ const COURSE = [
 
 
       <div class="rounded-xl overflow-hidden border border-white/10 bg-black my-4">
-        <img src="ch-breakout-waiting.png" alt="Dashboard reading Waiting for breakout with no grade or levels shown" class="w-full" loading="lazy">
-        <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">All four conditions have to hold. Until they do, there is no breakout to grade &mdash; the panel just waits.</div>
+        <img src="ch-breakout-vwap-blocked.png" alt="Chart showing price above the opening range with the dashboard reading Wrong side of VWAP" class="w-full" loading="lazy">
+        <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">Price cleared the range &mdash; and it still isn't a breakout. VWAP was on the wrong side, so nothing was registered and there's nothing to grade.</div>
       </div>
       <h4>How the trigger resets</h4>
       <p>Once price <strong>closes back inside the range</strong>, the trigger clears and the system can take
@@ -754,6 +754,20 @@ const COURSE = [
 
       <h4>Before the breakout</h4>
       <p>Until a breakout registers, the panel reads <strong>Waiting for breakout&hellip;</strong></p>
+
+      <div class="grid sm:grid-cols-2 gap-3 my-4">
+      <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
+        <img src="ch-breakout-waiting.png" alt="Dashboard reading Waiting for breakout" class="w-full" loading="lazy">
+        <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">Before &mdash; no explanation.</div>
+      </div>
+
+      <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
+        <img src="ch-breakout-vwap-blocked.png" alt="Dashboard reading Wrong side of VWAP" class="w-full" loading="lazy">
+        <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">After &mdash; the same morning, now saying why.</div>
+      </div>
+
+      </div>
+      <p>Those are the same morning, the same bar. The panel used to leave you guessing.</p>
       <p>One case is worth knowing. If price clears the range but sits the wrong side of VWAP, no breakout is
       recorded at all &mdash; so there's no grade, no levels, and nothing to explain. The panel now says
       <strong>&#9888; Wrong side of VWAP</strong> instead, because otherwise you'd be watching price trade
