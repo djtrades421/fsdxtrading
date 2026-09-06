@@ -6,7 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Nexus 2.0 User Guide</title>
   <meta name="description" content="Complete guide to the FSD-X Nexus 2.0 Chrome extension — strategy optimizer, AI chart and news analysis, trade journal, backtest sessions, playbook and prop firm tools." />
-  <meta name="robots" content="noindex, follow" />
+  <meta name="robots" content="noindex, nofollow" />
+  <script>
+    // ── Auth gate — VIP members only, same pattern as the rest of the workspace.
+    //    Runs before the body renders so the content never flashes to a logged-out visitor.
+    (function () {
+      try {
+        if (!localStorage.getItem('fsdx_token')) { window.location.replace('login.html'); }
+      } catch (e) { window.location.replace('login.html'); }
+    })();
+  </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20260906"></script>
