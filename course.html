@@ -1075,12 +1075,74 @@ const COURSE = [
 /* ---------------------------------------------------------------- RENDER */
 
 const READ_KEY = 'fsdx_course_read';
-function readSet() {
-  try { return new Set(JSON.parse(localStorage.getItem(READ_KEY) || '[]')); }
-  catch (e) { return new Set(); }
+const API = 'https://nexus-validator.dfuentes4211.workers.dev';
+
+// Progress lives on the server so it follows you between devices. localStorage is
+// the offline cache — the page renders from it instantly, then reconciles.
+let READ = new Set();
+
+function authHeaders() {
+  const t = (function () { try { return localStorage.getItem('fsdx_token'); } catch (e) { return null; } })();
+  return t ? { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + t } : null;
 }
-function saveRead(set) {
+
+function readSet() { return READ; }
+
+function cacheRead(set) {
   try { localStorage.setItem(READ_KEY, JSON.stringify([...set])); } catch (e) {}
+}
+
+function loadCache() {
+  try { READ = new Set(JSON.parse(localStorage.getItem(READ_KEY) || '[]')); }
+  catch (e) { READ = new Set(); }
+}
+
+function saveRead(set) {
+  READ = set;
+  cacheRead(set);
+}
+
+// Pull the member's saved progress and re-render if it differs from the cache.
+async function syncProgress() {
+  const h = authHeaders();
+  if (!h) return;
+  try {
+    const r = await fetch(API + '/api/course', { headers: h });
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data || !Array.isArray(data.chapters)) return;
+    const server = new Set(data.chapters);
+    const changed = server.size !== READ.size || [...server].some((s) => !READ.has(s));
+    if (changed) { READ = server; cacheRead(READ); renderAll(); }
+  } catch (e) { /* offline — the cache stands */ }
+}
+
+// Push one mark. Fire-and-forget; the UI already updated.
+function pushMark(chapter, read) {
+  const h = authHeaders();
+  if (!h) return;
+  try {
+    fetch(API + '/api/course', {
+      method: 'POST', headers: h, keepalive: true,
+      body: JSON.stringify({ chapter: chapter, read: read })
+    }).catch(function () {});
+  } catch (e) {}
+}
+
+// Log one course open per browser session.
+function logOpen() {
+  const h = authHeaders();
+  if (!h) return;
+  try {
+    if (sessionStorage.getItem('fsdx_course_opened')) return;
+    sessionStorage.setItem('fsdx_course_opened', '1');
+  } catch (e) { /* private mode — logging an extra open is fine */ }
+  try {
+    fetch(API + '/api/course', {
+      method: 'POST', headers: h, keepalive: true,
+      body: JSON.stringify({ open: true })
+    }).catch(function () {});
+  } catch (e) {}
 }
 
 function renderContents() {
@@ -1172,10 +1234,12 @@ function renderChapters() {
 
   wrap.querySelectorAll('[data-mark]').forEach(btn => {
     btn.addEventListener('click', () => {
-      const set = readSet();
+      const set = new Set(readSet());
       const id = btn.getAttribute('data-mark');
-      set.has(id) ? set.delete(id) : set.add(id);
+      const nowRead = !set.has(id);
+      nowRead ? set.add(id) : set.delete(id);
       saveRead(set);
+      pushMark(id, nowRead);
       renderAll();
     });
   });
@@ -1211,7 +1275,11 @@ function renderStats() {
 }
 
 function renderAll() { renderWatchBanner(); renderContents(); renderChapters(); renderStats(); }
+
+loadCache();
 renderAll();
+syncProgress();
+logOpen();
 </script>
 </body>
 </html>
