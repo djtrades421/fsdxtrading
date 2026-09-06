@@ -583,14 +583,17 @@
       el('se-wk').innerHTML=bars(Object.entries(s.week).map(([k,v])=>[k,v.avg,v.n+' trades']),'bg-emerald-400',F);
       const H=s.heat, yrs=[...new Set(Object.keys(H).map(k=>k.split('-')[0]))].sort();
       const mx=Math.max(...Object.values(H).map(Math.abs))||1;
-      let g='<div class="grid gap-[3px] text-[9.5px] min-w-[720px]" style="grid-template-columns:46px repeat(12,1fr)"><div></div>'+
-        MON.map(m=>'<div class="text-center text-zinc-600 font-black py-1">'+m+'</div>').join('');
-      for(const y of yrs){ g+='<div class="text-zinc-500 font-black flex items-center">'+y+'</div>';
+      // Full dollar amounts, not abbreviated — and the sans stack rather than mono,
+      // which is hard to read at this size. tabular-nums keeps the columns aligned.
+      const NUM='tabular-nums';
+      let g='<div class="grid gap-[3px] text-[10.5px] min-w-[900px]" style="grid-template-columns:52px repeat(12,1fr)"><div></div>'+
+        MON.map(m=>'<div class="text-center text-zinc-500 font-bold py-1 tracking-wide">'+m+'</div>').join('');
+      for(const y of yrs){ g+='<div class="text-zinc-400 font-bold flex items-center '+NUM+'">'+y+'</div>';
         for(let m=1;m<=12;m++){ const k=y+'-'+String(m).padStart(2,'0'), v=H[k];
-          if(v===undefined){ g+='<div class="py-1.5 text-center rounded '+M+' text-zinc-800" style="background:rgba(255,255,255,.02)">\u00b7</div>'; }
+          if(v===undefined){ g+='<div class="py-2 text-center rounded text-zinc-700" style="background:rgba(255,255,255,.02)">\u00b7</div>'; }
           else { const a=(0.10+0.45*Math.abs(v)/mx).toFixed(2);
-            g+='<div class="py-1.5 text-center rounded font-bold '+M+'" style="background:'+(v>=0?'rgba(52,211,153,':'rgba(248,113,113,')+a+');color:'+
-              (v>=0?'#a7f3d0':'#fecaca')+'">'+(v>=0?'':'-')+(Math.abs(v)/1000).toFixed(1)+'k</div>'; } } }
+            g+='<div class="py-2 text-center rounded font-semibold '+NUM+'" style="background:'+(v>=0?'rgba(52,211,153,':'rgba(248,113,113,')+a+');color:'+
+              (v>=0?'#a7f3d0':'#fecaca')+'">'+f0(v)+'</div>'; } } }
       el('se-heat').innerHTML=g+'</div>';
     }
 
