@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — The Knightfall Course</title>
+  <meta name="description" content="The full Knightfall course — building a trading plan, running the system, and the habits that make it work." />
+  <meta name="robots" content="noindex, nofollow" />
+  <script>
+    // ── Auth gate — VIP members only, same pattern as the rest of the workspace.
+    //    Runs before the body renders so the content never flashes to a logged-out visitor.
+    (function () {
+      try {
+        if (!localStorage.getItem('fsdx_token')) { window.location.replace('login.html'); }
+      } catch (e) { window.location.replace('login.html'); }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20260906"></script>
+  <script src="fsdx-account.js"></script>
+  <script src="alerts.js?v=20260901"></script>
+  <style>
+    body { background-color: #000; }
+    html { scroll-behavior: smooth; }
+    section[id] { scroll-margin-top: 90px; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .ch-num { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:8px; background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.28); font-size:11px; font-weight:900; color:#22c55e; flex-shrink:0; font-variant-numeric: tabular-nums; }
+    .toc a.active { color:#22c55e; }
+    .prose-fsdx p { margin: 0 0 0.9rem 0; line-height: 1.7; }
+    .prose-fsdx ul { margin: 0 0 1rem 0; padding-left: 0; list-style: none; }
+    .prose-fsdx li { position: relative; padding-left: 1.1rem; margin-bottom: 0.5rem; line-height: 1.65; }
+    .prose-fsdx li::before { content:""; position:absolute; left:0; top:0.62rem; width:5px; height:5px; border-radius:999px; background:rgba(34,197,94,0.55); }
+    .prose-fsdx h4 { font-weight:800; color:#fff; margin: 1.4rem 0 0.55rem 0; font-size: 0.9rem; }
+    .prose-fsdx strong { color:#fff; font-weight:700; }
+    .prose-fsdx table { width:100%; border-collapse:collapse; margin: 0.5rem 0 1rem 0; font-size:0.8rem; }
+    .prose-fsdx th { text-align:left; font-weight:800; color:#a1a1aa; padding:0.5rem 0.75rem; border-bottom:1px solid rgba(255,255,255,0.1); font-size:0.7rem; text-transform:uppercase; letter-spacing:0.05em; }
+    .prose-fsdx td { padding:0.55rem 0.75rem; border-bottom:1px solid rgba(255,255,255,0.05); color:#d4d4d8; font-variant-numeric: tabular-nums; }
+    .callout { border:1px solid rgba(34,197,94,0.22); background:rgba(34,197,94,0.05); border-radius:14px; padding:1rem 1.15rem; margin:1.1rem 0; }
+    .callout-warn { border:1px solid rgba(255,255,255,0.1); background:rgba(255,255,255,0.02); border-radius:14px; padding:1rem 1.15rem; margin:1.1rem 0; }
+    details > summary { list-style:none; cursor:pointer; }
+    details > summary::-webkit-details-marker { display:none; }
+    details[open] .chev { transform: rotate(90deg); }
+    .chev { transition: transform .15s; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <!-- ═══ Page header ═══ -->
+    <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 py-5">
+      <div class="max-w-5xl mx-auto flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+          <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+        </div>
+        <div>
+          <h1 class="text-lg font-black text-white leading-tight">The Knightfall Course</h1>
+          <p class="text-zinc-500 text-xs">Building a plan, running the system, and the habits that make it work</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 px-6 md:px-10 py-8">
+      <div class="max-w-5xl mx-auto">
+
+        <!-- ═══ Intro + stats ═══ -->
+        <div class="mb-10">
+          <p class="text-zinc-400 text-sm leading-relaxed max-w-3xl">
+            Everything from writing a trading plan through to reviewing your month. Each chapter is short
+            and stands on its own, so you can work straight through or jump to what you need.
+            <span class="text-zinc-300">Already know the indicator and just want the reference?</span>
+            Start at the Part 1 section.
+          </p>
+          <div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div class="border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
+              <div class="text-green-400 text-lg font-black tabular-nums" id="stat-chapters">—</div>
+              <div class="text-zinc-500 text-[10px] uppercase tracking-wider font-bold mt-0.5">Chapters</div>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
+              <div class="text-green-400 text-lg font-black tabular-nums" id="stat-runtime">—</div>
+              <div class="text-zinc-500 text-[10px] uppercase tracking-wider font-bold mt-0.5">Total runtime</div>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
+              <div class="text-green-400 text-lg font-black tabular-nums" id="stat-sections">—</div>
+              <div class="text-zinc-500 text-[10px] uppercase tracking-wider font-bold mt-0.5">Sections</div>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3">
+              <div class="text-green-400 text-lg font-black tabular-nums" id="stat-progress">—</div>
+              <div class="text-zinc-500 text-[10px] uppercase tracking-wider font-bold mt-0.5">You've read</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ Contents — rendered ═══ -->
+        <div id="contents" class="mb-14"></div>
+
+        <!-- ═══ Chapters — rendered ═══ -->
+        <div id="chapters"></div>
+
+        <!-- ═══ Footer CTA ═══ -->
+        <div class="mt-16 border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+          <div class="text-white font-bold text-sm mb-1">Questions as you work through it?</div>
+          <p class="text-zinc-400 text-xs leading-relaxed mb-4">
+            Bring them to the live room at 8:30 AM CT, or open a ticket in Discord. The monthly one-on-one
+            is the place for anything about your own journal and grading.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <a href="how-to.html" class="px-4 py-2 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-300 transition">How-To Guide &rarr;</a>
+            <a href="playbook.html" class="px-4 py-2 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-300 transition">Your Playbook &rarr;</a>
+            <a href="results.html" class="px-4 py-2 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-300 transition">Backtest Research &rarr;</a>
+          </div>
+        </div>
+
+        <div class="mt-10 text-[11px] text-zinc-600 leading-relaxed border border-white/5 bg-zinc-950/40 rounded-xl px-4 py-3">
+          Educational content only. Any trades or figures shown are illustrative and should not be expected to be
+          replicated in a live trading account. Futures trading involves substantial risk of loss and is not suitable
+          for every investor. Past performance is not necessarily indicative of future results.
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+<script>
+/* ============================================================================
+   THE COURSE
+   ----------------------------------------------------------------------------
+   To add a chapter: drop a new object into COURSE below. Everything else —
+   the contents list, the numbering, the runtime total, the progress counter —
+   is derived from this array. Nothing else in the file needs touching.
+
+     { id, section, title, mins, video, body }
+
+     id      unique slug, becomes the anchor (#ch-your-rules)
+     section which part it belongs to (must match a SECTIONS key)
+     title   chapter title
+     mins    runtime estimate, used for the total
+     video   YouTube/Vimeo embed URL, or null for "coming soon"
+     body    HTML string — the chapter copy
+
+   To add a whole new section: add a key to SECTIONS and use it on a chapter.
+   ========================================================================= */
+
+const SECTIONS = {
+  before:  { label: 'Before you trade', blurb: 'Decide these before you open a chart.' },
+  system:  { label: 'Part 1 — The system', blurb: 'How Knightfall works and how to read it.' },
+  running: { label: 'Part 2 — Running it', blurb: 'The habits that make the system worth having.' }
+};
+
+const COURSE = [
+
+  /* ---------------------------------------------------------------- BEFORE */
+  {
+    id: 'your-rules', section: 'before', title: 'Your rules and your trading plan', mins: 4, video: null,
+    body: `
+      <p>Before anything else: write down what you will and won't do. Then do that.</p>
+      <p>Not because rules are virtuous. Because the alternative is deciding under pressure, and nobody
+      decides well at 8:35 with money on the line.</p>
+
+      <h4>What a set of rules covers</h4>
+      <ul>
+        <li><strong>One strategy.</strong> Not necessarily one setup — but one system, run properly. Three at
+        once means none gets a fair sample, and you'll never learn which was working.</li>
+        <li><strong>Your window.</strong> The hours you trade. Write the times down.</li>
+        <li><strong>What you take.</strong> Which grades. Whether you take setups the system passed on.</li>
+        <li><strong>Your size.</strong> The risk profile, decided in advance. You'll fill this one in properly
+        in the drawdown protocol chapter, once you've seen how the system sizes.</li>
+        <li><strong>When you stop.</strong> Daily loss. Number of trades. What ends the day early.</li>
+      </ul>
+
+      <h4>The window rule is the one people break</h4>
+      <p>If your plan says you trade the open and you're finished at ten, then you're finished at ten.</p>
+      <div class="callout">
+        <p style="margin:0"><strong>There will always be another setup.</strong> That's the point — the market
+        opens again tomorrow. A trade you took outside your window because it looked good isn't part of the
+        system you tested, and it doesn't belong in the same P&amp;L.</p>
+      </div>
+
+      <h4>Rules you've actually tested</h4>
+      <p>A rule you invented on a bad Tuesday isn't a rule. It's a reaction.</p>
+      <p>Whatever you write down should come from something you looked at — the backtest research, your own
+      journal, your own testing sessions.</p>
+
+      <h4>Where to keep them</h4>
+      <ul>
+        <li><strong>The playbook on the site.</strong> Built for exactly this — rules, checklist, goals, in the
+        same place you're already logging trades.</li>
+        <li><strong>A notepad, a sticky note, a text file.</strong> Fine. What matters is that they exist in
+        writing and you can see them.</li>
+      </ul>
+      <p>The wrong answer is in your head. Rules in your head get renegotiated.</p>
+
+      <h4>Read them before the open</h4>
+      <p>First thing, before you're on the charts. Thirty seconds. You're not learning them — you're reminding
+      yourself what today looks like before the market gets a chance to suggest otherwise.</p>
+    `
+  },
+  {
+    id: 'what-to-expect', section: 'before', title: 'What to expect', mins: 6, video: null,
+    body: `
+      <p>Three scales. The career, the months, the trades. Same message at each.</p>
+
+      <h4>This takes time</h4>
+      <p>Trading is not a skill you pick up in a few months. It's genuinely difficult, and the statistics are
+      against you — most people who try it lose money. That isn't a marketing angle, it's the baseline you're
+      working against.</p>
+      <p>What separates people who improve from people who don't isn't talent. It's staying at it long enough
+      to learn something, and being honest enough to notice what isn't working.</p>
+      <p><strong>There's no standard timeline.</strong> Some people find their footing in six months. For others
+      it's a year, three years, five. That range isn't a measure of ability — it's screen time, temperament,
+      how much you had to unlearn, and how much time you can actually give it.</p>
+
+      <h4>And the months won't line up either</h4>
+      <p>There's no version of this where every month is green. Not with this system, not with any system.</p>
+      <ul>
+        <li>Some green months</li>
+        <li>Some flat ones, where you traded well and finished roughly where you started</li>
+        <li>Some red ones</li>
+        <li>And it is entirely possible to have a flat year. Or a red one.</li>
+      </ul>
+      <p>That's not failure. That's the range.</p>
+
+      <div class="callout-warn">
+        <p style="margin:0"><strong>The payout mindset is the trap.</strong> If your plan quietly assumes a
+        payout every month, then one flat month breaks the plan — and a broken plan is when people start forcing
+        trades to make the number work. Expecting payout after payout isn't optimism. It's a sizing error.</p>
+      </div>
+
+      <h4>What a win rate actually feels like</h4>
+      <p>Take a strategy that wins <strong>63%</strong> of the time. Any strategy — it doesn't matter which.</p>
+      <p>That sounds comfortable, right up until you turn it around: <strong>37 trades out of every 100
+      lose.</strong> Close to four in ten. And losses don't spread themselves evenly. They cluster.</p>
+      <p>At a 63% win rate, four losses in a row has roughly a <strong>2% chance</strong> at any given point.
+      That sounds rare. Over a year of trading it isn't — it will happen, more than once, and it will feel like
+      the system has stopped working.</p>
+      <p>It hasn't. That <em>is</em> the system. A 63% win rate and a run of four losers are the same fact
+      described two ways.</p>
+
+      <h4>The backtest number is not your budget</h4>
+      <ul>
+        <li><strong>It's the worst so far, not the worst possible.</strong> Nothing obliges the next one to be
+        shallower.</li>
+        <li><strong>It says nothing about your account.</strong> The same drawdown is survivable on one account
+        and fatal on another.</li>
+      </ul>
+      <p>Your sizing comes from what you can afford to lose. Not from what the strategy did.</p>
+
+      <h4>It's a grind, and it isn't for everybody</h4>
+      <p>Most of what this returns comes from doing an unremarkable thing repeatedly and not blowing up in
+      between. That doesn't suit everyone. <strong>That's a fit question, not a failure.</strong> Better to find
+      out now than $1,500 into a drawdown.</p>
+    `
+  },
+
+  /* ---------------------------------------------------------------- SYSTEM */
+  {
+    id: 'chart-setup', section: 'system', title: 'Get the chart right', mins: 2, video: null,
+    body: `
+      <p>Four settings. Wrong on any one and your levels won't match the backtest or anyone else in the room.
+      These are the same settings the Auto-Trader needs — same logic underneath, same chart required.</p>
+      <ul>
+        <li><strong>Symbol — <span class="text-white">MNQ1!</span></strong> The continuous front month. Not
+        MNQU6, not plain MNQ. It carries full price history and follows the roll on its own.</li>
+        <li><strong>B-ADJ — off.</strong> Bottom-right toolbar. Button flat, not highlighted. Back-adjustment
+        shifts historical prices; the opening range is built from real traded ones.</li>
+        <li><strong>Session — ETH.</strong> Not RTH. RTH starts the range in a different place.</li>
+        <li><strong>Timeframe — 5 minutes.</strong> The range is 15 minutes long — the first three candles.
+        It's set when the 8:40 candle closes.</li>
+      </ul>
+      <p><strong>Your clock doesn't matter.</strong> 8:30 CT is hard-anchored inside the script. It converts for
+      you. Leave the chart on whatever you find readable.</p>
+      <div class="callout">
+        <p style="margin:0"><strong>Levels not matching other members?</strong> It's B-ADJ or the session
+        setting. Nearly every time.</p>
+      </div>
+      <h4>Before moving on</h4>
+      <p>MNQ1! &middot; B-ADJ off &middot; ETH &middot; 5m &middot; box draws after 8:40 CT.</p>
+      <p>If the box doesn't draw, work back through those five before touching anything in the indicator
+      settings. It's almost never the indicator.</p>
+      <div class="callout-warn">
+        <p style="margin:0"><strong>If you're brand new:</strong> the system needs about six weeks of session
+        history stored before it will take a trade. On a fresh chart it will draw the boxes and grade the setups,
+        but it won't enter. That's expected, not a fault.</p>
+      </div>
+    `
+  },
+  { id: 'what-its-doing', section: 'system', title: 'What the system is doing', mins: 1, video: null, body: null },
+  { id: 'breakout',       section: 'system', title: 'What counts as a breakout', mins: 2, video: null, body: null },
+  { id: 'trend-read',     section: 'system', title: 'The trend read', mins: 4, video: null, body: null },
+  { id: 'reading-grade',  section: 'system', title: 'Reading the grade', mins: 5, video: null, body: null },
+  { id: 'keeps-you-out',  section: 'system', title: 'What keeps you out', mins: 4, video: null, body: null },
+  { id: 'stop-target',    section: 'system', title: 'Stop and target', mins: 5, video: null, body: null },
+  { id: 'sizing',         section: 'system', title: 'Sizing', mins: 3, video: null, body: null },
+  { id: 'dashboard',      section: 'system', title: 'The dashboard', mins: 5, video: null, body: null },
+
+  /* --------------------------------------------------------------- RUNNING */
+  { id: 'risk-profile',   section: 'running', title: 'Your risk profile and drawdown protocol', mins: 5, video: null, body: null },
+  { id: 'like-a-job',     section: 'running', title: 'Treat it like a job', mins: 4, video: null, body: null },
+  { id: 'journaling',     section: 'running', title: 'Journaling', mins: 4, video: null, body: null },
+  { id: 'backtesting',    section: 'running', title: 'Backtesting', mins: 4, video: null, body: null },
+  { id: 'prop-accounts',  section: 'running', title: 'Running prop accounts', mins: 4, video: null, body: null },
+  { id: 'monthly-review', section: 'running', title: 'Your monthly review', mins: 4, video: null, body: null },
+  { id: 'your-morning',   section: 'running', title: 'Your morning, start to finish', mins: 5, video: null, body: null }
+];
+
+/* ---------------------------------------------------------------- RENDER */
+
+const READ_KEY = 'fsdx_course_read';
+function readSet() {
+  try { return new Set(JSON.parse(localStorage.getItem(READ_KEY) || '[]')); }
+  catch (e) { return new Set(); }
+}
+function saveRead(set) {
+  try { localStorage.setItem(READ_KEY, JSON.stringify([...set])); } catch (e) {}
+}
+
+function renderContents() {
+  const read = readSet();
+  const wrap = document.getElementById('contents');
+  let html = '';
+  Object.keys(SECTIONS).forEach(key => {
+    const chapters = COURSE.filter(c => c.section === key);
+    if (!chapters.length) return;
+    const s = SECTIONS[key];
+    html += `
+      <div class="mb-8">
+        <div class="flex items-baseline gap-3 mb-1">
+          <div class="text-green-400 uppercase tracking-[0.25em] text-[10px] font-bold">${s.label}</div>
+          <div class="h-px flex-1 bg-white/10"></div>
+        </div>
+        <p class="text-zinc-500 text-xs mb-4">${s.blurb}</p>
+        <div class="grid sm:grid-cols-2 gap-2.5">`;
+    chapters.forEach(c => {
+      const n = COURSE.indexOf(c) + 1;
+      const done = read.has(c.id);
+      const ready = !!c.body;
+      html += `
+          <a href="#ch-${c.id}" class="group flex items-center gap-3 border border-white/10 bg-zinc-950/60 hover:border-green-500/30 rounded-xl px-4 py-3 transition">
+            <span class="ch-num">${n}</span>
+            <span class="flex-1 min-w-0">
+              <span class="block text-sm font-bold ${ready ? 'text-white group-hover:text-green-400' : 'text-zinc-500'} transition truncate">${c.title}</span>
+              <span class="block text-[10px] text-zinc-600 uppercase tracking-wider font-bold mt-0.5">
+                ${c.mins} min${ready ? '' : ' &middot; coming soon'}
+              </span>
+            </span>
+            ${done ? '<span class="text-green-400 text-xs">&#10003;</span>' : ''}
+          </a>`;
+    });
+    html += `</div></div>`;
+  });
+  wrap.innerHTML = html;
+}
+
+function renderChapters() {
+  const read = readSet();
+  const wrap = document.getElementById('chapters');
+  let html = '';
+  let lastSection = null;
+  COURSE.forEach((c, i) => {
+    const n = i + 1;
+    if (c.section !== lastSection) {
+      lastSection = c.section;
+      html += `
+        <div class="mt-14 mb-8 first:mt-0">
+          <div class="text-green-400 uppercase tracking-[0.25em] text-[10px] font-bold mb-2">${SECTIONS[c.section].label}</div>
+          <div class="h-px w-full bg-white/10"></div>
+        </div>`;
+    }
+    if (!c.body) {
+      html += `
+        <section id="ch-${c.id}" class="mb-4">
+          <div class="flex items-center gap-3 border border-dashed border-white/10 bg-zinc-950/30 rounded-2xl px-5 py-4">
+            <span class="ch-num" style="opacity:.5">${n}</span>
+            <div class="flex-1">
+              <div class="text-sm font-bold text-zinc-500">${c.title}</div>
+              <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mt-0.5">${c.mins} min &middot; coming soon</div>
+            </div>
+          </div>
+        </section>`;
+      return;
+    }
+    const done = read.has(c.id);
+    html += `
+      <section id="ch-${c.id}" class="mb-10 border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+        <div class="px-5 sm:px-7 py-5 border-b border-white/5 flex items-start gap-3">
+          <span class="ch-num mt-0.5">${n}</span>
+          <div class="flex-1 min-w-0">
+            <h2 class="text-lg font-black text-white leading-tight">${c.title}</h2>
+            <div class="text-[10px] text-zinc-600 uppercase tracking-wider font-bold mt-1">${c.mins} min read</div>
+          </div>
+          <button data-mark="${c.id}"
+            class="shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-bold border transition ${done
+              ? 'bg-green-500/10 border-green-500/30 text-green-400'
+              : 'bg-zinc-900 border-white/10 text-zinc-400 hover:border-green-500/30 hover:text-green-400'}">
+            ${done ? '&#10003; Read' : 'Mark read'}
+          </button>
+        </div>
+
+        ${c.video ? `
+        <div class="px-5 sm:px-7 pt-5">
+          <div class="rounded-xl overflow-hidden border border-white/10 bg-black aspect-video">
+            <iframe src="${c.video}" class="w-full h-full" frameborder="0" allowfullscreen loading="lazy"></iframe>
+          </div>
+        </div>` : `
+        <div class="px-5 sm:px-7 pt-5">
+          <div class="rounded-xl border border-dashed border-white/10 bg-black/40 aspect-video flex flex-col items-center justify-center gap-2">
+            <svg class="w-8 h-8 text-zinc-700" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/></svg>
+            <div class="text-zinc-600 text-xs font-bold uppercase tracking-wider">Video coming soon</div>
+          </div>
+        </div>`}
+
+        <div class="px-5 sm:px-7 py-6 prose-fsdx text-sm text-zinc-400">${c.body}</div>
+      </section>`;
+  });
+  wrap.innerHTML = html;
+
+  wrap.querySelectorAll('[data-mark]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const set = readSet();
+      const id = btn.getAttribute('data-mark');
+      set.has(id) ? set.delete(id) : set.add(id);
+      saveRead(set);
+      renderAll();
+    });
+  });
+}
+
+function renderStats() {
+  const read = readSet();
+  const total = COURSE.reduce((a, c) => a + (c.mins || 0), 0);
+  const h = Math.floor(total / 60), m = total % 60;
+  document.getElementById('stat-chapters').textContent = COURSE.length;
+  document.getElementById('stat-runtime').textContent = h ? `${h}h ${m}m` : `${m}m`;
+  document.getElementById('stat-sections').textContent = Object.keys(SECTIONS).length;
+  document.getElementById('stat-progress').textContent = `${read.size}/${COURSE.length}`;
+}
+
+function renderAll() { renderContents(); renderChapters(); renderStats(); }
+renderAll();
+</script>
+</body>
+</html>
