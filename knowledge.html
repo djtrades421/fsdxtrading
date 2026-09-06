@@ -5,14 +5,14 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X Knowledge Base — Setup & Training</title>
-  <meta name="description" content="Tutorials, calibration settings, and setup guides for FSD-X ORB PRO on NQ/MNQ. Everything you need to get the system running correctly." />
+  <meta name="description" content="Video tutorials and setup guides for FSD-X ORB PRO on NQ/MNQ. Everything you need to get the system running correctly." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="FSD-X Knowledge Base — Setup & Training" />
-  <meta property="og:description" content="Tutorials, calibration settings, and setup guides for FSD-X ORB PRO on NQ/MNQ. Everything you need to get the system running correctly." />
+  <meta property="og:description" content="Video tutorials and setup guides for FSD-X ORB PRO on NQ/MNQ. Everything you need to get the system running correctly." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="FSD-X Knowledge Base — Setup & Training" />
-  <meta name="twitter:description" content="Tutorials, calibration settings, and setup guides for FSD-X ORB PRO on NQ/MNQ. Everything you need to get the system running correctly." />
+  <meta name="twitter:description" content="Video tutorials and setup guides for FSD-X ORB PRO on NQ/MNQ. Everything you need to get the system running correctly." />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
@@ -47,11 +47,11 @@
   "@type": "ItemList",
   "@id": "https://www.fsdxtrading.com/knowledge.html#library",
   "name": "FSD-X Setup & Training Library",
-  "description": "Setup, calibration and live-usage training for the FSD-X suite, included with the membership. Educational content only — any trades shown are illustrative and should not be expected to be replicated in a live trading account.",
+  "description": "Setup and live-usage video training for the FSD-X suite, included with the membership. Educational content only — any trades shown are illustrative and should not be expected to be replicated in a live trading account.",
   "about": {
     "@id": "https://www.fsdxtrading.com/#membership"
   },
-  "numberOfItems": 5,
+  "numberOfItems": 4,
   "itemListElement": [
     {
       "@type": "ListItem",
@@ -67,16 +67,11 @@
     {
       "@type": "ListItem",
       "position": 3,
-      "name": "Default calibration settings reference — recommended baseline values for NQ/MNQ on the 5-minute chart, with the reason each one matters"
-    },
-    {
-      "@type": "ListItem",
-      "position": 4,
       "name": "ORB Playbook cheat sheet — execution rules and grade criteria"
     },
     {
       "@type": "ListItem",
-      "position": 5,
+      "position": 4,
       "name": "Nexus 2.0 Chrome extension install and license-key guide"
     }
   ]
@@ -102,11 +97,10 @@
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Setup & Training</div>
           <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">Knowledge Base</h1>
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
-            Everything you need to set up, calibrate, and run the FSD-X suite correctly. Start with the videos, then reference the settings table before going live.
+            Video walkthroughs for setting up and running the FSD-X suite correctly. Start here, then grab the downloads below.
           </p>
           <div class="mt-6 flex flex-wrap gap-2">
             <a href="#videos" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Tutorials & Walkthroughs</a>
-            <a href="#settings" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Default Settings</a>
             <a href="#downloads" class="px-3 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/40 hover:text-green-400 rounded-lg text-xs text-zinc-400 transition">Downloads & Extensions</a>
           </div>
         </div>
@@ -124,61 +118,6 @@
             ⚠ Videos are for educational purposes only. Any trades shown are presented for illustrative purposes and should not be expected to be replicated in a live trading account. Futures trading involves substantial risk of loss. Past performance is not necessarily indicative of future results.
           </div>
           <div id="video-grid-container" class="grid sm:grid-cols-2 gap-6"></div>
-        </div>
-      </section>
-
-      <!-- SETTINGS TABLE -->
-      <section id="settings" class="py-12 md:py-16 px-6 md:px-12 border-b border-white/5">
-        <div class="max-w-5xl mx-auto">
-          <div class="mb-6">
-            <h2 class="text-lg font-black text-white">Default Calibration Settings</h2>
-            <p class="text-zinc-500 text-xs mt-1">Recommended baseline settings for NQ/MNQ on the 5-minute timeframe. Find these in the FSD-X ORB PRO indicator settings panel on TradingView.</p>
-          </div>
-          <div class="border border-white/10 rounded-2xl overflow-hidden bg-zinc-950/40">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse min-w-[580px]">
-                <thead>
-                  <tr class="border-b border-white/10 bg-zinc-950 text-zinc-500 text-xs uppercase tracking-wider">
-                    <th class="py-4 px-6 font-semibold">Setting</th>
-                    <th class="py-4 px-6 font-semibold">Recommended Value</th>
-                    <th class="py-4 px-6 font-semibold">Why It Matters</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-white/5">
-                  <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white text-sm">ORB Start Time</td>
-                    <td class="py-4 px-6 text-green-400 text-sm font-bold">8:30 AM CT</td>
-                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">Hard-anchored to Central Time in the source code. Keep this at 8:30 regardless of your local chart timezone — the indicator handles the conversion automatically.</td>
-                  </tr>
-                  <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white text-sm">VWAP Alignment Filter</td>
-                    <td class="py-4 px-6 text-zinc-300 text-sm font-bold">ON (Strict)</td>
-                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">Breakouts are ignored if price isn't on the correct side of VWAP. This is a core quality filter — leaving it on keeps you aligned with session flow.</td>
-                  </tr>
-                  <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white text-sm">Realistic Trade Tracking</td>
-                    <td class="py-4 px-6 text-zinc-300 text-sm font-bold">ON</td>
-                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">Prevents inflated win rate stats. The dashboard won't log a second trade until the first one resolves at TP or SL — keeps your data honest.</td>
-                  </tr>
-                  <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white text-sm">Stop Loss Range</td>
-                    <td class="py-4 px-6 text-green-400 text-sm font-bold">75 Min / 175 Max pts</td>
-                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">The hybrid SL engine uses both structure and ATR to size stops. These bounds act as safety rails — stops won't go tighter than 75 pts or wider than 175 pts.</td>
-                  </tr>
-                  <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white text-sm">Minimum ORB Filter</td>
-                    <td class="py-4 px-6 text-zinc-300 text-sm font-bold">45 pts</td>
-                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">Skips setups when the opening range is too tight to produce meaningful breakouts. Anything below 45 points on MNQ typically produces false signals.</td>
-                  </tr>
-                  <tr class="hover:bg-white/[0.02] transition">
-                    <td class="py-4 px-6 font-bold text-white text-sm">Min Grade to Trade</td>
-                    <td class="py-4 px-6 text-zinc-300 text-sm font-bold">C or better</td>
-                    <td class="py-4 px-6 text-zinc-400 text-xs leading-relaxed">The grading system scores each setup A+ through F. For best results focus on A+/A/B+ trades. C and above is the minimum threshold to consider entering.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
         </div>
       </section>
 
