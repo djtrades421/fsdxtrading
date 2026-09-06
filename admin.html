@@ -1133,6 +1133,15 @@
             <div id="traffic-pages" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
           </div>
         </div>
+
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 mt-4">
+          <div class="flex items-center justify-between mb-1 flex-wrap gap-2">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Funnel by Source · This Month</div>
+            <div class="text-[10px] text-zinc-600">which channel sends buyers, not just clicks</div>
+          </div>
+          <p class="text-[11px] text-zinc-600 mb-4">Visits, then how many of those reached Memberships, then how many clicked Proceed to Checkout.</p>
+          <div id="traffic-source-funnel" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
+        </div>
       </div>
 
       <!-- COURSE TAB -->
@@ -1176,6 +1185,14 @@
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-5" id="analytics-monthly"></div>
+        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 mb-5">
+          <div class="flex items-center justify-between mb-1 flex-wrap gap-2">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Dormant Members</div>
+            <div class="text-[10px] text-zinc-600">by last login to the site</div>
+          </div>
+          <p class="text-[11px] text-zinc-600 mb-4">Site logins only &mdash; someone can be trading the indicator daily without signing in here. Read it as a nudge list, not a churn verdict.</p>
+          <div id="analytics-dormant" class="text-xs text-zinc-600">&mdash;</div>
+        </div>
         <div id="analytics-growth" class="mb-5"></div>
         <div id="analytics-churn" class="mb-5"></div>
       </div>
@@ -1984,6 +2001,54 @@
       }
     }
 
+    // ── Funnel by source ──
+    // visits comes from monthSources (first ping of a session, so it's sessions).
+    // The two steps come from monthSourcePages, which counts page hits per source.
+    function trafficSourceFunnel(sources, sourcePages){
+      const el = document.getElementById('traffic-source-funnel'); if(!el) return;
+      if(!sourcePages){
+        el.innerHTML = '<span class="text-zinc-600 text-xs">Waiting on worker data. Deploy the updated /api/track route, then give it a day to collect.</span>';
+        return;
+      }
+      const rows = Object.entries(sources||{})
+        .map(function(pair){
+          const src = pair[0], visits = pair[1];
+          const pages = sourcePages[src] || {};
+          const memb = pages['/memberships.html'] || pages['/memberships'] || 0;
+          const chk  = pages['/checkout-started'] || 0;
+          return { src: src, visits: visits, memb: memb, chk: chk };
+        })
+        .filter(function(r){ return r.visits > 0; })
+        .sort(function(a,b){ return b.visits - a.visits; })
+        .slice(0, 8);
+
+      if(!rows.length){ el.innerHTML = '<span class="text-zinc-600 text-xs">No source data this month yet.</span>'; return; }
+
+      const maxV = Math.max.apply(null, rows.map(function(r){ return r.visits; }));
+      el.innerHTML = rows.map(function(r){
+        const pctM = r.visits ? Math.round(r.memb/r.visits*100) : 0;
+        const pctC = r.visits ? Math.round(r.chk/r.visits*100) : 0;
+        const w = Math.max(Math.round(r.visits/maxV*100), 2);
+        const name = r.src.charAt(0).toUpperCase() + r.src.slice(1);
+        return '<div class="mb-4">'
+          + '<div class="flex justify-between items-baseline text-[13px] mb-1.5">'
+          +   '<span class="text-zinc-100 font-semibold">'+name+'</span>'
+          +   '<span class="text-zinc-500 text-[11px]">'
+          +     '<span class="text-white font-bold text-[14px]">'+r.visits.toLocaleString()+'</span> visits'
+          +     ' &middot; <span class="text-sky-400 font-bold">'+r.memb+'</span> memberships ('+pctM+'%)'
+          +     ' &middot; <span class="text-amber-400 font-bold">'+r.chk+'</span> checkout ('+pctC+'%)'
+          +   '</span></div>'
+          + '<div class="h-2 bg-white/5 rounded-full overflow-hidden flex">'
+          +   '<div class="h-full bg-emerald-500/70" style="width:'+w+'%"></div></div>'
+          + '<div class="h-1.5 bg-white/5 rounded-full overflow-hidden flex mt-1">'
+          +   '<div class="h-full bg-sky-500/70" style="width:'+Math.max(pctM,0)+'%"></div></div>'
+          + '<div class="h-1.5 bg-white/5 rounded-full overflow-hidden flex mt-1">'
+          +   '<div class="h-full bg-amber-400/70" style="width:'+Math.max(pctC,0)+'%"></div></div>'
+          + '</div>';
+      }).join('')
+      + '<div class="text-[10px] text-zinc-600 mt-3">Percentages are of that source\'s own visits, so channels are comparable regardless of size.</div>';
+    }
+
     // ── Site Traffic ──
     function prettyPath(p) {
       let s = (p || '/').toLowerCase().split('?')[0].split('#')[0];
@@ -2021,6 +2086,7 @@
         trafficHours(d.monthHours);
         trafficFunnel(d.month, d.monthPages);
         trafficPages(d);
+        trafficSourceFunnel(d.monthSources, d.monthSourcePages);
         const upEl = document.getElementById('traffic-updated');
         if (upEl) {
           const now = new Date().toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit', second: '2-digit' });
@@ -5703,7 +5769,56 @@
     }
 
     // ── Analytics tab ──
+    // ── Dormant members ──
+    // Uses lastLogin/createdAt already returned by /api/admin/members. No new tracking.
+    function renderDormant(){
+      const el = document.getElementById('analytics-dormant'); if(!el) return;
+      const list = (typeof allMembers !== 'undefined' && Array.isArray(allMembers)) ? allMembers : [];
+      if(!list.length){ el.innerHTML = '<span class="text-zinc-600 text-xs">No member data loaded yet. Open the Members tab first.</span>'; return; }
+
+      const now = Date.now();
+      const DAY = 86400000;
+      const buckets = { active7:[], d8_30:[], d31_60:[], d60plus:[], never:[] };
+
+      list.forEach(function(m){
+        const created = m.createdAt ? Date.parse(m.createdAt) : null;
+        const last = m.lastLogin ? Date.parse(m.lastLogin) : null;
+        if(!last || isNaN(last)){ buckets.never.push(m); return; }
+        // Signed up but never came back after the first session
+        if(created && !isNaN(created) && Math.abs(last-created) < 60000 && (now-last) > 7*DAY){
+          buckets.never.push(m); return;
+        }
+        const days = Math.floor((now-last)/DAY);
+        if(days <= 7) buckets.active7.push(m);
+        else if(days <= 30) buckets.d8_30.push(m);
+        else if(days <= 60) buckets.d31_60.push(m);
+        else buckets.d60plus.push(m);
+      });
+
+      const row = function(label, arr, colour, note){
+        const pct = Math.round(arr.length/list.length*100);
+        return '<div class="mb-3.5"><div class="flex justify-between items-baseline text-[13px] mb-1.5">'
+          + '<span class="text-zinc-100 font-semibold">'+label+'</span>'
+          + '<span class="text-zinc-400 text-sm"><span class="text-white font-bold text-[15px]">'+arr.length+'</span> · '+pct+'%</span></div>'
+          + '<div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full '+colour+' rounded-full" style="width:'+Math.max(pct,2)+'%"></div></div>'
+          + (note ? '<div class="text-[10px] text-zinc-600 mt-1">'+note+'</div>' : '') + '</div>';
+      };
+
+      const atRisk = buckets.d31_60.length + buckets.d60plus.length;
+      el.innerHTML =
+          '<div class="grid grid-cols-2 gap-3 mb-5">'
+        +   '<div class="border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3"><div class="text-2xl font-black text-amber-400 tabular-nums">'+atRisk+'</div><div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5">Not seen in 30+ days</div></div>'
+        +   '<div class="border border-white/10 bg-zinc-950/60 rounded-xl px-4 py-3"><div class="text-2xl font-black text-zinc-400 tabular-nums">'+buckets.never.length+'</div><div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mt-0.5">Signed up, never returned</div></div>'
+        + '</div>'
+        + row('Active — last 7 days', buckets.active7, 'bg-emerald-500/70')
+        + row('8–30 days', buckets.d8_30, 'bg-emerald-500/40')
+        + row('31–60 days', buckets.d31_60, 'bg-amber-400/70', 'Worth a check-in before renewal comes up.')
+        + row('60+ days', buckets.d60plus, 'bg-red-500/60')
+        + row('Never returned', buckets.never, 'bg-zinc-600/60', 'Created an account and did not come back. Onboarding, not churn.');
+    }
+
     function renderAnalytics() {
+      renderDormant();
       // Combine roster (active members) + history (former/cancelled) for full picture
       const allData = [...rosterData, ...historyData];
       if (!allData.length) {
