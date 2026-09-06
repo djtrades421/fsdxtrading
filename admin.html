@@ -337,6 +337,11 @@
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3v18h18M18.75 3v.75m0 0a48.6 48.6 0 010 0M7.5 14.25l3-3 3 3 4.5-4.5"/></svg>
             Traffic
           </button>
+          <button onclick="switchTab('course')" id="tab-course"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+            Course
+          </button>
           <button onclick="switchTab('history')" id="tab-history"
             class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg>
@@ -1110,11 +1115,54 @@
             <div id="traffic-funnel" class="text-xs text-zinc-600">—</div>
           </div>
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
-            <div class="flex items-center justify-between mb-4">
-              <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Top Pages · This Month</div>
+            <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Top Pages · <span id="pages-range-label">Today</span></div>
               <div class="text-[10px] text-zinc-600">public · non-members</div>
             </div>
+            <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+              <div class="flex gap-1">
+                <button onclick="setPagesRange('today')" id="pgr-today" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 transition">Today</button>
+                <button onclick="setPagesRange('week')" id="pgr-week" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border border-white/10 bg-zinc-900 text-zinc-400 hover:text-white transition">7 days</button>
+                <button onclick="setPagesRange('month')" id="pgr-month" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border border-white/10 bg-zinc-900 text-zinc-400 hover:text-white transition">Month</button>
+              </div>
+              <div class="flex items-center gap-2">
+                <span id="pages-baseline" class="text-[10px] text-zinc-600"></span>
+                <button onclick="markPagesChecked()" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border border-white/10 bg-zinc-900 text-zinc-400 hover:text-emerald-400 hover:border-emerald-500/40 transition">Mark checked</button>
+              </div>
+            </div>
             <div id="traffic-pages" class="text-xs text-zinc-600">Open this tab to load traffic…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COURSE TAB -->
+      <div id="panel-course" class="tab-panel">
+        <div class="flex items-center justify-between mb-5 flex-wrap gap-2">
+          <div>
+            <h2 class="text-lg font-black text-white">Course Usage</h2>
+            <div id="course-since" class="text-[11px] text-zinc-600 mt-0.5">&mdash;</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="course-updated" class="text-[10px] text-zinc-600"></span>
+            <button onclick="loadCourse()" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border border-white/10 bg-zinc-900 text-zinc-400 hover:text-emerald-400 hover:border-emerald-500/40 transition">Refresh</button>
+          </div>
+        </div>
+
+        <div id="course-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-5"></div>
+
+        <div class="grid lg:grid-cols-2 gap-4">
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Opens &middot; Last 30 Days</div>
+            </div>
+            <div id="course-trend" class="text-xs text-zinc-600">Open this tab to load&hellip;</div>
+          </div>
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Chapter Completion</div>
+              <div class="text-[10px] text-zinc-600">members marked read</div>
+            </div>
+            <div id="course-chapters" class="text-xs text-zinc-600">&mdash;</div>
           </div>
         </div>
       </div>
@@ -1557,7 +1605,7 @@
     let allMembers = [];
 
     function switchTab(tab) {
-      ['members','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history','traffic','trackrec'].forEach(t => {
+      ['members','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history','traffic','trackrec','course'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('tab-' + t);
         if (btn) btn.classList.remove('active-nav');
@@ -1580,6 +1628,7 @@
       if (tab === 'flags') renderFlags();
       if (tab === 'analytics') renderAnalytics();
       if (tab === 'traffic') loadTraffic();
+      if (tab === 'course') loadCourse();
       if (tab === 'history') { dedupeHistory(); renderHistory2(); }
       if (tab === 'trackrec') trInit();
 
@@ -1766,14 +1815,173 @@
       el.innerHTML = rows.map(([label,v,col,showPct])=>{ const pct=Math.round(v/base*100); const w=Math.max(v/base*100,2); return `<div class="mb-3"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${label}</span><span class="text-zinc-500">${v}${showPct?` · ${pct}% of visits`:''}</span></div><div class="h-3 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${w}%;background:${col}"></div></div></div>`; }).join('') + `<div class="text-[10px] text-zinc-600 mt-1 leading-relaxed">Checkout = reached the Terms gate and clicked <span class="text-amber-400/80">Proceed to Checkout</span> — the front of the Whop step. Actual purchases live in Whop.</div>`;
     }
 
-    function trafficPages(monthPages){
+    // ── Top Pages: range switch + "since you last looked" deltas ──
+    // The delta answers the real question — you check in the morning and again
+    // after the close, and want to know which pages moved. Baseline is a snapshot
+    // of TODAY's per-page counts, stored locally, stamped with the day so it
+    // resets itself at rollover instead of going negative.
+    const PAGES_SNAP_KEY = 'fsdx_pages_snapshot';
+    let pagesRange = 'today';
+    let lastTrafficData = null;
+
+    function ctToday(){
+      return new Intl.DateTimeFormat('en-CA', { timeZone:'America/Chicago' }).format(new Date());
+    }
+    function getPagesSnap(){
+      try { const s = JSON.parse(localStorage.getItem(PAGES_SNAP_KEY)||'null');
+            return (s && s.day === ctToday()) ? s : null; } catch(e){ return null; }
+    }
+    function markPagesChecked(){
+      if(!lastTrafficData) return;
+      try {
+        localStorage.setItem(PAGES_SNAP_KEY, JSON.stringify({
+          day: ctToday(), at: new Date().toISOString(), pages: lastTrafficData.todayPages || {}
+        }));
+      } catch(e){}
+      trafficPages(lastTrafficData);
+    }
+    function setPagesRange(r){
+      pagesRange = r;
+      ['today','week','month'].forEach(k=>{
+        const b = document.getElementById('pgr-'+k); if(!b) return;
+        const on = (k===r);
+        b.className = 'px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ' +
+          (on ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+              : 'border-white/10 bg-zinc-900 text-zinc-400 hover:text-white');
+      });
+      const lbl = document.getElementById('pages-range-label');
+      if(lbl) lbl.textContent = r==='today' ? 'Today' : r==='week' ? 'Last 7 Days' : 'This Month';
+      if(lastTrafficData) trafficPages(lastTrafficData);
+    }
+
+    function trafficPages(d){
       const el = document.getElementById('traffic-pages'); if(!el) return;
-      if(monthPages===undefined || monthPages===null){ el.innerHTML='<span class="text-zinc-600 text-xs">Waiting on worker page data.</span>'; return; }
-      const ent = Object.entries(monthPages).sort((a,b)=>b[1]-a[1]);
+      lastTrafficData = d || lastTrafficData;
+      const data = lastTrafficData || {};
+      const src = pagesRange==='today' ? data.todayPages
+                : pagesRange==='week'  ? data.weekPages
+                : data.monthPages;
+
+      const bEl = document.getElementById('pages-baseline');
+      const snap = getPagesSnap();
+      if(bEl){
+        if(pagesRange!=='today') bEl.textContent = 'deltas shown on Today';
+        else if(snap) bEl.textContent = 'since ' + new Date(snap.at).toLocaleTimeString('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit'}) + ' CT';
+        else bEl.textContent = 'no baseline set';
+      }
+
+      if(src===undefined || src===null){
+        el.innerHTML = '<span class="text-zinc-600 text-xs">Waiting on worker page data. Deploy the updated /api/admin/visits route.</span>';
+        return;
+      }
+      const ent = Object.entries(src).sort((a,b)=>b[1]-a[1]);
       const total = ent.reduce((s,[,v])=>s+v,0);
-      if(!ent.length || !total){ el.innerHTML='<span class="text-zinc-600 text-xs">No page visits recorded yet this month.</span>'; return; }
+      if(!ent.length || !total){
+        const w = pagesRange==='today' ? 'today' : pagesRange==='week' ? 'in the last 7 days' : 'this month';
+        el.innerHTML = '<span class="text-zinc-600 text-xs">No page visits recorded '+w+' yet.</span>';
+        return;
+      }
+      const base = (pagesRange==='today' && snap) ? (snap.pages||{}) : null;
       const top = ent.slice(0,10);
-      el.innerHTML = top.map(([k,v])=>{ const pct=Math.round(v/total*100); const isChk=(k==='/checkout-started'); return `<div class="mb-3.5"><div class="flex justify-between items-baseline text-[14px] mb-1.5"><span class="${isChk?'text-amber-400':'text-zinc-100'} font-semibold">${prettyPath(k)}</span><span class="text-zinc-400 text-sm"><span class="text-white font-bold text-[15px]">${v.toLocaleString()}</span> · ${pct}%</span></div><div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full ${isChk?'bg-amber-400/70':'bg-emerald-500/70'} rounded-full" style="width:${Math.max(pct,2)}%"></div></div></div>`; }).join('') + (ent.length>10?`<div class="text-[11px] text-zinc-600 mt-2">+${ent.length-10} more page${ent.length-10>1?'s':''}</div>`:'');
+      el.innerHTML = top.map(([k,v])=>{
+        const pct = Math.round(v/total*100);
+        const isChk = (k==='/checkout-started');
+        let delta = '';
+        if(base){
+          const diff = v - (base[k]||0);
+          if(diff > 0) delta = '<span class="text-emerald-400 font-bold ml-1.5">+'+diff+'</span>';
+        }
+        return '<div class="mb-3.5"><div class="flex justify-between items-baseline text-[14px] mb-1.5">'
+          + '<span class="'+(isChk?'text-amber-400':'text-zinc-100')+' font-semibold">'+prettyPath(k)+'</span>'
+          + '<span class="text-zinc-400 text-sm"><span class="text-white font-bold text-[15px]">'+v.toLocaleString()+'</span> · '+pct+'%'+delta+'</span>'
+          + '</div><div class="h-2 bg-white/5 rounded-full overflow-hidden">'
+          + '<div class="h-full '+(isChk?'bg-amber-400/70':'bg-emerald-500/70')+' rounded-full" style="width:'+Math.max(pct,2)+'%"></div></div></div>';
+      }).join('') + (ent.length>10?'<div class="text-[11px] text-zinc-600 mt-2">+'+(ent.length-10)+' more page'+(ent.length-10>1?'s':'')+'</div>':'');
+    }
+
+    // ── Course Usage ──
+    // Aggregate only. The worker returns counts; it never returns who read what.
+    const COURSE_CHAPTERS = [
+      ['your-rules','Your rules and your trading plan'],
+      ['what-to-expect','What to expect'],
+      ['chart-setup','Get the chart right'],
+      ['what-its-doing','What the system is doing'],
+      ['breakout','What counts as a breakout'],
+      ['trend-read','The trend read'],
+      ['reading-grade','Reading the grade'],
+      ['keeps-you-out','What keeps you out'],
+      ['stop-target','Stop and target'],
+      ['sizing','Sizing'],
+      ['dashboard','The dashboard'],
+      ['risk-profile','Your risk profile and drawdown protocol'],
+      ['like-a-job','Treat it like a job'],
+      ['journaling','Journaling'],
+      ['backtesting','Backtesting'],
+      ['prop-accounts','Running prop accounts'],
+      ['monthly-review','Your monthly review'],
+      ['your-morning','Your morning, start to finish']
+    ];
+
+    function courseCard(label, value, sub){
+      return '<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-center">'
+        + '<div class="text-xs text-zinc-500">'+label+'</div>'
+        + '<div class="text-3xl font-black text-emerald-400 mt-1">'+value+'</div>'
+        + (sub ? '<div class="text-[10px] text-zinc-600 mt-0.5">'+sub+'</div>' : '') + '</div>';
+    }
+
+    function courseTrend(daily){
+      const el = document.getElementById('course-trend'); if(!el) return;
+      const rows = (daily||[]).slice().reverse(); // oldest → newest
+      if(!rows.length){ el.innerHTML = '<span class="text-zinc-600 text-xs">No opens recorded yet.</span>'; return; }
+      const max = Math.max(1, ...rows.map(r=>r.opens));
+      const bars = rows.map(r=>{
+        const h = Math.round((r.opens/max)*100);
+        return '<div class="flex-1 flex flex-col justify-end" title="'+r.day+' · '+r.opens+' opens">'
+          + '<div class="rounded-t bg-emerald-500/70" style="height:'+Math.max(h,2)+'%"></div></div>';
+      }).join('');
+      el.innerHTML = '<div class="flex items-end gap-[2px] h-32">'+bars+'</div>'
+        + '<div class="flex justify-between text-[10px] text-zinc-600 mt-2">'
+        + '<span>'+rows[0].day.slice(5)+'</span><span>'+rows[rows.length-1].day.slice(5)+'</span></div>';
+    }
+
+    function courseChapters(completion, membersStarted){
+      const el = document.getElementById('course-chapters'); if(!el) return;
+      const comp = completion || {};
+      const anyone = Object.values(comp).some(v=>v>0);
+      if(!anyone){ el.innerHTML = '<span class="text-zinc-600 text-xs">Nobody has marked a chapter read yet.</span>'; return; }
+      const denom = Math.max(1, membersStarted||0);
+      el.innerHTML = COURSE_CHAPTERS.map(function(c,i){
+        const n = comp[c[0]]||0;
+        const pct = Math.round(n/denom*100);
+        return '<div class="mb-2.5"><div class="flex justify-between items-baseline text-[13px] mb-1">'
+          + '<span class="text-zinc-300"><span class="text-zinc-600 tabular-nums">'+(i+1)+'.</span> '+c[1]+'</span>'
+          + '<span class="text-white font-bold tabular-nums">'+n+'</span></div>'
+          + '<div class="h-1.5 bg-white/5 rounded-full overflow-hidden">'
+          + '<div class="h-full bg-emerald-500/70 rounded-full" style="width:'+Math.max(pct,1)+'%"></div></div></div>';
+      }).join('');
+    }
+
+    async function loadCourse(){
+      const statsEl = document.getElementById('course-stats'); if(!statsEl) return;
+      try {
+        const token = localStorage.getItem('fsdx_token') || '';
+        const res = await fetch(API + '/api/admin/course', { headers: { 'Authorization': 'Bearer ' + token } });
+        if(!res.ok) throw new Error('unauthorized');
+        const d = await res.json();
+        const o = d.opens || {};
+        statsEl.innerHTML = courseCard('Opens today', (o.today||0))
+          + courseCard('Last 7 days', (o.last7||0))
+          + courseCard('Last 30 days', (o.last30||0))
+          + courseCard('Members started', (d.membersStarted||0), 'marked at least one chapter');
+        const sEl = document.getElementById('course-since');
+        if(sEl) sEl.textContent = d.since ? ('Counting since ' + fmtSince(d.since)) : 'No course activity recorded yet';
+        courseTrend(d.daily);
+        courseChapters(d.completion, d.membersStarted);
+        const upEl = document.getElementById('course-updated');
+        if(upEl) upEl.textContent = 'Last updated ' + new Date().toLocaleTimeString('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit',second:'2-digit'}) + ' CT';
+      } catch(err){
+        statsEl.innerHTML = '<div class="col-span-full border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-zinc-600 text-sm text-center">Couldn\'t load course usage. Make sure the worker is deployed with the /api/course and /api/admin/course routes.</div>';
+      }
     }
 
     // ── Site Traffic ──
@@ -1812,7 +2020,7 @@
         trafficDOW(d.daily);
         trafficHours(d.monthHours);
         trafficFunnel(d.month, d.monthPages);
-        trafficPages(d.monthPages);
+        trafficPages(d);
         const upEl = document.getElementById('traffic-updated');
         if (upEl) {
           const now = new Date().toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit', second: '2-digit' });
