@@ -30,7 +30,7 @@
 
     // products — these used to be the ↳ sub-links
     {t:'The System',            u:'suite.html',                g:'Products', kw:'suite tools overview indicators'},
-    {t:'ORB PRO — Knightfall MK1', u:'suite.html#tool-orbpro', g:'Products', kw:'signal engine indicator grading breakout main'},
+    {t:'ORB PRO — Knightfall MK2', u:'suite.html#tool-orbpro', g:'Products', kw:'signal engine indicator grading breakout main'},
     {t:'Stack V1',              u:'suite.html#tool-stack',     g:'Products', kw:'trend mtf timeframe confirmation'},
     {t:'Volume Indicator',      u:'suite.html#tool-volume',    g:'Products', kw:'volume engine breakout companion'},
     {t:'Nexus 2.0',             u:'suite.html#tool-nexus',     g:'Products', kw:'chrome extension journal optimizer sidepanel'},
