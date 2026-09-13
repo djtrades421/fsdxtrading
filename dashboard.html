@@ -1288,7 +1288,9 @@
       // Reflect the member's plan (Plus vs Pro) in the tier label. Falls back to
       // the status-based label when the plan is unknown, so nothing breaks.
       if (memberPlan) {
-        const planName = memberPlan === 'pro' ? 'VIP Pro' : 'VIP Plus';
+        const planName = memberPlan === 'pro'  ? 'VIP Pro'
+                       : memberPlan === 'site' ? 'Nightwing'
+                       : 'VIP Plus';
         if (effectiveStatus === 'completed')      sc.label = planName + ' Lifetime';
         else if (effectiveStatus === 'trialing')  sc.label = planName + ' Trial';
         else                                       sc.label = planName;
