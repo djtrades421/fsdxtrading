@@ -332,6 +332,7 @@
         });
         clearTimeout(bail);
         if (res.status === 401) throw new Error('Session expired — log out and back in');
+        if (res.status === 403) throw new Error('Scout Alerts is part of VIP membership');
         if (!res.ok) throw new Error('status ' + res.status);
         const data = await res.json();
         allAlerts = Array.isArray(data.alerts) ? data.alerts : [];
@@ -363,7 +364,7 @@
          Fail-safe: if the profile call itself fails we leave whopKey undefined
          and DO NOT lock, so a transient API blip never shuts out a paying
          member. Only a profile that comes back with no key locks the page. */
-      let whopKey, profileOk = false;
+      let whopKey, memberPlan = null, profileOk = false;
       try {
         const pres = await fetch(API + '/api/auth/profile', {
           headers: { 'Authorization': 'Bearer ' + token }
@@ -372,9 +373,24 @@
         if (pdata && pdata.user) {
           profileOk = true;
           whopKey = pdata.user.whopKey;
+          memberPlan = pdata.user.plan || null;
           localStorage.setItem('fsdx_whop_status', pdata.user.whopStatus || '');
+          if (memberPlan) localStorage.setItem('fsdx_plan', memberPlan);
         }
       } catch (e) { console.error('[alerts] profile load failed:', e); }
+
+      /* Nightwing ($9.99) does not include Scout. Show the upgrade panel
+         rather than a feed that 403s. Same fail-safe as the key check above:
+         only a profile that actually came back locks anything. */
+      if (profileOk && typeof fsdxLacksFeature === 'function' &&
+          fsdxLacksFeature(memberPlan, 'scout')) {
+        fsdxRequireUpgrade({ title: 'Scout Alerts', perks: [
+          'Every Scout setup as it fires, on the site and in Nexus',
+          'Filter by type, direction and grade',
+          'Browser alerts with your own minimum grade'
+        ]});
+        return;
+      }
 
       if (profileOk && typeof fsdxIsPending === 'function' && fsdxIsPending(whopKey)) {
         fsdxRequireKey({ title: 'Scout Alerts', perks: [
