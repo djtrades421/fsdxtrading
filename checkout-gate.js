@@ -62,8 +62,36 @@
     proceed: "Proceed to Checkout"
   };
 
-  // Every data-gate value resolves to the same unified terms (one plan → one gate).
-  var TERMS = { membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED };
+  /* ---- Nightwing — the entry tier, and a genuinely different product ----
+     Site access + Nexus. No indicator suite, no Auto-Trader, no Scout, no
+     live room. Showing a Nightwing buyer the UNIFIED terms above would have
+     them agree to an Auto-Trader Addendum for software they are not being
+     sold — which is worse than no terms at all, because it misdescribes the
+     purchase at the point of sale. So it gets its own set: same risk,
+     refund, and one-account language, nothing about automation. */
+  var NIGHTWING = {
+    eyebrow: "Before You Continue",
+    title: "FSD-X Nightwing — Terms of Service",
+    points: [
+      "Nightwing is <strong>site access and the Nexus 2.0 extension</strong> — the member dashboard, trade journal, backtest workspace, playbook, trade importer and account tracker. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
+      "Nightwing <strong>does not include</strong> the FSD-X indicator suite (ORB PRO / Knightfall MK2, Stack V1, Volume Engine), the Auto-Trader, SCOUT live alerts, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
+      "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed — these tools record and analyse your own trading, they do not produce performance.",
+      "Any figures, backtests, or historical results shown on this site are <strong>hypothetical</strong> and are not a representation that any account will achieve similar results.",
+      "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in the platform places, sizes, or manages an order for you.",
+      "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
+      "Access is limited to <strong>one account</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
+      "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
+    ],
+    agree: "I accept the FSD-X Nightwing Terms and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
+    proceed: "Continue to Checkout"
+  };
+
+  // Every VIP data-gate value resolves to the same unified terms (one plan →
+  // one gate). Nightwing is the one product that is genuinely different.
+  var TERMS = {
+    membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED,
+    nightwing: NIGHTWING
+  };
 
   var pendingUrl = null;
   var pendingTarget = "_blank";
