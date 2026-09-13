@@ -47,6 +47,7 @@
     // site
     {t:'Home',            u:'index.html',       g:'Site', kw:'start landing'},
     {t:'Membership',      u:'memberships.html', g:'Site', kw:'pricing plans monthly quarterly annual trial join'},
+    {t:'Nightwing ($9.99)', u:'nightwing.html',   g:'Site', kw:'nightwing cheap entry tools tier site access nexus platform only budget 9.99 journal backtest without indicators'},
     {t:'Getting Started', u:'setup.html',       g:'Site', kw:'setup install tradingview access onboarding'},
     {t:'Live Sessions',   u:'schedule.html',    g:'Site', kw:'schedule 8:30 morning room gameplan monday'},
     {t:'Knowledge Base',  u:'knowledge.html',   g:'Site', kw:'guides docs walkthrough videos help'},
