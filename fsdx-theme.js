@@ -262,7 +262,7 @@
 
   #nav-quick{ padding:0 1px 1px; }
   .nav-q{
-    width:30px;height:30px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    width:27px;height:27px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
     border-radius:6px;color:#4C6484;transition:background .15s,color .15s;
   }
   .nav-q svg{ width:15px;height:15px; }
