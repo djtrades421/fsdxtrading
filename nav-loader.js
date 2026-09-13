@@ -44,6 +44,7 @@ window.toggleMobileMenu = function () {
     // a gated page quietly polluting the funnel is not.
     var PUBLIC_PAGES = [
       'index', 'suite', 'autotrader', 'results', 'track-record', 'memberships',
+      'nightwing', 'free-indicators', 'platform', 'partners', 'giveaways',
       'knowledge', 'faq', 'contact', 'schedule', 'disclosures', 'affiliates',
       'setup', 'welcome', '404'
     ];
@@ -334,6 +335,13 @@ function prepareNavLabels(root) {
       // "The Site" starts shut for members, open for visitors
       const loggedIn = !!localStorage.getItem('fsdx_token');
       applyNavGroupState('nav-group-site', !loggedIn);
+
+      /* Products (Free → Nightwing → Membership) starts OPEN for visitors —
+         it is the ladder, and a visitor who cannot see it assumes $129 is the
+         only way in. Members have already bought, so it starts shut for them
+         and stops competing with the Workspace links they actually use.
+         Either way the saved choice wins on the next visit. */
+      applyNavGroupState('nav-group-products', !loggedIn);
 
       // never hide the page you're on inside a shut group
       var activeInGroup = document.querySelector('#nav-content .nav-group .nav-link.fx-active, #nav-content .nav-group .nav-link.font-bold');
