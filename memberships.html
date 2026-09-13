@@ -575,22 +575,26 @@
               </div>
 
               <div>
+                <!-- Billing period. Only the monthly plan carries a free trial,
+                     so the trial line is per-plan, never a blanket badge. -->
+                <div id="nw-periods" class="grid grid-cols-2 gap-2 mb-4"></div>
+
                 <div class="rounded-2xl border border-white/10 bg-black/40 p-4">
                   <div id="whop-checkout" class="min-h-[420px]"></div>
                   <div id="whop-checkout-fallback" class="hidden text-center py-10">
-                    <p class="text-[13px] text-zinc-400 mb-4">Checkout didn't load in this browser.</p>
-                    <a href="https://whop.com/checkout/plan_9VB6qlHDMu9BP" target="_blank" rel="noopener noreferrer"
+                    <p class="text-[13px] text-zinc-400 mb-4">Checkout didn&rsquo;t load in this browser.</p>
+                    <a id="nw-fallback-link" href="https://whop.com/checkout/plan_9VB6qlHDMu9BP" target="_blank" rel="noopener noreferrer"
                        class="inline-block px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-xl transition text-sm">
                       Open checkout on Whop
                     </a>
                   </div>
                 </div>
-                <p class="text-center text-[11px] text-zinc-500 mt-3">
-                  Secure checkout by Whop · Cancel anytime ·
-                  <a href="https://whop.com/checkout/plan_9VB6qlHDMu9BP" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 underline">open on Whop instead</a>
-                </p>
-                <p class="text-center text-[11px] text-zinc-600 mt-2">
-                  Quarterly, 6-month and annual options are on the Whop checkout page.
+
+                <p id="nw-trial-note" class="text-center text-[11.5px] text-green-400/90 font-semibold mt-3"></p>
+
+                <p class="text-center text-[11px] text-zinc-500 mt-2">
+                  Secure checkout by Whop &middot; Cancel anytime &middot;
+                  <a id="nw-open-link" href="https://whop.com/checkout/plan_9VB6qlHDMu9BP" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 underline">open on Whop instead</a>
                 </p>
               </div>
 
@@ -599,36 +603,124 @@
 
           <script src="https://js.whop.cloud/elements/amber/elements.js" data-whop-elements></script>
           <script>
-            /* Mount the embedded checkout. Everything is guarded: a blocked
-               script, an ad blocker, or a Whop outage must leave a working
-               link rather than an empty box. */
+            /* Nightwing checkout — four billing periods on one embedded widget.
+               Switching a period tears the widget down and mounts the new plan.
+
+               Everything is guarded. A blocked script, an ad blocker, a Whop
+               outage or a re-mount the library does not like must all end with
+               a working link to Whop, never an empty box. A visitor who wants
+               to pay can always pay. */
             (function () {
-              var mount = document.getElementById('whop-checkout');
+              var PLANS = [
+                { id: 'plan_9VB6qlHDMu9BP', label: 'Monthly',  price: '$9.99',  per: '/ mo',
+                  note: '7-day free trial, then $9.99 per month. Cancel anytime.' },
+                { id: 'plan_tUnymSODvJdzv', label: '3 Months', price: '$24.99', per: '/ 3 mo',
+                  sub: '$8.33 / mo', save: 'Save 17%',
+                  note: '$24.99 billed every 3 months. No free trial on this plan.' },
+                { id: 'plan_zsSGNzcu9Act8', label: '6 Months', price: '$49.99', per: '/ 6 mo',
+                  sub: '$8.33 / mo', save: 'Save 17%',
+                  note: '$49.99 billed every 6 months. No free trial on this plan.' },
+                { id: 'plan_oqxr2pyB51Dmc', label: 'Annual',   price: '$99.99', per: '/ yr',
+                  sub: '$8.33 / mo', save: 'Save 17%',
+                  note: '$99.99 billed once a year. No free trial on this plan.' }
+              ];
+              var CHECKOUT = 'https://whop.com/checkout/';
+
+              var host     = document.getElementById('nw-periods');
+              var mount    = document.getElementById('whop-checkout');
               var fallback = document.getElementById('whop-checkout-fallback');
-              if (!mount) return;
+              var fbLink   = document.getElementById('nw-fallback-link');
+              var openLink = document.getElementById('nw-open-link');
+              var trialEl  = document.getElementById('nw-trial-note');
+              if (!host || !mount) return;
+
+              var current = 0;
 
               function showFallback(why) {
-                console.warn('[whop-checkout]', why);
+                console.warn('[nw-checkout]', why);
                 mount.classList.add('hidden');
                 if (fallback) fallback.classList.remove('hidden');
               }
+              function hideFallback() {
+                mount.classList.remove('hidden');
+                if (fallback) fallback.classList.add('hidden');
+              }
 
-              var tries = 0;
-              (function mountWhenReady() {
-                if (typeof window.WhopElements === 'function') {
-                  try {
-                    var checkout = window.WhopElements().checkout.create({
-                      plan: 'plan_9VB6qlHDMu9BP'
-                    });
-                    checkout.create('checkout').mount('#whop-checkout');
-                  } catch (e) {
-                    showFallback(e && e.message ? e.message : 'mount failed');
-                  }
+              function paintButtons() {
+                host.innerHTML = PLANS.map(function (p, i) {
+                  var on = i === current;
+                  return '<button type="button" data-i="' + i + '" ' +
+                    'class="rounded-xl border px-3 py-2.5 text-left transition ' +
+                      (on ? 'border-green-500/60 bg-green-500/10' : 'border-white/10 bg-zinc-950/40 hover:border-white/25') + '">' +
+                    '<div class="flex items-baseline justify-between gap-2">' +
+                      '<span class="text-[11px] font-bold uppercase tracking-widest ' +
+                        (on ? 'text-green-400' : 'text-zinc-400') + '">' + p.label + '</span>' +
+                      (p.save ? '<span class="text-[9.5px] font-bold text-green-400/90 whitespace-nowrap">' + p.save + '</span>' : '') +
+                    '</div>' +
+                    '<div class="mt-1 flex items-baseline gap-1">' +
+                      '<span class="text-base font-black text-white">' + p.price + '</span>' +
+                      '<span class="text-[10px] text-zinc-500">' + p.per + '</span>' +
+                    '</div>' +
+                    (p.sub ? '<div class="text-[10px] text-zinc-500 mt-0.5">' + p.sub + '</div>'
+                           : '<div class="text-[10px] text-green-400/80 mt-0.5">7-day trial</div>') +
+                    '</button>';
+                }).join('');
+
+                Array.prototype.forEach.call(host.querySelectorAll('button'), function (b) {
+                  b.addEventListener('click', function () {
+                    var i = parseInt(b.getAttribute('data-i'), 10);
+                    if (i === current) return;
+                    current = i;
+                    paintButtons();
+                    paintLinks();
+                    mountPlan();
+                  });
+                });
+              }
+
+              function paintLinks() {
+                var p = PLANS[current];
+                var url = CHECKOUT + p.id;
+                if (fbLink)   fbLink.href = url;
+                if (openLink) openLink.href = url;
+                if (trialEl)  trialEl.textContent = p.note;
+              }
+
+              /* Tear down before re-mounting. The library gives no documented
+                 unmount, so the container is emptied by hand — leaving the old
+                 widget in place would stack two checkouts on top of each other. */
+              function mountPlan() {
+                var p = PLANS[current];
+                hideFallback();
+                mount.innerHTML = '';
+
+                if (typeof window.WhopElements !== 'function') {
+                  return showFallback('WhopElements not available');
+                }
+                try {
+                  var checkout = window.WhopElements().checkout.create({ plan: p.id });
+                  checkout.create('checkout').mount('#whop-checkout');
+                } catch (e) {
+                  showFallback(e && e.message ? e.message : 'mount failed');
                   return;
                 }
+                /* Mounting can succeed silently and render nothing. If the box
+                   is still empty after a moment, fall back rather than leave a
+                   blank panel that looks broken. */
+                setTimeout(function () {
+                  if (!mount.firstChild) showFallback('widget rendered nothing');
+                }, 5000);
+              }
+
+              paintButtons();
+              paintLinks();
+
+              var tries = 0;
+              (function whenReady() {
+                if (typeof window.WhopElements === 'function') return mountPlan();
                 // ~6s for the third-party script, then give up gracefully.
                 if (++tries > 40) return showFallback('WhopElements never loaded');
-                setTimeout(mountWhenReady, 150);
+                setTimeout(whenReady, 150);
               })();
             })();
           </script>
