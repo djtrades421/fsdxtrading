@@ -1,6 +1,24 @@
 // nav-loader.js — Universal nav loader
 // Handles logged-in and logged-out states automatically
 
+// ── Mobile menu toggle ──
+// The hamburger in the mobile header calls toggleMobileMenu() inline, but the
+// function itself was pasted into each page's own <script> block. Five pages
+// (course, how-to, partners, playbook, refer) got the button and never got the
+// function, so tapping it threw "toggleMobileMenu is not defined" and the nav
+// could not be opened on a phone at all — including the close button inside
+// the injected nav, which calls the same function.
+//
+// Defining it here fixes all of them at once and means a new page only has to
+// load this file. Pages that still declare their own copy in <body> simply
+// overwrite this one with an identical implementation, so nothing changes for
+// them.
+window.toggleMobileMenu = function () {
+  var sidebar = document.getElementById('sidebar-panel');
+  if (!sidebar) return;
+  sidebar.classList.toggle('-translate-x-full');
+};
+
 // ── Site traffic beacon ──
 // Non-members only, public marketing pages only. Fires once per session PER page.
 // The first ping of the session also counts as the visit (top counters + source);
