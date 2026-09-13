@@ -18,7 +18,7 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js?v=20260830"></script>
-  <script src="nav-loader.js?v=20260906"></script>
+  <script src="nav-loader.js?v=20260913"></script>
   <script src="fsdx-account.js"></script>
   <script src="alerts.js?v=20260901"></script>
   <style>
@@ -409,7 +409,7 @@ const COURSE = [
         </ul>
       </div>
 
-      <div class="grid sm:grid-cols-2 gap-3 my-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
       <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
         <img src="ch-dashboard-full.png" alt="Dashboard showing transition bull with no shift tag" class="w-full" loading="lazy">
         <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">Before &mdash; <em>transition bull</em>.</div>
@@ -455,7 +455,7 @@ const COURSE = [
         <li><strong>Red &mdash; F.</strong> Not taken.</li>
       </ul>
 
-      <div class="grid sm:grid-cols-2 gap-3 my-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
       <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
         <img src="ch-reading-grade-aplus-all-solid.png" alt="A+ grade setup marked take trade" class="w-full" loading="lazy">
         <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5"><strong>A+</strong> &mdash; lime.</div>
@@ -554,7 +554,7 @@ const COURSE = [
         data says otherwise.</li>
       </ul>
 
-      <div class="grid sm:grid-cols-2 gap-3 my-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
       <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
         <img src="ch-keeps-you-out-countertrend.png" alt="Dashboard showing NO TRADE with the reason Counter-trend HTF" class="w-full" loading="lazy">
         <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">Blocked &mdash; <em>Counter-trend HTF</em>.</div>
@@ -603,7 +603,7 @@ const COURSE = [
       decided. A capped stop is the system telling you the morning was wider than it wants to trade.</p>
 
 
-      <div class="grid sm:grid-cols-2 gap-3 my-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
       <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
         <img src="ch-stop-target-struct.png" alt="Dashboard showing a stop set by the structure leg, tagged struct" class="w-full" loading="lazy">
         <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5"></div>
@@ -748,7 +748,7 @@ const COURSE = [
       </ul>
 
 
-      <div class="grid sm:grid-cols-2 gap-3 my-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
       <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
         <img src="ch-dashboard-orbavg-green.png" alt="Dashboard showing the five day average in green" class="w-full" loading="lazy">
         <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5"><strong>Green</strong> &mdash; 148.3 against a 159.4 average. Inside the band.</div>
@@ -788,7 +788,7 @@ const COURSE = [
       <h4>Before the breakout</h4>
       <p>Until a breakout registers, the panel reads <strong>Waiting for breakout&hellip;</strong></p>
 
-      <div class="grid sm:grid-cols-2 gap-3 my-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 my-4">
       <div class="rounded-xl overflow-hidden border border-white/10 bg-black ">
         <img src="ch-breakout-waiting.png" alt="Dashboard reading Waiting for breakout" class="w-full" loading="lazy">
         <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">Before &mdash; no explanation.</div>
@@ -1348,7 +1348,7 @@ function renderContents() {
           <div class="h-px flex-1 bg-white/10"></div>
         </div>
         <p class="text-zinc-500 text-xs mb-4">${s.blurb}</p>
-        <div class="grid sm:grid-cols-2 gap-2.5">`;
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">`;
     chapters.forEach(c => {
       const n = COURSE.indexOf(c) + 1;
       const done = read.has(c.id);
