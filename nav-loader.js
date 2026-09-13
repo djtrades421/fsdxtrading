@@ -394,14 +394,27 @@ function prepareNavLabels(root) {
         if (userBtn) userBtn.title = name + ' — profile';
         const whopStatus = localStorage.getItem('fsdx_whop_status') || '';
         const plan = localStorage.getItem('fsdx_plan') || '';
-        // Base name: "VIP Plus" / "VIP Pro" when known, else "VIP"
-        const planName = plan === 'pro' ? 'VIP Pro' : plan === 'plus' ? 'VIP Plus' : 'VIP';
+        // Base name: "VIP Plus" / "VIP Pro" / "Nightwing" when known, else "VIP"
+        const planName = plan === 'pro'  ? 'VIP Pro'
+                       : plan === 'plus' ? 'VIP Plus'
+                       : plan === 'site' ? 'Nightwing'
+                       : 'VIP';
         let tierText;
         if (tier === 'trial') tierText = planName + ' · Trial';
         else if (whopStatus === 'completed') tierText = planName + ' · Lifetime';
         else if (tier === 'pending' || whopStatus === 'pending') tierText = 'Setup incomplete';
         else tierText = plan ? planName : 'VIP Member';
         if (tierEl) tierEl.textContent = tierText;
+
+        /* Nightwing does not include Scout Alerts. Hide the link so the
+           member is never sent to a page that turns them away. This is
+           cosmetic only — the real gate is the 403 on /api/scout/feed. The
+           test is deliberately `=== 'site'`: an unknown plan keeps the link,
+           so a mapping gap can never hide a VIP member's own tools. */
+        if (plan === 'site') {
+          document.querySelectorAll('#nav-content a[href="alerts.html"]')
+            .forEach(el => el.classList.add('hidden'));
+        }
       }
     })
     .catch(function (err) {
@@ -421,6 +434,12 @@ function prepareNavLabels(root) {
           ['converter.html', 'Trade Importer'], ['refer.html', 'Refer & Earn'],
           ['profile.html', 'Profile']
         ]; } catch (e) {}
+        // Same Nightwing rule as the real nav above.
+        try {
+          if (localStorage.getItem('fsdx_plan') === 'site') {
+            vip = vip.filter(function (l) { return l[0] !== 'alerts.html'; });
+          }
+        } catch (e) {}
         var site = [
           ['index.html', 'Home'], ['suite.html', 'The System'],
           ['autotrader.html', 'ORB Auto-Trader'], ['results.html', 'Results'],
