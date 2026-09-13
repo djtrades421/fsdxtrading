@@ -179,8 +179,66 @@
       });
   }
 
+  /* ────────────────────────────────────────────────────────────────────────
+     Plan lock — a different situation from the key lock above.
+
+     The member IS paid up and their key IS attached. They just hold the
+     Nightwing tier, which does not include this page. So: no key field, no
+     "one step left" — say what the page is, what VIP adds, and link to the
+     upgrade. Same CSS, same shape, different ending.
+     ──────────────────────────────────────────────────────────────────────── */
+
+  var UPGRADE_URL = 'memberships.html';
+
+  /** True only for a plan we positively know is the Nightwing tier.
+   *  An unknown or missing plan is never locked out — a mapping gap must not
+   *  cost a VIP member their tools. */
+  function lacksFeature(plan, feature) {
+    if (plan !== 'site') return false;
+    return feature === 'scout';
+  }
+
+  /**
+   * Render the upgrade panel.
+   * @param {Object} o
+   *   o.into  - element id to render into (defaults to 'loading-screen')
+   *   o.title - what this page is, e.g. 'Scout Alerts'
+   *   o.perks - array of strings: what VIP adds
+   */
+  function renderUpgrade(o) {
+    o = o || {};
+    injectCss();
+    var host = document.getElementById(o.into || 'loading-screen');
+    if (!host) return;
+
+    var perks = (o.perks || []).map(function (p) {
+      return '<li>' + String(p).replace(/</g, '&lt;') + '</li>';
+    }).join('');
+
+    host.classList.remove('hidden');
+    host.innerHTML = ''
+      + '<div id="fsdx-lock">'
+      +   '<div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FF6B1F" '
+      +     'stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+      +     '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>'
+      +   '<h2>' + String(o.title || 'This tool').replace(/</g, '&lt;') + ' is part of VIP</h2>'
+
+      +   '<p>Your Nightwing membership covers the web platform and Nexus. '
+      +     'This page is included with a VIP membership.</p>'
+      +   (perks ? '<ul>' + perks + '</ul>' : '')
+      +   '<button class="whop" id="fsdx-upgrade-btn">See VIP membership</button>'
+      +   '<div class="hint">Keep your Nightwing membership as it is — the journal, backtester, '
+      +     'playbook, trade importer and Nexus all stay exactly where they are.</div>'
+      + '</div>';
+
+    var btn = document.getElementById('fsdx-upgrade-btn');
+    if (btn) btn.addEventListener('click', function () { window.location.href = UPGRADE_URL; });
+  }
+
   window.fsdxIsPending = isPending;
   window.fsdxRequireKey = renderLock;
+  window.fsdxLacksFeature = lacksFeature;
+  window.fsdxRequireUpgrade = renderUpgrade;
 
   /* nav-loader.js defines a stub renderer so the gate can never be lost to a
      load-order race. If a page locked before this file arrived, the request is
