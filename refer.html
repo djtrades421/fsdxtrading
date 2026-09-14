@@ -389,7 +389,11 @@
   </main>
 
 <script>
-  /* ─────────── access gate: members only ─────────── */
+  /* ─────────── access gate: signed-in only ───────────
+     Deliberately NOT plan-gated. Anyone can promote the $129 membership —
+     outside affiliates and Nightwing subscribers included. The restriction is
+     on the PRODUCT that earns commission (membership only, never Nightwing),
+     and that lives on the Whop side, not here. */
   (function () {
     var token = null;
     try { token = localStorage.getItem('fsdx_token'); } catch (e) {}

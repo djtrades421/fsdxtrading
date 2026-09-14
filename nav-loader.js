@@ -429,7 +429,9 @@ function prepareNavLabels(root) {
            member is never sent to a page that turns them away. This is
            cosmetic only — the real gate is the 403 on /api/scout/feed. The
            test is deliberately `=== 'site'`: an unknown plan keeps the link,
-           so a mapping gap can never hide a VIP member's own tools. */
+           so a mapping gap can never hide a VIP member's own tools.
+           Refer & Earn is NOT hidden — a Nightwing subscriber can still
+           promote the $129 membership; only Nightwing itself pays nothing. */
         if (plan === 'site') {
           document.querySelectorAll('#nav-content a[href="alerts.html"]')
             .forEach(el => el.classList.add('hidden'));
