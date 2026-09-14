@@ -4,34 +4,12 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X — VIP Dashboard</title>
+  <title>FSD-X — My Profile</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js?v=20260830"></script>
-  <script src="nav-loader.js?v=20260913b"></script>
-  <script src="fsdx-account.js?v=20260913b"></script>
-  <script src="filters.js?v=20260901"></script>
-  <script src="alerts.js?v=20260901"></script>
   <style>
     body { background-color: #000; }
-
-    /* Floating dropdowns sit over live content. fsdx-theme.js forces every
-       .bg-zinc-950 to 84% opacity site-wide, which reads fine on flat sections
-       but leaves these panels competing with the equity curve and calendar
-       behind them. ID selectors outrank the theme's class rule, so this wins
-       without touching the global look. Blur the backdrop and deepen the tint —
-       keeps the glass feel, restores legibility. */
-    #updates-panel, #access-details {
-      backdrop-filter: blur(18px) saturate(130%);
-      -webkit-backdrop-filter: blur(18px) saturate(130%);
-      box-shadow: inset 0 0 0 9999px rgba(4, 9, 17, 0.60),
-                  0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
-    }
-    .mini-cal-day { min-height: 90px; height: 90px; }
-    .mini-cal-day-win  { background: rgba(34,197,94,0.09); border-left: 2px solid rgba(34,197,94,0.45) !important; }
-    .mini-cal-day-loss { background: rgba(239,68,68,0.09); border-left: 2px solid rgba(239,68,68,0.4) !important; }
-    .mini-cal-day:hover { background: rgba(255,255,255,0.03); }
-    .mini-cal-day-win:hover  { background: rgba(34,197,94,0.14) !important; }
-    .mini-cal-day-loss:hover { background: rgba(239,68,68,0.14) !important; }
+    input:-webkit-autofill { -webkit-box-shadow: 0 0 0 30px #09090b inset !important; -webkit-text-fill-color: #fff !important; }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
@@ -47,1732 +25,887 @@
 
   <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
 
+    <!-- Loading -->
     <div id="loading-screen" class="flex-1 flex items-center justify-center">
-      <div class="text-center">
-        <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4"></div>
-        <p class="text-zinc-500 text-sm">Verifying access...</p>
-      </div>
+      <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
     </div>
 
-    <div id="inactive-screen" class="hidden flex-1 flex items-center justify-center px-6">
-      <div class="max-w-md text-center">
-        <div class="w-16 h-16 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center mx-auto mb-4">
-          <svg class="w-8 h-8 text-red-400" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
-        </div>
-        <h2 class="text-xl font-black text-white mb-2">Subscription Inactive</h2>
-        <p class="text-zinc-500 text-sm leading-relaxed mb-6">Your Whop subscription is no longer active. Renew your membership to regain access.</p>
-        <div class="flex gap-3 justify-center">
-          <a href="https://tinyurl.com/fsdxvipaccess" target="_blank" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Renew Membership →</a>
-          <button onclick="handleLogout()" class="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Logout</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="dashboard-content" class="hidden flex-1 flex flex-col">
+    <!-- Content -->
+    <div id="page-content" class="hidden flex-1">
 
       <!-- Header -->
-      <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 py-4 flex items-center justify-between gap-3 flex-wrap">
-        <div class="min-w-0">
-          <h1 id="welcome-msg" class="text-lg font-black text-white">Good morning</h1>
-          <p id="session-info" class="text-xs text-zinc-500 mt-0.5"></p>
+      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-2xl mx-auto flex items-center gap-5">
+          <div id="profile-avatar-large" class="w-16 h-16 rounded-2xl bg-green-500/20 border border-green-500/30 flex items-center justify-center text-green-400 text-2xl font-black shrink-0">?</div>
+          <div>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-1">// Account</div>
+            <h1 id="profile-heading" class="text-2xl font-black text-white tracking-tight">My Profile</h1>
+            <p id="profile-email-display" class="text-zinc-500 text-xs mt-0.5"></p>
+          </div>
         </div>
-        <div class="flex items-center gap-2 sm:gap-3 flex-wrap">
-          <!-- Status pill with dropdown -->
-          <div class="relative">
-            <div id="status-card" class="flex items-center gap-2 px-3 py-1.5 border border-green-500/20 bg-green-500/5 rounded-lg cursor-pointer hover:border-green-500/40 hover:bg-green-500/10 transition" onclick="toggleAccess()">
-              <span class="text-[10px] text-green-400/60 uppercase tracking-wider hidden sm:inline">Status</span>
-              <span id="status-tier" class="text-xs font-black text-green-400">VIP</span>
-              <svg id="access-chevron" class="w-3 h-3 text-green-400/60 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+      </section>
+
+      <div class="px-6 md:px-12 py-10">
+        <div class="max-w-2xl mx-auto space-y-6">
+
+          <!-- Profile info card -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
+            <h2 class="text-sm font-black text-white mb-5">Personal Information</h2>
+            <div id="profile-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
+
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">First Name</label>
+                  <input type="text" id="profile-firstname" placeholder="First"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Last Name</label>
+                  <input type="text" id="profile-lastname" placeholder="Last"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Email Address</label>
+                <input type="email" id="profile-email" placeholder="you@email.com"
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                <p class="text-[11px] text-zinc-600 mt-1.5">Changing your email will update your login credentials.</p>
+              </div>
+
+              <button onclick="saveProfile()" id="profile-btn"
+                class="w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-green-500/10">
+                Save Changes
+              </button>
             </div>
-            <div id="access-details" class="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-2rem)] border border-white/10 bg-zinc-950 shadow-2xl rounded-2xl overflow-hidden z-50" style="display:none;">
-              <div class="p-5">
-                <div class="flex flex-wrap items-center gap-3 mb-4 pb-4 border-b border-white/5">
-                  <div id="expand-status-badge" class="px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border"></div>
-                  <div class="flex flex-col">
-                    <span id="expand-joined" class="text-[10px] text-zinc-500"></span>
-                    <span id="expand-renewal" class="text-[10px] text-zinc-500"></span>
+          </div>
+
+          <!-- Two-Factor Authentication card -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <h2 class="text-sm font-black text-white">Two-Factor Authentication</h2>
+                <p class="text-zinc-500 text-xs mt-1">Use an authenticator app (Google Authenticator, Authy) to secure your account.</p>
+              </div>
+              <div id="twofa-badge" class="hidden px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider"></div>
+            </div>
+            <div id="twofa-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4 border"></div>
+
+            <!-- Which door this actually protects.
+                 2FA here guards email + password sign-in. Continue with Whop is
+                 authenticated by Whop, so a code we hold cannot gate it — saying
+                 otherwise would sell false security to the people most likely to
+                 turn this on. Filled in by renderTwoFactorScope(). -->
+            <div id="twofa-scope" class="hidden rounded-xl px-4 py-3 text-xs mb-4 border border-white/10 bg-zinc-900/60 text-zinc-400 leading-relaxed"></div>
+
+            <!-- Setup flow (hidden until needed) -->
+            <div id="twofa-setup" class="hidden space-y-4 mt-4">
+              <div class="border border-white/10 bg-zinc-900/60 rounded-xl p-4">
+                <p class="text-xs text-zinc-400 mb-3">Scan this QR code with your authenticator app, then enter the 6-digit code below to confirm.</p>
+                <div class="flex justify-center mb-4">
+                  <div id="twofa-qr" class="w-44 h-44 bg-white rounded-xl flex items-center justify-center">
+                    <span class="text-zinc-400 text-xs">Loading...</span>
                   </div>
                 </div>
-                <div class="text-xs font-black text-white uppercase tracking-wider mb-4">Your Access</div>
-                <div id="access-grid" class="grid grid-cols-1 gap-1"></div>
-              </div>
-            </div>
-          </div>
-          <!-- Updates pill with dropdown -->
-          <div class="relative">
-            <div id="updates-pill" class="flex items-center gap-2 px-3 py-1.5 border border-white/10 bg-zinc-900 rounded-lg cursor-pointer hover:border-white/20 hover:bg-zinc-800 transition" onclick="toggleUpdatesPill()">
-              <svg class="w-3 h-3 text-zinc-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
-              <span id="updates-pill-label" class="text-xs font-black text-white max-w-[120px] truncate">Updates</span>
-              <span id="updates-new-dot" class="hidden w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></span>
-              <svg id="updates-pill-chevron" class="w-3 h-3 text-zinc-500 transition-transform shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
-            </div>
-            <div id="updates-panel" class="absolute right-0 top-full mt-2 w-96 max-w-[calc(100vw-2rem)] border border-white/10 bg-zinc-950 shadow-2xl rounded-2xl overflow-hidden z-50" style="display:none;">
-              <div class="px-5 py-4 border-b border-white/5 flex items-center justify-between">
-                <div class="text-xs font-black text-white uppercase tracking-wider">FSD-X Updates</div>
-                <span id="updates-new-badge" class="hidden px-2 py-0.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-bold">New</span>
-              </div>
-              <div id="updates-list" class="divide-y divide-white/5 max-h-80 overflow-y-auto">
-                <div class="px-5 py-8 text-center text-zinc-600 text-xs">No updates posted yet.</div>
-              </div>
-            </div>
-          </div>
-          <a href="https://discord.gg/RePdHESvSx" target="_blank" class="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-lg text-xs text-green-400 font-bold hover:bg-green-500/20 transition">
-            <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
-            Live in Discord
-          </a>
-        </div>
-      </div>
-
-      <div class="flex-1 px-6 md:px-10 py-8 space-y-6">
-
-        <!-- Announcement banner -->
-        <div id="announcement-banner" class="hidden rounded-xl px-4 py-3 text-sm"></div>
-
-        <!-- MARKET SESSIONS -->
-        <div class="border border-white/10 bg-zinc-950/40 rounded-2xl px-4 sm:px-5 py-3">
-          <div class="flex items-center gap-4 flex-wrap">
-            <div class="hidden md:flex items-center gap-2 shrink-0">
-              <span class="w-1.5 h-1.5 rounded-full bg-zinc-600"></span>
-              <span class="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold">Market Sessions</span>
-              <span class="text-[9px] text-zinc-600 normal-case tracking-normal">each market's local time</span>
-            </div>
-            <div id="market-sessions" class="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 w-full md:w-auto md:ml-auto md:flex md:items-center"></div>
-          </div>
-        </div>
-
-        <!-- FILTERS -->
-        <div class="flex items-center justify-between gap-3 flex-wrap">
-          <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-[10px] uppercase tracking-widest text-zinc-600">Showing</span>
-            <div id="dash-account-filter"></div>
-            <span id="dash-filter-note" class="text-[10px] text-zinc-600"></span>
-          </div>
-          <a href="accounts.html" class="ml-auto text-[10px] uppercase tracking-widest text-zinc-600 hover:text-green-400 transition">Manage accounts →</a>
-        </div>
-
-        <!-- STAT CARDS -->
-
-        <!-- KPI CARDS + CHART -->
-        <div id="stats-content" class="space-y-4">
-
-          <!-- KPI cards -->
-          <div id="stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
-
-        </div>
-
-        <!-- EQUITY CURVE + ECONOMIC CALENDAR -->
-        <div class="grid xl:grid-cols-3 gap-4 xl:gap-6 xl:h-[500px]">
-
-          <!-- Equity curve — two thirds -->
-          <div class="xl:col-span-2 min-w-0 flex flex-col border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
-            <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
-              <div class="min-w-0">
-                <div class="flex items-center gap-2">
-                  <svg class="w-4 h-4 text-green-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.5 4.5L21.75 6"/></svg>
-                  <div class="text-xs text-zinc-500 uppercase tracking-[0.2em]">Equity Curve</div>
+                <div class="text-center mb-3">
+                  <p class="text-[10px] text-zinc-600 mb-1 uppercase tracking-wider">Or enter manually</p>
+                  <code id="twofa-secret" class="text-xs text-green-400 font-mono tracking-widest break-all"></code>
                 </div>
-                <div id="chart-final-pnl" class="text-2xl font-black mt-1 text-zinc-600">—</div>
-                <div id="chart-legend" class="flex gap-4 text-[11px] text-zinc-600 mt-0.5"></div>
-              </div>
-              <div id="eq-range" class="flex gap-1 shrink-0 bg-black/40 border border-white/10 rounded-xl p-1"></div>
-            </div>
-            <div id="equity-chart-wrap" class="relative mt-3 flex-1 min-h-[260px]">
-              <div class="flex items-center justify-center h-full text-zinc-600 text-xs">Loading chart...</div>
-            </div>
-          </div>
-
-          <!-- ECONOMIC CALENDAR — one third, beside the curve -->
-          <div class="min-w-0 flex flex-col border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-            <div class="px-4 sm:px-5 py-4 border-b border-white/10 shrink-0">
-              <div class="flex items-center justify-between gap-3 mb-3">
-                <h3 class="text-sm font-black text-white shrink-0 flex items-center gap-2">
-                  <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
-                  Economic Calendar
-                </h3>
-                <a href="https://www.forexfactory.com/calendar" target="_blank" class="px-2 py-1.5 bg-zinc-900 border border-white/10 hover:border-green-500/30 rounded-lg text-[10px] font-black text-zinc-400 hover:text-green-400 transition shrink-0">FF ↗</a>
-              </div>
-              <div class="flex flex-wrap items-center gap-2">
-                <div id="cal-date"></div>
-                <div id="cal-currency"></div>
-                <div id="cal-tz"></div>
-                <div class="flex gap-1 ml-auto">
-                  <button id="imp-H" onclick="toggleImpact('High')" class="px-2 py-1 rounded text-[10px] font-black border border-red-500/40 bg-red-500/10 text-red-400 transition">H</button>
-                  <button id="imp-M" onclick="toggleImpact('Medium')" class="px-2 py-1 rounded text-[10px] font-black border border-yellow-500/40 bg-yellow-500/10 text-yellow-400 transition">M</button>
-                  <button id="imp-L" onclick="toggleImpact('Low')" class="px-2 py-1 rounded text-[10px] font-black border border-white/20 bg-zinc-800 text-zinc-400 transition">L</button>
+                <input type="text" id="twofa-code" placeholder="000000" maxlength="6" inputmode="numeric"
+                  class="w-full bg-black border border-white/10 text-white text-center text-xl font-black tracking-[0.3em] px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                <div class="flex gap-2 mt-3">
+                  <button onclick="verify2FA()" id="twofa-verify-btn"
+                    class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+                    Confirm & Enable
+                  </button>
+                  <button onclick="cancel2FASetup()"
+                    class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">
+                    Cancel
+                  </button>
                 </div>
               </div>
             </div>
-            <div id="cal-body" class="flex-1 min-h-0 max-h-[300px] xl:max-h-none overflow-y-auto">
-              <div class="text-center py-8 text-zinc-600 text-xs">Loading calendar...</div>
+
+            <!-- Disable flow -->
+            <div id="twofa-disable" class="hidden space-y-3 mt-4">
+              <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-xl px-4 py-3 text-xs text-yellow-300/80">
+                Disabling 2FA will make your account less secure. Enter your password to confirm.
+              </div>
+              <input type="password" id="twofa-disable-pw" placeholder="Current password"
+                class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              <div class="flex gap-2">
+                <button onclick="disable2FA()" id="twofa-disable-btn"
+                  class="flex-1 py-2.5 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-400 font-black text-xs uppercase tracking-wider rounded-xl transition">
+                  Disable 2FA
+                </button>
+                <button onclick="document.getElementById('twofa-disable').classList.add('hidden')"
+                  class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">
+                  Cancel
+                </button>
+              </div>
             </div>
+
+            <div id="twofa-actions" class="mt-4"></div>
           </div>
 
-        </div><!-- /equity + econ calendar -->
-
-        <!-- MINI TRADE CALENDAR — full width -->
-        <div>
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-            <!-- Header -->
-            <div class="px-5 py-4 border-b border-white/10 flex items-center justify-between flex-wrap gap-3">
-              <div class="flex items-center gap-3">
-                <button onclick="miniCalPrev()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg></button>
-                <span id="mini-cal-title" class="text-lg font-black text-white w-36 text-center"></span>
-                <button onclick="miniCalNext()" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
+          <!-- Sign in with Whop card -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <h2 class="text-sm font-black text-white">Sign in with Whop</h2>
+                <p class="text-zinc-500 text-xs mt-1">Used once to set your account up. You can close this door when you no longer need it.</p>
               </div>
-              <div class="cal-header-stats flex gap-4 text-sm flex-wrap items-center">
-                <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="mini-cal-monthly" class="font-black">—</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="mini-cal-wr" class="font-black text-emerald-400">—</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="mini-cal-days" class="font-black text-zinc-400">—</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">TRADES</span><span id="mini-cal-trades" class="font-black text-zinc-400">—</span></div>
-                <a href="journal.html" class="text-[10px] text-zinc-500 hover:text-green-400 transition font-bold ml-2">Open Journal →</a>
-              </div>
+              <div id="whoplogin-badge" class="hidden px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider"></div>
             </div>
-            <!-- Grid -->
-            <div class="overflow-x-auto">
-              <div style="min-width:380px">
-                <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
-                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
-                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
-                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
-                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
-                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
-                  <div class="px-3 py-2 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Week</div>
+            <div id="whoplogin-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4 border"></div>
+            <div id="whoplogin-note" class="rounded-xl px-4 py-3 text-xs mb-4 border border-white/10 bg-zinc-900/60 text-zinc-400 leading-relaxed"></div>
+            <div id="whoplogin-actions"></div>
+          </div>
+
+          <!-- Change password card -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 sm:p-8">
+            <h2 id="password-heading" class="text-sm font-black text-white mb-5">Change Password</h2>
+            <div id="password-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border"></div>
+
+            <!-- Shown only to accounts created through Sign in with Whop, which
+                 have no password at all. Without this the card reads as broken:
+                 Current Password can never be filled in. -->
+            <div id="no-password-note" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border border-white/10 bg-zinc-900/60 text-zinc-400 leading-relaxed">
+              <span class="text-white font-bold block mb-0.5">You don't have a password yet</span>
+              You signed in with Whop, so there's nothing to replace — just pick a password below.
+              Continue with Whop keeps working either way.
+            </div>
+
+            <div class="space-y-4">
+              <div id="current-password-row">
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Current Password</label>
+                <div class="relative">
+                  <input type="password" id="current-password" placeholder="••••••••••"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                  <button type="button" onclick="toggleVis('current-password','eye-1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
+                    <svg id="eye-1" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  </button>
                 </div>
-                <div id="mini-cal-grid"></div>
               </div>
+
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">New Password</label>
+                <div class="relative">
+                  <input type="password" id="new-password" placeholder="Min 8 characters"
+                    oninput="checkStrength()"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                  <button type="button" onclick="toggleVis('new-password','eye-2')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
+                    <svg id="eye-2" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  </button>
+                </div>
+                <div class="mt-2 grid grid-cols-2 gap-1">
+                  <div class="flex items-center gap-1.5 text-[11px]" id="r-length"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">8+ characters</span></div>
+                  <div class="flex items-center gap-1.5 text-[11px]" id="r-upper"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Uppercase letter</span></div>
+                  <div class="flex items-center gap-1.5 text-[11px]" id="r-number"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Number</span></div>
+                  <div class="flex items-center gap-1.5 text-[11px]" id="r-special"><span class="w-2.5 h-2.5 rounded-full border border-zinc-700 shrink-0 req-dot"></span><span class="text-zinc-600">Special character</span></div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Confirm New Password</label>
+                <div class="relative">
+                  <input type="password" id="confirm-password" placeholder="Re-enter new password"
+                    oninput="checkMatch()"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 pr-10 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                  <button type="button" onclick="toggleVis('confirm-password','eye-3')" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition">
+                    <svg id="eye-3" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  </button>
+                </div>
+                <div id="match-msg" class="hidden mt-1 text-[11px]"></div>
+              </div>
+
+              <button onclick="changePassword()" id="password-btn"
+                class="w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-black text-xs uppercase tracking-wider rounded-xl transition">
+                Update Password
+              </button>
             </div>
           </div>
 
-        </div>
+          <!-- Account info card (read-only) -->
+          <div class="border border-white/5 bg-zinc-950/20 rounded-2xl p-6">
+            <h2 class="text-sm font-black text-white mb-4">Account Details</h2>
+            <div class="space-y-3 text-xs">
+              <div class="flex justify-between items-center py-2 border-b border-white/5">
+                <span class="text-zinc-500">Membership Tier</span>
+                <span id="account-tier" class="text-green-400 font-bold uppercase">—</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-white/5">
+                <span class="text-zinc-500">Member Since</span>
+                <span id="account-created" class="text-zinc-300">—</span>
+              </div>
+              <!-- The key is what activates Nexus. Masking it and leaving no way
+                   to read it meant the only route to your own key was the Whop
+                   dashboard or the signup email — which is a support ticket
+                   waiting to happen. Reveal + copy, both here. -->
+              <div class="flex justify-between items-center gap-3 py-2">
+                <span class="text-zinc-500 shrink-0">Whop Key</span>
+                <div class="flex items-center gap-1.5 min-w-0">
+                  <span id="account-key" class="text-zinc-400 font-mono truncate">—</span>
+                  <button type="button" id="key-reveal" class="hidden shrink-0 p-1.5 rounded-lg text-zinc-500 hover:text-green-400 hover:bg-white/5 transition"
+                          title="Show key" aria-label="Show key" aria-pressed="false">
+                    <svg id="key-eye-open" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.964-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    <svg id="key-eye-off" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243"/></svg>
+                  </button>
+                  <button type="button" id="key-copy" class="hidden shrink-0 p-1.5 rounded-lg text-zinc-500 hover:text-green-400 hover:bg-white/5 transition"
+                          title="Copy key" aria-label="Copy key">
+                    <svg id="key-copy-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"/></svg>
+                    <svg id="key-copy-done" class="w-4 h-4 hidden text-green-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                  </button>
+                </div>
+              </div>
+              <p id="key-hint" class="hidden text-[11px] text-zinc-600 leading-relaxed pt-1">
+                This is the key that activates the Nexus extension. Also in your
+                <a href="https://whop.com/hub" target="_blank" rel="noopener noreferrer" class="text-zinc-400 hover:text-green-400 underline">Whop dashboard</a>
+                under the Software tab.
+              </p>
+            </div>
+          </div>
 
-        <!-- QUICK ACCESS -->
-        <div class="grid gap-6">
-
-          <!-- QUICK ACCESS -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
-            <button onclick="toggleQuickAccess()" class="w-full px-6 py-4 flex items-center justify-between hover:bg-white/[0.02] transition">
-              <h3 class="text-sm font-black text-white">Quick Access</h3>
-              <svg id="qa-chevron" class="w-3.5 h-3.5 text-zinc-500 transition-transform rotate-180" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+          <!-- Danger zone -->
+          <div class="border border-white/5 rounded-2xl p-6">
+            <h2 class="text-sm font-black text-white mb-1">Session</h2>
+            <p class="text-zinc-500 text-xs mb-4">Log out of your current session on this device.</p>
+            <button onclick="handleLogout()"
+              class="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">
+              Logout
             </button>
-            <div id="qa-content" class="px-6 pb-5 space-y-3">
-              <a href="https://www.tradingview.com" target="_blank" class="flex items-center gap-3 p-3 bg-black border border-white/5 hover:border-green-500/30 rounded-xl transition group">
-                <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
-                <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">Open TradingView</div><div class="text-xs text-zinc-500">Launch your charts</div></div>
-                <svg class="w-3.5 h-3.5 text-zinc-600 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-              </a>
-              <a href="https://chromewebstore.google.com/detail/fsd-x-nexus-%E2%80%94-tradingview/pmanekgahpfnpkgngbimklpmdadcngj" target="_blank" class="flex items-center gap-3 p-3 bg-black border border-white/5 hover:border-green-500/30 rounded-xl transition group">
-                <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-                <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">FSD-X Nexus 2.0</div><div class="text-xs text-zinc-500">Chrome extension — journal, AI, optimizer</div></div>
-                <svg class="w-3.5 h-3.5 text-zinc-600 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-              </a>
-              <a href="https://discord.gg/RePdHESvSx" target="_blank" class="flex items-center gap-3 p-3 bg-black border border-white/5 hover:border-green-500/30 rounded-xl transition group">
-                <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03z"/></svg></div>
-                <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">VIP Discord</div><div class="text-xs text-zinc-500">Live sessions, SCOUT alerts, community</div></div>
-                <svg class="w-3.5 h-3.5 text-zinc-600 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-              </a>
-              <a href="playbook.html#risk" class="flex items-center gap-3 p-3 bg-gradient-to-r from-green-500/10 to-black border border-green-500/30 hover:border-green-500/50 rounded-xl transition group">
-                <div class="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
-                <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">Risk Profile Planner <span class="text-[9px] align-middle bg-green-500/20 text-green-400 font-black px-1.5 py-0.5 rounded ml-1 uppercase tracking-wider">New</span></div><div class="text-xs text-zinc-500">Find your eval + daily-driver setup — $250 to $625</div></div>
-                <svg class="w-3.5 h-3.5 text-zinc-600 ml-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-              </a>
-              <a href="results.html" class="flex items-center gap-3 p-3 bg-black border border-white/5 hover:border-green-500/30 rounded-xl transition group">
-                <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center shrink-0"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
-                <div><div class="text-sm font-bold text-white group-hover:text-green-400 transition">Backtest Research Data</div><div class="text-xs text-zinc-500">Full verified performance breakdown</div></div>
-              </a>
-            </div>
+          </div>
+
+          <!-- Delete Account -->
+          <div class="border border-red-500/10 bg-red-950/10 rounded-2xl p-6">
+            <h2 class="text-sm font-black text-red-400 mb-1">Delete Account</h2>
+            <p class="text-zinc-500 text-xs mb-4">Permanently deletes your account and all data including journal trades and backtest sessions. This cannot be undone.</p>
+            <button onclick="openDeleteModal()"
+              class="px-5 py-2.5 bg-transparent hover:bg-red-950/40 border border-red-500/30 text-red-400 hover:text-red-300 font-bold text-xs uppercase tracking-wider rounded-xl transition">
+              Delete My Account
+            </button>
           </div>
 
         </div>
-
       </div>
     </div>
   </main>
 
   <script>
     const API = 'https://nexus-validator.dfuentes4211.workers.dev';
-    const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
+    let currentUser = null;
+    // Accounts created through Sign in with Whop have no password. Default to
+    // true so a failed profile load never hides the current-password field on
+    // someone who does have one.
+    let _hasPassword = true;
 
-    function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
+    /* Reshape the password card for an account that has never had a password:
+       no "current password" field, an explanation, and a heading that matches
+       what the button actually does. */
+    /* ── Whop key: masked, revealable, copyable ────────────────────────────
+       The key activates Nexus. It used to render as "F-8A9C94••••••••" with
+       no way to see the rest, so the only way to get your own key was the
+       signup email or the Whop dashboard. Members lose both.
 
-    function toggleQuickAccess() {
-      const content = document.getElementById('qa-content');
-      const chevron = document.getElementById('qa-chevron');
-      const isOpen = !content.classList.contains('hidden');
-      content.classList.toggle('hidden', isOpen);
-      chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-    }
+       Masked by default on purpose — this panel gets screen-shared and
+       screenshotted for support, and the key is a licence. Revealing is a
+       deliberate click, and it re-masks when you leave the page. */
+    let keyRevealed = false;
 
-    // These header panels are 320-384px wide and anchored to the right edge of
-    // their pill. On a narrow phone that pushes the left half off-screen, so on
-    // small viewports they get pinned to the viewport instead.
-    function positionHeaderPanel(panel, anchor) {
-      if (!panel || !anchor) return;
-      if (window.innerWidth >= 640) {
-        panel.style.position = '';
-        panel.style.left = panel.style.right = panel.style.top = panel.style.width = '';
-        return;
+    function setupKeyReveal(key) {
+      const out    = document.getElementById('account-key');
+      const reveal = document.getElementById('key-reveal');
+      const copy   = document.getElementById('key-copy');
+      const hint   = document.getElementById('key-hint');
+      if (!out) return;
+
+      if (!key) {
+        out.textContent = '—';
+        return;   // nothing to reveal or copy; buttons stay hidden
       }
-      const r = anchor.getBoundingClientRect();
-      panel.style.position = 'fixed';
-      panel.style.left = '16px';
-      panel.style.right = '16px';
-      panel.style.width = 'auto';
-      panel.style.top = Math.round(r.bottom + 8) + 'px';
-    }
 
-    function repositionOpenHeaderPanels() {
-      [['updates-panel','updates-pill'], ['access-details','status-card']].forEach(function (pair) {
-        const panel = document.getElementById(pair[0]);
-        if (panel && panel.style.display === 'block') {
-          positionHeaderPanel(panel, document.getElementById(pair[1]));
+      const masked = key.slice(0, 8) + '••••••••';
+      const paint = () => {
+        out.textContent = keyRevealed ? key : masked;
+        out.classList.toggle('text-zinc-300', keyRevealed);
+        out.classList.toggle('text-zinc-400', !keyRevealed);
+        document.getElementById('key-eye-open').classList.toggle('hidden', keyRevealed);
+        document.getElementById('key-eye-off').classList.toggle('hidden', !keyRevealed);
+        reveal.title = keyRevealed ? 'Hide key' : 'Show key';
+        reveal.setAttribute('aria-label', reveal.title);
+        reveal.setAttribute('aria-pressed', keyRevealed ? 'true' : 'false');
+      };
+
+      keyRevealed = false;
+      paint();
+      reveal.classList.remove('hidden');
+      copy.classList.remove('hidden');
+      if (hint) hint.classList.remove('hidden');
+
+      reveal.addEventListener('click', () => { keyRevealed = !keyRevealed; paint(); });
+
+      copy.addEventListener('click', async () => {
+        let ok = false;
+        try {
+          await navigator.clipboard.writeText(key);
+          ok = true;
+        } catch (e) {
+          /* clipboard API needs a secure context and permission, and is blocked
+             in some in-app browsers. Fall back to the old selection trick so the
+             button is never a dead end. */
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = key;
+            ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+            document.body.appendChild(ta);
+            ta.select();
+            ok = document.execCommand('copy');
+            document.body.removeChild(ta);
+          } catch (e2) { ok = false; }
+        }
+
+        if (ok) {
+          document.getElementById('key-copy-icon').classList.add('hidden');
+          document.getElementById('key-copy-done').classList.remove('hidden');
+          copy.title = 'Copied';
+          setTimeout(() => {
+            document.getElementById('key-copy-icon').classList.remove('hidden');
+            document.getElementById('key-copy-done').classList.add('hidden');
+            copy.title = 'Copy key';
+          }, 1600);
+        } else {
+          /* Copy failed — reveal it instead so they can select it by hand. */
+          keyRevealed = true;
+          paint();
         }
       });
     }
-    window.addEventListener('resize', repositionOpenHeaderPanels);
-    window.addEventListener('orientationchange', repositionOpenHeaderPanels);
 
-    function toggleUpdatesPill() {
-      const panel = document.getElementById('updates-panel');
-      const chevron = document.getElementById('updates-pill-chevron');
-      const isOpen = panel.style.display !== 'none' && panel.style.display !== '';
-      panel.style.display = isOpen ? 'none' : 'block';
-      chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-      if (!isOpen) positionHeaderPanel(panel, document.getElementById('updates-pill'));
+    function renderPasswordCard(hasPassword) {
+      _hasPassword = hasPassword;
+      const row = document.getElementById('current-password-row');
+      const note = document.getElementById('no-password-note');
+      const heading = document.getElementById('password-heading');
+      const btn = document.getElementById('password-btn');
+      if (row) row.classList.toggle('hidden', !hasPassword);
+      if (note) note.classList.toggle('hidden', hasPassword);
+      if (heading) heading.textContent = hasPassword ? 'Change Password' : 'Set a Password';
+      if (btn) btn.textContent = hasPassword ? 'Update Password' : 'Set Password';
     }
 
-    async function loadUpdates(token) {
-      try {
-        const res = await fetch(`${API}/api/updates`, { headers: { 'Authorization': `Bearer ${token}` } });
-        const data = await res.json();
-        const updates = data.updates || [];
-        const pillLabel = document.getElementById('updates-pill-label');
-        const newDot = document.getElementById('updates-new-dot');
-        const list = document.getElementById('updates-list');
-        const newBadge = document.getElementById('updates-new-badge');
-        if (!updates.length) {
-          if (pillLabel) pillLabel.textContent = 'Updates';
-          return;
-        }
-        const latest = updates[0];
-        const countStr = updates.length + ' update' + (updates.length !== 1 ? 's' : '');
-        if (pillLabel) pillLabel.textContent = countStr;
-        // Show "New" dot + badge if latest is within 3 days
-        const latestMs = latest.createdAt ? new Date(latest.createdAt).getTime() : 0;
-        if (Date.now() - latestMs < 3 * 24 * 60 * 60 * 1000) {
-          newDot?.classList.remove('hidden');
-          newBadge?.classList.remove('hidden');
-        }
-        const typeConfig = {
-          feature:     { label: 'New Feature',  cls: 'bg-green-500/10 text-green-400 border-green-500/20' },
-          update:      { label: 'Update',        cls: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
-          bugfix:      { label: 'Bug Fix',       cls: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' },
-          maintenance: { label: 'Maintenance',   cls: 'bg-zinc-800 text-zinc-400 border-white/10' },
-        };
-        list.innerHTML = updates.map(u => {
-          const tc = typeConfig[u.type] || typeConfig.update;
-          const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-          return `<div class="px-5 py-4">
-            <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${tc.cls}">${tc.label}</span>
-              <span class="text-[10px] text-zinc-600">${dateStr}</span>
-            </div>
-            <div class="text-sm font-bold text-white mb-1">${u.title}</div>
-            ${u.body ? `<p class="text-xs text-zinc-400 leading-relaxed">${u.body}</p>` : ''}
-          </div>`;
-        }).join('');
-      } catch(e) {
-        console.error('Updates load error:', e);
-      }
+    function toggleMobileMenu() {
+      document.getElementById('sidebar-panel').classList.toggle('-translate-x-full');
     }
 
-    function toggleAccess() {
-      const details = document.getElementById('access-details');
-      const chevron = document.getElementById('access-chevron');
-      const isOpen = details.style.display !== 'none' && details.style.display !== '';
-      details.style.display = isOpen ? 'none' : 'block';
-      chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-      if (!isOpen) positionHeaderPanel(details, document.getElementById('status-card'));
-    }
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function(e) {
-      const statusCard = document.getElementById('status-card');
-      const accessDetails = document.getElementById('access-details');
-      if (accessDetails && statusCard && !statusCard.contains(e.target) && !accessDetails.contains(e.target)) {
-        accessDetails.style.display = 'none';
-        const chevron = document.getElementById('access-chevron');
-        if (chevron) chevron.style.transform = '';
-      }
-      const updatesPill = document.getElementById('updates-pill');
-      const updatesPanel = document.getElementById('updates-panel');
-      if (updatesPanel && updatesPill && !updatesPill.contains(e.target) && !updatesPanel.contains(e.target)) {
-        updatesPanel.style.display = 'none';
-        const chevron = document.getElementById('updates-pill-chevron');
-        if (chevron) chevron.style.transform = '';
-      }
-    });
-
-    function renderAccessGrid(tier) {
-      const isTrial = tier === 'trial';
-      const check = `<span class="text-green-400 font-black">✓</span>`;
-      const cross = `<span class="text-zinc-600">—</span>`;
-      const features = [
-        { label: 'Trade Journal', trial: true, pro: true, note: '' },
-        { label: 'Backtest Sessions', trial: true, pro: true, note: isTrial ? 'Limit 3' : 'Unlimited' },
-        { label: 'Performance Stats', trial: true, pro: true, note: '' },
-        { label: 'VIP Discord', trial: true, pro: true, note: '' },
-        { label: 'Nexus Extension', trial: true, pro: true, note: '' },
-        { label: 'AI Chart Analysis', trial: true, pro: true, note: isTrial ? 'Limited scans' : 'Full access' },
-        { label: 'AI Insights', trial: false, pro: true, note: isTrial ? 'Pro only' : '' },
-        { label: 'Strategy Optimizer', trial: false, pro: true, note: isTrial ? 'Pro only' : '' },
-        { label: 'Eval Simulator', trial: false, pro: true, note: isTrial ? 'Pro only' : '' },
-      ];
-      return features.map(f => {
-        const hasAccess = isTrial ? f.trial : f.pro;
-        const noteColor = f.note === 'Pro only' ? 'text-yellow-500' : 'text-zinc-600';
-        return `<div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
-          <div class="flex items-center gap-2">${hasAccess ? check : cross}<span class="text-xs ${hasAccess ? 'text-zinc-300' : 'text-zinc-600'}">${f.label}</span></div>
-          ${f.note ? `<span class="text-[10px] font-bold ${noteColor}">${f.note}</span>` : ''}
-        </div>`;
-      }).join('');
+    function toggleVis(inputId, eyeId) {
+      const input = document.getElementById(inputId);
+      const eye = document.getElementById(eyeId);
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      eye.innerHTML = isPassword
+        ? '<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/>'
+        : '<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>';
     }
 
-    async function handleLogout() {
+    function checkStrength() {
+      const pw = document.getElementById('new-password').value;
+      const checks = { 'r-length': pw.length >= 8, 'r-upper': /[A-Z]/.test(pw), 'r-number': /[0-9]/.test(pw), 'r-special': /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pw) };
+      Object.entries(checks).forEach(([id, met]) => {
+        const row = document.getElementById(id);
+        const dot = row.querySelector('.req-dot');
+        const label = row.querySelector('span:last-child');
+        dot.classList.toggle('bg-green-500', met);
+        dot.classList.toggle('border-green-500', met);
+        dot.classList.toggle('border-zinc-700', !met);
+        dot.innerHTML = met ? '<svg class="w-1.5 h-1.5 text-black" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>' : '';
+        label.classList.toggle('text-zinc-400', met);
+        label.classList.toggle('text-zinc-600', !met);
+      });
+      checkMatch();
+    }
+
+    function checkMatch() {
+      const pw = document.getElementById('new-password').value;
+      const confirm = document.getElementById('confirm-password').value;
+      const msg = document.getElementById('match-msg');
+      if (!confirm) { msg.classList.add('hidden'); return; }
+      msg.classList.remove('hidden');
+      msg.textContent = pw === confirm ? '✓ Passwords match' : '✗ Passwords do not match';
+      msg.className = `mt-1 text-[11px] ${pw === confirm ? 'text-emerald-400' : 'text-red-400'}`;
+    }
+
+    function showMsg(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.classList.remove('hidden');
+      el.className = `rounded-xl px-4 py-3 text-xs border ${type === 'error' ? 'bg-red-950/40 border-red-500/30 text-red-400' : 'bg-emerald-950/40 border-emerald-500/30 text-emerald-400'}`;
+    }
+
+    function handleLogout() {
       const token = localStorage.getItem('fsdx_token');
-      if (token) await fetch(`${API}/api/auth/logout`, { method:'POST', headers:{'Authorization':`Bearer ${token}`} }).catch(()=>{});
-      localStorage.removeItem('fsdx_token'); localStorage.removeItem('fsdx_name'); localStorage.removeItem('fsdx_tier');
+      if (token) fetch(`${API}/api/auth/logout`, { method: 'POST', headers: { 'Authorization': `Bearer ${token}` } }).catch(() => {});
+      localStorage.clear();
       window.location.href = 'login.html';
     }
 
-    function getGreeting() {
-      const h = new Date().getHours();
-      if (h < 12) return 'Good morning'; if (h < 17) return 'Good afternoon'; return 'Good evening';
-    }
+    async function saveProfile() {
+      const firstName = document.getElementById('profile-firstname').value.trim();
+      const lastName = document.getElementById('profile-lastname').value.trim();
+      const email = document.getElementById('profile-email').value.trim();
 
-    // ── Helpers (matching journal style) ──
-    const statCard = (label, val, color, sub='') => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl px-4 py-3 flex items-center gap-3"><div class="flex-1 min-w-0"><div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-0.5">${label}</div><div class="text-xl font-black leading-tight" style="color:${color}">${val}</div>${sub?`<div class="text-[10px] text-zinc-600 mt-0.5 truncate">${sub}</div>`:''}</div></div>`;
+      if (!firstName || !email) return showMsg('profile-msg', 'First name and email are required.', 'error');
+      if (!email.includes('@')) return showMsg('profile-msg', 'Please enter a valid email.', 'error');
 
-    function renderWinRateCard(wr, decided, wins, losses, bes) {
-      const color = wr >= 50 ? '#22c55e' : '#ef4444';
-      const r = 18, circ = 2 * Math.PI * r;
-      const dash = (wr / 100) * circ, gap = circ - dash;
-      const beSub = bes > 0 ? ` · ${bes} BE` : '';
-      return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl px-4 py-3 flex items-center gap-3">
-        <div class="relative flex items-center justify-center shrink-0" style="width:48px;height:48px">
-          <svg width="48" height="48" viewBox="0 0 48 48" style="transform:rotate(-90deg);position:absolute;inset:0">
-            <circle cx="24" cy="24" r="${r}" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
-            <circle cx="24" cy="24" r="${r}" fill="none" stroke="${color}" stroke-width="6"
-              stroke-dasharray="${dash.toFixed(2)} ${gap.toFixed(2)}"
-              stroke-linecap="round" opacity="0.9"/>
-          </svg>
-          <div style="color:${color}" class="text-xs font-black relative z-10">${wr}%</div>
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-0.5">Win Rate</div>
-          <div class="text-xl font-black leading-tight" style="color:${color}">${wr}%</div>
-          <div class="text-[10px] text-zinc-600 mt-0.5">${wins}W · ${losses}L${beSub}</div>
-        </div>
-      </div>`;
-    }
+      const btn = document.getElementById('profile-btn');
+      btn.disabled = true; btn.textContent = 'Saving...';
 
-    function renderNetPnlCard(netPnl) {
-      const color = netPnl > 0 ? '#22c55e' : netPnl < 0 ? '#ef4444' : '#71717a';
-      const sign = netPnl >= 0 ? '+' : '-';
-      const formatted = sign + '$' + Math.abs(netPnl).toFixed(2);
-      return `<div class="border border-white/10 bg-zinc-950/40 rounded-xl px-4 py-3 flex items-center gap-3">
-        <div class="flex-1 min-w-0">
-          <div class="text-[10px] text-zinc-500 uppercase tracking-wider mb-0.5">Net P&amp;L</div>
-          <div class="text-xl font-black leading-tight" style="color:${color}">${formatted}</div>
-          <div class="text-[10px] mt-0.5" style="color:${color};opacity:0.6">${netPnl >= 0 ? '▲ Profitable' : '▼ In drawdown'}</div>
-        </div>
-      </div>`;
-    }
-
-    function showChartTooltip(e, rawLabel, color, dotX, dotY) {
-      const tt = document.getElementById('eq-tooltip');
-      const wrap = document.getElementById('equity-chart-wrap');
-      if (!tt || !wrap) return;
-      const parts = rawLabel.split('·||·');
-      tt.innerHTML = parts.map((p,i) => i===0 ? `<div style="color:#71717a;font-size:10px;margin-bottom:4px">${p}</div>` : i===parts.length-1 ? `<div style="color:${color};font-size:12px;font-weight:700">${p}</div>` : `<div style="color:#e4e4e7;font-size:11px">${p}</div>`).join('');
-      tt.style.display = 'block';
-      const wRect = wrap.getBoundingClientRect();
-      let left = e.clientX - wRect.left + 12;
-      let top = e.clientY - wRect.top - 20;
-      if (left + 180 > wRect.width) left = e.clientX - wRect.left - 180;
-      tt.style.left = left + 'px'; tt.style.top = top + 'px';
-      const svgEl = wrap.querySelector('svg');
-      const uid = wrap._uid;
-      if (uid) {
-        const dot = document.getElementById(uid+'-dot');
-        const vline = document.getElementById(uid+'-vline');
-        if (dot) { dot.setAttribute('cx', dotX); dot.setAttribute('cy', dotY); dot.style.display=''; }
-        if (vline) { vline.setAttribute('x1', dotX); vline.setAttribute('x2', dotX); vline.style.display=''; }
-      }
-    }
-    function hideChartTooltip() {
-      const tt = document.getElementById('eq-tooltip');
-      if (tt) tt.style.display = 'none';
-      const wrap = document.getElementById('equity-chart-wrap');
-      if (!wrap || !wrap._uid) return;
-      const uid = wrap._uid;
-      const dot = document.getElementById(uid+'-dot');
-      const vline = document.getElementById(uid+'-vline');
-      if (dot) dot.style.display = 'none';
-      if (vline) vline.style.display = 'none';
-    }
-
-
-    /* ─────────────────────────────────────────────
-       Market sessions strip
-       Times come from Intl with a timeZone, so DST is handled for us —
-       no offset table to go stale twice a year.
-       ───────────────────────────────────────────── */
-    // `openDays` lists the weekdays a session STARTS on (0=Sun). A session
-    // whose close is at or before its open wraps past midnight, so it finishes
-    // on the following calendar day — Globex opens Sun–Thu and each of those
-    // sessions ends the next afternoon, which is why Friday isn't an open day
-    // even though Friday afternoon trades.
-    // `breaks` are intraday halts: trading stops but the session hasn't ended.
-    const SESSIONS = [
-      // CME Globex — the session that actually matters for NQ/MNQ. Sunday
-      // 17:00 CT straight through to Friday 16:00 CT, halting 16:00–17:00 CT
-      // each weekday. The halt is simply the gap between close and open, so it
-      // needs no break entry.
-      { label: 'Globex',   tz: 'America/Chicago',  open: [17, 0], close: [16, 0],  openDays: [0, 1, 2, 3, 4] },
-      // The three classic trading sessions — the liquidity window around each
-      // financial centre's business day, NOT that city's stock exchange hours.
-      // Each is defined in its OWN local time so the hours stay put and the
-      // browser resolves DST; pegging them to a fixed UTC offset (as some
-      // session tables do) makes them drift an hour twice a year.
-      { label: 'Tokyo',    tz: 'Asia/Tokyo',       open: [9, 0],  close: [18, 0], openDays: [1, 2, 3, 4, 5] },
-      { label: 'London',   tz: 'Europe/London',    open: [8, 0],  close: [17, 0], openDays: [1, 2, 3, 4, 5] },
-      // 17:00 ET is the forex rollover and the CME daily close — so the NY
-      // session and the Globex halt end together, which is the behaviour to
-      // preserve if these hours are ever edited.
-      { label: 'New York', tz: 'America/New_York', open: [8, 0],  close: [17, 0], openDays: [1, 2, 3, 4, 5] }
-    ];
-    const _WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-    function tzNow(tz, d) {
-      const parts = {};
-      new Intl.DateTimeFormat('en-US', {
-        timeZone: tz, hour12: false, weekday: 'short', hour: '2-digit', minute: '2-digit'
-      }).formatToParts(d).forEach(x => parts[x.type] = x.value);
-      let h = parseInt(parts.hour, 10);
-      if (h === 24) h = 0;                       // some engines emit 24 for midnight
-      const m = parseInt(parts.minute, 10);
-      // 24h is kept for the open/close arithmetic; 12h is only for display.
-      const h12 = h % 12 === 0 ? 12 : h % 12;
-      return { h, m, wd: parts.weekday,
-               clock: h12 + ':' + String(m).padStart(2, '0'),
-               ampm: h < 12 ? 'AM' : 'PM' };
-    }
-
-    function sessionState(s, now) {
-      const p = tzNow(s.tz, now);
-      const nowMin = p.h * 60 + p.m;
-      const openMin = s.open[0] * 60 + s.open[1];
-      const closeMin = s.close[0] * 60 + s.close[1];
-      const wd = _WD.indexOf(p.wd);
-      const days = s.openDays || [1, 2, 3, 4, 5];
-      const wraps = closeMin <= openMin;
-
-      // For a wrapping session, any time before the close belongs to the
-      // session that opened YESTERDAY — that's what makes Friday afternoon
-      // Globex open (it's Thursday's session) while Friday 17:00 is not.
-      const sessionDay = (wraps && nowMin < closeMin) ? (wd + 6) % 7 : wd;
-      let isOpen = days.indexOf(sessionDay) !== -1 && (wraps
-        ? (nowMin >= openMin || nowMin < closeMin)
-        : (nowMin >= openMin && nowMin < closeMin));
-
-      // Intraday halt (TSE lunch). Trading stops but the session is still
-      // running, so the countdown targets the reopen, not tomorrow's open.
-      let reopenIn = null;
-      if (isOpen && s.breaks) {
-        for (const [a, b] of s.breaks) {
-          const bs = a[0] * 60 + a[1], be = b[0] * 60 + b[1];
-          if (nowMin >= bs && nowMin < be) { isOpen = false; reopenIn = be - nowMin; break; }
-        }
-      }
-
-      // Minutes until the next open, skipping days this session doesn't trade.
-      let until;
-      if (reopenIn !== null) {
-        until = reopenIn;
-      } else {
-        until = openMin - nowMin;
-        let d = wd;
-        if (until <= 0) { until += 1440; d = (d + 1) % 7; }
-        let guard = 0;
-        while (days.indexOf(d) === -1 && guard++ < 8) { until += 1440; d = (d + 1) % 7; }
-      }
-
-      // Next stop, which for Tokyo before lunch is the break rather than 15:30.
-      let closesIn = null;
-      if (isOpen) {
-        closesIn = closeMin - nowMin;
-        if (closesIn <= 0) closesIn += 1440;      // wrapping session
-        if (s.breaks) s.breaks.forEach(([a]) => {
-          const bs = a[0] * 60 + a[1];
-          if (bs > nowMin && bs - nowMin < closesIn) closesIn = bs - nowMin;
+      const token = localStorage.getItem('fsdx_token');
+      try {
+        const res = await fetch(`${API}/api/auth/profile`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ firstName, lastName, email })
         });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.setItem('fsdx_name', firstName);
+          if (data.emailChangeRequested) {
+            // Email change requires confirmation — show modal
+            _pendingNewEmail = email;
+            document.getElementById('profile-email').value = currentUser.email || ''; // revert field until confirmed
+            document.getElementById('email-confirm-target').textContent = currentUser.email || '';
+            document.getElementById('email-confirm-code').value = '';
+            document.getElementById('email-confirm-error').classList.add('hidden');
+            document.getElementById('email-confirm-modal').classList.remove('hidden');
+            showMsg('profile-msg', 'Check your current email — we sent a code to confirm the change.', 'success');
+          } else {
+            showMsg('profile-msg', 'Profile updated successfully!', 'success');
+          }
+          // Update name display
+          document.getElementById('profile-heading').textContent = firstName + (lastName ? ' ' + lastName : '');
+          document.getElementById('profile-avatar-large').textContent = firstName.charAt(0).toUpperCase();
+        } else {
+          showMsg('profile-msg', data.error || 'Failed to update profile.', 'error');
+        }
+      } catch (err) {
+        showMsg('profile-msg', 'Connection error. Please try again.', 'error');
       }
-
-      return { label: s.label, isOpen, until, clock: p.clock, ampm: p.ampm, closesIn };
+      btn.disabled = false; btn.textContent = 'Save Changes';
     }
 
-    function fmtMins(mins) {
-      if (mins < 60) return mins + 'm';
-      const h = Math.floor(mins / 60), m = mins % 60;
-      // Past ~10 hours the minutes are noise and wrap the cell on a phone
-      if (h < 24) return h + 'h' + (h < 10 && m ? ' ' + m + 'm' : '');
-      const d = Math.floor(h / 24);
-      return d + 'd' + (h % 24 ? ' ' + (h % 24) + 'h' : '');
-    }
+    async function changePassword() {
+      const currentPw = document.getElementById('current-password').value;
+      const newPw = document.getElementById('new-password').value;
+      const confirmPw = document.getElementById('confirm-password').value;
 
-    function renderSessions() {
-      const el = document.getElementById('market-sessions');
-      if (!el) return;
-      const now = new Date();
-      const states = SESSIONS.map(s => sessionState(s, now));
-      // Only the soonest-to-open session gets a countdown — four at once is noise
-      let nextIdx = -1, best = Infinity;
-      states.forEach((st, i) => { if (!st.isOpen && st.until < best) { best = st.until; nextIdx = i; } });
+      // An account with no password has no "current" one to give.
+      if (_hasPassword && !currentPw) return showMsg('password-msg', 'Please enter your current password.', 'error');
+      if (!newPw || !confirmPw) return showMsg('password-msg', 'Please fill in all fields.', 'error');
+      if (newPw !== confirmPw) return showMsg('password-msg', 'New passwords do not match.', 'error');
+      if (newPw.length < 8) return showMsg('password-msg', 'Password must be at least 8 characters.', 'error');
+      if (!/[A-Z]/.test(newPw)) return showMsg('password-msg', 'Password must include an uppercase letter.', 'error');
+      if (!/[0-9]/.test(newPw)) return showMsg('password-msg', 'Password must include a number.', 'error');
+      if (!/[!@#$%^&*]/.test(newPw)) return showMsg('password-msg', 'Password must include a special character.', 'error');
 
-      el.innerHTML = states.map((st, i) => {
-        const dot = st.isOpen
-          ? '<span class="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0" style="box-shadow:0 0 6px rgba(74,222,128,.8)"></span>'
-          : '<span class="w-1.5 h-1.5 rounded-full bg-zinc-700 shrink-0"></span>';
-        const sub = st.isOpen
-          ? `<span class="text-[9px] text-green-400/70">closes ${fmtMins(st.closesIn)}</span>`
-          : (i === nextIdx ? `<span class="text-[9px] text-zinc-500">opens ${fmtMins(st.until)}</span>` : '');
-        return `<div class="flex flex-col md:flex-row md:items-center gap-0.5 md:gap-2 md:pl-5 min-w-0">
-          <div class="flex items-center gap-1.5 min-w-0">
-            ${dot}
-            <span class="text-[9px] uppercase tracking-wider ${st.isOpen ? 'text-zinc-300' : 'text-zinc-600'} truncate">${st.label}</span>
-          </div>
-          <div class="flex items-baseline gap-2 md:gap-1.5">
-            <span class="text-xs font-black ${st.isOpen ? 'text-white' : 'text-zinc-500'} tabular-nums whitespace-nowrap">${st.clock}<span class="text-[9px] font-bold ${st.isOpen ? 'text-zinc-400' : 'text-zinc-600'} ml-0.5">${st.ampm}</span></span>
-            ${sub}
-          </div>
-        </div>`;
-      }).join('');
-    }
+      const btn = document.getElementById('password-btn');
+      btn.disabled = true; btn.textContent = 'Updating...';
 
-    /* ─────────────────────────────────────────────
-       Equity curve range pills
-       Scoped to the chart only — the KPI cards above keep meaning
-       "everything that matches the account filter".
-       ───────────────────────────────────────────── */
-    const EQ_RANGES = [
-      { key: 'all', label: 'All Time', days: null },
-      { key: '90',  label: '90D', days: 90 },
-      { key: '30',  label: '30D', days: 30 },
-      { key: '7',   label: '7D',  days: 7 }
-    ];
-    let eqRange = 'all';
-
-    function renderEqRangePills() {
-      const el = document.getElementById('eq-range');
-      if (!el) return;
-      el.innerHTML = EQ_RANGES.map(r => {
-        const on = r.key === eqRange;
-        return `<button onclick="setEqRange('${r.key}')" class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${
-          on ? 'bg-green-500/15 text-green-400 border border-green-500/30'
-             : 'text-zinc-500 hover:text-zinc-300 border border-transparent'}">${r.label}</button>`;
-      }).join('');
-    }
-
-    function setEqRange(key) {
-      eqRange = key;
-      renderEqRangePills();
-      const wrap = document.getElementById('equity-chart-wrap');
-      if (wrap && wrap._trades) drawEquityCurve(wrap._trades);
-    }
-
-    function sliceByRange(trades) {
-      const r = EQ_RANGES.find(x => x.key === eqRange);
-      if (!r || !r.days) return trades;
-      const cutoff = new Date(Date.now() - r.days * 864e5).toISOString().slice(0, 10);
-      return trades.filter(t => (t.date || '') >= cutoff);
-    }
-
-    /* The chart is drawn into a fixed viewBox sized to its container. If the
-       container changes size without a redraw, the SVG stretches and every unit
-       inside it — padding, stroke widths, label type — scales with it.
-
-       A window resize listener is not enough: collapsing the sidebar widens the
-       content area by ~120px and fires no resize event, which left the curve
-       rendered at the old width and scaled up ~18%. Watch the element instead. */
-    let _eqResizeTimer = null;
-    function scheduleEquityRedraw() {
-      clearTimeout(_eqResizeTimer);
-      _eqResizeTimer = setTimeout(function () {
-        const wrap = document.getElementById('equity-chart-wrap');
-        if (!wrap || !wrap._trades || !wrap._trades.length) return;
-        // Only redraw when the box genuinely differs from what we drew for.
-        if (Math.abs(wrap.clientWidth - (wrap._drawnW || 0)) < 2 &&
-            Math.abs(wrap.clientHeight - (wrap._drawnH || 0)) < 2) return;
-        drawEquityCurve(wrap._trades);
-      }, 120);
-    }
-
-    function watchEquitySize() {
-      const wrap = document.getElementById('equity-chart-wrap');
-      if (!wrap || wrap._sizeWatched) return;
-      wrap._sizeWatched = true;
-      if (typeof ResizeObserver !== 'undefined') {
-        // Redrawing only rewrites the wrap's children, never its own box,
-        // so this cannot feed itself.
-        new ResizeObserver(scheduleEquityRedraw).observe(wrap);
+      const token = localStorage.getItem('fsdx_token');
+      try {
+        const res = await fetch(`${API}/api/auth/change-password`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showMsg('password-msg', data.wasFirstPassword
+            ? 'Password set. You can now sign in with your email or with Whop. Please log in again.'
+            : 'Password updated! Please log in again.', 'success');
+          _hasPassword = true;
+          // Turning Whop sign-in off only becomes possible once a password
+          // exists — reflect that immediately instead of after a reload.
+          renderWhopLogin(currentUser?.whopLoginEnabled !== false, true);
+          renderTwoFactorScope(currentUser?.twoFactorEnabled || false, true);
+          document.getElementById('current-password').value = '';
+          document.getElementById('new-password').value = '';
+          document.getElementById('confirm-password').value = '';
+          setTimeout(() => { handleLogout(); }, 2000);
+        } else {
+          showMsg('password-msg', data.error || 'Failed to update password.', 'error');
+        }
+      } catch (err) {
+        showMsg('password-msg', 'Connection error. Please try again.', 'error');
       }
-      window.addEventListener('resize', scheduleEquityRedraw);   // fallback
+      btn.disabled = false; btn.textContent = _hasPassword ? 'Update Password' : 'Set Password';
     }
 
-    function drawEquityCurve(allTrades) {
-      const wrap = document.getElementById('equity-chart-wrap');
-      if (!wrap) return;
-      wrap._trades = allTrades;                  // unsliced, so range + resize can redraw
-      const trades = sliceByRange(allTrades);
 
-      if (!trades.length) {
-        wrap.innerHTML = '<div class="flex items-center justify-center h-full text-zinc-600 text-xs">No trades in this range.</div>';
-        const fe = document.getElementById('chart-final-pnl');
-        if (fe) { fe.textContent = '—'; fe.className = 'text-2xl font-black mt-1 text-zinc-600'; }
-        const le = document.getElementById('chart-legend');
-        if (le) le.innerHTML = '';
+    // ── 2FA Setup ──
+    let _pending2FASecret = '';
+
+    async function start2FASetup() {
+      const token = localStorage.getItem('fsdx_token');
+      const btn = document.getElementById('twofa-start-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Loading...'; }
+      try {
+        const res = await fetch(`${API}/api/auth/2fa/setup`, {
+          method: 'POST', headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (!data.success) { showMsg('twofa-msg', data.error || 'Failed to start setup.', 'error'); if (btn) { btn.disabled=false; btn.textContent='Enable 2FA'; } return; }
+        _pending2FASecret = data.secret;
+        document.getElementById('twofa-secret').textContent = data.secret;
+        // Generate QR code using a free API
+        const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=176x176&data=' + encodeURIComponent(data.otpauthUrl);
+        const qrEl = document.getElementById('twofa-qr');
+        qrEl.innerHTML = `<img src="${qrUrl}" width="176" height="176" class="rounded-lg" alt="QR Code">`;
+        document.getElementById('twofa-setup').classList.remove('hidden');
+        document.getElementById('twofa-actions').innerHTML = '';
+        setTimeout(() => document.getElementById('twofa-code').focus(), 100);
+      } catch(e) { showMsg('twofa-msg', 'Connection error.', 'error'); }
+      if (btn) { btn.disabled = false; btn.textContent = 'Enable 2FA'; }
+    }
+
+    function cancel2FASetup() {
+      document.getElementById('twofa-setup').classList.add('hidden');
+      document.getElementById('twofa-code').value = '';
+      render2FAActions(currentUser.twoFactorEnabled);
+    }
+
+    async function verify2FA() {
+      const code = document.getElementById('twofa-code').value.trim();
+      if (code.length !== 6) { showMsg('twofa-msg', 'Enter the 6-digit code from your app.', 'error'); return; }
+      const btn = document.getElementById('twofa-verify-btn');
+      btn.disabled = true; btn.textContent = 'Verifying...';
+      const token = localStorage.getItem('fsdx_token');
+      try {
+        const res = await fetch(`${API}/api/auth/2fa/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentUser.twoFactorEnabled = true;
+          document.getElementById('twofa-setup').classList.add('hidden');
+          document.getElementById('twofa-code').value = '';
+          showMsg('twofa-msg', '✓ Two-factor authentication is now enabled.', 'success');
+          render2FAActions(true);
+        } else {
+          showMsg('twofa-msg', data.error || 'Invalid code.', 'error');
+        }
+      } catch(e) { showMsg('twofa-msg', 'Connection error.', 'error'); }
+      btn.disabled = false; btn.textContent = 'Confirm & Enable';
+    }
+
+    async function disable2FA() {
+      const pw = document.getElementById('twofa-disable-pw').value;
+      if (!pw) { showMsg('twofa-msg', 'Enter your password to disable 2FA.', 'error'); return; }
+      const btn = document.getElementById('twofa-disable-btn');
+      btn.disabled = true; btn.textContent = 'Disabling...';
+      const token = localStorage.getItem('fsdx_token');
+      try {
+        const res = await fetch(`${API}/api/auth/2fa/disable`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ password: pw })
+        });
+        const data = await res.json();
+        if (data.success) {
+          currentUser.twoFactorEnabled = false;
+          document.getElementById('twofa-disable').classList.add('hidden');
+          document.getElementById('twofa-disable-pw').value = '';
+          showMsg('twofa-msg', '2FA has been disabled.', 'success');
+          render2FAActions(false);
+        } else {
+          showMsg('twofa-msg', data.error || 'Failed to disable.', 'error');
+        }
+      } catch(e) { showMsg('twofa-msg', 'Connection error.', 'error'); }
+      btn.disabled = false; btn.textContent = 'Disable 2FA';
+    }
+
+    const WHOP_2FA_URL = 'https://help.whop.com/en/articles/10416242-how-to-enable-2fa-two-factor-authentication';
+
+    /* Sign in with Whop is a bootstrap, not a login method: it creates the
+       account and pulls the license key once. Once a password exists, leaving
+       it open means 2FA guards one of two entrances — so let the member close
+       it. Turning it off without a password would be a permanent lockout, so
+       that combination is blocked here and again on the worker. */
+    function renderWhopLogin(enabled, hasPassword) {
+      const badge = document.getElementById('whoplogin-badge');
+      const note = document.getElementById('whoplogin-note');
+      const actions = document.getElementById('whoplogin-actions');
+      if (!badge || !note || !actions) return;
+
+      badge.classList.remove('hidden');
+      badge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider '
+        + (enabled
+            ? 'bg-green-500/10 border border-green-500/20 text-green-400'
+            : 'bg-zinc-800 border border-white/10 text-zinc-500');
+      badge.textContent = enabled ? '● On' : '○ Off';
+
+      if (!enabled) {
+        note.innerHTML = `<span class="text-white font-bold block mb-0.5">Switched off</span>
+          Continue with Whop won't work for this account. Sign in with your email and password.
+          Your membership and renewals are unaffected — they still come from Whop.`;
+        actions.innerHTML = `<button onclick="setWhopLogin(true)" id="whoplogin-btn"
+          class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 hover:border-green-500/30 text-zinc-300 hover:text-green-400 font-bold text-xs rounded-xl transition">Turn back on</button>`;
         return;
       }
 
-      const sorted = [...trades].sort((a,b) =>
-        ((a.date||'')+(a.entryTime||'')) < ((b.date||'')+(b.entryTime||'')) ? -1 : 1
-      );
-
-      const points = [{ equity: 0, date: null, pnl: 0, result: null, ticker: '', grade: '', time: '' }];
-      sorted.forEach(t => {
-        const pnl = parseFloat(t.netPnl) || 0;
-        points.push({ equity: points[points.length-1].equity + pnl, date: t.date, pnl, result: t.result, ticker: t.ticker||'MNQ', grade: t.grade||'', time: t.entryTime||'' });
-      });
-
-      const finalPnl = points[points.length-1].equity;
-      const isPos = finalPnl >= 0;
-      const uid = 'eq' + Date.now();
-
-      const finalEl = document.getElementById('chart-final-pnl');
-      if (finalEl) { finalEl.textContent = (finalPnl>=0?'+':'-')+'$'+Math.abs(finalPnl).toFixed(2); finalEl.className = 'text-2xl font-black mt-1 '+(isPos?'text-emerald-400':'text-red-400'); }
-
-      const legendEl = document.getElementById('chart-legend');
-      if (legendEl) {
-        const dates = points.filter(p=>p.date).map(p=>p.date).sort();
-        if (dates.length >= 2) {
-          const fmt = d => { const p=d.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+p[2]+', '+p[0]; };
-          legendEl.innerHTML = `<span>${fmt(dates[0])} — ${fmt(dates[dates.length-1])}</span>`;
-        }
+      if (!hasPassword) {
+        note.innerHTML = `<span class="text-white font-bold block mb-0.5">This is your only way in</span>
+          Set a password below first. Turning this off without one would lock you out of your account.`;
+        actions.innerHTML = `<button disabled
+          class="px-4 py-2 bg-zinc-900/50 border border-white/5 text-zinc-600 font-bold text-xs rounded-xl cursor-not-allowed">Turn off</button>`;
+        return;
       }
 
-      const W = wrap.clientWidth || 700, H = wrap.clientHeight || 260;
-      // Left pad only needs to clear the widest y-label ("-$1.2K" ≈ 40px at 11px
-      // type); right pad just keeps the last point off the edge. The old 62/20
-      // left a visible dead band down both sides of the plot.
-      const NARROW = W < 480;
-      const PAD_L = NARROW ? 40 : 46, PAD_R = NARROW ? 6 : 10;
-      const PAD_T = 14, PAD_B = 34, CW = W-PAD_L-PAD_R, CH = H-PAD_T-PAD_B;
-      const equities = points.map(p=>p.equity);
-      const rawMin=Math.min(...equities), rawMax=Math.max(...equities), rng=rawMax-rawMin||1;
-      const dataMin=rawMin-rng*0.15, dataMax=rawMax+rng*0.15, dataRange=dataMax-dataMin;
-      const toX = i => PAD_L+(i/(points.length-1||1))*CW;
-      const toY = v => PAD_T+CH-((v-dataMin)/dataRange)*CH;
-
-      function catmullRomPath(pts) {
-        if (pts.length<2) return '';
-        const tension=0.4; let d=`M ${pts[0].x.toFixed(2)} ${pts[0].y.toFixed(2)}`;
-        for (let i=0;i<pts.length-1;i++) {
-          const p0=pts[Math.max(0,i-1)],p1=pts[i],p2=pts[i+1],p3=pts[Math.min(pts.length-1,i+2)];
-          const cp1x=p1.x+(p2.x-p0.x)*tension,cp1y=p1.y+(p2.y-p0.y)*tension;
-          const cp2x=p2.x-(p3.x-p1.x)*tension,cp2y=p2.y-(p3.y-p1.y)*tension;
-          d+=` C ${cp1x.toFixed(2)} ${cp1y.toFixed(2)}, ${cp2x.toFixed(2)} ${cp2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
-        }
-        return d;
-      }
-
-      // Split into green/red segments based on drawdown
-      let peak = 0;
-      const segments = [];
-      let curColor = points[0].equity >= 0 ? 'green' : 'red';
-      let curPts = [{ x: toX(0), y: toY(points[0].equity) }];
-
-      for (let i = 1; i < points.length; i++) {
-        const eq = points[i].equity;
-        const prevEq = points[i-1].equity;
-        if (eq > peak) peak = eq;
-        const inDD = eq < peak && eq < 0;
-        const newColor = inDD ? 'red' : 'green';
-
-        if (newColor !== curColor) {
-          // Interpolate exact zero crossing
-          const denom = Math.abs(prevEq) + Math.abs(eq);
-          const t = denom > 0 ? Math.abs(prevEq) / denom : 0.5;
-          const crossX = toX(i-1) + t * (toX(i) - toX(i-1));
-          const crossY = toY(0);
-          curPts.push({ x: crossX, y: crossY });
-          segments.push({ pts: [...curPts], color: curColor });
-          curPts = [{ x: crossX, y: crossY }];
-          curColor = newColor;
-        }
-        curPts.push({ x: toX(i), y: toY(eq) });
-      }
-      if (curPts.length > 1) segments.push({ pts: curPts, color: curColor });
-
-      // Y-axis ticks
-      function niceStep(range,n) { const r=range/n,mag=Math.pow(10,Math.floor(Math.log10(r))); return [1,2,2.5,5,10].map(m=>m*mag).find(c=>c>=r)||mag*10; }
-      const step=niceStep(dataRange,5); const yTicks=[];
-      for (let v=Math.ceil(dataMin/step)*step;v<=dataMax+step*0.01;v+=step) yTicks.push(parseFloat(v.toFixed(8)));
-
-      const allDates=[...new Set(points.filter(p=>p.date).map(p=>p.date))].sort();
-      const maxXLabels=Math.min(7,allDates.length);
-      const xDates=allDates.length<=maxXLabels?allDates:Array.from({length:maxXLabels},(_,i)=>allDates[Math.round(i/(maxXLabels-1)*(allDates.length-1))]);
-      const fmtY=v=>{const a=Math.abs(v),s=v<0?'-':'';return a>=1000?s+'$'+(a/1000).toFixed(a>=10000?0:1)+'K':s+'$'+a.toFixed(0);};
-      const fmtX=d=>{if(!d)return '';const p=d.split('-');return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1]+' '+parseInt(p[2]);};
-
-      const gridLines=yTicks.map(v=>{const y=toY(v);if(y<PAD_T-2||y>PAD_T+CH+2)return '';const isZero=Math.abs(v)<step*0.01;
-        return `<line x1="${PAD_L}" y1="${y.toFixed(1)}" x2="${(PAD_L+CW).toFixed(1)}" y2="${y.toFixed(1)}" stroke="${isZero?'rgba(255,255,255,0.1)':'rgba(255,255,255,0.04)'}" stroke-width="1"/>
-          <text x="${(PAD_L-8).toFixed(1)}" y="${y.toFixed(1)}" dy="0.35em" text-anchor="end" fill="${isZero?'rgba(255,255,255,0.85)':'rgba(255,255,255,0.7)'}" font-size="11" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${fmtY(v)}</text>`;}).join('');
-
-      // Dates are sampled evenly across the DATE list, but each label is placed
-      // at the x of that date's first trade — and trades are not spread evenly
-      // across days. A day with one trade sits right next to the next day's,
-      // so the labels collide ("Aug 24Aug 25Aug 27"). Measure each label and
-      // drop any that would touch the one before it.
-      const xLabelPts=xDates.map(d=>{const idx=points.findIndex(p=>p.date===d);if(idx<0)return null;
-        const txt=fmtX(d);return {x:toX(idx),txt,w:txt.length*5.6+10};}).filter(Boolean);
-
-      const keptLabels=[];
-      xLabelPts.forEach((L,i)=>{
-        const prev=keptLabels[keptLabels.length-1];
-        const clash=prev&&(L.x-prev.x)<(prev.w+L.w)/2;
-        if(!clash){keptLabels.push(L);return;}
-        // The last label anchors the right end of the range, so when it is the
-        // one colliding, evict whatever it overlaps instead of dropping it.
-        if(i===xLabelPts.length-1){
-          while(keptLabels.length&&(L.x-keptLabels[keptLabels.length-1].x)<(keptLabels[keptLabels.length-1].w+L.w)/2) keptLabels.pop();
-          keptLabels.push(L);
-        }
-      });
-
-      const xLabels=keptLabels.map(L=>
-        `<text x="${L.x.toFixed(1)}" y="${(PAD_T+CH+22).toFixed(1)}" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif">${L.txt}</text>`).join('');
-
-      const hoverRects=points.slice(1).map((p,i)=>{const x=toX(i+1),prevX=toX(i),sliceW=Math.max(8,x-prevX);
-        const col=p.result==='WIN'?'#22c55e':p.result==='LOSS'?'#ef4444':'#a1a1aa';
-        const sign=p.pnl>=0?'+':'-';
-        const tip=[p.date||(p.time?'@ '+p.time:''),`${p.ticker}${p.grade?' ['+p.grade+']':''}`,`${sign}$${Math.abs(p.pnl).toFixed(2)} → $${p.equity.toFixed(2)}`].filter(Boolean).join('·||·');
-        return `<rect x="${(prevX+(x-prevX)*0.1).toFixed(1)}" y="${PAD_T}" width="${sliceW.toFixed(1)}" height="${CH}" fill="transparent" onmouseenter="showChartTooltip(event,'${tip}','${col}',${x.toFixed(1)},${toY(p.equity).toFixed(1)})" onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>`;}).join('');
-
-      const lastLineCol = isPos ? '#22c55e' : '#ef4444';
-      const crosshairDot=`<circle id="${uid}-dot" cx="0" cy="0" r="5" fill="${lastLineCol}" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>`;
-      const crosshairLine=`<line id="${uid}-vline" x1="0" y1="${PAD_T}" x2="0" y2="${PAD_T+CH}" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>`;
-
-      // Build segment SVG paths
-      const showDots = points.length <= 60;
-      const baseY = Math.min(toY(Math.max(0,dataMin)), PAD_T+CH);
-      const segmentSVG = segments.map((seg, si) => {
-        const col = seg.color === 'red' ? '#ef4444' : '#22c55e';
-        const gid = `${uid}-fill-${si}`;
-        const pathD = catmullRomPath(seg.pts);
-        // Fill to the zero line (clamped to chart area)
-        const fillBase = Math.max(Math.min(toY(0), PAD_T + CH), PAD_T);
-        const fillD = pathD + ` L ${seg.pts[seg.pts.length-1].x.toFixed(2)} ${fillBase.toFixed(2)} L ${seg.pts[0].x.toFixed(2)} ${fillBase.toFixed(2)} Z`;
-        return `<defs>
-          <linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="${col}" stop-opacity="0.35"/>
-            <stop offset="40%" stop-color="${col}" stop-opacity="0.15"/>
-            <stop offset="100%" stop-color="${col}" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path d="${fillD}" fill="url(#${gid})"/>
-        <path d="${pathD}" fill="none" stroke="${col}" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.12"/>
-        <path d="${pathD}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>
-        ${showDots ? seg.pts.map(pt => `<circle cx="${pt.x.toFixed(2)}" cy="${pt.y.toFixed(2)}" r="3.5" fill="#09090b" stroke="${col}" stroke-width="2" pointer-events="none"/>`).join('') : ''}`;
-      }).join('');
-
-      wrap.innerHTML=`<svg id="${uid}-svg" width="100%" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">
-        <defs>
-          <filter id="${uid}-glow" x="-20%" y="-50%" width="140%" height="200%">
-            <feGaussianBlur stdDeviation="3" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <clipPath id="${uid}-clip"><rect x="${PAD_L}" y="${PAD_T-2}" width="${CW+1}" height="${CH+4}"/></clipPath>
-        </defs>
-        ${gridLines}${xLabels}
-        <g clip-path="url(#${uid}-clip)">
-          ${segmentSVG}
-          ${crosshairLine}${crosshairDot}${hoverRects}
-        </g>
-      </svg>
-      <div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:11px;white-space:nowrap;font-family:ui-monospace,monospace;color:#e4e4e7;box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>`;
-
-      // Store refs for crosshair, and the size this render was built for —
-      // the ResizeObserver below compares against it.
-      wrap._uid = uid;
-      wrap._drawnW = W;
-      wrap._drawnH = H;
+      note.innerHTML = `<span class="text-white font-bold block mb-0.5">You have a password now</span>
+        Turning this off closes the Whop door, so email and password becomes the only way in —
+        and two-factor then covers your whole account. You can switch it back on any time.`;
+      actions.innerHTML = `<button onclick="setWhopLogin(false)" id="whoplogin-btn"
+        class="px-4 py-2 border border-white/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 font-bold text-xs rounded-xl transition">Turn off Whop sign-in</button>`;
     }
 
-    function renderJournalStats(trades) {
+    async function setWhopLogin(enabled) {
+      if (!enabled && !confirm('Turn off Sign in with Whop?\n\nYou will only be able to sign in with your email and password. You can turn it back on from this page.')) return;
+
+      const btn = document.getElementById('whoplogin-btn');
+      if (btn) { btn.disabled = true; btn.textContent = 'Saving…'; }
+
       try {
-        const statsTop = document.getElementById('stats-top');
-
-        if (!trades.length) {
-          statsTop.innerHTML =
-            statCard('Total Trades','—','#71717a', dashTrades.length ? 'None for this filter' : 'No trades yet') +
-            statCard('Win Rate','—','#71717a') +
-            statCard('Net P&L','—','#71717a') +
-            statCard('Profit Factor','—','#71717a');
-          document.getElementById('chart-final-pnl').textContent = '—';
-          const wrap = document.getElementById('equity-chart-wrap');
-          if (wrap) wrap.innerHTML = '<div class="flex items-center justify-center h-full text-zinc-600 text-xs">' +
-            (dashTrades.length ? 'No trades match this filter.' : 'No trades yet.') + '</div>';
-          return;
-        }
-
-        const wins = trades.filter(t => t.result === 'WIN');
-        const losses = trades.filter(t => t.result === 'LOSS');
-        const bes = trades.filter(t => t.result === 'BE');
-        const decided = wins.length + losses.length;
-        const wr = decided ? Math.round(wins.length / decided * 100) : 0;
-        const netPnl = trades.reduce((s,t) => s + (parseFloat(t.netPnl)||0), 0);
-        const grossWin = wins.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0);
-        const grossLoss = Math.abs(losses.reduce((s,t)=>s+(parseFloat(t.netPnl)||0),0));
-        const pf = grossLoss === 0 ? (grossWin > 0 ? '∞' : '—') : (grossWin/grossLoss).toFixed(2);
-        const pfColor = pf==='∞'?'#22c55e':pf==='—'?'#71717a':parseFloat(pf)>=1?'#22c55e':'#ef4444';
-
-        statsTop.innerHTML =
-          statCard('Total Trades', trades.length, '#ffffff', `${wins.length}W · ${losses.length}L${bes.length?' · '+bes.length+'BE':''}`) +
-          renderWinRateCard(wr, decided, wins.length, losses.length, bes.length) +
-          renderNetPnlCard(netPnl) +
-          statCard('Profit Factor', pf, pfColor);
-
-        drawEquityCurve(trades);
-      } catch(e) {
-        console.error('Journal stats error:', e);
-      }
-    }
-
-
-    // ── Dashboard data + account filter ──
-    // One fetch feeds the KPI cards, the equity curve and the mini calendar.
-    let dashTrades = [], dashAccountFilter = null;
-
-    function tradeOwner(t) { return t.accountName || t.accountType || 'Unassigned'; }
-
-    async function loadDashData(whopKey) {
-      try {
-        const [tr, sr] = await Promise.all([
-          fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key: whopKey }) }),
-          fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-settings', key: whopKey }) })
-        ]);
-        const td = await tr.json(), sd = await sr.json();
-        dashTrades = Array.isArray(td.trades) ? td.trades : [];
-        const saved = Array.isArray(sd.accounts) ? sd.accounts : [];
-
-        // Saved accounts first, then anything that owns trades but was never saved.
-        const counts = {};
-        dashTrades.forEach(t => { const o = tradeOwner(t); counts[o] = (counts[o] || 0) + 1; });
-        const names = saved.map(a => a.name);
-        Object.keys(counts).forEach(o => { if (!names.includes(o)) names.push(o); });
-        const options = names.map(n => ({
-          value: n,
-          label: n,
-          hint: counts[n] ? String(counts[n]) : '0'
-        }));
-
-        if (!dashAccountFilter) {
-          dashAccountFilter = FSDXFilter.create({
-            mount: '#dash-account-filter',
-            label: 'Accounts',
-            options: options,
-            storageKey: 'fsdx_dash_accounts',
-            onChange: applyDashFilter
-          });
-        } else {
-          dashAccountFilter.setOptions(options, { silent: true });
-        }
-        applyDashFilter();
-      } catch (e) {
-        console.error('Dashboard data error:', e);
-        renderJournalStats([]);
-        buildMiniCal([]);
-      }
-    }
-
-    function applyDashFilter() {
-      const trades = (dashAccountFilter && !dashAccountFilter.isAll())
-        ? dashTrades.filter(t => dashAccountFilter.matches(tradeOwner(t)))
-        : dashTrades;
-
-      const note = document.getElementById('dash-filter-note');
-      if (note) {
-        note.textContent = (dashAccountFilter && !dashAccountFilter.isAll())
-          ? trades.length + ' of ' + dashTrades.length + ' trades'
-          : '';
-      }
-      renderJournalStats(trades);
-      buildMiniCal(trades);
-    }
-
-    async function loadAnnouncement(token) {
-      try {
-        const res = await fetch(`${API}/api/announcement`, { headers:{'Authorization':`Bearer ${token}`} });
+        const res = await fetch(`${API}/api/auth/whop-login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('fsdx_token')}` },
+          body: JSON.stringify({ enabled })
+        });
         const data = await res.json();
-        if (data.announcement) {
-          const banner = document.getElementById('announcement-banner');
-          const colors = { info:'bg-blue-500/10 border border-blue-500/20 text-blue-300', success:'bg-green-500/10 border border-green-500/20 text-green-300', warning:'bg-yellow-500/10 border border-yellow-500/20 text-yellow-300' };
-          banner.className = 'rounded-xl px-4 py-3 text-sm ' + (colors[data.announcement.type] || colors.info);
-          banner.textContent = data.announcement.message;
-          banner.classList.remove('hidden');
+        if (data.success) {
+          currentUser.whopLoginEnabled = data.whopLoginEnabled;
+          renderWhopLogin(data.whopLoginEnabled, _hasPassword);
+          showMsg('whoplogin-msg', data.whopLoginEnabled
+            ? 'Sign in with Whop is back on.'
+            : 'Sign in with Whop is off. Use your email and password from now on.', 'success');
+        } else {
+          renderWhopLogin(currentUser.whopLoginEnabled !== false, _hasPassword);
+          showMsg('whoplogin-msg', data.error || 'Could not update the setting.', 'error');
         }
-      } catch(e) {}
-    }
-
-    /* ══════════════════════════════════════════════════════════════════════
-       First-run checklist
-
-       Site-only. Everything to do with the membership itself — TradingView
-       username, claiming the indicators, Discord access — is handled at Whop
-       checkout, so repeating any of it here would just create a second place
-       to give a different answer.
-
-       Shown once. Dismissal is stored on the account rather than in
-       localStorage, so it does not come back when they open the site on their
-       phone.
-       ══════════════════════════════════════════════════════════════════════ */
-    let _profileUser = null;
-
-    function maybeShowWelcome(user, firstName) {
-      if (!user) return;
-      // ?welcome=1 forces it back for testing without clearing the stored flag.
-      const forced = new URLSearchParams(location.search).get('welcome') === '1';
-      if (user.onboardingDismissed && !forced) return;
-
-      const modal = document.getElementById('welcome-modal');
-      if (!modal) return;
-
-      document.getElementById('wm-greeting').textContent = firstName
-        ? `Welcome in, ${firstName}.`
-        : 'Welcome in.';
-
-      /* The account step is always about the same idea — Whop sign-in was a
-         bootstrap and there is one action left to finish the handover. Which
-         action depends on where they are, so the step changes rather than
-         vanishing. Hiding it once they had a password meant nobody was ever
-         told they could close the Whop door. */
-      const needsPassword = user.hasPassword === false;
-      const whopOn = user.whopLoginEnabled !== false;
-
-      const title = document.getElementById('wm-step-account-title');
-      const bodyEl = document.getElementById('wm-step-account-body');
-      const acct = document.getElementById('wm-step-account');
-
-      if (needsPassword) {
-        title.textContent = 'Set a password';
-        bodyEl.innerHTML = 'You signed in with Whop, which was only there to get you set up. '
-          + 'A password gives you a normal login, lets you turn on two-factor, and lets you '
-          + 'switch Whop sign-in off for good. '
-          + '<a href="profile.html" class="text-green-400 hover:underline font-bold">Set one in your profile &rarr;</a>';
-        acct.classList.remove('hidden');
-      } else if (whopOn) {
-        title.textContent = 'Switch Whop sign-in off';
-        bodyEl.innerHTML = "You've got a password, so Whop has done its job — it was only there to "
-          + 'set the account up. Turning it off means your email and password is the only way in, '
-          + 'and two-factor then covers the whole account. '
-          + '<a href="profile.html" class="text-green-400 hover:underline font-bold">Do it in your profile &rarr;</a>';
-        acct.classList.remove('hidden');
-      } else {
-        acct.classList.add('hidden');
+      } catch (err) {
+        renderWhopLogin(currentUser.whopLoginEnabled !== false, _hasPassword);
+        showMsg('whoplogin-msg', 'Connection error. Please try again.', 'error');
       }
-
-      const twofaNote = document.getElementById('wm-2fa-note');
-      if (twofaNote) twofaNote.classList.toggle('hidden', !needsPassword);
-
-      /* Number whatever is actually on screen, in order. Hardcoded numbers go
-         wrong the moment a step hides — and steps here hide by design. */
-      let n = 0;
-      modal.querySelectorAll('[data-wm-step]').forEach(step => {
-        if (step.classList.contains('hidden')) return;
-        const num = step.querySelector('.wm-num');
-        if (num) num.textContent = String(++n);
-      });
-
-      modal.classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
     }
 
-    function closeWelcome() {
-      const modal = document.getElementById('welcome-modal');
-      if (modal) modal.classList.add('hidden');
-      document.body.style.overflow = '';
+    /* Say plainly which sign-in method this 2FA covers.
+
+       There are two doors into an account and they are secured in different
+       places. The code below guards email + password. Continue with Whop is
+       authenticated by Whop before we ever see the member, so our code cannot
+       stand in front of it — the honest fix is to point them at Whop's own 2FA
+       rather than let them believe one switch covers both. */
+    function renderTwoFactorScope(enabled, hasPassword) {
+      const el = document.getElementById('twofa-scope');
+      if (!el) return;
+      const whopLink = `<a href="${WHOP_2FA_URL}" target="_blank" rel="noopener"
+                          class="text-green-400 hover:underline font-bold">turn on 2FA in your Whop account</a>`;
+
+      if (!hasPassword) {
+        // Whop is their only way in, so 2FA here would guard a door they never use.
+        el.innerHTML = `<span class="text-white font-bold block mb-0.5">You sign in with Whop</span>
+          This code protects email and password sign-in, which your account doesn't use yet.
+          To secure the way you actually log in, ${whopLink}.
+          Set a password below if you'd rather have both.`;
+      } else if (enabled) {
+        el.innerHTML = `<span class="text-white font-bold block mb-0.5">Covers email sign-in</span>
+          Your password login now asks for a code. Continue with Whop is verified by Whop
+          instead, so it won't ask — ${whopLink} to protect that door too.`;
+      } else {
+        el.innerHTML = `<span class="text-white font-bold block mb-0.5">Covers email sign-in</span>
+          This protects logging in with your email and password. Continue with Whop is
+          verified by Whop, so also ${whopLink}.`;
+      }
+      el.classList.remove('hidden');
     }
 
-    /* Close first, then record it. The modal is informational, so a failed
-       write costs them one extra sighting — never a stuck overlay on a page
-       they just paid for. */
-    function dismissWelcome() {
-      closeWelcome();
-      fetch(`${API}/api/auth/onboarding`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('fsdx_token')}` },
-        body: JSON.stringify({ dismissed: true })
-      }).catch(() => {});
+    function render2FAActions(enabled) {
+      const badge = document.getElementById('twofa-badge');
+      const actions = document.getElementById('twofa-actions');
+      badge.classList.remove('hidden');
+      if (enabled) {
+        badge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-green-500/10 border border-green-500/20 text-green-400';
+        badge.textContent = '● Enabled';
+        actions.innerHTML = `<button onclick="document.getElementById('twofa-disable').classList.toggle('hidden')" class="px-4 py-2 border border-white/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 font-bold text-xs rounded-xl transition">Disable 2FA</button>`;
+      } else {
+        badge.className = 'px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider bg-zinc-800 border border-white/10 text-zinc-500';
+        badge.textContent = '○ Not enabled';
+        actions.innerHTML = `<button id="twofa-start-btn" onclick="start2FASetup()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 hover:border-green-500/30 text-zinc-300 hover:text-green-400 font-bold text-xs rounded-xl transition">Enable 2FA →</button>`;
+      }
     }
 
-    async function initDashboard() {
+    // ── Email change confirmation ──
+    let _pendingNewEmail = '';
+
+    async function confirmEmailChange() {
+      const code = document.getElementById('email-confirm-code').value.trim();
+      if (code.length !== 6) { document.getElementById('email-confirm-error').textContent = 'Enter the 6-digit code.'; document.getElementById('email-confirm-error').classList.remove('hidden'); return; }
+      const btn = document.getElementById('email-confirm-btn');
+      btn.disabled = true; btn.textContent = 'Confirming...';
+      const token = localStorage.getItem('fsdx_token');
+      try {
+        const res = await fetch(`${API}/api/auth/email-change/confirm`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ code })
+        });
+        const data = await res.json();
+        if (data.success) {
+          document.getElementById('email-confirm-modal').classList.add('hidden');
+          if (data.newToken) {
+            localStorage.setItem('fsdx_token', data.newToken);
+          }
+          // Update display
+          document.getElementById('profile-email').value = _pendingNewEmail;
+          document.getElementById('profile-email-display').textContent = _pendingNewEmail;
+          showMsg('profile-msg', '✓ Email updated successfully.', 'success');
+        } else {
+          document.getElementById('email-confirm-error').textContent = data.error || 'Incorrect code.';
+          document.getElementById('email-confirm-error').classList.remove('hidden');
+        }
+      } catch(e) {
+        document.getElementById('email-confirm-error').textContent = 'Connection error.';
+        document.getElementById('email-confirm-error').classList.remove('hidden');
+      }
+      btn.disabled = false; btn.textContent = 'Confirm Change';
+    }
+
+    async function init() {
       const token = localStorage.getItem('fsdx_token');
       if (!token) { window.location.href = 'login.html'; return; }
 
-      let whopKey = null, tier = 'pro', whopStatus = 'active', whopExpiresAt = null, whopRenewalEnd = null, whopCancelAtPeriodEnd = false, createdAt = null;
-      let rosterRenewal = null, rosterStatus = null, rosterPlanName = null, memberPlan = null;
-      let firstName = localStorage.getItem('fsdx_name') || 'Member';
       try {
-        const res = await fetch(`${API}/api/auth/profile`, { headers:{'Authorization':`Bearer ${token}`} });
-        const data = await res.json();
-        if (data.user) {
-          _profileUser = data.user;
-          whopKey = data.user.whopKey;
-          tier = data.user.tier || 'pro';
-          memberPlan = data.user.plan || null;
-          whopStatus = data.user.whopStatus || 'active';
-          whopExpiresAt = data.user.whopExpiresAt || null;
-          whopRenewalEnd = data.user.whopRenewalEnd || null;
-          whopCancelAtPeriodEnd = data.user.whopCancelAtPeriodEnd || false;
-          createdAt = data.user.createdAt || null;
-          firstName = data.user.firstName || firstName;
-          // Roster enrichment from admin panel imports
-          rosterRenewal = data.user.rosterRenewal || null;
-          rosterStatus = data.user.rosterStatus || null;
-          rosterPlanName = data.user.rosterPlanName || null;
-          localStorage.setItem('fsdx_tier', tier);
-          localStorage.setItem('fsdx_plan', memberPlan || '');
-          localStorage.setItem('fsdx_name', firstName);
-          localStorage.setItem('fsdx_whop_status', data.user.whopStatus || '');
-        }
-      } catch(e) { tier = localStorage.getItem('fsdx_tier') || 'pro'; memberPlan = localStorage.getItem('fsdx_plan') || null; }
+        const res = await fetch(`${API}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const session = await res.json();
+        if (!session.authenticated) { window.location.href = 'login.html'; return; }
 
-      // No Whop key yet → show the unlock panel instead of an empty dashboard.
-      if (typeof fsdxIsPending === 'function' && fsdxIsPending(whopKey)) {
-        fsdxRequireKey({ title: 'your Dashboard', perks: [
-          'Live P&L, win rate and equity curve across your accounts',
-          'Economic calendar and market sessions',
-          'Your journal summary at a glance'
-        ]});
-        return;
-      }
+        // Load full profile
+        const profileRes = await fetch(`${API}/api/auth/profile`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const profileData = await profileRes.json();
+        currentUser = profileData.user || {};
 
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('dashboard-content').classList.remove('hidden');
-      document.getElementById('welcome-msg').textContent = getGreeting() + ', ' + firstName;
+        // Populate fields
+        document.getElementById('profile-firstname').value = currentUser.firstName || '';
+        document.getElementById('profile-lastname').value = currentUser.lastName || '';
+        document.getElementById('profile-email').value = currentUser.email || '';
+        document.getElementById('profile-heading').textContent = [currentUser.firstName, currentUser.lastName].filter(Boolean).join(' ') || 'My Profile';
+        document.getElementById('profile-email-display').textContent = currentUser.email || '';
+        document.getElementById('profile-avatar-large').textContent = (currentUser.firstName || 'M').charAt(0).toUpperCase();
+        document.getElementById('account-tier').textContent = currentUser.tier || 'VIP';
+        document.getElementById('account-created').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '—';
+        setupKeyReveal(currentUser.whopKey);
 
-      // First-run checklist. Only for members who are actually in — a pending
-      // account has already returned above and gets the unlock panel instead.
-      maybeShowWelcome(_profileUser, firstName);
+        renderPasswordCard(currentUser.hasPassword !== false);
+        render2FAActions(currentUser.twoFactorEnabled || false);
+        renderTwoFactorScope(currentUser.twoFactorEnabled || false, currentUser.hasPassword !== false);
+        renderWhopLogin(currentUser.whopLoginEnabled !== false, currentUser.hasPassword !== false);
+        document.getElementById('loading-screen').classList.add('hidden');
+        document.getElementById('page-content').classList.remove('hidden');
 
-      const now = new Date();
-      // Today's date stays in the VIEWER's timezone — that's their "today".
-      const dateStr = now.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
-
-      /* ── Next session ────────────────────────────────────────────────────
-         The session is a single real-world moment: 8:30 AM Central, weekdays.
-         We resolve that moment to an exact instant, then render it in the
-         VIEWER's own timezone — so a New York member reads 9:30 AM EDT and a
-         Chicago member reads 8:30 AM CDT for the same session.
-
-         The old code compared the viewer's local hour against 8:30 as though
-         it were CT, which told a London member 30 minutes before a session
-         that the next one was tomorrow.
-         ─────────────────────────────────────────────────────────────────── */
-      const SESSION_TZ = 'America/Chicago';
-      const SESSION_H = 8, SESSION_M = 30;
-
-      // Milliseconds a timezone is offset from UTC at a given instant.
-      function tzOffsetMs(date, tz) {
-        const p = {};
-        new Intl.DateTimeFormat('en-US', {
-          timeZone: tz, hour12: false, year: 'numeric', month: '2-digit',
-          day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
-        }).formatToParts(date).forEach(x => p[x.type] = x.value);
-        let hh = parseInt(p.hour, 10);
-        if (hh === 24) hh = 0;
-        const asUTC = Date.UTC(+p.year, +p.month - 1, +p.day, hh, +p.minute, +p.second);
-        return asUTC - (Math.floor(date.getTime() / 1000) * 1000);
-      }
-
-      // The exact instant at which a wall clock in `tz` reads y-mo-d h:mi.
-      // Iterated because the offset itself depends on the instant (DST).
-      function instantAt(y, mo, d, h, mi, tz) {
-        let guess = Date.UTC(y, mo, d, h, mi);
-        for (let i = 0; i < 4; i++) {
-          const next = Date.UTC(y, mo, d, h, mi) - tzOffsetMs(new Date(guess), tz);
-          if (next === guess) break;
-          guess = next;
-        }
-        return new Date(guess);
-      }
-
-      function ymdIn(date, tz) {
-        const p = {};
-        new Intl.DateTimeFormat('en-US', {
-          timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short'
-        }).formatToParts(date).forEach(x => p[x.type] = x.value);
-        return { y: +p.year, mo: +p.month - 1, d: +p.day,
-                 wd: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(p.weekday) };
-      }
-
-      // Next weekday 8:30 AM CT that hasn't happened yet.
-      function nextSessionInstant() {
-        const base = ymdIn(now, SESSION_TZ);
-        for (let i = 0; i < 10; i++) {
-          const probe = new Date(Date.UTC(base.y, base.mo, base.d + i, 12, 0));
-          const day = ymdIn(probe, SESSION_TZ);
-          if (day.wd === 0 || day.wd === 6) continue;            // weekends off
-          const inst = instantAt(day.y, day.mo, day.d, SESSION_H, SESSION_M, SESSION_TZ);
-          if (inst.getTime() > now.getTime()) return inst;
-        }
-        return null;
-      }
-
-      function getNextSession() {
-        const inst = nextSessionInstant();
-        if (!inst) return '—';
-
-        // Time on the VIEWER's clock, with their zone abbreviation
-        const time = inst.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-        // Zone abbreviation uses the BROWSER's locale, not en-US: a London member
-        // on en-GB gets "BST" where en-US would only say "GMT+1". The clock itself
-        // stays en-US 12-hour so it matches the rest of the site.
-        let abbr = '';
-        try {
-          abbr = (new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' })
-            .formatToParts(inst).find(x => x.type === 'timeZoneName') || {}).value || '';
-        } catch (e) {}
-        const clock = time + (abbr ? ' ' + abbr : '');
-
-        // Today / Tomorrow judged on the VIEWER's calendar, since the time
-        // shown is theirs — 8:30 CT can land on the next local day out east.
-        const key = dt => dt.toLocaleDateString('en-CA');   // YYYY-MM-DD, local
-        const todayKey = key(now);
-        const tomorrowKey = key(new Date(now.getTime() + 864e5));
-        const instKey = key(inst);
-
-        if (instKey === todayKey)    return 'Today · ' + clock;
-        if (instKey === tomorrowKey) return 'Tomorrow · ' + clock;
-        return inst.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })
-               + ' · ' + clock;
-      }
-      document.getElementById('session-info').textContent = dateStr + '  ·  Next Session: ' + getNextSession();
-
-      // ── Status card config by whopStatus ──
-      const statusMap = {
-        active:    { label: 'VIP',           sub: 'Active membership',    color: 'green',  cardCls: 'border-green-500/20 bg-green-500/5 hover:border-green-500/40',  textCls: 'text-green-400',  badgeCls: 'bg-green-500/10 text-green-400 border-green-500/25' },
-        trialing:  { label: 'VIP Trial',      sub: 'Trial access',         color: 'blue',   cardCls: 'border-blue-500/20 bg-blue-500/5 hover:border-blue-500/40',    textCls: 'text-blue-400',   badgeCls: 'bg-blue-500/10 text-blue-400 border-blue-500/25' },
-        completed: { label: 'VIP Lifetime',   sub: 'Lifetime access',      color: 'purple', cardCls: 'border-purple-500/20 bg-purple-500/5 hover:border-purple-500/40', textCls: 'text-purple-400', badgeCls: 'bg-purple-500/10 text-purple-400 border-purple-500/25' },
-        past_due:  { label: 'VIP',           sub: 'Payment past due',     color: 'yellow', cardCls: 'border-yellow-500/20 bg-yellow-500/5 hover:border-yellow-500/40', textCls: 'text-yellow-400', badgeCls: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/25' },
-        canceled:  { label: 'VIP',           sub: 'Access ending soon',   color: 'red',    cardCls: 'border-red-500/20 bg-red-500/5 hover:border-red-500/40',       textCls: 'text-red-400',    badgeCls: 'bg-red-500/10 text-red-400 border-red-500/25' },
-        expired:   { label: 'VIP',           sub: 'Subscription expired', color: 'red',    cardCls: 'border-red-500/20 bg-red-500/5 hover:border-red-500/40',       textCls: 'text-red-400',    badgeCls: 'bg-red-500/10 text-red-400 border-red-500/25' },
-        inactive:  { label: 'VIP',           sub: 'Subscription inactive','color': 'red',  cardCls: 'border-red-500/20 bg-red-500/5 hover:border-red-500/40',       textCls: 'text-red-400',    badgeCls: 'bg-red-500/10 text-red-400 border-red-500/25' },
-      };
-      // If active but cancel_at_period_end, treat as canceling
-      const effectiveStatus = (whopStatus === 'active' && whopCancelAtPeriodEnd) ? '_canceling' : whopStatus;
-      if (effectiveStatus === '_canceling') {
-        statusMap['_canceling'] = { label: 'VIP', sub: 'Cancels at period end', color: 'yellow', cardCls: 'border-yellow-500/20 bg-yellow-500/5 hover:border-yellow-500/40', textCls: 'text-yellow-400', badgeCls: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/25' };
-      }
-      const sc = statusMap[effectiveStatus] || statusMap['active'];
-
-      // Reflect the member's plan (Plus vs Pro) in the tier label. Falls back to
-      // the status-based label when the plan is unknown, so nothing breaks.
-      if (memberPlan) {
-        const planName = memberPlan === 'pro'  ? 'VIP Pro'
-                       : memberPlan === 'site' ? 'Nightwing'
-                       : 'VIP Plus';
-        if (effectiveStatus === 'completed')      sc.label = planName + ' Lifetime';
-        else if (effectiveStatus === 'trialing')  sc.label = planName + ' Trial';
-        else                                       sc.label = planName;
-      }
-
-      // Apply to status card
-      document.getElementById('status-card').className = `flex items-center gap-2 px-3 py-1.5 border ${sc.cardCls} rounded-lg cursor-pointer transition`;
-      // status-label is now inline in pill
-      document.getElementById('status-tier').textContent = sc.label;
-      document.getElementById('status-tier').className = `text-xs font-black ${sc.textCls}`;
-      // status-sub removed (now shown in dropdown badge only)
-      document.getElementById('access-chevron').className = `w-3 h-3 ${sc.textCls} opacity-60 transition-transform`;
-
-      // Populate expanded panel header
-      const badgeLabels = { active:'Active', trialing:'Trialing', completed:'Lifetime', past_due:'Past Due', canceled:'Canceled', expired:'Expired', inactive:'Inactive', _canceling:'Canceling' };
-      const badge = document.getElementById('expand-status-badge');
-      badge.textContent = badgeLabels[effectiveStatus] || 'Active';
-      badge.className = `px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border ${sc.badgeCls}`;
-
-      const fmtDate = ts => {
-        if (!ts) return null;
-        const d = typeof ts === 'number' ? new Date(ts * 1000) : new Date(ts);
-        return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-      };
-      const joinedEl = document.getElementById('expand-joined');
-      const renewalEl = document.getElementById('expand-renewal');
-      if (createdAt) joinedEl.textContent = 'Joined: ' + fmtDate(createdAt);
-      // Use roster renewal date as most reliable source (from admin Whop exports)
-      // Fall back to KV timestamps if roster not available
-      const effectiveRenewal = rosterRenewal || null;
-      const renewalTs = whopRenewalEnd || whopExpiresAt;
-      const isLifetime = whopStatus === 'completed' || rosterStatus === 'lifetime';
-
-      if (isLifetime) {
-        renewalEl.textContent = 'Lifetime — no renewal needed';
-      } else if (effectiveRenewal) {
-        // Roster date is a YYYY-MM-DD string
-        const [ry, rm, rd] = effectiveRenewal.split('-').map(Number);
-        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        const renewalDate = months[rm-1] + ' ' + rd + ', ' + ry;
-        const msUntil = new Date(ry, rm-1, rd).getTime() - Date.now();
-        const daysUntil = Math.ceil(msUntil / (1000*60*60*24));
-        const countdown = daysUntil > 0 ? ' · in ' + daysUntil + ' day' + (daysUntil===1?'':'s') : ' · today';
-        const isCanceling = ['canceling','trial_cancelled'].includes(rosterStatus) || whopCancelAtPeriodEnd;
-        renewalEl.textContent = (isCanceling ? 'Access ends: ' : 'Renews: ') + renewalDate + countdown;
-      } else if (renewalTs) {
-        const renewalDate = fmtDate(renewalTs);
-        const msUntil = (typeof renewalTs === 'number' ? renewalTs * 1000 : new Date(renewalTs).getTime()) - Date.now();
-        const daysUntil = Math.ceil(msUntil / (1000 * 60 * 60 * 24));
-        const countdown = daysUntil > 0 ? ' · in ' + daysUntil + ' day' + (daysUntil===1?'':'s') : ' · today';
-        renewalEl.textContent = (whopCancelAtPeriodEnd ? 'Access ends: ' : 'Renews: ') + renewalDate + countdown;
-      }
-
-      document.getElementById('access-grid').innerHTML = renderAccessGrid(tier);
-      initCalFilters();
-      renderEqRangePills();
-      watchEquitySize();
-      if (whopKey) loadDashData(whopKey);
-      loadAnnouncement(token);
-      loadUpdates(token);
-    }
-
-    // ── Economic Calendar ──
-    let calEvents = [];
-    let calCurrency = null, calDate = null, calTz = null;
-
-    function initCalFilters() {
-      if (calCurrency) return;
-      calDate = FSDXFilter.create({
-        mount: '#cal-date', label: 'This Week', mode: 'single', value: 'week',
-        options: [ { value:'week', label:'This Week' }, { value:'today', label:'Today' }, { value:'tomorrow', label:'Tomorrow' } ],
-        storageKey: 'fsdx_cal_range', onChange: renderCalendar
-      });
-      calTz = FSDXFilter.create({
-        mount: '#cal-tz', label: 'CT', mode: 'single', value: 'America/Chicago',
-        options: [
-          { value:'America/Chicago', label:'CT' }, { value:'America/New_York', label:'ET' },
-          { value:'America/Denver', label:'MT' }, { value:'America/Los_Angeles', label:'PT' },
-          { value:'Europe/London', label:'GMT' }, { value:'Europe/Paris', label:'CET (Paris)' },
-          { value:'Europe/Berlin', label:'CET (Berlin)' }, { value:'Asia/Tokyo', label:'JST' },
-          { value:'Australia/Sydney', label:'AEST' }, { value:'Asia/Dubai', label:'GST' },
-          { value:'Asia/Singapore', label:'SGT' }
-        ],
-        storageKey: 'fsdx_cal_tz', onChange: renderCalendar
-      });
-      calCurrency = FSDXFilter.create({
-        mount: '#cal-currency',
-        label: 'Currencies',
-        options: ['USD','EUR','GBP','JPY','CAD','AUD','CHF','NZD','CNY'].map(c => ({ value: c, label: c })),
-        storageKey: 'fsdx_cal_currencies',
-        onChange: renderCalendar
-      });
-    }
-    let calImpact = new Set(['High', 'Medium', 'Low']);
-
-    function toggleImpact(level) {
-      if (calImpact.has(level)) calImpact.delete(level); else calImpact.add(level);
-      const on = { High:'text-red-400 border-red-500/40 bg-red-500/10', Medium:'text-yellow-400 border-yellow-500/40 bg-yellow-500/10', Low:'text-zinc-400 border-white/20 bg-zinc-800' };
-      const off = { High:'text-zinc-600 border-white/5 bg-transparent', Medium:'text-zinc-600 border-white/5 bg-transparent', Low:'text-zinc-600 border-white/5 bg-transparent' };
-      ['High','Medium','Low'].forEach(l => {
-        const btn = document.getElementById('imp-' + l[0]);
-        if (btn) btn.className = 'px-2 py-1 rounded text-[10px] font-black border transition ' + (calImpact.has(l) ? on[l] : off[l]);
-      });
-      renderCalendar();
-    }
-
-    function parseFF(xml) {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(xml, 'text/xml');
-      const events = [];
-      doc.querySelectorAll('event').forEach(e => {
-        events.push({ title: e.querySelector('title')?.textContent||'', country: e.querySelector('country')?.textContent||'', date: e.querySelector('date')?.textContent||'', time: e.querySelector('time')?.textContent||'', impact: e.querySelector('impact')?.textContent||'Low', forecast: e.querySelector('forecast')?.textContent||'', previous: e.querySelector('previous')?.textContent||'' });
-      });
-      return events;
-    }
-
-    function convertTime(dateStr, timeStr, tz) {
-      if (!dateStr || !timeStr) return timeStr || '';
-      const tl = timeStr.toLowerCase().trim();
-      if (tl === 'all day' || tl === 'tentative') return timeStr;
-      try {
-        const [m,d,y] = dateStr.split('-');
-        let t = tl.replace(/\s/g,'');
-        const ispm = t.includes('pm'), isam = t.includes('am');
-        t = t.replace('am','').replace('pm','');
-        let [h,min] = t.split(':').map(Number);
-        if (ispm && h !== 12) h += 12; if (isam && h === 12) h = 0;
-        const isoStr = parseInt(y)+'-'+m+'-'+d+'T'+String(h).padStart(2,'0')+':'+String(min||0).padStart(2,'0')+':00';
-        const probe = new Date(isoStr+'Z');
-        // FF times are in UTC — match Nexus exactly
-        const srcMs = new Date(probe.toLocaleString('en-US',{timeZone:'UTC'})) - probe;
-        const tgtMs = new Date(probe.toLocaleString('en-US',{timeZone:tz})) - probe;
-        const adjusted = new Date(probe.getTime() + tgtMs - srcMs);
-        return adjusted.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'UTC'}).replace(' AM','A').replace(' PM','P');
-      } catch(e) { return timeStr; }
-    }
-
-    function todayInTz(tz) {
-      const parts = new Intl.DateTimeFormat('en-US',{timeZone:tz,month:'2-digit',day:'2-digit',year:'numeric'}).formatToParts(new Date());
-      const p = {}; parts.forEach(x => p[x.type] = x.value);
-      return p.month+'-'+p.day+'-'+p.year;
-    }
-
-    function renderCalendar() {
-      const body = document.getElementById('cal-body');
-      if (!body || !calEvents.length) return;
-      const tz = calTz ? calTz.getValue() : 'America/Chicago';
-      const dateFilter = calDate ? calDate.getValue() : 'week';
-      // calCurrency is a multi-select (filters.js); empty = every currency.
-      const todayStr = todayInTz('America/Chicago');
-      const nowCT = new Date(new Date().toLocaleString('en-US',{timeZone:'America/Chicago'}));
-      const tmrCT = new Date(nowCT); tmrCT.setDate(tmrCT.getDate()+1);
-      const tmrStr = String(tmrCT.getMonth()+1).padStart(2,'0')+'-'+String(tmrCT.getDate()).padStart(2,'0')+'-'+tmrCT.getFullYear();
-      let filtered = calEvents.slice();
-      if (dateFilter === 'today') filtered = filtered.filter(e => e.date === todayStr);
-      else if (dateFilter === 'tomorrow') filtered = filtered.filter(e => e.date === tmrStr);
-      filtered = filtered.filter(e => calImpact.has(e.impact));
-      if (calCurrency && !calCurrency.isAll()) filtered = filtered.filter(e => calCurrency.matches(e.country));
-      if (!filtered.length) { body.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">No events found.</div>'; return; }
-
-      // Find next upcoming event (matching Nexus logic)
-      const nowMs = Date.now();
-      let nextIdx = -1;
-      for (let ni = 0; ni < filtered.length; ni++) {
-        const nev = filtered[ni];
-        try {
-          const tl = nev.time.toLowerCase().trim();
-          if (tl === 'all day' || tl === 'tentative') continue;
-          let nt = tl.replace(/\s/g,'');
-          const nIspm = nt.includes('pm'), nIsam = nt.includes('am');
-          nt = nt.replace('am','').replace('pm','');
-          let [nh,nmin] = nt.split(':').map(Number);
-          if (nIspm && nh !== 12) nh += 12; if (nIsam && nh === 12) nh = 0;
-          const [nm,nd,ny] = nev.date.split('-');
-          const nisoStr = parseInt(ny)+'-'+nm+'-'+nd+'T'+String(nh).padStart(2,'0')+':'+String(nmin||0).padStart(2,'0')+':00';
-          const nprobe = new Date(nisoStr+'Z');
-          const nsrcMs = new Date(nprobe.toLocaleString('en-US',{timeZone:'America/Chicago'})) - nprobe;
-          const nevUtcMs = nprobe.getTime() - nsrcMs;
-          if (nevUtcMs <= nowMs) { nextIdx = ni; } else { break; }
-        } catch(e2) {}
-      }
-
-      const impColor = { High:'#ef4444', Medium:'#eab308', Low:'#52525b' };
-      const dots = imp => { const c=impColor[imp]||'#444'; const n=imp==='High'?3:imp==='Medium'?2:1; return Array(3).fill(0).map((_,i)=>`<span style="display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:2px;background:${i<n?c:'#222'}"></span>`).join(''); };
-      const fmtDate = s => { const [m,d,y]=s.split('-'); const dt=new Date(parseInt(y),parseInt(m)-1,parseInt(d)); return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][dt.getDay()]+' '+parseInt(m)+'/'+parseInt(d)+'/'+y; };
-      const GRID = '58px 34px 20px 1fr 44px 44px';
-      let html = `<div style="display:grid;grid-template-columns:${GRID};position:sticky;top:0;z-index:1;background:#111;" class="px-4 py-2 border-b border-white/10 gap-2">
-        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold">Time</div>
-        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold">Cur</div>
-        <div></div>
-        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold">Event</div>
-        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold text-right">Fore</div>
-        <div class="text-[9px] text-zinc-600 uppercase tracking-wider font-bold text-right">Prev</div>
-      </div>`;
-      let lastDate = null;
-      filtered.forEach((ev,i) => {
-        if (ev.date !== lastDate) {
-          html += `<div style="border-left:3px solid #22c55e;background:rgba(34,197,94,0.05);" class="px-4 py-2 border-b border-white/5"><span class="text-[10px] font-black text-green-400 uppercase tracking-wider">${fmtDate(ev.date)}</span></div>`;
-          lastDate = ev.date;
-        }
-        const isNext = i === nextIdx;
-        const isPast = nextIdx !== -1 && i < nextIdx;
-        const isFuture = nextIdx === -1 || i > nextIdx;
-        const dispTime = convertTime(ev.date, ev.time, tz);
-        const impC = impColor[ev.impact]||'#444';
-        const titleColor = ev.impact==='High'?'#fff':ev.impact==='Medium'?'#d4d4d8':'#71717a';
-        const bg = i%2===0?'':'background:rgba(255,255,255,0.01)';
-        const rowBg = isNext ? 'background:rgba(34,197,94,0.06);border-left:2px solid #22c55e;' : bg;
-        const timeColor = isNext ? '#22c55e' : isFuture ? '#ffffff' : '#444';
-        const timeFw = isNext ? '700' : isFuture ? '500' : '400';
-        html += `<div style="display:grid;grid-template-columns:${GRID};${rowBg};align-items:center;" class="px-4 py-2 border-b border-white/[0.04] gap-2">
-          <div style="font-size:10px;color:${timeColor};font-weight:${timeFw};white-space:nowrap">${isNext ? '▶ ' : ''}${dispTime}</div>
-          <div style="font-size:10px;color:${impC};font-weight:700">${ev.country}</div>
-          <div style="display:flex;align-items:center">${dots(ev.impact)}</div>
-          <div style="font-size:10px;color:${isPast?'#444':titleColor};font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ev.title}</div>
-          <div style="font-size:10px;color:${isPast?'#444':'#52525b'};text-align:right;white-space:nowrap">${ev.forecast||'—'}</div>
-          <div style="font-size:10px;color:${isPast?'#444':'#52525b'};text-align:right;white-space:nowrap">${ev.previous||'—'}</div>
-        </div>`;
-      });
-      body.innerHTML = html;
-    }
-
-    async function loadCalendar() {
-      try {
-        const res = await fetch(`${API}/api/calendar`);
-        if (!res.ok) throw new Error('Status ' + res.status);
-        const xml = await res.text();
-        calEvents = parseFF(xml);
-        renderCalendar();
-      } catch(e) {
-        const body = document.getElementById('cal-body');
-        if (body) body.innerHTML = '<div class="text-center py-8 text-zinc-600 text-xs">Could not load calendar.</div>';
+      } catch (err) {
+        window.location.href = 'login.html';
       }
     }
 
-
-    // ── MINI TRADE CALENDAR (mirrors journal renderCalendar) ──
-    let miniCalYear = new Date().getFullYear();
-    let miniCalMonth = new Date().getMonth();
-    let miniByDate = {}; // { 'YYYY-MM-DD': { pnl, count } }
-
-    function fmtMiniShort(v) {
-      const a = Math.abs(v), s = v < 0 ? '-' : '+';
-      return a >= 1000 ? s + '$' + (a/1000).toFixed(1) + 'K' : s + '$' + a.toFixed(0);
-    }
-    function fmtMiniFull(v) {
-      const s = v < 0 ? '-' : '+';
-      return s + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    }
-
-    function buildMiniCal(trades) {
-      miniByDate = {};
-      (trades || []).forEach(t => {
-        if (!t.date) return;
-        if (!miniByDate[t.date]) miniByDate[t.date] = { pnl: 0, count: 0, wins: 0, losses: 0 };
-        miniByDate[t.date].pnl += parseFloat(t.netPnl) || 0;
-        miniByDate[t.date].count++;
-        if (t.result === 'WIN') miniByDate[t.date].wins++;
-        else if (t.result === 'LOSS') miniByDate[t.date].losses++;
-      });
-      renderMiniCal();
-    }
-
-    function renderMiniCal() {
-      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-      const titleEl = document.getElementById('mini-cal-title');
-      if (titleEl) titleEl.textContent = months[miniCalMonth] + ' ' + miniCalYear;
-
-      /* Header stats — all scoped to the month being displayed.
-         The journal's version mixes scopes (its NET P&L / WIN RATE / TRADES are
-         all-time while MONTHLY / DAYS are month-only). That works there because
-         the calendar is the whole page. Here the KPI cards above already show the
-         all-time figures, so repeating them would put two identical numbers on
-         one screen and invite reading them as month values. */
-      let monthPnl = 0, monthDays = 0, monthTrades = 0, monthWins = 0, monthLosses = 0;
-      Object.keys(miniByDate).forEach(ds => {
-        const d = new Date(ds + 'T00:00:00');
-        if (d.getFullYear() === miniCalYear && d.getMonth() === miniCalMonth) {
-          const day = miniByDate[ds];
-          monthPnl += day.pnl;
-          monthDays++;
-          monthTrades += day.count;
-          monthWins += day.wins;
-          monthLosses += day.losses;
-        }
-      });
-      const decided = monthWins + monthLosses;
-      const monthWr = decided ? Math.round(monthWins / decided * 100) : null;
-
-      const mEl = document.getElementById('mini-cal-monthly');
-      if (mEl) { mEl.textContent = fmtMiniFull(monthPnl); mEl.className = 'font-black ' + (monthPnl >= 0 ? 'text-emerald-400' : 'text-red-400'); }
-
-      const wrEl = document.getElementById('mini-cal-wr');
-      if (wrEl) {
-        wrEl.textContent = monthWr !== null ? monthWr + '%' : '—';
-        wrEl.className = 'font-black ' + (monthWr === null ? 'text-zinc-500'
-          : monthWr >= 55 ? 'text-emerald-400' : monthWr >= 45 ? 'text-zinc-300' : 'text-red-400');
-      }
-
-      const dEl = document.getElementById('mini-cal-days');
-      if (dEl) { dEl.textContent = monthDays + ' day' + (monthDays !== 1 ? 's' : '') + ' traded'; }
-
-      const tEl = document.getElementById('mini-cal-trades');
-      if (tEl) { tEl.textContent = monthTrades + ' trade' + (monthTrades !== 1 ? 's' : ''); }
-
-      const grid = document.getElementById('mini-cal-grid');
-      if (!grid) return;
-
-      const daysInMonth = new Date(miniCalYear, miniCalMonth + 1, 0).getDate();
-      const today = new Date().toISOString().slice(0, 10);
-
-      // Weekdays only (Mon–Fri), same as journal
-      const weekdays = [];
-      for (let d = 1; d <= daysInMonth; d++) {
-        const dow = new Date(miniCalYear, miniCalMonth, d).getDay();
-        if (dow !== 0 && dow !== 6) weekdays.push(d);
-      }
-      const firstDow = new Date(miniCalYear, miniCalMonth, weekdays[0]).getDay() - 1; // 0=Mon … 4=Fri
-      let cells = [];
-      for (let i = 0; i < firstDow; i++) cells.push(null);
-      weekdays.forEach(d => cells.push(d));
-      while (cells.length % 5 !== 0) cells.push(null);
-
-      grid.innerHTML = '';
-      for (let r = 0; r < cells.length / 5; r++) {
-        const row = document.createElement('div');
-        row.className = 'grid grid-cols-6 border-b border-white/[0.06] last:border-0';
-        let rowPnl = 0;
-
-        for (let c = 0; c < 5; c++) {
-          const d = cells[r * 5 + c];
-          const cell = document.createElement('div');
-          cell.className = 'mini-cal-day border-r border-white/[0.06] p-3';
-
-          if (d) {
-            const ds = miniCalYear + '-' + String(miniCalMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-            const data = miniByDate[ds];
-            const isToday = ds === today;
-
-            if (data) rowPnl += data.pnl;
-            if (isToday) cell.style.outline = '1px solid rgba(34,197,94,0.3)';
-
-            if (data) {
-              cell.classList.add(data.pnl > 0 ? 'mini-cal-day-win' : 'mini-cal-day-loss');
-              cell.style.cursor = 'pointer';
-              cell.title = 'View ' + ds + ' in journal';
-              cell.onclick = () => { window.location.href = 'journal.html?date=' + ds + '&tab=history'; };
-            }
-
-            // Date number
-            const dateDiv = document.createElement('div');
-            dateDiv.className = isToday ? 'text-xs font-black text-green-400 mb-1' : 'text-xs font-bold text-zinc-500 mb-1';
-            dateDiv.textContent = (miniCalMonth + 1) + '/' + d;
-            cell.appendChild(dateDiv);
-
-            if (data) {
-              const pnlDiv = document.createElement('div');
-              pnlDiv.className = 'text-sm font-black ' + (data.pnl >= 0 ? 'text-emerald-400' : 'text-red-400');
-              pnlDiv.textContent = fmtMiniShort(data.pnl);
-              cell.appendChild(pnlDiv);
-
-              const countDiv = document.createElement('div');
-              countDiv.className = 'text-[10px] text-zinc-500 mt-0.5';
-              countDiv.textContent = data.count + ' trade' + (data.count !== 1 ? 's' : '');
-              cell.appendChild(countDiv);
-            }
-          }
-          row.appendChild(cell);
-        }
-
-        // Weekly total col (matches journal)
-        const wc = document.createElement('div');
-        wc.className = 'mini-cal-day p-3 flex flex-col items-end justify-start bg-zinc-950/30';
-        const wcInner = document.createElement('div');
-        wcInner.className = 'text-sm font-black ' + (rowPnl >= 0 ? 'text-emerald-400' : 'text-red-400');
-        wcInner.textContent = rowPnl !== 0 ? fmtMiniShort(rowPnl) : '—';
-        wc.appendChild(wcInner);
-        row.appendChild(wc);
-        grid.appendChild(row);
-      }
-    }
-
-    function miniCalPrev() { miniCalMonth--; if (miniCalMonth < 0) { miniCalMonth = 11; miniCalYear--; } renderMiniCal(); }
-    function miniCalNext() { miniCalMonth++; if (miniCalMonth > 11) { miniCalMonth = 0; miniCalYear++; } renderMiniCal(); }
-
-    loadCalendar();
-    renderSessions();
-    setInterval(renderSessions, 30000);   // clocks + countdowns tick without a reload
-    renderEqRangePills();
-    initDashboard();
-
+    init();
   </script>
-  <!-- ── First-run checklist ────────────────────────────────────────────── -->
-  <div id="welcome-modal" class="hidden fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-    <div class="w-full max-w-md bg-zinc-950 border border-white/10 rounded-2xl p-6 sm:p-7 my-8">
 
-      <div class="mb-5">
-        <div class="inline-flex items-center justify-center w-11 h-11 rounded-xl bg-green-500/10 border border-green-500/20 mb-3">
-          <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+  <!-- Delete Account Modal -->
+  <div id="delete-account-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
+    <div class="bg-zinc-900 border border-red-500/20 rounded-2xl p-6 w-full max-w-md shadow-2xl mx-4">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+          <svg class="w-4 h-4 text-red-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+          </svg>
         </div>
-        <h2 id="wm-greeting" class="text-lg font-black text-white">Welcome in.</h2>
-        <p class="text-zinc-500 text-xs mt-1">A few things to set up before tomorrow's open.</p>
-      </div>
-
-      <!-- 1. Indicators. The reason they bought. Whop-side, documented on setup.html. -->
-      <div data-wm-step class="border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
-        <div class="flex items-start gap-2.5">
-          <span class="wm-num text-green-400 font-black text-xs mt-0.5">1</span>
-          <div>
-            <div class="text-xs font-bold text-white">Claim your indicators on Whop</div>
-            <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
-              ORB PRO is invite-only, so it has to be claimed before it shows up in your TradingView
-              scripts. You'll need your TradingView <em>username</em>, not your email.
-              <a href="https://whop.com/joined/dj-trades-fsdx/" target="_blank" rel="noopener"  class="text-green-400 hover:underline font-bold">Claim on Whop &rarr;</a> <a href="setup.html#step-2" class="text-zinc-600 hover:text-zinc-400">walkthrough</a>
-            </div>
-          </div>
+        <div>
+          <h3 class="text-white font-black text-sm">Delete Account</h3>
+          <p class="text-red-400 text-xs">This action is permanent and cannot be undone</p>
         </div>
       </div>
-
-      <!-- 2. Discord, also claimed through Whop -->
-      <div data-wm-step class="border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
-        <div class="flex items-start gap-2.5">
-          <span class="wm-num text-green-400 font-black text-xs mt-0.5">2</span>
-          <div>
-            <div class="text-xs font-bold text-white">Claim your Discord access on Whop</div>
-            <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
-              Same place — claim it on your Whop membership and authorize Discord. That's what gets you
-              into the live trade room, 8:30 AM CT every market morning.
-              <a href="https://whop.com/joined/dj-trades-fsdx/" target="_blank" rel="noopener"  class="text-green-400 hover:underline font-bold">Claim on Whop &rarr;</a> <a href="setup.html#step-1" class="text-zinc-600 hover:text-zinc-400">walkthrough</a>
-            </div>
-          </div>
-        </div>
+      <p class="text-zinc-400 text-xs mb-4 leading-relaxed">All your data will be permanently deleted — journal trades, backtest sessions, settings, and your login credentials.</p>
+      <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Enter your password to confirm</label>
+      <input id="delete-confirm-password" type="password" placeholder="Your password"
+        onkeydown="if(event.key==='Enter')submitDeleteAccount()"
+        class="w-full bg-black border border-red-500/20 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-red-500/50 placeholder-zinc-700 mb-3"/>
+      <div id="delete-account-msg" class="hidden rounded-lg px-3 py-2 text-xs border border-red-500/30 bg-red-950/40 text-red-400 mb-3"></div>
+      <div class="flex gap-3">
+        <button onclick="closeDeleteModal()" class="flex-1 py-2.5 rounded-xl border border-white/10 text-zinc-400 text-xs font-bold hover:bg-white/5 transition">Cancel</button>
+        <button id="delete-account-btn" onclick="submitDeleteAccount()" class="flex-1 py-2.5 rounded-xl bg-red-500/80 hover:bg-red-500 text-white text-xs font-bold transition">Delete My Account</button>
       </div>
+    </div>
+  </div>
 
-      <!-- 3. Finish the handover from Whop. Text is set by maybeShowWelcome():
-           "Set a password" first, then "Switch Whop sign-in off" once they
-           have one. Hidden only when both are already done. -->
-      <div id="wm-step-account" data-wm-step class="hidden border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
-        <div class="flex items-start gap-2.5">
-          <span class="wm-num text-green-400 font-black text-xs mt-0.5">3</span>
-          <div>
-            <div id="wm-step-account-title" class="text-xs font-bold text-white">Set a password</div>
-            <div id="wm-step-account-body" class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. 2FA -->
-      <div data-wm-step class="border border-white/10 bg-black/40 rounded-xl p-4 mb-3">
-        <div class="flex items-start gap-2.5">
-          <span class="wm-num text-green-400 font-black text-xs mt-0.5">4</span>
-          <div>
-            <div class="text-xs font-bold text-white">Turn on two-factor</div>
-            <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
-              An authenticator code on top of your password.<span id="wm-2fa-note" class="hidden"> Needs a password first.</span>
-              <a href="profile.html" class="text-green-400 hover:underline font-bold">Enable it in your profile &rarr;</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 5. What's in here -->
-      <div data-wm-step class="border border-white/10 bg-black/40 rounded-xl p-4 mb-5">
-        <div class="flex items-start gap-2.5">
-          <span class="wm-num text-green-400 font-black text-xs mt-0.5">5</span>
-          <div>
-            <div class="text-xs font-bold text-white">Have a look around</div>
-            <div class="text-[11px] text-zinc-500 mt-0.5 leading-relaxed">
-              <a href="playbook.html" class="text-green-400 hover:underline font-bold">Playbook</a> for today's rules and session clock,
-              <a href="backtest.html" class="text-green-400 hover:underline font-bold">Backtest</a> for the historical sessions, and
-              <a href="alerts.html" class="text-green-400 hover:underline font-bold">Scout Alerts</a> for live signals.
-              Your dashboard fills in once you start logging trades.
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <button onclick="dismissWelcome()" id="wm-done-btn"
-        class="w-full py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-        Got it
+  <script>
+    function openDeleteModal() {
+      document.getElementById('delete-confirm-password').value = '';
+      document.getElementById('delete-account-msg').classList.add('hidden');
+      document.getElementById('delete-account-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('delete-confirm-password').focus(), 50);
+    }
+    function closeDeleteModal() {
+      document.getElementById('delete-account-modal').classList.add('hidden');
+    }
+    async function submitDeleteAccount() {
+      const password = document.getElementById('delete-confirm-password').value;
+      if (!password) return;
+      const btn = document.getElementById('delete-account-btn');
+      const msg = document.getElementById('delete-account-msg');
+      btn.disabled = true; btn.textContent = 'Deleting…';
+      try {
+        const token = localStorage.getItem('fsdx_token');
+        const res = await fetch(`${API}/api/auth/delete-account`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        if (data.success) {
+          localStorage.clear();
+          window.location.href = 'login.html';
+        } else {
+          msg.textContent = data.error || 'Deletion failed.';
+          msg.classList.remove('hidden');
+          btn.disabled = false; btn.textContent = 'Delete My Account';
+        }
+      } catch {
+        msg.textContent = 'Connection error. Please try again.';
+        msg.classList.remove('hidden');
+        btn.disabled = false; btn.textContent = 'Delete My Account';
+      }
+    }
+  </script>
+  <script src="nav-loader.js?v=20260913b"></script>
+  <script src="alerts.js"></script>
+  <!-- Email change confirmation modal -->
+  <div id="email-confirm-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
+    <div class="bg-zinc-950 border border-green-500/20 rounded-2xl w-full max-w-sm p-6">
+      <div class="text-3xl mb-3 text-center">📧</div>
+      <h2 class="text-base font-black text-white mb-1 text-center">Confirm New Email</h2>
+      <p class="text-zinc-500 text-xs mb-1 text-center">We sent a 6-digit code to your <span class="text-white font-bold">current</span> email to confirm this was you.</p>
+      <p id="email-confirm-target" class="text-green-400 font-bold text-xs text-center mb-5"></p>
+      <div id="email-confirm-error" class="hidden bg-red-950/40 border border-red-500/30 rounded-xl px-4 py-3 text-xs text-red-400 mb-4"></div>
+      <input type="text" id="email-confirm-code" placeholder="000000" maxlength="6" inputmode="numeric"
+        class="w-full bg-black border border-white/10 text-white text-center text-2xl font-black tracking-[0.4em] px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 mb-3">
+      <button onclick="confirmEmailChange()" id="email-confirm-btn"
+        class="w-full py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition mb-2">
+        Confirm Change
       </button>
-
+      <button onclick="document.getElementById('email-confirm-modal').classList.add('hidden')"
+        class="w-full py-2 text-xs text-zinc-600 hover:text-zinc-400 transition">Cancel</button>
     </div>
   </div>
 
