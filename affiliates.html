@@ -226,11 +226,14 @@
         why:'Multi-asset prop firm covering futures, forex, and indices. Good option if you want to diversify across different markets beyond just NQ/MNQ.',
         pts:['Futures, forex and indices'], rules:[] },
 
-      { n:'FundedNext', ty:'Multi-asset prop firm', pct:0, code:'', dd:'',
-        url:'https://tinyurl.com/DJTradesFSDX',
-        why:'Covers forex, indices, and crypto challenge paths. Using the link below ties your account to the FSD-X network and directly supports ongoing tool development.',
-        pts:['Forex, indices and crypto paths'], rules:[],
-        note:'Standard rates apply unless a platform-wide promo is active. No exclusive code.' },
+      { n:'FundedNext', ty:'Multi-asset prop firm', pct:0, pctLabel:'Varies', code:'DJFSDX', dd:'',
+        url:'https://fundednext.com/?fpr=DJFSDX',
+        why:'Futures, CFD, forex and crypto challenge paths under one account. FundedNext runs a large catalogue of challenges and the discount is set per product, so the amount you get depends on which account you pick.',
+        pts:['Futures, CFD, forex and crypto paths','Discount applied per product line','One-step and two-step challenge options','New and returning buyer offers'], rules:[],
+        tiers:['Futures challenges — discounted for new buyers, smaller discount for returning buyers',
+               'Stellar / CFD challenges — discounted across 1-step, 2-step and Lite sizes',
+               'Rapid Pro accounts — fixed-dollar discount instead of a percentage'],
+        note:'Discounts vary by account type and size, and FundedNext rotates them. Use the link, apply code DJFSDX at checkout, and the current offer for that specific account shows on the payment screen.' },
     ];
 
     const TOOLS = [
@@ -283,6 +286,14 @@
                   return '<span class="text-[10px] font-bold tracking-wide text-zinc-300 bg-zinc-900 border border-white/10 rounded-md px-2 py-1">'
                     + escA(r) + '</span>'; }).join('') + '</div>'
               : '')
+        +   (p.tiers && p.tiers.length
+              ? '<div class="mt-3.5 bg-zinc-900/60 border border-white/5 rounded-lg p-3">'
+                + '<div class="text-[10px] font-black uppercase tracking-wider text-zinc-500 mb-2">How the discount is applied</div>'
+                + p.tiers.map(function (t) {
+                    return '<div class="flex items-start gap-2 text-[11px] text-zinc-400 leading-relaxed mb-1">'
+                      + '<span class="text-green-400 shrink-0">&bull;</span>' + escA(t) + '</div>'; }).join('')
+                + '</div>'
+              : '')
         +   (p.stdCode
               ? '<div class="text-[11px] text-zinc-500 mt-3">Standard code (' + p.std + '% off): '
                 + '<span class="font-mono text-zinc-300 bg-zinc-900 border border-white/5 rounded px-1.5 py-0.5">'
@@ -306,6 +317,8 @@
           +   '</div><div class="text-[10.5px] text-zinc-600 mt-0.5">' + escA(p.ty) + '</div></td>'
           + '<td class="' + TD + ' text-right whitespace-nowrap">'
           +   (p.pct ? '<span class="font-black tabular-nums text-green-400">' + p.pct + '% off</span>'
+                    : p.pctLabel
+                      ? '<span class="text-[10px] font-black tracking-wide text-green-400 bg-green-500/10 border border-green-500/20 rounded px-2 py-1">' + escA(p.pctLabel) + '</span>'
                     : '<span class="text-[10px] font-bold text-zinc-500 bg-zinc-900 border border-white/10 rounded px-2 py-1">Standard</span>') + '</td>'
           + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell">'
           +   (p.dd ? '<span class="text-[10px] font-black tracking-wide text-green-400 bg-green-500/10 border border-green-500/20 rounded px-2 py-1">' + escA(p.dd) + '</span>'
