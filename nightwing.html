@@ -137,6 +137,83 @@
         </div>
       </section>
 
+      <!-- ══════════════ PLATFORM TOUR ══════════════
+           Two different kinds of data here, disclosed separately below the gallery:
+             • dashboard / journal  — demo account, trades entered by hand
+             • backtest screens     — a real backtest CSV imported, i.e. the feature working
+           The two backtest PNGs carry a burned-in corner stamp so the label survives
+           cropping and reposting. Keep both the stamp and the notes if you re-shoot.
+           ═══════════════════════════════════════════ -->
+      <section id="tour" class="py-12 px-6 md:px-12 border-t border-white/10 bg-zinc-950/40">
+        <div class="max-w-5xl mx-auto">
+
+          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-4 font-bold">// Inside the platform</div>
+          <p class="text-sm text-zinc-400 leading-relaxed max-w-2xl mb-7">
+            This is the actual workspace, not a mockup. Pick a tool to see it.
+          </p>
+
+          <div class="flex flex-wrap gap-2 mb-5" role="tablist" aria-label="Platform screenshots">
+            <button role="tab" id="tourtab-dashboard" aria-controls="tourpanel-dashboard" aria-selected="true"  class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Dashboard</button>
+            <button role="tab" id="tourtab-journal"   aria-controls="tourpanel-journal"   aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Journal</button>
+            <button role="tab" id="tourtab-sessions"  aria-controls="tourpanel-sessions"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Backtest</button>
+            <button role="tab" id="tourtab-calendar"  aria-controls="tourpanel-calendar"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Backtest detail</button>
+            <button role="tab" id="tourtab-importer"  aria-controls="tourpanel-importer"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Trade importer</button>
+            <button role="tab" id="tourtab-howto"     aria-controls="tourpanel-howto"     aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">How-to guide</button>
+          </div>
+
+          <div class="border border-white/10 rounded-2xl overflow-hidden bg-black">
+
+            <figure role="tabpanel" id="tourpanel-dashboard" aria-labelledby="tourtab-dashboard" class="tour-panel m-0">
+              <img src="shot-dashboard.png" width="1400" height="752" alt="The Nightwing dashboard: account selector, trade and win-rate tiles, equity curve, market session clocks and economic calendar." class="block w-full h-auto">
+              <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Dashboard.</span> Where you land. Switch between tracked accounts, read the equity curve, check session clocks and the economic calendar without leaving the page.</figcaption>
+            </figure>
+
+            <figure role="tabpanel" id="tourpanel-journal" aria-labelledby="tourtab-journal" class="tour-panel m-0" hidden>
+              <img src="shot-journal.png" width="1400" height="796" alt="The Nightwing trade journal calendar view with per-day results, weekly totals and filters for time, result, account, grade and direction." class="block w-full h-auto">
+              <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Journal.</span> Every trade on a month grid with weekly roll-ups. Filter by account, grade, direction or result, then switch to history and stats views.</figcaption>
+            </figure>
+
+            <figure role="tabpanel" id="tourpanel-sessions" aria-labelledby="tourtab-sessions" class="tour-panel m-0" hidden>
+              <img src="shot-backtest-sessions.png" width="1633" height="914" loading="lazy" alt="The backtest workspace session list, showing saved sessions with trade counts, win rate, dollars per trade and net result." class="block w-full h-auto">
+              <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Backtest workspace.</span> Keep every test you run as its own session and compare them side by side. Import from a CSV here or push straight from the Nexus extension.</figcaption>
+            </figure>
+
+            <figure role="tabpanel" id="tourpanel-calendar" aria-labelledby="tourtab-calendar" class="tour-panel m-0" hidden>
+              <img src="shot-backtest-calendar.png" width="1400" height="796" loading="lazy" alt="A single backtest session opened to its calendar tab, with per-day and per-week results and trade/stats/calendar tabs." class="block w-full h-auto">
+              <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Backtest detail.</span> Open any session into trades, stats or calendar. The same filters as the journal, so you read a backtest the way you read your live record.</figcaption>
+            </figure>
+
+            <figure role="tabpanel" id="tourpanel-importer" aria-labelledby="tourtab-importer" class="tour-panel m-0" hidden>
+              <img src="shot-importer.png" width="1645" height="545" alt="The universal trade importer, listing supported formats and a drag-and-drop area for CSV files." class="block w-full h-auto">
+              <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Trade importer.</span> Drop in Tradovate order exports or TradingView strategy exports. Format is auto-detected, entries and exits are paired, duplicates are skipped, and multiple files route to their own accounts.</figcaption>
+            </figure>
+
+            <figure role="tabpanel" id="tourpanel-howto" aria-labelledby="tourtab-howto" class="tour-panel m-0" hidden>
+              <img src="shot-howto.png" width="1637" height="710" alt="The how-to guide contents page, linking to a section for each tool in the workspace." class="block w-full h-auto">
+              <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">How-to guide.</span> Every tool documented end to end &mdash; what it does, how to run it, and the parts people miss. Included, not an upsell.</figcaption>
+            </figure>
+
+          </div>
+
+          <div class="mt-4 space-y-2 max-w-3xl text-[12px] text-zinc-500 leading-relaxed">
+            <p>
+              <span class="text-zinc-400 font-semibold">Dashboard and journal &mdash; sample data.</span>
+              Those screens come from a demo account with placeholder trades entered by hand, so the tools
+              have wins and losses to display. They are not real trades and not anyone's account.
+            </p>
+            <p>
+              <span class="text-zinc-400 font-semibold">Backtest screens &mdash; hypothetical results.</span>
+              Those show a real backtest CSV imported into the workspace, which is what the importer is for.
+              Backtested results are hypothetical, carry no risk, and do not reflect commissions, fees or
+              slippage. Past performance is not indicative of future results, and no figure shown here is
+              included with Nightwing &mdash; you import your own.
+            </p>
+            <p>Nightwing records and analyses trading. It does not produce it.</p>
+          </div>
+
+        </div>
+      </section>
+
       <!-- ══════════════ PLANS ══════════════ -->
       <section id="plans" class="py-12 px-6 md:px-12 border-t border-white/10">
         <div class="max-w-5xl mx-auto">
@@ -332,6 +409,47 @@
         sidebar.classList.add('-translate-x-full');
       }
     }
+
+    /* ── Platform tour tabs ───────────────────────────────────────────────
+       Panels live in the DOM and toggle with [hidden], so the images are all
+       present for crawlers and the first paint shows the dashboard. Styling
+       the tabs is done here rather than in markup so the two states can't
+       drift apart. */
+    (function () {
+      var tabs = Array.prototype.slice.call(document.querySelectorAll('.tour-tab'));
+      if (!tabs.length) return;
+
+      var ON  = ['bg-green-500/10','border-green-500/40','text-green-400'];
+      var OFF = ['bg-zinc-950/60','border-white/10','text-zinc-400','hover:border-white/25','hover:text-zinc-200'];
+
+      function paint(tab, active) {
+        (active ? OFF : ON).forEach(function (c) { tab.classList.remove(c); });
+        (active ? ON : OFF).forEach(function (c) { tab.classList.add(c); });
+        tab.setAttribute('aria-selected', active ? 'true' : 'false');
+      }
+
+      function select(tab) {
+        tabs.forEach(function (t) {
+          var active = t === tab;
+          paint(t, active);
+          var panel = document.getElementById(t.getAttribute('aria-controls'));
+          if (panel) panel.hidden = !active;
+        });
+      }
+
+      tabs.forEach(function (tab, i) {
+        paint(tab, tab.getAttribute('aria-selected') === 'true');
+        tab.addEventListener('click', function () { select(tab); });
+        tab.addEventListener('keydown', function (e) {
+          var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+          if (!d) return;
+          e.preventDefault();
+          var next = tabs[(i + d + tabs.length) % tabs.length];
+          select(next);
+          next.focus();
+        });
+      });
+    })();
   </script>
 
   <script src="nav-loader.js?v=20260913b"></script>
