@@ -5,7 +5,7 @@
    user checks "I understand and agree."
 
    Usage:
-     <script src="checkout-gate.js"></script>
+     <script src="checkout-gate.js?v=20260913b"></script>
    Per-product terms:
      Default = membership terms.
      Add data-gate="autotrader" to a checkout link for the

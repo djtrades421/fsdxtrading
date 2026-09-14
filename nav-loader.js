@@ -163,7 +163,7 @@ window.toggleMobileMenu = function () {
   if (document.getElementById('fsdx-search-js')) return;
   var sc = document.createElement('script');
   sc.id = 'fsdx-search-js';
-  sc.src = 'fsdx-search.js?v=20260830';
+  sc.src = 'fsdx-search.js?v=20260913b';
   sc.defer = true;
   (document.head || document.documentElement).appendChild(sc);
 })();
@@ -188,7 +188,7 @@ window.fsdxRequireKey = window.fsdxRequireKey || function (o) {
   if (document.getElementById('fsdx-account-js')) return;
   var sc = document.createElement('script');
   sc.id = 'fsdx-account-js';
-  sc.src = 'fsdx-account.js?v=20260830';
+  sc.src = 'fsdx-account.js?v=20260913b';
   sc.defer = true;
   (document.head || document.documentElement).appendChild(sc);
 })();
@@ -292,7 +292,7 @@ function prepareNavLabels(root) {
   // blank the nav just as thoroughly, so check the status and the body, and
   // give a flaky network one retry before giving up.
   function loadNavHtml(attempt) {
-    return fetch('nav.html?v=20260907')
+    return fetch('nav.html?v=20260913b')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();

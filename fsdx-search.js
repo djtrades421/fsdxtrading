@@ -6,7 +6,7 @@
    three letters instead of hunting a tree.
 
    Load it after nav-loader.js:
-       <script src="fsdx-search.js"></script>
+       <script src="fsdx-search.js?v=20260913b"></script>
 
    Open with ⌘K / Ctrl-K, or the Search button in the sidebar.
    ========================================================================== */
