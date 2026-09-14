@@ -157,7 +157,9 @@
             <button role="tab" id="tourtab-journal"   aria-controls="tourpanel-journal"   aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Journal</button>
             <button role="tab" id="tourtab-sessions"  aria-controls="tourpanel-sessions"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Backtest</button>
             <button role="tab" id="tourtab-calendar"  aria-controls="tourpanel-calendar"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Backtest detail</button>
+            <button role="tab" id="tourtab-accounts"  aria-controls="tourpanel-accounts"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Account tracker</button>
             <button role="tab" id="tourtab-importer"  aria-controls="tourpanel-importer"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Trade importer</button>
+            <button role="tab" id="tourtab-playbook"  aria-controls="tourpanel-playbook"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Playbook</button>
             <button role="tab" id="tourtab-howto"     aria-controls="tourpanel-howto"     aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">How-to guide</button>
           </div>
 
@@ -183,9 +185,19 @@
               <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Backtest detail.</span> Open any session into trades, stats or calendar. The same filters as the journal, so you read a backtest the way you read your live record.</figcaption>
             </figure>
 
+            <figure role="tabpanel" id="tourpanel-accounts" aria-labelledby="tourtab-accounts" class="tour-panel m-0" hidden>
+              <img src="shot-accounts.png" width="1400" height="620" loading="lazy" alt="The accounts page on the Trackers tab: a funded prop account with total and daily P&amp;L, win rate, days traded, firm rules, personal rules with a discipline score, and loss-streak counters." class="block w-full h-auto">
+              <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Account tracker.</span> One card per prop account with the firm's own rules alongside the ones you set for yourself. Discipline score, loss streaks and daily totals, so a rule break shows up before the firm's dashboard tells you.</figcaption>
+            </figure>
+
             <figure role="tabpanel" id="tourpanel-importer" aria-labelledby="tourtab-importer" class="tour-panel m-0" hidden>
               <img src="shot-importer.png" width="1645" height="545" alt="The universal trade importer, listing supported formats and a drag-and-drop area for CSV files." class="block w-full h-auto">
               <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Trade importer.</span> Drop in Tradovate order exports or TradingView strategy exports. Format is auto-detected, entries and exits are paired, duplicates are skipped, and multiple files route to their own accounts.</figcaption>
+            </figure>
+
+            <figure role="tabpanel" id="tourpanel-playbook" aria-labelledby="tourtab-playbook" class="tour-panel m-0" hidden>
+              <img src="shot-playbook.png" width="1400" height="809" loading="lazy" alt="The playbook Today tab: pre-session check counter, risk per trade, session countdown, and the pre-session checklist that resets at the open." class="block w-full h-auto">
+              <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Playbook.</span> Your rules, checklist, setups and goals in one place, synced with Nexus. The pre-session checklist resets at the open, so every morning starts from the same list rather than from memory.</figcaption>
             </figure>
 
             <figure role="tabpanel" id="tourpanel-howto" aria-labelledby="tourtab-howto" class="tour-panel m-0" hidden>
