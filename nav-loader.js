@@ -338,10 +338,21 @@ function prepareNavLabels(root) {
 
       /* Products (Free → Nightwing → Membership) starts OPEN for visitors —
          it is the ladder, and a visitor who cannot see it assumes $129 is the
-         only way in. Members have already bought, so it starts shut for them
-         and stops competing with the Workspace links they actually use.
-         Either way the saved choice wins on the next visit. */
-      applyNavGroupState('nav-group-products', !loggedIn);
+         only way in.
+
+         It starts open for MEMBERS TOO. It briefly did not, on the theory that
+         someone who already bought does not need the price list — and the first
+         person to look for it on a phone could not find it. That is the whole
+         argument settled: a collapsed group is an invisible group.
+
+         It also earns its place for a member. A Nightwing member's upgrade to
+         the full membership lives here, so hiding it hides the upsell, and a
+         member passing the free indicator to someone else should not have to
+         expand anything to find the link. Three rows is a cheap price for that.
+
+         A member who genuinely wants it shut can collapse it — that choice is
+         saved and wins on every later visit. */
+      applyNavGroupState('nav-group-products', true);
 
       // never hide the page you're on inside a shut group
       var activeInGroup = document.querySelector('#nav-content .nav-group .nav-link.fx-active, #nav-content .nav-group .nav-link.font-bold');
