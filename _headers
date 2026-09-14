@@ -1,0 +1,76 @@
+# Cloudflare Pages — cache rules for fsdxtrading.com
+#
+# WHY THIS FILE EXISTS
+# Some files on this site change without their names changing: nav.html and the
+# shared scripts. A browser that cached an old copy keeps serving it, which is
+# how the site ended up showing a new nav on some pages and an old nav on
+# others. The workaround was bumping "?v=" on every page that referenced them —
+# 35 files, by hand, every single time. This file replaces that chore.
+#
+# max-age=0 + must-revalidate does NOT mean "never cache". The browser still
+# keeps its copy; it just asks "has this changed?" before using it. If nothing
+# changed the server answers 304 Not Modified and sends no body — so it is
+# nearly as fast as a cache hit, and it can never be stale.
+#
+# AFTER THIS IS LIVE: push a changed nav.html or nav-loader.js and every visitor
+# gets it on their next page load. No version bumping, no 35-file edit.
+
+# ── Shared files that change in place ──────────────────────────────────────
+/nav.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/nav-loader.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/checkout-gate.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/fsdx-account.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/fsdx-search.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/fsdx-theme.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/alerts.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/filters.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/analytics.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/tracker-core.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# ── Every page ─────────────────────────────────────────────────────────────
+# Pricing, plan terms and product copy live in these. A visitor reading a
+# cached membership page from last week could see an old price.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# The bare domain and any extensionless URL (/welcome, /nightwing) land here.
+/
+  Cache-Control: public, max-age=0, must-revalidate
+
+# ── Data the site reads at runtime ─────────────────────────────────────────
+/track-record.json
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600
+
+# ── Images ─────────────────────────────────────────────────────────────────
+# These DO get renamed when they change (og-image-v2.png, arkham-chart.png),
+# so they are safe to cache hard. One day, and the CDN still revalidates.
+/*.png
+  Cache-Control: public, max-age=86400
+
+/*.jpg
+  Cache-Control: public, max-age=86400
+
+/*.csv
+  Cache-Control: public, max-age=86400
