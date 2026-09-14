@@ -40,6 +40,30 @@
     });
   }
 
+  // Who the journal's trades are actually filed under, most-used first.
+  //
+  // Used by the "no trades match this tracker" banner to tell the user which
+  // owners DO exist, so a stale filter is a one-click fix instead of a guess.
+  // Owner is accountName, falling back to accountType — the same definition
+  // cardTrades() filters on.
+  //
+  // This function was missing for a while and accounts.html called it anyway.
+  // It only runs when a card matches nothing, so it stayed invisible until
+  // someone deleted an account a tracker pointed at — then renderRow threw
+  // mid-map and the whole tracker list rendered blank, which read as "my
+  // trackers are gone and new ones won't save".
+  function ownersIn(trades) {
+    var counts = {};
+    (trades || []).forEach(function (t) {
+      var name = String((t && (t.accountName || t.accountType)) || '').trim();
+      if (!name) return;
+      counts[name] = (counts[name] || 0) + 1;
+    });
+    return Object.keys(counts)
+      .map(function (n) { return { name: n, count: counts[n] }; })
+      .sort(function (a, b) { return b.count - a.count || (a.name < b.name ? -1 : 1); });
+  }
+
   // Stable, transitive sort key — exitTime included so same-minute entries
   // don't sort unpredictably and shift the drawdown result between renders.
   function ddKey(t) {
@@ -133,6 +157,7 @@
     localDate: localDate,
     pnlOf: pnlOf,
     cardTrades: cardTrades,
+    ownersIn: ownersIn,
     drawdown: drawdown,
     summary: summary
   };
