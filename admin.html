@@ -1461,6 +1461,12 @@
                   <option value="Pro Quarterly">Pro Quarterly</option>
                   <option value="Pro Yearly">Pro Yearly</option>
                 </optgroup>
+                <optgroup label="Nightwing">
+                  <option value="Nightwing Monthly">Nightwing Monthly</option>
+                  <option value="Nightwing 3-Month">Nightwing 3-Month</option>
+                  <option value="Nightwing 6-Month">Nightwing 6-Month</option>
+                  <option value="Nightwing Yearly">Nightwing Yearly</option>
+                </optgroup>
                 <optgroup label="Legacy / VIP">
                   <option value="VIP Monthly">VIP Monthly</option>
                   <option value="VIP Annual">VIP Annual</option>
@@ -1507,6 +1513,7 @@
                 <option value="none">None / Lifetime</option>
                 <option value="monthly">Monthly</option>
                 <option value="quarterly">Quarterly</option>
+                <option value="semiannual">Every 6 Months</option>
                 <option value="annual">Annual</option>
               </select>
             </div>
@@ -2307,6 +2314,12 @@
       'plan_l0KkbipfcgnAp': 'Pro Monthly',     // $129.99
       'plan_RYMEBnqYNmFEZ': 'Pro Quarterly',   // $349 (30-day free trial)
       'plan_1CAj5BxdzpT1W': 'Pro Yearly',      // $1,299 — live plan ID from the Annual checkout button (verify in Whop)
+      // ── Nightwing — Site Access + Nexus 2.0 ($9.99 tier) ──
+      // Site login + the Nexus extension only. No VIP indicators, no Scout Alerts.
+      'plan_9VB6qlHDMu9BP': 'Nightwing Monthly',   // $9.99  (7-day trial)
+      'plan_tUnymSODvJdzv': 'Nightwing 3-Month',   // $24.99
+      'plan_zsSGNzcu9Act8': 'Nightwing 6-Month',   // $49.99
+      'plan_oqxr2pyB51Dmc': 'Nightwing Yearly',    // $99.99
       // ── Other products / legacy tiers ──
       'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
       'plan_aXiLFJZu79HYG': 'VIP Legacy',
@@ -2321,6 +2334,25 @@
     function planLabelFromId(planId) {
       if (!planId) return '';
       for (const id in PLAN_MAP) { if (planId.includes(id)) return PLAN_MAP[id]; }
+      return '';
+    }
+
+    // ── Fallback: resolve a tier label from the Whop PRODUCT NAME ──
+    // Only used when the plan ID isn't in PLAN_MAP yet (a new plan, a renamed
+    // one). Nightwing is tested FIRST because its Whop product is literally
+    // named "... VIP Site Access + Nexus 2.0" — the generic `vip` test below
+    // would otherwise swallow every Nightwing member into "VIP Monthly".
+    function accessFromProductName(name, isLifetime) {
+      const n = (name || '').toLowerCase();
+      if (!n) return '';
+      if (n.includes('nightwing')) return 'Nightwing';
+      if (n.includes('site access') && n.includes('nexus')) return 'Nightwing';
+      if (n.includes('lifetime') || isLifetime) return 'Lifetime';
+      if (n.includes('vip legacy')) return 'VIP Legacy';
+      if (n.includes('legacy')) return 'Legacy';
+      if (n.includes('annual') || n.includes('yearly')) return 'VIP Annual';
+      if (n.includes('vip') && (n.includes('no trial') || n.includes('access no trial'))) return 'VIP Monthly No Trial';
+      if (n.includes('vip')) return 'VIP Monthly';
       return '';
     }
 
@@ -3606,7 +3638,9 @@
         billingSection.style.opacity = '1';
         if (accessLower.includes('annual') || accessLower.includes('yearly')) {
           document.getElementById('mm-billing-cycle').value = 'annual';
-        } else if (accessLower.includes('quarterly')) {
+        } else if (accessLower.includes('6-month') || accessLower.includes('semiannual')) {
+          document.getElementById('mm-billing-cycle').value = 'semiannual';
+        } else if (accessLower.includes('quarterly') || accessLower.includes('3-month')) {
           document.getElementById('mm-billing-cycle').value = 'quarterly';
         } else if (accessLower.includes('monthly')) {
           document.getElementById('mm-billing-cycle').value = 'monthly';
@@ -3617,6 +3651,8 @@
           hint.textContent = 'Renewal date will auto-advance by 1 month each time a payment is logged.';
         } else if (cycle === 'quarterly') {
           hint.textContent = 'Renewal date will auto-advance by 3 months each time a payment is logged.';
+        } else if (cycle === 'semiannual') {
+          hint.textContent = 'Renewal date will auto-advance by 6 months each time a payment is logged.';
         } else if (cycle === 'annual') {
           hint.textContent = 'Renewal date will auto-advance by 12 months each time a payment is logged.';
         } else {
@@ -3631,6 +3667,7 @@
         const d = new Date(currentRenewal);
         if (cycle === 'monthly') d.setMonth(d.getMonth() + 1);
         else if (cycle === 'quarterly') d.setMonth(d.getMonth() + 3);
+        else if (cycle === 'semiannual') d.setMonth(d.getMonth() + 6);
         else if (cycle === 'annual') d.setFullYear(d.getFullYear() + 1);
         return d.toISOString().slice(0,10);
       } catch(e) { return currentRenewal; }
@@ -4661,8 +4698,11 @@
         else if (expiring) status = 'expiring';
         else if (!renewal && status !== 'lifetime') status = 'inactive';
 
-        // Determine access type from plan ID (central PLAN_MAP)
-        let accessType = planLabelFromId(planId) || 'VIP Monthly';
+        // Determine access type from plan ID (central PLAN_MAP), then the
+        // product name, and only then the VIP default. Without the product-name
+        // step an unmapped Nightwing plan would default straight to VIP Monthly.
+        const productNameA = (r['Product names'] || r['Products'] || r['Product'] || '').split(',')[0].trim();
+        let accessType = planLabelFromId(planId) || accessFromProductName(productNameA) || 'VIP Monthly';
         // Lifetime tiers have no renewal — don't leave them mislabeled as inactive
         if (/lifetime/i.test(accessType) && status === 'inactive') status = 'lifetime';
 
@@ -4744,17 +4784,9 @@
 
         // Access type — plan ID is authoritative (central PLAN_MAP); fall back to product name.
         const mappedLabel = planLabelFromId(planId);
-        let accessType = mappedLabel || planName; // default: product name if plan ID unmapped
-        const nameLower = planName.toLowerCase();
-        if (mappedLabel) {
-          accessType = mappedLabel;
-        } else if (nameLower.includes('lifetime') || subStatus === 'completed') accessType = 'Lifetime';
-        else if (nameLower.includes('vip legacy')) accessType = 'VIP Legacy';
-        else if (nameLower.includes('legacy')) accessType = 'Legacy';
-        else if (nameLower.includes('annual') || nameLower.includes('yearly')) accessType = 'VIP Annual';
-        else if (nameLower.includes('vip') && (nameLower.includes('no trial') || nameLower.includes('access no trial'))) accessType = 'VIP Monthly No Trial';
-        else if (nameLower.includes('vip')) accessType = 'VIP Monthly';
-        // Anything else (Optimizer, Nexus, Mentorship, etc.) keeps its product name as accessType
+        // Anything the helper doesn't recognise (Optimizer, Nexus, Mentorship,
+        // etc.) keeps its product name as accessType.
+        let accessType = mappedLabel || accessFromProductName(planName, subStatus === 'completed') || planName;
 
         const whopKey = r['Key'] || '';
         const nextPayment = r['Next payment date'] || '';
@@ -4976,17 +5008,12 @@
 
         // Access type — plan ID is authoritative (central PLAN_MAP); fall back to product name.
         const mappedLabel = planLabelFromId(planId);
-        let accessType = mappedLabel || 'VIP Monthly'; // safe default
-        if (!mappedLabel && productName) {
-          const n = productName.toLowerCase();
-          if (n.includes('lifetime') || hasNoActivity) accessType = 'Lifetime';
-          else if (n.includes('vip legacy')) accessType = 'VIP Legacy';
-          else if (n.includes('legacy')) accessType = 'Legacy';
-          else if (n.includes('annual') || n.includes('yearly')) accessType = 'VIP Annual';
-          else if (n.includes('vip') && n.includes('no trial')) accessType = 'VIP Monthly No Trial';
-          else if (n.includes('vip')) accessType = 'VIP Monthly';
-          else accessType = productName; // standalone product — use its name
-        }
+        // Plan ID → product name → VIP default. A standalone product the helper
+        // doesn't recognise keeps its own name.
+        let accessType = mappedLabel
+          || accessFromProductName(productName, hasNoActivity)
+          || productName
+          || 'VIP Monthly';
 
         const renewalDate = renewal || trialEnd || canceling || '';
 
@@ -6565,6 +6592,11 @@
         'plan_B5bAvYiAJvc5i': 19.99,    // Plus Monthly (grandfathered)
         'plan_C6yQOo7Z6tRap': 12.50,    // Plus Monthly (legacy)
         'plan_WDBtpCQLgdO6K': 119.00,   // Plus Yearly
+        // Nightwing — Site Access + Nexus 2.0 (per billing cycle, same as above)
+        'plan_9VB6qlHDMu9BP': 9.99,     // Nightwing Monthly
+        'plan_tUnymSODvJdzv': 24.99,    // Nightwing 3-Month
+        'plan_zsSGNzcu9Act8': 49.99,    // Nightwing 6-Month
+        'plan_oqxr2pyB51Dmc': 99.99,    // Nightwing Yearly
       };
       const priceFromPlanId = (planId) => {
         if (!planId) return 0;
