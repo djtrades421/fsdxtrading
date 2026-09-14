@@ -223,11 +223,11 @@
       +     '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>'
       +   '<h2>' + String(o.title || 'This tool').replace(/</g, '&lt;') + ' is part of VIP</h2>'
 
-      +   '<p>Your Nightwing membership covers the web platform and Nexus. '
+      +   '<p>Your Nightwing subscription covers the web platform and Nexus. '
       +     'This page is included with a VIP membership.</p>'
       +   (perks ? '<ul>' + perks + '</ul>' : '')
       +   '<button class="whop" id="fsdx-upgrade-btn">See VIP membership</button>'
-      +   '<div class="hint">Keep your Nightwing membership as it is — the journal, backtester, '
+      +   '<div class="hint">Keep your Nightwing subscription as it is — the journal, backtester, '
       +     'playbook, trade importer and Nexus all stay exactly where they are.</div>'
       + '</div>';
 
