@@ -767,6 +767,12 @@
   </div>
 
   <script>
+    // Local calendar date as YYYY-MM-DD. Not toISOString() — that returns the UTC
+    // date, which rolls over at 7pm CT and shifts a day for eastern timezones.
+    function fsdxToday(d) {
+      d = d || new Date();
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
     const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
     const TICK_SIZE = 0.25, TICK_VALUE = 0.50;
     const TICKER_MAP = {
@@ -936,7 +942,7 @@
       if (daysEl) daysEl.textContent = monthDaysTraded + ' day' + (monthDaysTraded!==1?'s':'') + ' traded';
 
       const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
-      const today = new Date().toISOString().slice(0,10);
+      const today = fsdxToday();
       const weekdays = [];
       for (let d = 1; d <= daysInMonth; d++) {
         const dow = new Date(calYear, calMonth, d).getDay();
@@ -1086,8 +1092,8 @@
 
     function renderStats() {
       const now = new Date();
-      const today = now.toISOString().slice(0,10);
-      const sow = new Date(now.getFullYear(), now.getMonth(), now.getDate()-now.getDay()).toISOString().slice(0,10);
+      const today = fsdxToday(now);
+      const sow = fsdxToday(new Date(now.getFullYear(), now.getMonth(), now.getDate()-now.getDay()));
       let trades = [...filteredTrades];
       if (statsTime === 'today') trades = trades.filter(t => t.date === today);
       else if (statsTime === 'week') trades = trades.filter(t => t.date >= sow);
@@ -1886,7 +1892,7 @@
           calcPnl();
         }
       } else {
-        document.getElementById('t-date').value = new Date().toISOString().slice(0,10);
+        document.getElementById('t-date').value = fsdxToday();
         document.getElementById('t-ticker').value = 'MNQ';
         document.getElementById('t-strategy').value = 'FSD-X ORB PRO';
         document.getElementById('t-timeframe').value = '5m';
@@ -2691,8 +2697,8 @@
 
     function getBtStatsFilteredTrades() {
       const now = new Date();
-      const today = now.toISOString().slice(0,10);
-      const sow = new Date(now.getFullYear(), now.getMonth(), now.getDate()-now.getDay()).toISOString().slice(0,10);
+      const today = fsdxToday(now);
+      const sow = fsdxToday(new Date(now.getFullYear(), now.getMonth(), now.getDate()-now.getDay()));
       let trades = [...filteredBtTrades];
       if (btStatsTime === 'today') trades = trades.filter(t => t.date === today);
       else if (btStatsTime === 'week') trades = trades.filter(t => t.date >= sow);
@@ -2862,21 +2868,21 @@
 
     function getBtDateRange() {
       const now = new Date();
-      const today = now.toISOString().slice(0,10);
+      const today = fsdxToday(now);
       const dr = btFDateRange ? btFDateRange.getValue() : 'all';
       const customEl = document.getElementById('gf-custom-range');
       if (customEl) customEl.classList.toggle('hidden', dr !== 'custom');
       if (dr === 'today') return { from: today, to: today };
       if (dr === 'week') {
-        const sow = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + 1).toISOString().slice(0,10);
+        const sow = fsdxToday(new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + 1));
         return { from: sow, to: today };
       }
       if (dr === 'month') {
-        const som = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().slice(0,10);
+        const som = fsdxToday(new Date(now.getFullYear(), now.getMonth(), 1));
         return { from: som, to: today };
       }
       if (dr === 'year') {
-        const soy = new Date(now.getFullYear(), 0, 1).toISOString().slice(0,10);
+        const soy = fsdxToday(new Date(now.getFullYear(), 0, 1));
         return { from: soy, to: today };
       }
       if (dr === 'custom') {
@@ -3006,7 +3012,7 @@
       const a = document.createElement('a');
       const session = btSessions.find(s => s.id === currentBtSessionId);
       a.href = url;
-      a.download = 'fsdx_bt_' + (session?.name||'session').replace(/\s+/g,'_') + '_' + new Date().toISOString().slice(0,10) + '.csv';
+      a.download = 'fsdx_bt_' + (session?.name||'session').replace(/\s+/g,'_') + '_' + fsdxToday() + '.csv';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);

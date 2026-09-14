@@ -289,6 +289,12 @@
   </main>
 
   <script>
+    // Local calendar date as YYYY-MM-DD. Not toISOString() — that returns the UTC
+    // date, which rolls over at 7pm CT and shifts a day for eastern timezones.
+    function fsdxToday(d) {
+      d = d || new Date();
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
     const API = 'https://nexus-validator.dfuentes4211.workers.dev';
     const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
 
@@ -692,7 +698,7 @@
     function sliceByRange(trades) {
       const r = EQ_RANGES.find(x => x.key === eqRange);
       if (!r || !r.days) return trades;
-      const cutoff = new Date(Date.now() - r.days * 864e5).toISOString().slice(0, 10);
+      const cutoff = fsdxToday(new Date(Date.now() - r.days * 864e5));
       return trades.filter(t => (t.date || '') >= cutoff);
     }
 
@@ -1642,7 +1648,7 @@
       if (!grid) return;
 
       const daysInMonth = new Date(miniCalYear, miniCalMonth + 1, 0).getDate();
-      const today = new Date().toISOString().slice(0, 10);
+      const today = fsdxToday();
 
       // Weekdays only (Mon–Fri), same as journal
       const weekdays = [];

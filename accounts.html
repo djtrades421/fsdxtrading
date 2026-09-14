@@ -125,6 +125,25 @@
           <!-- ══ TRACKERS ══ -->
           <div id="panel-trackers" class="sub-panel active space-y-3">
 
+            <!-- Load-failure banner. Shown instead of the empty state when the
+                 server read failed, so a backend blip never reads as "your
+                 trackers were deleted". Saving is blocked while this is up. -->
+            <div id="tracker-load-warning" class="hidden border border-amber-500/30 bg-amber-500/[0.06] rounded-2xl p-5">
+              <div class="flex items-start gap-3">
+                <span class="text-amber-400 text-lg leading-none shrink-0">&#9888;</span>
+                <div>
+                  <div class="text-white font-bold text-sm">Couldn't load your trackers</div>
+                  <p class="text-[13px] text-zinc-400 leading-relaxed mt-1.5">
+                    Nothing has been deleted &mdash; this is a loading problem, not a data problem.
+                    Anything shown below is a local copy from this browser. Saving is disabled until
+                    the load succeeds, so your saved trackers can't be overwritten.
+                  </p>
+                  <p class="text-[11px] text-zinc-600 font-mono mt-2" id="tracker-load-warning-detail"></p>
+                  <button onclick="retryTrackerLoad()" class="mt-3 text-xs font-bold px-3 py-1.5 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 hover:bg-amber-500/25 transition">Try again</button>
+                </div>
+              </div>
+            </div>
+
             <!-- Empty state -->
             <div id="tracker-empty" class="hidden text-center py-20">
               <div class="text-5xl mb-4">📊</div>
@@ -399,17 +418,75 @@
       } catch(e) {}
     }
 
+    // ── Tracker persistence ───────────────────────────────────────────────
+    // Trackers live server-side under `tracker_settings:<whopKey>`, reusing the
+    // journal endpoint as a key-value store.
+    //
+    // Both functions used to discard the server's response entirely. That caused
+    // two separate bugs:
+    //
+    //   1. A failed READ fell through to `trackerCards = []`, which renders the
+    //      "No trackers yet" empty state. Indistinguishable from actually having
+    //      none — so a load failure looked like the trackers had been deleted.
+    //   2. A failed WRITE was invisible. saveCard() closed the modal and drew the
+    //      new card, so it looked saved until the next reload.
+    //
+    // Worse, 1 and 2 combine into data loss: read fails → list renders empty →
+    // user adds a tracker → save writes [thatOneCard] over the server copy, and
+    // the real trackers are gone for good. Hence trackerLoadFailed, which blocks
+    // any write built on a list we could not verify.
+    let trackerLoadFailed = false;
+    let trackerLastError = '';
+    const trackerLSKey = () => 'fsdx_tracker_cards_' + (whopKey || 'anon');
+
+    function trackerCacheWrite(cards) {
+      try { localStorage.setItem(trackerLSKey(), JSON.stringify(cards)); } catch(e) {}
+    }
+    function trackerCacheRead() {
+      try { const v = JSON.parse(localStorage.getItem(trackerLSKey()) || '[]'); return Array.isArray(v) ? v : []; }
+      catch(e) { return []; }
+    }
+
     async function loadTrackerCards() {
       try {
         const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key:'tracker_settings:'+whopKey }) });
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText);
         const data = await res.json();
-        trackerCards = Array.isArray(data.trades) ? data.trades : [];
-      } catch(e) { trackerCards = []; }
+        if (data && data.error) throw new Error(String(data.error));
+        if (!Array.isArray(data.trades)) throw new Error('no trades array in response: ' + JSON.stringify(data).slice(0, 200));
+        trackerCards = data.trades;
+        trackerLoadFailed = false;
+        trackerLastError = '';
+        trackerCacheWrite(trackerCards);
+      } catch(e) {
+        trackerLoadFailed = true;
+        trackerLastError = e.message || String(e);
+        console.error('[FSDX] tracker load failed:', e);
+        // Last known-good local copy beats a blank list — see note above.
+        trackerCards = trackerCacheRead();
+      }
     }
 
+    // Returns true only when the server confirmed the write.
     async function saveTrackerCards() {
-      await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ action:'save-all', key:'tracker_settings:'+whopKey, payload:{ trades: trackerCards } }) });
+      if (trackerLoadFailed) {
+        trackerLastError = 'trackers could not be loaded, so saving is blocked to avoid overwriting them';
+        return false;
+      }
+      try {
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ action:'save-all', key:'tracker_settings:'+whopKey, payload:{ trades: trackerCards } }) });
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + res.statusText);
+        const data = await res.json().catch(() => ({}));
+        if (data && data.error) throw new Error(String(data.error));
+        trackerLastError = '';
+        trackerCacheWrite(trackerCards);
+        return true;
+      } catch(e) {
+        trackerLastError = e.message || String(e);
+        console.error('[FSDX] tracker save failed:', e);
+        return false;
+      }
     }
 
     // ── Stats calculation ──
@@ -422,7 +499,7 @@
 
     function calcStats(card) {
       const trades = getCardTrades(card);
-      const today = new Date().toISOString().slice(0,10);
+      const today = FSDXTracker.localDate();
 
       // P&L with numAccounts multiplier
       const pnl = t => (parseFloat(t.netPnl)||0) * (t.numAccounts||1);
@@ -592,7 +669,22 @@
     function renderList() {
       const list = document.getElementById('tracker-list');
       const empty = document.getElementById('tracker-empty');
-      if (!trackerCards.length) { empty.classList.remove('hidden'); list.classList.add('hidden'); return; }
+
+      // A load failure must never be shown as "you have no trackers". Say what
+      // actually happened, and make clear nothing has been deleted.
+      const warn = document.getElementById('tracker-load-warning');
+      if (warn) {
+        warn.classList.toggle('hidden', !trackerLoadFailed);
+        if (trackerLoadFailed) {
+          document.getElementById('tracker-load-warning-detail').textContent = trackerLastError;
+        }
+      }
+
+      if (!trackerCards.length) {
+        empty.classList.toggle('hidden', trackerLoadFailed);
+        list.classList.add('hidden');
+        return;
+      }
       empty.classList.add('hidden'); list.classList.remove('hidden');
       list.innerHTML = trackerCards.map(card => renderRow(card)).join('');
     }
@@ -991,6 +1083,11 @@
 
     function closeModal() { document.getElementById('tracker-modal').classList.add('hidden'); editingCardId=null; }
 
+    async function retryTrackerLoad() {
+      await loadTrackerCards();
+      renderList();
+    }
+
     async function saveCard() {
       const label = document.getElementById('tc-label').value.trim();
       if (!label) { showModalMsg('Label is required.','error'); return; }
@@ -1014,17 +1111,30 @@
         windowEnd: document.getElementById('tc-window-end').value,
         createdAt: new Date().toISOString()
       };
+      // Snapshot first: if the write is refused we put the list back exactly as
+      // it was, so the UI never shows a card the server doesn't have.
+      const before = trackerCards.slice();
       if (editingCardId) { const idx=trackerCards.findIndex(c=>c.id===editingCardId); if(idx!==-1) trackerCards[idx]=card; }
       else trackerCards.unshift(card);
-      await saveTrackerCards();
+
+      if (!await saveTrackerCards()) {
+        trackerCards = before;
+        showModalMsg('Could not save — ' + trackerLastError, 'error');
+        return;                       // modal stays open, nothing is lost
+      }
       closeModal();
       renderList();
     }
 
     async function deleteCard() {
       if (!editingCardId||!confirm('Delete this tracker?')) return;
+      const before = trackerCards.slice();
       trackerCards = trackerCards.filter(c=>c.id!==editingCardId);
-      await saveTrackerCards();
+      if (!await saveTrackerCards()) {
+        trackerCards = before;
+        showModalMsg('Could not delete — ' + trackerLastError, 'error');
+        return;
+      }
       closeModal();
       renderList();
     }

@@ -311,6 +311,12 @@
   </main>
 
 <script>
+    // Local calendar date as YYYY-MM-DD. Not toISOString() — that returns the UTC
+    // date, which rolls over at 7pm CT and puts evening activity on tomorrow.
+    function fsdxToday(d) {
+      d = d || new Date();
+      return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    }
 const PLAYBOOK_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-playbook';
 
 let pbData = { rules: [], checklist: [], setups: [], goals: [], checkState: {} };
@@ -368,7 +374,7 @@ async function loadPlaybook(key) {
 }
 
 function autoResetChecks() {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = fsdxToday();
   if (pbData.checkState.date !== today) {
     pbData.checkState = { date: today, checked: {} };
     document.getElementById('auto-reset-notice').classList.remove('hidden');
@@ -568,7 +574,7 @@ document.getElementById('rule-save').onclick = () => {
 // endpoint. Wiring the third card to real journal P&L is the next step.
 function renderToday() {
   // 1. checks
-  const today = new Date().toISOString().slice(0,10);
+  const today = fsdxToday();
   const checked = (pbData.checkState && pbData.checkState.date === today)
     ? (pbData.checkState.checked || {}) : {};
   const total = pbData.checklist.length;
@@ -619,7 +625,7 @@ setInterval(renderSessionClock, 30000);
 
 // ════ CHECKLIST ════
 function renderChecklist() {
-  const today = new Date().toISOString().slice(0,10);
+  const today = fsdxToday();
   if (pbData.checkState.date !== today) pbData.checkState = { date: today, checked: {} };
   const checked = pbData.checkState.checked || {};
   const total = pbData.checklist.length;
@@ -659,14 +665,14 @@ function renderChecklist() {
 
 function toggleCheck(id) {
   setTimeout(renderToday, 0);
-  const today = new Date().toISOString().slice(0,10);
+  const today = fsdxToday();
   if (!pbData.checkState.date || pbData.checkState.date !== today) pbData.checkState = { date: today, checked: {} };
   if (pbData.checkState.checked[id]) delete pbData.checkState.checked[id];
   else pbData.checkState.checked[id] = true;
   renderChecklist(); saveChecks();
 }
 document.getElementById('btn-reset-checks').onclick = () => {
-  const today = new Date().toISOString().slice(0,10);
+  const today = fsdxToday();
   pbData.checkState = { date: today, checked: {} };
   renderChecklist(); saveChecks();
 };
