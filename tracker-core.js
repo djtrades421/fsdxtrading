@@ -11,6 +11,21 @@
 (function (root) {
   'use strict';
 
+  // Today's date in the USER'S timezone, as YYYY-MM-DD.
+  //
+  // Do NOT use new Date().toISOString().slice(0,10) for this. That returns the
+  // UTC date, so for anyone west of Greenwich it rolls over early — at 7pm CT
+  // it already says tomorrow. Trades are stored with the date from an
+  // <input type="date">, which is always local, so a UTC "today" stops matching
+  // them for the last five hours of every US trading day. Symptom: Today's P&L
+  // and the firm daily-limit bar silently reset to zero in the evening.
+  function localDate(d) {
+    d = d || new Date();
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+
   // P&L for a trade, honouring the copy-trading multiplier
   function pnlOf(t) {
     return (parseFloat(t.netPnl) || 0) * (t.numAccounts || 1);
@@ -75,7 +90,7 @@
   // limit is not the same as a limit at 0%, and the UI must be able to tell.
   function summary(card, allTrades) {
     var trades = cardTrades(card, allTrades);
-    var today = new Date().toISOString().slice(0, 10);
+    var today = localDate();
     var dd = drawdown(card, trades);
 
     var todayPnl = trades.filter(function (t) { return t.date === today; })
@@ -115,6 +130,7 @@
   }
 
   root.FSDXTracker = {
+    localDate: localDate,
     pnlOf: pnlOf,
     cardTrades: cardTrades,
     drawdown: drawdown,
