@@ -109,6 +109,22 @@
     },
     {
       "@type": "Question",
+      "name": "Can Knightfall move my stop to breakeven or trail it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, as of September 2026. A Trailing Stop group in the settings gives you four modes: Off, Breakeven Only, Trail Only, or Breakeven then Trail. Triggers can be set in points or as a percentage of that trade's own TP1, and breakeven can sit at your fill, slightly into profit, or slightly below it. It's built into the same script and works alongside every Partials Mode — your targets and contract split are never changed, only the stop moves, and only in your favour. It ships Off, so existing charts behave exactly as they did before. It's a trade-off rather than a free upgrade: a tight trail exits closer to the high but gets stopped out by normal pullbacks. Test it in replay before you trade it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the new trailing stop work on the Auto Trader?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The trailing stop and auto breakeven added in September 2026 are in ORB PRO (Knightfall) only. The Auto Trader does not have this function — it places its bracket at entry and leaves it there. If you run both, the trail affects what you see on your Knightfall chart, not what the Auto Trader sends to your bridge."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Does it work on the free version of TradingView?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -345,6 +361,16 @@
                 </div>
               </div>
 
+              <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+                <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                  <span class="text-sm font-bold text-white leading-snug">Does the new trailing stop work on the Auto Trader?</span>
+                  <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+                </button>
+                <div class="faq-answer">
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">No. The trailing stop and auto breakeven added in September 2026 are in <span class="text-white font-semibold">ORB PRO (Knightfall)</span> only. <span class="text-white font-semibold">The Auto Trader does not have this function</span> — it places its bracket at entry and leaves it there. If you run both, the trail affects what you see on your Knightfall chart, not what the Auto Trader sends to your bridge.</p>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -407,6 +433,20 @@
               </button>
               <div class="faq-answer">
                 <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Yes — FSD-X ORB PRO works on free, Pro, and Premium TradingView plans. You don't need a paid TradingView subscription to use it.</p>
+              </div>
+            </div>
+
+            <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+              <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                <span class="text-sm font-bold text-white leading-snug">Can Knightfall move my stop to breakeven or trail it?</span>
+                <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+              </button>
+              <div class="faq-answer">
+                <div class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4 space-y-2">
+                  <p>Yes, as of September 2026. A <span class="text-white font-semibold">Trailing Stop</span> group in the settings gives you four modes: Off, Breakeven Only, Trail Only, or Breakeven then Trail. Triggers can be set in points or as a percentage of that trade's own TP1, and breakeven can sit at your fill, slightly into profit, or slightly below it.</p>
+                  <p>It's built into the same script — nothing extra to install — and it works alongside every Partials Mode. Your targets and contract split are never changed; only the stop moves, and only in your favour.</p>
+                  <p><span class="text-white font-semibold">It ships Off</span>, so existing charts behave exactly as they did before. It's a trade-off rather than a free upgrade: a tight trail exits closer to the high but gets stopped out by normal pullbacks. Test it in replay before you trade it. Full walkthrough is in the <a href="course.html#ch-trailing-stop" class="text-green-400 hover:underline font-semibold">course</a>.</p>
+                </div>
               </div>
             </div>
 

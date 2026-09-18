@@ -659,6 +659,167 @@ const COURSE = [
         <div class="px-3 py-2 text-[11px] text-zinc-500 border-t border-white/5">Both kinds at once. <strong>TP1</strong> found a real level &mdash; 4-hour S/R. <strong>TP2</strong> found nothing in range and fell back to <em>2R ORB</em>, a multiple of the opening range.</div>
       </div>
       <p><strong>Nothing beyond 200 points is considered,</strong> however good it looks out there.</p>
+      <div class="callout">
+        <p style="margin:0">Everything above is the stop at <em>entry</em>. Knightfall can now also move that
+        stop while the trade is running &mdash; to breakeven, or trailing behind price. It's off by default.
+        That's the next chapter.</p>
+      </div>
+    `
+  },
+  {
+    id: 'trailing-stop', section: 'system', title: 'Trailing stop and breakeven', mins: 9,
+    body: `
+      <p>Knightfall has always set the stop once at entry and left it there for the life of the trade. That
+      is still what it does out of the box. <strong>It can now also manage that stop for you</strong> &mdash;
+      moving it to breakeven, or trailing it behind price, or both in sequence.</p>
+      <p>It's built into the same script. There's nothing extra to install, and nothing changes on your chart
+      until you turn it on.</p>
+
+      <h4>The four modes</h4>
+      <p>A <strong>Trailing Stop</strong> group in the settings, with one dropdown:</p>
+      <ul>
+        <li><strong>Off</strong> &mdash; the stop is set at entry and never moves. The default, and how
+        Knightfall has always worked.</li>
+        <li><strong>Breakeven Only</strong> &mdash; once the trade has run far enough, the stop moves to your
+        entry.</li>
+        <li><strong>Trail Only</strong> &mdash; once the trade has run far enough, the stop follows behind
+        price.</li>
+        <li><strong>Breakeven then Trail</strong> &mdash; both, in sequence. Breakeven first, then the trail
+        takes over the moment it would place a better stop.</li>
+      </ul>
+
+      <h4>Trigger and distance</h4>
+      <p>Every mode runs on a <strong>trigger</strong> &mdash; how far the trade has to move in your favour
+      before anything happens &mdash; and, for the trail, a <strong>distance</strong> the stop rides behind
+      price.</p>
+      <p>The trigger is measured from your fill to the <em>best</em> price the trade has reached, not to where
+      price is right now. Once something has moved, it doesn't move back.</p>
+
+      <h4>Points, or % of TP1</h4>
+      <p>The trigger can be set two ways, and this is the part worth thinking about.</p>
+      <ul>
+        <li><strong>Points</strong> &mdash; a fixed number, the same on every trade.</li>
+        <li><strong>% of TP1</strong> &mdash; the trigger scales to each trade's own first target.</li>
+      </ul>
+      <p><strong>Why the second one exists.</strong> Your first target isn't a fixed distance. It's derived
+      from the stop, and the stop is clamped between 75 and 175 points &mdash; so TP1 lands anywhere from
+      roughly 86 to 200 points out depending on the morning. A fixed trigger therefore arms at a completely
+      different place in the trade each time: early on a wide morning, late on a tight one.</p>
+      <p>A percentage stays in proportion to the trade in front of you. <strong>50</strong> is halfway to TP1
+      &mdash; the same price the 50% partial exits at, so the two line up exactly. <strong>100</strong> is at
+      TP1. Above 100 is legal and means past it, which is how you stop the trail ever placing itself short of
+      your own target.</p>
+      <div class="callout">
+        <p style="margin:0">Trail <em>distance</em> is always points. The units setting only changes what the
+        two trigger numbers mean.</p>
+      </div>
+
+      <h4>Breakeven doesn't have to mean breakeven</h4>
+      <p>The offset decides where "breakeven" actually sits relative to your fill.</p>
+      <ul>
+        <li><strong>0</strong> &mdash; exactly at the fill. A true scratch.</li>
+        <li><strong>Positive</strong> &mdash; that many points into profit, so the trade is locked green
+        rather than scratched.</li>
+        <li><strong>Negative</strong> &mdash; that many points below the fill. A partial reduction in risk
+        rather than a full move to breakeven.</li>
+      </ul>
+      <div class="callout-warn">
+        <p style="margin:0"><strong>Keep the offset well below the trigger.</strong> Asking to lock in more
+        profit than the trade has actually made gets capped at the best price the trade reached &mdash; it
+        can't invent a level price never traded at.</p>
+      </div>
+
+      <h4>How it combines with your partials</h4>
+      <p>This is the part worth slowing down on, because Partials Mode and Trail Mode are two separate
+      settings and every combination of them is legal.</p>
+      <p>One rule sits underneath all of it: <strong>whatever is still open in the trade is what gets
+      protected.</strong> There is one stop across the whole position, not a different stop per leg.</p>
+      <p><strong>Your targets and your contract split are never changed.</strong> Only the stop moves, and it
+      only ever moves in your favour. A pullback never widens it.</p>
+      <table>
+        <thead><tr><th>Partials Mode</th><th>Before the partial fills</th><th>After it fills</th></tr></thead>
+        <tbody>
+          <tr><td>None &mdash; full exit at TP1</td><td>One leg, all contracts.</td><td>&mdash;</td></tr>
+          <tr><td>50% of TP1</td><td>Both legs &mdash; the half going to the 50% line and the half going to TP1 &mdash; on the same stop.</td><td>The runner to TP1, on its own.</td></tr>
+          <tr><td>TP1 then TP2</td><td>Both legs &mdash; the half going to TP1 and the half going to TP2 &mdash; on the same stop.</td><td>The runner to TP2, on its own.</td></tr>
+          <tr><td>Full Size to TP2</td><td>One leg, all contracts to TP2.</td><td>&mdash;</td></tr>
+        </tbody>
+      </table>
+      <p>The split itself is untouched: half the contracts rounded down as the partial, the rest running on,
+      exactly as before this update.</p>
+
+      <h4>The combinations worth knowing</h4>
+      <ul>
+        <li><strong>50% of TP1 partials, trigger set to 50% of TP1.</strong> The stop arms at exactly the
+        price the partial fills at. Money comes off the table and what's left is protected in the same
+        moment. The two line up to the tick &mdash; this is the reason the percentage unit exists.</li>
+        <li><strong>TP1 then TP2, trigger above 100%.</strong> The trail only engages past TP1, which is
+        after the partial has already gone. From there it's managing the runner alone, and it can only
+        improve on TP2 rather than pull it in.</li>
+        <li><strong>Full Size to TP2, Breakeven then Trail.</strong> Full size to TP2 takes nothing off at
+        TP1, so there's no partial cushion on the way. Breakeven does that job instead. Set the trigger to
+        100% of TP1 and the stop moves to your fill at exactly the price TP1 would have paid you.</li>
+        <li><strong>None, Breakeven Only.</strong> The simplest version there is. One target, one stop, and
+        the stop stops being a loss once the trade has run far enough.</li>
+      </ul>
+      <div class="callout">
+        <p style="margin:0"><strong>One-contract trades.</strong> Nothing to split, so there's no partial and
+        no runner &mdash; one leg, one stop, and the trail manages the whole thing.</p>
+      </div>
+      <div class="callout-warn">
+        <p style="margin:0 0 .6rem 0"><strong>A trail distance wider than your trail trigger is legal, and it
+        does exactly what it says.</strong> The trail arms, but the stop it wants is still worse than the one
+        you already have &mdash; so nothing moves until price has run far enough for the trail to actually
+        beat it.</p>
+        <p style="margin:0">In <strong>Breakeven then Trail</strong> the breakeven leg is holding the stop in
+        the meantime, and the tag on the chart stays <strong>(BE)</strong> until the trail is genuinely the
+        one holding it. The tag follows the stop that's binding, not the trigger that's cleared.</p>
+      </div>
+      <p><strong>Whatever you've picked, the dashboard says it back to you</strong> &mdash; Partials Mode on
+      the left of the exit row, Trail Mode on the right. Read that row before you take the trade rather than
+      reconstructing it from memory mid-trade.</p>
+
+      <h4>What you'll see on the chart</h4>
+      <ul>
+        <li><strong>The stop line moves with the stop.</strong> The drawn stop-loss line and its price label
+        move together, tagged <strong>(BE)</strong> or <strong>(TRAIL)</strong> so you can see at a glance
+        which one is holding it.</li>
+        <li><strong>The line stays red.</strong> A stop is a stop wherever it sits. Only the price and the tag
+        change &mdash; there's nothing new to learn to read.</li>
+        <li><strong>Ghost lines carry the active trade's stop.</strong> If a second setup appears and redraws
+        the live levels while your trade is still open, the ghost line is the one showing your trade's current
+        stop &mdash; and it's the one that moves.</li>
+      </ul>
+
+      <h4>What you'll see on the dashboard</h4>
+      <p>A row sits directly above TAKE TRADE / NO TRADE showing your current exit configuration: your
+      Partials Mode on the left &mdash; where your contracts are going &mdash; and your Trail Mode and its
+      settings on the right &mdash; what your stop will do.</p>
+      <p>The right side stays muted while trailing is off and turns yellow the moment it isn't. The one thing
+      you can miss &mdash; trailing being on when you didn't mean it &mdash; is the one thing that changes
+      colour.</p>
+
+      <h4>This is a trade-off, not a free upgrade</h4>
+      <p>A tight trail exits closer to the high of a move but gets stopped out by normal pullbacks. A wide
+      trail survives pullbacks but gives back more when it does exit. Different settings produce genuinely
+      different behaviour, and there is no setting that only helps.</p>
+      <p>Tightening the trail buys you exits nearer the high of the move and pays for it in stop-outs on
+      moves that would have carried on. That is the whole decision. Which end of it suits you depends on how
+      you trade, and the only way to find out is on your own setups.</p>
+
+      <div class="callout-warn">
+        <p style="margin:0 0 .6rem 0"><strong>Test it before you trade it.</strong> Use replay. Run it on your
+        own setups, on both long and short sides, and watch how it behaves before you put it in front of a
+        live trade.</p>
+        <p style="margin:0"><strong>The stop updates on bar close.</strong> It isn't tick-by-tick. The tighter
+        your trail distance, the more often price can move through your trail level inside a bar.</p>
+      </div>
+
+      <div class="callout">
+        <p style="margin:0"><strong>It ships Off.</strong> Existing charts behave exactly as they did before
+        the update &mdash; the same trades, in the same places. Nothing changes until you choose to turn it
+        on.</p>
+      </div>
     `
   },
   {
@@ -693,7 +854,7 @@ const COURSE = [
     `
   },
   {
-    id: 'dashboard', section: 'system', title: 'The dashboard', mins: 7,
+    id: 'dashboard', section: 'system', title: 'The dashboard', mins: 8,
     body: `
       <p>The trend state row is covered in <strong>The trend read</strong> &mdash; states, the closed-candle
       rule, and [shift?]. This chapter is everything else on the panel.</p>
@@ -784,6 +945,20 @@ const COURSE = [
         rail and the clamp decided. A cap in particular is the system saying conditions were wider than it
         wants to trade.</li>
       </ul>
+      <p>Once a trade is running with stop management turned on, the stop line's own label on the chart also
+      carries <strong>(BE)</strong> or <strong>(TRAIL)</strong> &mdash; which one moved it. See
+      <strong>Trailing stop and breakeven</strong>.</p>
+
+      <h4>The exit row</h4>
+      <p>Directly above TAKE TRADE / NO TRADE, one row showing how the trade will be exited before you take
+      it.</p>
+      <ul>
+        <li><strong>Left</strong> &mdash; your Partials Mode. Where your contracts are going.</li>
+        <li><strong>Right</strong> &mdash; your Trail Mode and its settings. What your stop will do.</li>
+      </ul>
+      <p>The right side stays muted while trailing is off and turns yellow the moment it isn't. Worth a glance
+      before every entry, for the same reason the stop tag is: it tells you what the trade is going to do
+      before it does it.</p>
 
       <h4>Before the breakout</h4>
       <p>Until a breakout registers, the panel reads <strong>Waiting for breakout&hellip;</strong></p>
