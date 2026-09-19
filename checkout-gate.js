@@ -86,11 +86,37 @@
     proceed: "Continue to Checkout"
   };
 
+  /* ---- Raven — the middle tier ----
+     Raven, Nexus and the platform. Same reasoning as Nightwing: showing a
+     Raven buyer the UNIFIED terms would have them accept an Auto-Trader
+     Addendum for software they are not being sold. It also needs one point
+     Nightwing does not — Raven produces no performance data of any kind, and
+     the Knightfall backtest is not its backtest. Saying so at the point of
+     sale is the cheapest protection against a "but the site said" dispute. */
+  var RAVEN = {
+    eyebrow: "Before You Continue",
+    title: "FSD-X Raven — Terms of Service",
+    points: [
+      "Raven is the <strong>ORB Raven indicator</strong> plus the Nexus 2.0 extension and the member platform. The indicator marks opening range breakouts and draws the levels; it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
+      "Raven <strong>applies no grading and no filtering</strong>. It marks every breakout and does not tell you which are worth taking. It does not know whether a level was hit, does not track trades, and reports <strong>no win rate and no performance of any kind</strong>.",
+      "<strong>Raven has no backtest and no track record.</strong> Any backtest, figures or historical results shown elsewhere on this site belong to ORB PRO (Knightfall), a different product with grading and filtering that Raven does not have. They are <strong>hypothetical</strong> and are not a representation that any account will achieve similar results.",
+      "Raven <strong>does not include</strong> ORB PRO (Knightfall), the Auto-Trader, Stack V1, the Volume Engine, SCOUT live alerts, the live trade room, or the VIP Discord channels. Those are part of the full FSD-X membership.",
+      "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed.",
+      "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in Raven places, sizes, or manages an order for you, and it does not connect to a broker.",
+      "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
+      "Access is limited to <strong>one account</strong>, and the TradingView script is granted to <strong>one TradingView username</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
+      "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
+    ],
+    agree: "I accept the FSD-X Raven Terms and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
+    proceed: "Continue to Checkout"
+  };
+
   // Every VIP data-gate value resolves to the same unified terms (one plan →
-  // one gate). Nightwing is the one product that is genuinely different.
+  // one gate). Nightwing and Raven are the two products that are genuinely
+  // different, and each needs its own terms for the same reason.
   var TERMS = {
     membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED,
-    nightwing: NIGHTWING
+    nightwing: NIGHTWING, raven: RAVEN
   };
 
   var pendingUrl = null;
