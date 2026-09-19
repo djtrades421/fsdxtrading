@@ -8,8 +8,16 @@
   <meta name="description" content="The full Knightfall course — building a trading plan, running the system, and the habits that make it work." />
   <meta name="robots" content="noindex, nofollow" />
   <script>
-    // ── Auth gate — VIP members only, same pattern as the rest of the workspace.
-    //    Runs before the body renders so the content never flashes to a logged-out visitor.
+    // ── Auth gate — ANY signed-in member, deliberately.
+    //    Not VIP-only. Nightwing and Raven members get the course too: the
+    //    Knightfall-specific chapters are inert without Knightfall, so gating
+    //    them buys nothing, and reading them is the best argument for the
+    //    upgrade. The course is also being built out with general trading
+    //    material (trading plan, habits) that applies to every tier.
+    //    Decision: Danny, 2026-09-19. `products.js` matches — course: true on
+    //    both 'site' and 'raven' — and compare.html says so publicly.
+    //    Runs before the body renders so the content never flashes to a
+    //    logged-out visitor.
     (function () {
       try {
         if (!localStorage.getItem('fsdx_token')) { window.location.replace('login.html'); }
