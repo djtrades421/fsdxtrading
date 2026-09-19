@@ -37,10 +37,8 @@
     {t:'Nexus 2.0',             u:'suite.html#tool-nexus',     g:'Products', kw:'chrome extension journal optimizer sidepanel'},
     {t:'The Platform',          u:'platform.html',             g:'Products', kw:'member platform dashboard journal importer csv import backtest workspace tracker accounts playbook workspace included'},
     {t:'ORB Auto-Trader',       u:'autotrader.html',           g:'Products', kw:'automation pickmytrade tradovate hands off at'},
-    /* RAVEN LAUNCH — uncomment with the nav links in nav.html. Search must not
-       surface a product the site cannot yet grant access to. */
-    // {t:'Raven',              u:'raven.html',    g:'Products', kw:'orb raven levels indicator breakout no grading stop target position size'},
-    // {t:'Compare Plans',      u:'compare.html',  g:'Products', kw:'compare comparison plans tiers pricing difference which one nightwing raven membership free'},
+    {t:'Raven',                 u:'raven.html',                g:'Products', kw:'orb raven levels indicator breakout no grading stop target position size'},
+    {t:'Compare Plans',         u:'compare.html',              g:'Products', kw:'compare comparison plans tiers pricing difference which one nightwing raven membership free'},
 
     // proof
     {t:'Backtest Results',  u:'results.html',      g:'Results', kw:'results backtest data stats grades knightfall'},
