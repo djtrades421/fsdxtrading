@@ -191,6 +191,7 @@
                 <a href="#tool-orbpro" class="px-3 py-2.5 text-xs text-zinc-400 hover:text-green-400 transition border-b-2 border-transparent hover:border-green-500 whitespace-nowrap">FSD-X ORB PRO (Knightfall MK2)</a>
                                 <a href="#tool-stack" class="px-3 py-2.5 text-xs text-zinc-400 hover:text-green-400 transition border-b-2 border-transparent hover:border-green-500 whitespace-nowrap">Stack V1</a>
                 <a href="#tool-volume" class="px-3 py-2.5 text-xs text-zinc-400 hover:text-green-400 transition border-b-2 border-transparent hover:border-green-500 whitespace-nowrap">FSD-X ORB Volume</a>
+                <a href="#tool-raven" class="px-3 py-2.5 text-xs text-zinc-400 hover:text-green-400 transition border-b-2 border-transparent hover:border-green-500 whitespace-nowrap">ORB Raven</a>
               </div>
             </div>
             <div class="w-px bg-white/10 my-2"></div>
@@ -445,6 +446,84 @@
                   <div class="flex justify-between text-xs"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">TradingView</span></div>
                   <div class="flex justify-between text-xs"><span class="text-zinc-500">Execution Layout</span><span class="text-zinc-300">Lower Pane Overlay</span></div>
                   <div class="flex justify-between text-xs"><span class="text-green-400 font-bold text-right">VIP Membership Only</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Raven. Included in the membership, and also sold on its own as the
+               $39.99 tier. The "no grading, no filtering" line is the whole
+               distinction from Knightfall above — do not soften it, it is what
+               stops a member expecting Knightfall's behaviour from this script.
+               Raven has NO backtest and NO track record: never put Knightfall's
+               figures in this card. -->
+          <div id="tool-raven" class="scroll-mt-32 md:scroll-mt-24 border border-white/10 bg-zinc-950/40 rounded-2xl sm:rounded-3xl p-5 sm:p-8 hover:border-green-500/20 transition">
+            <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6 w-full">
+              <div class="space-y-2">
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] uppercase tracking-wider">TradingView Levels Indicator</span>
+                  <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-wider font-extrabold flex items-center gap-1">
+                    <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
+                  </span>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">FSD-X // ORB Raven</h2>
+                <p class="text-zinc-400 text-sm font-medium">Every breakout marked, with all the levels drawn &mdash; and no opinion about which to take.</p>
+                <p class="text-[12px] text-zinc-500 mt-1">Also sold on its own as the <a href="raven.html" class="text-green-400 hover:underline">Raven tier</a> at $39.99/month. Included here at no extra cost. <a href="compare.html" class="text-green-400 hover:underline">Compare &rarr;</a></p>
+              </div>
+              <div class="w-full sm:w-auto">
+                <a href="memberships.html"
+                   class="w-full sm:w-auto text-center px-6 py-3 bg-green-500 hover:bg-green-400 text-black text-xs font-extrabold rounded-xl transition inline-block shadow-lg shadow-green-500/5">
+                  Unlock with Membership
+                </a>
+              </div>
+            </div>
+            <div class="grid xl:grid-cols-3 gap-8">
+              <div class="xl:col-span-2 space-y-6">
+                <div>
+                  <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">What it does</h4>
+                  <p class="text-zinc-400 text-sm leading-relaxed">The same opening range detection, stop placement and target selection as Knightfall &mdash; with the selection layer removed. Raven marks <span class="text-white font-semibold">every</span> breakout of the range, both directions, and draws the entry, the stop, both targets, the midpoint and a nearby watch level for each one. It does not grade them and it does not filter them.</p>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-4">
+                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
+                    <div class="text-white text-xs font-bold mb-1">No Grading, No Filtering</div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">There is no A+ through F score and no "don't take this one". Every breakout is drawn and the read stays with the trader. For a member who already has their own criteria, a system that overrules them is worse than one that doesn't.</p>
+                  </div>
+                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
+                    <div class="text-white text-xs font-bold mb-1">Labelled Targets</div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Every target carries the kind of level it came from &mdash; prior day or week high and low, chart and higher-timeframe S/R, unfilled fair value gaps, round numbers. You always know what you are aiming at, not just a price.</p>
+                  </div>
+                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
+                    <div class="text-white text-xs font-bold mb-1">Position Size, Honestly</div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">Contracts from your risk setting and the distance to the stop &mdash; plus the <em>real</em> dollar risk, because rounding to a whole contract means the two rarely match. It flags the case where one contract already exceeds your risk.</p>
+                  </div>
+                  <div class="p-4 bg-zinc-900/30 border border-white/5 rounded-xl">
+                    <div class="text-white text-xs font-bold mb-1">Ghost Lines</div>
+                    <p class="text-zinc-500 text-xs leading-relaxed">A second breakout on the same side leaves the previous level set faded on the chart, so a position you still have open stays readable instead of being redrawn away.</p>
+                  </div>
+                </div>
+                <div class="p-4 bg-zinc-900/10 border border-white/5 rounded-xl flex items-start gap-3">
+                  <span class="text-green-400 text-sm mt-0.5">&#9888;</span>
+                  <div class="text-xs">
+                    <span class="text-white font-semibold block mb-0.5">It is an indicator, not a strategy</span>
+                    <p class="text-zinc-500 leading-relaxed">No backtest tab, no equity curve, no trade tracking and no automated execution. Raven never finds out what happened after the breakout, so it has no win rate to report. The backtest and live record on this site belong to ORB PRO (Knightfall).</p>
+                  </div>
+                </div>
+                <!-- Screenshot -->
+                <div class="rounded-2xl overflow-hidden border border-white/5 bg-black">
+                  <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold">// ORB Raven &mdash; MNQ 5m</div>
+                  <img src="screenshot-raven.png" alt="FSD-X ORB Raven marking a bear breakout of the opening range on an MNQ 5-minute chart, with the entry, stop, TP1 and TP2 zones, the 50% level and a watch level drawn, and the dashboard showing range width, trend state, the level stack and position size." class="w-full h-auto" width="874" height="663" loading="lazy" decoding="async">
+                </div>
+              </div>
+              <div class="bg-black border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden min-h-[200px] xl:min-h-auto">
+                <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
+                <div>
+                  <div class="text-[10px] text-green-500 uppercase tracking-widest mb-3">// Who it is for</div>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Members who bring their own read and want the levels drawn properly &mdash; where the opening range sits, where the stop belongs, where a realistic target is. If you want the system to decide the morning for you, that is Knightfall, above.</p>
+                </div>
+                <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
+                  <div class="flex justify-between text-xs"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">TradingView</span></div>
+                  <div class="flex justify-between text-xs"><span class="text-zinc-500">Primary Targets</span><span class="text-zinc-300 text-right">NQ, MNQ, ES Futures</span></div>
+                  <div class="flex justify-between text-xs"><span class="text-green-400 font-bold text-right">Included &middot; also $39.99 alone</span></div>
                 </div>
               </div>
             </div>
