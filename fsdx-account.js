@@ -190,11 +190,11 @@
 
   var UPGRADE_URL = 'memberships.html';
 
-  /** True only for a plan we positively know is the Nightwing tier.
-   *  An unknown or missing plan is never locked out — a mapping gap must not
-   *  cost a VIP member their tools. */
+  /** True only for a plan we positively know is one of the tools tiers
+   *  (Nightwing or Raven). An unknown or missing plan is never locked out —
+   *  a mapping gap must not cost a VIP member their tools. */
   function lacksFeature(plan, feature) {
-    if (plan !== 'site') return false;
+    if (plan !== 'site' && plan !== 'raven') return false;
     return feature === 'scout';
   }
 

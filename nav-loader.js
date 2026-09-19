@@ -414,9 +414,10 @@ function prepareNavLabels(root) {
         const whopStatus = localStorage.getItem('fsdx_whop_status') || '';
         const plan = localStorage.getItem('fsdx_plan') || '';
         // Base name: "VIP Plus" / "VIP Pro" / "Nightwing" when known, else "VIP"
-        const planName = plan === 'pro'  ? 'VIP Pro'
-                       : plan === 'plus' ? 'VIP Plus'
-                       : plan === 'site' ? 'Nightwing'
+        const planName = plan === 'pro'   ? 'VIP Pro'
+                       : plan === 'plus'  ? 'VIP Plus'
+                       : plan === 'site'  ? 'Nightwing'
+                       : plan === 'raven' ? 'Raven'
                        : 'VIP';
         let tierText;
         if (tier === 'trial') tierText = planName + ' · Trial';
@@ -425,14 +426,15 @@ function prepareNavLabels(root) {
         else tierText = plan ? planName : 'VIP Member';
         if (tierEl) tierEl.textContent = tierText;
 
-        /* Nightwing does not include Scout Alerts. Hide the link so the
+        /* Neither tools tier includes Scout Alerts. Hide the link so the
            member is never sent to a page that turns them away. This is
            cosmetic only — the real gate is the 403 on /api/scout/feed. The
-           test is deliberately `=== 'site'`: an unknown plan keeps the link,
-           so a mapping gap can never hide a VIP member's own tools.
-           Refer & Earn is NOT hidden — a Nightwing subscriber can still
-           promote the $129 membership; only Nightwing itself pays nothing. */
-        if (plan === 'site') {
+           test is deliberately an explicit list: an unknown plan keeps the
+           link, so a mapping gap can never hide a VIP member's own tools.
+           Refer & Earn is NOT hidden — a Nightwing or Raven subscriber can
+           still promote the $129 membership; only the tier itself pays
+           nothing. */
+        if (plan === 'site' || plan === 'raven') {
           document.querySelectorAll('#nav-content a[href="alerts.html"]')
             .forEach(el => el.classList.add('hidden'));
         }
@@ -455,9 +457,10 @@ function prepareNavLabels(root) {
           ['converter.html', 'Trade Importer'], ['refer.html', 'Refer & Earn'],
           ['profile.html', 'Profile']
         ]; } catch (e) {}
-        // Same Nightwing rule as the real nav above.
+        // Same tools-tier rule as the real nav above.
         try {
-          if (localStorage.getItem('fsdx_plan') === 'site') {
+          var fbPlan = localStorage.getItem('fsdx_plan');
+          if (fbPlan === 'site' || fbPlan === 'raven') {
             vip = vip.filter(function (l) { return l[0] !== 'alerts.html'; });
           }
         } catch (e) {}

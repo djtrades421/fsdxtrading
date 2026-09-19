@@ -1108,6 +1108,30 @@
 
          Only an explicitly known 'site' plan is rewritten. An unknown plan
          keeps the VIP wording, same fail-open rule as every other gate. */
+      /* Raven gets its own wording, not Nightwing's. The difference matters on
+         this exact screen: Nightwing has no script to claim, Raven does. Tell a
+         Raven member "there is nothing to claim" and they never go and get the
+         indicator they just paid for. */
+      if (user.plan === 'raven') {
+        const indTitle = document.getElementById('wm-ind-title');
+        const indBody  = document.getElementById('wm-ind-body');
+        if (indTitle && indBody) {
+          indTitle.textContent = 'Claim ORB Raven, then install Nexus';
+          indBody.innerHTML = 'Raven is invite-only, so claim it on Whop against your TradingView username — '
+            + 'it then shows up under Invite-only scripts on the Indicators menu. '
+            + 'Install the Nexus 2.0 extension the same way and paste in your licence key. '
+            + '<a href="setup.html" class="text-green-400 hover:underline font-bold">Getting started guide &rarr;</a>';
+        }
+        const disTitle = document.getElementById('wm-dis-title');
+        const disBody  = document.getElementById('wm-dis-body');
+        if (disTitle && disBody) {
+          disTitle.textContent = 'Join the Discord';
+          disBody.innerHTML = 'The free channels are open to everyone — market talk, the free indicators '
+            + 'and direct support. The live trade room and VIP channels are part of the full membership. '
+            + '<a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline font-bold">Join free &rarr;</a>';
+        }
+      }
+
       if (user.plan === 'site') {
         const indTitle = document.getElementById('wm-ind-title');
         const indBody  = document.getElementById('wm-ind-body');
@@ -1139,7 +1163,7 @@
          Only an explicitly known 'site' plan loses the mention; an unknown
          plan keeps it, same fail-open rule used everywhere else. */
       const scoutFrag = document.getElementById('wm-scout-frag');
-      if (scoutFrag) scoutFrag.classList.toggle('hidden', user.plan === 'site');
+      if (scoutFrag) scoutFrag.classList.toggle('hidden', user.plan === 'site' || user.plan === 'raven');
 
       /* Number whatever is actually on screen, in order. Hardcoded numbers go
          wrong the moment a step hides — and steps here hide by design. */
@@ -1336,8 +1360,9 @@
       // Reflect the member's plan (Plus vs Pro) in the tier label. Falls back to
       // the status-based label when the plan is unknown, so nothing breaks.
       if (memberPlan) {
-        const planName = memberPlan === 'pro'  ? 'VIP Pro'
-                       : memberPlan === 'site' ? 'Nightwing'
+        const planName = memberPlan === 'pro'   ? 'VIP Pro'
+                       : memberPlan === 'site'  ? 'Nightwing'
+                       : memberPlan === 'raven' ? 'Raven'
                        : 'VIP Plus';
         if (effectiveStatus === 'completed')      sc.label = planName + ' Lifetime';
         else if (effectiveStatus === 'trialing')  sc.label = planName + ' Trial';

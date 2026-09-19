@@ -414,13 +414,26 @@
     'use strict';
     var plan = null;
     try { plan = localStorage.getItem('fsdx_plan'); } catch (e) { return; }
-    if (plan !== 'site') return;
+    if (plan !== 'site' && plan !== 'raven') return;
 
-    var NOT_YOURS = {
+    var IS_RAVEN = plan === 'raven';
+
+    /* Raven and Nightwing are NOT the same walkthrough, and this is the one
+       place the difference bites. Nightwing has nothing on TradingView, so
+       steps 4 and 6 are struck out. Raven has exactly one script to claim and
+       add, so those two steps stay live and only the VIP-Discord step is
+       struck out. Greying out step 4 for a Raven member would tell them there
+       is nothing to claim, and they would never go and get the indicator they
+       just paid for. */
+    var NOT_YOURS = IS_RAVEN ? {
+      'step-5': 'The live room, VIP channels and Scout alerts are part of the full membership. The free Discord channels are open to you already — no claiming needed.'
+    } : {
       'step-4': 'Nightwing does not include the indicator suite, so there is nothing to claim here.',
       'step-5': 'The live room, VIP channels and Scout alerts are part of the full membership. The free Discord channels are open to you already — no claiming needed.',
       'step-6': 'No indicators to add. Your tools are the platform and Nexus.'
     };
+
+    var TIER_NAME = IS_RAVEN ? 'Raven' : 'Nightwing';
 
     function mark() {
       Object.keys(NOT_YOURS).forEach(function (id) {
@@ -448,7 +461,7 @@
         }
 
         var tag = document.createElement('div');
-        tag.textContent = 'Not part of Nightwing';
+        tag.textContent = 'Not part of ' + TIER_NAME;
         tag.style.cssText = 'margin-left:auto;flex:0 0 auto;font-size:10px;font-weight:700;'
           + 'letter-spacing:.14em;text-transform:uppercase;color:#eab308;'
           + 'border:1px solid rgba(234,179,8,.3);background:rgba(234,179,8,.08);'
@@ -465,13 +478,20 @@
         note.style.cssText = 'border:1px solid rgba(34,197,94,.28);background:rgba(34,197,94,.06);'
           + 'border-radius:16px;padding:18px 22px;margin-bottom:20px';
         note.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:.2em;'
-          + 'text-transform:uppercase;color:#22c55e;margin-bottom:7px">You’re on Nightwing</div>'
+          + 'text-transform:uppercase;color:#22c55e;margin-bottom:7px">You’re on ' + TIER_NAME + '</div>'
           + '<p style="font-size:13px;color:#a2aebf;line-height:1.6;margin:0">'
-          + 'Three steps below are for the full membership and are marked as such. '
-          + 'Yours are <strong style="color:#fff">Create Your Site Account</strong>, '
-          + '<a href="#step-7" style="color:#22c55e;font-weight:700;text-decoration:none">Activate Nexus 2.0</a> '
-          + 'and <strong style="color:#fff">Secure Your Account</strong>. '
-          + 'The Nexus key is the only thing you claim on Whop.</p>';
+          + (IS_RAVEN
+              ? 'One step below is for the full membership and is marked as such. Everything else is yours — '
+                + 'including <strong style="color:#fff">claiming ORB Raven</strong> on Whop against your '
+                + 'TradingView username and adding it to a chart from '
+                + '<strong style="color:#fff">Invite-only scripts</strong>. You claim two things on Whop: '
+                + 'the Raven script and your Nexus key.'
+              : 'Three steps below are for the full membership and are marked as such. '
+                + 'Yours are <strong style="color:#fff">Create Your Site Account</strong>, '
+                + '<a href="#step-7" style="color:#22c55e;font-weight:700;text-decoration:none">Activate Nexus 2.0</a> '
+                + 'and <strong style="color:#fff">Secure Your Account</strong>. '
+                + 'The Nexus key is the only thing you claim on Whop.')
+          + '</p>';
         first.parentNode.insertBefore(note, first);
       }
     }
