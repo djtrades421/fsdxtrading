@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Compare Plans — FSD-X Trading</title>
+  <meta name="description" content="Every FSD-X product side by side: the free Arkham indicator, Nightwing, Raven and the full membership. What each one includes, what it doesn't, and who it's for." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Compare Plans — FSD-X Trading" />
+  <meta property="og:description" content="Every FSD-X product side by side. What each one includes, what it doesn't, and who it's for." />
+  <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
+  <meta property="og:url" content="https://www.fsdxtrading.com/compare.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Compare Plans — FSD-X Trading" />
+  <meta name="twitter:description" content="Every FSD-X product side by side. What each one includes, what it doesn't, and who it's for." />
+  <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
+  <link rel="canonical" href="https://www.fsdxtrading.com/compare.html" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <style>
+    body { background-color: #000; }
+    .cmp th, .cmp td { border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .cmp tbody tr:hover td { background: rgba(255,255,255,0.015); }
+    .cmp .col-hl { background: rgba(34,197,94,0.035); }
+  </style>
+  <script src="analytics.js"></script>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       THE POINT OF THIS PAGE. With four purchasable products, no single page
+       answered "what do I get for what" — a visitor had to open three pages
+       and cross-read them. This is that page. Everything else links here.
+
+       WHEN A PRODUCT CHANGES, CHANGE IT HERE TOO. This table and the
+       individual product pages say the same things in different words, and
+       that is exactly how the Whop listings and the site drifted apart
+       before. Treat this page as the one that must never be wrong.
+
+       Raven has no backtest and no track record. Knightfall's figures must
+       never appear in a Raven column or anywhere near one.
+       ═══════════════════════════════════════════════════════════════════ -->
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+    <div class="w-full flex-1">
+
+      <!-- ══════════════ HERO ══════════════ -->
+      <section class="pt-12 pb-8 md:pt-20 md:pb-10 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Compare</div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">Which one do you actually need?</h1>
+          <p class="mt-4 text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
+            Four products, and they're not versions of each other. Two of them don't include a signal tool at all,
+            and one of them is free forever. Here's all of it in one table, with the honest version of who each one is for.
+          </p>
+        </div>
+      </section>
+
+      <!-- ══════════════ THE SHORT ANSWER ══════════════ -->
+      <section class="py-10 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-5 font-bold">// The short answer</div>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <a href="free-indicators.html" class="border border-white/10 hover:border-green-500/30 bg-zinc-950/40 hover:bg-white/[0.02] rounded-2xl p-5 transition group flex flex-col">
+              <div class="flex items-baseline justify-between mb-2">
+                <div class="text-white font-black text-[15px] group-hover:text-green-400 transition">Free Indicators</div>
+                <div class="text-zinc-400 text-xs font-bold">Free</div>
+              </div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed flex-1">You want to see how we draw an opening range before spending anything. Arkham marks the range and flags volume-backed breakouts. No account, no email.</p>
+              <div class="mt-4 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Start here &rarr;</div>
+            </a>
+
+            <a href="nightwing.html" class="border border-white/10 hover:border-green-500/30 bg-zinc-950/40 hover:bg-white/[0.02] rounded-2xl p-5 transition group flex flex-col">
+              <div class="flex items-baseline justify-between mb-2">
+                <div class="text-white font-black text-[15px] group-hover:text-green-400 transition">Nightwing</div>
+                <div class="text-zinc-400 text-xs font-bold">$9.99/mo</div>
+              </div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed flex-1">You already have a strategy you trust. You want the journal, the backtester and the prop-account tracking around it. <span class="text-zinc-300">No chart tool from us.</span></p>
+              <div class="mt-4 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">The tools only &rarr;</div>
+            </a>
+
+            <a href="raven.html" class="border border-green-500/25 hover:border-green-500/50 bg-green-500/[0.05] hover:bg-green-500/[0.08] rounded-2xl p-5 transition group flex flex-col">
+              <div class="flex items-baseline justify-between mb-2">
+                <div class="text-white font-black text-[15px] group-hover:text-green-400 transition">Raven</div>
+                <div class="text-zinc-400 text-xs font-bold">$39.99/mo</div>
+              </div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed flex-1">You have your own read and want the levels drawn properly. Raven marks every breakout with entry, stop, targets and your size &mdash; and <span class="text-zinc-300">doesn't tell you which to take.</span></p>
+              <div class="mt-4 text-[11px] font-bold text-green-400 uppercase tracking-wider">Levels, no judgment &rarr;</div>
+            </a>
+
+            <a href="memberships.html" class="border border-white/10 hover:border-green-500/30 bg-zinc-950/40 hover:bg-white/[0.02] rounded-2xl p-5 transition group flex flex-col">
+              <div class="flex items-baseline justify-between mb-2">
+                <div class="text-white font-black text-[15px] group-hover:text-green-400 transition">Membership</div>
+                <div class="text-zinc-400 text-xs font-bold">$129/mo</div>
+              </div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed flex-1">You want the system to do the deciding. Knightfall grades every breakout and filters the ones that don't qualify &mdash; plus the Auto Trader, the live room and everything else.</p>
+              <div class="mt-4 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Everything &rarr;</div>
+            </a>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ THE TABLE ══════════════ -->
+      <section class="py-10 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-5 font-bold">// Everything, side by side</div>
+
+          <div class="overflow-x-auto -mx-6 px-6 md:mx-0 md:px-0">
+            <table class="cmp w-full min-w-[720px] text-left border-collapse">
+              <thead>
+                <tr>
+                  <th class="py-3 pr-4 text-[11px] uppercase tracking-wider text-zinc-500 font-bold w-[34%]"></th>
+                  <th class="py-3 px-3 text-center"><div class="text-white font-black text-sm">Free</div><div class="text-[11px] text-zinc-500 mt-0.5">$0</div></th>
+                  <th class="py-3 px-3 text-center"><div class="text-white font-black text-sm">Nightwing</div><div class="text-[11px] text-zinc-500 mt-0.5">$9.99/mo</div></th>
+                  <th class="py-3 px-3 text-center col-hl"><div class="text-green-400 font-black text-sm">Raven</div><div class="text-[11px] text-zinc-500 mt-0.5">$39.99/mo</div></th>
+                  <th class="py-3 px-3 text-center"><div class="text-white font-black text-sm">Membership</div><div class="text-[11px] text-zinc-500 mt-0.5">$129/mo</div></th>
+                </tr>
+              </thead>
+              <tbody class="text-[13px]">
+
+                <tr><td colspan="5" class="pt-6 pb-2 text-[10px] uppercase tracking-widest text-green-400 font-black">On the chart</td></tr>
+
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Arkham ORB</div><div class="text-zinc-500 text-[12px]">Opening range, volume-backed breakouts. Public script.</div></td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold col-hl">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">ORB Raven</div><div class="text-zinc-500 text-[12px]">Every breakout marked, with entry, stop, both targets and your size. No grading, no filtering.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold col-hl">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">ORB PRO (Knightfall)</div><div class="text-zinc-500 text-[12px]">Grades every breakout A+ to F, filters the ones that don't qualify, sizes by grade.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700 col-hl">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Knightfall Auto Trader</div><div class="text-zinc-500 text-[12px]">Hands-off execution through your own bridge and broker.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700 col-hl">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Stack V1 &amp; Volume Engine</div><div class="text-zinc-500 text-[12px]">Multi-timeframe trend confirmation and volume context.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700 col-hl">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+
+                <tr><td colspan="5" class="pt-8 pb-2 text-[10px] uppercase tracking-widest text-green-400 font-black">Beside the chart &amp; after the close</td></tr>
+
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Nexus 2.0</div><div class="text-zinc-500 text-[12px]">Chrome side panel — position sizing, economic calendar, multi-timeframe analysis, trade logging.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold col-hl">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Member platform</div><div class="text-zinc-500 text-[12px]">Dashboard, trade journal, backtest workspace, broker importer, prop-account trackers.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold col-hl">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Playbook &amp; knowledge base</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold col-hl">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">The Knightfall course</div><div class="text-zinc-500 text-[12px]">The written course on running the graded system.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700 col-hl">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+
+                <tr><td colspan="5" class="pt-8 pb-2 text-[10px] uppercase tracking-widest text-green-400 font-black">The community</td></tr>
+
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Free Discord</div><div class="text-zinc-500 text-[12px]">Open to everyone, subscription or not.</div></td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold col-hl">&#10003;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Live trade room</div><div class="text-zinc-500 text-[12px]">Every market morning, 8:30 AM CT.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700 col-hl">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">SCOUT live alerts &amp; VIP channels</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-700 col-hl">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-green-400 font-bold">&#10003;</td>
+                </tr>
+
+                <tr><td colspan="5" class="pt-8 pb-2 text-[10px] uppercase tracking-widest text-green-400 font-black">Signing up</td></tr>
+
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Free trial</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-500 text-[12px]">Nothing to trial</td>
+                  <td class="py-3 px-3 text-center text-zinc-300 text-[12px]">7 days<div class="text-zinc-600 text-[11px]">monthly only</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-300 text-[12px] col-hl">7 days<div class="text-zinc-600 text-[11px]">monthly only</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-300 text-[12px]">30 days</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Longer terms</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-700">&mdash;</td>
+                  <td class="py-3 px-3 text-center text-zinc-300 text-[12px]">3, 6, 12 months</td>
+                  <td class="py-3 px-3 text-center text-zinc-300 text-[12px] col-hl">3, 6, 12 months</td>
+                  <td class="py-3 px-3 text-center text-zinc-300 text-[12px]">Quarterly, annual</td>
+                </tr>
+                <tr>
+                  <td class="py-3 pr-4"><div class="text-white font-semibold">Performance data published</div><div class="text-zinc-500 text-[12px]">Whether the product has a backtest or track record of its own.</div></td>
+                  <td class="py-3 px-3 text-center text-zinc-500 text-[12px]">None</td>
+                  <td class="py-3 px-3 text-center text-zinc-500 text-[12px]">None</td>
+                  <td class="py-3 px-3 text-center text-zinc-500 text-[12px] col-hl">None</td>
+                  <td class="py-3 px-3 text-center text-zinc-300 text-[12px]"><a href="results.html" class="text-green-400 hover:underline">Backtest</a> &amp; <a href="track-record.html" class="text-green-400 hover:underline">live record</a></td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+          <div class="mt-6 border border-white/10 bg-zinc-950/40 rounded-xl px-4 py-3">
+            <p class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">About that last row.</span> The backtest and live track record on this site belong to <span class="text-white font-semibold">ORB PRO (Knightfall)</span> and to nothing else. Raven is an indicator &mdash; it marks breakouts and draws levels, it never finds out what happened next, and it has no win rate to publish. Nightwing records <em>your</em> trading; it doesn't produce any. Neither one inherits Knightfall's numbers, and we won't present them as if it does.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ THE HONEST BIT ══════════════ -->
+      <section class="py-10 px-6 md:px-12 border-b border-white/10 bg-zinc-950/30">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-5 font-bold">// Two things people get wrong</div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="border border-white/10 bg-black/40 rounded-2xl p-5">
+              <div class="text-white font-bold text-sm mb-2">Nightwing isn't a cheap Raven</div>
+              <p class="text-[13px] text-zinc-400 leading-relaxed">They're built for different people. Nightwing gives you nothing to put on a chart &mdash; it's for a trader who already has a strategy and wants the record-keeping around it. Raven puts levels on the chart. If you want something to trade from, Nightwing isn't the cheaper option, it's the wrong one.</p>
+            </div>
+            <div class="border border-white/10 bg-black/40 rounded-2xl p-5">
+              <div class="text-white font-bold text-sm mb-2">Raven isn't a cut-down Knightfall</div>
+              <p class="text-[13px] text-zinc-400 leading-relaxed">Same range detection, same stop placement, same target selection &mdash; so the levels are identical. What Knightfall adds is judgment: it grades each breakout and refuses the ones that don't qualify. If you want that call made for you, pay for it. If you'd rather make it yourself, paying for it would only get in your way.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ MOVING BETWEEN THEM ══════════════ -->
+      <section class="py-10 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-5 font-bold">// Changing your mind later</div>
+          <div class="grid sm:grid-cols-3 gap-4">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-white font-bold text-sm mb-1.5">Upgrade any time</div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Through Whop, whenever you want. Your journal entries, tracked accounts and backtest history stay attached to your site account, so nothing is lost moving up.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-white font-bold text-sm mb-1.5">Everything unlocks the same way</div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Whatever you pick, access is instant through Whop &mdash; claim your scripts, sign in here, activate Nexus. The <a href="setup.html" class="text-green-400 hover:underline font-semibold">Getting Started guide</a> covers it.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-white font-bold text-sm mb-1.5">Full members have it all</div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Raven, Nexus and the platform are part of the membership already. If you're on the $129 plan there's nothing here to buy separately.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
+      <div class="max-w-6xl mx-auto space-y-6">
+        <p class="text-xs text-zinc-400 leading-relaxed">Educational, rules-based software. Not financial advice and not a trade-signal service. Any backtest or historical figures shown elsewhere on this site are hypothetical and belong to ORB PRO (Knightfall). Futures trading involves substantial risk of loss and is not suitable for every investor. Past performance is not indicative of future results. FSD-X is an independent software provider, not a broker or financial advisor.</p>
+        <nav class="pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+          <a href="index.html" class="hover:text-green-400 transition">Home</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
+          <a href="nightwing.html" class="hover:text-green-400 transition">Nightwing</a>
+          <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
+          <a href="knowledge.html" class="hover:text-green-400 transition">Knowledge Base</a>
+          <a href="converter.html" class="hover:text-green-400 transition">Trade Converter</a>
+          <a href="faq.html" class="hover:text-green-400 transition">FAQ</a>
+          <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+          <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
+        </nav>
+        <div class="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
+          <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
+          <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="nav-loader.js?v=20260913b"></script>
+  <script src="checkout-gate.js?v=20260913b"></script>
+</body>
+</html>

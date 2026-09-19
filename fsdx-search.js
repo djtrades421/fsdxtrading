@@ -29,17 +29,21 @@
     {t:'My Profile',      u:'profile.html',   g:'Workspace', vip:1, kw:'account password email settings'},
 
     // products — these used to be the ↳ sub-links
-    {t:'The System',            u:'suite.html',                g:'Products', kw:'suite tools overview indicators'},
+    {t:"What's in the Membership", u:'suite.html',             g:'Products', kw:'suite the system tools overview indicators included membership'},
     {t:'Giveaways', u:'giveaways.html', g:'Community', kw:'giveaway giveaways free eval evaluation prize contest enter win follow socials instagram youtube x discord'},
     {t:'ORB PRO — Knightfall MK2', u:'suite.html#tool-orbpro', g:'Products', kw:'signal engine indicator grading breakout main'},
     {t:'Stack V1',              u:'suite.html#tool-stack',     g:'Products', kw:'trend mtf timeframe confirmation'},
     {t:'Volume Indicator',      u:'suite.html#tool-volume',    g:'Products', kw:'volume engine breakout companion'},
     {t:'Nexus 2.0',             u:'suite.html#tool-nexus',     g:'Products', kw:'chrome extension journal optimizer sidepanel'},
-    {t:'Member Platform',       u:'platform.html',             g:'Products', kw:'dashboard journal importer csv import backtest workspace tracker accounts playbook workspace included'},
+    {t:'The Platform',          u:'platform.html',             g:'Products', kw:'member platform dashboard journal importer csv import backtest workspace tracker accounts playbook workspace included'},
     {t:'ORB Auto-Trader',       u:'autotrader.html',           g:'Products', kw:'automation pickmytrade tradovate hands off at'},
+    /* RAVEN LAUNCH — uncomment with the nav links in nav.html. Search must not
+       surface a product the site cannot yet grant access to. */
+    // {t:'Raven',              u:'raven.html',    g:'Products', kw:'orb raven levels indicator breakout no grading stop target position size'},
+    // {t:'Compare Plans',      u:'compare.html',  g:'Products', kw:'compare comparison plans tiers pricing difference which one nightwing raven membership free'},
 
     // proof
-    {t:'Results',           u:'results.html',      g:'Results', kw:'backtest data stats grades'},
+    {t:'Backtest Results',  u:'results.html',      g:'Results', kw:'results backtest data stats grades knightfall'},
     {t:'Backtest (7-year)', u:'results.html',      g:'Results', kw:'seven year history annual ledger'},
     {t:'Risk Profile Planner', u:'results.html#risk-profiles', g:'Results', kw:'account size eval pass rate 50k 100k 150k 250k'},
     {t:'Live Track Record', u:'track-record.html', g:'Results', kw:'live forward walked trades posted verified mk1'},
