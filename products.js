@@ -17,13 +17,21 @@ export const PRODUCT = {
   NEXUS_STANDALONE:  'prod_jNTNmXVjVsTUx', // FSD-X Nexus Standalone
   NEXUS_MARKETPLACE: 'prod_ufb6xrzAO7lwo', // FSD-X Nexus Marketplace
   NIGHTWING:         'prod_LwWpX164TGT7Q', // Nightwing — Site Access + Nexus 2.0 ($9.99)
+  RAVEN:             'prod_9gteCsUjkCpjS', // Raven — ORB Levels + Platform ($39.99)
 };
 
 /* ── Plans ──────────────────────────────────────────────────────────────────
    'pro'   — full VIP bundle, everything including the Auto Trader
    'plus'  — VIP indicators, no Auto Trader
-   'site'  — NEW. Nightwing: site access + Nexus. Web platform and the
+   'site'  — Nightwing: site access + Nexus. Web platform and the
              extension, no VIP TradingView scripts and no Scout Alerts.
+   'raven' — NEW. Raven: everything in 'site', plus the ORB Raven
+             invite-only script on TradingView. The script is granted by
+             Whop against a TradingView username, so as far as this worker
+             is concerned Raven and Nightwing are identical — same site
+             tools, same Nexus, still no Scout and no VIP scripts. The
+             plans are kept apart so the label is right and so a future
+             gate has somewhere to hang.
    'nexus' — the standalone extension product. Extension only, no site login.
    ─────────────────────────────────────────────────────────────────────────── */
 
@@ -63,6 +71,42 @@ export function siteProductIds(env) {
   return ids;
 }
 
+/** The $39.99 Raven tier: "FSD-X Raven — ORB Levels + Platform".
+ *  One Whop product, four billing plans (monthly / 3mo / 6mo / yearly) sharing
+ *  one product_id, exactly like Nightwing.
+ *
+ *  Same plan_-id guard as siteProductIds, and for the same reason: Whop shows
+ *  plan ids everywhere and product ids almost nowhere, so a pasted plan_ id is
+ *  the likely mistake and it would silently refuse every Raven member. */
+export function ravenProductIds(env) {
+  const raw = [
+    PRODUCT.RAVEN,
+    env.WHOP_PRODUCT_ID_RAVEN,
+    env.WHOP_PRODUCT_ID_RAVEN_2,
+  ].filter(Boolean);
+
+  const ids = [];
+  for (const v of raw) {
+    const id = String(v).trim();
+    if (id.startsWith('plan_')) {
+      console.error(
+        '[products] WHOP_PRODUCT_ID_RAVEN is set to a PLAN id (' + id + '). ' +
+        'It must be the PRODUCT id, which starts with prod_. ' +
+        'Raven memberships will be rejected until this is fixed.');
+      continue;
+    }
+    ids.push(id);
+  }
+  return ids;
+}
+
+/** The two lower tiers behave identically on the web platform and in Nexus.
+ *  Anywhere the old code asked `plan === 'site'`, ask this instead, or Raven
+ *  members quietly get Nightwing's restrictions without Nightwing's label. */
+export function isToolsPlan(plan) {
+  return plan === 'site' || plan === 'raven';
+}
+
 /** Products that grant the full VIP bundle (indicators + site + Nexus). */
 export function vipProductIds(env) {
   return [
@@ -92,6 +136,7 @@ export function nexusProductIds(env) {
     PRODUCT.PRO,
     env.WHOP_PRODUCT_ID_6, // Pro, when overridden in the dashboard
     ...siteProductIds(env),
+    ...ravenProductIds(env),
   ].filter(Boolean);
 }
 
@@ -103,7 +148,7 @@ export function isVipPlan(plan) {
 
 /** Everything that may sign in to the site or use a Nexus API. */
 export function allowedProductIds(env) {
-  return [...vipProductIds(env), ...siteProductIds(env)];
+  return [...vipProductIds(env), ...siteProductIds(env), ...ravenProductIds(env)];
 }
 
 /** Whop membership statuses we treat as live access. */
@@ -120,6 +165,7 @@ export const NEXUS_OK_STATUSES =
 export function planForProduct(productId, env) {
   if (!productId) return null;
   if (siteProductIds(env).includes(productId)) return 'site';
+  if (ravenProductIds(env).includes(productId)) return 'raven';
   if (productId === PRODUCT.NEXUS_STANDALONE ||
       productId === PRODUCT.NEXUS_MARKETPLACE) return 'nexus';
   const proPid = env.WHOP_PRODUCT_ID_6 || PRODUCT.PRO;
@@ -154,9 +200,18 @@ const FEATURES = {
     // Everything on the web platform except the live signal relay. Scout is
     // the reason to hold a VIP membership, so it stays behind that wall.
     scout: false,
-    // refer stays true: a Nightwing subscriber can still promote the $129
-    // membership. What earns commission is the PRODUCT referred — only the
-    // membership does, never Nightwing — and that is a Whop-side setting.
+    journal: true, backtest: true, converter: true,
+    playbook: true, accounts: true, course: true, refer: true,
+    nexus: true, vipIndicators: false, autoTrader: false,
+  },
+  raven: {
+    label: 'Raven',
+    // Identical to Nightwing on the web platform. The difference between the
+    // two tiers is the ORB Raven script on TradingView, which Whop grants
+    // directly — nothing here gates it, so nothing here needs to know about it.
+    // vipIndicators stays false: that flag means the VIP suite (Knightfall,
+    // Stack, Volume), which Raven does not include.
+    scout: false,
     journal: true, backtest: true, converter: true,
     playbook: true, accounts: true, course: true, refer: true,
     nexus: true, vipIndicators: false, autoTrader: false,
