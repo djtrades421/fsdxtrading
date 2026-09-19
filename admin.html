@@ -1467,6 +1467,12 @@
                   <option value="Nightwing 6-Month">Nightwing 6-Month</option>
                   <option value="Nightwing Yearly">Nightwing Yearly</option>
                 </optgroup>
+                <optgroup label="Raven">
+                  <option value="Raven Monthly">Raven Monthly</option>
+                  <option value="Raven 3-Month">Raven 3-Month</option>
+                  <option value="Raven 6-Month">Raven 6-Month</option>
+                  <option value="Raven Yearly">Raven Yearly</option>
+                </optgroup>
                 <optgroup label="Legacy / VIP">
                   <option value="VIP Monthly">VIP Monthly</option>
                   <option value="VIP Annual">VIP Annual</option>
@@ -2320,6 +2326,13 @@
       'plan_tUnymSODvJdzv': 'Nightwing 3-Month',   // $24.99
       'plan_zsSGNzcu9Act8': 'Nightwing 6-Month',   // $49.99
       'plan_oqxr2pyB51Dmc': 'Nightwing Yearly',    // $99.99
+      // ── Raven — ORB Levels + Platform ($39.99 tier) ──
+      // Everything Nightwing has, plus the ORB Raven script on TradingView.
+      // Still no VIP indicator suite and no Scout Alerts.
+      'plan_FS3wz2m2zg0VJ': 'Raven Monthly',       // $39.99 (7-day trial)
+      'plan_yEIga8NOmOvmF': 'Raven 3-Month',       // $105
+      'plan_p8AqrufxMg8N4': 'Raven 6-Month',       // $199.99
+      'plan_0no5d2OV6gVGP': 'Raven Yearly',        // $375
       // ── Other products / legacy tiers ──
       'plan_hbtb1mgoj9BRW': 'VIP Monthly No Trial',
       'plan_aXiLFJZu79HYG': 'VIP Legacy',
@@ -2339,12 +2352,15 @@
 
     // ── Fallback: resolve a tier label from the Whop PRODUCT NAME ──
     // Only used when the plan ID isn't in PLAN_MAP yet (a new plan, a renamed
-    // one). Nightwing is tested FIRST because its Whop product is literally
-    // named "... VIP Site Access + Nexus 2.0" — the generic `vip` test below
-    // would otherwise swallow every Nightwing member into "VIP Monthly".
+    // one). Raven and Nightwing are tested FIRST: Nightwing's Whop product is
+    // literally named "... VIP Site Access + Nexus 2.0", so the generic `vip`
+    // test below would otherwise swallow every Nightwing member into "VIP
+    // Monthly". Raven goes above it for the same reason — a future rename that
+    // puts "VIP" in the product name must not silently reclassify the tier.
     function accessFromProductName(name, isLifetime) {
       const n = (name || '').toLowerCase();
       if (!n) return '';
+      if (n.includes('raven')) return 'Raven';
       if (n.includes('nightwing')) return 'Nightwing';
       if (n.includes('site access') && n.includes('nexus')) return 'Nightwing';
       if (n.includes('lifetime') || isLifetime) return 'Lifetime';
@@ -6597,6 +6613,11 @@
         'plan_tUnymSODvJdzv': 24.99,    // Nightwing 3-Month
         'plan_zsSGNzcu9Act8': 49.99,    // Nightwing 6-Month
         'plan_oqxr2pyB51Dmc': 99.99,    // Nightwing Yearly
+        // Raven — ORB Levels + Platform (per billing cycle, same as above)
+        'plan_FS3wz2m2zg0VJ': 39.99,    // Raven Monthly
+        'plan_yEIga8NOmOvmF': 105.00,   // Raven 3-Month
+        'plan_p8AqrufxMg8N4': 199.99,   // Raven 6-Month
+        'plan_0no5d2OV6gVGP': 375.00,   // Raven Yearly
       };
       const priceFromPlanId = (planId) => {
         if (!planId) return 0;

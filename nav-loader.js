@@ -464,9 +464,18 @@ function prepareNavLabels(root) {
             vip = vip.filter(function (l) { return l[0] !== 'alerts.html'; });
           }
         } catch (e) {}
+        /* Labels here must match nav.html. They drifted once already: nav.html
+           was renamed and this list was not, so a member who hit the fallback
+           saw "The System" and "Results" while everyone else saw "What's in the
+           Membership" and "Backtest Results". Compare Plans is included because
+           the fallback fires exactly when someone is already having a bad time,
+           and that page answers the question they are most likely stuck on. */
         var site = [
-          ['index.html', 'Home'], ['suite.html', 'The System'],
-          ['autotrader.html', 'ORB Auto-Trader'], ['results.html', 'Results'],
+          ['index.html', 'Home'], ['compare.html', 'Compare Plans'],
+          ['suite.html', "What's in the Membership"],
+          ['platform.html', 'The Platform'],
+          ['autotrader.html', 'ORB Auto-Trader'], ['results.html', 'Backtest Results'],
+          ['nightwing.html', 'Nightwing'], ['raven.html', 'Raven'],
           ['memberships.html', 'Membership'], ['knowledge.html', 'Knowledge Base'],
           ['partners.html', 'Partner Program'], ['contact.html', 'Contact & Help']
         ];
