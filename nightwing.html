@@ -211,6 +211,108 @@
         </div>
       </section>
 
+
+      <!-- ══════════════ NEXUS IN DETAIL ══════════════
+           Every claim here is checked against the extension source
+           (fsdx-nexus 2.0.47): the tab names are its own, the prop-firm
+           presets are the ones in its dropdown, and the Optimizer really does
+           read whatever strategy settings dialog is open rather than only ours.
+           If the extension changes, re-check this section and the matching one
+           on the other tier page before editing either. -->
+      <section class="py-12 px-6 md:px-12 border-t border-white/10">
+        <div class="max-w-5xl mx-auto">
+
+          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-4 font-bold">// Nexus 2.0, in detail</div>
+          <h2 class="text-2xl md:text-3xl font-black tracking-tight mb-3">It is not a position size calculator with extras</h2>
+          <p class="text-sm md:text-base text-zinc-400 leading-relaxed max-w-2xl mb-8">
+            Nexus is five tools in a side panel that sits against the TradingView chart. Most of it has
+            nothing to do with our indicators &mdash; it works on whatever you happen to be trading.
+          </p>
+
+          <div class="grid lg:grid-cols-2 gap-8 items-start">
+
+            <div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
+              <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold">// Nexus 2.0 &mdash; the Optimizer, docked beside the chart</div>
+              <img src="screenshot-nexus-panel.png" alt="The FSD-X Nexus 2.0 side panel showing its five main tabs — Tools, Analysis, Journal, Backtest and Playbook — with the Optimizer open on the Setup view, listing each strategy input with editable minimum, maximum and step values." class="block w-full h-auto" width="594" height="939" loading="lazy" decoding="async">
+            </div>
+
+            <div class="space-y-4">
+              <div class="border border-green-500/25 bg-green-500/[0.04] rounded-2xl p-5">
+                <div class="text-[10px] font-black text-green-400 uppercase tracking-widest mb-1.5">Tools &middot; Optimizer</div>
+                <div class="text-white font-bold text-[15px] mb-2">Sweep a strategy's settings instead of guessing them</div>
+                <p class="text-[13px] text-zinc-400 leading-relaxed">Open any TradingView strategy's settings dialog and Nexus reads its inputs straight off the screen. Give each one a minimum, a maximum and a step, run the sweep, and read the combinations back ranked. <span class="text-zinc-300">It is not limited to our scripts</span> &mdash; it optimises whatever strategy is on your chart.</p>
+              </div>
+
+              <div class="border border-white/10 bg-zinc-950/50 rounded-2xl p-5">
+                <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Tools &middot; Eval Sim</div>
+                <div class="text-white font-bold text-[15px] mb-2">Run your own history against a prop firm's rules</div>
+                <p class="text-[13px] text-zinc-400 leading-relaxed">Presets for <span class="text-white font-semibold">Apex, TopStep, MFF and E8</span>, or set your own account size, daily drawdown, trailing or end-of-day drawdown and profit target. Feed it your journal and it simulates the evaluation, including how the result changes with contract count.</p>
+                <p class="text-[11.5px] text-zinc-600 leading-relaxed mt-2">Simulated outcomes from your own past trades. Hypothetical, and not a prediction that any evaluation will pass.</p>
+              </div>
+
+              <div class="border border-white/10 bg-zinc-950/50 rounded-2xl p-5">
+                <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Analysis</div>
+                <div class="text-white font-bold text-[15px] mb-2">Three timeframes read together</div>
+                <p class="text-[13px] text-zinc-400 leading-relaxed">Drop in your entry, confirmation and trend charts and get them read as one picture, with your ticker, strategy and maximum risk as context. It is AI-assisted and it says so in the panel &mdash; a second opinion to argue with, not an instruction.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Tools</div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Position calculator</span> for futures and forex, micro or standard, sized off your stop to a target R:R. Plus a <span class="text-white font-semibold">watchlist scanner</span>, <span class="text-white font-semibold">news headlines</span>, an <span class="text-white font-semibold">economic calendar</span> and an options <span class="text-white font-semibold">flow</span> reader.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Journal</div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Log a trade without leaving the chart &mdash; entry, exit, stop, both targets, tags, notes and a screenshot. Then history and stats: win rate, net P&amp;L, long versus short, performance by day, drawdown from peak. Export to <span class="text-white font-semibold">CSV or PDF</span>.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Backtest</div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Upload a CSV, keep each run as its own session, and read the results back the same way you read your live record. Sessions sync with the backtest workspace on this site.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Playbook</div>
+              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Your rules, setups and goals, plus a pre-trade checklist you tick off before entering. Daily rules and drawdown-protection rules live here too, and all of it syncs with the playbook on this site.</p>
+            </div>
+          </div>
+
+          <!-- The sync is the actual differentiator and it is easy to bury. Every
+               item below is a real two-way call in popup.js (action 'get' and
+               'save' against the shared journal and playbook endpoints), not a
+               marketing paraphrase. -->
+          <div class="mt-8 border border-green-500/25 bg-green-500/[0.05] rounded-2xl p-6">
+            <div class="text-[10px] font-black text-green-400 uppercase tracking-widest mb-2">The part that matters</div>
+            <h3 class="text-xl md:text-2xl font-black tracking-tight mb-3">The panel and the site are one account, not two</h3>
+            <p class="text-[13.5px] text-zinc-400 leading-relaxed max-w-3xl mb-5">
+              This is the difference between Nexus and every other browser extension you have tried.
+              It is not a standalone tool that happens to share a login &mdash; it reads and writes the
+              same data as the platform on this site, both directions, automatically.
+            </p>
+            <div class="grid sm:grid-cols-2 gap-3">
+              <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
+                <span class="text-green-400 shrink-0 mt-0.5 font-black">&rarr;</span>
+                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Log a trade in the panel</span> while the chart is still in front of you, and it is in your journal on this site before you have closed the tab.</p>
+              </div>
+              <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
+                <span class="text-green-400 shrink-0 mt-0.5 font-black">&larr;</span>
+                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Upload a backtest CSV on the site</span> and the session is there in the panel's Backtest tab, ready to read against the chart.</p>
+              </div>
+              <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
+                <span class="text-green-400 shrink-0 mt-0.5 font-black">&harr;</span>
+                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Your playbook is one list.</span> Rules, setups, goals and the pre-session checklist &mdash; tick something off in the panel and the site knows.</p>
+              </div>
+              <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
+                <span class="text-green-400 shrink-0 mt-0.5 font-black">&harr;</span>
+                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Accounts and defaults follow you.</span> Tracked accounts, your usual ticker, timeframe and contract count are set once and apply in both places.</p>
+              </div>
+            </div>
+            <p class="text-[12.5px] text-zinc-500 leading-relaxed mt-4">Which is why buying one without the other would not make sense &mdash; and why they are never sold apart.</p>
+          </div>
+
+        </div>
+      </section>
+
       <!-- ══════════════ PLATFORM TOUR ══════════════
            Two different kinds of data here, disclosed separately below the gallery:
              • dashboard / journal  — demo account, trades entered by hand
