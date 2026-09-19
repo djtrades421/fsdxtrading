@@ -561,15 +561,14 @@
             nothing to do with our indicators &mdash; it works on whatever you happen to be trading.
           </p>
 
-          <div class="grid lg:grid-cols-2 gap-8 items-start">
-
-            <div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
+          <div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
               <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold">// Nexus 2.0 &mdash; the Optimizer, mid-sweep</div>
               <img src="screenshot-nexus-panel.png" alt="The FSD-X Nexus 2.0 side panel with its five main tabs — Tools, Analysis, Journal, Backtest and Playbook — and the Optimizer running a sweep: combination 2 of 32 at 6 percent, an estimated time remaining, elapsed time, the parameter combination currently being tested, and an export button." class="block w-full h-auto" width="699" height="368" loading="lazy" decoding="async">
             </div>
+          <p class="mt-3 text-[12px] text-zinc-500 leading-relaxed">The panel docks to the right of the TradingView chart and stays there while you work. Above, the Optimizer part-way through a sweep &mdash; it reports the combination it is on, how far through it is and how long is left, and can be stopped at any point.</p>
 
-            <div class="space-y-4">
-              <div class="border border-green-500/25 bg-green-500/[0.04] rounded-2xl p-5">
+          <div class="mt-8 grid md:grid-cols-3 gap-4 items-start">
+<div class="border border-green-500/25 bg-green-500/[0.04] rounded-2xl p-5">
                 <div class="text-[10px] font-black text-green-400 uppercase tracking-widest mb-1.5">Tools &middot; Optimizer</div>
                 <div class="text-white font-bold text-[15px] mb-2">Sweep a strategy's settings instead of guessing them</div>
                 <p class="text-[13px] text-zinc-400 leading-relaxed">Open any TradingView strategy's settings dialog and Nexus reads its inputs straight off the screen. Give each one a minimum, a maximum and a step, run the sweep, and read the combinations back ranked. <span class="text-zinc-300">It is not limited to our scripts</span> &mdash; it optimises whatever strategy is on your chart.</p>
@@ -587,10 +586,9 @@
                 <div class="text-white font-bold text-[15px] mb-2">Three timeframes read together</div>
                 <p class="text-[13px] text-zinc-400 leading-relaxed">Drop in your entry, confirmation and trend charts and get them read as one picture, with your ticker, strategy and maximum risk as context. It is AI-assisted and it says so in the panel &mdash; a second opinion to argue with, not an instruction.</p>
               </div>
-            </div>
           </div>
 
-          <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
               <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Tools</div>
               <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Position calculator</span> for futures and forex, micro or standard, sized off your stop to a target R:R. Plus a <span class="text-white font-semibold">watchlist scanner</span>, <span class="text-white font-semibold">news headlines</span>, an <span class="text-white font-semibold">economic calendar</span> and an options <span class="text-white font-semibold">flow</span> reader.</p>
