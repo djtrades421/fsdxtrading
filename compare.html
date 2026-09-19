@@ -322,6 +322,19 @@
     </footer>
   </main>
 
+  <script>
+    /* Defined per page across this site rather than in nav-loader.js. Leave it
+       out and the mobile menu button silently does nothing. */
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      if (sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.remove('-translate-x-full');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+      }
+    }
+  </script>
+
   <script src="nav-loader.js?v=20260913b"></script>
   <script src="checkout-gate.js?v=20260913b"></script>
 </body>
