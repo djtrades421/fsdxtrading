@@ -562,11 +562,19 @@
                   </div>
                   <!-- Tier Comparison Table -->
                   <div class="mt-4 border border-white/5 rounded-xl overflow-hidden">
+                    <!-- Column names matter here. "Trial" used to imply every trial
+                         lands in the middle column; only the full-membership trial
+                         does. nexus-validate.js returns tier 'trial' solely when
+                         isVipPlan(plan) && status === 'trialing', and isVipPlan is
+                         false for 'site', 'raven' and 'nexus' — so Nightwing, Raven
+                         and standalone get full access from day one, trial or not.
+                         Daily numbers below are the server's, from LIMITS in
+                         nexus-ai.js. Change them there and here together. -->
                     <div class="grid grid-cols-4 bg-zinc-900/60 text-[10px] uppercase tracking-wider font-bold border-b border-white/5">
                       <div class="px-3 py-2.5 text-zinc-500">Feature</div>
-                      <div class="px-3 py-2.5 text-zinc-500 text-center">Free</div>
-                      <div class="px-3 py-2.5 text-yellow-400 text-center">Trial</div>
-                      <div class="px-3 py-2.5 text-green-400 text-center">VIP</div>
+                      <div class="px-3 py-2.5 text-zinc-500 text-center">No key</div>
+                      <div class="px-3 py-2.5 text-yellow-400 text-center">Membership trial</div>
+                      <div class="px-3 py-2.5 text-green-400 text-center">Full access</div>
                     </div>
                     <div class="divide-y divide-white/5 text-xs">
                       <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Optimizer</span><span class="text-center text-zinc-500">2 params · 50 combos</span><span class="text-center text-yellow-400">✓ Full</span><span class="text-center text-green-400">✓ Full</span></div>
@@ -575,18 +583,22 @@
                       <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">News Calendar</span><span class="text-center text-green-400">✓</span><span class="text-center text-green-400">✓</span><span class="text-center text-green-400">✓</span></div>
                       <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Journal</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">✓ Full</span><span class="text-center text-green-400">✓ Full</span></div>
                       <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Backtest Journal</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">3 sessions</span><span class="text-center text-green-400">Unlimited</span></div>
-                      <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Watchlist</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">2/day</span><span class="text-center text-green-400">1 Scan All/day</span></div>
+                      <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Watchlist scan</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">1 Scan All/day</span><span class="text-center text-green-400">1 Scan All/day</span></div>
                       <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Chart AI</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">2/day</span><span class="text-center text-green-400">5/day</span></div>
                       <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">News AI</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">2/day</span><span class="text-center text-green-400">5/day</span></div>
                       <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Flow Reader AI</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">2/day</span><span class="text-center text-green-400">5/day</span></div>
-                      <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Eval Sim & Strategy AI</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">2/day</span><span class="text-center text-green-400">5/day</span></div>
+                      <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Eval Sim AI</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">2/day</span><span class="text-center text-green-400">5/day</span></div>
+                      <div class="grid grid-cols-4 px-3 py-2 hover:bg-white/[0.02]"><span class="text-zinc-400">Strategy AI</span><span class="text-center text-zinc-600">🔒</span><span class="text-center text-yellow-400">1/day</span><span class="text-center text-green-400">3/day</span></div>
                     </div>
                     <div class="grid grid-cols-4 bg-zinc-900/30 border-t border-white/5 text-[10px] px-3 py-2">
-                      <span class="text-zinc-600">Access</span>
-                      <span class="text-center text-zinc-500">Chrome Store</span>
-                      <span class="text-center text-yellow-400/70">VIP 30-Day Trial</span>
-                      <span class="text-center text-green-400/70">VIP / Standalone</span>
+                      <span class="text-zinc-600">Who's in this column</span>
+                      <span class="text-center text-zinc-500">No key entered</span>
+                      <span class="text-center text-yellow-400/70">Membership, during its 30&#8209;day trial</span>
+                      <span class="text-center text-green-400/70">Everyone else with a key</span>
                     </div>
+                  </div>
+                  <div class="mt-3 border border-white/10 bg-zinc-950/40 rounded-xl px-4 py-3">
+                    <p class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Only the membership's own trial is limited.</span> On the $129 membership Nexus is one part of a much bigger bundle, so its 30-day trial runs on the middle column. Everywhere else the extension is most of what you're paying for, so a trial there would leave you nothing to judge &mdash; <a href="nightwing.html" class="text-green-400 hover:underline">Nightwing</a> (7-day trial), <a href="raven.html" class="text-green-400 hover:underline">Raven</a> (7-day trial) and standalone Nexus (3-day trial) all run on <span class="text-white font-semibold">full access from day one</span>, trial or not. Longer billing terms have no trial and start on full access immediately.</p>
                   </div>
                 </div>
                 <div class="grid sm:grid-cols-2 gap-4 text-xs">
