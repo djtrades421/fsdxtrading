@@ -481,6 +481,76 @@
       </section>
 
       <!-- ═══ TRUST STRIP ═══ -->
+      <!-- ═══ PIVOT · PICK YOUR SETTING ═══ -->
+      <section id="pick-your-setting" class="px-6 md:px-12 py-20 border-b border-white/10 bg-zinc-950/30">
+        <div class="max-w-6xl mx-auto">
+
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Before anything else</div>
+          <h2 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-[1.1]">The system ships set to $400.<br class="hidden md:block"> That's a default, not a recommendation.</h2>
+          <p class="mt-5 text-zinc-400 text-base leading-relaxed max-w-3xl">
+            Risk-per-trade is the first thing you should change, and almost nobody does. It's the setting that decides how big your swings are — up and down. Pick it before you take a single trade.
+          </p>
+
+          <!-- what does and doesn't move -->
+          <div class="mt-10 grid md:grid-cols-2 gap-4">
+            <div class="border border-green-500/25 bg-green-500/[0.04] rounded-2xl p-6">
+              <div class="text-[10px] text-green-400 uppercase tracking-widest font-bold mb-3">Doesn't move with the setting</div>
+              <div class="space-y-2.5 text-sm text-zinc-300">
+                <div class="flex items-baseline gap-3"><span class="text-white font-black text-base w-20 shrink-0">62.59%</span><span>Win rate — identical at all six settings</span></div>
+                <div class="flex items-baseline gap-3"><span class="text-white font-black text-base w-20 shrink-0">1.70</span><span>Profit factor — moves inside a tenth</span></div>
+                <div class="flex items-baseline gap-3"><span class="text-white font-black text-base w-20 shrink-0">1,112</span><span>Trades across the same 7-year window</span></div>
+              </div>
+              <p class="mt-4 text-[11px] text-zinc-500 leading-relaxed">Turning the setting down doesn't cost you the edge. It costs you size.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-[10px] text-zinc-400 uppercase tracking-widest font-bold mb-3">Does move with the setting</div>
+              <div class="space-y-2.5 text-sm text-zinc-300">
+                <div class="flex items-baseline gap-3"><span class="text-zinc-400 font-black text-base w-20 shrink-0">Drawdown</span><span>-$1,500 at $250 · -$5,546 at $1,000</span></div>
+                <div class="flex items-baseline gap-3"><span class="text-zinc-400 font-black text-base w-20 shrink-0">Net</span><span>Scales with it, in both directions</span></div>
+              </div>
+              <p class="mt-4 text-[11px] text-zinc-500 leading-relaxed">Which is why these two numbers mean nothing until you've picked your setting — and why they don't lead on this page.</p>
+            </div>
+          </div>
+
+          <!-- the three questions -->
+          <h3 class="mt-12 text-xl md:text-2xl font-black text-white">Three questions decide it</h3>
+          <div class="mt-5 grid md:grid-cols-3 gap-4">
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-2">01 — Account size</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">A 50K has less room to absorb a losing run than a 150K. The bigger the account, the more setting you can carry.</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-2">02 — Will you intervene?</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Moving to breakeven, re-entering, running a drawdown protocol. If you'll take every signal exactly as printed and do nothing else, size down.</p>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-2">03 — What can you sit through?</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Not what you can survive on paper — what you'll actually hold through without switching the thing off mid-drawdown.</p>
+            </div>
+          </div>
+
+          <!-- worked examples -->
+          <div class="mt-8 grid md:grid-cols-2 gap-4">
+            <div class="border border-white/10 bg-black/40 rounded-2xl p-6">
+              <div class="text-[10px] text-zinc-400 uppercase tracking-widest font-bold mb-2">Example · 50K, no intervention</div>
+              <div class="text-2xl font-black text-white mb-2">$250 — Conservative</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Deepest drawdown in the backtest was <span class="text-white font-semibold">-$1,500</span>. Smaller moves, slower going, the shallowest of any setting. Makes less — that's the trade.</p>
+            </div>
+            <div class="border border-white/10 bg-black/40 rounded-2xl p-6">
+              <div class="text-[10px] text-zinc-400 uppercase tracking-widest font-bold mb-2">Example · 150K</div>
+              <div class="text-2xl font-black text-white mb-2">$400 — Balanced</div>
+              <p class="text-sm text-zinc-400 leading-relaxed">Deepest drawdown in the backtest was <span class="text-white font-semibold">-$2,250</span>. More room on a larger account means the default may already fit.</p>
+            </div>
+          </div>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <a href="results.html#risk-profiles" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-7 py-3.5 rounded-xl text-sm">Compare all six settings →</a>
+            <span class="text-[11px] text-zinc-500 leading-relaxed max-w-md">Every figure above is from the seven-year MNQ backtest — hypothetical and simulated, not actual trading, gross of commissions, fees and slippage. Drawdown figures are backtested maximums, not limits, and not a prediction of what any account will experience. Past performance is not indicative of future results.</span>
+          </div>
+
+        </div>
+      </section>
+
       <!-- ═══ THE LADDER — three ways in ═══
            A visitor used to land here and see exactly one option: the $129
            trial. Free and Nightwing existed but nothing on the front door said
