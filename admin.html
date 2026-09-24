@@ -7,7 +7,7 @@
   <title>FSD-X — Admin Panel</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="fsdx-theme.js?v=20260830"></script>
-  <script src="nav-loader.js?v=20260913b"></script>
+  <script src="nav-loader.js?v=20260924a"></script>
   <style>
     body { background-color: #000; overflow-x: hidden; }
     .tab-panel { display: none !important; }
@@ -1839,10 +1839,22 @@
     function trafficFunnel(month, monthPages){
       const el = document.getElementById('traffic-funnel'); if(!el) return;
       const mp = monthPages||{}; const visits=month||0;
-      const memb = mp['/memberships']||0; const chk = mp['/checkout-started']||0;
+      const memb = (mp['/memberships']||0) + (mp['/memberships.html']||0); const chk = mp['/checkout-started']||0;
       const base = Math.max(1, visits);
       const rows=[['Visits (sessions)',visits,'#22c55e',false],['Viewed Memberships',memb,'#38bdf8',true],['Clicked Proceed to Checkout',chk,'#f59e0b',true]];
-      el.innerHTML = rows.map(([label,v,col,showPct])=>{ const pct=Math.round(v/base*100); const w=Math.max(v/base*100,2); return `<div class="mb-3"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${label}</span><span class="text-zinc-500">${v}${showPct?` · ${pct}% of visits`:''}</span></div><div class="h-3 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${w}%;background:${col}"></div></div></div>`; }).join('') + `<div class="text-[10px] text-zinc-600 mt-1 leading-relaxed">Checkout = reached the Terms gate and clicked <span class="text-amber-400/80">Proceed to Checkout</span> — the front of the Whop step. Actual purchases live in Whop.</div>`;
+      el.innerHTML = rows.map(([label,v,col,showPct])=>{ const pct=Math.round(v/base*100); const w=Math.max(v/base*100,2); return `<div class="mb-3"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${label}</span><span class="text-zinc-500">${v}${showPct?` · ${pct}% of visits`:''}</span></div><div class="h-3 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${w}%;background:${col}"></div></div></div>`; }).join('') + `<div class="text-[10px] text-zinc-600 mt-1 leading-relaxed">Checkout = reached the Terms gate and clicked <span class="text-amber-400/80">Proceed to Checkout</span> — the front of the Whop step. Actual purchases live in Whop.</div>` + checkoutByProduct(mp);
+    }
+    // Per-product checkout clicks (/checkout/<product>). Members included, so an
+    // existing member adding Raven or Nightwing shows here even though they are
+    // excluded from the non-member funnel bars above.
+    function checkoutByProduct(mp){
+      const names = { raven:'Raven', nightwing:'Nightwing', autotrader:'Auto Trader', tools:'Suite / Tools', membership:'Membership (Knightfall)' };
+      const ent = Object.entries(mp||{}).filter(([k])=>k.indexOf('/checkout/')===0)
+        .map(([k,v])=>[k.slice(10),v]).sort((a,b)=>b[1]-a[1]);
+      if(!ent.length) return `<div class="text-[10px] text-zinc-600 mt-3">No per-product checkout clicks yet this month.</div>`;
+      const max = Math.max.apply(null, ent.map(e=>e[1]));
+      return `<div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mt-4 mb-2">Checkout Clicks by Product · incl. members</div>`
+        + ent.map(([k,v])=>`<div class="mb-2"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${names[k]||k}</span><span class="text-amber-400 font-bold">${v}</span></div><div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full bg-amber-400/70" style="width:${Math.max(v/max*100,2)}%"></div></div></div>`).join('');
     }
 
     // ── Top Pages: range switch + "since you last looked" deltas ──
@@ -1904,7 +1916,7 @@
         el.innerHTML = '<span class="text-zinc-600 text-xs">Waiting on worker page data. Deploy the updated /api/admin/visits route.</span>';
         return;
       }
-      const ent = Object.entries(src).sort((a,b)=>b[1]-a[1]);
+      const ent = Object.entries(src).filter(([k])=>k.indexOf('/checkout/')!==0).sort((a,b)=>b[1]-a[1]);
       const total = ent.reduce((s,[,v])=>s+v,0);
       if(!ent.length || !total){
         const w = pagesRange==='today' ? 'today' : pagesRange==='week' ? 'in the last 7 days' : 'this month';
@@ -2073,7 +2085,8 @@
         '/faq': 'FAQ', '/contact': 'Contact', '/disclosures': 'Disclosures',
         '/autotrader': 'Auto Trader', '/suite': 'Suite', '/knowledge': 'Knowledge',
         '/affiliates': 'Affiliates', '/converter': 'Converter', '/accounts': 'Accounts',
-        '/schedule': 'Schedule', '/setup': 'Setup'
+        '/schedule': 'Schedule', '/setup': 'Setup', '/raven': 'Raven', '/nightwing': 'Nightwing',
+        '/compare': 'Compare', '/free-indicators': 'Free Indicators', '/checkout-started': 'Checkout Started'
       };
       if (map[s]) return map[s];
       const seg = s.replace(/^\//, '').replace(/[-_/]/g, ' ').trim();

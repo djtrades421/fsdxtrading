@@ -44,7 +44,7 @@ window.toggleMobileMenu = function () {
     // a gated page quietly polluting the funnel is not.
     var PUBLIC_PAGES = [
       'index', 'suite', 'autotrader', 'results', 'track-record', 'memberships',
-      'nightwing', 'free-indicators', 'platform', 'partners', 'giveaways',
+      'nightwing', 'raven', 'compare', 'free-indicators', 'platform', 'partners', 'giveaways',
       'knowledge', 'faq', 'contact', 'schedule', 'disclosures', 'affiliates',
       'setup', 'welcome', '404'
     ];
@@ -62,7 +62,11 @@ window.toggleMobileMenu = function () {
 
     // Is this the first tracked page of the whole session? → count it as a visit.
     var firstOfSession = !sessionStorage.getItem('fsdx_v');
-    var src = 'direct';
+    // Every ping carries the source that STARTED the session. Before this,
+    // only the landing page carried it and every later page (memberships,
+    // checkout) was sent as 'direct', so the by-source funnel credited all
+    // mid-funnel activity to Direct and showed 0 for YouTube/Google/social.
+    var src = sessionStorage.getItem('fsdx_src') || 'direct';
     if (firstOfSession) {
       sessionStorage.setItem('fsdx_v', '1');
       var params = new URLSearchParams(location.search);
@@ -76,6 +80,7 @@ window.toggleMobileMenu = function () {
         else if (ref && ref.indexOf(location.host) === -1) src = 'referral';
         else src = 'direct';
       }
+      sessionStorage.setItem('fsdx_src', src || 'direct');
     }
 
     fetch('https://nexus-validator.dfuentes4211.workers.dev/api/track', {

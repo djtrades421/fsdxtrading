@@ -20,21 +20,41 @@
   // non-member visit counts in the admin Traffic tab. It reuses the same
   // /api/track endpoint as nav-loader.js and posts a synthetic path, so it
   // shows up in "Pages Visited This Month" under /checkout-started.
-  function trackCheckoutStart() {
+  // Two pings, both to the same /api/track endpoint as nav-loader.js:
+  //
+  //  1. /checkout-started — the funnel number. Non-members only, once per
+  //     session, so it lines up with the non-member visit counts. Unchanged.
+  //
+  //  2. /checkout/<product> — once per product per session, members INCLUDED.
+  //     The old single ping skipped anyone logged in, so an existing Knightfall
+  //     member buying Raven or Nightwing never counted anywhere, and a visitor
+  //     who checked out two products in one session counted once.
+  //
+  // Both carry the session's real source (set by nav-loader.js) instead of a
+  // hardcoded 'direct'.
+  function ping(path) {
+    var src = "direct";
+    try { src = sessionStorage.getItem("fsdx_src") || "direct"; } catch (e) {}
+    fetch("https://nexus-validator.dfuentes4211.workers.dev/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: src, path: path, visit: false }),
+      keepalive: true
+    }).catch(function () {});
+  }
+
+  function trackCheckoutStart(product) {
     try {
-      // Members already bought — exclude them so this stays a marketing-funnel number
-      if (localStorage.getItem("fsdx_token")) return;
-      // Count each session once (matches how pages are tallied per session)
+      product = String(product || "membership").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30) || "membership";
+      var pk = "fsdx_checkout:" + product;
+      if (!sessionStorage.getItem(pk)) {
+        sessionStorage.setItem(pk, "1");
+        ping("/checkout/" + product);
+      }
+      if (localStorage.getItem("fsdx_token")) return;          // funnel = non-members
       if (sessionStorage.getItem("fsdx_checkout_started")) return;
       sessionStorage.setItem("fsdx_checkout_started", "1");
-      // Same payload shape as a normal secondary-page ping: visit:false means
-      // it adds to the page breakdown WITHOUT inflating visit or source totals.
-      fetch("https://nexus-validator.dfuentes4211.workers.dev/api/track", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source: "direct", path: "/checkout-started", visit: false }),
-        keepalive: true
-      }).catch(function () {});
+      ping("/checkout-started");
     } catch (e) { /* tracking never blocks checkout */ }
   }
 
@@ -121,6 +141,7 @@
 
   var pendingUrl = null;
   var pendingTarget = "_blank";
+  var pendingGate = "membership";
 
   // ---- build modal once ----
   function buildModal() {
@@ -170,7 +191,7 @@
       if (!check.checked || !pendingUrl) return;
       var url = pendingUrl;
       var tgt = pendingTarget;
-      trackCheckoutStart();   // record checkout intent before we send them to Whop
+      trackCheckoutStart(pendingGate);   // record checkout intent before we send them to Whop
       closeModal();
       if (tgt === "_blank") { window.open(url, "_blank", "noopener"); }
       else { window.location.href = url; }
@@ -215,7 +236,8 @@
     e.preventDefault();
     pendingUrl = a.getAttribute("href");
     pendingTarget = a.getAttribute("target") || "_self";
-    openModal(a.getAttribute("data-gate") || "membership");
+    pendingGate = a.getAttribute("data-gate") || "membership";
+    openModal(pendingGate);
   }, true);
 
   if (document.readyState === "loading") {
