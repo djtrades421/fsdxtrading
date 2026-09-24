@@ -32,13 +32,15 @@
   //
   // Both carry the session's real source (set by nav-loader.js) instead of a
   // hardcoded 'direct'.
-  function ping(path) {
+  function ping(paths) {
     var src = "direct";
     try { src = sessionStorage.getItem("fsdx_src") || "direct"; } catch (e) {}
+    // One request for all paths: the Worker does read-modify-write on one daily
+    // KV key, so two pings fired at once race and one gets dropped.
     fetch("https://nexus-validator.dfuentes4211.workers.dev/api/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ source: src, path: path, visit: false }),
+      body: JSON.stringify({ source: src, path: paths[0], paths: paths.slice(1), visit: false }),
       keepalive: true
     }).catch(function () {});
   }
@@ -46,15 +48,19 @@
   function trackCheckoutStart(product) {
     try {
       product = String(product || "membership").toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 30) || "membership";
+      var paths = [];
+      // Funnel number first — non-members, once per session (unchanged).
+      if (!localStorage.getItem("fsdx_token") && !sessionStorage.getItem("fsdx_checkout_started")) {
+        sessionStorage.setItem("fsdx_checkout_started", "1");
+        paths.push("/checkout-started");
+      }
+      // Per-product — once per product per session, members included.
       var pk = "fsdx_checkout:" + product;
       if (!sessionStorage.getItem(pk)) {
         sessionStorage.setItem(pk, "1");
-        ping("/checkout/" + product);
+        paths.push("/checkout/" + product);
       }
-      if (localStorage.getItem("fsdx_token")) return;          // funnel = non-members
-      if (sessionStorage.getItem("fsdx_checkout_started")) return;
-      sessionStorage.setItem("fsdx_checkout_started", "1");
-      ping("/checkout-started");
+      if (paths.length) ping(paths);
     } catch (e) { /* tracking never blocks checkout */ }
   }
 
