@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Journal</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20260924a"></script>
   <script src="fsdx-account.js?v=20260913b"></script>
@@ -588,6 +588,13 @@
   </div>
 
   <script>
+
+    // ── Output escaping (security) ──
+    // Trade notes, tags, and imported CSV fields are member/import-supplied.
+    // _e() escapes text for innerHTML; _url() only lets http(s) links through
+    // so an imported "javascript:" chart link can't run code.
+    function _e(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    function _url(u) { const s = String(u == null ? '' : u).trim(); return /^https?:\/\//i.test(s) ? _e(s) : '#'; }
     // Local calendar date as YYYY-MM-DD. Not toISOString() — that returns the UTC
     // date, which rolls over at 7pm CT and puts evening activity on tomorrow.
     function fsdxToday(d) {
@@ -989,16 +996,16 @@
         const p = parseFloat(t.netPnl)||0;
         const tp1 = parseFloat(t.tp1Pnl)||0, tp2 = parseFloat(t.tp2Pnl)||0;
         return `<tr class="hover:bg-white/[0.02] transition cursor-pointer" onclick="showDetail('${t.id}')">
-          <td class="px-4 py-3 text-zinc-400 text-xs">${t.date||'—'}</td>
-          <td class="px-4 py-3 text-white font-bold">${t.ticker||'MNQ'}</td>
-          <td class="px-4 py-3"><span class="text-xs font-bold ${t.direction==='LONG'?'text-emerald-400':'text-red-400'}">${t.direction||'—'}</span></td>
-          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-zinc-800 text-zinc-300 border-white/10">${t.grade||'—'}</span></td>
-          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result||'—'}</span></td>
+          <td class="px-4 py-3 text-zinc-400 text-xs">${_e(t.date||'—')}</td>
+          <td class="px-4 py-3 text-white font-bold">${_e(t.ticker||'MNQ')}</td>
+          <td class="px-4 py-3"><span class="text-xs font-bold ${_e(t.direction==='LONG'?'text-emerald-400':'text-red-400')}">${_e(t.direction||'—')}</span></td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-zinc-800 text-zinc-300 border-white/10">${_e(t.grade||'—')}</span></td>
+          <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${_e(t.result||'—')}</span></td>
           <td class="px-4 py-3 text-xs ${pnlColor(tp1)}">${tp1!==0?fmt(tp1):'—'}</td>
           <td class="px-4 py-3 text-xs ${pnlColor(tp2)}">${tp2!==0?fmt(tp2):'—'}</td>
           <td class="px-4 py-3 font-bold ${pnlColor(p)}">${fmt(p)}</td>
-          <td class="px-4 py-3 text-zinc-500 text-xs">${t.accountType||'—'}</td>
-          <td class="px-4 py-3">${t.chartUrl?`<a href="${t.chartUrl}" target="_blank" onclick="event.stopPropagation()" class="text-zinc-500 hover:text-green-400 text-xs transition">View ↗</a>`:'<span class="text-zinc-700 text-xs">—</span>'}</td>
+          <td class="px-4 py-3 text-zinc-500 text-xs">${_e(t.accountType||'—')}</td>
+          <td class="px-4 py-3">${t.chartUrl?`<a href="${_url(t.chartUrl)}" target="_blank" onclick="event.stopPropagation()" class="text-zinc-500 hover:text-green-400 text-xs transition">View ↗</a>`:'<span class="text-zinc-700 text-xs">—</span>'}</td>
           <td class="px-4 py-3" onclick="event.stopPropagation()">
             <div class="flex gap-2">
               <button onclick="openEditModal('${t.id}')" class="text-zinc-600 hover:text-emerald-400 text-xs">✏️</button>
@@ -1993,18 +2000,17 @@
       if (!t) return;
       detailId = id;
       const p = parseFloat(t.netPnl)||0;
-      const tags = Array.isArray(t.tags)&&t.tags.length?t.tags.map(tg=>`<span class="tag-pill text-[10px]">${tg}</span>`).join(''):'—';
+      const tags = Array.isArray(t.tags)&&t.tags.length?t.tags.map(tg=>`<span class="tag-pill text-[10px]">${_e(tg)}</span>`).join(''):'—';
       const chartBlock = t.chartUrl ? `
         <div class="border-t border-white/5 pt-4">
           <div class="flex items-center justify-between mb-2">
             <div class="text-xs text-zinc-600 uppercase tracking-wider">Chart</div>
-            <a href="${t.chartUrl}" target="_blank" class="text-xs text-green-400 hover:text-green-300 transition">Open full size ↗</a>
+            <a href="${_url(t.chartUrl)}" target="_blank" class="text-xs text-green-400 hover:text-green-300 transition">Open full size ↗</a>
           </div>
           <div class="rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
-            <img src="${t.chartUrl}" alt="Trade chart"
+            <img src="${_url(t.chartUrl)}" alt="Trade chart"
               class="w-full max-h-64 object-contain bg-zinc-950"
-              onerror="this.parentElement.innerHTML='<div class=\\'p-4 text-center\\'><a href=\\'${t.chartUrl}\\' target=\\'_blank\\' class=\\'text-green-400 text-xs hover:underline\\'>View Chart ↗</a></div>'"
-            />
+              onerror="this.style.display='none'; this.nextElementSibling && (this.nextElementSibling.style.display='block')"><div style="display:none" class="p-4 text-center"><a href="${_url(t.chartUrl)}" target="_blank" rel="noopener" class="text-green-400 text-xs hover:underline">View Chart ↗</a></div>
           </div>
         </div>` : '';
       document.getElementById('detail-body').innerHTML = `
@@ -2012,15 +2018,15 @@
           <div class="flex items-center justify-between">
             <span class="text-2xl font-black ${pnlColor(p)}">${fmt(p)}</span>
             <div class="flex gap-2">
-              ${t.result?`<span class="px-2 py-0.5 rounded text-xs font-bold border ${resultBadge(t.result)}">${t.result}</span>`:''}
-              ${t.grade?`<span class="px-3 py-1 bg-zinc-800 border border-white/10 rounded-lg text-sm font-black">${t.grade}</span>`:''}
+              ${t.result?`<span class="px-2 py-0.5 rounded text-xs font-bold border ${resultBadge(t.result)}">${_e(t.result)}</span>`:''}
+              ${t.grade?`<span class="px-3 py-1 bg-zinc-800 border border-white/10 rounded-lg text-sm font-black">${_e(t.grade)}</span>`:''}
             </div>
           </div>
           <div class="grid grid-cols-2 gap-2 text-xs border-t border-white/5 pt-3">
             ${[['Date',t.date],['Ticker',t.ticker],['Direction',t.direction],['Contracts',t.contracts],['Account',t.accountType+(t.accountName?' — '+t.accountName:'')],['Strategy',t.strategy||'—'],['Entry Time',t.entryTime||'—'],['Exit Time',t.exitTime||'—'],['TP1 P&L',t.tp1Pnl?fmt(t.tp1Pnl):'—'],['TP2 P&L',t.tp2Pnl?fmt(t.tp2Pnl):'—'],['Commissions',t.commissions?'-$'+parseFloat(t.commissions).toFixed(2):'—']].map(([k,v])=>`<div><div class="text-zinc-600 mb-0.5">${k}</div><div class="text-white font-medium">${v||'—'}</div></div>`).join('')}
           </div>
           ${t.tags&&t.tags.length?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-2">Tags</div><div class="flex flex-wrap gap-1">${tags}</div></div>`:''}
-          ${t.notes?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-1">Notes</div><p class="text-zinc-400 text-xs leading-relaxed">${t.notes}</p></div>`:''}
+          ${t.notes?`<div class="border-t border-white/5 pt-3"><div class="text-xs text-zinc-600 mb-1">Notes</div><p class="text-zinc-400 text-xs leading-relaxed">${_e(t.notes)}</p></div>`:''}
           ${chartBlock}
         </div>`;
       document.getElementById('detail-modal').classList.remove('hidden');

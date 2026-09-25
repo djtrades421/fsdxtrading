@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Admin Panel</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20260924a"></script>
   <style>
@@ -1632,6 +1632,14 @@
 
   <script>
     const API = 'https://nexus-validator.dfuentes4211.workers.dev';
+
+    // ── Output escaping ──
+    // Member names, emails, Whop usernames, cancel reasons and notes come from
+    // outside. Anything interpolated into innerHTML goes through esc(); anything
+    // inside an inline onclick='…' string goes through jsq() (JS-string escape,
+    // then HTML escape — the browser HTML-decodes the attribute before JS runs).
+    function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    function jsq(s) { return esc(JSON.stringify(String(s == null ? '' : s)).slice(1, -1)); }
     let allMembers = [];
 
     function switchTab(tab) {
@@ -1769,15 +1777,16 @@
     const TSRC_NICE = { youtube:'YouTube', google:'Google', search:'Search', social:'Social', referral:'Referral', direct:'Direct', ig:'Instagram', discord:'Discord', tiktok:'TikTok', email:'Email' };
     const TSRC_C = { youtube:'#22c55e', direct:'#38bdf8', google:'#f59e0b', search:'#06b6d4', social:'#a78bfa', referral:'#f472b6', ig:'#ec4899', discord:'#818cf8' };
     const TSRC_PAL = ['#22c55e','#38bdf8','#f59e0b','#a78bfa','#f472b6','#06b6d4','#fb923c'];
-    function niceSrc(k){ return TSRC_NICE[k] || (k.charAt(0).toUpperCase()+k.slice(1)); }
+    // Sources arrive from the public /api/track beacon — escape before display.
+    function niceSrc(k){ return esc(TSRC_NICE[k] || (k.charAt(0).toUpperCase()+k.slice(1))); }
     function srcColorAt(k,i){ return TSRC_C[k] || TSRC_PAL[i % TSRC_PAL.length]; }
 
     function trafficStats(d){
       const el = document.getElementById('traffic-stats'); if(!el) return;
       const card = (label,val,sub,delta)=>{
         let dl='';
-        if(delta!=null && isFinite(delta)){ const up=delta>=0; dl=`<div class="text-[10px] mt-0.5 ${up?'text-emerald-400':'text-red-400'}">${up?'▲':'▼'} ${Math.abs(delta)}% vs last mo</div>`; }
-        return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">${label}</div><div class="text-3xl font-black text-emerald-400 mt-1">${val}</div>${sub?`<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>`:''}${dl}</div>`;
+        if(delta!=null && isFinite(delta)){ const up=delta>=0; dl=`<div class="text-[10px] mt-0.5 ${esc(up?'text-emerald-400':'text-red-400')}">${up?'▲':'▼'} ${Math.abs(delta)}% vs last mo</div>`; }
+        return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 text-center"><div class="text-[11px] text-zinc-500">${esc(label)}</div><div class="text-3xl font-black text-emerald-400 mt-1">${val}</div>${sub?`<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>`:''}${dl}</div>`;
       };
       const mo=d.month||0, lm=d.lastMonth||0;
       const delta = lm ? Math.round((mo-lm)/lm*100) : null;
@@ -1842,7 +1851,7 @@
       const memb = (mp['/memberships']||0) + (mp['/memberships.html']||0); const chk = mp['/checkout-started']||0;
       const base = Math.max(1, visits);
       const rows=[['Visits (sessions)',visits,'#22c55e',false],['Viewed Memberships',memb,'#38bdf8',true],['Clicked Proceed to Checkout',chk,'#f59e0b',true]];
-      el.innerHTML = rows.map(([label,v,col,showPct])=>{ const pct=Math.round(v/base*100); const w=Math.max(v/base*100,2); return `<div class="mb-3"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${label}</span><span class="text-zinc-500">${v}${showPct?` · ${pct}% of visits`:''}</span></div><div class="h-3 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${w}%;background:${col}"></div></div></div>`; }).join('') + `<div class="text-[10px] text-zinc-600 mt-1 leading-relaxed">Checkout = reached the Terms gate and clicked <span class="text-amber-400/80">Proceed to Checkout</span> — the front of the Whop step. Actual purchases live in Whop.</div>` + checkoutByProduct(mp);
+      el.innerHTML = rows.map(([label,v,col,showPct])=>{ const pct=Math.round(v/base*100); const w=Math.max(v/base*100,2); return `<div class="mb-3"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${esc(label)}</span><span class="text-zinc-500">${v}${showPct?` · ${pct}% of visits`:''}</span></div><div class="h-3 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:${w}%;background:${col}"></div></div></div>`; }).join('') + `<div class="text-[10px] text-zinc-600 mt-1 leading-relaxed">Checkout = reached the Terms gate and clicked <span class="text-amber-400/80">Proceed to Checkout</span> — the front of the Whop step. Actual purchases live in Whop.</div>` + checkoutByProduct(mp);
     }
     // Per-product checkout clicks (/checkout/<product>). Members included, so an
     // existing member adding Raven or Nightwing shows here even though they are
@@ -1854,7 +1863,7 @@
       if(!ent.length) return `<div class="text-[10px] text-zinc-600 mt-3">No per-product checkout clicks yet this month.</div>`;
       const max = Math.max.apply(null, ent.map(e=>e[1]));
       return `<div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mt-4 mb-2">Checkout Clicks by Product · incl. members</div>`
-        + ent.map(([k,v])=>`<div class="mb-2"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${names[k]||k}</span><span class="text-amber-400 font-bold">${v}</span></div><div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full bg-amber-400/70" style="width:${Math.max(v/max*100,2)}%"></div></div></div>`).join('');
+        + ent.map(([k,v])=>`<div class="mb-2"><div class="flex justify-between text-[11px] mb-1"><span class="text-zinc-300">${esc(names[k]||k)}</span><span class="text-amber-400 font-bold">${v}</span></div><div class="h-2 bg-white/5 rounded-full overflow-hidden"><div class="h-full rounded-full bg-amber-400/70" style="width:${Math.max(v/max*100,2)}%"></div></div></div>`).join('');
     }
 
     // ── Top Pages: range switch + "since you last looked" deltas ──
@@ -2089,11 +2098,12 @@
         '/compare': 'Compare', '/free-indicators': 'Free Indicators', '/checkout-started': 'Checkout Started'
       };
       if (map[s]) return map[s];
+      // Paths arrive from the public /api/track beacon — escape before display.
       const seg = s.replace(/^\//, '').replace(/[-_/]/g, ' ').trim();
-      return seg.charAt(0).toUpperCase() + seg.slice(1);
+      return esc(seg.charAt(0).toUpperCase() + seg.slice(1));
     }
     function trafficCard(label, value, sub) {
-      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-center"><div class="text-xs text-zinc-500">${label}</div><div class="text-3xl font-black text-emerald-400 mt-1">${value}</div>${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}</div>`;
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-5 text-center"><div class="text-xs text-zinc-500">${esc(label)}</div><div class="text-3xl font-black text-emerald-400 mt-1">${value}</div>${sub ? `<div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>` : ''}</div>`;
     }
     async function loadTraffic() {
       const statsEl = document.getElementById('traffic-stats');
@@ -2206,7 +2216,7 @@
           inactive:   { label: 'Inactive',   cls: 'bg-red-950/30 text-red-400 border-red-500/20' },
         };
         const sc = statusCfg[status] || { label: status || '—', cls: 'bg-zinc-800 text-zinc-500 border-white/10' };
-        const statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${sc.cls}">${sc.label}</span>`;
+        const statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${sc.cls}">${esc(sc.label)}</span>`;
 
         const lastLogin = m.lastLogin
           ? new Date(m.lastLogin).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -2257,18 +2267,18 @@
 
         return `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="px-5 py-3.5 text-white font-medium">${m.firstName || ''} ${m.lastName || ''}</td>
-          <td class="px-5 py-3.5 text-zinc-400 text-xs">${m.email}</td>
+          <td class="px-5 py-3.5 text-white font-medium">${esc(m.firstName || '')} ${esc(m.lastName || '')}</td>
+          <td class="px-5 py-3.5 text-zinc-400 text-xs">${esc(m.email)}</td>
           <td class="px-5 py-3.5">
-            <div class="flex items-center gap-2 group" id="key-cell-${m.email.replace(/[^a-z0-9]/gi,'_')}">
+            <div class="flex items-center gap-2 group" id="key-cell-${esc(m.email.replace(/[^a-z0-9]/gi,'_'))}">
               <span class="font-mono text-xs text-zinc-400 tracking-wide key-display" data-real="${key}">${key ? maskedKey : '—'}</span>
               ${key ? `
-              <button onclick="toggleKeyVisibility('${m.email.replace(/[^a-z0-9]/gi,'_')}')" title="Show/hide key"
+              <button onclick="toggleKeyVisibility('${esc(m.email.replace(/[^a-z0-9]/gi,'_'))}')" title="Show/hide key"
                 class="opacity-0 group-hover:opacity-100 transition text-zinc-600 hover:text-zinc-300 key-eye-btn" data-visible="false">
                 <svg class="w-3.5 h-3.5 eye-icon-closed" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <svg class="w-3.5 h-3.5 eye-icon-open hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88"/></svg>
               </button>
-              <button onclick="openUpdateKey('${m.email}', '${key}')" title="Update Whop Key"
+              <button onclick="openUpdateKey('${jsq(m.email)}', '${jsq(key)}')" title="Update Whop Key"
                 class="opacity-0 group-hover:opacity-100 transition text-zinc-600 hover:text-green-400">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125"/>
@@ -2286,7 +2296,7 @@
           <td class="px-5 py-3.5 text-zinc-500 text-xs">${lastLogin}</td>
           <td class="px-5 py-3.5 text-zinc-500 text-xs">${new Date(m.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
           <td class="px-5 py-3.5 text-right">
-            <button onclick="deleteMember('${m.email}')" class="text-zinc-600 hover:text-red-400 transition text-xs">
+            <button onclick="deleteMember('${jsq(m.email)}')" class="text-zinc-600 hover:text-red-400 transition text-xs">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
             </button>
           </td>
@@ -2435,7 +2445,7 @@
 
           html += `<div class="border border-white/10 bg-black/40 rounded-xl p-3 text-xs">
             <div class="flex items-center justify-between mb-2">
-              <span class="font-bold text-white">${planName}</span>
+              <span class="font-bold text-white">${esc(planName)}</span>
               <span class="px-2 py-0.5 rounded text-[10px] font-bold border uppercase ${statusColor}">${status}</span>
             </div>
             <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-zinc-500">
@@ -2443,7 +2453,7 @@
               ${nextPayment && status !== 'canceled' ? `<div>Next Payment <span class="text-zinc-300">${fmtDate(nextPayment)}</span></div>` : ''}
               ${churned ? `<div>Churned <span class="text-red-400">${fmtDate(churned)}</span></div>` : ''}
               ${spendHtml}
-              ${cancelReason ? `<div class="col-span-2 text-red-400/70">✗ ${cancelReason}</div>` : ''}
+              ${cancelReason ? `<div class="col-span-2 text-red-400/70">✗ ${esc(cancelReason)}</div>` : ''}
               ${key ? `<div class="col-span-2 font-mono text-[10px] text-zinc-600">${key}</div>` : ''}
             </div>
           </div>`;
@@ -2479,7 +2489,7 @@
             <div>
               <span class="text-white font-bold">$${shown.toFixed(2)}</span>
               ${showGross ? `<span class="text-zinc-600 ml-1 text-[10px]">($${p.amount.toFixed(2)} gross)</span>` : ''}
-              <span class="text-zinc-600 ml-2">${p.description || p.billingReason || '—'}</span>
+              <span class="text-zinc-600 ml-2">${esc(p.description || p.billingReason || '—')}</span>
             </div>
             <div class="flex items-center gap-3 text-zinc-500">
               <span>${fmtDate(date)}</span>
@@ -2608,7 +2618,7 @@
     }
 
     async function deleteMember(email) {
-      if (!confirm(`Delete account for ${email}? This cannot be undone.`)) return;
+      if (!confirm(`Delete account for ${esc(email)}? This cannot be undone.`)) return;
       const token = localStorage.getItem('fsdx_token') || '';
       try {
         const res = await fetch(`${API}/api/admin/member`, {
@@ -2937,8 +2947,9 @@
       try {
         const res = await fetch(`${API}/api/auth/me`, { headers: { 'Authorization': `Bearer ${token}` } });
         const data = await res.json();
-        // Must be authenticated AND be the admin email
-        if (!data.authenticated || data.email !== 'fsdxteam@gmail.com') {
+        // Must be a session minted by the admin 2FA login — the server says so
+        // with isAdmin. A normal member login with the admin email is not enough.
+        if (!data.authenticated || data.isAdmin !== true) {
           localStorage.removeItem('fsdx_admin');
           window.location.href = 'admin-login.html';
           return;
@@ -3016,18 +3027,18 @@
           <div class="flex items-start justify-between gap-4">
             <div class="flex-1">
               <div class="flex flex-wrap items-center gap-2 mb-1.5">
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${tc.cls}">${tc.label}</span>
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${vc.cls}">${vc.label}</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${tc.cls}">${esc(tc.label)}</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${vc.cls}">${esc(vc.label)}</span>
                 <span class="text-[10px] text-zinc-600">${dateStr}</span>
               </div>
-              <div class="text-sm font-bold text-white mb-1">${u.title}</div>
-              ${u.body ? `<p class="text-xs text-zinc-500 leading-relaxed">${u.body}</p>` : ''}
+              <div class="text-sm font-bold text-white mb-1">${esc(u.title)}</div>
+              ${u.body ? `<p class="text-xs text-zinc-500 leading-relaxed">${esc(u.body)}</p>` : ''}
             </div>
             <div class="flex gap-2 shrink-0">
-              <button onclick="editUpdate('${u.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition">
+              <button onclick="editUpdate('${jsq(u.id)}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
               </button>
-              <button onclick="deleteUpdate('${u.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition">
+              <button onclick="deleteUpdate('${jsq(u.id)}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
               </button>
             </div>
@@ -3148,14 +3159,14 @@
               <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full border ${ev.type === 'daily' ? 'text-green-400 border-green-500/30 bg-green-500/10' : ev.type === 'weekly' ? 'text-blue-400 border-blue-500/30 bg-blue-500/10' : 'text-yellow-400 border-yellow-500/30 bg-yellow-500/10'}">${ev.type}</span>
               ${ev.status === 'hidden' ? '<span class="text-[10px] text-zinc-600 uppercase tracking-wider">hidden</span>' : ''}
             </div>
-            <div class="text-sm font-black text-white">${ev.title}</div>
-            ${ev.subtitle ? `<div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">${ev.subtitle}</div>` : ''}
+            <div class="text-sm font-black text-white">${esc(ev.title)}</div>
+            ${ev.subtitle ? `<div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-0.5">${esc(ev.subtitle)}</div>` : ''}
             ${ev.time ? `<div class="text-xs text-zinc-400 mt-1">⏰ ${ev.time} ${ev.timezone || ''}</div>` : ''}
-            ${ev.description ? `<div class="text-xs text-zinc-500 mt-1 truncate max-w-lg">${ev.description}</div>` : ''}
+            ${ev.description ? `<div class="text-xs text-zinc-500 mt-1 truncate max-w-lg">${esc(ev.description)}</div>` : ''}
             <div class="flex items-center gap-2 mt-2">
               <button onclick="editScheduleEvent(${idx})" class="text-[10px] text-zinc-400 hover:text-white transition font-bold uppercase tracking-wider">Edit</button>
               <span class="text-zinc-700">·</span>
-              <button onclick="deleteScheduleEvent('${ev.id}')" class="text-[10px] text-red-500/70 hover:text-red-400 transition font-bold uppercase tracking-wider">Delete</button>
+              <button onclick="deleteScheduleEvent('${jsq(ev.id)}')" class="text-[10px] text-red-500/70 hover:text-red-400 transition font-bold uppercase tracking-wider">Delete</button>
               ${idx > 0 ? `<span class="text-zinc-700">·</span><button onclick="moveScheduleEvent(${idx}, -1)" class="text-[10px] text-zinc-500 hover:text-white transition">↑ Move Up</button>` : ''}
               ${idx < allScheduleEvents.length - 1 ? `<span class="text-zinc-700">·</span><button onclick="moveScheduleEvent(${idx}, 1)" class="text-[10px] text-zinc-500 hover:text-white transition">↓ Move Down</button>` : ''}
             </div>
@@ -3868,14 +3879,14 @@
             body: JSON.stringify({ action:'get-trades', key: fromKey }) });
           const data = await res.json();
           const trades = Array.isArray(data.trades) ? data.trades : [];
-          if (!trades.length) { migrateLog(`  ⊘ ${label} — no data, skipping`, '#52525b'); skipped++; return null; }
+          if (!trades.length) { migrateLog(`  ⊘ ${esc(label)} — no data, skipping`, '#52525b'); skipped++; return null; }
           await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
             body: JSON.stringify({ action:'save-all', key: toKey, payload: { trades } }) });
-          migrateLog(`  ✓ ${label} — ${trades.length} record${trades.length!==1?'s':''} migrated`, '#22c55e');
+          migrateLog(`  ✓ ${esc(label)} — ${trades.length} record${trades.length!==1?'s':''} migrated`, '#22c55e');
           migrated++;
           return trades;
         } catch(e) {
-          migrateLog(`  ✗ ${label} — error: ${e.message}`, '#ef4444');
+          migrateLog(`  ✗ ${esc(label)} — error: ${esc(e.message)}`, '#ef4444');
           return null;
         }
       }
@@ -3885,13 +3896,13 @@
           const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
             body: JSON.stringify({ action:'get-settings', key: fromKey }) });
           const data = await res.json();
-          if (!data.accounts?.length && !data.defaults) { migrateLog(`  ⊘ ${label} — no data, skipping`, '#52525b'); skipped++; return; }
+          if (!data.accounts?.length && !data.defaults) { migrateLog(`  ⊘ ${esc(label)} — no data, skipping`, '#52525b'); skipped++; return; }
           await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'},
             body: JSON.stringify({ action:'save-settings', key: toKey, payload: { accounts: data.accounts||[], defaults: data.defaults||{} } }) });
-          migrateLog(`  ✓ ${label} — migrated`, '#22c55e');
+          migrateLog(`  ✓ ${esc(label)} — migrated`, '#22c55e');
           migrated++;
         } catch(e) {
-          migrateLog(`  ✗ ${label} — error: ${e.message}`, '#ef4444');
+          migrateLog(`  ✗ ${esc(label)} — error: ${esc(e.message)}`, '#ef4444');
         }
       }
 
@@ -3968,10 +3979,10 @@
           const rest = h.key.slice(h.prefix.length);
           const escapedKey = h.key.replace(/'/g, "\\'");
           return `<div class="flex items-center gap-3 px-4 py-3" id="kvrow-${btoa(h.key).replace(/=/g,'')}">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border flex-shrink-0" style="color:${color};border-color:${color}33;background:${color}11">${label}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border flex-shrink-0" style="color:${color};border-color:${color}33;background:${color}11">${esc(label)}</span>
             <span class="text-zinc-400 flex-1 truncate">${rest}</span>
             ${h.value ? `<span class="text-zinc-600 text-[10px] flex-shrink-0">→ ${h.value}</span>` : ''}
-            <button onclick="deleteKvKey('${escapedKey}')" title="Delete this KV entry"
+            <button onclick="deleteKvKey('${jsq(h.key)}')" title="Delete this KV entry"
               class="flex-shrink-0 text-zinc-700 hover:text-red-400 transition ml-2">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
@@ -4202,7 +4213,7 @@
       const title = rt.exact
         ? 'Renewal time from Whop (Central Time)'
         : 'Approximate (Central Time) — this member is charged at this time of day, taken from their last renewal';
-      return `<div class="${cls || 'text-[9px] text-zinc-600'}" title="${title}">${rt.exact ? '' : '≈'}${rt.time}</div>`;
+      return `<div class="${esc(cls || 'text-[9px] text-zinc-600')}" title="${esc(title)}">${rt.exact ? '' : '≈'}${rt.time}</div>`;
     }
 
     // ── KV storage keys ──
@@ -4488,34 +4499,34 @@
           typeBadge = '<span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-green-500/10 text-green-400 border-green-500/20">✓ Member</span>';
         } else if (r.leftDate || r.cancelReason) {
           const leftStr = r.leftDate ? ` · Left ${fmtDate(r.leftDate)}` : '';
-          const reasonStr = r.cancelReason ? `<div class="text-[9px] text-zinc-500 mt-0.5 max-w-[200px] truncate" title="${r.cancelReason}">✗ ${r.cancelReason}</div>` : '';
-          const planStr = r.planName ? `<div class="text-[9px] text-zinc-600">${r.planName}</div>` : '';
+          const reasonStr = r.cancelReason ? `<div class="text-[9px] text-zinc-500 mt-0.5 max-w-[200px] truncate" title="${esc(r.cancelReason)}">✗ ${esc(r.cancelReason)}</div>` : '';
+          const planStr = r.planName ? `<div class="text-[9px] text-zinc-600">${esc(r.planName)}</div>` : '';
           typeBadge = `<div><span class="px-2 py-0.5 rounded text-[10px] font-bold border bg-yellow-500/10 text-yellow-400 border-yellow-500/20">Former${leftStr}</span>${planStr}${reasonStr}</div>`;
         } else {
           typeBadge = '<span class="text-zinc-700 text-[10px]">Prospect</span>';
         }
 
         const hRowId = 'hr_' + r.id.replace(/[^a-z0-9]/gi,'_');
-        return `<tr class="hover:bg-white/[0.02] transition cursor-pointer" onclick="toggleHistoryExpand('${hRowId}', '${(r.email||'').replace(/'/g,"\\'")}', '${(r.whopKey||'').replace(/'/g,"\\'")}')">
+        return `<tr class="hover:bg-white/[0.02] transition cursor-pointer" onclick="toggleHistoryExpand('${hRowId}', '${jsq(r.email||'')}', '${jsq(r.whopKey||'')}')">
           <td class="px-4 py-3">
             <div class="flex items-center gap-2">
               <svg id="${hRowId}_chevron" class="w-3 h-3 text-zinc-600 shrink-0 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
               <div>
-                <div class="text-white font-bold">${r.name || r.whopUsername || '—'}</div>
-                <div class="text-zinc-600 text-[10px]">@${r.whopUsername||'—'}</div>
+                <div class="text-white font-bold">${esc(r.name || r.whopUsername || '—')}</div>
+                <div class="text-zinc-600 text-[10px]">@${esc(r.whopUsername||'—')}</div>
               </div>
             </div>
           </td>
-          <td class="px-4 py-3 text-zinc-400">${r.email||'—'}</td>
-          <td class="px-4 py-3">${r.discordName ? `<span class="text-indigo-400">${r.discordName}</span>` : '<span class="text-zinc-700">—</span>'}</td>
+          <td class="px-4 py-3 text-zinc-400">${esc(r.email||'—')}</td>
+          <td class="px-4 py-3">${r.discordName ? `<span class="text-indigo-400">${esc(r.discordName)}</span>` : '<span class="text-zinc-700">—</span>'}</td>
           <td class="px-4 py-3 text-zinc-500">${flag} ${location||'—'}</td>
           <td class="px-4 py-3 ${spend>0?'text-emerald-400 font-bold':'text-zinc-700'}">$${spend.toFixed(2)}</td>
           <td class="px-4 py-3 text-zinc-500">${r.joined ? fmtDate(r.joined) : '—'}</td>
           <td class="px-4 py-3 text-zinc-400">${r.leftDate ? fmtDate(r.leftDate) : '—'}</td>
           <td class="px-4 py-3">${typeBadge}</td>
           <td class="px-4 py-3 whitespace-nowrap" onclick="event.stopPropagation()">
-            <button onclick="openEditHistoryModal('${r.id}')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 hover:border-white/30 px-2.5 py-1 rounded-lg transition font-bold mr-1">Edit</button>
-            <button onclick="deleteHistoryEntry('${r.id}')" class="text-[10px] text-zinc-600 hover:text-red-400 border border-white/10 hover:border-red-500/30 px-2.5 py-1 rounded-lg transition font-bold">Del</button>
+            <button onclick="openEditHistoryModal('${jsq(r.id)}')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 hover:border-white/30 px-2.5 py-1 rounded-lg transition font-bold mr-1">Edit</button>
+            <button onclick="deleteHistoryEntry('${jsq(r.id)}')" class="text-[10px] text-zinc-600 hover:text-red-400 border border-white/10 hover:border-red-500/30 px-2.5 py-1 rounded-lg transition font-bold">Del</button>
           </td>
         </tr>
         <tr id="${hRowId}_expand" class="hidden">
@@ -5313,13 +5324,13 @@
         const info = FORMAT_INFO[p.format] || FORMAT_INFO.unknown;
         return `<div class="flex items-center justify-between gap-3 py-1.5 border-b border-white/5 last:border-0">
           <div class="min-w-0">
-            <span class="${info.ok ? 'text-zinc-500' : 'text-red-400'} text-[10px] truncate">${p.file.name}</span>
-            <span class="text-white text-[11px] font-bold ml-2">${info.label}</span>
+            <span class="${esc(info.ok ? 'text-zinc-500' : 'text-red-400')} text-[10px] truncate">${esc(p.file.name)}</span>
+            <span class="text-white text-[11px] font-bold ml-2">${esc(info.label)}</span>
           </div>
           <div class="flex items-center gap-3 shrink-0">
             <span class="text-zinc-600 text-[10px]">${info.role}</span>
             <span class="text-zinc-600 text-[10px]">${p.rows.length} rows</span>
-            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${info.ok ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">${info.ok ? 'detected' : 'skipped'}</span>
+            <span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${esc(info.ok ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400')}">${info.ok ? 'detected' : 'skipped'}</span>
           </div>
         </div>`;
       }).join('');
@@ -5454,15 +5465,15 @@
           Cancelled ones still get archived to History. To add someone new, import a Users export or use <span class="text-white font-bold">+ Add Member</span>.
         </div>`] : []),
         ...diff.newItems.map(d => `<div class="flex items-start gap-3 p-2 rounded-lg ${noAdd ? 'bg-zinc-800/30 border border-white/5' : 'bg-green-500/5 border border-green-500/15'}">
-          <span class="text-[10px] font-black ${noAdd ? 'text-zinc-500' : 'text-emerald-400'} uppercase mt-0.5 shrink-0">${newLabel}</span>
-          <div class="text-xs"><span class="text-white font-bold">${d.item.name || d.item.discordName || d.item.whopUsername || d.item.email}</span>
-          <span class="text-zinc-500 ml-2">${d.item.email || d.item.whopKey || ''}</span>
-          <span class="ml-2 text-zinc-600">${d.item.status} · ${d.item.accessType}</span></div>
+          <span class="text-[10px] font-black ${esc(noAdd ? 'text-zinc-500' : 'text-emerald-400')} uppercase mt-0.5 shrink-0">${newLabel}</span>
+          <div class="text-xs"><span class="text-white font-bold">${esc(d.item.name || d.item.discordName || d.item.whopUsername || d.item.email)}</span>
+          <span class="text-zinc-500 ml-2">${esc(d.item.email || d.item.whopKey || '')}</span>
+          <span class="ml-2 text-zinc-600">${d.item.status} · ${esc(d.item.accessType)}</span></div>
         </div>`),
         ...diff.changed.map(d => `<div class="flex items-start gap-3 p-2 rounded-lg bg-yellow-500/5 border border-yellow-500/15">
           <span class="text-[10px] font-black text-yellow-400 uppercase mt-0.5 shrink-0">CHG</span>
-          <div class="text-xs"><span class="text-white font-bold">${d.item.name || d.item.discordName || d.item.email}</span>
-          <span class="text-zinc-500 ml-2">${d.item.email}</span>
+          <div class="text-xs"><span class="text-white font-bold">${esc(d.item.name || d.item.discordName || d.item.email)}</span>
+          <span class="text-zinc-500 ml-2">${esc(d.item.email)}</span>
           <div class="text-yellow-400/80 mt-0.5">${d.changes.join(' · ')}</div></div>
         </div>`),
       ];
@@ -5951,7 +5962,7 @@
         <div class="space-y-3">
           ${growthRows.map(r => `<div>
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs text-zinc-500 w-20">${r.label}</span>
+              <span class="text-xs text-zinc-500 w-20">${esc(r.label)}</span>
               <div class="flex-1 mx-3 space-y-1">
                 <div class="flex items-center gap-2">
                   <div class="h-2 rounded-full bg-emerald-400/60" style="width:${Math.round(r.gained/maxVal*100)}%;min-width:${r.gained?4:0}px"></div>
@@ -6007,7 +6018,7 @@
             const pct = Math.round(count/max*100);
             const share = Math.round(count/total*100);
             return `<div class="flex items-center gap-3">
-              <div class="text-xs text-zinc-400 w-48 truncate shrink-0" title="${reason}">${reason}</div>
+              <div class="text-xs text-zinc-400 w-48 truncate shrink-0" title="${esc(reason)}">${esc(reason)}</div>
               <div class="flex-1 h-2 bg-white/5 rounded-full overflow-hidden">
                 <div class="h-full bg-red-400/60 rounded-full" style="width:${pct}%"></div>
               </div>
@@ -6073,7 +6084,7 @@
       const rowHtml = (val, label, bold) =>
         `<label class="flex items-center gap-2.5 px-3 py-1.5 hover:bg-white/5 cursor-pointer">
           <input type="checkbox" class="rf-ms rf-ms-access accent-green-500" value="${val}" ${checked.has(val)?'checked':''} onchange="updateMultiSelectLabel('access');renderRoster()">
-          <span class="text-xs ${bold ? 'text-white font-semibold' : 'text-zinc-300'}">${label}</span>
+          <span class="text-xs ${esc(bold ? 'text-white font-semibold' : 'text-zinc-300')}">${esc(label)}</span>
         </label>`;
 
       let html = '';
@@ -6216,7 +6227,7 @@
         // Member flags
         const memberFlags = flagsData.filter(f => !f.dismissed && (f.email === r.email || f.discordName === r.discordName || f.tvUsername === r.tvUsername));
         const flagBadges = memberFlags.map(f =>
-          `<span class="px-1.5 py-0.5 rounded text-[9px] font-black border ${f.severity==='red'?'bg-red-500/10 text-red-400 border-red-500/20':'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'}" title="${f.reason}">${f.severity==='red'?'🔴':'🟡'} ${f.type}</span>`
+          `<span class="px-1.5 py-0.5 rounded text-[9px] font-black border ${f.severity==='red'?'bg-red-500/10 text-red-400 border-red-500/20':'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'}" title="${esc(f.reason)}">${f.severity==='red'?'🔴':'🟡'} ${f.type}</span>`
         ).join(' ');
 
         // Site onboarded — check by whopKey (most reliable) then email
@@ -6235,22 +6246,22 @@
         }
 
         const rowId = 'rr_' + r.id.replace(/[^a-z0-9]/gi,'_');
-        return `<tr class="hover:bg-white/[0.02] transition cursor-pointer" onclick="toggleRosterExpand('${rowId}', '${(r.email||'').replace(/'/g,"\\'")}', '${(r.whopKey||'').replace(/'/g,"\\'")}')">
+        return `<tr class="hover:bg-white/[0.02] transition cursor-pointer" onclick="toggleRosterExpand('${rowId}', '${jsq(r.email||'')}', '${jsq(r.whopKey||'')}')">
           <td class="px-4 py-3">
             <div class="flex items-center gap-2">
               <svg id="${rowId}_chevron" class="w-3 h-3 text-zinc-600 shrink-0 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
               <div>
-                <div class="text-white font-bold">${r.name||'—'}</div>
-                <div class="text-zinc-500 text-[10px]">${r.discordName||''}</div>
+                <div class="text-white font-bold">${esc(r.name||'—')}</div>
+                <div class="text-zinc-500 text-[10px]">${esc(r.discordName||'')}</div>
               </div>
             </div>
           </td>
-          <td class="px-4 py-3 text-zinc-400">${r.email||'—'}</td>
+          <td class="px-4 py-3 text-zinc-400">${esc(r.email||'—')}</td>
           <td class="px-4 py-3" onclick="event.stopPropagation()">${renderRosterKey(r)}</td>
-          <td class="px-4 py-3 text-zinc-400">${r.tvUsername||'—'}</td>
+          <td class="px-4 py-3 text-zinc-400">${esc(r.tvUsername||'—')}</td>
           <td class="px-4 py-3">${statusBadge(r.status)}</td>
-          <td class="px-4 py-3 text-zinc-500">${(r.planName||r.accessType||'—') === 'VIP' ? 'VIP Monthly' : (r.planName||r.accessType||'—')}</td>
-          <td class="px-4 py-3 text-zinc-600">${r.source||'—'}</td>
+          <td class="px-4 py-3 text-zinc-500">${esc((r.planName||r.accessType||'—') === 'VIP' ? 'VIP Monthly' : (r.planName||r.accessType||'—'))}</td>
+          <td class="px-4 py-3 text-zinc-600">${esc(r.source||'—')}</td>
           <td class="px-4 py-3 text-zinc-500">${fmtDate(r.joined)}</td>
           <td class="px-4 py-3 text-zinc-400">${renewalDisplay}</td>
           <td class="px-4 py-3 text-center">${siteDot}</td>
@@ -6260,12 +6271,12 @@
             ${r.churnedDate && !r.leftDate ? `<div class="text-red-400/80 font-bold">Churned ${fmtDate(r.churnedDate)}</div>` : ''}
             ${r.tenureDays !== null && r.tenureDays !== undefined ? `<div class="text-zinc-600">${r.tenureDays}d as member${r.trialLeaver ? ' · <span class="text-yellow-500">trial leaver</span>' : ''}</div>` : ''}
             ${r.spend && parseFloat(r.spend) > 0 ? `<div class="text-zinc-500">$${parseFloat(r.spend).toFixed(2)} spent</div>` : ''}
-            ${r.cancelReason ? `<div class="text-red-400/70 truncate" title="Cancel: ${r.cancelReason}">✗ ${r.cancelReason}</div>` : ''}
-            ${r.notes && r.notes !== r.cancelReason && !r.leftDate ? `<div class="text-zinc-600 truncate" title="${r.notes}">${r.notes}</div>` : ''}
+            ${r.cancelReason ? `<div class="text-red-400/70 truncate" title="Cancel: ${esc(r.cancelReason)}">✗ ${esc(r.cancelReason)}</div>` : ''}
+            ${r.notes && r.notes !== r.cancelReason && !r.leftDate ? `<div class="text-zinc-600 truncate" title="${esc(r.notes)}">${esc(r.notes)}</div>` : ''}
             ${!r.leftDate && !r.churnedDate && !r.cancelReason && !r.notes ? '<span class="text-zinc-700">—</span>' : ''}
           </td>
           <td class="px-4 py-3" onclick="event.stopPropagation()">
-            <button onclick="openEditMemberModal('${r.id}')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 hover:border-white/30 px-2.5 py-1 rounded-lg transition font-bold">Edit</button>
+            <button onclick="openEditMemberModal('${jsq(r.id)}')" class="text-[10px] text-zinc-500 hover:text-white border border-white/10 hover:border-white/30 px-2.5 py-1 rounded-lg transition font-bold">Edit</button>
           </td>
         </tr>
         <tr id="${rowId}_expand" class="hidden">
@@ -6428,9 +6439,9 @@
           <div class="space-y-2">
             ${paid.map(p => `<div class="flex items-start justify-between bg-zinc-900/60 rounded-xl px-4 py-3">
               <div>
-                <div class="text-sm font-bold text-white">${p.customerName||p.email||'—'}</div>
-                <div class="text-xs text-zinc-500 mt-0.5">${p.email}</div>
-                <div class="text-[10px] text-zinc-600 mt-0.5">${p.billingReason==='subscription_create'?'🆕 New subscriber':p.billingReason==='subscription_cycle'?'🔄 Renewal':'1️⃣ One-time'}${p.description?` · <span class="text-zinc-500">${p.description.replace(/^FSD-X (Trading )?/,'')}</span>`:''}</div>
+                <div class="text-sm font-bold text-white">${esc(p.customerName||p.email||'—')}</div>
+                <div class="text-xs text-zinc-500 mt-0.5">${esc(p.email)}</div>
+                <div class="text-[10px] text-zinc-600 mt-0.5">${p.billingReason==='subscription_create'?'🆕 New subscriber':p.billingReason==='subscription_cycle'?'🔄 Renewal':'1️⃣ One-time'}${p.description?` · <span class="text-zinc-500">${esc(p.description.replace(/^FSD-X (Trading )?/,''))}</span>`:''}</div>
               </div>
               <div class="text-right shrink-0 ml-3">
                 <div class="text-sm font-black text-emerald-400">+$${netOf(p).toFixed(2)}</div>
@@ -6450,9 +6461,9 @@
           <div class="space-y-2">
             ${failed.map(p => `<div class="flex items-start justify-between bg-red-950/20 border border-red-500/10 rounded-xl px-4 py-3">
               <div>
-                <div class="text-sm font-bold text-white">${p.customerName||p.email||'—'}</div>
-                <div class="text-xs text-zinc-500 mt-0.5">${p.email}</div>
-                ${p.failureReason?`<div class="text-[10px] text-red-400/70 mt-0.5">${p.failureReason}</div>`:''}
+                <div class="text-sm font-bold text-white">${esc(p.customerName||p.email||'—')}</div>
+                <div class="text-xs text-zinc-500 mt-0.5">${esc(p.email)}</div>
+                ${p.failureReason?`<div class="text-[10px] text-red-400/70 mt-0.5">${esc(p.failureReason)}</div>`:''}
               </div>
               <div class="text-right shrink-0 ml-3">
                 <div class="text-sm font-black text-red-400">$${p.amount.toFixed(2)}</div>
@@ -6470,12 +6481,12 @@
           <div class="space-y-2">
             ${dayRenewals.map(r => `<div class="flex items-center justify-between bg-zinc-900/60 rounded-xl px-4 py-3">
               <div>
-                <div class="text-sm font-bold text-white">${r.name||r.discordName||'—'}</div>
-                <div class="text-xs text-zinc-500 mt-0.5">${r.email||'—'}</div>
-                <div class="text-[10px] text-zinc-600 mt-0.5">${r.planName||r.accessType||''}</div>
+                <div class="text-sm font-bold text-white">${esc(r.name||r.discordName||'—')}</div>
+                <div class="text-xs text-zinc-500 mt-0.5">${esc(r.email||'—')}</div>
+                <div class="text-[10px] text-zinc-600 mt-0.5">${esc(r.planName||r.accessType||'')}</div>
               </div>
               <div class="text-right shrink-0 ml-3">
-                <span class="inline-block text-[10px] font-bold px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">${r.planName||r.accessType}</span>
+                <span class="inline-block text-[10px] font-bold px-2 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">${esc(r.planName||r.accessType)}</span>
                 ${renewalTimeLabel(r, 'text-[10px] text-zinc-500 mt-1')}
               </div>
             </div>`).join('')}
@@ -6559,13 +6570,13 @@
 
           const hasActivity = renewals.length > 0 || payments;
           html += `<div class="min-h-[80px] p-2 border-r border-white/[0.04] last:border-0 ${isToday?'bg-green-500/5':''} ${hasActivity?'cursor-pointer hover:bg-white/[0.03]':''} transition group" ${hasActivity?`onclick="openDayModal('${ds}')"`:''}">`;
-          html += `<div class="text-[10px] font-bold mb-1.5 ${isToday?'text-emerald-400':isPast?'text-zinc-600':'text-zinc-400'} group-hover:text-white transition">${dsDisplay}</div>`;
+          html += `<div class="text-[10px] font-bold mb-1.5 ${esc(isToday?'text-emerald-400':isPast?'text-zinc-600':'text-zinc-400')} group-hover:text-white transition">${dsDisplay}</div>`;
 
           // Renewals coming up
           if (renewals.length > 0) {
             html += `<div class="text-[9px] font-bold text-yellow-400 mb-0.5">⏰ ${renewals.length} renewing</div>`;
             renewals.slice(0,2).forEach(r => {
-              html += `<div class="text-[9px] text-zinc-500 truncate">${r.name||r.discordName||r.email||'—'}</div>`;
+              html += `<div class="text-[9px] text-zinc-500 truncate">${esc(r.name||r.discordName||r.email||'—')}</div>`;
             });
             if (renewals.length > 2) html += `<div class="text-[9px] text-zinc-600">+${renewals.length-2} more</div>`;
           }
@@ -6771,9 +6782,9 @@
             const discounted = listPrice > 0 && price > 0 && price < listPrice - 0.005;
             const priceSource = r.billingAmountManual ? 'manual' : (lastRecurringPrice(r) > 0 ? 'from last charge' : 'plan price');
             return `<div class="pay-row">
-              <div class="pay-name trunc text-white font-bold">${r.name||r.discordName||r.email}</div>
-              <div class="pay-email trunc text-zinc-500">${r.email}</div>
-              <div class="pay-plan trunc text-zinc-600 text-[10px]">${r.planName||r.accessType||''}${discounted ? `<span class="ml-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">discounted</span>` : ''}</div>
+              <div class="pay-name trunc text-white font-bold">${esc(r.name||r.discordName||r.email)}</div>
+              <div class="pay-email trunc text-zinc-500">${esc(r.email)}</div>
+              <div class="pay-plan trunc text-zinc-600 text-[10px]">${esc(r.planName||r.accessType||'')}${discounted ? `<span class="ml-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">discounted</span>` : ''}</div>
               <div class="pay-price whitespace-nowrap" title="${priceSource}">
                 <div class="text-emerald-400/80 text-[10px] font-bold">${discounted ? `<span class="text-zinc-600 font-normal line-through mr-1">$${listPrice.toFixed(2)}</span>` : ''}$${price.toFixed(2)}</div>
                 ${upRatio !== null ? `<div class="text-zinc-600 text-[9px]">≈$${(price*upRatio).toFixed(2)} after fees</div>` : ''}
@@ -6814,7 +6825,7 @@
             return `<div class="py-2 border-b border-white/5 last:border-0">
               <div class="flex items-center justify-between gap-4 mb-1">
                 <div class="min-w-0 flex items-center gap-2 flex-wrap">
-                  <span class="text-white font-bold">${name}</span>
+                  <span class="text-white font-bold">${esc(name)}</span>
                   ${isOneTime ? '<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">ONE-TIME</span>' : ''}
                   <span class="text-zinc-600 text-[10px]">${v.count} sale${v.count!==1?'s':''}</span>
                 </div>
@@ -6839,11 +6850,11 @@
         if (failedCount) failedCount.textContent = failedPays.length ? failedPays.length + ' failed' : '';
         if (failedPays.length) {
           failedEl.innerHTML = failedPays.map(p => `<div class="fail-row">
-            <div class="f-name trunc text-white font-bold">${p.customerName||p.email}</div>
-            <div class="f-email trunc text-zinc-500 text-[10px]">${p.email}</div>
-            <div class="f-prod trunc text-zinc-600 text-[10px]">${p.description?p.description.replace(/^FSD-X (Trading )?/,''):''}</div>
+            <div class="f-name trunc text-white font-bold">${esc(p.customerName||p.email)}</div>
+            <div class="f-email trunc text-zinc-500 text-[10px]">${esc(p.email)}</div>
+            <div class="f-prod trunc text-zinc-600 text-[10px]">${esc(p.description?p.description.replace(/^FSD-X (Trading )?/,''):'')}</div>
             <div class="f-amount text-zinc-500 text-[10px] whitespace-nowrap">$${p.amount.toFixed(2)}</div>
-            <div class="f-why text-red-400/80 text-[10px] mt-0.5">${p.failureReason}</div>
+            <div class="f-why text-red-400/80 text-[10px] mt-0.5">${esc(p.failureReason)}</div>
           </div>`).join('');
           // Stays collapsed by default — the red count badge signals attention needed.
         } else {
@@ -6872,13 +6883,13 @@
         const reasonLabel = { subscription_create: '🆕 New', subscription_cycle: '🔄 Renewal', one_time: '1️⃣ One-time' };
         return `<tr class="hover:bg-white/[0.02] transition">
           <td class="px-4 py-3 text-zinc-500">${fmtDate(p.paidAt)}</td>
-          <td class="px-4 py-3"><div class="text-white font-bold">${p.customerName||'—'}</div><div class="text-zinc-500 text-[10px]">${p.email}</div></td>
-          <td class="px-4 py-3 text-zinc-400">${p.discordName||'—'}</td>
-          <td class="px-4 py-3 text-zinc-300 max-w-[180px] truncate" title="${p.description||''}">${(p.description||'—').replace(/^FSD-X (Trading )?/,'')}</td>
+          <td class="px-4 py-3"><div class="text-white font-bold">${esc(p.customerName||'—')}</div><div class="text-zinc-500 text-[10px]">${esc(p.email)}</div></td>
+          <td class="px-4 py-3 text-zinc-400">${esc(p.discordName||'—')}</td>
+          <td class="px-4 py-3 text-zinc-300 max-w-[180px] truncate" title="${esc(p.description||'')}">${esc((p.description||'—').replace(/^FSD-X (Trading )?/,''))}</td>
           <td class="px-4 py-3 font-bold ${p.status==='paid'?'text-emerald-400':'text-zinc-400'}">$${(p.status==='paid'?netOf(p):p.amount).toFixed(2)}${p.status==='paid'&&p.netAmount!==null&&p.netAmount!==undefined&&Math.abs(p.netAmount-p.amount)>0.005?`<div class="text-[10px] font-normal text-zinc-600">$${p.amount.toFixed(2)} gross</div>`:''}</td>
           <td class="px-4 py-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${sc}">${p.status}</span></td>
           <td class="px-4 py-3 text-zinc-500">${reasonLabel[p.billingReason]||p.billingReason||'—'}</td>
-          <td class="px-4 py-3 text-red-400/80 text-[10px] max-w-[200px] truncate" title="${p.failureReason||''}">${p.failureReason||'—'}</td>
+          <td class="px-4 py-3 text-red-400/80 text-[10px] max-w-[200px] truncate" title="${esc(p.failureReason||'')}">${esc(p.failureReason||'—')}</td>
         </tr>`;
       }).join('');
     }
@@ -7016,28 +7027,28 @@
                 <span class="text-sm font-black text-white">${f.type}</span>
                 <span class="text-[10px] px-2 py-0.5 rounded-full border ${f.severity==='red'?'bg-red-500/10 text-red-400 border-red-500/20':'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'}">${f.severity==='red'?'HIGH':'REVIEW'}</span>
               </div>
-              <div class="text-xs text-zinc-500 mt-1">${f.reason}</div>
+              <div class="text-xs text-zinc-500 mt-1">${esc(f.reason)}</div>
             </div>
-            <button onclick="dismissFlag('${f.id}')" class="text-[10px] text-zinc-600 hover:text-zinc-400 border border-white/10 px-2 py-1 rounded-lg transition whitespace-nowrap">Dismiss</button>
+            <button onclick="dismissFlag('${jsq(f.id)}')" class="text-[10px] text-zinc-600 hover:text-zinc-400 border border-white/10 px-2 py-1 rounded-lg transition whitespace-nowrap">Dismiss</button>
           </div>
           ${twoRecord ? `<div class="grid grid-cols-2 gap-3">
             <div class="bg-zinc-900/60 rounded-lg p-3 text-xs">
               <div class="text-zinc-600 uppercase tracking-wider text-[10px] mb-1">Churned Record — ${f.record1.status}</div>
-              <div class="text-white font-bold">${f.record1.name||'—'}</div>
-              <div class="text-zinc-500">${f.record1.email||'—'}</div>
+              <div class="text-white font-bold">${esc(f.record1.name||'—')}</div>
+              <div class="text-zinc-500">${esc(f.record1.email||'—')}</div>
               <div class="text-zinc-600">Discord: ${f.record1.discord||'—'} · TV: ${f.record1.tv||'—'}</div>
               <div class="text-zinc-600">Joined: ${fmtDate(f.record1.joined)} · Left: ${f.record1.left?fmtDate(f.record1.left):'—'}</div>
               ${f.record1.tenure !== undefined && f.record1.tenure !== null ? `<div class="text-yellow-500/80 font-bold mt-0.5">${f.record1.tenure}d member · $${parseFloat(f.record1.spend||0).toFixed(2)} spent</div>` : ''}
             </div>
             <div class="bg-zinc-900/60 rounded-lg p-3 text-xs">
               <div class="text-zinc-600 uppercase tracking-wider text-[10px] mb-1">Current Record — ${f.record2.status}</div>
-              <div class="text-white font-bold">${f.record2.name||'—'}</div>
-              <div class="text-zinc-500">${f.record2.email||'—'}</div>
+              <div class="text-white font-bold">${esc(f.record2.name||'—')}</div>
+              <div class="text-zinc-500">${esc(f.record2.email||'—')}</div>
               <div class="text-zinc-600">Discord: ${f.record2.discord||'—'} · TV: ${f.record2.tv||'—'}</div>
               <div class="text-zinc-600">Joined: ${f.record2.joined?fmtDate(f.record2.joined):'—'}</div>
             </div>
           </div>` : ''}
-          ${multiMember ? `<div class="space-y-1 mt-2">${f.members.map(m => `<div class="flex items-center gap-3 text-xs bg-zinc-900/60 rounded-lg px-3 py-2"><span class="text-white font-bold">${m.name||'—'}</span><span class="text-zinc-500">${m.email||'—'}</span><span class="text-zinc-600">${m.status}</span></div>`).join('')}</div>` : ''}
+          ${multiMember ? `<div class="space-y-1 mt-2">${f.members.map(m => `<div class="flex items-center gap-3 text-xs bg-zinc-900/60 rounded-lg px-3 py-2"><span class="text-white font-bold">${esc(m.name||'—')}</span><span class="text-zinc-500">${esc(m.email||'—')}</span><span class="text-zinc-600">${m.status}</span></div>`).join('')}</div>` : ''}
         </div>`;
       };
 
@@ -7202,8 +7213,8 @@
 
     function trCard(label, val, cls) {
       return `<div class="bg-black border border-white/5 rounded-xl px-3 py-2">
-        <div class="text-[9px] uppercase tracking-wider text-zinc-600 font-bold">${label}</div>
-        <div class="text-sm font-black ${cls || 'text-white'}">${val}</div>
+        <div class="text-[9px] uppercase tracking-wider text-zinc-600 font-bold">${esc(label)}</div>
+        <div class="text-sm font-black ${esc(cls || 'text-white')}">${val}</div>
       </div>`;
     }
 
@@ -7340,9 +7351,9 @@
         return `<tr class="border-b border-white/5">
           <td class="px-3 py-1.5 text-zinc-300">${t.date}</td>
           <td class="px-2 py-1.5 font-bold ${t.dir==='LONG'?'text-emerald-400':'text-red-400'}">${t.dir}</td>
-          <td class="px-2 py-1.5 text-zinc-400">${t.grade || '—'}</td>
+          <td class="px-2 py-1.5 text-zinc-400">${esc(t.grade || '—')}</td>
           <td class="px-2 py-1.5 text-right text-zinc-500">${t.contracts}</td>
-          <td class="px-2 py-1.5 text-zinc-500">${t.exit_reason}</td>
+          <td class="px-2 py-1.5 text-zinc-500">${esc(t.exit_reason)}</td>
           <td class="px-3 py-1.5 text-right font-bold ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${trMoney(t.pnl)}</td>
           <td class="px-3 py-1.5 text-right">${isNew
             ? '<span class="text-green-400 font-bold">NEW</span>'

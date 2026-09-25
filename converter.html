@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Trade Importer</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20260924a"></script>
   <script src="fsdx-account.js?v=20260913b"></script>
@@ -409,6 +409,9 @@
   </div>
 
   <script>
+
+    // ── Output escaping (security) ── imported CSV values are untrusted.
+    function _e(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
     function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
 
     const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
@@ -857,7 +860,7 @@
           slPrice: null,
           sl: null,
           strategy: 'Live Trade',
-          notes: `Tradovate · ${first.rawContract}` + (scaled ? ` · ${entryFills.length} in / ${exitFills.length} out` : '') + (fees > 0 ? ` · gross $${gross.toFixed(2)} − fees $${fees.toFixed(2)}` : ''),
+          notes: `Tradovate · ${_e(first.rawContract)}` + (scaled ? ` · ${entryFills.length} in / ${exitFills.length} out` : '') + (fees > 0 ? ` · gross $${gross.toFixed(2)} − fees $${fees.toFixed(2)}` : ''),
           // Routed by account #. Falls back to the raw ID when nothing matches,
           // so the trade still carries which account it came from.
           accountName: acct ? acct.name : acctId,
@@ -1400,15 +1403,15 @@
 
       document.getElementById('preview-body').innerHTML = trades.slice(0, 10).map(t => `
         <tr class="hover:bg-white/[0.02] transition">
-          <td class="px-4 py-2.5 text-zinc-300">${t.date}</td>
-          <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.entryTime || '—'}</td>
-          <td class="px-4 py-2.5 text-zinc-500 font-mono">${t.exitTime || '—'}</td>
-          <td class="px-4 py-2.5 text-white font-bold">${t.ticker}</td>
-          <td class="px-4 py-2.5 font-black ${dirColor(t.direction)}">${t.direction || '—'}</td>
-          <td class="px-4 py-2.5"><span class="px-1.5 py-0.5 rounded text-[10px] font-black border bg-zinc-800 text-zinc-300 border-white/10">${t.grade || '—'}</span></td>
-          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${t.result}</span></td>
+          <td class="px-4 py-2.5 text-zinc-300">${_e(t.date)}</td>
+          <td class="px-4 py-2.5 text-zinc-500 font-mono">${_e(t.entryTime || '—')}</td>
+          <td class="px-4 py-2.5 text-zinc-500 font-mono">${_e(t.exitTime || '—')}</td>
+          <td class="px-4 py-2.5 text-white font-bold">${_e(t.ticker)}</td>
+          <td class="px-4 py-2.5 font-black ${dirColor(t.direction)}">${_e(t.direction || '—')}</td>
+          <td class="px-4 py-2.5"><span class="px-1.5 py-0.5 rounded text-[10px] font-black border bg-zinc-800 text-zinc-300 border-white/10">${_e(t.grade || '—')}</span></td>
+          <td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded text-[10px] font-bold border ${resultBadge(t.result)}">${_e(t.result)}</span></td>
           <td class="px-4 py-2.5 font-mono font-bold ${parseFloat(t.netPnl) >= 0 ? 'text-emerald-400' : 'text-red-400'}">${parseFloat(t.netPnl) >= 0 ? '+' : ''}$${parseFloat(t.netPnl).toFixed(2)}</td>
-          <td class="px-4 py-2.5 text-zinc-500">${t.contracts}c</td>
+          <td class="px-4 py-2.5 text-zinc-500">${_e(t.contracts)}c</td>
         </tr>
       `).join('');
     }

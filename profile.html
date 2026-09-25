@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — My Profile</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
     body { background-color: #000; }
@@ -292,6 +292,8 @@
     </div>
   </main>
 
+  <script src="qrcode.js"></script>
+
   <script>
     const API = 'https://nexus-validator.dfuentes4211.workers.dev';
     let currentUser = null;
@@ -558,10 +560,20 @@
         if (!data.success) { showMsg('twofa-msg', data.error || 'Failed to start setup.', 'error'); if (btn) { btn.disabled=false; btn.textContent='Enable 2FA'; } return; }
         _pending2FASecret = data.secret;
         document.getElementById('twofa-secret').textContent = data.secret;
-        // Generate QR code using a free API
-        const qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=176x176&data=' + encodeURIComponent(data.otpauthUrl);
+        // Draw the QR code right here in the page. The otpauth URL contains the
+        // member's 2FA secret, so it must never be sent to an outside service.
         const qrEl = document.getElementById('twofa-qr');
-        qrEl.innerHTML = `<img src="${qrUrl}" width="176" height="176" class="rounded-lg" alt="QR Code">`;
+        try {
+          const qr = qrcode(0, 'M');
+          qr.addData(data.otpauthUrl);
+          qr.make();
+          const img = document.createElement('img');
+          img.src = qr.createDataURL(5, 2);
+          img.width = 176; img.height = 176; img.className = 'rounded-lg bg-white'; img.alt = 'QR Code';
+          qrEl.replaceChildren(img);
+        } catch (e) {
+          qrEl.textContent = 'QR unavailable — enter the key below manually.';
+        }
         document.getElementById('twofa-setup').classList.remove('hidden');
         document.getElementById('twofa-actions').innerHTML = '';
         setTimeout(() => document.getElementById('twofa-code').focus(), 100);

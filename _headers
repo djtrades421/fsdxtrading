@@ -15,6 +15,26 @@
 # AFTER THIS IS LIVE: push a changed nav.html or nav-loader.js and every visitor
 # gets it on their next page load. No version bumping, no 35-file edit.
 
+# ── Security headers — every response ──────────────────────────────────────
+# Cloudflare Pages merges these with the cache rules below.
+#
+# Content-Security-Policy: the browser only loads scripts, styles, fonts and
+# network calls from the origins listed. An injected <script src=evil.com>,
+# or a fetch that ships a member's token to another server, is blocked.
+# 'unsafe-inline' is still needed because pages use inline <script> blocks and
+# onclick= handlers; removing it is a later, larger refactor.
+#
+# Adding a new outside service (a new analytics tag, a new embed, a new API)?
+# Add its origin to the right directive here, or the browser will block it.
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://www.googletagmanager.com https://t.whop.tw; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://nexus-validator.dfuentes4211.workers.dev https://t.whop.tw https://*.whop.com https://formspree.io https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+
 # ── Shared files that change in place ──────────────────────────────────────
 /nav.html
   Cache-Control: public, max-age=0, must-revalidate

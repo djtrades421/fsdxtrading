@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — VIP Dashboard</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20260924a"></script>
   <script src="fsdx-account.js?v=20260913b"></script>
@@ -289,6 +289,13 @@
   </main>
 
   <script>
+
+    // ── Output escaping (security) ──
+    // Trade notes, tags, and imported CSV fields are member/import-supplied.
+    // _e() escapes text for innerHTML; _url() only lets http(s) links through
+    // so an imported "javascript:" chart link can't run code.
+    function _e(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    function _url(u) { const s = String(u == null ? '' : u).trim(); return /^https?:\/\//i.test(s) ? _e(s) : '#'; }
     // Local calendar date as YYYY-MM-DD. Not toISOString() — that returns the UTC
     // date, which rolls over at 7pm CT and shifts a day for eastern timezones.
     function fsdxToday(d) {
@@ -437,7 +444,7 @@
         const noteColor = f.note === 'Pro only' ? 'text-yellow-500' : 'text-zinc-600';
         return `<div class="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
           <div class="flex items-center gap-2">${hasAccess ? check : cross}<span class="text-xs ${hasAccess ? 'text-zinc-300' : 'text-zinc-600'}">${f.label}</span></div>
-          ${f.note ? `<span class="text-[10px] font-bold ${noteColor}">${f.note}</span>` : ''}
+          ${f.note ? `<span class="text-[10px] font-bold ${noteColor}">${_e(f.note)}</span>` : ''}
         </div>`;
       }).join('');
     }
@@ -1576,9 +1583,9 @@
         const timeFw = isNext ? '700' : isFuture ? '500' : '400';
         html += `<div style="display:grid;grid-template-columns:${GRID};${rowBg};align-items:center;" class="px-4 py-2 border-b border-white/[0.04] gap-2">
           <div style="font-size:10px;color:${timeColor};font-weight:${timeFw};white-space:nowrap">${isNext ? '▶ ' : ''}${dispTime}</div>
-          <div style="font-size:10px;color:${impC};font-weight:700">${ev.country}</div>
+          <div style="font-size:10px;color:${impC};font-weight:700">${_e(ev.country)}</div>
           <div style="display:flex;align-items:center">${dots(ev.impact)}</div>
-          <div style="font-size:10px;color:${isPast?'#444':titleColor};font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ev.title}</div>
+          <div style="font-size:10px;color:${isPast?'#444':titleColor};font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_e(ev.title)}</div>
           <div style="font-size:10px;color:${isPast?'#444':'#52525b'};text-align:right;white-space:nowrap">${ev.forecast||'—'}</div>
           <div style="font-size:10px;color:${isPast?'#444':'#52525b'};text-align:right;white-space:nowrap">${ev.previous||'—'}</div>
         </div>`;
