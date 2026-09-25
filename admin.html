@@ -1204,9 +1204,19 @@
         <div class="flex items-center justify-between mb-1 flex-wrap gap-3">
           <div>
             <h2 class="text-sm font-black text-white">📈 Public Track Record</h2>
-            <p class="text-xs text-zinc-600 mt-0.5">Import the Knightfall MK2 strategy export, merge new trades, publish <span class="text-zinc-400 font-mono">track-record.json</span></p>
+            <p class="text-xs text-zinc-600 mt-0.5">Import the Knightfall strategy export, merge new trades, publish <span id="tr-file-label" class="text-zinc-400 font-mono">track-record.json</span></p>
           </div>
           <a href="track-record.html" target="_blank" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">View Page ↗</a>
+        </div>
+
+        <!-- Which record -->
+        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
+          <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-3">// Which Record</div>
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" onclick="trSetProfile('400')" data-trp="400" class="trp-btn px-4 py-2 rounded-xl text-xs font-bold border transition">$400 &middot; track-record.json</button>
+            <button type="button" onclick="trSetProfile('250')" data-trp="250" class="trp-btn px-4 py-2 rounded-xl text-xs font-bold border transition">$250 &middot; track-record-250.json</button>
+          </div>
+          <p class="text-[10px] text-zinc-600 mt-2">Each profile is its own file. Pick one, then import the TradingView export that was run on that same risk setting.</p>
         </div>
 
         <!-- Current state -->
@@ -1218,12 +1228,7 @@
         <!-- Settings -->
         <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-4">// Settings</div>
-          <div class="mb-4">
-            <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Version label</label>
-            <input type="text" id="tr-version" value="Knightfall MK2" placeholder="Knightfall MK2"
-              class="w-full md:w-64 bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:border-green-500/50 outline-none"/>
-            <p class="text-[10px] text-zinc-600 mt-1">Shown as the badge in the page header. Bump it when you ship a new version.</p>
-          </div>
+          
           <div class="grid md:grid-cols-4 gap-4">
             <div>
               <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Inception (locked start)</label>
@@ -1235,7 +1240,7 @@
               <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Public release date</label>
               <input type="date" id="tr-release" value="2026-06-15"
                 class="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:border-green-500/50 outline-none"/>
-              <p class="text-[10px] text-zinc-600 mt-1">Shown on the page as the day Knightfall MK2 went public.</p>
+              <p class="text-[10px] text-zinc-600 mt-1">Shown on the page as the public release date.</p>
             </div>
             <div>
               <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Commission (round turn / contract)</label>
@@ -1245,9 +1250,9 @@
             </div>
             <div>
               <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Risk profile ($ per trade)</label>
-              <input type="number" step="25" id="tr-risk" value="400"
-                class="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:border-green-500/50 outline-none"/>
-              <p class="text-[10px] text-zinc-600 mt-1">Must match the risk setting the export was run on. Shown on the page.</p>
+              <input type="number" step="25" id="tr-risk" value="400" readonly
+                class="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-zinc-400 outline-none cursor-not-allowed"/>
+              <p class="text-[10px] text-zinc-600 mt-1">Set by the record picked above. The export must be run on this same setting.</p>
             </div>
           </div>
         </div>
@@ -1305,10 +1310,10 @@
           <div class="text-[10px] uppercase tracking-widest text-green-500/70 font-bold mb-3">// Ready to Publish</div>
           <div id="tr-publish-summary" class="text-xs text-zinc-400 mb-4"></div>
           <button onclick="trDownload()" class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-            ↓ Download track-record.json
+            ↓ Download <span id="tr-dl-name">track-record.json</span>
           </button>
           <p class="text-[11px] text-zinc-600 mt-3 leading-relaxed">
-            Drop this file in the site root (next to <span class="font-mono text-zinc-500">track-record.html</span>), replacing the old one, and push.
+            Drop this file in the site root (next to <span class="font-mono text-zinc-500">track-record.html</span>), replacing the old one with the same name, and push.
             The public page reads it directly — no worker changes, and nobody but you can publish because publishing means committing to the repo.
           </p>
         </div>
@@ -7158,19 +7163,54 @@
     let TR_PUBLISHED = null;   // currently live track-record.json
     let TR_PARSED    = [];     // trades parsed from the uploaded CSV
     let TR_RESULT    = null;   // merged output awaiting download
+    const TR_FILES   = { '400': 'track-record.json', '250': 'track-record-250.json' };
+    const TR_CACHE   = {};     // published data per profile
+    let TR_PROFILE   = '400';
 
     const trMoney = n => (n < 0 ? '-' : '+') + '$' + Math.abs(n).toLocaleString('en-US', {maximumFractionDigits:0});
 
+    function trPaintProfile() {
+      const file = TR_FILES[TR_PROFILE];
+      document.querySelectorAll('.trp-btn').forEach(b => {
+        const on = b.dataset.trp === TR_PROFILE;
+        b.className = 'trp-btn px-4 py-2 rounded-xl text-xs font-bold border transition ' +
+          (on ? 'border-green-500/40 bg-green-500/10 text-green-400' : 'border-white/10 bg-zinc-900 text-zinc-400 hover:text-zinc-200');
+      });
+      document.getElementById('tr-risk').value = TR_PROFILE;
+      document.getElementById('tr-file-label').textContent = file;
+      document.getElementById('tr-dl-name').textContent = file;
+    }
+
+    function trSetProfile(p) {
+      if (!TR_FILES[p]) return;
+      TR_PROFILE = p; TR_PARSED = []; TR_RESULT = null;
+      document.getElementById('tr-preview').classList.add('hidden');
+      document.getElementById('tr-publish').classList.add('hidden');
+      document.getElementById('tr-parse-msg').classList.add('hidden');
+      trPaintProfile();
+      if (TR_CACHE[p]) { TR_PUBLISHED = TR_CACHE[p]; trRenderCurrent(); return; }
+      TR_PUBLISHED = null;
+      document.getElementById('tr-current').innerHTML = '<span class="text-zinc-500">Loading…</span>';
+      trFetch(p);
+    }
+
+    function trFetch(p) {
+      const file = TR_FILES[p];
+      fetch(file + '?v=' + Date.now())
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .then(d => { if (p !== TR_PROFILE) return; TR_CACHE[p] = TR_PUBLISHED = d; trRenderCurrent(); })
+        .catch(() => {
+          if (p !== TR_PROFILE) return;
+          TR_CACHE[p] = TR_PUBLISHED = { meta: {}, trades: [] };
+          document.getElementById('tr-current').innerHTML =
+            '<span class="text-zinc-500">No <span class="font-mono">' + file + '</span> published yet. Your first import will create it.</span>';
+        });
+    }
+
     function trInit() {
       if (TR_PUBLISHED) return;
-      fetch('track-record.json?v=' + Date.now())
-        .then(r => r.ok ? r.json() : Promise.reject())
-        .then(d => { TR_PUBLISHED = d; trRenderCurrent(); })
-        .catch(() => {
-          TR_PUBLISHED = { meta: {}, trades: [] };
-          document.getElementById('tr-current').innerHTML =
-            '<span class="text-zinc-500">No <span class="font-mono">track-record.json</span> published yet. Your first import will create it.</span>';
-        });
+      trPaintProfile();
+      trFetch(TR_PROFILE);
     }
 
     function trStats(list) {
@@ -7196,8 +7236,11 @@
       if (m.inception) document.getElementById('tr-inception').value = m.inception;
       if (m.public_release) document.getElementById('tr-release').value = m.public_release;
       if (m.commission_rt != null) document.getElementById('tr-comm').value = m.commission_rt;
-      if (m.risk_profile != null) document.getElementById('tr-risk').value = m.risk_profile;
-      if (m.version) document.getElementById('tr-version').value = m.version;
+      if (m.risk_profile != null && String(m.risk_profile) !== TR_PROFILE) {
+        document.getElementById('tr-current').innerHTML = '<span class="text-red-400 font-bold">' + TR_FILES[TR_PROFILE] +
+          ' says it is the $' + esc(String(m.risk_profile)) + ' profile, not $' + TR_PROFILE + '. Check which file was pushed before importing.</span>';
+        return;
+      }
       document.getElementById('tr-current').innerHTML = `
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
           ${trCard('Trades', s.n)}
@@ -7307,8 +7350,16 @@
             msg.classList.remove('hidden');
             return;
           }
-          msg.className = 'mt-4 text-xs text-green-400';
-          msg.textContent = '✓ ' + file.name + ' — ' + TR_PARSED.length + ' trades on/after ' + inception + '.';
+          // Size check: the biggest loss should sit near the selected risk.
+          // Catches a $250 export imported into the $400 record, and the reverse.
+          const risk = parseFloat(TR_PROFILE);
+          const worst = Math.max(0, ...TR_PARSED.map(t => -t.gross));
+          const ratio = worst / risk;
+          const off = worst > 0 && (ratio < 0.8 || ratio > 1.4);
+          msg.className = 'mt-4 text-xs ' + (off ? 'text-yellow-400' : 'text-green-400');
+          msg.textContent = '✓ ' + file.name + ' — ' + TR_PARSED.length + ' trades on/after ' + inception + '.' +
+            (off ? ' ⚠ Largest loss is $' + worst.toFixed(0) + ', which does not look like the $' + risk +
+                   ' profile. Make sure this export was run on $' + risk + ' before merging.' : '');
           msg.classList.remove('hidden');
           trPreview();
         } catch (err) {
@@ -7382,11 +7433,11 @@
 
       TR_RESULT = {
         meta: {
-          version: document.getElementById('tr-version').value.trim() || 'Knightfall MK2',
+          version: 'Knightfall',
           inception,
           public_release: document.getElementById('tr-release').value,
           instrument: 'MNQ',
-          risk_profile: parseFloat(document.getElementById('tr-risk').value) || null,
+          risk_profile: parseFloat(TR_PROFILE),
           session: 'New York open (8:30 AM CT)',
           commission_rt: comm,
           generated: new Date().toISOString().slice(0, 10),
@@ -7418,10 +7469,10 @@
       const blob = new Blob([JSON.stringify(TR_RESULT, null, 1)], {type: 'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'track-record.json';
+      a.download = TR_FILES[TR_PROFILE];
       a.click();
       URL.revokeObjectURL(a.href);
-      TR_PUBLISHED = TR_RESULT;
+      TR_PUBLISHED = TR_CACHE[TR_PROFILE] = TR_RESULT;
       trRenderCurrent();
     }
   </script>
