@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Accounts</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20260924a"></script>
   <script src="fsdx-account.js?v=20260913b"></script>
@@ -352,6 +352,13 @@
   </div>
 
   <script>
+
+    // ── Output escaping (security) ──
+    // Trade notes, tags, and imported CSV fields are member/import-supplied.
+    // _e() escapes text for innerHTML; _url() only lets http(s) links through
+    // so an imported "javascript:" chart link can't run code.
+    function _e(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+    function _url(u) { const s = String(u == null ? '' : u).trim(); return /^https?:\/\//i.test(s) ? _e(s) : '#'; }
     function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
 
     const JOURNAL_URL = 'https://nexus-validator.dfuentes4211.workers.dev/api/nexus-journal';
@@ -712,14 +719,14 @@
         const p = parseFloat(t.netPnl)||0;
         const pCol = p>=0?'text-emerald-400':'text-red-400';
         const sign = p>=0?'+':'-';
-        return `<a href="journal.html?date=${t.date}&tab=history" target="_blank"
+        return `<a href="journal.html?date=${_e(t.date)}&tab=history" target="_blank"
           class="flex items-center justify-between py-1.5 px-3 rounded-lg hover:bg-white/5 transition cursor-pointer group">
           <div class="flex items-center gap-3 text-xs">
-            <span class="text-zinc-500 font-mono">${t.date||'—'}</span>
+            <span class="text-zinc-500 font-mono">${_e(t.date||'—')}</span>
             <span class="text-zinc-600 font-mono">${fmt12(t.entryTime)}</span>
-            <span class="text-zinc-300 font-bold">${t.ticker||'MNQ'}</span>
-            <span class="${t.direction==='LONG'?'text-emerald-400':'text-red-400'} font-bold">${t.direction||'—'}</span>
-            ${t.grade?`<span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-zinc-800 border border-white/10 text-zinc-300">${t.grade}</span>`:''}
+            <span class="text-zinc-300 font-bold">${_e(t.ticker||'MNQ')}</span>
+            <span class="${_e(t.direction==='LONG'?'text-emerald-400':'text-red-400')} font-bold">${_e(t.direction||'—')}</span>
+            ${t.grade?`<span class="px-1.5 py-0.5 rounded text-[10px] font-black bg-zinc-800 border border-white/10 text-zinc-300">${_e(t.grade)}</span>`:''}
           </div>
           <div class="flex items-center gap-2">
             <span class="text-xs font-bold ${pCol}">${sign}$${Math.abs(p).toFixed(0)}</span>

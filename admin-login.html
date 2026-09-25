@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Admin</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js"></script>
   <style>body { background-color: #000; }</style>
 </head>
@@ -76,7 +76,7 @@
     if (existingToken) {
       fetch(`${API}/api/auth/me`, { headers: { 'Authorization': `Bearer ${existingToken}` } })
         .then(r => r.json())
-        .then(d => { if (d.authenticated && d.email === 'fsdxteam@gmail.com') window.location.href = 'admin.html'; })
+        .then(d => { if (d.authenticated && d.isAdmin === true) window.location.href = 'admin.html'; })
         .catch(() => {});
     }
 
