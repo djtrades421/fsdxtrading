@@ -256,10 +256,24 @@
                   <h2 class="text-sm font-black text-white">Backtest Sessions</h2>
                   <p class="text-xs text-zinc-600 mt-0.5">Create sessions here or from the Nexus extension</p>
                 </div>
-                <button onclick="openNewSession()" class="flex items-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                  New Session
-                </button>
+                <div class="flex items-center gap-2">
+                  <button id="bt-cmp-btn" onclick="btCompareToggle()" class="hidden items-center gap-2 px-4 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-black text-xs uppercase tracking-wider rounded-xl transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"/></svg>
+                    Compare
+                  </button>
+                  <button onclick="openNewSession()" class="flex items-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                    New Session
+                  </button>
+                </div>
+              </div>
+              <!-- Compare mode bar -->
+              <div id="bt-cmp-bar" class="hidden items-center justify-between gap-3 flex-wrap mb-4 border border-green-500/25 bg-green-500/[0.05] rounded-xl px-4 py-3">
+                <div class="text-xs text-zinc-300"><span class="font-black text-green-400">Compare</span> &middot; <span id="bt-cmp-count">Pick 2 sessions</span></div>
+                <div class="flex items-center gap-2">
+                  <button id="bt-cmp-go" onclick="btCompareOpen()" disabled class="px-4 py-2 bg-green-500 hover:bg-green-400 disabled:opacity-40 disabled:cursor-not-allowed text-black font-black text-xs uppercase tracking-wider rounded-lg transition">Compare side by side</button>
+                  <button onclick="btCompareToggle(false)" class="px-3 py-2 text-zinc-500 hover:text-white text-xs font-bold transition">Cancel</button>
+                </div>
               </div>
               <div id="bt-empty" class="hidden text-center py-16">
                 <div class="text-4xl mb-3">🧪</div>
@@ -272,6 +286,22 @@
                   <thead><tr id="bt-head"></tr></thead>
                   <tbody id="bt-rows"></tbody>
                 </table>
+              </div>
+            </div>
+            <div id="bt-cmp-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm overflow-y-auto" onclick="if(event.target===this)btCompareClose()">
+              <div class="max-w-4xl mx-auto my-8 md:my-14 px-4">
+                <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5 md:p-7">
+                  <div class="flex items-start justify-between gap-4 mb-5">
+                    <div>
+                      <div class="text-[10px] font-bold tracking-widest text-green-400 uppercase mb-1">// Side by side</div>
+                      <h3 class="text-lg font-black text-white">Compare sessions</h3>
+                    </div>
+                    <button onclick="btCompareClose()" class="p-2 rounded-lg text-zinc-500 hover:text-white hover:bg-zinc-800 transition" title="Close">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                  </div>
+                  <div id="bt-cmp-body" class="text-sm text-zinc-500">Loading…</div>
+                </div>
               </div>
             </div>
             <div id="bt-detail" class="hidden">
@@ -2105,6 +2135,8 @@
         const grid=document.getElementById('bt-grid'), empty=document.getElementById('bt-empty');
         if (!btSessions.length) { empty.classList.remove('hidden'); grid.classList.add('hidden'); return; }
         empty.classList.add('hidden'); grid.classList.remove('hidden');
+        const cb = document.getElementById('bt-cmp-btn');
+        if (cb) { cb.classList.toggle('hidden', btSessions.length < 2); cb.classList.toggle('flex', btSessions.length >= 2); }
         renderBtTable();
       } catch(err) { console.error(err); }
     }
@@ -2112,7 +2144,8 @@
     // ── Session index: sortable table ────────────────────────────────────────
     // NOTE: only the *view* is sorted. btSessions keeps its own order because the
     // trial gate below uses btSessions.indexOf(s) to decide which rows are locked.
-    let btSort = { k: 'p', dir: -1 };   // matches the mockup: best run on top
+    let btSort = { k: 'p', dir: -1 };
+    const btCmp = { on: false, ids: [] };   // compare mode state   // matches the mockup: best run on top
 
     const btPerTrade = s => {
       const n = parseInt(s.tradeCount) || 0;
@@ -2124,6 +2157,7 @@
       k === 'w' ? (parseFloat(s.winRate) || 0) :
       k === 'pt' ? btPerTrade(s) :
       k === 'p' ? (parseFloat(s.netPnl) || 0) :
+      k === 'd' ? (s.createdAt || '') :
                   (s.createdAt || '');
 
     function sortBt(k) {
@@ -2137,6 +2171,14 @@
       const d = new Date(iso);
       return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: '2-digit' });
     }
+    function btDateCell(iso) {
+      const d = iso ? new Date(iso) : null;
+      if (!d || isNaN(d)) return '<span class="text-zinc-700">&mdash;</span>';
+      const sameYear = d.getFullYear() === new Date().getFullYear();
+      const day = d.toLocaleDateString('en-US', sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' });
+      const tm = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+      return '<div class="font-bold text-zinc-300">' + day + '</div><div class="text-[10.5px] text-zinc-600 mt-0.5">' + tm + '</div>';
+    }
 
     function renderBtTable() {
       const head = document.getElementById('bt-head');
@@ -2145,12 +2187,13 @@
 
       const COLS = [
         ['n',  'Session',   'left'],
+        ['d',  'Date',      'left'],
         ['t',  'Trades',    'right'],
         ['w',  'Win rate',  'right'],
         ['pt', '$ / trade', 'right'],
         ['p',  'Net P&L',   'right'],
       ];
-      head.innerHTML = COLS.map(([k, label, al]) =>
+      head.innerHTML = (btCmp.on ? '<th class="border-b border-white/10 w-8"></th>' : '') + COLS.map(([k, label, al]) =>
         '<th onclick="sortBt(\'' + k + '\')" class="cursor-pointer select-none text-[10px] font-bold tracking-widest uppercase text-zinc-600 hover:text-zinc-400 transition pb-2.5 px-2.5 whitespace-nowrap border-b border-white/10 text-' + al + '"'
         + (al === 'left' ? ' style="padding-left:12px"' : '') + '>'
         + label + (btSort.k === k ? '<span class="text-green-400 ml-1">' + (btSort.dir < 0 ? '&#9662;' : '&#9652;') + '</span>' : '')
@@ -2166,8 +2209,15 @@
         const p = parseFloat(s.netPnl) || 0;
         const wr = parseFloat(s.winRate) || 0;
         const best = btSessions.length > 1 && p === bestPnl && p > 0;
-        const meta = [s.ticker, s.strategy, btDate(s.createdAt)].filter(Boolean).join(' &middot; ');
-        return '<tr onclick="openBtSession(\'' + s.id + '\')" class="cursor-pointer hover:bg-white/[0.025] transition group">'
+        const meta = [s.ticker, s.strategy].filter(Boolean).join(' &middot; ');
+        const locked = userTier === 'trial' && btSessions.indexOf(s) >= 3;
+        const picked = btCmp.ids.includes(s.id);
+        const click = btCmp.on ? (locked ? '' : 'btComparePick(\'' + s.id + '\')') : 'openBtSession(\'' + s.id + '\')';
+        return '<tr onclick="' + click + '" class="cursor-pointer hover:bg-white/[0.025] transition group' + (picked ? ' bg-green-500/[0.07]' : '') + '">'
+          + (btCmp.on ? '<td class="py-3 pl-3 pr-1 border-b border-white/5 align-middle">'
+              + (locked ? '' : '<span class="inline-flex w-4 h-4 rounded border items-center justify-center ' + (picked ? 'bg-green-500 border-green-500' : 'border-white/25') + '">'
+                + (picked ? '<svg class="w-3 h-3 text-black" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' : '') + '</span>')
+              + '</td>' : '')
           + '<td class="py-3 px-2.5 border-b border-white/5' + (best ? ' bg-green-500/[0.045]' : '') + '"'
           +     ' style="padding-left:12px' + (best ? ';box-shadow:inset 2px 0 0 0 #FF6B1F' : '') + '">'
           +   '<div class="font-bold text-white">' + escBt(s.name || 'Untitled')
@@ -2175,6 +2225,7 @@
           +   '</div>'
           +   '<div class="text-[10.5px] text-zinc-600 mt-0.5">' + meta + '</div>'
           + '</td>'
+          + '<td class="py-3 px-2.5 text-left whitespace-nowrap tabular-nums border-b border-white/5' + (best ? ' bg-green-500/[0.045]' : '') + '">' + btDateCell(s.createdAt) + '</td>'
           + '<td class="py-3 px-2.5 text-right tabular-nums font-bold text-white border-b border-white/5' + (best ? ' bg-green-500/[0.045]' : '') + '">' + (s.tradeCount || 0) + '</td>'
           + '<td class="py-3 px-2.5 text-right tabular-nums font-bold border-b border-white/5 ' + (wr >= 50 ? 'text-emerald-400' : 'text-red-400') + (best ? ' bg-green-500/[0.045]' : '') + '">' + (s.winRate || 0) + '%</td>'
           + '<td class="py-3 px-2.5 text-right tabular-nums font-bold text-zinc-300 border-b border-white/5' + (best ? ' bg-green-500/[0.045]' : '') + '">$' + btPerTrade(s).toFixed(2) + '</td>'
@@ -2186,6 +2237,110 @@
           +   '</button></td>'
           + '</tr>';
       }).join('');
+    }
+
+    // ── Compare two sessions ─────────────────────────────────────────────────
+
+    function btCompareToggle(force) {
+      btCmp.on = typeof force === 'boolean' ? force : !btCmp.on;
+      btCmp.ids = [];
+      const bar = document.getElementById('bt-cmp-bar');
+      bar.classList.toggle('hidden', !btCmp.on); bar.classList.toggle('flex', btCmp.on);
+      btCompareCount(); renderBtTable();
+    }
+    function btComparePick(id) {
+      const i = btCmp.ids.indexOf(id);
+      if (i >= 0) btCmp.ids.splice(i, 1);
+      else { btCmp.ids.push(id); if (btCmp.ids.length > 2) btCmp.ids.shift(); }
+      btCompareCount(); renderBtTable();
+    }
+    function btCompareCount() {
+      const n = btCmp.ids.length;
+      document.getElementById('bt-cmp-count').textContent = n === 2 ? '2 selected' : n === 1 ? 'Pick 1 more' : 'Pick 2 sessions';
+      document.getElementById('bt-cmp-go').disabled = n !== 2;
+    }
+    function btCompareClose() { document.getElementById('bt-cmp-modal').classList.add('hidden'); document.body.style.overflow = ''; }
+
+    async function btFetchTrades(id) {
+      const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({action:'get-trades',key:'backtest:'+whopKey+':'+id}) });
+      const data = await res.json();
+      return Array.isArray(data.trades) ? data.trades : [];
+    }
+
+    function btCmpStats(trades) {
+      const list = trades.slice().sort((a, b) => ((a.date||'') + (a.entryTime||'')).localeCompare((b.date||'') + (b.entryTime||'')));
+      const pnl = list.map(t => parseFloat(t.netPnl) || 0);
+      const w = pnl.filter(p => p > 0), l = pnl.filter(p => p < 0);
+      const gp = w.reduce((a, b) => a + b, 0), gl = Math.abs(l.reduce((a, b) => a + b, 0));
+      const net = pnl.reduce((a, b) => a + b, 0);
+      let eq = 0, peak = 0, mdd = 0, run = 0, maxRun = 0; const curve = [0];
+      pnl.forEach(p => { eq += p; peak = Math.max(peak, eq); mdd = Math.min(mdd, eq - peak); curve.push(eq);
+        run = p < 0 ? run + 1 : 0; maxRun = Math.max(maxRun, run); });
+      const months = {}; list.forEach((t, i) => { const m = (t.date || '').slice(0, 7); if (m) months[m] = (months[m] || 0) + pnl[i]; });
+      const mv = Object.values(months);
+      const dates = list.map(t => t.date).filter(Boolean);
+      return {
+        n: list.length, net, wr: list.length ? 100 * w.length / list.length : 0,
+        per: list.length ? net / list.length : 0, pf: gl ? gp / gl : (gp ? Infinity : 0),
+        avgW: w.length ? gp / w.length : 0, avgL: l.length ? -gl / l.length : 0,
+        mdd, maxRun, best: pnl.length ? Math.max(...pnl) : 0, worst: pnl.length ? Math.min(...pnl) : 0,
+        posM: mv.length ? 100 * mv.filter(v => v > 0).length / mv.length : 0, nM: mv.length,
+        from: dates[0] || '', to: dates[dates.length - 1] || '', curve
+      };
+    }
+
+    function btCmpCurves(a, b) {
+      const W = 800, H = 220, P = 8;
+      const all = a.curve.concat(b.curve), lo = Math.min(0, ...all), hi = Math.max(0, ...all), rng = (hi - lo) || 1;
+      const path = c => c.map((v, i) => (i ? 'L' : 'M') + (P + (W - 2 * P) * i / Math.max(1, c.length - 1)).toFixed(1) + ',' + (P + (H - 2 * P) * (1 - (v - lo) / rng)).toFixed(1)).join('');
+      const zy = (P + (H - 2 * P) * (1 - (0 - lo) / rng)).toFixed(1);
+      return '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" class="w-full h-44 md:h-56">'
+        + '<line x1="0" x2="' + W + '" y1="' + zy + '" y2="' + zy + '" stroke="rgba(255,255,255,.12)" stroke-dasharray="4 4"/>'
+        + '<path d="' + path(a.curve) + '" fill="none" stroke="#22c55e" stroke-width="2" vector-effect="non-scaling-stroke"/>'
+        + '<path d="' + path(b.curve) + '" fill="none" stroke="#FF6B1F" stroke-width="2" vector-effect="non-scaling-stroke"/>'
+        + '</svg><div class="text-[10.5px] text-zinc-600 mt-1">Cumulative P&amp;L by trade number, so runs of different lengths line up from the start.</div>';
+    }
+
+    async function btCompareOpen() {
+      if (btCmp.ids.length !== 2) return;
+      const [A, B] = btCmp.ids.map(id => btSessions.find(s => s.id === id));
+      const modal = document.getElementById('bt-cmp-modal'), body = document.getElementById('bt-cmp-body');
+      body.innerHTML = '<div class="py-10 text-center text-zinc-500 text-sm">Loading both sessions…</div>';
+      modal.classList.remove('hidden'); document.body.style.overflow = 'hidden';
+      let ta, tb;
+      try { [ta, tb] = await Promise.all([btFetchTrades(A.id), btFetchTrades(B.id)]); }
+      catch (e) { body.innerHTML = '<div class="py-10 text-center text-red-400 text-sm">Could not load those sessions. Try again.</div>'; return; }
+      const a = btCmpStats(ta), b = btCmpStats(tb);
+      const money = v => (v < 0 ? '-' : '+') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const md = d => { if (!d) return '—'; const p = d.split('-'); return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+p[1]-1] + ' ' + (+p[2]) + ', ' + p[0]; };
+      // [label, valueA, valueB, displayA, displayB, higherIsBetter (null = no winner)]
+      const R = [
+        ['Trades', a.n, b.n, a.n, b.n, null],
+        ['Period', 0, 0, md(a.from) + ' &rarr; ' + md(a.to), md(b.from) + ' &rarr; ' + md(b.to), null],
+        ['Net P&amp;L', a.net, b.net, money(a.net), money(b.net), true],
+        ['Win rate', a.wr, b.wr, a.wr.toFixed(1) + '%', b.wr.toFixed(1) + '%', true],
+        ['$ / trade', a.per, b.per, money(a.per), money(b.per), true],
+        ['Profit factor', a.pf, b.pf, isFinite(a.pf) ? a.pf.toFixed(2) : '∞', isFinite(b.pf) ? b.pf.toFixed(2) : '∞', true],
+        ['Avg win', a.avgW, b.avgW, money(a.avgW), money(b.avgW), true],
+        ['Avg loss', a.avgL, b.avgL, money(a.avgL), money(b.avgL), true],
+        ['Max drawdown', a.mdd, b.mdd, money(a.mdd), money(b.mdd), true],
+        ['Longest losing run', a.maxRun, b.maxRun, a.maxRun + ' trades', b.maxRun + ' trades', false],
+        ['Best trade', a.best, b.best, money(a.best), money(b.best), true],
+        ['Worst trade', a.worst, b.worst, money(a.worst), money(b.worst), true],
+        ['Profitable months', a.posM, b.posM, a.posM.toFixed(0) + '% of ' + a.nM, b.posM.toFixed(0) + '% of ' + b.nM, true],
+      ];
+      const cell = (disp, win) => '<td class="py-2.5 px-3 text-right tabular-nums font-bold border-b border-white/5 ' + (win ? 'text-green-400' : 'text-zinc-300') + '">' + disp + (win ? ' <span class="text-[9px] align-[1px]">&#9650;</span>' : '') + '</td>';
+      let winsA = 0, winsB = 0;
+      const rows = R.map(([lab, va, vb, da, db, hib]) => {
+        let wa = false, wb = false;
+        if (hib !== null && va !== vb) { const aBetter = hib ? va > vb : va < vb; wa = aBetter; wb = !aBetter; aBetter ? winsA++ : winsB++; }
+        return '<tr><td class="py-2.5 px-3 text-zinc-500 text-xs font-bold uppercase tracking-wider border-b border-white/5">' + lab + '</td>' + cell(da, wa) + cell(db, wb) + '</tr>';
+      }).join('');
+      const head = (s, col) => '<th class="py-3 px-3 text-right align-bottom border-b border-white/10"><div class="flex items-center justify-end gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background:' + col + '"></span><span class="font-black text-white text-sm">' + escBt(s.name || 'Untitled') + '</span></div><div class="text-[10.5px] text-zinc-600 font-normal mt-0.5">' + (btDate(s.createdAt) || '') + '</div></th>';
+      body.innerHTML =
+        '<div class="overflow-x-auto"><table class="w-full text-sm" style="border-collapse:collapse"><thead><tr><th class="border-b border-white/10"></th>' + head(A, '#22c55e') + head(B, '#FF6B1F') + '</tr></thead><tbody>' + rows + '</tbody></table></div>'
+        + '<div class="mt-3 text-[11px] text-zinc-500">&#9650; marks the better figure on each row. <span class="text-zinc-300 font-bold">' + escBt(A.name || 'A') + '</span> leads on ' + winsA + ', <span class="text-zinc-300 font-bold">' + escBt(B.name || 'B') + '</span> on ' + winsB + '. Check the period and trade count first: runs over different dates or sizes aren\'t a like-for-like comparison.</div>'
+        + '<div class="mt-6"><div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Equity curves</div>' + btCmpCurves(a, b) + '</div>';
     }
 
     let currentBtSessionId = null;
