@@ -424,13 +424,13 @@
   </div>
   <div class="mt-6 grid md:grid-cols-2 gap-6 items-start">
     <div>
-      <div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Same setting, different room — $400 risk</div>
+      <div class="text-[10px] font-bold tracking-widest text-zinc-500 uppercase mb-2">Same setting, different room — <span id="pk-risk">$400</span> risk</div>
       <div class="overflow-x-auto no-scrollbar"><table class="w-full text-left text-sm">
-        <thead><tr class="border-b border-white/10 text-zinc-500 text-xs"><th class="py-2 pr-4 font-semibold">Account</th><th class="py-2 pr-4 font-semibold">Trailing drawdown</th><th class="py-2 font-semibold">Losses to reach it</th></tr></thead>
+        <thead><tr class="border-b border-white/10 text-zinc-500 text-xs"><th class="py-2 pr-4 font-semibold">Account</th><th class="py-2 pr-4 font-semibold">Trailing drawdown</th><th class="py-2 font-semibold">Full losses it can absorb</th></tr></thead>
         <tbody class="text-zinc-300">
-          <tr class="border-b border-white/5"><td class="py-2 pr-4">50K</td><td class="py-2 pr-4">$2,000</td><td class="py-2">about 5</td></tr>
-          <tr class="border-b border-white/5"><td class="py-2 pr-4">100K</td><td class="py-2 pr-4">$3,000</td><td class="py-2">about 7</td></tr>
-          <tr><td class="py-2 pr-4">150K</td><td class="py-2 pr-4">$4,500</td><td class="py-2">about 11</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4">50K</td><td class="py-2 pr-4">$2,000</td><td class="py-2" data-pk-dd="2000">about 5</td></tr>
+          <tr class="border-b border-white/5"><td class="py-2 pr-4">100K</td><td class="py-2 pr-4">$3,000</td><td class="py-2" data-pk-dd="3000">about 7</td></tr>
+          <tr><td class="py-2 pr-4">150K</td><td class="py-2 pr-4">$4,500</td><td class="py-2" data-pk-dd="4500">about 11</td></tr>
         </tbody>
       </table></div>
       <p class="text-[11px] text-zinc-600 mt-2">Straight losses at full size. Real sequences mix wins, losses and smaller grades.</p>
@@ -1330,6 +1330,9 @@ const D={"250":{"7yr":{"trades":1112,"wins":696,"losses":416,"be":0,"net":68628,
   };
   function render(){
     paint('.rp-chip','r',risk); paint('.rp-tf','tf',tf);
+    // Picking-a-setting table follows the selected risk
+    const pkR=document.getElementById('pk-risk'); if(pkR) pkR.textContent='$'+Number(risk).toLocaleString();
+    document.querySelectorAll('[data-pk-dd]').forEach(td=>{ td.textContent='about '+Math.floor(Number(td.dataset.pkDd)/Number(risk)); });
     paint('.ev-acct','a',acct); paint('.ev-dll','d',dll);
     const lab='$'+risk+' \u00b7 '+(tf==='7yr'?'7-YEAR':'2-YEAR');
     document.querySelectorAll('.bdg').forEach(b=>b.innerHTML=lab);
