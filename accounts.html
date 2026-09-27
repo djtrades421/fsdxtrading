@@ -1255,6 +1255,10 @@
       document.getElementById('tc-mingrade').value='';
       setDDType('trailing');
       updateNameDropdown();
+      // A new account must start unlinked. updateNameDropdown() keeps the
+      // previous selection, which linked every new account to the LAST one
+      // saved and overwrote its account # — the "saving over itself" bug.
+      document.getElementById('tc-name').value = '';
       fillFleetFields({});
       document.getElementById('tracker-modal').classList.remove('hidden');
       setTimeout(() => document.getElementById('tc-label').focus(), 50);
@@ -1313,9 +1317,18 @@
       const regType = st === 'eval' ? 'Evaluation' : st === 'personal' ? 'Personal' : 'Funded';
       const accountsBefore = JSON.parse(JSON.stringify(journalAccounts));
       let accountsChanged = false;
+      // Never let two account setups share one My Accounts entry — that is how
+      // one save ends up overwriting another account's number and commission.
+      if (linkName) {
+        const owner = trackerCards.find(c => c.filterName === linkName && c.id !== editingCardId);
+        if (owner) {
+          if (!editingCardId) linkName = '';     // new account: start its own entry
+          else { showModalMsg('"' + linkName + '" is already set up as "' + (owner.label || linkName) + '". Pick a different account under Advanced.', 'error'); return; }
+        }
+      }
       if (!isGroup) {
         let acct = linkName ? journalAccounts.find(a => a.name === linkName) : null;
-        if (!acct && !editingCardId) acct = journalAccounts.find(a => a.name === label) || null;
+        if (!acct && !editingCardId) acct = journalAccounts.find(a => a.name === label && !trackerCards.some(c => c.filterName === a.name)) || null;
         if (!acct && editingCardId) {
           const prevCard = trackerCards.find(c => c.id === editingCardId);
           if (prevCard && prevCard.filterName) acct = journalAccounts.find(a => a.name === prevCard.filterName) || null;
