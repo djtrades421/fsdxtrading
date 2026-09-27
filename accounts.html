@@ -433,7 +433,7 @@
             <div class="grid grid-cols-3 gap-3">
               <div><label for="tc-size" class="block text-xs text-zinc-600 mb-1">Account size</label><input id="tc-size" type="number" placeholder="50000" class="tc-in"></div>
               <div><label for="tc-maxdd" class="block text-xs text-zinc-600 mb-1">Max drawdown</label><input id="tc-maxdd" type="number" placeholder="2000" class="tc-in"></div>
-              <div><label for="tc-floorlock" class="block text-xs text-zinc-600 mb-1">Floor locks at</label><input id="tc-floorlock" type="number" placeholder="optional" class="tc-in"></div>
+              <div><label for="tc-lockprofit" class="block text-xs text-zinc-600 mb-1">Trailing stops at (+$)</label><input id="tc-lockprofit" type="number" min="0" placeholder="e.g. 2100 · blank = never" class="tc-in"></div>
               <div><label for="tc-target" class="block text-xs text-zinc-600 mb-1">Profit target</label><input id="tc-target" type="number" placeholder="eval only" class="tc-in"></div>
               <div><label for="tc-payoutline" class="block text-xs text-zinc-600 mb-1">Payout line (+$)</label><input id="tc-payoutline" type="number" placeholder="optional" class="tc-in"></div>
               <div><label for="tc-firm-daily" class="block text-xs text-zinc-600 mb-1">Daily loss limit</label><input id="tc-firm-daily" type="number" placeholder="optional" class="tc-in"></div>
@@ -441,6 +441,7 @@
               <div><label for="tc-inactivity" class="block text-xs text-zinc-600 mb-1">Inactivity limit (days)</label><input id="tc-inactivity" type="number" min="0" placeholder="optional" class="tc-in"></div>
               <div><label for="tc-qualify" class="block text-xs text-zinc-600 mb-1">Day counts if net ≥</label><input id="tc-qualify" type="number" min="0" placeholder="0 = any trade" class="tc-in"></div>
             </div>
+            <div id="tc-lock-hint" class="text-[10px] text-zinc-500 -mt-1"></div>
             <div>
               <div class="block text-xs text-zinc-600 mb-1">Drawdown type</div>
               <div class="grid grid-cols-3 gap-2">
@@ -1231,6 +1232,7 @@
         (type==='eod'?'border-green-500/40 bg-green-500/10 text-green-400':'border-white/10 text-zinc-500');
       document.getElementById('dd-static').className = 'py-2 border text-xs font-bold rounded-xl transition ' +
         (type==='static'?'border-green-500/40 bg-green-500/10 text-green-400':'border-white/10 text-zinc-500');
+      if (typeof paintLockHint === 'function') paintLockHint();
     }
 
     function updateNameDropdown() {
@@ -1386,7 +1388,7 @@
       // "Also apply these rules to…" — copy onto the ticked trackers.
       const applyIds = selectedApplyIds();
       if (applyIds.length) {
-        trackerCards = trackerCards.map(c => applyIds.includes(c.id) && c.id !== card.id ? { ...c, ...rulesOf(card) } : c);
+        trackerCards = trackerCards.map(c => { if (!(applyIds.includes(c.id) && c.id !== card.id)) return c; const n = { ...c, ...rulesOf(card), floorLock: null }; delete n.floorLockBuffer; return n; });
       }
 
       if (!await saveTrackerCards()) {
@@ -1741,7 +1743,7 @@
       { id:'renewal',     name:'Renewal / expiry',     hint:'Uses the Renews / expires date',               unit:'days before' }
     ];
     const LEVEL_LABEL = { over:'PAST LIMIT', urgent:'URGENT', heads:'HEADS-UP', payout:'READY', info:'NOTE' };
-    const RULE_FIELDS = ['accountSize','profitTarget','firmDaily','maxDD','ddType','floorLock','payoutLine','minDays',
+    const RULE_FIELDS = ['accountSize','profitTarget','firmDaily','maxDD','ddType','floorLockProfit','payoutLine','minDays',
       'inactivityDays','qualifyMin','alerts','personalDaily','maxTradesPerDay','maxConsecLosses','minGrade','windowStart','windowEnd'];
 
     let modalPayouts = [];
@@ -1785,6 +1787,19 @@
         b.style.opacity = on || !v ? '1' : '.7';
       });
     }
+    // One line under Firm rules that does the lock math for you.
+    function paintLockHint() {
+      const el = $id('tc-lock-hint'); if (!el) return;
+      const size = parseFloat($id('tc-size').value), dd = parseFloat($id('tc-maxdd').value), lpRaw = $id('tc-lockprofit').value;
+      const $ = v => '$' + Math.round(v).toLocaleString();
+      if (!(size > 0) || !(dd > 0)) { el.textContent = 'Trailing stops at: the profit where your firm stops trailing the floor (e.g. +2,100 on a 50K). Leave blank if it never stops.'; return; }
+      if (ddType_modal === 'static') { el.textContent = 'Static drawdown: the floor stays at ' + $(size - dd) + ' — "Trailing stops at" isn\'t used.'; return; }
+      if (lpRaw === '' || !(parseFloat(lpRaw) > 0)) { el.textContent = 'Floor starts at ' + $(size - dd) + ' and keeps trailing your high — it never stops.'; return; }
+      const lp = parseFloat(lpRaw);
+      el.textContent = 'Floor starts at ' + $(size - dd) + ', trails your high, and stops at ' + $(size + lp - dd) + ' once you\'re up +' + $(lp) + '.';
+    }
+    ['tc-size','tc-maxdd','tc-lockprofit'].forEach(id => document.addEventListener('input', e => { if (e.target && e.target.id === id) paintLockHint(); }));
+
     function toggleApplyPanel() { $id('tc-apply-wrap').classList.toggle('hidden'); }
 
     // ── Modal: fill / read the fleet fields ──
@@ -1802,7 +1817,9 @@
       setGoal(card.goal || '');
       $id('tc-start').value = card.startDate || '';
       $id('tc-renew').value = card.renewDate || '';
-      $id('tc-floorlock').value = card.floorLock ?? '';
+      // Shown as the profit the firm quotes (+2,100), whatever older field it was saved in.
+      { const lp = FSDXTracker.lockProfit(card); $id('tc-lockprofit').value = lp == null ? '' : lp; }
+      paintLockHint();
       $id('tc-payoutline').value = card.payoutLine ?? '';
       $id('tc-mindays').value = card.minDays ?? '';
       $id('tc-inactivity').value = card.inactivityDays ?? '';
@@ -1863,7 +1880,9 @@
         goal: $id('tc-goal').value,
         startDate: $id('tc-start').value,
         renewDate: $id('tc-renew').value,
-        floorLock: numOrNull('tc-floorlock'),
+        floorLockProfit: numOrNull('tc-lockprofit'),
+        floorLockBuffer: undefined,            // older forms of the same setting
+        floorLock: null,
         payoutLine: numOrNull('tc-payoutline'),
         minDays: numOrNull('tc-mindays'),
         inactivityDays: numOrNull('tc-inactivity'),
@@ -1916,7 +1935,7 @@
       if (!src) return;
       const set = (el, v) => { $id(el).value = v === null || v === undefined ? '' : v; };
       set('tc-size', src.accountSize); set('tc-target', src.profitTarget); set('tc-firm-daily', src.firmDaily);
-      set('tc-maxdd', src.maxDD); set('tc-floorlock', src.floorLock); set('tc-payoutline', src.payoutLine);
+      set('tc-maxdd', src.maxDD); set('tc-lockprofit', FSDXTracker.lockProfit(src)); paintLockHint(); set('tc-payoutline', src.payoutLine);
       set('tc-mindays', src.minDays); set('tc-inactivity', src.inactivityDays); set('tc-qualify', src.qualifyMin);
       set('tc-personal-daily', src.personalDaily); set('tc-max-trades', src.maxTradesPerDay); set('tc-max-consec', src.maxConsecLosses);
       set('tc-mingrade', src.minGrade || ''); set('tc-window-start', src.windowStart); set('tc-window-end', src.windowEnd);
@@ -2276,7 +2295,8 @@
         const cfgI = FSDXTracker.alertCfg(card, 'inactivity');
         const cushCol = m.cushion === null ? COL.dim : m.cushion <= 0 || (cfgC.urgent != null && m.cushion <= cfgC.urgent) ? COL.red : (cfgC.warn != null && m.cushion <= cfgC.warn) ? COL.amber : COL.green;
         const cushPct = m.cushion === null ? 0 : Math.max(0, Math.min(100, Math.round(m.cushion / m.ddLimit * 100)));
-        const locked = m.floor !== null && card.floorLock && m.floor === parseFloat(card.floorLock);
+        const lockBal = FSDXTracker.lockBalance(card);
+        const locked = m.floor !== null && lockBal > 0 && m.floor === lockBal;
         const g = fleetGoal(card, m);
         const idle = m.lastTrade ? FSDXTracker.daysBetween(m.lastTrade, today) : null;
         const idleCls = idle === null ? 'text-zinc-600' : cfgI.on && ((m.limitDays && idle >= m.limitDays) || (cfgI.urgent != null && idle >= cfgI.urgent)) ? 'text-red-400' : cfgI.on && cfgI.warn != null && idle >= cfgI.warn ? 'text-yellow-400' : 'text-zinc-300';

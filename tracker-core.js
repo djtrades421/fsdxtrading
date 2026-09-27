@@ -117,11 +117,37 @@
     return { totalPnl: equity, currentDD: currentDD, maxDD: maxDD, hwm: hwm };
   }
 
+  // Balance the trailing floor stops at, or 0 when it never stops.
+  function lockBalance(card) {
+    var start = parseFloat(card.accountSize) || 0;
+    var dd = parseFloat(card.maxDD) || 0;
+    // A card that has the field uses it — even empty, which means "never".
+    if (Object.prototype.hasOwnProperty.call(card, 'floorLockProfit')) {
+      var p = parseFloat(card.floorLockProfit);
+      return isFinite(p) && p > 0 && start && dd ? start + p - dd : 0;
+    }
+    if (Object.prototype.hasOwnProperty.call(card, 'floorLockBuffer')) {
+      var buf = parseFloat(card.floorLockBuffer);
+      return isFinite(buf) && start ? start + buf : 0;
+    }
+    return parseFloat(card.floorLock) || 0;
+  }
+  // The same lock, as the profit the member types ("+2,100"). null = never.
+  function lockProfit(card) {
+    var start = parseFloat(card.accountSize) || 0, dd = parseFloat(card.maxDD) || 0;
+    var bal = lockBalance(card);
+    return bal && start && dd ? bal - start + dd : null;
+  }
+
   // Drawdown floor (liquidation balance) for a card.
   //   trailing / eod : start + peak P&L − DD limit, never below start − DD
   //   static         : start − DD limit
-  //   floorLock      : once the trailing floor reaches this balance it stops
-  //                    moving (e.g. 50,100 on a 50K account)
+  //   floor lock     : the trailing floor stops once the account's high
+  //                    reaches a profit the firm states, e.g. "+$2,100" on a
+  //                    50K with $2,000 DD -> floor stops at 50,100.
+  //                    floorLockProfit is what the member enters. Older
+  //                    trackers may carry floorLockBuffer (start + buffer) or
+  //                    floorLock (a balance); both are still read.
   // Returns null when size or DD limit is missing.
   function floorOf(card, hwm) {
     var start = parseFloat(card.accountSize) || 0;
@@ -129,7 +155,7 @@
     if (!start || !dd) return null;
     if (card.ddType === 'static') return start - dd;
     var f = start + Math.max(0, hwm || 0) - dd;
-    var lock = parseFloat(card.floorLock) || 0;
+    var lock = lockBalance(card);
     if (lock > 0 && f > lock) f = lock;
     return f;
   }
@@ -495,6 +521,8 @@
     drawdown: drawdown,
     summary: summary,
     floorOf: floorOf,
+    lockBalance: lockBalance,
+    lockProfit: lockProfit,
     fleet: fleet,
     alertCfg: alertCfg,
     alertHiddenBy: alertHiddenBy,
