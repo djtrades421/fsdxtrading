@@ -2133,10 +2133,22 @@
       const dim = '#52525b';
       const kpis = `<div class="fl-kpis">
         ${kpi('Accounts', active.length, [byStage('eval') + ' eval', byStage('funded') + ' funded', byStage('queued') ? byStage('queued') + ' queued' : ''].filter(Boolean).join(' · '), '#e4e4e7')}
-        ${kpi('Urgent', nUrgent, 'act before next session', nUrgent ? COL.red : dim)}
-        ${kpi('Heads-up', nHeads, 'getting close', nHeads ? COL.amber : dim)}
-        ${kpi('Payout ready', nPayout, 'line or target hit', nPayout ? COL.green : dim)}
-        ${kpi('Near target', nNear, 'within your heads-up', nNear ? COL.blue : dim)}
+        ${(() => {
+          // Tiles count WARNINGS, same as the Needs attention pills, the
+          // dashboard tile and the menu badge — so every number agrees. The
+          // line underneath says how many accounts they're spread across.
+          const w = lv => { let n = 0; const acc = new Set();
+            active.forEach(r => r.vis.forEach(a => { if (lv.includes(a.level)) { n++; acc.add(r.card.id); } }));
+            return { n, a: acc.size }; };
+          const on = (x, fallback) => x.n ? 'on ' + x.a + ' account' + (x.a === 1 ? '' : 's') : fallback;
+          const u = w(['over','urgent']), h = w(['heads']), p = w(['payout']);
+          const near = { n: 0, a: 0 }; { const acc = new Set();
+            active.forEach(r => r.vis.forEach(a => { if (a.level === 'info' && (a.rule === 'target' || a.rule === 'payout')) { near.n++; acc.add(r.card.id); } })); near.a = acc.size; }
+          return kpi('Urgent', u.n, on(u, 'act before next session'), u.n ? COL.red : dim) +
+                 kpi('Heads-up', h.n, on(h, 'getting close'), h.n ? COL.amber : dim) +
+                 kpi('Payout ready', p.n, on(p, 'line or target hit'), p.n ? COL.green : dim) +
+                 kpi('Near target', near.n, on(near, 'within your heads-up'), near.n ? COL.blue : dim);
+        })()}
         ${kpi('Going idle', nIdle, 'no trade in a while', nIdle ? COL.amber : dim)}
       </div>`;
 
