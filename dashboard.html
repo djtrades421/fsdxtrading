@@ -11,6 +11,7 @@
   <script src="fsdx-account.js?v=20260913b"></script>
   <script src="filters.js?v=20260901"></script>
   <script src="alerts.js?v=20260901"></script>
+  <script src="tracker-core.js?v=20260927"></script>
   <style>
     body { background-color: #000; }
 
@@ -32,7 +33,12 @@
     .mini-cal-day:hover { background: rgba(255,255,255,0.03); }
     .mini-cal-day-win:hover  { background: rgba(34,197,94,0.14) !important; }
     .mini-cal-day-loss:hover { background: rgba(239,68,68,0.14) !important; }
-  </style>
+      /* Fleet warnings tile beside the KPI cards (dashboard option 5A) */
+    .dash-stats-row { display:grid; grid-template-columns:minmax(0,1fr); gap:12px; }
+    @media (min-width:1280px) { .dash-stats-row.has-fleet { grid-template-columns:minmax(0,2.1fr) minmax(320px,1fr); align-items:stretch; } }
+    .fleet-tile-row { display:flex; gap:8px; align-items:center; padding:6px 16px; border-top:1px solid rgba(255,255,255,.05); font-size:11px; min-width:0; transition:background .15s; }
+    .fleet-tile-row:hover { background:rgba(255,255,255,.03); }
+</style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
@@ -155,8 +161,13 @@
         <!-- KPI CARDS + CHART -->
         <div id="stats-content" class="space-y-4">
 
-          <!-- KPI cards -->
-          <div id="stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+          <!-- KPI cards + Fleet warnings tile. The tile only appears for
+               members with account trackers; without it the row is the
+               original four cards. See renderFleetTile(). -->
+          <div id="stats-row" class="dash-stats-row">
+            <div id="stats-top" class="grid grid-cols-2 lg:grid-cols-4 gap-3"></div>
+            <div id="fleet-tile" class="hidden"></div>
+          </div>
 
         </div>
 
@@ -977,6 +988,58 @@
 
     function tradeOwner(t) { return t.accountName || t.accountType || 'Unassigned'; }
 
+    // ── Fleet warnings tile ──
+    // Same engine as the Fleet tab on accounts.html (FSDXTracker.fleet), so
+    // the counts here always match that page. Read-only: snooze / handled /
+    // ignore happen on the Fleet tab. A failed load just leaves the tile hidden.
+    async function loadFleetTile(whopKey, accounts) {
+      const tile = document.getElementById('fleet-tile');
+      if (!tile || typeof FSDXTracker === 'undefined' || !FSDXTracker.fleet) return;
+      try {
+        const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key:'tracker_settings:'+whopKey }) });
+        const data = await res.json();
+        const cards = Array.isArray(data && data.trades) ? data.trades : [];
+        renderFleetTile(cards, accounts);
+      } catch (e) {
+        console.error('[FSDX] fleet tile load failed:', e);
+      }
+    }
+
+    function renderFleetTile(cards, accounts) {
+      const tile = document.getElementById('fleet-tile');
+      const row = document.getElementById('stats-row');
+      const esc = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      const today = FSDXTracker.localDate();
+      const RANK = FSDXTracker.LEVEL_RANK;
+      const active = cards.filter(c => FSDXTracker.stageOf(c, accounts) !== 'archived');
+      if (!active.length) { tile.classList.add('hidden'); row.classList.remove('has-fleet'); return; }
+
+      const warns = [];
+      active.forEach(card => {
+        let r; try { r = FSDXTracker.fleet(card, dashTrades, { today, accounts, journalHasTrades: dashTrades.length > 0 }); } catch (e) { return; }
+        r.alerts.forEach(a => { if (a.level !== 'info' && !FSDXTracker.alertHiddenBy(card, a, today)) warns.push({ a, card }); });
+      });
+      warns.sort((x, y) => RANK[x.a.level] - RANK[y.a.level] || (x.card.label || '').localeCompare(y.card.label || ''));
+      const n = lv => warns.filter(w => lv.includes(w.a.level)).length;
+      const nU = n(['over','urgent']), nH = n(['heads']), nP = n(['payout']);
+      const col = { over:'#f87171', urgent:'#f87171', heads:'#facc15', payout:'#34d399' };
+      const pill = (v, bg, fg, label) => v ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap" style="background:${bg};color:${fg}" title="${label}">${v} ${label}</span>` : '';
+      const hot = nU > 0;
+
+      tile.innerHTML = `<a href="accounts.html#fleet" class="h-full flex flex-col rounded-xl overflow-hidden transition hover:border-white/20" style="border:1px solid ${hot ? 'rgba(239,68,68,.35)' : 'rgba(255,255,255,.1)'};background:${hot ? 'rgba(239,68,68,.04)' : 'rgba(9,9,11,.4)'}">
+        <div class="flex items-center justify-between gap-2 flex-wrap px-4 py-2.5">
+          <span class="text-[10px] font-bold uppercase tracking-wider whitespace-nowrap" style="color:${hot ? '#f87171' : '#71717a'}">${warns.length ? '⚠ ' : ''}Fleet warnings</span>
+          <span class="flex gap-1 flex-wrap">${pill(nU,'rgba(239,68,68,.12)','#f87171','urgent')}${pill(nH,'rgba(234,179,8,.10)','#facc15','heads-up')}${pill(nP,'rgba(16,185,129,.10)','#34d399','ready')}</span>
+        </div>
+        ${warns.length
+          ? warns.slice(0, 3).map(w => `<div class="fleet-tile-row"><i style="width:7px;height:7px;border-radius:99px;background:${col[w.a.level]};flex-shrink:0;display:inline-block"></i><b class="text-white whitespace-nowrap">${esc(w.card.label || 'Account')}</b><span class="text-zinc-400 truncate">${esc(w.a.title)}</span></div>`).join('')
+          : `<div class="px-4 pb-3 text-xs text-zinc-500">All clear — ${active.length} account${active.length === 1 ? '' : 's'}, nothing needs attention on the data you've imported.</div>`}
+        <div class="mt-auto px-4 py-2 text-[11px] font-bold text-green-400" style="border-top:1px solid rgba(255,255,255,.05)">${warns.length > 3 ? 'View all ' + warns.length + ' in Fleet →' : 'Open Fleet →'}</div>
+      </a>`;
+      tile.classList.remove('hidden');
+      row.classList.add('has-fleet');
+    }
+
     async function loadDashData(whopKey) {
       try {
         const [tr, sr] = await Promise.all([
@@ -986,6 +1049,7 @@
         const td = await tr.json(), sd = await sr.json();
         dashTrades = Array.isArray(td.trades) ? td.trades : [];
         const saved = Array.isArray(sd.accounts) ? sd.accounts : [];
+        loadFleetTile(whopKey, saved);   // runs on ALL trades, ignores the account filter
 
         // Saved accounts first, then anything that owns trades but was never saved.
         const counts = {};
