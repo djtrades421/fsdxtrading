@@ -1975,6 +1975,12 @@
       const nHeads = count(r => hasLv(r, ['heads']) && !hasLv(r, ['over', 'urgent']));
       const nPayout = count(r => hasLv(r, ['payout']));
       const nHidden = rows.reduce((s, r) => s + r.hid.length, 0);
+      // Side-menu badge (nav-loader.js) — urgent warnings only, across active accounts.
+      if (window.fsdxSetFleetBadge) {
+        const urg = [];
+        active.forEach(r => r.vis.forEach(a => { if (a.level === 'over' || a.level === 'urgent') urg.push(r.card.label || 'Account'); }));
+        window.fsdxSetFleetBadge(urg.length, [...new Set(urg)]);
+      }
       const byStage = st => active.filter(r => r.m.stage === st).length;
 
       // ── Review summary ──

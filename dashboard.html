@@ -463,7 +463,7 @@
     async function handleLogout() {
       const token = localStorage.getItem('fsdx_token');
       if (token) await fetch(`${API}/api/auth/logout`, { method:'POST', headers:{'Authorization':`Bearer ${token}`} }).catch(()=>{});
-      localStorage.removeItem('fsdx_token'); localStorage.removeItem('fsdx_name'); localStorage.removeItem('fsdx_tier');
+      localStorage.removeItem('fsdx_token'); localStorage.removeItem('fsdx_name'); localStorage.removeItem('fsdx_tier'); localStorage.removeItem('fsdx_fleet_badge');
       window.location.href = 'login.html';
     }
 
@@ -1012,7 +1012,7 @@
       const today = FSDXTracker.localDate();
       const RANK = FSDXTracker.LEVEL_RANK;
       const active = cards.filter(c => FSDXTracker.stageOf(c, accounts) !== 'archived');
-      if (!active.length) { tile.classList.add('hidden'); row.classList.remove('has-fleet'); return; }
+      if (!active.length) { tile.classList.add('hidden'); row.classList.remove('has-fleet'); if (window.fsdxSetFleetBadge) window.fsdxSetFleetBadge(0, []); return; }
 
       const warns = [];
       active.forEach(card => {
@@ -1022,6 +1022,8 @@
       warns.sort((x, y) => RANK[x.a.level] - RANK[y.a.level] || (x.card.label || '').localeCompare(y.card.label || ''));
       const n = lv => warns.filter(w => lv.includes(w.a.level)).length;
       const nU = n(['over','urgent']), nH = n(['heads']), nP = n(['payout']);
+      // Side-menu badge on every page reads this saved count.
+      if (window.fsdxSetFleetBadge) window.fsdxSetFleetBadge(nU, [...new Set(warns.filter(w => ['over','urgent'].includes(w.a.level)).map(w => w.card.label || 'Account'))]);
       const col = { over:'#f87171', urgent:'#f87171', heads:'#facc15', payout:'#34d399' };
       const pill = (v, bg, fg, label) => v ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap" style="background:${bg};color:${fg}" title="${label}">${v} ${label}</span>` : '';
       const hot = nU > 0;

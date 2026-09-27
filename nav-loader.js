@@ -220,6 +220,101 @@ function applyNavGroupState(id, defaultOpen) {
   if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 
+// ── Fleet badge on the Accounts link ──
+// A red count of URGENT account warnings (past a limit, or at the member's own
+// urgent line). Heads-up and payout-ready never count, and anything the member
+// snoozed / handled / ignored on the Fleet tab is already left out.
+//
+// Only accounts.html and dashboard.html have the data to work this out, so
+// they call fsdxSetFleetBadge() after they render and the number is saved in
+// localStorage. Every other page just shows the saved number — no extra
+// fetches on pages that don't use it. The saved value is tied to the current
+// login token, so a different login on the same browser never sees it.
+(function () {
+  var KEY = 'fsdx_fleet_badge';
+  function tokenTag() {
+    try { var t = localStorage.getItem('fsdx_token') || ''; return t ? t.slice(-12) : ''; } catch (e) { return ''; }
+  }
+  function read() {
+    try {
+      var v = JSON.parse(localStorage.getItem(KEY) || 'null');
+      if (!v || v.t !== tokenTag()) return null;
+      return v;
+    } catch (e) { return null; }
+  }
+  function css() {
+    if (document.getElementById('fx-fleet-badge-css')) return;
+    var st = document.createElement('style');
+    st.id = 'fx-fleet-badge-css';
+    st.textContent =
+      '#nav-content a.fx-has-badge{position:relative}' +
+      '.fx-fleet-badge{margin-left:auto;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#ef4444;color:#fff;' +
+        'font-size:10px;font-weight:900;line-height:18px;text-align:center;box-sizing:border-box;flex-shrink:0}' +
+      '@media (min-width:768px){html.nav-collapsed .fx-fleet-badge{position:absolute;top:3px;right:3px;min-width:0;width:9px;height:9px;padding:0;' +
+        'font-size:0;box-shadow:0 0 0 2px #070c14}}' +
+      '.fx-fleet-tip{position:fixed;z-index:9999;width:220px;padding:10px 12px;border-radius:10px;background:#0f1724;' +
+        'border:1px solid rgba(239,68,68,.45);box-shadow:0 10px 30px rgba(0,0,0,.55);pointer-events:none;font-family:inherit}' +
+      '.fx-fleet-tip b{display:block;font-size:12px;color:#fca5a5}' +
+      '.fx-fleet-tip span{display:block;font-size:11px;color:#8098b7;margin-top:2px}' +
+      '.fx-fleet-tip i{display:block;font-style:normal;font-size:11px;font-weight:800;color:#f26b21;margin-top:6px}';
+    document.head.appendChild(st);
+  }
+  function esc(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  var tip = null;
+  function hideTip() { if (tip) { tip.remove(); tip = null; } }
+  function render() {
+    var link = document.querySelector('#nav-content a[href="accounts.html"], #nav-content a[href="accounts.html#fleet"]');
+    if (!link) return;
+    var old = link.querySelector('.fx-fleet-badge');
+    if (old) old.remove();
+    link.classList.remove('fx-has-badge');
+    link.onmouseenter = link.onmouseleave = null;
+    hideTip();
+    var v = read();
+    if (!v || !(v.n > 0)) {
+      link.setAttribute('href', 'accounts.html');
+      if (link.dataset.fxTitle) link.title = link.dataset.fxTitle;
+      return;
+    }
+    css();
+    var b = document.createElement('span');
+    b.className = 'fx-fleet-badge';
+    b.textContent = v.n > 99 ? '99+' : String(v.n);
+    b.setAttribute('aria-label', v.n + ' urgent account warning' + (v.n === 1 ? '' : 's'));
+    link.appendChild(b);
+    link.classList.add('fx-has-badge');
+    link.setAttribute('href', 'accounts.html#fleet');
+    if (!link.dataset.fxTitle) link.dataset.fxTitle = link.title || 'Accounts';
+    link.removeAttribute('title');           // the custom tip replaces the browser one
+    var names = (v.accts || []).slice(0, 4);
+    var more = (v.accts || []).length - names.length;
+    link.onmouseenter = function () {
+      hideTip();
+      tip = document.createElement('div');
+      tip.className = 'fx-fleet-tip';
+      tip.innerHTML = '<b>' + v.n + ' urgent warning' + (v.n === 1 ? '' : 's') + '</b>' +
+        (names.length ? '<span>' + esc(names.join(' · ')) + (more > 0 ? ' +' + more + ' more' : '') + '</span>' : '') +
+        '<i>Open Fleet →</i>';
+      document.body.appendChild(tip);
+      var r = link.getBoundingClientRect();
+      var top = r.top + r.height / 2 - tip.offsetHeight / 2;
+      tip.style.left = Math.min(window.innerWidth - 232, r.right + 12) + 'px';
+      tip.style.top = Math.max(8, top) + 'px';
+    };
+    link.onmouseleave = hideTip;
+  }
+  // Called by accounts.html / dashboard.html with the urgent count and the
+  // names of the accounts behind it.
+  window.fsdxSetFleetBadge = function (n, accts) {
+    try {
+      if (!tokenTag()) return;
+      localStorage.setItem(KEY, JSON.stringify({ n: n || 0, accts: accts || [], t: tokenTag(), at: Date.now() }));
+    } catch (e) {}
+    render();
+  };
+  window.fsdxRenderFleetBadge = render;
+})();
+
 function toggleNavCollapse() {
   var on = document.documentElement.classList.toggle('nav-collapsed');
   try { localStorage.setItem('fsdx_nav_collapsed', on ? '1' : '0'); } catch (e) {}
@@ -336,6 +431,9 @@ function prepareNavLabels(root) {
           link.classList.add('text-green-400', 'font-bold');
         }
       });
+
+      // Red count of urgent account warnings on the Accounts link
+      try { window.fsdxRenderFleetBadge && window.fsdxRenderFleetBadge(); } catch (e) {}
 
       // "The Site" starts shut for members, open for visitors
       const loggedIn = !!localStorage.getItem('fsdx_token');
@@ -519,5 +617,6 @@ function navLogout() {
   // session into whatever account signed in next on the same browser.
   localStorage.removeItem('fsdx_whop_status');
   localStorage.removeItem('fsdx_admin');
+  localStorage.removeItem('fsdx_fleet_badge');
   window.location.href = 'index.html';
 }
