@@ -1023,7 +1023,9 @@
       const n = lv => warns.filter(w => lv.includes(w.a.level)).length;
       const nU = n(['over','urgent']), nH = n(['heads']), nP = n(['payout']);
       // Side-menu badge on every page reads this saved count.
-      if (window.fsdxSetFleetBadge) window.fsdxSetFleetBadge(nU, [...new Set(warns.filter(w => ['over','urgent'].includes(w.a.level)).map(w => w.card.label || 'Account'))]);
+      if (window.fsdxSetFleetBadge) window.fsdxSetFleetBadge(nU,
+        [...new Set(warns.filter(w => ['over','urgent'].includes(w.a.level)).map(w => w.card.label || 'Account'))],
+        warns.map(w => ({ key: w.card.id + '|' + w.a.id + '|' + w.a.level + '|' + w.a.fp, level: w.a.level, acct: w.card.label || 'Account', title: w.a.title, note: w.a.note || '' })));
       const col = { over:'#f87171', urgent:'#f87171', heads:'#facc15', payout:'#34d399' };
       const pill = (v, bg, fg, label) => v ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap" style="background:${bg};color:${fg}" title="${label}">${v} ${label}</span>` : '';
       const hot = nU > 0;

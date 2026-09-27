@@ -14,8 +14,10 @@
 //     grade: 'A+',                        // optional pill
 //     lines: [['Entry','20145.25'], ...], // optional detail rows
 //     id:    'scout-123',                 // optional; dedupes across pages
-//     ttl:   12000                        // optional; 0 = stays until dismissed
-//   });
+//     ttl:   12000,                       // optional; 0 = stays until dismissed
+//     href:  'accounts.html#fleet',       // optional; clicking the card goes here
+//     sound: true | false                 // optional; overrides the Scout mute
+//   });                                   //   (account warnings have their own)
 
 (function () {
   'use strict';
@@ -172,8 +174,8 @@
 
   // A short two-note blip. Synthesised so there's no audio file to ship, and
   // it stays silent unless the browser has already granted audio.
-  function ping(accent) {
-    if (isMuted()) return;
+  function ping(accent, force) {
+    if (!force && isMuted()) return;
     // Browsers block audio until the page has been interacted with, so building
     // a context before then is wasted work (and noisy in the console).
     if (navigator.userActivation && !navigator.userActivation.hasBeenActive) return;
@@ -295,9 +297,13 @@
 
     host.appendChild(node);
     requestAnimationFrame(function () { node.classList.add('in'); });
-    ping(accent);
+    if (a.sound !== false) ping(accent, a.sound === true);
 
-    node.querySelector('.fsdx-toast-x').addEventListener('click', function () { dismiss(node); });
+    node.querySelector('.fsdx-toast-x').addEventListener('click', function (e) { e.stopPropagation(); dismiss(node); });
+    if (a.href) {
+      node.style.cursor = 'pointer';
+      node.addEventListener('click', function () { window.location.href = a.href; });
+    }
 
     if (ttl) {
       var bar = node.querySelector('.fsdx-toast-bar');

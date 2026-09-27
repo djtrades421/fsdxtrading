@@ -220,6 +220,77 @@ function applyNavGroupState(id, defaultOpen) {
   if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 
+// ── Account warning pop-ups ──
+// Same corner toast as Scout Alerts (alerts.js), fired when an account gets a
+// NEW warning. Settings live on the Accounts page → Alerts tab and, like Scout,
+// are saved on this device. Each warning pops once: once it has popped (or
+// been seen on the Fleet tab) it stays quiet until it changes. Built so a live
+// feed (Tradovate API, later Nexus) can call the same entry point.
+window.FSDXFleetPop = (function () {
+  var PREF = 'fsdx_fleet_pop', SEEN = 'fsdx_fleet_pop_seen';
+  var DEF = { on: true, sound: true, sticky: true, levels: { urgent: true, payout: true, heads: false } };
+  var LABEL = { over: 'Past limit', urgent: 'Urgent', payout: 'Ready', heads: 'Heads-up' };
+  var TYPE  = { over: 'sl', urgent: 'sl', payout: 'tp', heads: 'level' };
+  function prefs() {
+    try {
+      var p = JSON.parse(localStorage.getItem(PREF) || 'null') || {};
+      var out = JSON.parse(JSON.stringify(DEF));
+      ['on','sound','sticky'].forEach(function (k) { if (typeof p[k] === 'boolean') out[k] = p[k]; });
+      if (p.levels) ['urgent','payout','heads'].forEach(function (k) { if (typeof p.levels[k] === 'boolean') out.levels[k] = p.levels[k]; });
+      return out;
+    } catch (e) { return JSON.parse(JSON.stringify(DEF)); }
+  }
+  function setPrefs(p) { try { localStorage.setItem(PREF, JSON.stringify(p)); } catch (e) {} }
+  function seen() { try { var v = JSON.parse(localStorage.getItem(SEEN) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+  function addSeen(keys) {
+    var s = seen();
+    keys.forEach(function (k) { if (s.indexOf(k) === -1) s.push(k); });
+    try { localStorage.setItem(SEEN, JSON.stringify(s.slice(-400))); } catch (e) {}
+  }
+  function wanted(p, level) { return level === 'over' || level === 'urgent' ? p.levels.urgent : !!p.levels[level]; }
+  // items: [{ key, level, acct, title, note }]
+  function maybePop(items, opts) {
+    opts = opts || {};
+    if (!Array.isArray(items) || !items.length) return;
+    var p = prefs();
+    var s = seen();
+    var fresh = items.filter(function (it) { return it && it.key && s.indexOf(it.key) === -1 && wanted(p, it.level); });
+    if (!fresh.length) return;
+    // On the Fleet tab the list is already in front of you — count it as seen.
+    if (opts.markOnly || !p.on || !window.FSDXAlerts) { addSeen(fresh.map(function (i) { return i.key; })); return; }
+    addSeen(fresh.map(function (i) { return i.key; }));
+    var rank = { over: 0, urgent: 1, payout: 2, heads: 3 };
+    fresh.sort(function (a, b) { return rank[a.level] - rank[b.level]; });
+    var sticky = p.sticky && fresh.some(function (i) { return i.level === 'over' || i.level === 'urgent'; });
+    if (fresh.length > 2) {
+      var top = fresh[0];
+      window.FSDXAlerts.show({
+        force: true, type: TYPE[top.level], sound: p.sound, ttl: sticky ? 0 : 15000, href: 'accounts.html#fleet',
+        title: fresh.length + ' new account warnings',
+        sub: 'Click to review in Fleet',
+        lines: fresh.slice(0, 4).map(function (i) { return [i.acct, LABEL[i.level] + ' · ' + i.title]; })
+      });
+    } else {
+      fresh.forEach(function (i, n) {
+        window.FSDXAlerts.show({
+          force: true, type: TYPE[i.level], sound: n === 0 ? p.sound : false,
+          ttl: sticky && (i.level === 'over' || i.level === 'urgent') ? 0 : 15000, href: 'accounts.html#fleet',
+          title: LABEL[i.level] + ' · ' + i.acct, sub: i.title,
+          lines: i.note ? [['Your note', i.note]] : []
+        });
+      });
+    }
+  }
+  function test() {
+    if (!window.FSDXAlerts) return;
+    var p = prefs();
+    window.FSDXAlerts.show({ force: true, type: 'sl', sound: p.sound, ttl: p.sticky ? 0 : 15000, href: 'accounts.html#fleet',
+      title: 'Urgent · TFY 50K 001', sub: '$200 left before the drawdown floor', lines: [['Your note', 'Stop for the day, lower size.']] });
+  }
+  function resetSeen() { try { localStorage.removeItem(SEEN); } catch (e) {} }
+  return { prefs: prefs, setPrefs: setPrefs, maybePop: maybePop, test: test, resetSeen: resetSeen, seen: seen };
+})();
+
 // ── Fleet badge on the Accounts link ──
 // A red count of URGENT account warnings (past a limit, or at the member's own
 // urgent line). Heads-up and payout-ready never count, and anything the member
@@ -305,12 +376,21 @@ function applyNavGroupState(id, defaultOpen) {
   }
   // Called by accounts.html / dashboard.html with the urgent count and the
   // names of the accounts behind it.
-  window.fsdxSetFleetBadge = function (n, accts) {
+  window.fsdxSetFleetBadge = function (n, accts, items, popOpts) {
     try {
       if (!tokenTag()) return;
-      localStorage.setItem(KEY, JSON.stringify({ n: n || 0, accts: accts || [], t: tokenTag(), at: Date.now() }));
+      localStorage.setItem(KEY, JSON.stringify({ n: n || 0, accts: accts || [], items: (items || []).slice(0, 40), t: tokenTag(), at: Date.now() }));
     } catch (e) {}
     render();
+    if (items) try { window.FSDXFleetPop.maybePop(items, popOpts); } catch (e) {}
+  };
+  // Other pages: pop anything new from the last saved list (e.g. a warning
+  // worked out on the dashboard, then you moved to the Journal).
+  window.fsdxPopFromCache = function () {
+    var v = read();
+    if (v && v.items && !/accounts\.html$/.test(location.pathname)) {
+      try { window.FSDXFleetPop.maybePop(v.items); } catch (e) {}
+    }
   };
   window.fsdxRenderFleetBadge = render;
 })();
@@ -434,6 +514,8 @@ function prepareNavLabels(root) {
 
       // Red count of urgent account warnings on the Accounts link
       try { window.fsdxRenderFleetBadge && window.fsdxRenderFleetBadge(); } catch (e) {}
+      // alerts.js loads after this file on most pages — give it a beat.
+      setTimeout(function () { try { window.fsdxPopFromCache && window.fsdxPopFromCache(); } catch (e) {} }, 1200);
 
       // "The Site" starts shut for members, open for visitors
       const loggedIn = !!localStorage.getItem('fsdx_token');
@@ -618,5 +700,6 @@ function navLogout() {
   localStorage.removeItem('fsdx_whop_status');
   localStorage.removeItem('fsdx_admin');
   localStorage.removeItem('fsdx_fleet_badge');
+  localStorage.removeItem('fsdx_fleet_pop_seen');
   window.location.href = 'index.html';
 }

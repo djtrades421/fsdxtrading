@@ -53,6 +53,16 @@
     @media (min-width: 560px) and (max-width: 1180px) {
       .fl-grid.fl-row { grid-template-columns:repeat(3,minmax(0,1fr)); }
     }
+    /* Alerts tab switches (match Scout Alerts' switch) */
+    .fp-sw { flex-shrink:0; width:44px; height:24px; border-radius:99px; border:1px solid rgba(255,255,255,.1); background:#27272a; position:relative; transition:all .15s; display:inline-block; }
+    .fp-sw > span { position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:99px; background:#fff; transition:transform .15s; }
+    .fp-sw.on { background:#22c55e; border-color:#22c55e; }
+    .fp-sw.on > span { transform:translateX(20px); }
+    .fp-row { width:100%; display:flex; align-items:center; justify-content:space-between; gap:16px; text-align:left; padding:12px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.05); background:rgba(24,24,27,.4); transition:border-color .15s; }
+    .fp-row:hover { border-color:rgba(255,255,255,.15); }
+    .fp-row b { display:block; font-size:.875rem; font-weight:700; color:#fff; }
+    .fp-row i { display:block; font-style:normal; font-size:11px; color:#71717a; margin-top:2px; }
+    #fp-rest.off { opacity:.4; pointer-events:none; }
     /* Setup modal — layout + the on/off switch (not in the Tailwind build) */
     .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
     .tc-in { width:100%; box-sizing:border-box; background:#000; border:1px solid rgba(255,255,255,.1); color:#fff; font-size:.875rem; line-height:1.25rem; padding:.5rem .75rem; border-radius:.75rem; }
@@ -128,6 +138,7 @@
           <div class="flex -mb-px overflow-x-auto">
             <button onclick="switchTab('fleet')" id="tab-fleet" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Fleet</button>
             <button onclick="switchTab('registry')" id="tab-registry" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">My Accounts</button>
+            <button onclick="switchTab('alerts')" id="tab-alerts" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Alerts</button>
             <button onclick="switchTab('imports')" id="tab-imports" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Imports</button>
           </div>
         </div>
@@ -193,6 +204,53 @@
             <!-- Tracker list -->
             <div id="tracker-list" class="hidden space-y-3"></div>
 
+          </div>
+
+          <!-- ══ ALERTS — pop-up settings for account warnings ══ -->
+          <div id="panel-alerts" class="sub-panel space-y-4">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <div class="text-sm font-black text-white">Pop-up alerts</div>
+                  <p class="text-xs text-zinc-500 mt-1 max-w-md">When an account gets a new warning, show it in the corner of the screen while you're on the site — the same pop-up as Scout Alerts. Each warning pops once. The Fleet tab, dashboard tile and menu badge work either way.</p>
+                </div>
+                <button type="button" onclick="setFleetPop('on')" id="fp-on" class="fp-sw" aria-label="Pop-up alerts"><span></span></button>
+              </div>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6" id="fp-rest">
+              <div class="text-sm font-black text-white mb-1">Which warnings pop up</div>
+              <p class="text-xs text-zinc-500 mb-4 max-w-md">Uses the lines you set on each account.</p>
+              <div class="space-y-1.5">
+                <button type="button" onclick="setFleetPop('urgent')" class="fp-row"><span><b>Urgent &amp; past limit</b><i>Close to the floor, inactivity past your limit, your urgent lines</i></span><span class="fp-sw" id="fp-urgent"><span></span></span></button>
+                <button type="button" onclick="setFleetPop('payout')" class="fp-row"><span><b>Payout ready &amp; target hit</b><i>Past your payout line, or an eval hit its profit target</i></span><span class="fp-sw" id="fp-payout"><span></span></span></button>
+                <button type="button" onclick="setFleetPop('heads')" class="fp-row"><span><b>Heads-up</b><i>Getting close to a line — can be chatty with a big fleet</i></span><span class="fp-sw" id="fp-heads"><span></span></span></button>
+              </div>
+              <div class="border-t border-white/5 mt-5 pt-4 space-y-1.5">
+                <button type="button" onclick="setFleetPop('sound')" class="fp-row"><span><b>Sound</b><i>A short chime when a warning pops up</i></span><span class="fp-sw" id="fp-sound"><span></span></span></button>
+                <button type="button" onclick="setFleetPop('sticky')" class="fp-row"><span><b>Keep urgent ones on screen</b><i>Urgent pop-ups stay until you close them instead of fading</i></span><span class="fp-sw" id="fp-sticky"><span></span></span></button>
+              </div>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+              <div class="text-sm font-black text-white mb-1">Test it</div>
+              <p class="text-xs text-zinc-500 mb-4 max-w-md">Shows a sample warning with your current settings. "Pop again" lets warnings that already popped show once more.</p>
+              <div class="flex gap-2 flex-wrap">
+                <button onclick="FSDXFleetPop.test()" class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Fire a test pop-up</button>
+                <button onclick="FSDXFleetPop.resetSeen();flToast('Current warnings will pop up again on your next page.')" class="px-4 py-2.5 border border-white/10 text-zinc-300 hover:text-white text-xs font-bold rounded-xl transition">Pop again</button>
+              </div>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
+              <div class="text-sm font-black text-white mb-3">Other places to get warnings</div>
+              <div class="space-y-1.5">
+                <div class="fp-row" style="cursor:default;opacity:.55"><span><b>Nexus extension</b><i>Pop-ups while you're on TradingView</i></span><span class="text-[10px] font-bold text-zinc-500 border border-white/10 rounded-full px-2 py-0.5">Coming later</span></div>
+                <div class="fp-row" style="cursor:default;opacity:.55"><span><b>Email</b><i>A daily summary of urgent warnings</i></span><span class="text-[10px] font-bold text-zinc-500 border border-white/10 rounded-full px-2 py-0.5">Coming later</span></div>
+                <div class="fp-row" style="cursor:default;opacity:.55"><span><b>Live, as trades happen</b><i>Needs the Tradovate connection — warnings today update when you import</i></span><span class="text-[10px] font-bold text-zinc-500 border border-white/10 rounded-full px-2 py-0.5">Coming later</span></div>
+              </div>
+            </div>
+
+            <p class="text-[11px] text-zinc-600 leading-relaxed">These settings are saved on this device, like Scout Alerts — turning pop-ups off on your phone leaves them on at your desk.</p>
           </div>
 
           <!-- ══ IMPORTS ══ -->
@@ -493,12 +551,12 @@
       document.getElementById('page-content').classList.remove('hidden');
       const wanted = new URLSearchParams(location.search).get('tab') || (location.hash || '').replace('#', '');
       // The old Trackers tab is now the Fleet tab (rows expand to the full detail).
-      switchTab(['fleet','registry','imports'].includes(wanted) ? wanted : 'fleet');
+      switchTab(['fleet','registry','alerts','imports'].includes(wanted) ? wanted : 'fleet');
     }
 
     // ── Tabs ──
     function switchTab(tab) {
-      ['fleet','registry','trackers','imports'].forEach(t => {
+      ['fleet','registry','alerts','trackers','imports'].forEach(t => {
         const panel = document.getElementById('panel-' + t);
         const btn = document.getElementById('tab-' + t);
         if (panel) panel.classList.toggle('active', t === tab);
@@ -519,6 +577,7 @@
       if (tab === 'registry') renderAccountsList();
       if (tab === 'trackers') renderList();
       if (tab === 'fleet') renderFleet();
+      if (tab === 'alerts') paintFleetPop();
       if (tab === 'imports') { updateDeleteAccountPicker(); refreshDeletePreview(); renderImportBatches(); }
       if (location.hash !== '#' + tab) history.replaceState(null, '', '#' + tab);
     }
@@ -1883,6 +1942,22 @@
       renderFleet();
     }
 
+    // ── Alerts tab ──
+    function paintFleetPop() {
+      if (!window.FSDXFleetPop) return;
+      const p = FSDXFleetPop.prefs();
+      const sw = (id, on) => { const el = document.getElementById(id); if (el) el.classList.toggle('on', !!on); };
+      sw('fp-on', p.on); sw('fp-urgent', p.levels.urgent); sw('fp-payout', p.levels.payout); sw('fp-heads', p.levels.heads);
+      sw('fp-sound', p.sound); sw('fp-sticky', p.sticky);
+      document.getElementById('fp-rest').classList.toggle('off', !p.on);
+    }
+    function setFleetPop(k) {
+      const p = FSDXFleetPop.prefs();
+      if (k in p.levels) p.levels[k] = !p.levels[k]; else p[k] = !p[k];
+      FSDXFleetPop.setPrefs(p);
+      paintFleetPop();
+    }
+
     function flToast(msg, err) {
       const t = document.createElement('div');
       t.className = 'fl-toast' + (err ? ' err' : '');
@@ -1997,9 +2072,13 @@
       const nHidden = rows.reduce((s, r) => s + r.hid.length, 0);
       // Side-menu badge (nav-loader.js) — urgent warnings only, across active accounts.
       if (window.fsdxSetFleetBadge) {
-        const urg = [];
-        active.forEach(r => r.vis.forEach(a => { if (a.level === 'over' || a.level === 'urgent') urg.push(r.card.label || 'Account'); }));
-        window.fsdxSetFleetBadge(urg.length, [...new Set(urg)]);
+        const urg = [], items = [];
+        active.forEach(r => r.vis.forEach(a => {
+          if (a.level === 'over' || a.level === 'urgent') urg.push(r.card.label || 'Account');
+          if (a.level !== 'info') items.push({ key: r.card.id + '|' + a.id + '|' + a.level + '|' + a.fp, level: a.level, acct: r.card.label || 'Account', title: a.title, note: a.note || '' });
+        }));
+        // You're looking at the list here, so these count as seen — no pop-up on this page.
+        window.fsdxSetFleetBadge(urg.length, [...new Set(urg)], items, { markOnly: true });
       }
       const byStage = st => active.filter(r => r.m.stage === st).length;
 
