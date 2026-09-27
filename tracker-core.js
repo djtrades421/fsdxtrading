@@ -386,7 +386,8 @@
     var cc = alertCfg(card, 'consistency');
     if (cc.on && consistency !== null) {
       var cl = lvl(consistency, cc.warn, cc.urgent, true);
-      if (cl) push('consistency', 'consistency', cl, 'Best day is ' + consistency + '% of total profit',
+      if (cl) push('consistency', 'consistency', cl,
+        consistency > 100 ? 'Best day is bigger than your total profit' : 'Best day is ' + consistency + '% of total profit',
         'Your ' + (cl === 'urgent' ? 'cap' : 'heads-up line') + ': ' + (cl === 'urgent' ? cc.urgent : cc.warn) + '%. Payout requests can be held until it drops.',
         cl + '|' + lastTrade);
     }
