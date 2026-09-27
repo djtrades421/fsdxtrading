@@ -302,6 +302,20 @@
     // Queued and archived accounts aren't being traded — no warnings.
     if (stage === 'queued' || stage === 'archived') return { m: m, alerts: alerts };
 
+    // Orphan: the tracker points at an account that was deleted from My
+    // Accounts and no trades are left for it. Every other warning would be
+    // noise (e.g. "inactive 57 days" counted from when the tracker was made),
+    // so say what actually happened and stop. Only when the caller confirms
+    // the account list really loaded (accountsLoaded) — a failed load must
+    // never make every tracker look orphaned.
+    if (opts.accountsLoaded && card.filterName && trades.length === 0 &&
+        !(opts.accounts || []).some(function (a) { return a && a.name === card.filterName; })) {
+      m.orphan = true;
+      push('system', 'orphan', 'heads', 'Account no longer in My Accounts',
+        '"' + card.filterName + '" was deleted and has no trades left. Delete this tracker, or add the account back.', 'orphan');
+      return { m: m, alerts: alerts };
+    }
+
     if (m.unmatched) {
       push('system', 'unmatched', 'info', 'No trades match this tracker',
         'Edit it and pick the account your imports are filed under.', 'unmatched');

@@ -992,20 +992,20 @@
     // Same engine as the Fleet tab on accounts.html (FSDXTracker.fleet), so
     // the counts here always match that page. Read-only: snooze / handled /
     // ignore happen on the Fleet tab. A failed load just leaves the tile hidden.
-    async function loadFleetTile(whopKey, accounts) {
+    async function loadFleetTile(whopKey, accounts, accountsLoaded) {
       const tile = document.getElementById('fleet-tile');
       if (!tile || typeof FSDXTracker === 'undefined' || !FSDXTracker.fleet) return;
       try {
         const res = await fetch(JOURNAL_URL, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ action:'get-trades', key:'tracker_settings:'+whopKey }) });
         const data = await res.json();
         const cards = Array.isArray(data && data.trades) ? data.trades : [];
-        renderFleetTile(cards, accounts);
+        renderFleetTile(cards, accounts, accountsLoaded);
       } catch (e) {
         console.error('[FSDX] fleet tile load failed:', e);
       }
     }
 
-    function renderFleetTile(cards, accounts) {
+    function renderFleetTile(cards, accounts, accountsLoaded) {
       const tile = document.getElementById('fleet-tile');
       const row = document.getElementById('stats-row');
       const esc = v => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1016,7 +1016,7 @@
 
       const warns = [];
       active.forEach(card => {
-        let r; try { r = FSDXTracker.fleet(card, dashTrades, { today, accounts, journalHasTrades: dashTrades.length > 0 }); } catch (e) { return; }
+        let r; try { r = FSDXTracker.fleet(card, dashTrades, { today, accounts, accountsLoaded: !!accountsLoaded, journalHasTrades: dashTrades.length > 0 }); } catch (e) { return; }
         r.alerts.forEach(a => { if (a.level !== 'info' && !FSDXTracker.alertHiddenBy(card, a, today)) warns.push({ a, card }); });
       });
       warns.sort((x, y) => RANK[x.a.level] - RANK[y.a.level] || (x.card.label || '').localeCompare(y.card.label || ''));
@@ -1051,7 +1051,7 @@
         const td = await tr.json(), sd = await sr.json();
         dashTrades = Array.isArray(td.trades) ? td.trades : [];
         const saved = Array.isArray(sd.accounts) ? sd.accounts : [];
-        loadFleetTile(whopKey, saved);   // runs on ALL trades, ignores the account filter
+        loadFleetTile(whopKey, saved, Array.isArray(sd.accounts));   // runs on ALL trades, ignores the account filter
 
         // Saved accounts first, then anything that owns trades but was never saved.
         const counts = {};

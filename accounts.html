@@ -493,6 +493,7 @@
     let whopKey = null;
     let journalTrades = [];
     let journalAccounts = [];
+    let accountsLoaded = false;     // true only once My Accounts really loaded — see orphan check
     let trackerCards = [];
     let editingCardId = null;
     let ddType_modal = 'trailing';
@@ -551,6 +552,7 @@
         const td = await tr.json(); const sd = await sr.json();
         journalTrades = Array.isArray(td.trades) ? td.trades : [];
         journalAccounts = Array.isArray(sd.accounts) ? sd.accounts : [];
+        accountsLoaded = Array.isArray(sd.accounts) || (sd && !sd.error);
       } catch(e) {}
     }
 
@@ -1467,7 +1469,13 @@
 
       if (editingAccountId) {
         const idx = journalAccounts.findIndex(a => a.id === editingAccountId);
+        const oldName = idx >= 0 ? journalAccounts[idx].name : null;
         if (idx >= 0) journalAccounts[idx] = { ...journalAccounts[idx], name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate };
+        // Renamed? Trackers point at the account by name — carry them over.
+        if (oldName && oldName !== name && trackerCards.some(c => c.filterName === oldName) && !trackerLoadFailed) {
+          trackerCards = trackerCards.map(c => c.filterName === oldName ? { ...c, filterName: name } : c);
+          saveTrackerCards();
+        }
       } else {
         if (journalAccounts.find(a => a.name === name)) { showAfMsg('Account with this name already exists.', 'error'); return; }
         journalAccounts.push({ id: Date.now().toString(), name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate });
@@ -1476,6 +1484,18 @@
       cancelEditAccount();
       renderAccountsList();
       showAfMsg('Saved!', 'success');
+    }
+
+    // Delete one tracker straight from the Fleet list (orphan clean-up).
+    async function deleteTrackerById(id) {
+      const card = trackerCards.find(c => c.id === id);
+      if (!card || !confirm(`Delete the tracker "${card.label || 'Tracker'}"?\n\nIts rules and warning settings are removed. No trades are touched.`)) return;
+      const before = trackerCards.slice();
+      trackerCards = trackerCards.filter(c => c.id !== id);
+      fleetOpen.delete(id);
+      if (!await saveTrackerCards()) { trackerCards = before; flToast('Could not delete — ' + trackerLastError, true); return; }
+      renderFleet(); renderList();
+      flToast('Tracker deleted.');
     }
 
     async function deleteAccount(id) {
@@ -1489,6 +1509,17 @@
       journalAccounts = journalAccounts.filter(a => a.id !== id);
       await saveAccountsToKV();
       renderAccountsList();
+
+      // The account and its tracker are stored separately. Offer to remove the
+      // tracker too, so Fleet doesn't keep a row for an account that's gone.
+      const linked = trackerCards.filter(c => c.filterName === a.name);
+      if (linked.length && !trackerLoadFailed &&
+          confirm(`Also delete ${linked.length === 1 ? 'its tracker "' + (linked[0].label || a.name) + '"' : 'its ' + linked.length + ' trackers'}?\n\nKeep ${linked.length === 1 ? 'it' : 'them'} only if you'll add this account back.`)) {
+        const before = trackerCards.slice();
+        trackerCards = trackerCards.filter(c => c.filterName !== a.name);
+        if (!await saveTrackerCards()) { trackerCards = before; flToast('Account deleted, but its tracker could not be — ' + trackerLastError, true); }
+      }
+      renderFleet(); renderList();
     }
 
     function showAfMsg(msg, type) {
@@ -1959,7 +1990,7 @@
       fleetCache = {};
       const rows = trackerCards.map(card => {
         let res;
-        try { res = FSDXTracker.fleet(card, journalTrades, { today, accounts: journalAccounts, journalHasTrades: journalTrades.length > 0 }); }
+        try { res = FSDXTracker.fleet(card, journalTrades, { today, accounts: journalAccounts, accountsLoaded, journalHasTrades: journalTrades.length > 0 }); }
         catch (e) { console.error('[FSDX] fleet eval failed', card && card.id, e); res = { m: { stage: 'other', tradeCount: 0, pnl: 0, profit: 0, cushion: null, lastTrade: null }, alerts: [] }; }
         fleetCache[card.id] = res;
         const vis = [], hid = [];
@@ -2076,6 +2107,9 @@
           <div class="acts">
             ${a.hiddenBy
               ? `<button class="${CL.btn}" onclick="fleetAction('${cid(r)}','${esc(a.id)}','restore')">Restore</button>`
+              : a.id === 'orphan'
+              ? `<button class="${CL.ghost}" onclick="switchTab('registry')">Add account back</button>
+                 <button class="text-xs font-bold px-3 py-1.5 rounded-lg border border-red-500/30 text-red-400 hover:bg-red-500/10 transition whitespace-nowrap" onclick="deleteTrackerById('${cid(r)}')">Delete tracker</button>`
               : `${a.rule === 'payout' && a.level === 'payout' ? `<button class="${CL.ghost}" onclick="openEditCard('${cid(r)}');setTimeout(()=>document.getElementById('tc-po-amt').focus(),60)">Log payout</button>` : ''}
                  <button class="${CL.ghost}" onclick="fleetAction('${cid(r)}','${esc(a.id)}','snooze')" title="Hide until tomorrow">Snooze</button>
                  <button class="${CL.ghost}" onclick="fleetAction('${cid(r)}','${esc(a.id)}','ignore')" title="Hide unless it gets worse">Ignore</button>
@@ -2154,7 +2188,7 @@
         const more = r.vis.length > 2 ? `<span class="${CL.badge} ${LV.muted}">+${r.vis.length - 2}</span>` : '';
         const pl = m.balance === null ? m.pnl : m.profit;
         const plTxt = (pl >= 0 ? '+' : '-') + '$' + Math.round(Math.abs(pl)).toLocaleString();
-        const inactive = m.stage === 'queued' || m.stage === 'archived';
+        const inactive = m.stage === 'queued' || m.stage === 'archived' || m.orphan;
         return `<div class="fl-grid fl-row px-5 py-3.5 border-t border-white/5" onclick="openCardDetail('${cid(r)}')">
           <div class="c-acct flex items-center gap-2.5 min-w-0">
             <span class="fl-dot ${inactive ? 'bg-zinc-600' : dotCls(r.worst)}"></span>
