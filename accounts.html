@@ -1133,7 +1133,10 @@
     function accountAxisBar(s, card) {
       const start   = parseFloat(card.accountSize) || 0;
       const ddLimit = s.maxDDLimit || 0;
-      const tgtPnl  = s.target || 0;
+      // Evals aim at the profit target; funded accounts at the payout line.
+      const isPayout = parseFloat(card.payoutLine) > 0 && (!s.target || FSDXTracker.stageOf(card, journalAccounts) === 'funded');
+      const tgtPnl  = isPayout ? parseFloat(card.payoutLine) : (s.target || 0);
+      const tgtLabel = isPayout ? 'PAYOUT LINE' : 'TARGET';
       if (!start || !ddLimit || !tgtPnl) return '';
 
       // Logged payouts come out of the balance; the floor honours static DD
@@ -1180,7 +1183,7 @@
         <!-- top labels: MLL / TARGET -->
         <div class="flex items-center justify-between mt-1">
           <span class="text-xs font-bold text-red-400">${money(mll)} <span class="text-[10px] text-zinc-500 font-medium">MLL</span></span>
-          <span class="text-xs font-bold text-emerald-400">${money(targetBal)} <span class="text-[10px] text-zinc-500 font-medium">TARGET</span></span>
+          <span class="text-xs font-bold text-emerald-400">${money(targetBal)} <span class="text-[10px] text-zinc-500 font-medium">${tgtLabel}</span></span>
         </div>
         <!-- bottom labels: cushion / balance / remaining -->
         <div class="flex items-center justify-between mt-2">
