@@ -17,7 +17,10 @@
        tabs use (set in the markup). This block is layout only — grids, bars,
        responsive stacking — plus the blue "note" colour, which the static
        tailwind.css build doesn't include. */
-    .fl-kpis { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; }
+    .fl-kpis { display:grid; grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px; }
+    .fl-firms { display:grid; grid-template-columns:repeat(auto-fill,minmax(170px,1fr)); gap:10px; }
+    .fl-firm { border:1px solid rgba(255,255,255,.06); background:rgba(0,0,0,.25); border-radius:12px; padding:10px 12px; transition:border-color .15s; }
+    .fl-firm:hover { border-color:rgba(255,255,255,.18); }
     .fl-alert { display:grid; grid-template-columns:110px 170px minmax(0,1fr) auto; gap:14px; align-items:center; }
     .fl-alert .acts { display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap; }
     .fl-grid { display:grid; grid-template-columns:minmax(130px,1.3fr) 112px 86px 120px 140px 72px minmax(110px,1.3fr) 30px; gap:12px; align-items:center; }
@@ -31,33 +34,47 @@
     .lv-info { background:rgba(96,165,250,.10); color:#93C5FD; border-color:rgba(96,165,250,.25); }
     @media (max-width: 900px) {
       .fl-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .fl-firms { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .fl-alert { grid-template-columns:1fr; gap:6px; }
       .fl-alert .acts { justify-content:flex-start; }
       .fl-search { width:100% !important; }
+    }
+    @media (min-width: 901px) and (max-width: 1180px) {
+      .fl-kpis { grid-template-columns:repeat(3,minmax(0,1fr)); }
     }
     @media (max-width: 1180px) {
       .fl-head { display:none !important; }
       .fl-grid.fl-row { grid-template-columns:1fr 1fr; row-gap:10px; }
       .fl-row > .c-acct { grid-column:1 / -1; }
       .fl-row > .c-flags { grid-column:1 / -1; }
-      .fl-row > .c-edit { display:none; }
+      .fl-row > .c-edit { grid-column:1 / -1; justify-content:flex-end; }
       .fl-lbl { display:block; margin-bottom:2px; }
     }
     @media (min-width: 560px) and (max-width: 1180px) {
       .fl-grid.fl-row { grid-template-columns:repeat(3,minmax(0,1fr)); }
     }
-    /* Setup modal additions — sized to match the modal's existing inputs */
-    .tc-rule.off { opacity:.55; }
-    .tc-rule-top { display:flex; gap:10px; align-items:flex-start; }
-    .tc-rule-top input[type=checkbox] { width:16px; height:16px; margin-top:2px; accent-color:#22c55e; flex-shrink:0; }
-    .tc-rule-fields { display:grid; grid-template-columns:130px 130px minmax(0,1fr); gap:10px; margin-top:10px; }
+    /* Setup modal — layout + the on/off switch (not in the Tailwind build) */
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
     .tc-in { width:100%; box-sizing:border-box; background:#000; border:1px solid rgba(255,255,255,.1); color:#fff; font-size:.875rem; line-height:1.25rem; padding:.5rem .75rem; border-radius:.75rem; }
     .tc-in:focus { outline:none; border-color:rgba(34,197,94,.5); }
-    .tc-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
-    @media (max-width: 560px) {
-      .tc-rule-fields { grid-template-columns:1fr 1fr; }
-      .tc-rule-fields > div:last-child { grid-column:1 / -1; }
-      .tc-3 { grid-template-columns:1fr 1fr; }
+    .tc-in::placeholder { color:#3f3f46; }
+    .tc-in:disabled { opacity:.35; }
+    .tc-wgrid { display:grid; grid-template-columns:44px minmax(0,1.3fr) 112px 112px minmax(0,1.6fr); gap:12px; align-items:center; }
+    .tc-wrow { padding:10px 16px; border-bottom:1px solid rgba(255,255,255,.05); }
+    .tc-wrow:last-child { border-bottom:0; }
+    .tc-wrow.off .tc-wtext, .tc-wrow.off .tc-in { opacity:.4; }
+    .tc-sw { appearance:none; -webkit-appearance:none; width:36px; height:20px; border-radius:99px; background:rgba(255,255,255,.12); position:relative; cursor:pointer; transition:background .15s; margin:0; }
+    .tc-sw::after { content:''; position:absolute; top:3px; left:3px; width:14px; height:14px; border-radius:99px; background:#e4e4e7; transition:left .15s; }
+    .tc-sw:checked { background:#22c55e; }
+    .tc-sw:checked::after { left:19px; }
+    .tc-sw:focus-visible { outline:2px solid rgba(34,197,94,.6); outline-offset:2px; }
+    details > summary { list-style:none; }
+    details > summary::-webkit-details-marker { display:none; }
+    @media (max-width: 760px) {
+      .tc-whead { display:none; }
+      .tc-wgrid { grid-template-columns:44px 1fr 1fr; }
+      .tc-wgrid > .tc-wtext { grid-column:2 / -1; }
+      .tc-wgrid > .tc-wnote { grid-column:1 / -1; }
     }
     .fl-toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:60; padding:10px 16px; border-radius:12px; font-size:13px; font-weight:700; background:#18181b; color:#fff; border:1px solid rgba(255,255,255,.15); box-shadow:0 10px 30px rgba(0,0,0,.5); }
     .fl-toast.err { background:#3b1115; border-color:rgba(239,68,68,.5); color:#FCA5A5; }
@@ -111,7 +128,6 @@
           <div class="flex -mb-px overflow-x-auto">
             <button onclick="switchTab('fleet')" id="tab-fleet" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Fleet</button>
             <button onclick="switchTab('registry')" id="tab-registry" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">My Accounts</button>
-            <button onclick="switchTab('trackers')" id="tab-trackers" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Trackers</button>
             <button onclick="switchTab('imports')" id="tab-imports" class="tab-btn px-4 py-3 text-xs font-bold uppercase tracking-widest border-b-2 border-transparent text-zinc-500 hover:text-zinc-300 transition mr-1 whitespace-nowrap">Imports</button>
           </div>
         </div>
@@ -262,217 +278,176 @@
     </div>
   </main>
 
-  <!-- New/Edit Modal -->
+  <!-- New/Edit Modal — "Account setup". One form per account: the account,
+       firm rules, warnings, your rules. IDs are the same ones the save/load
+       code has always used; stage + goal are hidden inputs set by buttons. -->
   <div id="tracker-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
-    <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-2xl p-6 max-h-[92vh] overflow-y-auto">
-      <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-black" id="modal-title">New Tracker</h2>
-        <button onclick="closeModal()" class="text-zinc-500 hover:text-white transition">
+    <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-5xl max-h-[92vh] overflow-y-auto" style="background-color:#0a0f1a" role="dialog" aria-labelledby="modal-title">
+
+      <div class="flex items-start justify-between gap-4 px-6 pt-6 pb-4 border-b border-white/10">
+        <div>
+          <h2 class="text-lg font-black" id="modal-title">New Tracker</h2>
+          <p class="text-xs text-zinc-500 mt-1">One setup per account. Firm rules, your warning lines and your own rules all live here.</p>
+        </div>
+        <button onclick="closeModal()" aria-label="Close" class="text-zinc-500 hover:text-white transition p-1">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <div class="space-y-4">
+      <div class="p-6 space-y-5">
 
-        <!-- Label -->
-        <div>
-          <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Label <span class="text-red-500">*</span></label>
-          <input id="tc-label" type="text" placeholder="e.g. Apex Eval #1, Topstep Funded, All Evals"
-            class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
+        <!-- Rules bar: copy from / apply to -->
+        <div id="tc-rulesbar" class="border border-green-500/20 bg-green-500/[0.04] rounded-xl px-4 py-3 flex items-center gap-3 flex-wrap">
+          <svg class="w-4 h-4 text-green-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 10h16M10 10v10"/></svg>
+          <div class="min-w-0" style="flex:1 1 220px">
+            <div class="text-xs font-bold text-white">Same rules as another account?</div>
+            <div class="text-[10px] text-zinc-500">Copy them in, or push these rules out to other accounts when you save.</div>
+          </div>
+          <label for="tc-copyfrom" class="sr-only">Copy rules from</label>
+          <select id="tc-copyfrom" onchange="copyRulesFrom(this.value)" class="tc-in" style="width:auto;max-width:240px"></select>
+          <button type="button" onclick="toggleApplyPanel()" class="text-xs font-bold px-3 py-2 rounded-xl border border-white/10 text-zinc-300 hover:text-white transition whitespace-nowrap">Apply to… <span id="tc-apply-count"></span></button>
+        </div>
+        <div id="tc-apply-wrap" class="hidden border border-white/5 bg-zinc-900/40 rounded-xl p-4">
+          <div class="flex items-center justify-between gap-3 flex-wrap mb-3">
+            <div class="text-[10px] text-zinc-500">On save, copies firm rules, warnings and your rules to the accounts you tick. Their name, stage, dates and payouts stay as they are.</div>
+            <div class="flex gap-2">
+              <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('all')">All</button>
+              <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('firm')">Same firm</button>
+              <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('none')">None</button>
+            </div>
+          </div>
+          <div id="tc-apply-list" class="grid grid-cols-1 sm:grid-cols-3 gap-1.5"></div>
         </div>
 
-        <!-- Copy rules from another tracker — the fast path for a fleet -->
-        <div id="tc-copy-wrap" class="hidden">
-          <label for="tc-copyfrom" class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Copy rules from</label>
-          <select id="tc-copyfrom" onchange="copyRulesFrom(this.value)" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2.5 rounded-xl focus:outline-none focus:border-green-500/50"></select>
-          <div class="text-[10px] text-zinc-600 mt-1">Fills firm rules, warnings and your rules from another account. Label, account, stage, dates and payouts are left alone.</div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+          <!-- 1 · The account -->
+          <section class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-4">
+            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">1 · The account</div>
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="tc-label" class="block text-xs text-zinc-600 mb-1">Name <span class="text-red-500">*</span></label>
+                <input id="tc-label" type="text" placeholder="e.g. TFY 50K 001" class="tc-in">
+              </div>
+              <div>
+                <label for="tc-firm" class="block text-xs text-zinc-600 mb-1">Firm</label>
+                <input id="tc-firm" type="text" list="tc-firm-list" placeholder="e.g. Tradeify" class="tc-in">
+                <datalist id="tc-firm-list"></datalist>
+              </div>
+              <div class="col-span-2">
+                <label for="tc-name" class="block text-xs text-zinc-600 mb-1">Trades from <span class="text-zinc-600">— an account in My Accounts</span></label>
+                <select id="tc-name" class="tc-in"><option value="">Any Account</option></select>
+                <details class="mt-1.5">
+                  <summary class="text-[10px] text-zinc-600 cursor-pointer hover:text-zinc-400">Track a group instead (all evals, all funded…)</summary>
+                  <select id="tc-type" onchange="updateNameDropdown()" class="tc-in mt-2">
+                    <option value="">Any Type</option>
+                    <option value="Evaluation">Evaluation</option>
+                    <option value="Funded">Funded</option>
+                    <option value="Personal">Personal</option>
+                  </select>
+                </details>
+              </div>
+            </div>
+
+            <div>
+              <div class="block text-xs text-zinc-600 mb-1">Stage</div>
+              <input type="hidden" id="tc-stage" value="eval">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="tc-stage-btns">
+                <button type="button" data-v="eval" onclick="setStage('eval')" class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">Evaluation</button>
+                <button type="button" data-v="queued" onclick="setStage('queued')" class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">Passed · queued</button>
+                <button type="button" data-v="funded" onclick="setStage('funded')" class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">Funded</button>
+                <button type="button" data-v="personal" onclick="setStage('personal')" class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">Personal</button>
+              </div>
+            </div>
+
+            <div>
+              <div class="block text-xs text-zinc-600 mb-1">What are you working toward?</div>
+              <input type="hidden" id="tc-goal" value="">
+              <div class="grid grid-cols-2 gap-2" id="tc-goal-btns">
+                <button type="button" data-v="pass" onclick="setGoal('pass')" class="tc-goalc text-left px-3 py-2 border border-white/10 rounded-xl transition"><b class="block text-xs font-bold text-white">Pass the eval</b><span class="block text-[10px] text-zinc-500 mt-0.5">Progress bar = profit target</span></button>
+                <button type="button" data-v="payout" onclick="setGoal('payout')" class="tc-goalc text-left px-3 py-2 border border-white/10 rounded-xl transition"><b class="block text-xs font-bold text-white">Reach payout</b><span class="block text-[10px] text-zinc-500 mt-0.5">Progress bar = your payout line</span></button>
+                <button type="button" data-v="buffer" onclick="setGoal('buffer')" class="tc-goalc text-left px-3 py-2 border border-white/10 rounded-xl transition"><b class="block text-xs font-bold text-white">Protect the buffer</b><span class="block text-[10px] text-zinc-500 mt-0.5">Progress bar = cushion to floor</span></button>
+                <button type="button" data-v="track" onclick="setGoal('track')" class="tc-goalc text-left px-3 py-2 border border-white/10 rounded-xl transition"><b class="block text-xs font-bold text-white">Just track it</b><span class="block text-[10px] text-zinc-500 mt-0.5">No goal bar</span></button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label for="tc-start" class="block text-xs text-zinc-600 mb-1">Start date <span class="text-zinc-600">— optional</span></label>
+                <input id="tc-start" type="date" class="tc-in">
+              </div>
+              <div>
+                <label for="tc-renew" class="block text-xs text-zinc-600 mb-1">Renews / expires <span class="text-zinc-600">— optional</span></label>
+                <input id="tc-renew" type="date" class="tc-in">
+              </div>
+            </div>
+            <label class="flex items-center gap-2 text-xs text-zinc-500 cursor-pointer">
+              <input type="checkbox" id="tc-archived" style="accent-color:#22c55e"> Archived / closed — keep the history, hide it from the fleet
+            </label>
+          </section>
+
+          <!-- 2 · Firm rules -->
+          <section class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-4">
+            <div>
+              <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">2 · Firm rules</div>
+              <div class="text-[10px] text-zinc-600 mt-1">Copy from your firm's rules page. Leave blank what your firm doesn't have.</div>
+            </div>
+            <div class="grid grid-cols-3 gap-3">
+              <div><label for="tc-size" class="block text-xs text-zinc-600 mb-1">Account size <span class="text-red-500">*</span></label><input id="tc-size" type="number" placeholder="50000" class="tc-in"></div>
+              <div><label for="tc-maxdd" class="block text-xs text-zinc-600 mb-1">Max drawdown</label><input id="tc-maxdd" type="number" placeholder="2000" class="tc-in"></div>
+              <div><label for="tc-floorlock" class="block text-xs text-zinc-600 mb-1">Floor locks at</label><input id="tc-floorlock" type="number" placeholder="optional" class="tc-in"></div>
+              <div><label for="tc-target" class="block text-xs text-zinc-600 mb-1">Profit target</label><input id="tc-target" type="number" placeholder="eval only" class="tc-in"></div>
+              <div><label for="tc-payoutline" class="block text-xs text-zinc-600 mb-1">Payout line (+$)</label><input id="tc-payoutline" type="number" placeholder="optional" class="tc-in"></div>
+              <div><label for="tc-firm-daily" class="block text-xs text-zinc-600 mb-1">Daily loss limit</label><input id="tc-firm-daily" type="number" placeholder="optional" class="tc-in"></div>
+              <div><label for="tc-mindays" class="block text-xs text-zinc-600 mb-1">Min days / payout</label><input id="tc-mindays" type="number" min="0" placeholder="optional" class="tc-in"></div>
+              <div><label for="tc-inactivity" class="block text-xs text-zinc-600 mb-1">Inactivity limit (days)</label><input id="tc-inactivity" type="number" min="0" placeholder="optional" class="tc-in"></div>
+              <div><label for="tc-qualify" class="block text-xs text-zinc-600 mb-1">Day counts if net ≥</label><input id="tc-qualify" type="number" min="0" placeholder="0 = any trade" class="tc-in"></div>
+            </div>
+            <div>
+              <div class="block text-xs text-zinc-600 mb-1">Drawdown type</div>
+              <div class="grid grid-cols-3 gap-2">
+                <button type="button" onclick="setDDType('trailing')" id="dd-trailing" class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">Trailing</button>
+                <button type="button" onclick="setDDType('eod')" id="dd-eod" class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">End of Day</button>
+                <button type="button" onclick="setDDType('static')" id="dd-static" class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">Static</button>
+              </div>
+            </div>
+            <details id="tc-payouts-box" class="border-t border-white/5 pt-3">
+              <summary class="text-xs font-bold text-zinc-400 cursor-pointer">Payouts taken <span id="tc-payouts-sum" class="text-zinc-600 font-medium"></span></summary>
+              <div class="text-[10px] text-zinc-600 mt-2 mb-2">Withdrawals aren't in your trade imports. Log them so balance, cushion and the payout line stay right.</div>
+              <div id="tc-payouts-list" class="space-y-1.5 mb-2"></div>
+              <div class="grid grid-cols-3 gap-2 items-end">
+                <div><label for="tc-po-amt" class="block text-xs text-zinc-600 mb-1">Amount ($)</label><input id="tc-po-amt" type="number" min="0" placeholder="1500" class="tc-in"></div>
+                <div><label for="tc-po-date" class="block text-xs text-zinc-600 mb-1">Date</label><input id="tc-po-date" type="date" class="tc-in"></div>
+                <button type="button" onclick="addModalPayout()" class="py-2 border border-white/10 text-zinc-300 hover:text-white text-xs font-bold rounded-xl transition">+ Log payout</button>
+              </div>
+            </details>
+          </section>
         </div>
 
-        <!-- Filter -->
-        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-          <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Which Trades to Track</div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Account Type</label>
-              <select id="tc-type" onchange="updateNameDropdown()"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
-                <option value="">Any Type</option>
-                <option value="Evaluation">Evaluation</option>
-                <option value="Funded">Funded</option>
-                <option value="Personal">Personal</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Account Name</label>
-              <select id="tc-name"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
-                <option value="">Any Account</option>
-              </select>
-            </div>
+        <!-- 3 · Warn me early -->
+        <section class="border border-white/5 bg-zinc-900/40 rounded-xl overflow-hidden">
+          <div class="px-4 pt-4 pb-3">
+            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">3 · Warn me early</div>
+            <div class="text-[10px] text-zinc-600 mt-1">Your own lines, set before the firm's. Heads-up = yellow flag. Urgent = red flag at the top of Fleet. Your note shows on the flag.</div>
           </div>
-          <div class="text-[10px] text-zinc-600">Leave both as "Any" to track all trades. Pick type only, name only, or both.</div>
-        </div>
+          <div class="tc-wgrid tc-whead border-t border-b border-white/5 px-4 py-2 text-[10px] text-zinc-500 uppercase tracking-wider">
+            <span>On</span><span>Watch for</span><span>Heads-up at</span><span>Urgent at</span><span>What to do (your note)</span>
+          </div>
+          <div id="tc-alerts"></div>
+        </section>
 
-        <!-- Account: firm, stage, goal, dates -->
-        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-          <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">The Account</div>
-          <div class="tc-3">
-            <div>
-              <label for="tc-firm" class="block text-xs text-zinc-600 mb-1">Firm</label>
-              <input id="tc-firm" type="text" list="tc-firm-list" placeholder="e.g. Tradeify" class="tc-in">
-              <datalist id="tc-firm-list"></datalist>
-            </div>
-            <div>
-              <label for="tc-stage" class="block text-xs text-zinc-600 mb-1">Stage</label>
-              <select id="tc-stage" onchange="onStageChange()" class="tc-in">
-                <option value="eval">Evaluation</option>
-                <option value="queued">Passed · queued</option>
-                <option value="funded">Funded</option>
-                <option value="personal">Personal</option>
-                <option value="archived">Archived / closed</option>
-              </select>
-            </div>
-            <div>
-              <label for="tc-goal" class="block text-xs text-zinc-600 mb-1">Working toward</label>
-              <select id="tc-goal" class="tc-in">
-                <option value="">Auto (by stage)</option>
-                <option value="pass">Pass the eval</option>
-                <option value="payout">Reach payout</option>
-                <option value="buffer">Protect the buffer</option>
-                <option value="track">Just track it</option>
-              </select>
-            </div>
-            <div>
-              <label for="tc-start" class="block text-xs text-zinc-600 mb-1">Start date — optional</label>
-              <input id="tc-start" type="date" class="tc-in">
-            </div>
-            <div>
-              <label for="tc-renew" class="block text-xs text-zinc-600 mb-1">Renews / expires — optional</label>
-              <input id="tc-renew" type="date" class="tc-in">
-            </div>
-          </div>
-          <div class="text-[10px] text-zinc-600">Passed · queued and Archived accounts show in the fleet but raise no warnings.</div>
-        </div>
-
-        <!-- Firm Rules -->
-        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-          <div>
-            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Firm Rules</div>
-            <div class="text-[10px] text-zinc-600 mt-0.5">Hard limits set by your prop firm — breaching these ends your account</div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Account Size <span class="text-red-500">*</span></label>
-              <input id="tc-size" type="number" placeholder="50000"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Profit Target</label>
-              <input id="tc-target" type="number" placeholder="3000"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Firm Daily Loss Limit</label>
-              <input id="tc-firm-daily" type="number" placeholder="1000"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Max / Trailing DD</label>
-              <input id="tc-maxdd" type="number" placeholder="2500"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-            </div>
-            <div>
-              <label for="tc-floorlock" class="block text-xs text-zinc-600 mb-1">Floor locks at (balance)</label>
-              <input id="tc-floorlock" type="number" placeholder="optional, e.g. 50100" class="tc-in">
-            </div>
-            <div>
-              <label for="tc-payoutline" class="block text-xs text-zinc-600 mb-1">Payout line (+$ profit)</label>
-              <input id="tc-payoutline" type="number" placeholder="optional, e.g. 3600" class="tc-in">
-            </div>
-            <div>
-              <label for="tc-mindays" class="block text-xs text-zinc-600 mb-1">Min trading days per payout</label>
-              <input id="tc-mindays" type="number" min="0" placeholder="optional" class="tc-in">
-            </div>
-            <div>
-              <label for="tc-inactivity" class="block text-xs text-zinc-600 mb-1">Inactivity limit (days)</label>
-              <input id="tc-inactivity" type="number" min="0" placeholder="optional, e.g. 15" class="tc-in">
-            </div>
-            <div>
-              <label for="tc-qualify" class="block text-xs text-zinc-600 mb-1">A day counts if net ≥ ($)</label>
-              <input id="tc-qualify" type="number" min="0" placeholder="0 = any trade" class="tc-in">
-            </div>
-          </div>
-          <div class="text-[10px] text-zinc-600">Copy these from your firm's rules page. Firms change rules — re-check when they email you. Leave blank what your firm doesn't have.</div>
-          <div>
-            <label class="block text-xs text-zinc-600 mb-1.5">Drawdown Type</label>
-            <div class="grid grid-cols-3 gap-2">
-              <button type="button" onclick="setDDType('trailing')" id="dd-trailing"
-                class="py-2 border border-green-500/40 bg-green-500/10 text-green-400 text-xs font-bold rounded-xl transition">Trailing</button>
-              <button type="button" onclick="setDDType('eod')" id="dd-eod"
-                class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">End of Day</button>
-              <button type="button" onclick="setDDType('static')" id="dd-static"
-                class="py-2 border border-white/10 text-zinc-500 text-xs font-bold rounded-xl transition">Static</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Payouts taken — they never show up in a trade CSV -->
-        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3" id="tc-payouts-box">
-          <div>
-            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Payouts Taken</div>
-            <div class="text-[10px] text-zinc-600 mt-0.5">Withdrawals come out of the balance but aren't in your trade imports. Log them here so balance, cushion and the payout line stay right.</div>
-          </div>
-          <div id="tc-payouts-list" class="space-y-1.5"></div>
-          <div class="grid grid-cols-3 gap-2 items-end">
-            <div>
-              <label for="tc-po-amt" class="block text-[10px] text-zinc-600 mb-1">Amount ($)</label>
-              <input id="tc-po-amt" type="number" min="0" placeholder="1500" class="tc-in">
-            </div>
-            <div>
-              <label for="tc-po-date" class="block text-[10px] text-zinc-600 mb-1">Date</label>
-              <input id="tc-po-date" type="date" class="tc-in">
-            </div>
-            <button type="button" onclick="addModalPayout()" class="py-2 border border-white/10 text-zinc-300 hover:text-white text-xs font-bold rounded-xl transition">+ Log payout</button>
-          </div>
-        </div>
-
-        <!-- Warnings -->
-        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-          <div>
-            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">Warn Me Early</div>
-            <div class="text-[10px] text-zinc-600 mt-0.5">Your own lines, set before the firm's. Heads-up = amber flag. Urgent = red flag at the top of the Fleet tab. The note shows on the flag — write what you'll do.</div>
-          </div>
-          <div id="tc-alerts" class="space-y-2"></div>
-        </div>
-
-        <!-- My Rules -->
-        <div class="border border-white/5 bg-zinc-900/40 rounded-xl p-4 space-y-3">
-          <div>
-            <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider">My Rules</div>
-            <div class="text-[10px] text-zinc-600 mt-0.5">Your personal trading rules — breaking these affects your discipline score</div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Personal Daily Loss Limit</label>
-              <input id="tc-personal-daily" type="number" placeholder="500"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-              <p class="text-[10px] text-zinc-700 mt-0.5">Your own limit, not the firm's</p>
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Max Trades Per Day</label>
-              <input id="tc-max-trades" type="number" placeholder="3" min="1"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Max Consecutive Losses</label>
-              <input id="tc-max-consec" type="number" placeholder="2" min="1"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-              <p class="text-[10px] text-zinc-700 mt-0.5">Stop trading after this many in a row</p>
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Min Acceptable Grade</label>
-              <select id="tc-mingrade"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
+        <!-- 4 · My rules -->
+        <details class="border border-white/5 bg-zinc-900/40 rounded-xl p-4">
+          <summary class="cursor-pointer flex items-center justify-between gap-3">
+            <span class="text-xs font-bold text-zinc-400 uppercase tracking-wider">4 · My rules · discipline score</span>
+            <span id="tc-myrules-sum" class="text-[10px] text-zinc-500 normal-case"></span>
+          </summary>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
+            <div><label for="tc-personal-daily" class="block text-xs text-zinc-600 mb-1">Personal daily loss limit</label><input id="tc-personal-daily" type="number" placeholder="500" class="tc-in"></div>
+            <div><label for="tc-max-trades" class="block text-xs text-zinc-600 mb-1">Max trades per day</label><input id="tc-max-trades" type="number" placeholder="3" min="1" class="tc-in"></div>
+            <div><label for="tc-max-consec" class="block text-xs text-zinc-600 mb-1">Max losses in a row</label><input id="tc-max-consec" type="number" placeholder="2" min="1" class="tc-in"></div>
+            <div><label for="tc-mingrade" class="block text-xs text-zinc-600 mb-1">Min acceptable grade</label>
+              <select id="tc-mingrade" class="tc-in">
                 <option value="">Any grade</option>
                 <option value="A+">A+ only</option>
                 <option value="A">A+ / A</option>
@@ -482,42 +457,22 @@
                 <option value="C">All grades</option>
               </select>
             </div>
+            <div><label for="tc-window-start" class="block text-xs text-zinc-600 mb-1">Trade window start</label><input id="tc-window-start" type="time" class="tc-in"></div>
+            <div><label for="tc-window-end" class="block text-xs text-zinc-600 mb-1">Trade window end</label><input id="tc-window-end" type="time" class="tc-in"></div>
           </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Trade Window Start</label>
-              <input id="tc-window-start" type="time"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
-            </div>
-            <div>
-              <label class="block text-xs text-zinc-600 mb-1">Trade Window End</label>
-              <input id="tc-window-end" type="time"
-                class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50">
-            </div>
-          </div>
-        </div>
-
-        <!-- Apply the same rules to other trackers -->
-        <details id="tc-apply-wrap" class="border border-white/5 bg-zinc-900/40 rounded-xl p-4">
-          <summary class="text-xs font-bold text-zinc-400 uppercase tracking-wider cursor-pointer">Also apply these rules to… <span id="tc-apply-count" class="text-zinc-600 normal-case tracking-normal font-medium"></span></summary>
-          <div class="text-[10px] text-zinc-600 mt-2 mb-2">On save, copies firm rules, warnings and your rules to the accounts you tick. Their label, account, stage, dates and payouts stay as they are.</div>
-          <div class="flex gap-2 mb-2">
-            <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('all')">All</button>
-            <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('firm')">Same firm</button>
-            <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('none')">None</button>
-          </div>
-          <div id="tc-apply-list" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5"></div>
         </details>
 
         <div id="modal-msg" class="hidden text-xs text-center py-2 rounded-lg"></div>
       </div>
 
-      <div class="flex gap-3 mt-6">
-        <button onclick="closeModal()" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Cancel</button>
-        <button onclick="saveCard()" class="flex-1 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Tracker</button>
-      </div>
-      <div id="delete-btn-wrap" class="hidden mt-3 pt-3 border-t border-white/5">
-        <button onclick="deleteCard()" class="w-full py-2 text-xs text-red-400 hover:text-red-300 hover:bg-red-500/5 rounded-xl transition font-bold">🗑 Delete Tracker</button>
+      <div class="flex items-center justify-between gap-3 px-6 py-4 border-t border-white/10">
+        <div id="delete-btn-wrap" class="hidden">
+          <button onclick="deleteCard()" class="text-xs text-red-400 hover:text-red-300 font-bold px-2 py-2 transition">Delete</button>
+        </div>
+        <div class="flex gap-3 ml-auto">
+          <button onclick="closeModal()" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Cancel</button>
+          <button onclick="saveCard()" class="px-6 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save account</button>
+        </div>
       </div>
     </div>
   </div>
@@ -556,7 +511,8 @@
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
       const wanted = new URLSearchParams(location.search).get('tab') || (location.hash || '').replace('#', '');
-      switchTab(['fleet','registry','trackers','imports'].includes(wanted) ? wanted : 'fleet');
+      // The old Trackers tab is now the Fleet tab (rows expand to the full detail).
+      switchTab(['fleet','registry','imports'].includes(wanted) ? wanted : 'fleet');
     }
 
     // ── Tabs ──
@@ -575,7 +531,7 @@
       if (btn) {
         // `hidden` wins over inline-flex while set; toggling both keeps the
         // button laid out as a flex row every time it reappears.
-        const showBtn = tab === 'trackers' || tab === 'fleet';
+        const showBtn = tab === 'fleet';
         btn.classList.toggle('hidden', !showBtn);
         btn.classList.toggle('inline-flex', showBtn);
       }
@@ -914,7 +870,7 @@
       </div>`;
     }
 
-    function renderRow(card) {
+    function renderRow(card, panelOnly) {
       const s = calcStats(card);
       const filterLabel = [card.filterType, card.filterName].filter(Boolean).join(' · ') || 'All Trades';
 
@@ -958,57 +914,8 @@
         </div>`;
       };
 
-      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden hover:border-white/20 transition">
-        <!-- Row header — always visible -->
-        <div class="px-5 py-4 cursor-pointer flex items-center gap-4" onclick="toggleExpand('${card.id}')">
-          <!-- Status dot + label -->
-          <div class="flex items-center gap-2.5 min-w-0 flex-1">
-            <span class="w-2 h-2 rounded-full ${sc.dot} shrink-0"></span>
-            <div class="min-w-0">
-              <div class="text-sm font-black text-white truncate">${card.label}</div>
-              <div class="text-[10px] ${unmatched ? 'text-yellow-500/80' : 'text-zinc-600'}">${filterLabel}${unmatched ? ' · no matching trades' : ''}</div>
-            </div>
-          </div>
-
-          <!-- Status badge -->
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${sc.badge} whitespace-nowrap hidden sm:block">${sc.label}</span>
-
-          <!-- P&L -->
-          <div class="text-right shrink-0">
-            <div class="text-sm font-black ${pnlCol}">${pnlSign}$${Math.abs(s.totalPnl).toFixed(0)}</div>
-            <div class="text-[10px] text-zinc-600">${s.trades.length} trades</div>
-          </div>
-
-          <!-- Progress bars -->
-          <div class="hidden md:flex flex-col gap-1 items-end shrink-0">
-            ${s.targetPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">Target</span>${miniBar(s.targetPct,false)}<span class="text-[10px] font-bold" style="color:${s.targetPct>=0?'#22c55e':'#ef4444'}">${s.targetPct}%</span></div>` : ''}
-            ${s.ddPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">DD</span>${miniBar(s.ddPct,true)}<span class="text-[10px] font-bold" style="color:${s.ddPct>0?'#ef4444':'#a1a1aa'}">${s.ddPct}%</span></div>` : ''}
-          </div>
-
-          <!-- Discipline + WR -->
-          <div class="hidden lg:flex gap-4 shrink-0">
-            <div class="text-center">
-              <div class="text-sm font-black ${discColor}">${s.disciplineScore}%</div>
-              <div class="text-[10px] text-zinc-600">Discipline</div>
-            </div>
-            <div class="text-center">
-              <div class="text-sm font-black ${wrColor}">${s.wr}%</div>
-              <div class="text-[10px] text-zinc-600">Win Rate</div>
-            </div>
-          </div>
-
-          <!-- Edit + expand -->
-          <div class="flex items-center gap-2 shrink-0">
-            <button onclick="event.stopPropagation();openEditCard('${card.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
-            </button>
-            <svg class="w-4 h-4 text-zinc-500 expand-arrow" id="arrow-${card.id}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
-          </div>
-        </div>
-
-        <!-- Expand panel -->
-        <div class="expand-panel border-t border-white/5" id="expand-${card.id}">
-          ${unmatchedBanner ? '<div class="pt-4"></div>' + unmatchedBanner : ''}
+      // The detail panel on its own — the Fleet tab expands a row into this.
+      const panelHtml = `          ${unmatchedBanner ? '<div class="pt-4"></div>' + unmatchedBanner : ''}
           <div class="p-5 space-y-5">
 
             <!-- Top stats row -->
@@ -1066,7 +973,60 @@
               ${statBox('Today\'s Trades', s.todayTradeCount+(card.maxTradesPerDay?' / '+card.maxTradesPerDay:''), s.todayTradeCount>=(parseInt(card.maxTradesPerDay)||999)?'#ef4444':'#e4e4e7')}
             </div>
 
+          </div>`;
+      if (panelOnly) return panelHtml;
+
+      return `<div class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden hover:border-white/20 transition">
+        <!-- Row header — always visible -->
+        <div class="px-5 py-4 cursor-pointer flex items-center gap-4" onclick="toggleExpand('${card.id}')">
+          <!-- Status dot + label -->
+          <div class="flex items-center gap-2.5 min-w-0 flex-1">
+            <span class="w-2 h-2 rounded-full ${sc.dot} shrink-0"></span>
+            <div class="min-w-0">
+              <div class="text-sm font-black text-white truncate">${card.label}</div>
+              <div class="text-[10px] ${unmatched ? 'text-yellow-500/80' : 'text-zinc-600'}">${filterLabel}${unmatched ? ' · no matching trades' : ''}</div>
+            </div>
           </div>
+
+          <!-- Status badge -->
+          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${sc.badge} whitespace-nowrap hidden sm:block">${sc.label}</span>
+
+          <!-- P&L -->
+          <div class="text-right shrink-0">
+            <div class="text-sm font-black ${pnlCol}">${pnlSign}$${Math.abs(s.totalPnl).toFixed(0)}</div>
+            <div class="text-[10px] text-zinc-600">${s.trades.length} trades</div>
+          </div>
+
+          <!-- Progress bars -->
+          <div class="hidden md:flex flex-col gap-1 items-end shrink-0">
+            ${s.targetPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">Target</span>${miniBar(s.targetPct,false)}<span class="text-[10px] font-bold" style="color:${s.targetPct>=0?'#22c55e':'#ef4444'}">${s.targetPct}%</span></div>` : ''}
+            ${s.ddPct !== null ? `<div class="flex items-center gap-1.5"><span class="text-[10px] text-zinc-600">DD</span>${miniBar(s.ddPct,true)}<span class="text-[10px] font-bold" style="color:${s.ddPct>0?'#ef4444':'#a1a1aa'}">${s.ddPct}%</span></div>` : ''}
+          </div>
+
+          <!-- Discipline + WR -->
+          <div class="hidden lg:flex gap-4 shrink-0">
+            <div class="text-center">
+              <div class="text-sm font-black ${discColor}">${s.disciplineScore}%</div>
+              <div class="text-[10px] text-zinc-600">Discipline</div>
+            </div>
+            <div class="text-center">
+              <div class="text-sm font-black ${wrColor}">${s.wr}%</div>
+              <div class="text-[10px] text-zinc-600">Win Rate</div>
+            </div>
+          </div>
+
+          <!-- Edit + expand -->
+          <div class="flex items-center gap-2 shrink-0">
+            <button onclick="event.stopPropagation();openEditCard('${card.id}')" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            </button>
+            <svg class="w-4 h-4 text-zinc-500 expand-arrow" id="arrow-${card.id}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+          </div>
+        </div>
+
+        <!-- Expand panel -->
+        <div class="expand-panel border-t border-white/5" id="expand-${card.id}">
+          ${panelHtml}
         </div>
       </div>`;
     }
@@ -1246,7 +1206,7 @@
 
     function openNewCard() {
       editingCardId = null;
-      document.getElementById('modal-title').textContent = 'New Tracker';
+      document.getElementById('modal-title').textContent = 'New account tracker';
       document.getElementById('delete-btn-wrap').classList.add('hidden');
       document.getElementById('modal-msg').classList.add('hidden');
       ['tc-label','tc-size','tc-target','tc-firm-daily','tc-maxdd','tc-personal-daily','tc-max-trades','tc-max-consec','tc-window-start','tc-window-end'].forEach(id => document.getElementById(id).value='');
@@ -1263,7 +1223,7 @@
       const card = trackerCards.find(c=>c.id===id);
       if (!card) return;
       editingCardId = id;
-      document.getElementById('modal-title').textContent = 'Edit Tracker';
+      document.getElementById('modal-title').textContent = 'Edit · ' + (card.label || 'account');
       document.getElementById('delete-btn-wrap').classList.remove('hidden');
       document.getElementById('modal-msg').classList.add('hidden');
       document.getElementById('tc-label').value = card.label||'';
@@ -1685,16 +1645,17 @@
     //  saveTrackerCards() path as everything else — no new storage.
     // ══════════════════════════════════════════════════════════
 
-    // One row per warning rule in the setup modal.
+    // One row per warning rule in the setup form. `unit` goes in the input
+    // placeholder; urgent:false means the rule only has one level.
     const RULE_META = [
-      { id:'cushion',     name:'Cushion to floor',      hint:'Dollars left before the drawdown floor. Needs account size + max DD.', warnL:'Heads-up at ($ left)', urgL:'Urgent at ($ left)' },
-      { id:'inactivity',  name:'Inactivity',            hint:'Days since your last trade — not your last upload. It keeps counting on days you don\'t import. At the inactivity limit above it becomes a red INACTIVITY flag, and gaps already in your history are checked too.', warnL:'Heads-up at (days)', urgL:'Urgent at (days)' },
-      { id:'pullback',    name:'Pullback from high',    hint:'Dollars given back from the account\'s high.', warnL:'Heads-up at ($ off)', urgL:'Urgent at ($ off)' },
-      { id:'dailyLoss',   name:'Firm daily loss used',  hint:'Checked on your most recent session after each import. Needs the firm daily loss limit.', warnL:'Heads-up at (%)', urgL:'Urgent at (%)' },
-      { id:'payout',      name:'Payout line reached',   hint:'Green flag once profit passes your payout line and min trading days are met. Optional: a blue note when you\'re close.', warnL:'Note at ($ to go)', urgL:null },
-      { id:'consistency', name:'Consistency',           hint:'Best single day as a share of total profit.', warnL:'Heads-up at (%)', urgL:'Urgent at (%)' },
-      { id:'target',      name:'Profit target',         hint:'Evaluations only. Green flag when hit; optional blue note when close.', warnL:'Note at ($ to go)', urgL:null },
-      { id:'renewal',     name:'Renewal / expiry date', hint:'Uses the Renews / expires date above.', warnL:'Heads-up (days before)', urgL:'Urgent (days before)' }
+      { id:'cushion',     name:'Cushion to floor',     hint:'$ left before the drawdown floor',            unit:'$ left' },
+      { id:'inactivity',  name:'Inactivity',           hint:'Days since your last trade — not your last upload. Past the firm limit = red flag.', unit:'days' },
+      { id:'pullback',    name:'Pullback from high',   hint:'$ given back from the account high',          unit:'$ off' },
+      { id:'dailyLoss',   name:'Firm daily loss used', hint:'% of the daily limit, last session',          unit:'%' },
+      { id:'payout',      name:'Payout line reached',  hint:'Green flag at your payout line + min days. Heads-up = $ to go (optional).', unit:'$ to go', urgent:false },
+      { id:'consistency', name:'Consistency',          hint:'Best day as % of total profit',               unit:'%' },
+      { id:'target',      name:'Profit target',        hint:'Evals only. Green flag when hit. Heads-up = $ to go (optional).', unit:'$ to go', urgent:false },
+      { id:'renewal',     name:'Renewal / expiry',     hint:'Uses the Renews / expires date',               unit:'days before' }
     ];
     const LEVEL_LABEL = { over:'PAST LIMIT', urgent:'URGENT', heads:'HEADS-UP', payout:'READY', info:'NOTE' };
     const RULE_FIELDS = ['accountSize','profitTarget','firmDaily','maxDD','ddType','floorLock','payoutLine','minDays',
@@ -1705,6 +1666,7 @@
     let fleetQuery = '';
     let fleetShowHidden = false;
     let fleetCache = {};           // cardId -> FSDXTracker.fleet() result, for the action buttons
+    let fleetOpen = new Set();     // rows expanded to the full tracker detail
 
     const numOrNull = id => { const v = document.getElementById(id).value; return v === '' ? null : (parseFloat(v)); };
     const $id = id => document.getElementById(id);
@@ -1715,11 +1677,36 @@
       return out;
     }
 
+    // Selected / unselected look — the same classes as the drawdown-type toggle.
+    const SEG_ON = ' border-green-500/40 bg-green-500/10 text-green-400';
+    const SEG_OFF = ' border-white/10 text-zinc-500';
+    function setStage(v) {
+      $id('tc-stage').value = v;
+      document.querySelectorAll('#tc-stage-btns button').forEach(b => {
+        b.className = 'py-2 border text-xs font-bold rounded-xl transition' + (b.dataset.v === v ? SEG_ON : SEG_OFF);
+      });
+    }
+    function setGoal(v) {
+      const cur = $id('tc-goal').value;
+      v = cur === v ? '' : v;                       // click again = back to automatic
+      $id('tc-goal').value = v;
+      const auto = v || ($id('tc-stage').value === 'eval' ? 'pass' : $id('tc-stage').value === 'funded' ? 'payout' : 'track');
+      document.querySelectorAll('#tc-goal-btns button').forEach(b => {
+        const on = b.dataset.v === auto;
+        b.className = 'tc-goalc text-left px-3 py-2 border rounded-xl transition' + (on ? ' border-green-500/40 bg-green-500/10' : ' border-white/10');
+        b.style.opacity = on || !v ? '1' : '.7';
+      });
+    }
+    function toggleApplyPanel() { $id('tc-apply-wrap').classList.toggle('hidden'); }
+
     // ── Modal: fill / read the fleet fields ──
     function fillFleetFields(card) {
       $id('tc-firm').value = card.firm || '';
-      $id('tc-stage').value = card.id ? FSDXTracker.stageOf(card, journalAccounts) === 'other' ? 'eval' : FSDXTracker.stageOf(card, journalAccounts) : 'eval';
-      $id('tc-goal').value = card.goal || '';
+      const st = card.id ? FSDXTracker.stageOf(card, journalAccounts) : 'eval';
+      $id('tc-archived').checked = st === 'archived';
+      setStage(st === 'other' || st === 'archived' ? (card.prevStage || 'eval') : st);
+      $id('tc-goal').value = '';
+      setGoal(card.goal || '');
       $id('tc-start').value = card.startDate || '';
       $id('tc-renew').value = card.renewDate || '';
       $id('tc-floorlock').value = card.floorLock ?? '';
@@ -1731,31 +1718,34 @@
       $id('tc-po-date').value = FSDXTracker.localDate();
       modalPayouts = Array.isArray(card.payouts) ? card.payouts.map(p => ({ ...p })) : [];
       renderModalPayouts();
+      $id('tc-payouts-box').open = false;
       renderAlertEditors(card);
+      const mine = [card.personalDaily && 'daily limit', card.maxTradesPerDay && 'max trades', card.maxConsecLosses && 'losses in a row', card.minGrade && 'min grade', card.windowStart && 'trade window'].filter(Boolean);
+      $id('tc-myrules-sum').textContent = mine.length ? mine.length + ' set — ' + mine.join(', ') : 'none set';
 
       // Firm suggestions from what's already been typed on other trackers.
       const firms = [...new Set(trackerCards.map(c => (c.firm || '').trim()).filter(Boolean))].sort();
       $id('tc-firm-list').innerHTML = firms.map(f => `<option value="${esc(f)}"></option>`).join('');
 
-      // Copy-from list: every other tracker.
+      // Rules bar only makes sense when there are other accounts.
       const others = trackerCards.filter(c => c.id !== card.id);
-      $id('tc-copy-wrap').classList.toggle('hidden', !others.length);
-      $id('tc-copyfrom').innerHTML = '<option value="">— pick an account —</option>' +
+      $id('tc-rulesbar').classList.toggle('hidden', !others.length);
+      $id('tc-copyfrom').innerHTML = '<option value="">Copy rules from…</option>' +
         others.map(c => `<option value="${esc(c.id)}">${esc(c.label || 'Tracker')}${c.firm ? ' · ' + esc(c.firm) : ''}</option>`).join('');
-
       renderApplyList(card.id);
-      $id('tc-apply-wrap').open = false;
+      $id('tc-apply-wrap').classList.add('hidden');
 
-      // New tracker: picking an account pre-fills label, size and stage.
+      // New account: picking one from My Accounts pre-fills name, size and stage.
       $id('tc-name').onchange = () => {
         if (editingCardId) return;
         const a = journalAccounts.find(x => x.name === $id('tc-name').value);
         if (!a) return;
         if (!$id('tc-label').value.trim()) $id('tc-label').value = a.name;
         if (!$id('tc-size').value && a.accountSize) $id('tc-size').value = a.accountSize;
-        if (a.accountType === 'Funded') $id('tc-stage').value = 'funded';
-        else if (a.accountType === 'Personal') $id('tc-stage').value = 'personal';
-        else if (a.accountType === 'Evaluation') $id('tc-stage').value = 'eval';
+        if (a.accountType === 'Funded') setStage('funded');
+        else if (a.accountType === 'Personal') setStage('personal');
+        else if (a.accountType === 'Evaluation') setStage('eval');
+        setGoal($id('tc-goal').value || '');
       };
     }
 
@@ -1765,13 +1755,16 @@
         alerts[r.id] = {
           on: $id('al-on-' + r.id).checked,
           warn: numOrNull('al-w-' + r.id),
-          urgent: r.urgL ? numOrNull('al-u-' + r.id) : null,
+          urgent: r.urgent === false ? null : numOrNull('al-u-' + r.id),
           note: $id('al-n-' + r.id).value.trim().slice(0, 140)
         };
       });
+      const stage = $id('tc-stage').value;
+      const archived = $id('tc-archived').checked;
       return {
         firm: $id('tc-firm').value.trim(),
-        stage: $id('tc-stage').value,
+        stage: archived ? 'archived' : stage,
+        prevStage: archived ? stage : undefined,     // restored if un-archived
         goal: $id('tc-goal').value,
         startDate: $id('tc-start').value,
         renewDate: $id('tc-renew').value,
@@ -1789,33 +1782,29 @@
       $id('tc-alerts').innerHTML = RULE_META.map(r => {
         const c = FSDXTracker.alertCfg(card, r.id);
         const v = x => x === null || x === undefined ? '' : esc(x);
-        return `<div class="tc-rule border border-white/5 bg-black/30 rounded-xl p-3 ${c.on ? '' : 'off'}" id="al-box-${r.id}">
-          <div class="tc-rule-top">
-            <input type="checkbox" id="al-on-${r.id}" ${c.on ? 'checked' : ''} onchange="document.getElementById('al-box-${r.id}').classList.toggle('off', !this.checked)">
-            <label for="al-on-${r.id}" class="cursor-pointer">
-              <div class="text-sm font-bold text-white">${r.name}</div>
-              <div class="text-[11px] text-zinc-500 leading-snug mt-0.5">${r.hint}</div>
-            </label>
-          </div>
-          <div class="tc-rule-fields">
-            <div><label for="al-w-${r.id}" class="block text-[10px] text-zinc-600 mb-1">${r.warnL}</label><input id="al-w-${r.id}" type="number" min="0" class="tc-in" value="${v(c.warn)}"></div>
-            ${r.urgL ? `<div><label for="al-u-${r.id}" class="block text-[10px] text-zinc-600 mb-1">${r.urgL}</label><input id="al-u-${r.id}" type="number" min="0" class="tc-in" value="${v(c.urgent)}"></div>` : '<div></div>'}
-            <div><label for="al-n-${r.id}" class="block text-[10px] text-zinc-600 mb-1">What to do (shows on the flag)</label><input id="al-n-${r.id}" type="text" maxlength="140" class="tc-in" placeholder="e.g. Lower size on this account" value="${v(c.note)}"></div>
-          </div>
+        return `<div class="tc-wgrid tc-wrow ${c.on ? '' : 'off'}" id="al-box-${r.id}">
+          <div><input type="checkbox" class="tc-sw" id="al-on-${r.id}" ${c.on ? 'checked' : ''} aria-label="${esc(r.name)}" onchange="document.getElementById('al-box-${r.id}').classList.toggle('off', !this.checked)"></div>
+          <label for="al-on-${r.id}" class="tc-wtext cursor-pointer min-w-0">
+            <div class="text-sm font-bold text-white">${r.name}</div>
+            <div class="text-[10px] text-zinc-500 leading-snug">${r.hint}</div>
+          </label>
+          <div><label for="al-w-${r.id}" class="sr-only">${r.name} heads-up</label><input id="al-w-${r.id}" type="number" min="0" class="tc-in" style="border-color:rgba(234,179,8,.3)" placeholder="${r.unit}" value="${v(c.warn)}"></div>
+          <div>${r.urgent === false ? '<div class="text-[10px] text-zinc-600 text-center">—</div>' : `<label for="al-u-${r.id}" class="sr-only">${r.name} urgent</label><input id="al-u-${r.id}" type="number" min="0" class="tc-in" style="border-color:rgba(239,68,68,.3)" placeholder="${r.unit}" value="${v(c.urgent)}">`}</div>
+          <div class="tc-wnote"><label for="al-n-${r.id}" class="sr-only">${r.name} note</label><input id="al-n-${r.id}" type="text" maxlength="140" class="tc-in" placeholder="Add a note — shows on the flag" value="${v(c.note)}"></div>
         </div>`;
       }).join('');
     }
 
     function renderModalPayouts() {
       const el = $id('tc-payouts-list');
-      if (!modalPayouts.length) { el.innerHTML = '<div class="text-[11px] text-zinc-600">None logged.</div>'; return; }
       const total = modalPayouts.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+      $id('tc-payouts-sum').textContent = modalPayouts.length ? '· ' + modalPayouts.length + ' logged, $' + total.toLocaleString() : '· none logged';
+      if (!modalPayouts.length) { el.innerHTML = ''; return; }
       el.innerHTML = modalPayouts.map((p, i) => `<div class="flex items-center justify-between text-xs border border-white/5 rounded-lg px-3 py-1.5">
           <span class="text-zinc-400">${esc(p.date || '—')}</span>
           <span class="text-white font-bold">$${(parseFloat(p.amount) || 0).toLocaleString()}</span>
           <button type="button" onclick="removeModalPayout(${i})" class="text-zinc-500 hover:text-red-400 text-[11px] font-bold">Remove</button>
-        </div>`).join('') +
-        `<div class="text-[11px] text-zinc-500 text-right">Total withdrawn: <b class="text-white">$${total.toLocaleString()}</b></div>`;
+        </div>`).join('');
     }
     function addModalPayout() {
       const amt = parseFloat($id('tc-po-amt').value);
@@ -1826,7 +1815,6 @@
       renderModalPayouts();
     }
     function removeModalPayout(i) { modalPayouts.splice(i, 1); renderModalPayouts(); }
-    function onStageChange() { /* goal "Auto" follows the stage at render time — nothing to do here */ }
 
     function copyRulesFrom(id) {
       const src = trackerCards.find(c => c.id === id);
@@ -1840,12 +1828,12 @@
       if (!$id('tc-firm').value && src.firm) $id('tc-firm').value = src.firm;
       setDDType(src.ddType || 'trailing');
       renderAlertEditors(src);
-      showModalMsg('Rules copied from ' + (src.label || 'that tracker') + '. Review, then save.', 'success');
+      $id('tc-copyfrom').value = '';
+      showModalMsg('Rules copied from ' + (src.label || 'that account') + '. Review, then save.', 'success');
     }
 
     function renderApplyList(currentId) {
       const others = trackerCards.filter(c => c.id !== currentId);
-      $id('tc-apply-wrap').classList.toggle('hidden', !others.length);
       $id('tc-apply-list').innerHTML = others.map(c => `<label class="flex items-center gap-2 text-xs text-zinc-300 border border-white/5 rounded-lg px-3 py-2 cursor-pointer hover:bg-white/5">
           <input type="checkbox" class="tc-apply" value="${esc(c.id)}" data-firm="${esc((c.firm || '').toLowerCase())}" onchange="updateApplyCount()" style="accent-color:#22c55e">
           <span class="truncate">${esc(c.label || 'Tracker')}</span>${c.firm ? `<span class="text-zinc-600 truncate">· ${esc(c.firm)}</span>` : ''}
@@ -1853,7 +1841,7 @@
       updateApplyCount();
     }
     function selectedApplyIds() { return [...document.querySelectorAll('.tc-apply:checked')].map(x => x.value); }
-    function updateApplyCount() { const n = selectedApplyIds().length; $id('tc-apply-count').textContent = n ? '(' + n + ' selected)' : ''; }
+    function updateApplyCount() { const n = selectedApplyIds().length; $id('tc-apply-count').textContent = n ? '(' + n + ')' : ''; }
     function applyPick(mode) {
       const firm = $id('tc-firm').value.trim().toLowerCase();
       document.querySelectorAll('.tc-apply').forEach(x => {
@@ -1862,19 +1850,17 @@
       updateApplyCount();
     }
 
-    // Open the setup modal pre-pointed at a registry account with no tracker.
+    // Open the setup form pre-pointed at a My Accounts entry with no tracker.
     function openNewCardFor(name) {
       openNewCard();
       $id('tc-name').value = name;
       $id('tc-name').onchange && $id('tc-name').onchange();
     }
 
-    // Jump from a fleet row to that account's full tracker card.
+    // Fleet row click: open / close that account's full tracker detail inline.
     function openCardDetail(id) {
-      switchTab('trackers');
-      const panel = document.getElementById('expand-' + id);
-      if (panel && !panel.classList.contains('open')) toggleExpand(id);
-      if (panel) panel.parentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (fleetOpen.has(id)) fleetOpen.delete(id); else fleetOpen.add(id);
+      renderFleet();
     }
 
     function flToast(msg, err) {
@@ -2013,18 +1999,54 @@
         <a href="converter.html" class="${CL.ghost}">Import trades</a>
       </div>`;
 
-      const kpi = (label, val, sub, col) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
-          <div class="${CL.label} mb-1">${label}</div>
-          <div class="text-base font-black" style="color:${col}">${val}</div>
+      // Near target / payout (blue notes) and accounts going idle.
+      const nNear = count(r => r.vis.some(a => a.level === 'info' && (a.rule === 'target' || a.rule === 'payout')));
+      const nIdle = count(r => {
+        if (r.m.stage === 'queued' || !r.m.lastTrade) return false;
+        const c = FSDXTracker.alertCfg(r.card, 'inactivity');
+        const line = c.on && c.warn != null ? c.warn : 10;
+        return FSDXTracker.daysBetween(r.m.lastTrade, today) >= line;
+      });
+      const kpi = (label, val, sub, col) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl px-4 py-3.5">
+          <div class="${CL.label}">${label}</div>
+          <div class="text-2xl font-black mt-1" style="color:${col}">${val}</div>
           <div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>
         </div>`;
+      const dim = '#52525b';
       const kpis = `<div class="fl-kpis">
         ${kpi('Accounts', active.length, [byStage('eval') + ' eval', byStage('funded') + ' funded', byStage('queued') ? byStage('queued') + ' queued' : ''].filter(Boolean).join(' · '), '#e4e4e7')}
-        ${kpi('Urgent', nUrgent, 'accounts', nUrgent ? COL.red : '#71717a')}
-        ${kpi('Heads-up', nHeads, 'accounts', nHeads ? COL.amber : '#71717a')}
-        ${kpi('Ready', nPayout, 'payout line or target hit', nPayout ? COL.green : '#71717a')}
-        ${kpi('Put away', nHidden, 'snoozed · handled · ignored', '#71717a')}
+        ${kpi('Urgent', nUrgent, 'act before next session', nUrgent ? COL.red : dim)}
+        ${kpi('Heads-up', nHeads, 'getting close', nHeads ? COL.amber : dim)}
+        ${kpi('Payout ready', nPayout, 'line or target hit', nPayout ? COL.green : dim)}
+        ${kpi('Near target', nNear, 'within your heads-up', nNear ? COL.blue : dim)}
+        ${kpi('Going idle', nIdle, 'no trade in a while', nIdle ? COL.amber : dim)}
       </div>`;
+
+      // ── By firm: one square per account, coloured by its worst flag ──
+      const firmMap = {};
+      active.forEach(r => { const f = (r.card.firm || '').trim() || 'No firm set'; (firmMap[f] = firmMap[f] || []).push(r); });
+      const firmNames = Object.keys(firmMap).sort((a, b) => (a === 'No firm set') - (b === 'No firm set') || a.localeCompare(b));
+      const sq = r => r.m.stage === 'queued' ? '#3f3f46' : r.worst <= 1 ? COL.red : r.worst === 2 ? COL.green : r.worst === 3 ? COL.amber : '#27272a';
+      const byFirm = active.length > 1 ? `<section class="${CL.card} px-5 py-4">
+        <div class="flex items-center justify-between gap-3 flex-wrap mb-3">
+          <div class="${CL.head}">By firm</div>
+          <div class="flex items-center gap-3 text-[10px] text-zinc-500">
+            <span class="flex items-center gap-1"><i style="width:9px;height:9px;border-radius:3px;background:${COL.red};display:inline-block"></i>urgent</span>
+            <span class="flex items-center gap-1"><i style="width:9px;height:9px;border-radius:3px;background:${COL.amber};display:inline-block"></i>heads-up</span>
+            <span class="flex items-center gap-1"><i style="width:9px;height:9px;border-radius:3px;background:${COL.green};display:inline-block"></i>ready</span>
+            <span class="flex items-center gap-1"><i style="width:9px;height:9px;border-radius:3px;background:#27272a;display:inline-block"></i>clear</span>
+          </div>
+        </div>
+        <div class="fl-firms">${firmNames.map(f => {
+          const list = firmMap[f];
+          const funded = list.filter(r => r.m.stage === 'funded').length, evals = list.filter(r => r.m.stage === 'eval').length;
+          return `<button type="button" class="fl-firm text-left" onclick="fleetQuery=${esc(JSON.stringify(f === 'No firm set' ? '' : f))};fleetFilter='all';renderFleet()">
+            <div class="flex items-baseline justify-between gap-2"><span class="text-sm font-black text-white truncate">${esc(f)}</span><span class="text-[10px] text-zinc-500 whitespace-nowrap">${list.length} acct</span></div>
+            <div class="text-[10px] text-zinc-600 mb-2">${[evals ? evals + ' eval' : '', funded ? funded + ' funded' : ''].filter(Boolean).join(' · ') || '&nbsp;'}</div>
+            <div class="flex gap-1 flex-wrap">${list.map(r => `<i title="${esc(r.card.label || '')}" style="width:12px;height:12px;border-radius:3px;background:${sq(r)};display:inline-block"></i>`).join('')}</div>
+          </button>`;
+        }).join('')}</div>
+      </section>` : '';
 
       // ── Needs attention ──
       const attn = [];
@@ -2141,8 +2163,8 @@
           <div><div class="fl-lbl ${CL.label}">Goal</div><div class="flex items-center justify-between gap-2 flex-wrap"><span class="text-xs font-bold text-white whitespace-nowrap">${esc(g.label)}</span><span class="text-[10px] text-zinc-600 whitespace-nowrap">${esc(g.note)}</span></div>${g.col !== 'transparent' ? `<div class="fl-bar"><i style="width:${g.pct}%;background:${g.col}"></i></div>` : ''}</div>
           <div><div class="fl-lbl ${CL.label}">Last trade</div><span class="text-xs font-bold ${idleCls}" title="${esc(m.lastTrade || '')}">${idle === null ? '—' : idle === 0 ? 'Today' : idle + 'd ago'}</span></div>
           <div class="c-flags flex gap-1.5 flex-wrap min-w-0">${flags || `<span class="${CL.badge} ${LV.muted}">Clear</span>`}${more}</div>
-          <div class="c-edit"><button class="${CL.edit}" aria-label="Edit ${esc(card.label || 'tracker')}" onclick="event.stopPropagation();openEditCard('${cid(r)}')"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg></button></div>
-        </div>`;
+          <div class="c-edit flex items-center gap-1"><button class="${CL.edit}" aria-label="Edit ${esc(card.label || 'tracker')}" onclick="event.stopPropagation();openEditCard('${cid(r)}')"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg></button></div>
+        </div>${fleetOpen.has(card.id) ? `<div class="border-t border-white/5 bg-black/20">${(() => { try { return renderRow(card, true); } catch (e) { console.error('[FSDX] detail failed', e); return '<div class="p-5 text-xs text-red-400">This account\'s detail could not be shown. Edit it to check the settings.</div>'; } })()}</div>` : ''}`;
       }).join('');
 
       const table = `<section class="${CL.card} overflow-hidden">
@@ -2153,9 +2175,9 @@
         <div class="fl-grid fl-head px-5 py-2.5 border-t border-white/5 ${CL.label}"><span>Account</span><span>Stage</span><span>P&amp;L</span><span>Cushion to floor</span><span>Goal</span><span>Last trade</span><span>Flags</span><span></span></div>
         ${tableRows || '<div class="text-xs text-zinc-500 py-6 text-center">No accounts match.</div>'}
       </section>
-      <div class="text-[10px] text-zinc-600">Click a row for the full tracker. Warnings use the lines you set on each tracker and your imported trades — they're a reminder, not a statement of what your firm has done. Check the firm's dashboard for the official numbers.</div>`;
+      <div class="text-[10px] text-zinc-600">Click a row for the full detail. Warnings use the lines you set on each tracker and your imported trades — they're a reminder, not a statement of what your firm has done. Check the firm's dashboard for the official numbers.</div>`;
 
-      root.innerHTML = summary + kpis + attnBox + nudge + table;
+      root.innerHTML = summary + kpis + attnBox + byFirm + nudge + table;
     }
 
     init();
