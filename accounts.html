@@ -13,50 +13,27 @@
   <script src="alerts.js?v=20260901"></script>
   <style>
     /* ── Fleet view ────────────────────────────────────────────────────
-       Plain CSS on purpose: tailwind.css is a static build, so any utility
-       class it wasn't built with would silently do nothing. Everything new
-       on this page is styled here with an fl- prefix. */
-    .fl-card { border:1px solid rgba(255,255,255,.1); background:rgba(10,22,38,.55); border-radius:16px; }
-    .fl-mono { font-family:var(--fx-mono,ui-monospace,monospace); }
-    .fl-eyebrow { font-family:var(--fx-mono,ui-monospace,monospace); font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#647E9C; }
-    .fl-kpis { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:10px; }
-    .fl-kpi { padding:14px 16px; }
-    .fl-kpi b { display:block; font-size:24px; font-weight:900; margin-top:4px; line-height:1.1; }
-    .fl-kpi small { display:block; font-size:11px; color:#647E9C; margin-top:2px; }
-    .fl-pill { display:inline-flex; align-items:center; font-size:10px; font-weight:900; letter-spacing:.1em; padding:4px 8px; border-radius:7px; white-space:nowrap; border:1px solid transparent; }
-    .fl-flag { display:inline-block; font-size:11px; font-weight:700; padding:3px 8px; border-radius:7px; white-space:nowrap; max-width:100%; overflow:hidden; text-overflow:ellipsis; }
-    .lv-over   { background:rgba(239,68,68,.16); color:#FCA5A5; border-color:rgba(239,68,68,.45); }
-    .lv-urgent { background:rgba(239,68,68,.12); color:#F87171; border-color:rgba(239,68,68,.35); }
-    .lv-heads  { background:rgba(240,168,28,.12); color:#F5C35A; border-color:rgba(240,168,28,.35); }
-    .lv-payout { background:rgba(34,197,94,.12); color:#4ADE80; border-color:rgba(34,197,94,.35); }
-    .lv-info   { background:rgba(96,165,250,.12); color:#93C5FD; border-color:rgba(96,165,250,.3); }
-    .lv-muted  { background:rgba(128,152,183,.10); color:#8098B7; }
-    .fl-btn { height:34px; padding:0 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:transparent; color:#A3B8D2; font-size:12px; font-weight:700; white-space:nowrap; transition:all .15s; }
-    .fl-btn:hover { color:#fff; border-color:rgba(255,255,255,.25); background:rgba(255,255,255,.04); }
-    .fl-btn.primary { background:var(--fx-orange,#F26B21); border-color:transparent; color:#0A0A0A; font-weight:900; }
-    .fl-btn.primary:hover { filter:brightness(1.1); color:#0A0A0A; }
-    .fl-btn.solid { background:rgba(255,255,255,.06); color:#E4ECF6; }
-    .fl-alert { display:grid; grid-template-columns:118px 180px minmax(0,1fr) auto; gap:14px; align-items:center; padding:13px 18px; border-top:1px solid rgba(255,255,255,.06); }
+       Look comes from the SAME Tailwind classes the Trackers / My Accounts
+       tabs use (set in the markup). This block is layout only — grids, bars,
+       responsive stacking — plus the blue "note" colour, which the static
+       tailwind.css build doesn't include. */
+    .fl-kpis { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; }
+    .fl-alert { display:grid; grid-template-columns:110px 170px minmax(0,1fr) auto; gap:14px; align-items:center; }
     .fl-alert .acts { display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap; }
-    .fl-chip { height:32px; padding:0 13px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:transparent; color:#A3B8D2; font-size:12px; font-weight:700; white-space:nowrap; }
-    .fl-chip.on { border-color:color-mix(in srgb, var(--fx-orange,#F26B21) 60%, transparent); background:color-mix(in srgb, var(--fx-orange,#F26B21) 14%, transparent); color:#FFC49A; }
-    .fl-search { height:32px; width:190px; padding:0 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12); background:#000; color:#fff; font-size:12px; }
-    .fl-grid { display:grid; grid-template-columns:minmax(140px,1.4fr) 96px 90px 120px 130px 64px minmax(110px,1.3fr) 34px; gap:12px; align-items:center; }
-    .fl-head { padding:10px 18px; border-top:1px solid rgba(255,255,255,.06); }
-    .fl-row { padding:12px 18px; border-top:1px solid rgba(255,255,255,.06); cursor:pointer; transition:background .15s; }
-    .fl-row:hover { background:rgba(255,255,255,.025); }
-    .fl-row.hot { background:rgba(239,68,68,.04); }
-    .fl-bar { height:5px; border-radius:99px; background:rgba(255,255,255,.07); overflow:hidden; margin-top:5px; }
+    .fl-grid { display:grid; grid-template-columns:minmax(130px,1.3fr) 112px 86px 120px 140px 72px minmax(110px,1.3fr) 30px; gap:12px; align-items:center; }
+    .fl-row { cursor:pointer; transition:background .15s; }
+    .fl-row:hover { background:rgba(255,255,255,.02); }
+    .fl-bar { height:6px; border-radius:99px; background:rgba(255,255,255,.05); overflow:hidden; margin-top:5px; }
     .fl-bar > i { display:block; height:100%; border-radius:99px; }
     .fl-dot { width:8px; height:8px; border-radius:99px; flex-shrink:0; }
+    .fl-flag { max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:inline-block; }
     .fl-lbl { display:none; }
-    .fl-edit { width:34px; height:34px; border-radius:9px; border:1px solid rgba(255,255,255,.1); background:transparent; color:#8098B7; display:flex; align-items:center; justify-content:center; }
-    .fl-edit:hover { color:#fff; background:rgba(255,255,255,.06); }
+    .lv-info { background:rgba(96,165,250,.10); color:#93C5FD; border-color:rgba(96,165,250,.25); }
     @media (max-width: 900px) {
       .fl-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .fl-alert { grid-template-columns:1fr; gap:6px; }
       .fl-alert .acts { justify-content:flex-start; }
-      .fl-search { width:100%; }
+      .fl-search { width:100% !important; }
     }
     @media (max-width: 1180px) {
       .fl-head { display:none !important; }
@@ -64,30 +41,25 @@
       .fl-row > .c-acct { grid-column:1 / -1; }
       .fl-row > .c-flags { grid-column:1 / -1; }
       .fl-row > .c-edit { display:none; }
-      .fl-lbl { display:block; font-size:10px; color:#647E9C; text-transform:uppercase; letter-spacing:.1em; margin-bottom:2px; }
+      .fl-lbl { display:block; margin-bottom:2px; }
     }
     @media (min-width: 560px) and (max-width: 1180px) {
       .fl-grid.fl-row { grid-template-columns:repeat(3,minmax(0,1fr)); }
     }
-    /* Setup modal additions */
-    .tc-rule { border:1px solid rgba(255,255,255,.06); border-radius:12px; padding:12px; background:rgba(0,0,0,.25); }
+    /* Setup modal additions — sized to match the modal's existing inputs */
     .tc-rule.off { opacity:.55; }
     .tc-rule-top { display:flex; gap:10px; align-items:flex-start; }
-    .tc-rule-top input[type=checkbox] { width:18px; height:18px; margin-top:1px; accent-color:var(--fx-orange,#F26B21); flex-shrink:0; }
-    .tc-rule-fields { display:grid; grid-template-columns:120px 120px minmax(0,1fr); gap:8px; margin-top:10px; }
-    .tc-rule-fields label { display:block; font-size:10px; color:#647E9C; margin-bottom:3px; }
-    .tc-in { width:100%; box-sizing:border-box; background:#000; border:1px solid rgba(255,255,255,.1); color:#fff; font-size:13px; padding:7px 10px; border-radius:10px; }
-    .tc-in:focus { outline:none; border-color:color-mix(in srgb, var(--fx-orange,#F26B21) 50%, transparent); }
-    .tc-in.warn { border-color:rgba(240,168,28,.35); }
-    .tc-in.urg { border-color:rgba(239,68,68,.35); }
+    .tc-rule-top input[type=checkbox] { width:16px; height:16px; margin-top:2px; accent-color:#22c55e; flex-shrink:0; }
+    .tc-rule-fields { display:grid; grid-template-columns:130px 130px minmax(0,1fr); gap:10px; margin-top:10px; }
+    .tc-in { width:100%; box-sizing:border-box; background:#000; border:1px solid rgba(255,255,255,.1); color:#fff; font-size:.875rem; line-height:1.25rem; padding:.5rem .75rem; border-radius:.75rem; }
+    .tc-in:focus { outline:none; border-color:rgba(34,197,94,.5); }
     .tc-3 { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
-    .tc-seg { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
     @media (max-width: 560px) {
       .tc-rule-fields { grid-template-columns:1fr 1fr; }
       .tc-rule-fields > div:last-child { grid-column:1 / -1; }
       .tc-3 { grid-template-columns:1fr 1fr; }
     }
-    .fl-toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:60; padding:10px 16px; border-radius:12px; font-size:13px; font-weight:700; background:#1C2E45; color:#fff; border:1px solid rgba(255,255,255,.15); box-shadow:0 10px 30px rgba(0,0,0,.5); }
+    .fl-toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:60; padding:10px 16px; border-radius:12px; font-size:13px; font-weight:700; background:#18181b; color:#fff; border:1px solid rgba(255,255,255,.15); box-shadow:0 10px 30px rgba(0,0,0,.5); }
     .fl-toast.err { background:#3b1115; border-color:rgba(239,68,68,.5); color:#FCA5A5; }
 
     body { background-color: #000; }
@@ -460,7 +432,7 @@
               <label for="tc-po-date" class="block text-[10px] text-zinc-600 mb-1">Date</label>
               <input id="tc-po-date" type="date" class="tc-in">
             </div>
-            <button type="button" onclick="addModalPayout()" class="fl-btn solid" style="height:37px">+ Log payout</button>
+            <button type="button" onclick="addModalPayout()" class="py-2 border border-white/10 text-zinc-300 hover:text-white text-xs font-bold rounded-xl transition">+ Log payout</button>
           </div>
         </div>
 
@@ -530,9 +502,9 @@
           <summary class="text-xs font-bold text-zinc-400 uppercase tracking-wider cursor-pointer">Also apply these rules to… <span id="tc-apply-count" class="text-zinc-600 normal-case tracking-normal font-medium"></span></summary>
           <div class="text-[10px] text-zinc-600 mt-2 mb-2">On save, copies firm rules, warnings and your rules to the accounts you tick. Their label, account, stage, dates and payouts stay as they are.</div>
           <div class="flex gap-2 mb-2">
-            <button type="button" class="fl-btn" onclick="applyPick('all')">All</button>
-            <button type="button" class="fl-btn" onclick="applyPick('firm')">Same firm</button>
-            <button type="button" class="fl-btn" onclick="applyPick('none')">None</button>
+            <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('all')">All</button>
+            <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('firm')">Same firm</button>
+            <button type="button" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition" onclick="applyPick('none')">None</button>
           </div>
           <div id="tc-apply-list" class="grid grid-cols-1 sm:grid-cols-2 gap-1.5"></div>
         </details>
@@ -1817,7 +1789,7 @@
       $id('tc-alerts').innerHTML = RULE_META.map(r => {
         const c = FSDXTracker.alertCfg(card, r.id);
         const v = x => x === null || x === undefined ? '' : esc(x);
-        return `<div class="tc-rule ${c.on ? '' : 'off'}" id="al-box-${r.id}">
+        return `<div class="tc-rule border border-white/5 bg-black/30 rounded-xl p-3 ${c.on ? '' : 'off'}" id="al-box-${r.id}">
           <div class="tc-rule-top">
             <input type="checkbox" id="al-on-${r.id}" ${c.on ? 'checked' : ''} onchange="document.getElementById('al-box-${r.id}').classList.toggle('off', !this.checked)">
             <label for="al-on-${r.id}" class="cursor-pointer">
@@ -1826,9 +1798,9 @@
             </label>
           </div>
           <div class="tc-rule-fields">
-            <div><label for="al-w-${r.id}">${r.warnL}</label><input id="al-w-${r.id}" type="number" min="0" class="tc-in warn" value="${v(c.warn)}"></div>
-            ${r.urgL ? `<div><label for="al-u-${r.id}">${r.urgL}</label><input id="al-u-${r.id}" type="number" min="0" class="tc-in urg" value="${v(c.urgent)}"></div>` : '<div></div>'}
-            <div><label for="al-n-${r.id}">What to do (shows on the flag)</label><input id="al-n-${r.id}" type="text" maxlength="140" class="tc-in" placeholder="e.g. Lower size on this account" value="${v(c.note)}"></div>
+            <div><label for="al-w-${r.id}" class="block text-[10px] text-zinc-600 mb-1">${r.warnL}</label><input id="al-w-${r.id}" type="number" min="0" class="tc-in" value="${v(c.warn)}"></div>
+            ${r.urgL ? `<div><label for="al-u-${r.id}" class="block text-[10px] text-zinc-600 mb-1">${r.urgL}</label><input id="al-u-${r.id}" type="number" min="0" class="tc-in" value="${v(c.urgent)}"></div>` : '<div></div>'}
+            <div><label for="al-n-${r.id}" class="block text-[10px] text-zinc-600 mb-1">What to do (shows on the flag)</label><input id="al-n-${r.id}" type="text" maxlength="140" class="tc-in" placeholder="e.g. Lower size on this account" value="${v(c.note)}"></div>
           </div>
         </div>`;
       }).join('');
@@ -1839,7 +1811,7 @@
       if (!modalPayouts.length) { el.innerHTML = '<div class="text-[11px] text-zinc-600">None logged.</div>'; return; }
       const total = modalPayouts.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
       el.innerHTML = modalPayouts.map((p, i) => `<div class="flex items-center justify-between text-xs border border-white/5 rounded-lg px-3 py-1.5">
-          <span class="text-zinc-400 fl-mono">${esc(p.date || '—')}</span>
+          <span class="text-zinc-400">${esc(p.date || '—')}</span>
           <span class="text-white font-bold">$${(parseFloat(p.amount) || 0).toLocaleString()}</span>
           <button type="button" onclick="removeModalPayout(${i})" class="text-zinc-500 hover:text-red-400 text-[11px] font-bold">Remove</button>
         </div>`).join('') +
@@ -1875,7 +1847,7 @@
       const others = trackerCards.filter(c => c.id !== currentId);
       $id('tc-apply-wrap').classList.toggle('hidden', !others.length);
       $id('tc-apply-list').innerHTML = others.map(c => `<label class="flex items-center gap-2 text-xs text-zinc-300 border border-white/5 rounded-lg px-3 py-2 cursor-pointer hover:bg-white/5">
-          <input type="checkbox" class="tc-apply" value="${esc(c.id)}" data-firm="${esc((c.firm || '').toLowerCase())}" onchange="updateApplyCount()" style="accent-color:var(--fx-orange,#F26B21)">
+          <input type="checkbox" class="tc-apply" value="${esc(c.id)}" data-firm="${esc((c.firm || '').toLowerCase())}" onchange="updateApplyCount()" style="accent-color:#22c55e">
           <span class="truncate">${esc(c.label || 'Tracker')}</span>${c.firm ? `<span class="text-zinc-600 truncate">· ${esc(c.firm)}</span>` : ''}
         </label>`).join('');
       updateApplyCount();
@@ -1942,23 +1914,48 @@
     function fleetGoal(card, m) {
       const goal = card.goal || (m.stage === 'eval' ? 'pass' : m.stage === 'funded' ? 'payout' : m.stage === 'queued' ? 'queued' : 'track');
       const pct = (v, of) => Math.max(0, Math.min(100, Math.round(v / of * 100)));
-      if (goal === 'queued') return { label: 'Passed', note: 'waiting on a slot', pct: 100, col: '#4C6484' };
+      if (goal === 'queued') return { label: 'Passed', note: 'waiting on a slot', pct: 100, col: '#52525b' };
       if (goal === 'pass') {
-        if (!m.target) return { label: 'Target', note: 'not set', pct: 0, col: '#60A5FA' };
+        if (!m.target) return { label: 'Target', note: 'not set', pct: 0, col: '#60a5fa' };
         const left = m.target - m.pnl;
-        return { label: 'Target ' + Math.max(0, Math.round(m.pnl / m.target * 100)) + '%', note: left <= 0 ? 'hit' : '$' + Math.round(left).toLocaleString() + ' to go', pct: pct(m.pnl, m.target), col: '#60A5FA' };
+        return { label: 'Target ' + Math.max(0, Math.round(m.pnl / m.target * 100)) + '%', note: left <= 0 ? 'hit' : '$' + Math.round(left).toLocaleString() + ' to go', pct: pct(m.pnl, m.target), col: '#60a5fa' };
       }
       if (goal === 'payout') {
-        if (!m.payoutLine) return { label: 'Payout', note: 'set a payout line', pct: 0, col: '#22C55E' };
+        if (!m.payoutLine) return { label: 'Payout', note: 'set a payout line', pct: 0, col: '#22c55e' };
         const left = m.payoutLine - m.profit;
-        return { label: left <= 0 ? 'Payout ready' : 'Payout ' + Math.max(0, Math.round(m.profit / m.payoutLine * 100)) + '%', note: left <= 0 ? (m.minDays ? m.payoutDays + '/' + m.minDays + ' days' : 'past line') : '$' + Math.round(left).toLocaleString() + ' to go', pct: pct(m.profit, m.payoutLine), col: '#22C55E' };
+        return { label: left <= 0 ? 'Payout ready' : 'Payout ' + Math.max(0, Math.round(m.profit / m.payoutLine * 100)) + '%', note: left <= 0 ? (m.minDays ? m.payoutDays + '/' + m.minDays + ' days' : 'past line') : '$' + Math.round(left).toLocaleString() + ' to go', pct: pct(m.profit, m.payoutLine), col: '#22c55e' };
       }
       if (goal === 'buffer') {
-        if (m.cushion === null) return { label: 'Buffer', note: 'needs size + DD', pct: 0, col: '#F0A81C' };
-        return { label: 'Buffer ' + pct(m.cushion, m.ddLimit) + '%', note: 'of $' + Math.round(m.ddLimit).toLocaleString(), pct: pct(m.cushion, m.ddLimit), col: '#F0A81C' };
+        if (m.cushion === null) return { label: 'Buffer', note: 'needs size + DD', pct: 0, col: '#f59e0b' };
+        return { label: 'Buffer ' + pct(m.cushion, m.ddLimit) + '%', note: 'of $' + Math.round(m.ddLimit).toLocaleString(), pct: pct(m.cushion, m.ddLimit), col: '#f59e0b' };
       }
       return { label: '—', note: '', pct: 0, col: 'transparent' };
     }
+
+    // Same class strings the Trackers / My Accounts tabs use, so the Fleet
+    // tab reads as part of the same page (fonts, cards, badges, buttons).
+    const CL = {
+      card:   'border border-white/10 bg-zinc-950/40 rounded-2xl',
+      head:   'text-xs font-black text-zinc-400 uppercase tracking-wider',
+      label:  'text-[10px] text-zinc-500 uppercase tracking-wider',
+      btn:    'text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition whitespace-nowrap',
+      ghost:  'text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 text-zinc-400 hover:text-white transition whitespace-nowrap',
+      primary:'px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition',
+      badge:  'text-[10px] font-bold px-2 py-0.5 rounded-full border whitespace-nowrap',
+      chipOn: 'text-xs font-bold px-3 py-1.5 rounded-full border border-green-500/40 bg-green-500/10 text-green-400 transition whitespace-nowrap',
+      chipOff:'text-xs font-bold px-3 py-1.5 rounded-full border border-white/10 text-zinc-500 hover:text-zinc-300 transition whitespace-nowrap',
+      input:  'bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-xl focus:outline-none focus:border-green-500/50 placeholder-zinc-700',
+      edit:   'p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition'
+    };
+    const LV = {
+      over:   'bg-red-500/10 text-red-400 border-red-500/30',
+      urgent: 'bg-red-500/10 text-red-400 border-red-500/20',
+      heads:  'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
+      payout: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+      info:   'lv-info',
+      muted:  'bg-zinc-500/10 text-zinc-400 border-white/10'
+    };
+    const COL = { red: '#ef4444', amber: '#f59e0b', green: '#22c55e', blue: '#60a5fa', dim: '#52525b' };
 
     function renderFleet() {
       const root = document.getElementById('fleet-root');
@@ -1969,11 +1966,10 @@
         root.innerHTML = `<div class="border border-amber-500/30 bg-amber-500/[0.06] rounded-2xl p-5">
           <div class="text-white font-bold text-sm">Couldn't load your trackers</div>
           <p class="text-zinc-400 text-xs mt-1">Nothing has been deleted. Warnings are paused until they load.</p>
-          <button onclick="retryTrackerLoad().then(renderFleet)" class="mt-3 fl-btn">Try again</button></div>`;
+          <button onclick="retryTrackerLoad().then(renderFleet)" class="mt-3 ${CL.btn}">Try again</button></div>`;
         return;
       }
 
-      // Evaluate every card once.
       fleetCache = {};
       const rows = trackerCards.map(card => {
         let res;
@@ -1995,7 +1991,7 @@
       const nHidden = rows.reduce((s, r) => s + r.hid.length, 0);
       const byStage = st => active.filter(r => r.m.stage === st).length;
 
-      // ── Import summary ──
+      // ── Review summary ──
       let latest = null;
       journalTrades.forEach(t => { if (t.importBatch && t.importedAt && (!latest || t.importedAt > latest.at)) latest = { id: t.importBatch, at: t.importedAt, label: t.importBatchLabel || 'Import' }; });
       let importLine = 'No tracked imports yet.';
@@ -2003,27 +1999,31 @@
         const batch = journalTrades.filter(t => t.importBatch === latest.id);
         const accts = new Set(batch.map(t => t.accountName || t.accountType).filter(Boolean));
         const ago = FSDXTracker.daysBetween(FSDXTracker.localDate(new Date(latest.at)), today);
-        importLine = `Latest import: <b class="text-white">${esc(latest.label)}</b> · ${ago === 0 ? 'today' : ago === 1 ? 'yesterday' : ago + ' days ago'} · ${batch.length} trade${batch.length === 1 ? '' : 's'} across ${accts.size} account${accts.size === 1 ? '' : 's'}`;
+        importLine = `Latest import: <span class="text-white font-bold">${esc(latest.label)}</span> · ${ago === 0 ? 'today' : ago === 1 ? 'yesterday' : ago + ' days ago'} · ${batch.length} trade${batch.length === 1 ? '' : 's'} across ${accts.size} account${accts.size === 1 ? '' : 's'}`;
       }
       const lastOnFile = journalTrades.reduce((d, t) => t.date && t.date > d ? t.date : d, '');
       const toReview = active.reduce((s, r) => s + r.vis.filter(a => a.level !== 'info').length, 0);
 
-      const summary = `<div class="fl-card" style="padding:16px 18px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;border-color:${toReview ? 'color-mix(in srgb, var(--fx-orange,#F26B21) 45%, transparent)' : 'rgba(255,255,255,.1)'}">
-        <div style="flex:1;min-width:240px">
+      const summary = `<div class="${CL.card} px-5 py-4 flex items-center justify-between gap-4 flex-wrap">
+        <div class="min-w-0" style="flex:1 1 280px">
           <div class="text-sm font-black text-white">${toReview ? toReview + ' warning' + (toReview === 1 ? '' : 's') + ' to review' : 'Nothing needs attention'}</div>
-          <div class="text-xs text-zinc-400 mt-1">${importLine}${lastOnFile ? ` · last trade on file ${esc(FSDXTracker.niceDate(lastOnFile))}` : ''}</div>
-          <div class="text-[11px] text-zinc-600 mt-1">Inactivity counts from your last trade date and keeps running between imports. Balance, drawdown and payout figures update when you import.</div>
+          <div class="text-xs text-zinc-500 mt-1">${importLine}${lastOnFile ? ` · last trade on file ${esc(FSDXTracker.niceDate(lastOnFile))}` : ''}</div>
+          <div class="text-[10px] text-zinc-600 mt-1">Inactivity counts from your last trade date and keeps running between imports. Balance, drawdown and payout figures update when you import.</div>
         </div>
-        <a href="converter.html" class="fl-btn solid" style="display:inline-flex;align-items:center">Import trades</a>
+        <a href="converter.html" class="${CL.ghost}">Import trades</a>
       </div>`;
 
-      const kpi = (label, val, sub, col) => `<div class="fl-card fl-kpi"><div class="fl-eyebrow">${label}</div><b style="color:${col}">${val}</b><small>${sub}</small></div>`;
+      const kpi = (label, val, sub, col) => `<div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4 text-center">
+          <div class="${CL.label} mb-1">${label}</div>
+          <div class="text-base font-black" style="color:${col}">${val}</div>
+          <div class="text-[10px] text-zinc-600 mt-0.5">${sub}</div>
+        </div>`;
       const kpis = `<div class="fl-kpis">
-        ${kpi('Accounts', active.length, [byStage('eval') + ' eval', byStage('funded') + ' funded', byStage('queued') ? byStage('queued') + ' queued' : ''].filter(Boolean).join(' · '), '#E4ECF6')}
-        ${kpi('Urgent', nUrgent, 'accounts · act before next session', nUrgent ? '#F87171' : '#647E9C')}
-        ${kpi('Heads-up', nHeads, 'accounts getting close', nHeads ? '#F5C35A' : '#647E9C')}
-        ${kpi('Ready', nPayout, 'payout line or target hit', nPayout ? '#4ADE80' : '#647E9C')}
-        ${kpi('Put away', nHidden, 'snoozed · handled · ignored', '#A3B8D2')}
+        ${kpi('Accounts', active.length, [byStage('eval') + ' eval', byStage('funded') + ' funded', byStage('queued') ? byStage('queued') + ' queued' : ''].filter(Boolean).join(' · '), '#e4e4e7')}
+        ${kpi('Urgent', nUrgent, 'accounts', nUrgent ? COL.red : '#71717a')}
+        ${kpi('Heads-up', nHeads, 'accounts', nHeads ? COL.amber : '#71717a')}
+        ${kpi('Ready', nPayout, 'payout line or target hit', nPayout ? COL.green : '#71717a')}
+        ${kpi('Put away', nHidden, 'snoozed · handled · ignored', '#71717a')}
       </div>`;
 
       // ── Needs attention ──
@@ -2033,54 +2033,56 @@
       attn.sort((x, y) => (x.a.hiddenBy ? 1 : 0) - (y.a.hiddenBy ? 1 : 0) || FSDXTracker.LEVEL_RANK[x.a.level] - FSDXTracker.LEVEL_RANK[y.a.level] || (x.r.card.label || '').localeCompare(y.r.card.label || ''));
       const stageName = st => FSDXTracker.STAGES[st] || '—';
       const cid = r => esc(r.card.id);
-      const attnRows = attn.map(({ r, a }) => `<div class="fl-alert" style="${a.hiddenBy ? 'opacity:.55' : ''}">
-          <span class="fl-pill lv-${a.level}" style="justify-self:start">${LEVEL_LABEL[a.level]}</span>
+      const attnRows = attn.map(({ r, a }) => `<div class="fl-alert px-5 py-3 border-t border-white/5" style="${a.hiddenBy ? 'opacity:.55' : ''}">
+          <span class="${CL.badge} ${LV[a.level]}" style="justify-self:start">${LEVEL_LABEL[a.level]}</span>
           <div class="min-w-0">
             <div class="text-sm font-black text-white truncate">${esc(r.card.label || 'Tracker')}</div>
-            <div class="text-[11px] text-zinc-500 truncate">${[r.card.firm, stageName(r.m.stage)].filter(Boolean).map(esc).join(' · ')}</div>
+            <div class="text-[10px] text-zinc-600 truncate">${[r.card.firm, stageName(r.m.stage)].filter(Boolean).map(esc).join(' · ')}</div>
           </div>
           <div class="min-w-0">
-            <div class="text-sm font-semibold text-white">${esc(a.title)}</div>
-            ${a.detail ? `<div class="text-xs text-zinc-400 mt-0.5">${esc(a.detail)}</div>` : ''}
-            ${a.note ? `<div class="text-xs font-semibold mt-1" style="color:#FF9A5C">Your note: ${esc(a.note)}</div>` : ''}
-            ${a.hiddenBy ? `<div class="text-[11px] text-zinc-500 mt-1">${a.hiddenBy === 'snoozed' ? 'Snoozed until tomorrow' : a.hiddenBy === 'handled' ? 'Marked handled' : 'Ignored'}</div>` : ''}
+            <div class="text-sm font-bold text-white">${esc(a.title)}</div>
+            ${a.detail ? `<div class="text-xs text-zinc-500 mt-0.5">${esc(a.detail)}</div>` : ''}
+            ${a.note ? `<div class="text-xs font-bold text-green-400 mt-1">Your note: ${esc(a.note)}</div>` : ''}
+            ${a.hiddenBy ? `<div class="text-[10px] text-zinc-600 mt-1">${a.hiddenBy === 'snoozed' ? 'Snoozed until tomorrow' : a.hiddenBy === 'handled' ? 'Marked handled' : 'Ignored'}</div>` : ''}
           </div>
           <div class="acts">
             ${a.hiddenBy
-              ? `<button class="fl-btn" onclick="fleetAction('${cid(r)}','${esc(a.id)}','restore')">Restore</button>`
-              : `${a.rule === 'payout' && a.level === 'payout' ? `<button class="fl-btn" onclick="openEditCard('${cid(r)}');setTimeout(()=>document.getElementById('tc-po-amt').focus(),60)">Log payout</button>` : ''}
-                 <button class="fl-btn" onclick="fleetAction('${cid(r)}','${esc(a.id)}','snooze')" title="Hide until tomorrow">Snooze</button>
-                 <button class="fl-btn" onclick="fleetAction('${cid(r)}','${esc(a.id)}','ignore')" title="Hide unless it gets worse">Ignore</button>
-                 <button class="fl-btn solid" onclick="fleetAction('${cid(r)}','${esc(a.id)}','handled')" title="Hide until new trades change it">Handled</button>`}
+              ? `<button class="${CL.btn}" onclick="fleetAction('${cid(r)}','${esc(a.id)}','restore')">Restore</button>`
+              : `${a.rule === 'payout' && a.level === 'payout' ? `<button class="${CL.ghost}" onclick="openEditCard('${cid(r)}');setTimeout(()=>document.getElementById('tc-po-amt').focus(),60)">Log payout</button>` : ''}
+                 <button class="${CL.ghost}" onclick="fleetAction('${cid(r)}','${esc(a.id)}','snooze')" title="Hide until tomorrow">Snooze</button>
+                 <button class="${CL.ghost}" onclick="fleetAction('${cid(r)}','${esc(a.id)}','ignore')" title="Hide unless it gets worse">Ignore</button>
+                 <button class="${CL.btn}" onclick="fleetAction('${cid(r)}','${esc(a.id)}','handled')" title="Hide until new trades change it">Handled</button>`}
           </div>
         </div>`).join('');
-      const attnBox = `<section class="fl-card" style="overflow:hidden">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;flex-wrap:wrap">
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-            <h2 class="text-sm font-black uppercase tracking-wider text-white" style="margin:0">Needs attention</h2>
-            ${(() => { const c = lv => attn.filter(x => !x.a.hiddenBy && lv.includes(x.a.level)).length;
-               const u = c(['over','urgent']), h = c(['heads']), p = c(['payout']);
-               return (u ? `<span class="fl-pill lv-urgent">${u} urgent</span>` : '') + (h ? `<span class="fl-pill lv-heads">${h} heads-up</span>` : '') + (p ? `<span class="fl-pill lv-payout">${p} ready</span>` : ''); })()}
+      const pc = lv => attn.filter(x => !x.a.hiddenBy && lv.includes(x.a.level)).length;
+      const pu = pc(['over', 'urgent']), ph = pc(['heads']), pp = pc(['payout']);
+      const attnBox = `<section class="${CL.card} overflow-hidden">
+        <div class="px-5 py-4 flex items-center justify-between gap-3 flex-wrap">
+          <div class="flex items-center gap-2 flex-wrap">
+            <div class="${CL.head}">Needs attention</div>
+            ${pu ? `<span class="${CL.badge} ${LV.urgent}">${pu} urgent</span>` : ''}
+            ${ph ? `<span class="${CL.badge} ${LV.heads}">${ph} heads-up</span>` : ''}
+            ${pp ? `<span class="${CL.badge} ${LV.payout}">${pp} ready</span>` : ''}
           </div>
-          ${nHidden ? `<button class="fl-btn" onclick="fleetShowHidden=!fleetShowHidden;renderFleet()">${fleetShowHidden ? 'Hide put-away' : 'Show put-away (' + nHidden + ')'}</button>` : ''}
+          ${nHidden ? `<button class="${CL.ghost}" onclick="fleetShowHidden=!fleetShowHidden;renderFleet()">${fleetShowHidden ? 'Hide put-away' : 'Show put-away (' + nHidden + ')'}</button>` : ''}
         </div>
-        ${attnRows || `<div class="text-xs text-zinc-500" style="padding:4px 18px 16px">All clear on the data you've imported.${!trackerCards.some(c => c.alerts) ? ' Edit a tracker to switch on the warnings you want — inactivity, pullback and consistency start off.' : ''}</div>`}
+        ${attnRows || `<div class="text-xs text-zinc-500 px-5 pb-4">All clear on the data you've imported.${!trackerCards.some(c => c.alerts) ? ' Edit a tracker to switch on the warnings you want — inactivity, pullback and consistency start off.' : ''}</div>`}
       </section>`;
 
-      // ── Registry accounts with no tracker yet ──
+      // ── My Accounts entries with no tracker ──
       const tracked = new Set(trackerCards.map(c => c.filterName).filter(Boolean));
       const untracked = journalAccounts.filter(a => a.name && !tracked.has(a.name));
-      const nudge = untracked.length ? `<div class="fl-card" style="padding:14px 18px">
+      const nudge = untracked.length ? `<div class="${CL.card} px-5 py-4">
         <div class="text-xs font-bold text-zinc-300">${untracked.length} account${untracked.length === 1 ? '' : 's'} in My Accounts ${untracked.length === 1 ? 'has' : 'have'} no tracker yet — no warnings for ${untracked.length === 1 ? 'it' : 'them'}.</div>
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${untracked.slice(0, 40).map(a => `<button class="fl-btn" data-name="${esc(a.name)}" onclick="openNewCardFor(this.dataset.name)">+ ${esc(a.name)}</button>`).join('')}</div>
+        <div class="flex gap-2 flex-wrap mt-3">${untracked.slice(0, 40).map(a => `<button class="${CL.btn}" data-name="${esc(a.name)}" onclick="openNewCardFor(this.dataset.name)">+ ${esc(a.name)}</button>`).join('')}</div>
         <div class="text-[10px] text-zinc-600 mt-2">Tip: set one up, then use “Copy rules from” or “Also apply these rules to…” for the rest.</div>
       </div>` : '';
 
       if (!trackerCards.length) {
-        root.innerHTML = summary + nudge + `<div class="fl-card text-center" style="padding:48px 20px">
+        root.innerHTML = summary + nudge + `<div class="text-center py-20">
           <h3 class="text-xl font-black mb-2">No accounts tracked yet</h3>
-          <p class="text-zinc-500 text-sm mb-5" style="max-width:440px;margin-left:auto;margin-right:auto">Set up a tracker per account — firm rules, payout line and your own warning lines. Then every import tells you which accounts need attention.</p>
-          <button onclick="openNewCard()" class="fl-btn primary" style="height:42px;padding:0 20px">+ New Tracker</button>
+          <p class="text-zinc-500 text-sm mb-6 max-w-md mx-auto">Set up a tracker per account — firm rules, payout line and your own warning lines. Then every import tells you which accounts need attention.</p>
+          <button onclick="openNewCard()" class="${CL.primary}">+ New Tracker</button>
         </div>`;
         return;
       }
@@ -2107,48 +2109,51 @@
         return true;
       }).sort((a, b) => a.worst - b.worst || (a.card.label || '').localeCompare(b.card.label || '', undefined, { numeric: true }));
 
-      const dotCol = w => w <= 1 ? '#EF4444' : w === 2 ? '#22C55E' : w === 3 ? '#F0A81C' : '#31465F';
-      const stageCls = { eval: 'lv-info', funded: 'lv-payout', queued: 'lv-muted', personal: 'lv-muted', archived: 'lv-muted', other: 'lv-muted' };
+      // Status dot uses the same colours as the tracker cards' dot.
+      const dotCls = w => w <= 1 ? 'bg-red-400' : w === 2 ? 'bg-green-400' : w === 3 ? 'bg-yellow-400' : 'bg-green-400';
+      const stageCls = { eval: LV.info, funded: LV.payout, queued: LV.muted, personal: LV.muted, archived: LV.muted, other: LV.muted };
       const tableRows = shown.map(r => {
         const { card, m } = r;
         const cfgC = FSDXTracker.alertCfg(card, 'cushion');
         const cfgI = FSDXTracker.alertCfg(card, 'inactivity');
-        const cushCol = m.cushion === null ? '#31465F' : m.cushion <= 0 || (cfgC.urgent != null && m.cushion <= cfgC.urgent) ? '#EF4444' : (cfgC.warn != null && m.cushion <= cfgC.warn) ? '#F0A81C' : '#22C55E';
+        const cushCol = m.cushion === null ? COL.dim : m.cushion <= 0 || (cfgC.urgent != null && m.cushion <= cfgC.urgent) ? COL.red : (cfgC.warn != null && m.cushion <= cfgC.warn) ? COL.amber : COL.green;
         const cushPct = m.cushion === null ? 0 : Math.max(0, Math.min(100, Math.round(m.cushion / m.ddLimit * 100)));
         const locked = m.floor !== null && card.floorLock && m.floor === parseFloat(card.floorLock);
         const g = fleetGoal(card, m);
         const idle = m.lastTrade ? FSDXTracker.daysBetween(m.lastTrade, today) : null;
-        const idleCol = idle === null ? '#647E9C' : cfgI.on && ((m.limitDays && idle >= m.limitDays) || (cfgI.urgent != null && idle >= cfgI.urgent)) ? '#F87171' : cfgI.on && cfgI.warn != null && idle >= cfgI.warn ? '#F5C35A' : '#A3B8D2';
-        const flags = r.vis.slice(0, 2).map(a => `<span class="fl-flag lv-${a.level}" title="${esc(a.title)}">${esc(a.title)}</span>`).join(' ');
-        const more = r.vis.length > 2 ? `<span class="fl-flag lv-muted">+${r.vis.length - 2}</span>` : '';
-        const balTxt = m.balance === null ? (m.pnl >= 0 ? '+' : '−') + '$' + Math.round(Math.abs(m.pnl)).toLocaleString() : (m.profit >= 0 ? '+' : '−') + '$' + Math.round(Math.abs(m.profit)).toLocaleString();
-        return `<div class="fl-grid fl-row ${r.worst <= 1 ? 'hot' : ''}" onclick="openCardDetail('${cid(r)}')">
-          <div class="c-acct" style="display:flex;gap:10px;align-items:center;min-width:0">
-            <span class="fl-dot" style="background:${dotCol(r.worst)}"></span>
-            <div style="min-width:0">
+        const idleCls = idle === null ? 'text-zinc-600' : cfgI.on && ((m.limitDays && idle >= m.limitDays) || (cfgI.urgent != null && idle >= cfgI.urgent)) ? 'text-red-400' : cfgI.on && cfgI.warn != null && idle >= cfgI.warn ? 'text-yellow-400' : 'text-zinc-300';
+        const flags = r.vis.slice(0, 2).map(a => `<span class="fl-flag ${CL.badge} ${LV[a.level]}" title="${esc(a.title)}">${esc(a.title)}</span>`).join(' ');
+        const more = r.vis.length > 2 ? `<span class="${CL.badge} ${LV.muted}">+${r.vis.length - 2}</span>` : '';
+        const pl = m.balance === null ? m.pnl : m.profit;
+        const plTxt = (pl >= 0 ? '+' : '-') + '$' + Math.round(Math.abs(pl)).toLocaleString();
+        const inactive = m.stage === 'queued' || m.stage === 'archived';
+        return `<div class="fl-grid fl-row px-5 py-3.5 border-t border-white/5" onclick="openCardDetail('${cid(r)}')">
+          <div class="c-acct flex items-center gap-2.5 min-w-0">
+            <span class="fl-dot ${inactive ? 'bg-zinc-600' : dotCls(r.worst)}"></span>
+            <div class="min-w-0">
               <div class="text-sm font-black text-white truncate">${esc(card.label || 'Tracker')}</div>
-              <div class="text-[11px] text-zinc-500 truncate">${esc([card.firm, card.filterName && card.filterName !== card.label ? card.filterName : ''].filter(Boolean).join(' · ') || (card.filterType || 'All trades'))}</div>
+              <div class="text-[10px] text-zinc-600 truncate">${esc([card.firm, card.filterName && card.filterName !== card.label ? card.filterName : ''].filter(Boolean).join(' · ') || (card.filterType || 'All trades'))}</div>
             </div>
           </div>
-          <div><span class="fl-lbl">Stage</span><span class="fl-flag ${stageCls[m.stage] || 'lv-muted'}">${esc(stageName(m.stage))}</span></div>
-          <div><span class="fl-lbl">P&amp;L</span><span class="fl-mono text-sm font-bold" style="color:${(m.balance === null ? m.pnl : m.profit) >= 0 ? '#34D399' : '#F87171'}">${balTxt}</span>${m.withdrawn ? `<div class="text-[10px] text-zinc-600">$${Math.round(m.withdrawn).toLocaleString()} paid out</div>` : ''}</div>
-          <div><span class="fl-lbl">Cushion to floor</span>${m.stage === 'queued' || m.stage === 'archived' ? '<span class="text-[11px] text-zinc-600">not active</span>' : m.cushion === null ? '<span class="text-[11px] text-zinc-600">needs size + DD</span>' : `<div style="display:flex;justify-content:space-between;gap:6px;font-size:11px"><span class="fl-mono font-bold" style="color:${cushCol}">$${Math.round(Math.max(0, m.cushion)).toLocaleString()}</span><span class="text-zinc-600">${locked ? 'floor locked' : 'of $' + Math.round(m.ddLimit).toLocaleString()}</span></div><div class="fl-bar"><i style="width:${cushPct}%;background:${cushCol}"></i></div>`}</div>
-          <div><span class="fl-lbl">Goal</span><div style="display:flex;justify-content:space-between;gap:6px;font-size:11px"><span class="font-bold text-white">${esc(g.label)}</span><span class="text-zinc-600">${esc(g.note)}</span></div>${g.col !== 'transparent' ? `<div class="fl-bar"><i style="width:${g.pct}%;background:${g.col}"></i></div>` : ''}</div>
-          <div><span class="fl-lbl">Last trade</span><span class="fl-mono text-xs font-bold" style="color:${idleCol}" title="${esc(m.lastTrade || '')}">${idle === null ? '—' : idle === 0 ? 'Today' : idle + 'd ago'}</span></div>
-          <div class="c-flags" style="display:flex;gap:5px;flex-wrap:wrap;min-width:0">${flags || '<span class="fl-flag lv-muted">Clear</span>'}${more}</div>
-          <div class="c-edit"><button class="fl-edit" aria-label="Edit ${esc(card.label || 'tracker')}" onclick="event.stopPropagation();openEditCard('${cid(r)}')"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg></button></div>
+          <div><div class="fl-lbl ${CL.label}">Stage</div><span class="${CL.badge} ${stageCls[m.stage] || LV.muted}">${esc(stageName(m.stage))}</span></div>
+          <div><div class="fl-lbl ${CL.label}">P&amp;L</div><div class="text-sm font-black ${pl >= 0 ? 'text-emerald-400' : 'text-red-400'}">${plTxt}</div>${m.withdrawn ? `<div class="text-[10px] text-zinc-600">$${Math.round(m.withdrawn).toLocaleString()} paid out</div>` : ''}</div>
+          <div><div class="fl-lbl ${CL.label}">Cushion to floor</div>${inactive ? '<span class="text-[10px] text-zinc-600">not active</span>' : m.cushion === null ? '<span class="text-[10px] text-zinc-600">needs size + DD</span>' : `<div class="flex items-center justify-between gap-2 flex-wrap"><span class="text-xs font-bold whitespace-nowrap" style="color:${cushCol}">$${Math.round(Math.max(0, m.cushion)).toLocaleString()}</span><span class="text-[10px] text-zinc-600">${locked ? 'floor locked' : 'of $' + Math.round(m.ddLimit).toLocaleString()}</span></div><div class="fl-bar"><i style="width:${cushPct}%;background:${cushCol}"></i></div>`}</div>
+          <div><div class="fl-lbl ${CL.label}">Goal</div><div class="flex items-center justify-between gap-2 flex-wrap"><span class="text-xs font-bold text-white whitespace-nowrap">${esc(g.label)}</span><span class="text-[10px] text-zinc-600 whitespace-nowrap">${esc(g.note)}</span></div>${g.col !== 'transparent' ? `<div class="fl-bar"><i style="width:${g.pct}%;background:${g.col}"></i></div>` : ''}</div>
+          <div><div class="fl-lbl ${CL.label}">Last trade</div><span class="text-xs font-bold ${idleCls}" title="${esc(m.lastTrade || '')}">${idle === null ? '—' : idle === 0 ? 'Today' : idle + 'd ago'}</span></div>
+          <div class="c-flags flex gap-1.5 flex-wrap min-w-0">${flags || `<span class="${CL.badge} ${LV.muted}">Clear</span>`}${more}</div>
+          <div class="c-edit"><button class="${CL.edit}" aria-label="Edit ${esc(card.label || 'tracker')}" onclick="event.stopPropagation();openEditCard('${cid(r)}')"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg></button></div>
         </div>`;
       }).join('');
 
-      const table = `<section class="fl-card" style="overflow:hidden">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 18px;flex-wrap:wrap">
-          <div style="display:flex;gap:6px;flex-wrap:wrap">${chipDefs.map(([id, label, n]) => `<button class="fl-chip ${fleetFilter === id ? 'on' : ''}" onclick="fleetFilter='${id}';renderFleet()">${label} ${n}</button>`).join('')}</div>
-          <input id="fleet-q" class="fl-search" type="search" placeholder="Search name or firm" aria-label="Search accounts" value="${esc(fleetQuery)}" oninput="fleetQuery=this.value;renderFleet();const e=document.getElementById('fleet-q');e.focus();e.setSelectionRange(e.value.length,e.value.length)">
+      const table = `<section class="${CL.card} overflow-hidden">
+        <div class="px-5 py-4 flex items-center justify-between gap-3 flex-wrap">
+          <div class="flex gap-2 flex-wrap">${chipDefs.map(([id, label, n]) => `<button class="${fleetFilter === id ? CL.chipOn : CL.chipOff}" onclick="fleetFilter='${id}';renderFleet()">${label} ${n}</button>`).join('')}</div>
+          <input id="fleet-q" class="fl-search ${CL.input}" style="width:200px" type="search" placeholder="Search name or firm" aria-label="Search accounts" value="${esc(fleetQuery)}" oninput="fleetQuery=this.value;renderFleet();const e=document.getElementById('fleet-q');e.focus();e.setSelectionRange(e.value.length,e.value.length)">
         </div>
-        <div class="fl-grid fl-head fl-eyebrow"><span>Account</span><span>Stage</span><span>P&amp;L</span><span>Cushion to floor</span><span>Goal</span><span>Last trade</span><span>Flags</span><span></span></div>
-        ${tableRows || '<div class="text-xs text-zinc-500" style="padding:22px 18px;text-align:center">No accounts match.</div>'}
+        <div class="fl-grid fl-head px-5 py-2.5 border-t border-white/5 ${CL.label}"><span>Account</span><span>Stage</span><span>P&amp;L</span><span>Cushion to floor</span><span>Goal</span><span>Last trade</span><span>Flags</span><span></span></div>
+        ${tableRows || '<div class="text-xs text-zinc-500 py-6 text-center">No accounts match.</div>'}
       </section>
-      <div class="text-[11px] text-zinc-600">Click a row for the full tracker. Warnings use the lines you set on each tracker and your imported trades — they're a reminder, not a statement of what your firm has done. Check the firm's dashboard for the official numbers.</div>`;
+      <div class="text-[10px] text-zinc-600">Click a row for the full tracker. Warnings use the lines you set on each tracker and your imported trades — they're a reminder, not a statement of what your firm has done. Check the firm's dashboard for the official numbers.</div>`;
 
       root.innerHTML = summary + kpis + attnBox + nudge + table;
     }
