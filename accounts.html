@@ -120,7 +120,7 @@
             </div>
             <button onclick="openNewCard()" id="new-tracker-btn" class="inline-flex shrink-0 items-center justify-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-              New Tracker
+              Add Account
             </button>
           </div>
 
@@ -153,46 +153,9 @@
                 <div class="text-xs text-zinc-500 uppercase tracking-wider">My Accounts</div>
                 <div id="accounts-count" class="text-[10px] text-zinc-600 uppercase tracking-wider"></div>
               </div>
-              <div id="accounts-list" class="space-y-2 mb-5"></div>
+              <div id="accounts-list" class="space-y-2 mb-4"></div>
 
-              <!-- Add/Edit form -->
-              <div id="account-form" class="border border-white/10 bg-zinc-900/50 rounded-xl p-4 space-y-3">
-                <div class="text-xs text-zinc-400 font-bold mb-1" id="account-form-title">Add Account</div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Nickname <span class="text-red-500">*</span></label>
-                    <input id="af-name" type="text" placeholder="e.g. Apex Funded #1" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                  </div>
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Account # <span class="text-amber-500/80">— required for auto-import</span></label>
-                    <input id="af-number" type="text" placeholder="e.g. ABC12345678" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                    <p class="text-[10px] text-zinc-600 mt-1">Must match the <span class="text-zinc-500 font-mono">Account</span> column in your Tradovate export so imports route here automatically.</p>
-                  </div>
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Account Size — Optional</label>
-                    <input id="af-size" type="number" placeholder="e.g. 50000" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                  </div>
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Type</label>
-                    <select id="af-type" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50">
-                      <option value="">Select...</option>
-                      <option value="Funded">Funded</option>
-                      <option value="Evaluation">Evaluation</option>
-                      <option value="Personal">Personal</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="block text-xs text-zinc-600 mb-1">Commission — Optional</label>
-                    <input id="af-comm" type="number" step="0.01" min="0" placeholder="e.g. 0.37" class="w-full bg-black border border-white/10 text-white text-sm px-3 py-2 rounded-lg focus:outline-none focus:border-green-500/50 placeholder-zinc-700">
-                    <p class="text-[10px] text-zinc-600 mt-1">All-in rate <span class="text-zinc-500">per side</span> (commission + exchange/NFA/clearing). Charged on entry <span class="text-zinc-500">and</span> exit — <span class="text-zinc-500">not</span> a round-turn figure. Common: $0.37–$0.85.</p>
-                  </div>
-                </div>
-                <div id="af-msg" class="hidden text-xs py-1.5 rounded-lg text-center"></div>
-                <div class="flex gap-2">
-                  <button onclick="saveAccount()" class="flex-1 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-lg transition" id="af-btn">+ Add Account</button>
-                  <button onclick="cancelEditAccount()" id="af-cancel" class="hidden px-4 py-2 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-lg transition">Cancel</button>
-                </div>
-              </div>
+              <div class="text-[10px] text-zinc-600">Add or edit an account with the <span class="text-zinc-400 font-bold">Add Account</span> button or the pencil — it's the same setup as Fleet. Name, account #, size, stage and commission is enough; firm rules and warnings are optional.</div>
             </div>
 
           </div>
@@ -334,17 +297,34 @@
                 <input id="tc-firm" type="text" list="tc-firm-list" placeholder="e.g. Tradeify" class="tc-in">
                 <datalist id="tc-firm-list"></datalist>
               </div>
+              <div>
+                <label for="tc-acctnum" class="block text-xs text-zinc-600 mb-1">Account # <span class="text-amber-500/80">— for imports</span></label>
+                <input id="tc-acctnum" type="text" placeholder="e.g. ABC12345678" class="tc-in">
+              </div>
+              <div>
+                <label for="tc-comm" class="block text-xs text-zinc-600 mb-1">Commission <span class="text-zinc-600">— $ per side</span></label>
+                <input id="tc-comm" type="number" step="0.01" min="0" placeholder="e.g. 0.52" class="tc-in">
+              </div>
+              <div class="col-span-2 text-[10px] text-zinc-600 -mt-1">Account # must match the <span class="text-zinc-500">Account</span> column in your Tradovate export so imports route here. Commission is the all-in rate per side (charged on entry and exit).</div>
               <div class="col-span-2">
-                <label for="tc-name" class="block text-xs text-zinc-600 mb-1">Trades from <span class="text-zinc-600">— an account in My Accounts</span></label>
-                <select id="tc-name" class="tc-in"><option value="">Any Account</option></select>
-                <details class="mt-1.5">
-                  <summary class="text-[10px] text-zinc-600 cursor-pointer hover:text-zinc-400">Track a group instead (all evals, all funded…)</summary>
-                  <select id="tc-type" onchange="updateNameDropdown()" class="tc-in mt-2">
-                    <option value="">Any Type</option>
-                    <option value="Evaluation">Evaluation</option>
-                    <option value="Funded">Funded</option>
-                    <option value="Personal">Personal</option>
-                  </select>
+                <details id="tc-adv">
+                  <summary class="text-[10px] text-zinc-600 cursor-pointer hover:text-zinc-400">Advanced — link to a different account, or track a group</summary>
+                  <div class="grid grid-cols-2 gap-3 mt-2">
+                    <div>
+                      <label for="tc-name" class="block text-[10px] text-zinc-600 mb-1">Trades filed under</label>
+                      <select id="tc-name" class="tc-in"><option value="">This account</option></select>
+                    </div>
+                    <div>
+                      <label for="tc-type" class="block text-[10px] text-zinc-600 mb-1">Or every account of type</label>
+                      <select id="tc-type" onchange="updateNameDropdown()" class="tc-in">
+                        <option value="">—</option>
+                        <option value="Evaluation">Evaluation</option>
+                        <option value="Funded">Funded</option>
+                        <option value="Personal">Personal</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="text-[10px] text-zinc-600 mt-1.5">A group (type set, "This account" left as is) has no account # — it adds up every account of that type.</div>
                 </details>
               </div>
             </div>
@@ -393,7 +373,7 @@
               <div class="text-[10px] text-zinc-600 mt-1">Copy from your firm's rules page. Leave blank what your firm doesn't have.</div>
             </div>
             <div class="grid grid-cols-3 gap-3">
-              <div><label for="tc-size" class="block text-xs text-zinc-600 mb-1">Account size <span class="text-red-500">*</span></label><input id="tc-size" type="number" placeholder="50000" class="tc-in"></div>
+              <div><label for="tc-size" class="block text-xs text-zinc-600 mb-1">Account size</label><input id="tc-size" type="number" placeholder="50000" class="tc-in"></div>
               <div><label for="tc-maxdd" class="block text-xs text-zinc-600 mb-1">Max drawdown</label><input id="tc-maxdd" type="number" placeholder="2000" class="tc-in"></div>
               <div><label for="tc-floorlock" class="block text-xs text-zinc-600 mb-1">Floor locks at</label><input id="tc-floorlock" type="number" placeholder="optional" class="tc-in"></div>
               <div><label for="tc-target" class="block text-xs text-zinc-600 mb-1">Profit target</label><input id="tc-target" type="number" placeholder="eval only" class="tc-in"></div>
@@ -467,7 +447,7 @@
 
       <div class="flex items-center justify-between gap-3 px-6 py-4 border-t border-white/10">
         <div id="delete-btn-wrap" class="hidden">
-          <button onclick="deleteCard()" class="text-xs text-red-400 hover:text-red-300 font-bold px-2 py-2 transition">Delete</button>
+          <button onclick="deleteCard()" class="text-xs text-red-400 hover:text-red-300 font-bold px-2 py-2 transition">Delete account</button>
         </div>
         <div class="flex gap-3 ml-auto">
           <button onclick="closeModal()" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition">Cancel</button>
@@ -532,7 +512,7 @@
       if (btn) {
         // `hidden` wins over inline-flex while set; toggling both keeps the
         // button laid out as a flex row every time it reappears.
-        const showBtn = tab === 'fleet';
+        const showBtn = tab === 'fleet' || tab === 'registry';
         btn.classList.toggle('hidden', !showBtn);
         btn.classList.toggle('inline-flex', showBtn);
       }
@@ -1195,7 +1175,7 @@
       const type = document.getElementById('tc-type').value;
       const sel = document.getElementById('tc-name');
       const cur = sel.value;
-      sel.innerHTML = '<option value="">Any Account</option>';
+      sel.innerHTML = '<option value="">This account</option>';
       (type ? journalAccounts.filter(a => !a.accountType || a.accountType===type) : journalAccounts)
         .forEach(a => {
           const opt = document.createElement('option');
@@ -1208,7 +1188,7 @@
 
     function openNewCard() {
       editingCardId = null;
-      document.getElementById('modal-title').textContent = 'New account tracker';
+      document.getElementById('modal-title').textContent = 'Add account';
       document.getElementById('delete-btn-wrap').classList.add('hidden');
       document.getElementById('modal-msg').classList.add('hidden');
       ['tc-label','tc-size','tc-target','tc-firm-daily','tc-maxdd','tc-personal-daily','tc-max-trades','tc-max-consec','tc-window-start','tc-window-end'].forEach(id => document.getElementById(id).value='');
@@ -1256,14 +1236,52 @@
 
     async function saveCard() {
       const label = document.getElementById('tc-label').value.trim();
-      if (!label) { showModalMsg('Label is required.','error'); return; }
+      if (!label) { showModalMsg('Name is required.','error'); return; }
       const accountSize = parseFloat(document.getElementById('tc-size').value)||null;
-      if (!accountSize) { showModalMsg('Account size is required.','error'); return; }
+
+      // ── One form, two records ──
+      // The import side (My Accounts: account #, commission, type) and the rules
+      // side (this tracker) are saved together, so an account is only ever set
+      // up once. The account keeps the NAME it was created with — trades are
+      // filed under that name, so renaming here only changes the label.
+      const typeSel = document.getElementById('tc-type').value;
+      let linkName = document.getElementById('tc-name').value;
+      const isGroup = !linkName && !!typeSel;
+      const acctNumber = normAcctNum(document.getElementById('tc-acctnum').value);
+      const commRaw = document.getElementById('tc-comm').value;
+      const commissionRate = commRaw === '' ? null : Math.max(0, parseFloat(commRaw) || 0);
+      const st = document.getElementById('tc-stage').value;
+      const regType = st === 'eval' ? 'Evaluation' : st === 'personal' ? 'Personal' : 'Funded';
+      const accountsBefore = JSON.parse(JSON.stringify(journalAccounts));
+      let accountsChanged = false;
+      if (!isGroup) {
+        let acct = linkName ? journalAccounts.find(a => a.name === linkName) : null;
+        if (!acct && !editingCardId) acct = journalAccounts.find(a => a.name === label) || null;
+        if (!acct && editingCardId) {
+          const prevCard = trackerCards.find(c => c.id === editingCardId);
+          if (prevCard && prevCard.filterName) acct = journalAccounts.find(a => a.name === prevCard.filterName) || null;
+        }
+        if (acctNumber) {
+          const clash = journalAccounts.find(a => a !== acct && normAcctNum(a.accountNumber) === acctNumber);
+          if (clash) { showModalMsg('Account # already used by "' + clash.name + '".', 'error'); return; }
+        }
+        if (acct) {
+          Object.assign(acct, { accountNumber: acctNumber, accountType: regType, commissionRate,
+                                accountSize: accountSize != null ? accountSize : acct.accountSize });
+        } else {
+          let name = label, n = 2;
+          while (journalAccounts.some(a => a.name === name)) name = label + ' (' + (n++) + ')';
+          acct = { id: Date.now().toString(), name, accountNumber: acctNumber, accountSize, accountType: regType, commissionRate };
+          journalAccounts.push(acct);
+        }
+        linkName = acct.name;
+        accountsChanged = true;
+      }
       const card = {
         id: editingCardId||(Date.now().toString()+Math.random().toString(36).slice(2)),
         label,
-        filterType: document.getElementById('tc-type').value,
-        filterName: document.getElementById('tc-name').value,
+        filterType: isGroup ? typeSel : '',
+        filterName: isGroup ? '' : linkName,
         accountSize,
         profitTarget: parseFloat(document.getElementById('tc-target').value)||null,
         firmDaily: parseFloat(document.getElementById('tc-firm-daily').value)||null,
@@ -1298,23 +1316,40 @@
 
       if (!await saveTrackerCards()) {
         trackerCards = before;
+        journalAccounts = accountsBefore;
         showModalMsg('Could not save — ' + trackerLastError, 'error');
         return;                       // modal stays open, nothing is lost
+      }
+      if (accountsChanged) {
+        try { await saveAccountsToKV(); }
+        catch (e) { flToast('Rules saved, but the account # / commission could not be — try again.', true); }
       }
       closeModal();
       renderList();
       renderFleet();
+      renderAccountsList();
       if (applyIds.length) flToast('Saved — rules applied to ' + applyIds.length + ' other tracker' + (applyIds.length===1?'':'s') + '.');
     }
 
     async function deleteCard() {
-      if (!editingCardId||!confirm('Delete this tracker?')) return;
+      const card = trackerCards.find(c => c.id === editingCardId);
+      if (!card) return;
+      const acct = card.filterName ? journalAccounts.find(a => a.name === card.filterName) : null;
+      const shared = acct && trackerCards.some(c => c.id !== card.id && c.filterName === acct.name);
+      if (!confirm(`Delete "${card.label || 'this account'}"?\n\n` +
+        (acct && !shared ? 'Removes its rules, warnings and account # (import routing). ' : 'Removes its rules and warnings. ') +
+        'Trades stay in your journal — remove them on the Imports tab.')) return;
       const before = trackerCards.slice();
       trackerCards = trackerCards.filter(c=>c.id!==editingCardId);
       if (!await saveTrackerCards()) {
         trackerCards = before;
         showModalMsg('Could not delete — ' + trackerLastError, 'error');
         return;
+      }
+      if (acct && !shared) {
+        journalAccounts = journalAccounts.filter(a => a.id !== acct.id);
+        try { await saveAccountsToKV(); } catch (e) {}
+        renderAccountsList();
       }
       closeModal();
       renderList();
@@ -1380,7 +1415,8 @@
             <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/></svg>
           </div>
           <div class="text-sm font-black text-white mb-1.5">Add your first account</div>
-          <p class="text-xs text-zinc-500 leading-relaxed max-w-sm mx-auto">One entry per prop account or personal account. Add the account number from your Tradovate export and imported trades route here on their own — then trackers and per-account stats light up.</p>
+          <p class="text-xs text-zinc-500 leading-relaxed max-w-sm mx-auto">One entry per prop account or personal account. Add the account number from your Tradovate export and imported trades route here on their own. Firm rules and warnings are optional.</p>
+          <button onclick="openNewCard()" class="mt-4 px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">+ Add Account</button>
         </div>`;
         return;
       }
@@ -1401,6 +1437,7 @@
               <div class="text-sm font-bold text-white flex items-center gap-2 flex-wrap">
                 ${esc(a.name)}
                 ${a.accountNumber ? '' : '<span class="text-[10px] font-bold text-amber-500/90 bg-amber-500/10 border border-amber-500/25 rounded px-1.5 py-0.5" title="Add an Account # so Tradovate imports route here automatically">⚠ no auto-import</span>'}
+                ${(() => { const c = trackerCards.find(t => t.filterName === a.name); return c ? `<span class="text-[10px] font-bold text-zinc-400 bg-zinc-500/10 border border-white/10 rounded-full px-2 py-0.5">${esc(FSDXTracker.STAGES[FSDXTracker.stageOf(c, journalAccounts)] || 'Set up')}${c.firm ? ' · ' + esc(c.firm) : ''}</span>` : '<span class="text-[10px] font-bold text-zinc-500 border border-white/10 rounded-full px-2 py-0.5">rules not set</span>'; })()}
               </div>
               <div class="text-xs text-zinc-500 mt-0.5 truncate">${meta || '<span class="text-zinc-700">No details set</span>'}</div>
             </div>
@@ -1425,65 +1462,12 @@
       }).join('');
     }
 
+    // Pencil on a My Accounts row → the same setup form as Fleet.
     function editAccount(id) {
-      const a = journalAccounts.find(a => a.id === id);
+      const a = journalAccounts.find(x => x.id === id);
       if (!a) return;
-      editingAccountId = id;
-      document.getElementById('af-name').value = a.name || '';
-      document.getElementById('af-number').value = a.accountNumber || '';
-      document.getElementById('af-size').value = a.accountSize || '';
-      document.getElementById('af-type').value = a.accountType || '';
-      document.getElementById('af-comm').value = a.commissionRate != null ? a.commissionRate : '';
-      document.getElementById('account-form-title').textContent = 'Edit Account';
-      document.getElementById('af-btn').textContent = 'Save Changes';
-      document.getElementById('af-cancel').classList.remove('hidden');
-      document.getElementById('account-form').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      document.getElementById('af-name').focus();
-    }
-
-    function cancelEditAccount() {
-      editingAccountId = null;
-      ['af-name','af-number','af-size','af-comm'].forEach(id => document.getElementById(id).value = '');
-      document.getElementById('af-type').value = '';
-      document.getElementById('account-form-title').textContent = 'Add Account';
-      document.getElementById('af-btn').textContent = '+ Add Account';
-      document.getElementById('af-cancel').classList.add('hidden');
-      document.getElementById('af-msg').classList.add('hidden');
-    }
-
-    async function saveAccount() {
-      const name = document.getElementById('af-name').value.trim();
-      if (!name) { showAfMsg('Nickname is required.', 'error'); return; }
-      const acctNumber = normAcctNum(document.getElementById('af-number').value);
-      const acctSize = parseFloat(document.getElementById('af-size').value) || null;
-      const acctType = document.getElementById('af-type').value;
-      const commRaw = document.getElementById('af-comm').value;
-      const commissionRate = commRaw === '' ? null : Math.max(0, parseFloat(commRaw) || 0);
-
-      // A duplicate account # would make import routing pick whichever record
-      // happens to sit first in the array — silently wrong. Block it here.
-      if (acctNumber) {
-        const clash = journalAccounts.find(a => a.id !== editingAccountId && normAcctNum(a.accountNumber) === acctNumber);
-        if (clash) { showAfMsg('Account # already used by "' + clash.name + '".', 'error'); return; }
-      }
-
-      if (editingAccountId) {
-        const idx = journalAccounts.findIndex(a => a.id === editingAccountId);
-        const oldName = idx >= 0 ? journalAccounts[idx].name : null;
-        if (idx >= 0) journalAccounts[idx] = { ...journalAccounts[idx], name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate };
-        // Renamed? Trackers point at the account by name — carry them over.
-        if (oldName && oldName !== name && trackerCards.some(c => c.filterName === oldName) && !trackerLoadFailed) {
-          trackerCards = trackerCards.map(c => c.filterName === oldName ? { ...c, filterName: name } : c);
-          saveTrackerCards();
-        }
-      } else {
-        if (journalAccounts.find(a => a.name === name)) { showAfMsg('Account with this name already exists.', 'error'); return; }
-        journalAccounts.push({ id: Date.now().toString(), name, accountNumber: acctNumber, accountSize: acctSize, accountType: acctType, commissionRate });
-      }
-      await saveAccountsToKV();
-      cancelEditAccount();
-      renderAccountsList();
-      showAfMsg('Saved!', 'success');
+      const card = trackerCards.find(c => c.filterName === a.name);
+      if (card) openEditCard(card.id); else openNewCardFor(a.name);
     }
 
     // Delete one tracker straight from the Fleet list (orphan clean-up).
@@ -1522,13 +1506,6 @@
       renderFleet(); renderList();
     }
 
-    function showAfMsg(msg, type) {
-      const el = document.getElementById('af-msg');
-      el.textContent = msg;
-      el.className = 'text-xs py-1.5 rounded-lg text-center ' + (type === 'error' ? 'bg-red-500/10 text-red-400' : 'bg-emerald-500/10 text-emerald-400');
-      el.classList.remove('hidden');
-      setTimeout(() => el.classList.add('hidden'), 3000);
-    }
 
     // ══════════════════════════════════════════════════════════
     //  IMPORTS — undo one upload, or clear one account
@@ -1716,11 +1693,16 @@
       document.querySelectorAll('#tc-stage-btns button').forEach(b => {
         b.className = 'py-2 border text-xs font-bold rounded-xl transition' + (b.dataset.v === v ? SEG_ON : SEG_OFF);
       });
+      paintGoal();                                  // "auto" goal follows the stage
     }
     function setGoal(v) {
       const cur = $id('tc-goal').value;
       v = cur === v ? '' : v;                       // click again = back to automatic
       $id('tc-goal').value = v;
+      paintGoal();
+    }
+    function paintGoal() {
+      const v = $id('tc-goal').value;
       const auto = v || ($id('tc-stage').value === 'eval' ? 'pass' : $id('tc-stage').value === 'funded' ? 'payout' : 'track');
       document.querySelectorAll('#tc-goal-btns button').forEach(b => {
         const on = b.dataset.v === auto;
@@ -1733,6 +1715,11 @@
     // ── Modal: fill / read the fleet fields ──
     function fillFleetFields(card) {
       $id('tc-firm').value = card.firm || '';
+      // Import side lives on the My Accounts entry this tracker is linked to.
+      const acct = card.filterName ? journalAccounts.find(a => a.name === card.filterName) : null;
+      $id('tc-acctnum').value = acct && acct.accountNumber ? acct.accountNumber : '';
+      $id('tc-comm').value = acct && acct.commissionRate != null ? acct.commissionRate : '';
+      $id('tc-adv').open = !!(card.filterType && !card.filterName) || !!(card.filterName && card.label && card.filterName !== card.label);
       const st = card.id ? FSDXTracker.stageOf(card, journalAccounts) : 'eval';
       $id('tc-archived').checked = st === 'archived';
       setStage(st === 'other' || st === 'archived' ? (card.prevStage || 'eval') : st);
@@ -1768,9 +1755,11 @@
 
       // New account: picking one from My Accounts pre-fills name, size and stage.
       $id('tc-name').onchange = () => {
-        if (editingCardId) return;
         const a = journalAccounts.find(x => x.name === $id('tc-name').value);
         if (!a) return;
+        $id('tc-acctnum').value = a.accountNumber || '';
+        $id('tc-comm').value = a.commissionRate != null ? a.commissionRate : '';
+        if (editingCardId) return;
         if (!$id('tc-label').value.trim()) $id('tc-label').value = a.name;
         if (!$id('tc-size').value && a.accountSize) $id('tc-size').value = a.accountSize;
         if (a.accountType === 'Funded') setStage('funded');
@@ -2135,7 +2124,7 @@
       const tracked = new Set(trackerCards.map(c => c.filterName).filter(Boolean));
       const untracked = journalAccounts.filter(a => a.name && !tracked.has(a.name));
       const nudge = untracked.length ? `<div class="${CL.card} px-5 py-4">
-        <div class="text-xs font-bold text-zinc-300">${untracked.length} account${untracked.length === 1 ? '' : 's'} in My Accounts ${untracked.length === 1 ? 'has' : 'have'} no tracker yet — no warnings for ${untracked.length === 1 ? 'it' : 'them'}.</div>
+        <div class="text-xs font-bold text-zinc-300">${untracked.length} account${untracked.length === 1 ? '' : 's'} from My Accounts ${untracked.length === 1 ? 'isn\'t' : 'aren\'t'} set up here yet — no rules or warnings for ${untracked.length === 1 ? 'it' : 'them'}.</div>
         <div class="flex gap-2 flex-wrap mt-3">${untracked.slice(0, 40).map(a => `<button class="${CL.btn}" data-name="${esc(a.name)}" onclick="openNewCardFor(this.dataset.name)">+ ${esc(a.name)}</button>`).join('')}</div>
         <div class="text-[10px] text-zinc-600 mt-2">Tip: set one up, then use “Copy rules from” or “Also apply these rules to…” for the rest.</div>
       </div>` : '';
