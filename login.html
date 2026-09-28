@@ -343,7 +343,11 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code })
         });
-        const data = await res.json();
+        // A non-JSON reply (worker crash, proxy page) must not masquerade as
+        // "Connection error" — carry the status so it can be diagnosed.
+        let data;
+        try { data = await res.json(); }
+        catch (pe) { data = { error: 'Sign-in failed (server ' + res.status + '). Please try again.' }; }
         if (data.success) {
           clearWhopRetry();   // a clean run re-arms the retry for next time
           localStorage.setItem('fsdx_token', data.token);
@@ -359,7 +363,7 @@
         }
       } catch (e) {
         btns.forEach(b => b.disabled = false);
-        showMsg('login-msg', 'Connection error. Please try again.', 'error');
+        showMsg('login-msg', 'Connection error. Please try again. [' + location.host + ']', 'error');
         addRetryButton('login-msg');
       }
     }
