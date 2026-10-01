@@ -10,6 +10,7 @@
   <script src="nav-loader.js?v=20260924a"></script>
   <script src="fsdx-account.js?v=20260913b"></script>
   <script src="tracker-core.js?v=20260927"></script>
+  <script src="tradovate-sync.js?v=20261001"></script>
   <script src="alerts.js?v=20260901"></script>
   <style>
     /* ── Fleet view ────────────────────────────────────────────────────
@@ -266,12 +267,12 @@
                 <div class="flex flex-wrap gap-2">
                   <button id="tv-connect-btn" onclick="tvConnect()" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-purple-500 hover:bg-purple-400 text-black transition whitespace-nowrap">Connect Tradovate</button>
                   <button id="tv-sync-btn" onclick="tvSyncNow()" class="hidden text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition whitespace-nowrap">Sync now</button>
-                  <a id="tv-import-btn" href="converter.html#tradovate" class="hidden text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 text-zinc-400 hover:text-white transition whitespace-nowrap">Import synced trades</a>
                 </div>
               </div>
               <div id="tv-msg" class="hidden rounded-xl px-4 py-3 text-xs border mt-3"></div>
               <div id="tv-list" class="mt-4 space-y-3"><div class="text-xs text-zinc-600">Checking connection…</div></div>
-              <div class="text-[10px] text-zinc-600 mt-4">Each prop firm usually has its own Tradovate login — connect each one. Synced trades go into your journal through the importer, so account matching, commissions and duplicate checks work the same as a CSV import.</div>
+              <div id="tv-held" class="hidden mt-4 rounded-xl px-4 py-3 text-xs border border-amber-500/30 bg-amber-950/20 text-amber-300"></div>
+              <div class="text-[10px] text-zinc-600 mt-4">Each prop firm usually has its own Tradovate login — connect each one. New accounts are added to Fleet automatically, and new trades import on their own while this page or your Dashboard is open (checked every 10 minutes). Trades already in your journal are skipped.</div>
             </div>
 
             <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
@@ -381,7 +382,7 @@
                 <label for="tc-comm" class="block text-xs text-zinc-600 mb-1">Commission <span class="text-zinc-600">— $ per side</span></label>
                 <input id="tc-comm" type="number" step="0.01" min="0" placeholder="e.g. 0.52" class="tc-in">
               </div>
-              <div class="col-span-2 text-[10px] text-zinc-600 -mt-1">Account # must match the <span class="text-zinc-500">Account</span> column in your Tradovate export so imports route here. Commission is the all-in rate per side (charged on entry and exit).</div>
+              <div class="col-span-2 text-[10px] text-zinc-600 -mt-1">Account # must match the <span class="text-zinc-500">Account</span> column in your Tradovate export so imports route here. Commission is the all-in rate per side (charged on entry and exit). <span class="text-purple-300/80">Synced from Tradovate? Leave it blank to use the real fees Tradovate reports; enter a rate to override them. Changing it re-prices this account's synced trades.</span></div>
               <div class="col-span-2">
                 <details id="tc-adv">
                   <summary class="text-[10px] text-zinc-600 cursor-pointer hover:text-zinc-400">Advanced — link to a different account, or track a group</summary>
@@ -574,6 +575,17 @@
       // The old Trackers tab is now the Fleet tab (rows expand to the full detail).
       switchTab(['fleet','registry','alerts','imports'].includes(wanted) ? wanted : 'fleet');
       if (tvReturn) tvShowReturn(tvReturn);
+      // Tradovate auto-import: on load and every 10 min. Skips a pass while the
+      // setup form is open so it never races a save.
+      if (window.FSDXTv) FSDXTv.start(() => whopKey, async (res) => {
+        await Promise.all([loadJournalData(), loadTrackerCards()]);
+        renderFleet(); renderAccountsList(); renderList(); renderImportBatches();
+        const bits = [];
+        if (res.added) bits.push(res.added + ' new trade' + (res.added === 1 ? '' : 's') + ' imported from Tradovate');
+        if (res.newAccounts.length) bits.push(res.newAccounts.length + ' new account' + (res.newAccounts.length === 1 ? '' : 's') + ' added — set up rules in Fleet');
+        if (bits.length) flToast(bits.join(' · ') + '.');
+        tvLoadStatus();
+      }, () => document.getElementById('tracker-modal').classList.contains('hidden'));
     }
 
     // ── Tradovate sync (read-only OAuth) ──
@@ -599,7 +611,7 @@
     function tvShowReturn(p) {
       const st = p.get('tradovate'), d = p.get('d');
       const msgs = {
-        'connected': ['Tradovate connected. Your accounts are synced — use Import synced trades to bring the fills into your journal.', 'ok'],
+        'connected': ['Tradovate connected. Your accounts are being added to Fleet and trades import automatically — give it a few seconds.', 'ok'],
         'synced-with-errors': ['Tradovate connected, but part of the first sync failed. It retries every 30 minutes, or press Sync now.', 'error'],
         'denied': ['Connection cancelled on Tradovate — nothing was shared.', 'error'],
         'error': ['Tradovate connection did not complete' + (d ? ' (' + d + ')' : '') + '. Please try again.', 'error'],
@@ -618,8 +630,8 @@
       } catch (e) { list.innerHTML = ''; tvMsg('Could not reach the server.', 'error'); return; }
       const conns = data.connections || [];
       document.getElementById('tv-sync-btn').classList.toggle('hidden', !conns.length);
-      document.getElementById('tv-import-btn').classList.toggle('hidden', !conns.length);
       document.getElementById('tv-connect-btn').textContent = conns.length ? 'Connect another login' : 'Connect Tradovate';
+      tvRenderHeld();
       if (!data.configured) { const cb = document.getElementById('tv-connect-btn'); cb.disabled = true; cb.classList.add('opacity-40'); cb.title = 'Tradovate sync is not switched on yet'; list.innerHTML = '<div class="text-xs text-zinc-600">Tradovate sync is not switched on yet.</div>'; return; }
       if (!conns.length) { list.innerHTML = '<div class="text-xs text-zinc-600">No Tradovate login connected yet.</div>'; return; }
       list.innerHTML = conns.map(c => {
@@ -647,6 +659,18 @@
           </div>`;
       }).join('');
     }
+    // Trades held back because there's no fee for them yet (Tradovate reported
+    // none and the account has no commission rate set).
+    function tvRenderHeld() {
+      const el = document.getElementById('tv-held'); if (!el) return;
+      let last = {}; try { last = JSON.parse(localStorage.getItem('fsdx_tv_last') || '{}'); } catch (e) {}
+      const held = Object.entries(last.held || {});
+      if (!held.length) { el.classList.add('hidden'); return; }
+      el.innerHTML = '<div class="font-bold mb-1">Waiting for a commission rate</div>'
+        + held.map(([name, n]) => `<div>${esc(name)} — ${n} trade${n === 1 ? '' : 's'}</div>`).join('')
+        + '<div class="text-[10px] text-amber-300/70 mt-1">Tradovate didn\'t report fees for these, so they\'re held instead of imported at the wrong P&amp;L. Set the commission in that account\'s setup (enter 0 if your firm charges none) and they import right away.</div>';
+      el.classList.remove('hidden');
+    }
     async function tvConnect() {
       const btn = document.getElementById('tv-connect-btn'); btn.disabled = true;
       try {
@@ -661,7 +685,12 @@
       try {
         const r = await fetch(TV_API + '/sync', { method: 'POST', headers: tvHeaders() });
         const d = await r.json();
-        if (!r.ok) tvMsg(d.error || 'Sync failed.', 'error'); else tvMsg('Synced. Use Import synced trades to add new fills to your journal.', 'ok');
+        if (!r.ok) tvMsg(d.error || 'Sync failed.', 'error');
+        else {
+          const res = window.FSDXTv ? await FSDXTv.run({ whopKey }) : { added: 0, newAccounts: [] };
+          if (res.added || (res.newAccounts || []).length) { await Promise.all([loadJournalData(), loadTrackerCards()]); renderFleet(); renderAccountsList(); renderList(); renderImportBatches(); }
+          tvMsg('Synced. ' + (res.added ? res.added + ' new trade' + (res.added === 1 ? '' : 's') + ' imported' : 'No new trades') + ((res.newAccounts || []).length ? ' · ' + res.newAccounts.length + ' new account' + (res.newAccounts.length === 1 ? '' : 's') + ' added' : '') + '.', 'ok');
+        }
       } catch (e) { tvMsg('Could not reach the server.', 'error'); }
       btn.disabled = false; btn.textContent = 'Sync now';
       tvLoadStatus();
@@ -1521,6 +1550,24 @@
       if (accountsChanged) {
         try { await saveAccountsToKV(); }
         catch (e) { flToast('Rules saved, but the account # / commission could not be — try again.', true); }
+        // Commission changed on an account → re-price its Tradovate-synced
+        // trades so a wrong rate is fixed for the past too, not just from now.
+        try {
+          const prevAcct = accountsBefore.find(a => a.name === linkName);
+          const nowAcct = journalAccounts.find(a => a.name === linkName);
+          const was = prevAcct ? prevAcct.commissionRate : null, now = nowAcct ? nowAcct.commissionRate : null;
+          if (window.FSDXTv && nowAcct && String(was) !== String(now)) {
+            const rp = FSDXTv.reprice(journalTrades, journalAccounts, linkName);
+            if (rp.changed) {
+              await fetch(JOURNAL_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'save-all', key: whopKey, payload: { trades: rp.trades } }) });
+              journalTrades = rp.trades;
+              flToast(rp.changed + ' synced trade' + (rp.changed === 1 ? '' : 's') + ' re-priced at the new commission.');
+            }
+          }
+          // A rate set on a held account lets its waiting trades come in now.
+          if (window.FSDXTv) FSDXTv.run({ whopKey }).then(res => { if (res.added) { loadJournalData().then(() => { renderFleet(); renderList(); }); flToast(res.added + ' waiting trade' + (res.added === 1 ? '' : 's') + ' imported from Tradovate.'); } });
+        } catch (e) { console.warn('[FSDX] re-price skipped', e); }
       }
       closeModal();
       renderList();
@@ -2430,7 +2477,7 @@
           <div class="c-acct flex items-center gap-2.5 min-w-0">
             <span class="fl-dot ${inactive ? 'bg-zinc-600' : dotCls(r.worst)}"></span>
             <div class="min-w-0">
-              <div class="text-sm font-black text-white truncate">${esc(card.label || 'Tracker')}</div>
+              <div class="text-sm font-black text-white truncate">${esc(card.label || 'Tracker')}${card.needsSetup ? ' <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border border-purple-500/40 bg-purple-500/10 text-purple-300 align-middle">NEEDS SETUP</span>' : ''}</div>
               <div class="text-[10px] text-zinc-600 truncate">${esc([card.firm, card.filterName && card.filterName !== card.label ? card.filterName : ''].filter(Boolean).join(' · ') || (card.filterType || 'All trades'))}</div>
             </div>
           </div>

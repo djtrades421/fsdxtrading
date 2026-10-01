@@ -12,6 +12,7 @@
   <script src="filters.js?v=20260901"></script>
   <script src="alerts.js?v=20260901"></script>
   <script src="tracker-core.js?v=20260927"></script>
+  <script src="tradovate-sync.js?v=20261001"></script>
   <style>
     body { background-color: #000; }
 
@@ -1497,6 +1498,9 @@
       renderEqRangePills();
       watchEquitySize();
       if (whopKey) loadDashData(whopKey);
+      // Tradovate auto-import while the Dashboard is open (every 10 min).
+      // Refreshes the numbers when something new comes in.
+      if (whopKey && window.FSDXTv) FSDXTv.start(() => whopKey, () => loadDashData(whopKey));
       loadAnnouncement(token);
       loadUpdates(token);
     }
