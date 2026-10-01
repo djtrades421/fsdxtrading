@@ -256,6 +256,24 @@
           <!-- ══ IMPORTS ══ -->
           <div id="panel-imports" class="sub-panel space-y-6">
 
+            <!-- Tradovate connection (read-only OAuth sync) -->
+            <div id="tv-card" class="border border-purple-500/20 bg-purple-950/10 rounded-2xl p-6">
+              <div class="flex flex-wrap items-start justify-between gap-3 mb-1">
+                <div>
+                  <div class="text-xs text-purple-300 uppercase tracking-wider font-bold">Tradovate Sync</div>
+                  <div class="text-xs text-zinc-500 mt-1 max-w-xl">Connect your Tradovate login once and your accounts, balances and fills sync here every 30 minutes, without exporting CSVs. Read-only: FSD-X can't place, change or cancel orders.</div>
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <button id="tv-connect-btn" onclick="tvConnect()" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-purple-500 hover:bg-purple-400 text-black transition whitespace-nowrap">Connect Tradovate</button>
+                  <button id="tv-sync-btn" onclick="tvSyncNow()" class="hidden text-xs font-bold px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white transition whitespace-nowrap">Sync now</button>
+                  <a id="tv-import-btn" href="converter.html#tradovate" class="hidden text-xs font-bold px-3 py-1.5 rounded-lg border border-white/10 text-zinc-400 hover:text-white transition whitespace-nowrap">Import synced trades</a>
+                </div>
+              </div>
+              <div id="tv-msg" class="hidden rounded-xl px-4 py-3 text-xs border mt-3"></div>
+              <div id="tv-list" class="mt-4 space-y-3"><div class="text-xs text-zinc-600">Checking connection…</div></div>
+              <div class="text-[10px] text-zinc-600 mt-4">Each prop firm usually has its own Tradovate login — connect each one. Synced trades go into your journal through the importer, so account matching, commissions and duplicate checks work the same as a CSV import.</div>
+            </div>
+
             <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6">
               <div class="text-xs text-zinc-500 uppercase tracking-wider mb-1">Recent Imports</div>
               <div class="text-xs text-zinc-700 mb-4">Each upload is tracked separately. Remove one without touching anything else — useful when a batch went in at the wrong commission rate.</div>
@@ -550,9 +568,112 @@
       await Promise.all([loadJournalData(), loadTrackerCards()]);
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
-      const wanted = new URLSearchParams(location.search).get('tab') || (location.hash || '').replace('#', '');
+      // Coming back from Tradovate's consent screen: #tradovate=<status>&d=<detail>
+      const tvReturn = /^#tradovate=/.test(location.hash || '') ? new URLSearchParams(location.hash.slice(1)) : null;
+      const wanted = tvReturn ? 'imports' : (new URLSearchParams(location.search).get('tab') || (location.hash || '').replace('#', ''));
       // The old Trackers tab is now the Fleet tab (rows expand to the full detail).
       switchTab(['fleet','registry','alerts','imports'].includes(wanted) ? wanted : 'fleet');
+      if (tvReturn) tvShowReturn(tvReturn);
+    }
+
+    // ── Tradovate sync (read-only OAuth) ──
+    // The server holds the Tradovate token (encrypted) and never sends it here.
+    // This card only shows status and starts / stops the connection.
+    const TV_API = 'https://nexus-validator.dfuentes4211.workers.dev/api/tradovate';
+    function tvHeaders() { return { 'Authorization': 'Bearer ' + (localStorage.getItem('fsdx_token') || ''), 'Content-Type': 'application/json' }; }
+    function tvMsg(text, kind) {
+      const el = document.getElementById('tv-msg'); if (!el) return;
+      el.textContent = text;
+      el.className = 'rounded-xl px-4 py-3 text-xs border mt-3 ' + (kind === 'error'
+        ? 'bg-red-950/40 border-red-500/30 text-red-400'
+        : 'bg-emerald-950/40 border-emerald-500/30 text-emerald-400');
+    }
+    function tvAgo(iso) {
+      if (!iso) return 'never';
+      const m = Math.round((Date.now() - Date.parse(iso)) / 60000);
+      if (m < 1) return 'just now'; if (m < 60) return m + ' min ago';
+      const h = Math.round(m / 60); if (h < 48) return h + 'h ago';
+      return Math.round(h / 24) + 'd ago';
+    }
+    function tvMoney(v) { return v == null ? '—' : (v < 0 ? '−$' : '$') + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+    function tvShowReturn(p) {
+      const st = p.get('tradovate'), d = p.get('d');
+      const msgs = {
+        'connected': ['Tradovate connected. Your accounts are synced — use Import synced trades to bring the fills into your journal.', 'ok'],
+        'synced-with-errors': ['Tradovate connected, but part of the first sync failed. It retries every 30 minutes, or press Sync now.', 'error'],
+        'denied': ['Connection cancelled on Tradovate — nothing was shared.', 'error'],
+        'error': ['Tradovate connection did not complete' + (d ? ' (' + d + ')' : '') + '. Please try again.', 'error'],
+      };
+      const m = msgs[st] || msgs.error;
+      tvMsg(m[0], m[1]);
+      history.replaceState(null, '', '#imports');
+    }
+    async function tvLoadStatus() {
+      const list = document.getElementById('tv-list'); if (!list) return;
+      let data;
+      try {
+        const r = await fetch(TV_API + '/status', { headers: tvHeaders() });
+        data = await r.json();
+        if (!r.ok) { list.innerHTML = ''; tvMsg(data.error || 'Could not load Tradovate status.', 'error'); return; }
+      } catch (e) { list.innerHTML = ''; tvMsg('Could not reach the server.', 'error'); return; }
+      const conns = data.connections || [];
+      document.getElementById('tv-sync-btn').classList.toggle('hidden', !conns.length);
+      document.getElementById('tv-import-btn').classList.toggle('hidden', !conns.length);
+      document.getElementById('tv-connect-btn').textContent = conns.length ? 'Connect another login' : 'Connect Tradovate';
+      if (!data.configured) { document.getElementById('tv-connect-btn').disabled = true; list.innerHTML = '<div class="text-xs text-zinc-600">Tradovate sync is not switched on yet.</div>'; return; }
+      if (!conns.length) { list.innerHTML = '<div class="text-xs text-zinc-600">No Tradovate login connected yet.</div>'; return; }
+      list.innerHTML = conns.map(c => {
+        const badge = c.status === 'ok'
+          ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full border border-green-500/40 bg-green-500/10 text-green-400">Connected</span>'
+          : c.status === 'expired'
+            ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-400">Reconnect needed</span>'
+            : '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full border border-red-500/40 bg-red-500/10 text-red-400">Sync issue</span>';
+        const accts = (c.accounts || []).map(a => `
+            <div class="flex items-center justify-between gap-3 py-1.5 border-b border-white/5 last:border-0">
+              <div class="text-xs text-zinc-300 truncate">${esc(a.name)} <span class="text-[10px] text-zinc-600 uppercase">${a.env === 'demo' ? 'sim / prop' : 'live'}</span></div>
+              <div class="text-xs font-mono text-zinc-400 shrink-0">${tvMoney(a.balance)}</div>
+            </div>`).join('') || '<div class="text-xs text-zinc-600 py-1">No accounts found on this login.</div>';
+        return `<div class="border border-white/10 bg-black/40 rounded-xl p-4">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">${esc(c.tvName || 'Tradovate login')}</span>${badge}</div>
+              <div class="flex items-center gap-3">
+                <span class="text-[10px] text-zinc-600">Synced ${esc(tvAgo(c.lastSync))} · ${c.fillCount || 0} fills</span>
+                ${c.status === 'expired' ? '<button onclick="tvConnect()" class="text-[10px] font-bold text-amber-400 hover:text-amber-300">Reconnect</button>' : ''}
+                <button onclick="tvDisconnect('${esc(c.id)}')" class="text-[10px] font-bold text-zinc-500 hover:text-red-400">Disconnect</button>
+              </div>
+            </div>
+            ${c.error && c.status !== 'ok' ? `<div class="text-[10px] text-zinc-500 mb-2">${esc(c.error)}</div>` : ''}
+            ${accts}
+          </div>`;
+      }).join('');
+    }
+    async function tvConnect() {
+      const btn = document.getElementById('tv-connect-btn'); btn.disabled = true;
+      try {
+        const r = await fetch(TV_API + '/start', { method: 'POST', headers: tvHeaders() });
+        const d = await r.json();
+        if (!r.ok || !d.url) { tvMsg(d.error || 'Could not start the connection.', 'error'); btn.disabled = false; return; }
+        window.location.href = d.url;   // → Tradovate's own login + approve screen
+      } catch (e) { tvMsg('Could not reach the server.', 'error'); btn.disabled = false; }
+    }
+    async function tvSyncNow() {
+      const btn = document.getElementById('tv-sync-btn'); btn.disabled = true; btn.textContent = 'Syncing…';
+      try {
+        const r = await fetch(TV_API + '/sync', { method: 'POST', headers: tvHeaders() });
+        const d = await r.json();
+        if (!r.ok) tvMsg(d.error || 'Sync failed.', 'error'); else tvMsg('Synced. Use Import synced trades to add new fills to your journal.', 'ok');
+      } catch (e) { tvMsg('Could not reach the server.', 'error'); }
+      btn.disabled = false; btn.textContent = 'Sync now';
+      tvLoadStatus();
+    }
+    async function tvDisconnect(id) {
+      if (!confirm('Disconnect this Tradovate login?\n\nFSD-X deletes its access and the synced fills it stored. Trades already imported into your journal stay.')) return;
+      try {
+        const r = await fetch(TV_API + '/disconnect', { method: 'POST', headers: tvHeaders(), body: JSON.stringify({ id }) });
+        const d = await r.json();
+        if (!r.ok) tvMsg(d.error || 'Could not disconnect.', 'error'); else tvMsg('Disconnected. FSD-X no longer has access to that login.', 'ok');
+      } catch (e) { tvMsg('Could not reach the server.', 'error'); }
+      tvLoadStatus();
     }
 
     // ── Tabs ──
@@ -579,7 +700,7 @@
       if (tab === 'trackers') renderList();
       if (tab === 'fleet') renderFleet();
       if (tab === 'alerts') paintFleetPop();
-      if (tab === 'imports') { updateDeleteAccountPicker(); refreshDeletePreview(); renderImportBatches(); }
+      if (tab === 'imports') { updateDeleteAccountPicker(); refreshDeletePreview(); renderImportBatches(); tvLoadStatus(); }
       if (location.hash !== '#' + tab) history.replaceState(null, '', '#' + tab);
     }
 
