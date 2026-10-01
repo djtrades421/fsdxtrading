@@ -91,6 +91,19 @@
           <div class="flex gap-1 mb-3">
             <button onclick="setInputMode('file')" id="tab-file" class="px-4 py-2 text-xs font-bold rounded-lg bg-green-500/10 border border-green-500/30 text-green-400 transition">↑ Upload File</button>
             <button onclick="setInputMode('paste')" id="tab-paste" class="px-4 py-2 text-xs font-bold rounded-lg bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white transition">⌘ Paste CSV</button>
+            <button onclick="setInputMode('tradovate')" id="tab-tradovate" class="px-4 py-2 text-xs font-bold rounded-lg bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white transition">⟳ Tradovate Sync</button>
+          </div>
+
+          <div id="tradovate-input-panel" class="hidden">
+            <div class="border border-purple-500/20 bg-purple-950/10 rounded-2xl p-6">
+              <div class="text-sm font-bold text-white mb-1">Import from your connected Tradovate logins</div>
+              <div class="text-xs text-zinc-500 mb-4">Pulls the fills FSD-X has synced from Tradovate and runs them through the same steps as a Tradovate Orders CSV: matched to your accounts by account #, commissions applied, and trades already in your journal skipped.</div>
+              <div class="flex flex-wrap items-center gap-3">
+                <button id="tv-load-btn" onclick="loadTradovateSync()" class="px-5 py-2.5 bg-purple-500 hover:bg-purple-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Load synced fills</button>
+                <a href="accounts.html#imports" class="text-xs text-zinc-500 hover:text-white">Manage connections →</a>
+              </div>
+              <div id="tv-load-note" class="text-[10px] text-zinc-600 mt-3"></div>
+            </div>
           </div>
 
           <div id="file-input-panel">
@@ -442,6 +455,8 @@
     function setInputMode(mode) {
       document.getElementById('file-input-panel').classList.toggle('hidden', mode !== 'file');
       document.getElementById('paste-input-panel').classList.toggle('hidden', mode !== 'paste');
+      document.getElementById('tradovate-input-panel').classList.toggle('hidden', mode !== 'tradovate');
+      document.getElementById('tab-tradovate').className = 'px-4 py-2 text-xs font-bold rounded-lg transition ' + (mode === 'tradovate' ? 'bg-purple-500/10 border border-purple-500/30 text-purple-400' : 'bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white');
       document.getElementById('tab-file').className = 'px-4 py-2 text-xs font-bold rounded-lg transition ' + (mode === 'file' ? 'bg-green-500/10 border border-green-500/30 text-green-400' : 'bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white');
       document.getElementById('tab-paste').className = 'px-4 py-2 text-xs font-bold rounded-lg transition ' + (mode === 'paste' ? 'bg-green-500/10 border border-green-500/30 text-green-400' : 'bg-zinc-900 border border-white/10 text-zinc-500 hover:text-white');
     }
@@ -453,6 +468,46 @@
     }
 
     function handleFile(file) { handleFiles(file ? [file] : []); }
+
+    // ── Tradovate Sync source ──
+    // The server returns synced fills shaped exactly like Tradovate "Orders" CSV
+    // rows. We turn them back into CSV text and hand that to the normal pipeline,
+    // so account routing, commissions and duplicate handling are identical to a
+    // file upload. Fill times arrive in UTC; they're written in this browser's
+    // local time, the same way a Tradovate CSV export shows them.
+    async function loadTradovateSync() {
+      const btn = document.getElementById('tv-load-btn');
+      const note = document.getElementById('tv-load-note');
+      btn.disabled = true; btn.textContent = 'Loading…'; note.textContent = '';
+      try {
+        const r = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/tradovate/fills', {
+          headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('fsdx_token') || '') }
+        });
+        const d = await r.json();
+        if (!r.ok) { note.textContent = d.error || 'Could not load synced fills.'; return; }
+        const rows = d.rows || [];
+        if (!rows.length) { note.textContent = 'No synced fills yet. Connect Tradovate on the Accounts page, or press Sync now there.'; return; }
+        const pad = n => String(n).padStart(2, '0');
+        const localStamp = iso => {
+          const t = new Date(iso);
+          if (isNaN(t.getTime())) return iso;
+          return `${pad(t.getMonth() + 1)}/${pad(t.getDate())}/${t.getFullYear()} ${pad(t.getHours())}:${pad(t.getMinutes())}:${pad(t.getSeconds())}`;
+        };
+        const cols = ['Account', 'B/S', 'filledQty', 'avgPrice', 'Contract', 'Fill Time', 'Status', 'Text'];
+        const cell = v => {
+          const s = String(v == null ? '' : v).replace(/[\r\n]+/g, ' ');
+          return /[",]/.test(s) ? '"' + s.replace(/"/g, '') + '"' : s;
+        };
+        const lines = [cols.join(',')].concat(rows.map(row =>
+          cols.map(c => cell(c === 'Fill Time' ? localStamp(row[c]) : row[c])).join(',')));
+        loadedFiles = [{ name: 'Tradovate sync', text: lines.join('\n') }];
+        processLoadedFiles();
+      } catch (e) {
+        note.textContent = 'Could not reach the server.';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Load synced fills';
+      }
+    }
 
     // Accepts one file or many. Multi-file is the whole point for prop traders:
     // each prop account is its own Tradovate login and therefore its own export,
@@ -1826,6 +1881,8 @@
         return;
       }
       await loadJournalAccounts();
+      // Arriving from Accounts → "Import synced trades": open the Tradovate source.
+      if ((location.hash || '') === '#tradovate') setInputMode('tradovate');
       const qs = new URLSearchParams(window.location.search);
       const dest = qs.get('dest');
       pendingSessionId = qs.get('session');
