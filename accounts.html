@@ -620,7 +620,7 @@
       document.getElementById('tv-sync-btn').classList.toggle('hidden', !conns.length);
       document.getElementById('tv-import-btn').classList.toggle('hidden', !conns.length);
       document.getElementById('tv-connect-btn').textContent = conns.length ? 'Connect another login' : 'Connect Tradovate';
-      if (!data.configured) { document.getElementById('tv-connect-btn').disabled = true; list.innerHTML = '<div class="text-xs text-zinc-600">Tradovate sync is not switched on yet.</div>'; return; }
+      if (!data.configured) { const cb = document.getElementById('tv-connect-btn'); cb.disabled = true; cb.classList.add('opacity-40'); cb.title = 'Tradovate sync is not switched on yet'; list.innerHTML = '<div class="text-xs text-zinc-600">Tradovate sync is not switched on yet.</div>'; return; }
       if (!conns.length) { list.innerHTML = '<div class="text-xs text-zinc-600">No Tradovate login connected yet.</div>'; return; }
       list.innerHTML = conns.map(c => {
         const badge = c.status === 'ok'
@@ -635,7 +635,7 @@
             </div>`).join('') || '<div class="text-xs text-zinc-600 py-1">No accounts found on this login.</div>';
         return `<div class="border border-white/10 bg-black/40 rounded-xl p-4">
             <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-              <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">${esc(c.tvName || 'Tradovate login')}</span>${badge}</div>
+              <div class="flex items-center gap-2"><span class="text-sm font-bold text-white">${esc(c.tvName || 'Tradovate login')}</span>${c.tvUser || c.tvUserId ? `<span class="text-[10px] text-zinc-500">${esc(c.tvUser ? '@' + c.tvUser : 'ID ' + c.tvUserId)}</span>` : ''}${badge}</div>
               <div class="flex items-center gap-3">
                 <span class="text-[10px] text-zinc-600">Synced ${esc(tvAgo(c.lastSync))} · ${c.fillCount || 0} fills</span>
                 ${c.status === 'expired' ? '<button onclick="tvConnect()" class="text-[10px] font-bold text-amber-400 hover:text-amber-300">Reconnect</button>' : ''}
