@@ -137,12 +137,33 @@
     proceed: "Continue to Checkout"
   };
 
+  /* ---- Lifetime — one-time, capped, TradingView transition (Oct 2026) ----
+     Same product as the membership, so the Auto-Trader language stays. What
+     changes is the money: one payment, no trial, no refund, and a plain
+     statement of what "lifetime" does and does not cover. */
+  var LIFETIME = {
+    eyebrow: "Before You Continue",
+    title: "FSD-X Lifetime Access — Terms of Service",
+    points: [
+      "Lifetime Access is a <strong>one-time payment of $399</strong>. There is <strong>no free trial</strong> and the payment is <strong>non-refundable</strong>.",
+      "It covers <strong>everything in the FSD-X Pro membership as it exists today</strong> — the indicator suite on TradingView, the Auto-Trader, Nexus 2.0, the member platform, SCOUT alerts, the VIP Discord and live room, and the monthly one-on-one call — for as long as FSD-X offers it.",
+      "It also includes the <strong>NinjaTrader version of Knightfall when it launches</strong>. It is pending NinjaTrader's approval and <strong>no release date is promised</strong>.",
+      "It <strong>does not include</strong> new products or tools released after your purchase.",
+      "TradingView access is granted to the <strong>one TradingView username</strong> you enter at checkout. Access is limited to <strong>one person</strong>; sharing, reselling, or redistributing it ends access without refund.",
+      "All FSD-X software is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service. Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No result is guaranteed.",
+      "The Auto-Trader <strong>emits automation alerts only — it does not place or guarantee any order</strong>. Execution runs through third-party services and brokers <strong>you</strong> choose and control, and you are responsible for your own safeguards and for confirming automation is allowed by your broker and prop firm.",
+      "I have read and agree to the full <a href='disclosures.html#lifetime' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Auto-Trader Addendum and the Lifetime terms."
+    ],
+    agree: "I understand this is a one-time, non-refundable payment with no trial, I accept the FSD-X Lifetime Terms, and I take full responsibility for all activity, losses, and outcomes on my own account.",
+    proceed: "Proceed to Checkout"
+  };
+
   // Every VIP data-gate value resolves to the same unified terms (one plan →
   // one gate). Nightwing and Raven are the two products that are genuinely
   // different, and each needs its own terms for the same reason.
   var TERMS = {
     membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED,
-    nightwing: NIGHTWING, raven: RAVEN
+    nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME
   };
 
   var pendingUrl = null;

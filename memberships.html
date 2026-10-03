@@ -14,6 +14,8 @@
   <meta name="twitter:title" content="FSD-X Membership — Everything Included" />
   <meta name="twitter:description" content="One membership, everything in it: full indicator suite + Auto Trader. $129/month with a 30-day free trial. Quarterly &amp; Annual options available." />
   <link rel="stylesheet" href="tailwind.css">
+  <link rel="stylesheet" href="lifetime.css?v=20261003b">
+  <script src="lifetime.js?v=20261003" defer></script>
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
     body { background-color: #000; }
@@ -380,6 +382,103 @@
         })();
       </script>
 
+      <!-- ═══════════════════════════════════════════════════════════════
+           LIFETIME OFFER — TradingView transition (Oct 2026)
+           Shows only while admin → Lifetime Spots is active. Closes itself at
+           Oct 31 11:59 PM CT or when Remaining hits 0. Logic in lifetime.js.
+           ═══════════════════════════════════════════════════════════════ -->
+      <section id="lifetime" class="lt-wrap" data-lt-root hidden>
+        <div class="lt-card">
+          <div class="lt-top">
+            <div class="lt-kicker">// Before TradingView's Nov 1 change</div>
+            <div class="lt-badge" data-lt="badge">20 spots · Open</div>
+          </div>
+
+          <div class="lt-grid">
+            <div>
+              <h2 class="lt-h">Lifetime Access</h2>
+              <div class="lt-price"><b>$399</b><span>One-time payment</span></div>
+              <div class="lt-chips lt-chips-lg">
+                <span class="lt-chip lt-chip-warn">No free trial</span>
+                <span class="lt-chip">No refunds</span>
+                <span class="lt-chip">One per person</span>
+              </div>
+              <p class="lt-why">
+                Starting <strong>November 1</strong>, TradingView is changing how private scripts are sold.
+                That isn't our call, and it changes how FSD-X is offered on TradingView going forward.
+                Before the switch, we're opening <strong>20 lifetime spots</strong>. When they're filled or the
+                deadline hits &mdash; whichever comes first &mdash; lifetime closes for good.
+              </p>
+
+              <p class="lt-trialnote">The 30-day free trial applies to the monthly and quarterly plans below. <strong>Lifetime has no trial</strong> &mdash; it's a single payment and access starts right away.</p>
+
+              <div class="lt-lists">
+                <div>
+                  <div class="lt-lh">Included for life</div>
+                  <ul class="lt-ul">
+                    <li>ORB PRO (Knightfall MK2) on TradingView</li>
+                    <li>Knightfall Auto Trader</li>
+                    <li>Stack V1, Volume Engine &amp; ORB Raven</li>
+                    <li>Nexus 2.0 + the full member platform</li>
+                    <li>SCOUT alerts</li>
+                    <li>VIP Discord &amp; the live trade room</li>
+                    <li>Monthly 1-on-1 call</li>
+                    <li><span>NinjaTrader version when it launches <em class="lt-soon">Coming soon</em></span></li>
+                  </ul>
+                </div>
+                <div>
+                  <div class="lt-lh">Not included</div>
+                  <ul class="lt-ul lt-no">
+                    <li>New products or tools released after purchase</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="lt-side">
+              <div class="lt-box lt-open-only">
+                <div class="lt-box-h"><span>Offer ends in</span><em>Oct 31 · 11:59 PM CT</em></div>
+                <div class="lt-clock">
+                  <div><b data-lt="d">00</b><small>Days</small></div>
+                  <div><b data-lt="h">00</b><small>Hrs</small></div>
+                  <div><b data-lt="m">00</b><small>Min</small></div>
+                  <div><b data-lt="s">00</b><small>Sec</small></div>
+                </div>
+              </div>
+
+              <div class="lt-box lt-spots">
+                <div class="lt-box-h"><span>Lifetime spots</span><em>Hard cap</em></div>
+                <div data-lt="num">&mdash;</div>
+                <div class="lt-bar"><i data-lt="fill"></i></div>
+                <p class="lt-open-only">Capped at 20 so every lifetime member actually gets supported. Once they're gone, they're gone.</p>
+              </div>
+
+              <a href="https://whop.com/checkout/plan_SNuUJU8GaJk5N" data-gate="lifetime" target="_blank" rel="noopener noreferrer" class="lt-cta lt-open-only">Claim a Lifetime Spot &mdash; $399</a>
+              <div class="lt-terms lt-open-only">
+                <span>One-time payment</span><span>No trial</span><span>No refunds</span><span>One per person</span>
+              </div>
+
+              <div class="lt-closed lt-closed-only">
+                <b>Lifetime is closed.</b> <span data-lt="closed-why"></span>
+                Monthly, quarterly and annual memberships below are unaffected.
+              </div>
+            </div>
+          </div>
+
+          <div class="lt-nt">
+            <img src="NinjaTrader.png" alt="NinjaTrader" loading="lazy">
+            <div><b>Knightfall for NinjaTrader is coming soon &mdash; and lifetime members get it.</b> Native on NinjaTrader 8 with automation built in, no third-party bridge needed. It's waiting on NinjaTrader's approval, so there's no release date yet. Follow along in the Discord for the launch.</div>
+          </div>
+
+          <div class="lt-foot">
+            TradingView access is granted to the TradingView username you enter at checkout. Lifetime covers everything in the
+            FSD-X Pro membership as it exists today, plus the NinjaTrader version when it launches, for as long as FSD-X offers it.
+            New products or tools released later are not included. Educational software &mdash; not financial advice.
+            Futures trading involves substantial risk of loss. <a href="disclosures.html#lifetime">Lifetime terms</a>.
+          </div>
+        </div>
+      </section>
+
       <!-- PRO MEMBERSHIP CAP (memberships.html) -->
       <div id="cap-section-mem" class="hidden px-6 md:px-12 pt-6">
         <div class="max-w-5xl mx-auto">
@@ -659,6 +758,6 @@
 
 
   <script src="nav-loader.js?v=20260924a"></script>
-  <script src="checkout-gate.js?v=20260924a"></script>
+  <script src="checkout-gate.js?v=20261003a"></script>
 </body>
 </html>

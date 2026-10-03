@@ -16,6 +16,8 @@
   <meta name="twitter:title" content="FSD-X Trading — ORB PRO | Rules-Based NQ/MNQ Framework | DJ Trades" />
   <meta name="twitter:description" content="A rules-based opening range breakout system for NQ/MNQ futures, built for prop traders working through evals. Every setup graded A+ through C. Check the eval pass rate for your account size, then run it free for 30 days." />
   <link rel="stylesheet" href="tailwind.css">
+  <link rel="stylesheet" href="lifetime.css?v=20261003b">
+  <script src="lifetime.js?v=20261003" defer></script>
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
     body { background-color: #000; }
@@ -386,7 +388,25 @@
                   Watch the Demo
                 </a>
               </div>
+              <p class="lt-trial-note" data-lt-root data-lt-hide-closed hidden>The 30-day free trial is for monthly and quarterly plans. <b>Lifetime is a one-time payment with no trial.</b></p>
               <div class="flex flex-wrap gap-4">
+                <!-- LIFETIME OFFER (TradingView transition) — see lifetime.js -->
+              <a href="memberships.html#lifetime" class="lt-mini" data-lt-root data-lt-hide-closed hidden>
+                <div class="lt-mini-row">
+                  <span class="lt-mini-k">Lifetime access · <b>$399 one time</b></span>
+                  <span class="lt-mono" data-lt="num">&mdash;</span>
+                </div>
+                <div class="lt-chips">
+                  <span class="lt-chip lt-chip-warn">No free trial</span>
+                  <span class="lt-chip">One-time payment</span>
+                  <span class="lt-chip">No refunds</span>
+                </div>
+                <div class="lt-bar"><i data-lt="fill"></i></div>
+                <div class="lt-mini-row">
+                  <span class="lt-mini-sub">Before TradingView's Nov 1 change. Ends in <span class="lt-mono" data-lt="left">&mdash;</span> or when spots run out.</span>
+                  <span class="lt-mini-go">See the offer &rarr;</span>
+                </div>
+              </a>
                 <!-- PRO MEMBERSHIP CAP -->
               <div id="cap-widget" class="hidden flex-1 min-w-[260px] rounded-2xl border border-white/[0.13] bg-white/[0.025] px-4 py-3.5">
                 <div class="flex items-baseline justify-between gap-4 mb-2.5">
@@ -1097,7 +1117,7 @@
     }
   </script>
   <script src="nav-loader.js?v=20260924a"></script>
-  <script src="checkout-gate.js?v=20260924a"></script>
+  <script src="checkout-gate.js?v=20261003a"></script>
 
   <script>
     fetch('track-record.json?v=' + Date.now())
