@@ -3,115 +3,219 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#05080D" />
   <title>404 — Page Not Found | FSD-X Trading</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="tailwind.css">
+  <script src="fsdx-theme.js?v=20260830"></script>
   <!--
     FSD-X Copy Trader — control page. ADMIN ONLY.
     Not linked anywhere, not in the sitemap, noindex. Everyone sees the normal
-    404 page; the controls only appear when the API confirms an admin session
-    (TOTP login). The real lock is on the server: every /api/copier route
-    returns 404 to anyone who isn't admin.
+    404 page; the controls only appear when the API confirms an admin session.
+    The real lock is on the server: every /api/copier route returns 404 to
+    anyone who isn't admin.
+    Colours come from fsdx-theme.js (--fx-orange / --fx-line / --fx-mono), so
+    the page follows the site's palette swap. Green/red = P&L only.
   -->
   <style>
-    body { background:#000; }
     #cp-app { display:none; }
     body.cp-on #cp-404 { display:none !important; }
     body.cp-on #cp-app { display:block; }
 
-    :root {
-      --bg:#000; --card:#0b0b0d; --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.14);
-      --tx:#f4f4f5; --mut:#a1a1aa; --dim:#71717a;
-      --grn:#22c55e; --grn-bg:rgba(34,197,94,.1); --red:#ef4444; --red-bg:rgba(239,68,68,.12);
-      --amb:#f59e0b; --amb-bg:rgba(245,158,11,.12); --blu:#60a5fa;
+    #cp-app {
+      --acc: var(--fx-orange, #FF6B1F);
+      --line: var(--fx-line, rgba(120,160,210,.13));
+      --mono: var(--fx-mono, 'JetBrains Mono', ui-monospace, Menlo, monospace);
+      --card: rgba(255,255,255,.022);
+      --card2: rgba(255,255,255,.04);
+      --tx: #E9EDF3; --mut: #94A0B2; --dim: #66727F;
+      --up: #34D399; --up-bg: rgba(52,211,153,.10);
+      --dn: #F87171; --dn-bg: rgba(248,113,113,.10);
+      --warn: #FBBF24; --warn-bg: rgba(251,191,36,.10);
+      --acc-bg: color-mix(in srgb, var(--acc) 12%, transparent);
+      color: var(--tx); font-size: 14px; line-height: 1.45;
+      padding-bottom: calc(84px + env(safe-area-inset-bottom));
     }
-    #cp-app { color:var(--tx); font:14px/1.45 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; max-width:1280px; margin:0 auto; padding:20px 16px 60px; }
-    .cp-top { display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; margin-bottom:16px; }
-    .cp-top h1 { font-size:20px; font-weight:900; letter-spacing:-.01em; margin:0; }
-    .cp-top a { color:var(--dim); font-size:12px; text-decoration:none; }
-    .cp-top a:hover { color:var(--tx); }
-    .chip { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--line2); color:var(--mut); white-space:nowrap; }
-    .chip i { width:7px; height:7px; border-radius:50%; background:currentColor; display:inline-block; }
-    .chip.g { color:var(--grn); background:var(--grn-bg); border-color:transparent; }
-    .chip.r { color:var(--red); background:var(--red-bg); border-color:transparent; }
-    .chip.a { color:var(--amb); background:var(--amb-bg); border-color:transparent; }
-    .sp { flex:1; }
+    #cp-app * { box-sizing: border-box; }
+    .wrap { max-width: 1360px; margin: 0 auto; padding: 0 20px 0 26px; }
+    @media (max-width: 720px) { .wrap { padding: 0 12px 0 16px; } }
+    .mono { font-family: var(--mono); }
+    .up { color: var(--up); } .dn { color: var(--dn); } .mut { color: var(--mut); } .dim { color: var(--dim); }
+    .acc { color: var(--acc); }
 
-    .bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:14px; border:1px solid var(--line); background:var(--card); border-radius:14px; margin-bottom:16px; }
-    .btn { appearance:none; border:1px solid var(--line2); background:#18181b; color:var(--tx); font-weight:800; font-size:12px; letter-spacing:.04em; text-transform:uppercase; padding:10px 14px; border-radius:10px; cursor:pointer; white-space:nowrap; }
-    .btn:hover { border-color:rgba(255,255,255,.3); }
-    .btn:disabled { opacity:.4; cursor:not-allowed; }
-    .btn.go { background:var(--grn); color:#000; border-color:var(--grn); }
-    .btn.stop { background:var(--red); color:#fff; border-color:var(--red); }
-    .btn.warn { color:var(--red); border-color:rgba(239,68,68,.45); background:transparent; }
-    .btn.sm { padding:6px 9px; font-size:11px; border-radius:8px; }
-    .btn.big { padding:12px 22px; font-size:13px; }
-    .tog { display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--mut); cursor:pointer; user-select:none; }
-    .tog input { display:none; }
-    .tog b { width:38px; height:22px; border-radius:999px; background:#27272a; position:relative; transition:.15s; flex:none; }
-    .tog b::after { content:""; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:#fff; transition:.15s; }
-    .tog input:checked + b { background:var(--amb); }
-    .tog input:checked + b::after { left:19px; }
-    .tog.g input:checked + b { background:var(--grn); }
+    /* ── top bar ── */
+    .top { position: sticky; top: 0; z-index: 40; background: color-mix(in srgb, var(--fx-ink, #04070C) 88%, transparent);
+           backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+    .top .wrap { display: flex; align-items: center; gap: 14px; min-height: 64px; flex-wrap: wrap; padding-top: 8px; padding-bottom: 8px; }
+    .brand { display: flex; align-items: baseline; gap: 8px; font-family: var(--mono); font-weight: 700; letter-spacing: .08em; font-size: 13px; white-space: nowrap; }
+    .brand b { color: var(--acc); }
+    .brand span { color: var(--dim); font-size: 10px; letter-spacing: .14em; border: 1px solid var(--line); border-radius: 5px; padding: 2px 6px; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px; border-radius: 7px; font: 700 10.5px/1 var(--mono);
+            letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line); color: var(--mut); white-space: nowrap; }
+    .chip i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .chip.on { color: var(--up); background: var(--up-bg); border-color: transparent; }
+    .chip.on i { box-shadow: 0 0 0 3px rgba(52,211,153,.18); animation: pulse 1.6s infinite; }
+    .chip.bad { color: var(--dn); background: var(--dn-bg); border-color: transparent; }
+    .chip.wrn { color: var(--warn); background: var(--warn-bg); border-color: transparent; }
+    .chip.acc { color: var(--acc); background: var(--acc-bg); border-color: transparent; }
+    @keyframes pulse { 50% { opacity: .45; } }
+    .sp { flex: 1; }
+    .clock { font: 600 12px var(--mono); color: var(--dim); white-space: nowrap; }
+    .ctl { display: flex; align-items: center; gap: 10px; }
+    @media (max-width: 720px) { .ctl.desk { display: none; } .clock { display: none; } }
 
-    .grid { display:grid; grid-template-columns:repeat(12,1fr); gap:16px; }
-    .card { grid-column:span 12; border:1px solid var(--line); background:var(--card); border-radius:14px; padding:16px; min-width:0; }
-    .c4 { grid-column:span 4; } .c8 { grid-column:span 8; } .c6 { grid-column:span 6; }
-    @media (max-width:900px) { .c4,.c8,.c6 { grid-column:span 12; } }
-    .card h2 { margin:0 0 12px; font-size:12px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; color:var(--mut); display:flex; align-items:center; gap:8px; }
-    .card h2 .sp { flex:1; }
-    .muted { color:var(--dim); font-size:12px; }
-    .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-    select, input[type=number] { background:#000; color:var(--tx); border:1px solid var(--line2); border-radius:8px; padding:8px 9px; font:inherit; font-size:13px; min-width:0; }
-    select { max-width:100%; }
-    input[type=number] { width:78px; }
-    input[type=checkbox].ck { width:16px; height:16px; accent-color:var(--grn); }
+    /* ── buttons / inputs ── */
+    .btn { appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 14px;
+           border-radius: 9px; border: 1px solid var(--line); background: var(--card2); color: var(--tx); cursor: pointer;
+           font: 700 11.5px/1 var(--mono); letter-spacing: .07em; text-transform: uppercase; white-space: nowrap; transition: .12s; }
+    .btn:hover { border-color: color-mix(in srgb, var(--tx) 30%, transparent); }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn.pri { background: var(--acc); border-color: var(--acc); color: #0B0B0B; }
+    .btn.pri:hover { filter: brightness(1.08); }
+    .btn.arm-on { background: transparent; border-color: var(--up); color: var(--up); }
+    .btn.kill { background: #DC2626; border-color: #DC2626; color: #fff; }
+    .btn.kill:hover { background: #EF4444; }
+    .btn.ghost-dn { color: var(--dn); border-color: color-mix(in srgb, var(--dn) 45%, transparent); background: transparent; }
+    .btn.sm { height: 30px; padding: 0 10px; font-size: 10.5px; border-radius: 7px; }
+    .btn.xs { height: 26px; padding: 0 8px; font-size: 10px; border-radius: 6px; }
+    .btn.lg { height: 46px; padding: 0 20px; font-size: 13px; }
+    .inp, .sel { background: rgba(0,0,0,.35); color: var(--tx); border: 1px solid var(--line); border-radius: 8px; height: 34px; padding: 0 10px;
+                 font: 500 13px var(--mono); min-width: 0; outline: none; }
+    .inp:focus, .sel:focus { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-bg); }
+    .inp.n { width: 84px; text-align: right; }
+    .inp.n.s { width: 64px; }
+    .inp.t { width: 84px; text-align: center; }
+    .sel { padding-right: 26px; }
+    .tog { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; font-size: 13px; color: var(--mut); }
+    .tog input { display: none; }
+    .tog b { position: relative; width: 36px; height: 20px; border-radius: 999px; background: rgba(255,255,255,.12); flex: none; transition: .15s; }
+    .tog b::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 50%; background: #fff; transition: .15s; }
+    .tog input:checked + b { background: var(--acc); }
+    .tog input:checked + b::after { left: 19px; }
+    .tog.wrn input:checked + b { background: var(--warn); }
+    .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    .seg button { appearance: none; border: 0; background: transparent; color: var(--mut); font: 700 10.5px var(--mono); letter-spacing: .06em;
+                  text-transform: uppercase; padding: 0 11px; height: 32px; cursor: pointer; }
+    .seg button + button { border-left: 1px solid var(--line); }
+    .seg button.on { background: var(--acc-bg); color: var(--acc); }
+    .days { display: inline-flex; gap: 4px; }
+    .days button { appearance: none; width: 30px; height: 30px; border-radius: 7px; border: 1px solid var(--line); background: transparent; color: var(--dim);
+                   font: 700 11px var(--mono); cursor: pointer; }
+    .days button.on { background: var(--acc-bg); color: var(--acc); border-color: transparent; }
 
-    .conn { display:flex; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--line); }
-    .conn:first-of-type { border-top:0; }
-    .conn .nm { font-weight:800; }
-    .pos { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; }
-    .pos .L { color:var(--grn); } .pos .S { color:var(--red); }
-    .env { font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:2px 6px; border-radius:5px; background:#27272a; color:var(--mut); }
-    .env.live { background:var(--red-bg); color:var(--red); }
+    /* ── tabs ── */
+    .tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--line); margin: 18px 0 18px; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tabs button { appearance: none; border: 0; background: none; color: var(--dim); font: 700 11.5px var(--mono); letter-spacing: .1em; text-transform: uppercase;
+                   padding: 12px 14px; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+    .tabs button:hover { color: var(--tx); }
+    .tabs button.on { color: var(--tx); border-bottom-color: var(--acc); }
+    .tabs button .badge { display: inline-block; min-width: 18px; padding: 1px 5px; margin-left: 6px; border-radius: 9px; background: var(--dn-bg); color: var(--dn); font-size: 10px; }
+    .pane { display: none; } .pane.on { display: block; }
 
-    table.ft { width:100%; border-collapse:collapse; font-size:13px; }
-    table.ft th { text-align:left; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); padding:0 8px 8px; white-space:nowrap; }
-    table.ft td { padding:9px 8px; border-top:1px solid var(--line); vertical-align:middle; }
-    table.ft tr.off td { opacity:.5; }
-    table.ft tr.halt td { background:rgba(239,68,68,.05); }
-    .halt-r { color:var(--red); font-size:12px; font-weight:700; }
-    .ok-r { color:var(--grn); font-size:12px; font-weight:700; }
-    @media (max-width:900px) {
-      table.ft thead { display:none; }
-      table.ft, table.ft tbody, table.ft tr, table.ft td { display:block; width:100%; }
-      table.ft tr { border-top:1px solid var(--line); padding:10px 0; }
-      table.ft td { border:0; padding:4px 0; display:flex; justify-content:space-between; gap:12px; align-items:center; }
-      table.ft td::before { content:attr(data-l); font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--dim); }
+    /* ── cards ── */
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; min-width: 0; }
+    .card + .card { margin-top: 14px; }
+    .card-h { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+    .card-h h3 { margin: 0; font-size: 16px; font-weight: 800; letter-spacing: -.01em; }
+    .lbl { font: 700 10px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+    .note { color: var(--dim); font-size: 12.5px; margin: 10px 0 0; }
+    .grid2 { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 560px), 1fr)); gap: 14px; }
+    .grid2 > .card + .card { margin-top: 0; }
+
+    /* KPIs */
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 14px; }
+    .kpi { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+    .kpi .v { font: 700 22px var(--mono); margin-top: 6px; letter-spacing: -.02em; }
+    .kpi .s { font-size: 12px; color: var(--dim); margin-top: 2px; }
+
+    /* group live card */
+    .gl-top { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .gl-leader { display: flex; align-items: center; gap: 16px; padding: 14px; border-radius: 11px; background: rgba(0,0,0,.25); border: 1px solid var(--line); margin: 14px 0 10px; flex-wrap: wrap; }
+    .bigpos { font: 700 26px var(--mono); letter-spacing: -.02em; }
+    .tag { display: inline-flex; align-items: center; height: 20px; padding: 0 7px; border-radius: 5px; font: 700 9.5px var(--mono); letter-spacing: .1em; text-transform: uppercase;
+           background: rgba(255,255,255,.07); color: var(--mut); white-space: nowrap; }
+    .tag.live { background: var(--dn-bg); color: var(--dn); }
+    .tag.funded { background: var(--up-bg); color: var(--up); }
+    .tag.eval { background: var(--acc-bg); color: var(--acc); }
+    .tag.sim { background: rgba(96,165,250,.12); color: #93C5FD; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; background: var(--dim); flex: none; }
+    .dot.ok { background: var(--up); } .dot.bad { background: var(--dn); } .dot.wrn { background: var(--warn); } .dot.off { background: rgba(255,255,255,.18); }
+
+    /* tables */
+    .tw { overflow-x: auto; margin: 0 -4px; }
+    table.t { width: 100%; border-collapse: collapse; }
+    table.t th { text-align: left; font: 700 9.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); padding: 0 8px 9px; white-space: nowrap; }
+    table.t th.r, table.t td.r { text-align: right; }
+    table.t td { padding: 10px 8px; border-top: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+    table.t td.num { font-family: var(--mono); font-size: 13px; }
+    table.t tr.tot td { border-top: 1px solid color-mix(in srgb, var(--tx) 22%, transparent); font-weight: 700; }
+    table.t tr.halted td { background: rgba(248,113,113,.045); }
+    table.t tr.paused td { opacity: .55; }
+    table.t tr.edit td { border-top: 0; white-space: normal; padding-top: 0; }
+    .an { font-weight: 700; }
+    .sub { font-size: 11.5px; color: var(--dim); }
+    .hr { color: var(--dn); font-size: 12px; font-weight: 600; white-space: normal; max-width: 260px; }
+    .meter { width: 90px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 4px; }
+    .meter i { display: block; height: 100%; background: var(--up); }
+    .meter i.w { background: var(--warn); } .meter i.d { background: var(--dn); }
+
+    @media (max-width: 860px) {
+      table.t.cards thead { display: none; }
+      table.t.cards, table.t.cards tbody, table.t.cards tr, table.t.cards td { display: block; width: 100%; }
+      table.t.cards tr { border-top: 1px solid var(--line); padding: 10px 4px; }
+      table.t.cards td { border: 0; padding: 4px 4px; display: flex; justify-content: space-between; align-items: center; gap: 12px; white-space: normal; }
+      table.t.cards td::before { content: attr(data-l); font: 700 9.5px var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+      table.t.cards td.first::before { display: none; }
+      table.t.cards tr.tot { display: none; }
+      table.t.cards tr.edit td::before { display: none; }
+      table.t.cards tr.edit td { display: block; }
+      .gl-leader > div:last-child { text-align: left !important; }
     }
 
-    .log { max-height:420px; overflow:auto; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; line-height:1.55; }
-    .log div { padding:2px 0; border-bottom:1px solid rgba(255,255,255,.03); white-space:pre-wrap; word-break:break-word; }
-    .log .t { color:var(--dim); margin-right:8px; }
-    .log .ok { color:#86efac; } .log .err { color:#fca5a5; } .log .warn { color:#fcd34d; }
-    .log .dry { color:#c4b5fd; } .log .lead { color:#93c5fd; } .log .info { color:var(--mut); }
+    /* group editor */
+    .rules { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px 22px; padding: 14px; border-radius: 11px; background: rgba(0,0,0,.2); border: 1px solid var(--line); margin-bottom: 14px; }
+    .rule .lbl { display: block; margin-bottom: 7px; }
+    .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-    .banner { padding:10px 14px; border-radius:10px; font-size:13px; font-weight:700; margin-bottom:16px; display:none; }
-    .banner.show { display:block; }
-    .banner.a { background:var(--amb-bg); color:var(--amb); }
-    .banner.r { background:var(--red-bg); color:var(--red); }
-    .banner.g { background:var(--grn-bg); color:var(--grn); }
+    /* log */
+    .logf { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .log { font: 500 12.5px/1.6 var(--mono); max-height: 65vh; overflow: auto; }
+    .log > div { display: flex; gap: 12px; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.03); }
+    .log .t { color: var(--dim); flex: none; }
+    .log .m { word-break: break-word; }
+    .log .ok .m { color: #86EFAC; } .log .err .m { color: #FCA5A5; } .log .warn .m { color: #FCD34D; }
+    .log .dry .m { color: #C4B5FD; } .log .lead .m { color: #93C5FD; } .log .info .m { color: var(--mut); }
 
-    .modal { position:fixed; inset:0; background:rgba(0,0,0,.75); display:none; align-items:center; justify-content:center; padding:16px; z-index:50; }
-    .modal.show { display:flex; }
-    .modal .box { background:#0f0f12; border:1px solid var(--line2); border-radius:16px; padding:22px; max-width:440px; width:100%; }
-    .modal h3 { margin:0 0 8px; font-size:17px; font-weight:900; }
-    .modal p { margin:0 0 18px; color:var(--mut); font-size:14px; }
-    .modal .row { justify-content:flex-end; }
-    .toast { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:#18181b; border:1px solid var(--line2); color:var(--tx); padding:10px 16px; border-radius:10px; font-size:13px; font-weight:700; display:none; z-index:60; max-width:calc(100vw - 32px); }
-    .toast.show { display:block; }
-    .toast.err { border-color:rgba(239,68,68,.6); color:#fca5a5; }
+    /* banners */
+    .ban { display: none; align-items: center; gap: 10px; padding: 11px 14px; border-radius: 10px; font-weight: 600; font-size: 13px; margin-top: 14px; }
+    .ban.on { display: flex; }
+    .ban.dn { background: var(--dn-bg); color: #FCA5A5; } .ban.wrn { background: var(--warn-bg); color: #FCD34D; }
+
+    /* empty */
+    .empty { text-align: center; padding: 36px 16px; color: var(--dim); }
+    .empty b { display: block; color: var(--tx); font-size: 15px; margin-bottom: 6px; }
+
+    /* mobile action bar */
+    .mbar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 45; padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+            background: color-mix(in srgb, var(--fx-ink, #04070C) 94%, transparent); border-top: 1px solid var(--line); gap: 10px;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .mbar .btn { flex: 1; height: 48px; }
+    @media (max-width: 720px) { .mbar { display: flex; } }
+
+    /* modal + toast */
+    .modal { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(0,0,0,.72); }
+    .modal.on { display: flex; }
+    .modal .box { width: 100%; max-width: 440px; background: #0B1017; border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+    .modal h4 { margin: 0 0 8px; font-size: 18px; font-weight: 800; }
+    .modal p { margin: 0 0 20px; color: var(--mut); }
+    .modal .row { justify-content: flex-end; }
+    .toast { position: fixed; left: 50%; bottom: calc(90px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 70; display: none;
+             padding: 11px 16px; border-radius: 10px; background: #111821; border: 1px solid var(--line); font-weight: 600; font-size: 13px; max-width: calc(100vw - 32px); }
+    .toast.on { display: block; } .toast.err { border-color: rgba(248,113,113,.6); color: #FCA5A5; }
+    @media (min-width: 721px) { .toast { bottom: 24px; } }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen">
@@ -129,85 +233,52 @@
     </div>
   </div>
 
-  <!-- Copier controls (admin only) -->
   <div id="cp-app">
-    <div class="cp-top">
-      <h1>FSD-X Copier</h1>
-      <span class="chip">Admin only</span>
-      <span id="ch-feed" class="chip"><i></i>Feed off</span>
-      <span id="ch-mode" class="chip a">Dry run</span>
-      <span id="ch-arm" class="chip">Disarmed</span>
-      <span class="sp"></span>
-      <a href="admin.html">← Admin panel</a>
-    </div>
-
-    <div id="bn-config" class="banner r">The copier OAuth app isn't set up yet. Add TRADOVATE_COPIER_CLIENT_ID and TRADOVATE_COPIER_CLIENT_SECRET in Cloudflare.</div>
-    <div id="bn-live" class="banner r">LIVE: follower orders are being sent.</div>
-
-    <div class="bar">
-      <button id="b-arm" class="btn go big">Arm</button>
-      <label class="tog" title="Dry run: the engine logs every order it would send and sends nothing.">
-        <input id="t-dry" type="checkbox" checked><b></b><span>Dry run</span>
-      </label>
-      <span class="sp"></span>
-      <select id="s-group" title="Flatten one group"><option value="1">Group 1</option><option value="2">Group 2</option><option value="3">Group 3</option></select>
-      <button id="b-flat-group" class="btn warn">Flatten group</button>
-      <button id="b-flat-f" class="btn warn">Flatten followers</button>
-      <button id="b-flat-all" class="btn stop">Flatten all + leader</button>
-    </div>
-
-    <div class="grid">
-      <div class="card c4">
-        <h2>Tradovate logins <span class="sp"></span><button id="b-refresh" class="btn sm">Refresh</button></h2>
-        <div id="conns"></div>
-        <div class="row" style="margin-top:12px"><button id="b-connect" class="btn go">+ Connect login</button></div>
-        <p class="muted" style="margin:10px 0 0">Uses the copier OAuth app (order permission). Separate from the read-only tracker connection on Accounts.</p>
+    <header class="top"><div class="wrap">
+      <div class="brand">FSD-X <b>COPIER</b><span>ADMIN</span></div>
+      <div class="chips" id="chips"></div>
+      <div class="sp"></div>
+      <div class="clock" id="clock"></div>
+      <div class="ctl desk">
+        <label class="tog wrn" title="Dry run logs every order it would send and sends nothing."><input type="checkbox" id="t-dry"><b></b><span>Dry run</span></label>
+        <button class="btn lg pri" id="b-arm">Arm</button>
+        <button class="btn lg kill" data-exit>Exit everything</button>
       </div>
+    </div></header>
 
-      <div class="card c4">
-        <h2>Leader</h2>
-        <div class="row"><select id="s-leader" style="flex:1"></select><button id="b-leader" class="btn">Set</button></div>
-        <div id="leader-info" style="margin-top:12px"></div>
-      </div>
+    <main class="wrap">
+      <div class="ban dn" id="ban-live">● LIVE — follower orders are being sent.</div>
+      <div class="ban wrn" id="ban-cfg">The copier OAuth app isn't configured. Add TRADOVATE_COPIER_CLIENT_ID and TRADOVATE_COPIER_CLIENT_SECRET in Cloudflare.</div>
+      <div class="ban wrn" id="ban-feed"></div>
 
-      <div class="card c4">
-        <h2>Settings</h2>
-        <div class="row" style="justify-content:space-between;margin-bottom:10px">
-          <span>Max contracts per follower order</span><input id="i-maxqty" type="number" min="1" max="200" step="1">
-        </div>
-        <label class="tog g" style="margin-bottom:10px;display:flex"><input id="t-autofix" type="checkbox"><b></b><span>Auto-fix out-of-sync followers</span></label>
-        <label class="tog g" style="display:flex"><input id="t-join" type="checkbox"><b></b><span>On arm, join a trade the leader is already in</span></label>
-        <p class="muted" style="margin:10px 0 0">An order over the max halts that follower. Auto-fix corrects a follower that has drifted from the leader for more than 20s.</p>
-      </div>
+      <nav class="tabs" id="tabs">
+        <button data-tab="live" class="on">Live</button>
+        <button data-tab="groups">Groups</button>
+        <button data-tab="accounts">Accounts</button>
+        <button data-tab="trades">Trades</button>
+        <button data-tab="log">Log</button>
+        <button data-tab="setup">Setup</button>
+      </nav>
 
-      <div class="card">
-        <h2>Followers <span class="sp"></span>
-          <select id="s-follower"></select><button id="b-add" class="btn sm">Add</button>
-        </h2>
-        <div style="overflow-x:auto">
-          <table class="ft">
-            <thead><tr>
-              <th>On</th><th>Account</th><th>Grp</th><th>Mult</th><th>Fixed qty</th>
-              <th>Daily loss</th><th>Net-liq floor</th><th>Position</th><th>Day P&amp;L · Net liq</th><th>Status</th><th></th>
-            </tr></thead>
-            <tbody id="ftb"></tbody>
-          </table>
-        </div>
-        <p class="muted" style="margin:10px 0 0">Size = leader × Mult, rounded, minimum 1. Fixed qty &gt; 0 overrides Mult (always that size, leader's direction). Daily loss and Net-liq floor halt + flatten the follower; 0 = off. Set the floor just above that account's drawdown line.</p>
-      </div>
+      <section class="pane on" id="p-live"></section>
+      <section class="pane" id="p-groups"></section>
+      <section class="pane" id="p-accounts"></section>
+      <section class="pane" id="p-trades"></section>
+      <section class="pane" id="p-log"></section>
+      <section class="pane" id="p-setup"></section>
+    </main>
 
-      <div class="card">
-        <h2>Log <span class="sp"></span><button id="b-clearlog" class="btn sm">Clear</button></h2>
-        <div id="log" class="log"></div>
-      </div>
+    <div class="mbar">
+      <button class="btn pri" id="b-arm-m">Arm</button>
+      <button class="btn kill" data-exit>Exit all</button>
     </div>
   </div>
 
-  <div id="modal" class="modal"><div class="box">
-    <h3 id="m-title"></h3><p id="m-text"></p>
-    <div class="row"><button id="m-no" class="btn">Cancel</button><button id="m-yes" class="btn stop">Confirm</button></div>
+  <div class="modal" id="modal"><div class="box">
+    <h4 id="m-t"></h4><p id="m-p"></p>
+    <div class="row"><button class="btn" id="m-no">Cancel</button><button class="btn kill" id="m-yes">Confirm</button></div>
   </div></div>
-  <div id="toast" class="toast"></div>
+  <div class="toast" id="toast"></div>
 
 <script>
 (function () {
@@ -215,217 +286,439 @@
   var API = 'https://nexus-validator.dfuentes4211.workers.dev';
   var token = '';
   try { token = localStorage.getItem('fsdx_token') || ''; } catch (e) {}
-  if (!token) return;                                   // stays a 404 page
+  if (!token) return;                                          // stays a 404 page
 
-  var S = null, pollT = null, busy = false;
+  var S = null, busy = false, pollT = null, tab = 'live', logFilter = 'all', openTrade = null, openAcct = null;
+  try { tab = sessionStorage.getItem('cp_tab') || 'live'; } catch (e) {}
   var $ = function (id) { return document.getElementById(id); };
-  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
-  function money(n) { if (n == null) return '—'; var s = Math.abs(n).toLocaleString(undefined, { maximumFractionDigits: 0 }); return (n < 0 ? '-$' : '$') + s; }
-  function posStr(m) {
-    var k = Object.keys(m || {}); if (!k.length) return '<span class="muted">flat</span>';
-    return k.map(function (s) { var q = m[s]; return '<span class="' + (q > 0 ? 'L' : 'S') + '">' + (q > 0 ? '+' : '') + q + ' ' + esc(s) + '</span>'; }).join(' ');
+  var DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  var TYPES = ['eval', 'funded', 'sim', 'live'];
+
+  /* ── helpers ── */
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function money(n, plus) {
+    if (n == null || isNaN(n)) return '<span class="dim">—</span>';
+    var s = '$' + Math.abs(n).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    return n < 0 ? '-' + s : (plus && n > 0 ? '+' + s : s);
   }
+  function pnl(n) { if (n == null || isNaN(n)) return '<span class="dim">—</span>'; return '<span class="' + (n > 0 ? 'up' : n < 0 ? 'dn' : 'mut') + '">' + money(n, true) + '</span>'; }
+  function posHtml(m) {
+    var k = Object.keys(m || {});
+    if (!k.length) return '<span class="dim">flat</span>';
+    return '<span>' + k.map(function (s) { var q = m[s]; return '<span class="' + (q > 0 ? 'up' : 'dn') + '">' + (q > 0 ? '+' : '') + q + '</span> <span class="mut">' + esc(s) + '</span>'; }).join(' &nbsp;') + '</span>';
+  }
+  function acc(key) { return S.accounts.find(function (a) { return a.key === key; }); }
+  function aname(key) { var a = acc(key); return a ? a.name : '—'; }
+  function envTag(a) { return a ? '<span class="tag' + (a.env === 'live' ? ' live' : '') + '">' + a.env + '</span>' : ''; }
+  function typeTag(t) { return '<span class="tag ' + t + '">' + t + '</span>'; }
+  function fmtTime(ms, withDate) {
+    var d = new Date(ms);
+    var o = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'America/Chicago' };
+    if (withDate) { o.month = 'short'; o.day = 'numeric'; delete o.second; }
+    return d.toLocaleString([], o);
+  }
+  function editing(el) { var a = document.activeElement; return a && el.contains(a) && /INPUT|SELECT|TEXTAREA/.test(a.tagName); }
   function toast(msg, err) {
-    var t = $('toast'); t.textContent = msg; t.className = 'toast show' + (err ? ' err' : '');
-    clearTimeout(toast.t); toast.t = setTimeout(function () { t.className = 'toast'; }, err ? 6000 : 3000);
+    var t = $('toast'); t.textContent = msg; t.className = 'toast on' + (err ? ' err' : '');
+    clearTimeout(toast.t); toast.t = setTimeout(function () { t.className = 'toast'; }, err ? 6000 : 2600);
   }
-  function confirmBox(title, text, yes) {
-    return new Promise(function (resolve) {
-      $('m-title').textContent = title; $('m-text').textContent = text; $('m-yes').textContent = yes || 'Confirm';
-      $('modal').className = 'modal show';
-      function done(v) { $('modal').className = 'modal'; $('m-yes').onclick = $('m-no').onclick = null; resolve(v); }
+  function confirmBox(title, text, yes, safe) {
+    return new Promise(function (res) {
+      $('m-t').textContent = title; $('m-p').textContent = text; $('m-yes').textContent = yes || 'Confirm';
+      $('m-yes').className = 'btn ' + (safe ? 'pri' : 'kill');
+      $('modal').className = 'modal on';
+      function done(v) { $('modal').className = 'modal'; $('m-yes').onclick = $('m-no').onclick = null; res(v); }
       $('m-yes').onclick = function () { done(true); }; $('m-no').onclick = function () { done(false); };
     });
   }
-
   function api(path, body) {
     return fetch(API + path, {
       method: body ? 'POST' : 'GET',
       headers: Object.assign({ Authorization: 'Bearer ' + token }, body ? { 'Content-Type': 'application/json' } : {}),
       body: body ? JSON.stringify(body) : undefined,
-    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { d.__status = r.status; return d; }); });
+    }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { d.__s = r.status; return d; }); });
   }
   function act(body, okMsg) {
     if (busy) return Promise.resolve();
     busy = true;
     return api('/api/copier/action', body).then(function (d) {
       busy = false;
-      if (d.__status !== 200) { toast(d.error || 'Failed', true); refresh(); return; }
-      if (d.state) render(d.state);
+      if (d.__s !== 200) { toast(d.error || 'Failed', true); refresh(); return null; }
+      if (d.state) { d.state.configured = S ? S.configured : true; render(d.state, true); }
       if (okMsg) toast(okMsg);
+      return d;
     }).catch(function () { busy = false; toast('Connection error', true); });
   }
 
-  /* ── Render ── */
-  function render(s) {
+  /* ── derived ── */
+  function groupStatus(g) {
+    if (!g.leader) return { t: 'No leader', c: 'wrn' };
+    if (!g.followers.length) return { t: 'No followers', c: 'wrn' };
+    if (!g.enabled) return { t: 'Paused', c: '' };
+    if (!S.armed) return { t: 'Disarmed', c: '' };
+    if (!g.inWindow) return { t: 'Outside window', c: 'wrn' };
+    return { t: 'Copying', c: 'on' };
+  }
+  function windowText(g) {
+    var w = g.window;
+    if (!w.on) return 'Any time';
+    var d = w.days.length === 7 ? 'Every day' : (w.days.join(',') === '1,2,3,4,5' ? 'Mon–Fri' : w.days.map(function (x) { return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][x]; }).join(' '));
+    return d + ' · ' + w.start + '–' + w.end + ' CT' + (w.flattenAtEnd ? ' · flatten at end' : '');
+  }
+  function acctStatus(a) {
+    if (a.cfg.halted) return { dot: 'bad', html: '<div class="hr">' + esc(a.cfg.haltReason) + '</div>' };
+    var g = a.groupId && S.groups.find(function (x) { return x.id === a.groupId; });
+    var f = g && g.followers.find(function (x) { return x.key === a.key; });
+    if (f && !f.enabled) return { dot: 'off', html: '<span class="mut">Paused · exits only</span>' };
+    if (f && f.sitting && f.sitting.length) return { dot: 'wrn', html: '<span class="mut">Sitting out ' + esc(f.sitting.join(', ')) + '</span>' };
+    if (a.role === 'leader') return { dot: S.armed ? 'ok' : 'off', html: '<span class="mut">Leader</span>' };
+    if (a.role === 'follower') return { dot: S.armed && g.enabled ? 'ok' : 'off', html: S.armed && g.enabled ? '<span class="up">Ready</span>' : '<span class="mut">Idle</span>' };
+    return { dot: 'off', html: '<span class="dim">Not in a group</span>' };
+  }
+  function ddMeter(a) {
+    if (a.ddLeft == null) return '';
+    var ac = a.cfg, room = ac.trail > 0 ? ac.trail : (a.netLiq && a.floor ? Math.max(1, a.netLiq - a.floor + 1) : 1);
+    var pct = Math.max(0, Math.min(100, (a.ddLeft / room) * 100));
+    return '<div class="meter"><i class="' + (pct < 25 ? 'd' : pct < 50 ? 'w' : '') + '" style="width:' + pct.toFixed(0) + '%"></i></div>';
+  }
+
+  /* ── render: header ── */
+  function renderTop() {
+    var feeds = S.feeds || [], live = feeds.filter(function (f) { return f.live; }).length;
+    var halted = S.accounts.filter(function (a) { return a.cfg.halted && a.role; }).length;
+    var chips = [];
+    chips.push(S.armed ? '<span class="chip on"><i></i>Armed</span>' : '<span class="chip"><i></i>Disarmed</span>');
+    chips.push(S.dryRun ? '<span class="chip wrn">Dry run</span>' : '<span class="chip bad">Live orders</span>');
+    if (S.armed) chips.push(live === feeds.length && feeds.length ? '<span class="chip on"><i></i>Feed ' + live + '/' + feeds.length + '</span>' : '<span class="chip bad"><i></i>Feed ' + live + '/' + feeds.length + '</span>');
+    if (halted) chips.push('<span class="chip bad">' + halted + ' halted</span>');
+    $('chips').innerHTML = chips.join('');
+    [$('b-arm'), $('b-arm-m')].forEach(function (b) { b.textContent = S.armed ? 'Disarm' : 'Arm'; b.className = 'btn ' + (b.id === 'b-arm' ? 'lg ' : '') + (S.armed ? 'arm-on' : 'pri'); });
+    $('t-dry').checked = !!S.dryRun;
+    $('ban-live').className = 'ban dn' + (S.armed && !S.dryRun ? ' on' : '');
+    $('ban-cfg').className = 'ban wrn' + (S.configured === false ? ' on' : '');
+    var down = S.armed ? feeds.filter(function (f) { return !f.live; }) : [];
+    $('ban-feed').className = 'ban wrn' + (down.length ? ' on' : '');
+    $('ban-feed').textContent = down.length ? 'Leader feed reconnecting: ' + down.map(function (f) { return f.label; }).join(', ') + '. Followers catch up automatically when it\'s back.' : '';
+    var hc = S.accounts.filter(function (a) { return a.cfg.halted && a.role; }).length;
+    $('tabs').querySelector('[data-tab=accounts]').innerHTML = 'Accounts' + (hc ? '<span class="badge">' + hc + '</span>' : '');
+  }
+  function tickClock() {
+    $('clock').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'America/Chicago' }) + ' CT';
+  }
+
+  /* ── render: LIVE ── */
+  function renderLive() {
+    var el = $('p-live');
+    var fol = S.accounts.filter(function (a) { return a.role === 'follower'; });
+    var sum = function (arr, f) { var s = 0, any = false; arr.forEach(function (a) { if (a[f] != null) { s += a[f]; any = true; } }); return any ? s : null; };
+    var byType = {}; TYPES.forEach(function (t) { byType[t] = sum(fol.filter(function (a) { return a.cfg.type === t; }), 'dayPnL'); });
+    var open = fol.filter(function (a) { return Object.keys(a.positions || {}).length; }).length;
+    var halted = fol.filter(function (a) { return a.cfg.halted; }).length;
+    var html = '<div class="kpis">'
+      + kpi('Followers · day P&L', pnl(sum(fol, 'dayPnL')), 'Open ' + strip(pnl(sum(fol, 'openPnL'))))
+      + kpi('Funded · day', pnl(byType.funded), plural(fol.filter(function (a) { return a.cfg.type === 'funded'; }).length, 'account'))
+      + kpi('Eval · day', pnl(byType.eval), plural(fol.filter(function (a) { return a.cfg.type === 'eval'; }).length, 'account'))
+      + kpi('In a position', '<span>' + open + '</span><span class="dim"> / ' + fol.length + '</span>', 'follower accounts')
+      + kpi('Halted', '<span class="' + (halted ? 'dn' : '') + '">' + halted + '</span>', halted ? 'see Accounts' : 'all clear')
+      + '</div>';
+    if (!S.groups.length) {
+      html += '<div class="card empty"><b>No copy groups yet</b>Connect a Tradovate login under Setup, then create a group under Groups.</div>';
+    } else {
+      html += '<div class="grid2">' + S.groups.map(liveGroup).join('') + '</div>';
+    }
+    el.innerHTML = html;
+  }
+  function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+  function strip(h) { return h.replace(/<[^>]+>/g, ''); }
+  function kpi(l, v, s) { return '<div class="kpi"><div class="lbl">' + l + '</div><div class="v">' + v + '</div><div class="s">' + s + '</div></div>'; }
+  function liveGroup(g) {
+    var st = groupStatus(g), la = g.leader && acc(g.leader);
+    var rows = g.followers.map(function (f) {
+      var a = acc(f.key); if (!a) return '';
+      var as = acctStatus(a);
+      return '<tr class="' + (a.cfg.halted ? 'halted' : (!f.enabled ? 'paused' : '')) + '">'
+        + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + as.dot + '"></span><span class="an">' + esc(a.name) + '</span>' + typeTag(a.cfg.type) + '</div></td>'
+        + '<td data-l="Position" class="num">' + posHtml(a.positions) + '</td>'
+        + '<td data-l="Open" class="num r">' + pnl(a.openPnL) + '</td>'
+        + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
+        + '<td data-l="DD left" class="num r">' + (a.ddLeft == null ? '<span class="dim">—</span>' : money(a.ddLeft)) + '</td>'
+        + '<td data-l="" class="r"><button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></td>'
+        + '</tr>';
+    }).join('');
+    return '<div class="card">'
+      + '<div class="gl-top"><h3 style="margin:0;font-size:17px;font-weight:800">' + esc(g.name) + '</h3><span class="chip ' + st.c + '">' + (st.c === 'on' ? '<i></i>' : '') + st.t + '</span>'
+      + '<span class="sp"></span>'
+      + '<button class="btn sm" data-gtoggle="' + g.id + '">' + (g.enabled ? 'Pause' : 'Resume') + '</button>'
+      + '<button class="btn sm ghost-dn" data-flat-group="' + g.id + '">Flatten group</button></div>'
+      + '<div class="sub" style="margin-top:6px">' + esc(windowText(g)) + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + '</div>'
+      + '<div class="gl-leader"><div><div class="lbl">Leader</div><div class="an" style="margin-top:4px">' + (la ? esc(la.name) + ' ' + envTag(la) : '<span class="dim">not set</span>') + '</div></div>'
+      + '<div class="bigpos">' + posHtml(S.armed ? g.leaderPos : (la && la.positions)) + '</div><span class="sp"></span>'
+      + (la ? '<div style="text-align:right"><div class="lbl">Day</div><div class="mono" style="margin-top:4px;font-weight:700">' + pnl(la.dayPnL) + '</div></div>' : '') + '</div>'
+      + (rows ? '<div class="tw"><table class="t cards"><thead><tr><th>Follower</th><th>Position</th><th class="r">Open</th><th class="r">Day</th><th class="r">DD left</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+              : '<div class="empty" style="padding:18px">No followers. Add them under Groups.</div>')
+      + '</div>';
+  }
+
+  /* ── render: GROUPS ── */
+  function renderGroups() {
+    var el = $('p-groups');
+    if (editing(el)) return;
+    var used = {}; S.groups.forEach(function (g) { g.followers.forEach(function (f) { used[f.key] = g.name; }); });
+    var leaders = {}; S.groups.forEach(function (g) { if (g.leader) leaders[g.leader] = 1; });
+    var html = '<div class="card-h"><div class="note" style="margin:0;flex:1">Each group copies one leader to its followers with its own rules. A leader can run several groups; an account follows one group.</div>'
+      + '<button class="btn pri" id="b-newgroup">+ New group</button></div>';
+    if (!S.groups.length) html += '<div class="card empty"><b>No groups</b>Create one to get started.</div>';
+    html += S.groups.map(function (g) {
+      var opts = function (sel, filter) {
+        return S.accounts.filter(filter).map(function (a) { return '<option value="' + esc(a.key) + '"' + (a.key === sel ? ' selected' : '') + '>' + esc(a.name) + ' · ' + a.env + ' · ' + esc(a.conn) + '</option>'; }).join('');
+      };
+      var leaderOpts = '<option value="">Choose leader…</option>' + opts(g.leader, function (a) { return !used[a.key]; });
+      var addOpts = S.accounts.filter(function (a) { return !used[a.key] && !leaders[a.key]; });
+      var fr = g.followers.map(function (f) {
+        var a = acc(f.key);
+        return '<tr data-g="' + g.id + '" data-k="' + esc(f.key) + '" class="' + (f.enabled ? '' : 'paused') + '">'
+          + '<td class="first"><label class="tog"><input type="checkbox" data-ff="enabled"' + (f.enabled ? ' checked' : '') + '><b></b></label></td>'
+          + '<td data-l="Account"><span class="an">' + esc(a ? a.name : f.key) + '</span> ' + envTag(a) + (a ? ' ' + typeTag(a.cfg.type) : '') + '<div class="sub">' + esc(a ? a.conn : '') + '</div></td>'
+          + '<td data-l="Multiplier"><input class="inp n s" type="number" min="0" max="50" step="0.25" data-ff="mult" value="' + f.mult + '"' + (f.fixedQty > 0 ? ' disabled' : '') + '></td>'
+          + '<td data-l="Fixed qty"><input class="inp n s" type="number" min="0" max="100" step="1" data-ff="fixedQty" value="' + f.fixedQty + '"></td>'
+          + '<td data-l="Invert"><label class="tog"><input type="checkbox" data-ff="invert"' + (f.invert ? ' checked' : '') + '><b></b></label></td>'
+          + '<td data-l="" class="r"><button class="btn xs" data-rmf>Remove</button></td></tr>';
+      }).join('');
+      var w = g.window;
+      return '<div class="card" data-gcard="' + g.id + '">'
+        + '<div class="card-h"><input class="inp" style="font:800 16px Inter,sans-serif;height:38px;width:min(320px,100%)" data-gf="name" value="' + esc(g.name) + '">'
+        + '<label class="tog"><input type="checkbox" data-gf="enabled"' + (g.enabled ? ' checked' : '') + '><b></b><span>' + (g.enabled ? 'Active' : 'Paused') + '</span></label>'
+        + '<span class="sp"></span><button class="btn sm ghost-dn" data-delgroup>Delete</button></div>'
+        + '<div class="rules">'
+        + '<div class="rule"><span class="lbl">Leader</span><select class="sel" style="width:100%" data-gf="leader"' + (S.armed ? ' disabled title="Disarm to change"' : '') + '>' + leaderOpts + '</select></div>'
+        + '<div class="rule"><span class="lbl">Trading window (CT)</span><div class="row"><label class="tog"><input type="checkbox" data-gw="on"' + (w.on ? ' checked' : '') + '><b></b></label>'
+        + '<input class="inp t" data-gw="start" value="' + esc(w.start) + '" placeholder="08:30"' + (w.on ? '' : ' disabled') + '><span class="dim">→</span><input class="inp t" data-gw="end" value="' + esc(w.end) + '" placeholder="15:00"' + (w.on ? '' : ' disabled') + '></div>'
+        + '<div class="row" style="margin-top:8px"><div class="days">' + DAYS.map(function (d, i) { return '<button data-day="' + i + '" class="' + (w.days.indexOf(i) >= 0 ? 'on' : '') + '"' + (w.on ? '' : ' disabled') + '>' + d + '</button>'; }).join('') + '</div></div>'
+        + '<label class="tog" style="margin-top:9px"><input type="checkbox" data-gw="flattenAtEnd"' + (w.flattenAtEnd ? ' checked' : '') + (w.on ? '' : ' disabled') + '><b></b><span>Flatten followers at end</span></label></div>'
+        + '<div class="rule"><span class="lbl">Direction</span><div class="seg">' + ['both', 'long', 'short'].map(function (d) { return '<button data-dir="' + d + '" class="' + (g.direction === d ? 'on' : '') + '">' + d + '</button>'; }).join('') + '</div>'
+        + '<span class="lbl" style="margin-top:12px">Symbols</span><input class="inp" style="width:100%" data-gf="symbols" placeholder="All — or e.g. MNQ, NQ" value="' + esc(g.symbols) + '"></div>'
+        + '<div class="rule"><span class="lbl">Max contracts per order</span><input class="inp n" type="number" min="1" max="200" data-gf="maxQty" value="' + g.maxQty + '">'
+        + '<div class="note" style="margin-top:6px">An opening order bigger than this halts that account (exits still copy).</div></div>'
+        + '</div>'
+        + '<div class="card-h" style="margin-bottom:6px"><span class="lbl">Followers · ' + g.followers.length + '</span><span class="sp"></span>'
+        + '<select class="sel" data-addf' + (addOpts.length ? '' : ' disabled') + '><option value="">' + (addOpts.length ? 'Add follower…' : 'No free accounts') + '</option>'
+        + addOpts.map(function (a) { return '<option value="' + esc(a.key) + '">' + esc(a.name) + ' · ' + a.env + ' · ' + esc(a.conn) + '</option>'; }).join('') + '</select></div>'
+        + (fr ? '<div class="tw"><table class="t cards"><thead><tr><th>On</th><th>Account</th><th>Mult</th><th>Fixed qty</th><th>Invert</th><th></th></tr></thead><tbody>' + fr + '</tbody></table></div>' : '<div class="empty" style="padding:16px">No followers yet.</div>')
+        + '<p class="note">Size = leader × Mult, rounded, minimum 1. Fixed qty &gt; 0 overrides Mult. Outside the window, when paused, or for a symbol/direction this group doesn\'t trade, followers only exit — they never open or add.</p>'
+        + '</div>';
+    }).join('');
+    el.innerHTML = html;
+  }
+
+  /* ── render: ACCOUNTS ── */
+  function renderAccounts() {
+    var el = $('p-accounts');
+    if (editing(el)) return;
+    if (!S.accounts.length) { el.innerHTML = '<div class="card empty"><b>No accounts</b>Connect a Tradovate login under Setup.</div>'; return; }
+    var gname = {}; S.groups.forEach(function (g) { gname[g.id] = g.name; });
+    var list = S.accounts.slice().sort(function (a, b) { var r = function (x) { return x.role === 'leader' ? 0 : x.role === 'follower' ? 1 : 2; }; return r(a) - r(b) || a.name.localeCompare(b.name); });
+    var tot = { net: 0, day: 0, open: 0 };
+    var rows = list.map(function (a) {
+      var ac = a.cfg, st = acctStatus(a);
+      if (a.role === 'follower') { tot.net += a.netLiq || 0; tot.day += a.dayPnL || 0; tot.open += a.openPnL || 0; }
+      var parts = [];
+      if (ac.dailyLoss) parts.push('Loss ' + strip(money(ac.dailyLoss)));
+      if (ac.dailyProfit) parts.push('Lock ' + strip(money(ac.dailyProfit)));
+      if (ac.maxPos) parts.push('Max ' + ac.maxPos);
+      if (ac.floor) parts.push('Floor ' + strip(money(ac.floor)));
+      if (ac.trail) parts.push('Trail ' + strip(money(ac.trail)));
+      var isOpen = openAcct === a.key;
+      var risk = a.role === 'leader' ? '<span class="dim">Leaders aren\'t auto-halted</span>' :
+        '<button class="btn xs' + (isOpen ? ' pri' : '') + '" data-editrisk>' + (isOpen ? 'Done' : 'Edit') + '</button> <span class="sub">' + (parts.join(' · ') || 'No limits') + '</span>';
+      return '<tr data-k="' + esc(a.key) + '" class="' + (ac.halted ? 'halted' : '') + '">'
+        + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + st.dot + '"></span><div><span class="an">' + esc(a.name) + '</span> ' + envTag(a)
+        + '<div class="sub">' + esc(a.conn) + (a.role ? ' · ' + (a.role === 'leader' ? 'Leader' : esc(gname[a.groupId] || '')) : '') + '</div></div></div></td>'
+        + '<td data-l="Type"><select class="sel" data-af="type">' + TYPES.map(function (t) { return '<option' + (t === ac.type ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></td>'
+        + '<td data-l="Net liq" class="num r">' + money(a.netLiq) + '</td>'
+        + '<td data-l="Day P&L" class="num r">' + pnl(a.dayPnL) + '</td>'
+        + '<td data-l="Open" class="num r">' + pnl(a.openPnL) + '</td>'
+        + '<td data-l="Position" class="num">' + posHtml(a.positions) + '</td>'
+        + '<td data-l="DD left" class="num r">' + (a.ddLeft == null ? '<span class="dim">—</span>' : money(a.ddLeft) + ddMeter(a)) + (ac.trail > 0 && ac.peak != null ? '<div class="sub">peak ' + strip(money(ac.peak)) + ' <a href="#" data-resetpeak class="acc">reset</a></div>' : '') + '</td>'
+        + '<td data-l="Risk rules">' + risk + '</td>'
+        + '<td data-l="Status">' + st.html + (ac.halted ? '<button class="btn xs" style="margin-top:6px" data-resethalt>Reset halt</button>' : '') + '</td>'
+        + '<td data-l="" class="r"><button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></td></tr>'
+        + (isOpen && a.role !== 'leader' ? '<tr class="edit" data-k="' + esc(a.key) + '"><td colspan="10"><div class="rules" style="margin:4px 0 6px">'
+          + rf('dailyLoss', ac.dailyLoss, 'Daily loss limit $', 'Day P&L at or below −this → halt + flatten. Clears at 5pm CT.', 50)
+          + rf('dailyProfit', ac.dailyProfit, 'Daily profit lock $', 'Day P&L at or above +this → halt + flatten. Clears at 5pm CT.', 50)
+          + rf('maxPos', ac.maxPos, 'Max position (contracts)', 'Never holds more than this. Clamps size, doesn\'t halt.', 1)
+          + rf('floor', ac.floor, 'Net-liq floor $', 'Net liq at or below this → halt + flatten until reset.', 100)
+          + rf('trail', ac.trail, 'Trailing drawdown $', 'Floor = highest net liq seen − this. Set to your firm\'s drawdown.', 100)
+          + '</div><div class="sub" style="margin-bottom:6px">0 = off. Saved as you change each box.</div></td></tr>' : '');
+    }).join('');
+    el.innerHTML = '<div class="card"><div class="tw"><table class="t cards"><thead><tr><th>Account</th><th>Type</th><th class="r">Net liq</th><th class="r">Day P&amp;L</th><th class="r">Open</th><th>Position</th><th class="r">DD left</th>'
+      + '<th>Risk rules</th><th>Status</th><th></th></tr></thead><tbody>' + rows
+      + '<tr class="tot"><td>Followers total</td><td></td><td class="num r">' + money(tot.net) + '</td><td class="num r">' + pnl(tot.day) + '</td><td class="num r">' + pnl(tot.open) + '</td><td colspan="5"></td></tr>'
+      + '</tbody></table></div>'
+      + '<p class="note">Balances refresh every 20s while this page is open. Daily loss and profit lock halt + flatten the account and clear at the 5pm CT session roll. Floor and trailing DD halt + flatten until you reset. Trailing DD floor = highest net liq seen − amount.</p></div>';
+  }
+  function rf(f, v, t, help, step) { return '<div class="rule"><span class="lbl">' + t + '</span><input class="inp n" style="width:120px" type="number" min="0" step="' + step + '" data-af="' + f + '" value="' + (v || 0) + '"><div class="note" style="margin-top:6px">' + help + '</div></div>'; }
+
+  /* ── render: TRADES ── */
+  function renderTrades() {
+    var el = $('p-trades');
+    var tr = S.trades || [];
+    var sums = { funded: 0, eval: 0, sim: 0, live: 0 };
+    tr.forEach(function (t) { TYPES.forEach(function (k) { sums[k] += (t.byType && t.byType[k]) || 0; }); });
+    var html = '<div class="kpis">' + kpi('Trades', tr.length, 'last ' + tr.length + ' copied')
+      + kpi('Funded total', pnl(sums.funded), 'all listed trades') + kpi('Eval total', pnl(sums.eval), 'all listed trades')
+      + (sums.sim ? kpi('Sim total', pnl(sums.sim), '') : '') + '</div>';
+    if (!tr.length) { el.innerHTML = html + '<div class="card empty"><b>No trades yet</b>Each leader round trip shows here with P&amp;L per account, split Funded / Eval.</div>'; return; }
+    var rows = tr.map(function (t) {
+      var o = openTrade === t.id;
+      var detail = o ? '<tr><td colspan="7" style="background:rgba(0,0,0,.2)">' + Object.keys(t.pnl).map(function (k) {
+        var a = acc(k); return '<span style="display:inline-block;margin:3px 16px 3px 0"><span class="mut">' + esc(a ? a.name : k) + (k === t.leader ? ' (leader)' : '') + '</span> <span class="mono">' + pnl(t.pnl[k]) + '</span></span>';
+      }).join('') + '</td></tr>' : '';
+      return '<tr data-trade="' + esc(t.id) + '" style="cursor:pointer"><td class="first num">' + fmtTime(t.closedAt, true) + '</td>'
+        + '<td data-l="Trade"><span class="an">' + esc(t.sym) + '</span> <span class="' + (t.side === 'Long' ? 'up' : 'dn') + '">' + t.side + '</span> <span class="mut mono">×' + t.qty + '</span></td>'
+        + '<td data-l="Group" class="sub">' + esc((t.groups || []).join(', ')) + '</td>'
+        + '<td data-l="Leader" class="num r">' + pnl(t.pnl[t.leader]) + '</td>'
+        + '<td data-l="Funded" class="num r">' + pnl(t.byType.funded) + '</td>'
+        + '<td data-l="Eval" class="num r">' + pnl(t.byType.eval) + '</td>'
+        + '<td data-l="" class="r dim">' + (o ? '▴' : '▾') + '</td></tr>' + detail;
+    }).join('');
+    el.innerHTML = html + '<div class="card"><div class="card-h"><span class="lbl">Copied trades</span><span class="sp"></span><button class="btn xs" id="b-cleartrades">Clear</button></div>'
+      + '<div class="tw"><table class="t cards"><thead><tr><th>Closed</th><th>Trade</th><th>Group</th><th class="r">Leader</th><th class="r">Funded</th><th class="r">Eval</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+      + '<p class="note">P&amp;L per trade = change in each account\'s realized P&amp;L from open to close (includes fees). Tap a row for every account.</p></div>';
+  }
+
+  /* ── render: LOG ── */
+  var LOGF = { all: null, orders: ['ok', 'dry'], errors: ['err', 'warn'], leader: ['lead'] };
+  function renderLog() {
+    var el = $('p-log');
+    var f = LOGF[logFilter];
+    var items = S.log.slice().reverse().filter(function (l) { return !f || f.indexOf(l.lvl) >= 0; });
+    var body = items.map(function (l) { return '<div class="' + esc(l.lvl) + '"><span class="t">' + fmtTime(l.t) + '</span><span class="m">' + esc(l.msg) + '</span></div>'; }).join('') || '<div class="info"><span class="m">Nothing here.</span></div>';
+    if (el._b === body && el._f === logFilter) return;
+    el._b = body; el._f = logFilter;
+    el.innerHTML = '<div class="card"><div class="logf">' + Object.keys(LOGF).map(function (k) { return '<button class="btn xs' + (k === logFilter ? ' pri' : '') + '" data-logf="' + k + '">' + k + '</button>'; }).join('')
+      + '<span class="sp"></span><button class="btn xs" id="b-clearlog">Clear</button></div><div class="log">' + body + '</div></div>';
+  }
+
+  /* ── render: SETUP ── */
+  function renderSetup() {
+    var el = $('p-setup');
+    if (editing(el)) return;
+    var conns = S.conns.map(function (c) {
+      var bad = c.status !== 'ok', n = S.accounts.filter(function (a) { return a.connId === c.id; }).length;
+      return '<tr><td class="first"><span class="dot ' + (bad ? 'bad' : 'ok') + '"></span> <span class="an">' + esc(c.tvName) + '</span><div class="sub">' + n + ' account' + (n === 1 ? '' : 's') + (bad ? ' · <span class="dn">' + esc(c.error || c.status) + '</span>' : '') + '</div></td>'
+        + '<td class="r">' + (bad ? '<button class="btn xs pri" data-connect>Reconnect</button> ' : '') + '<button class="btn xs ghost-dn" data-rmconn="' + esc(c.id) + '">Remove</button></td></tr>';
+    }).join('');
+    var s = S.settings;
+    el.innerHTML = '<div class="grid2"><div class="card"><div class="card-h"><h3>Tradovate logins</h3><span class="sp"></span><button class="btn sm" id="b-refresh">Refresh accounts</button><button class="btn sm pri" data-connect>+ Connect</button></div>'
+      + (conns ? '<table class="t"><tbody>' + conns + '</tbody></table>' : '<div class="empty" style="padding:18px">No logins yet.</div>')
+      + '<p class="note">Uses the copier OAuth app (order permission), separate from the read-only tracker on Accounts. Connect each prop firm login once; every account under it shows up.</p></div>'
+      + '<div class="card"><div class="card-h"><h3>Engine settings</h3></div>'
+      + '<label class="tog" style="display:flex;margin-bottom:12px"><input type="checkbox" data-set="autoFix"' + (s.autoFix ? ' checked' : '') + '><b></b><span>Auto-fix out-of-sync followers <span class="dim">(after 20s)</span></span></label>'
+      + '<label class="tog" style="display:flex;margin-bottom:14px"><input type="checkbox" data-set="joinOpen"' + (s.joinOpen ? ' checked' : '') + '><b></b><span>On arm, join a trade the leader is already in</span></label>'
+      + '<div class="row"><span style="flex:1">Circuit breaker — max automatic orders per account per minute</span><input class="inp n" type="number" min="3" max="200" data-set="maxOrdersPerMin" value="' + s.maxOrdersPerMin + '"></div>'
+      + '<p class="note">The breaker blocks every automatic order on an account that suddenly fires too many — protection against a runaway loop. Manual flatten still works; reset it on Accounts.</p>'
+      + '<p class="note"><b class="acc">Flatten buttons always send real orders</b>, even in dry run. Disarm stops copying and leaves positions open. Exit everything stops copying and closes every leader and follower.</p></div></div>';
+  }
+
+  /* ── render all ── */
+  function render(s, force) {
     S = s;
-    $('bn-config').className = 'banner r' + (s.configured === false ? ' show' : '');
-    $('bn-live').className = 'banner r' + (s.armed && !s.dryRun ? ' show' : '');
-
-    var feed = $('ch-feed');
-    if (!s.armed) { feed.className = 'chip'; feed.innerHTML = '<i></i>Feed off'; }
-    else if (s.feed.live) { feed.className = 'chip g'; feed.innerHTML = '<i></i>Feed live'; }
-    else { feed.className = 'chip a'; feed.innerHTML = '<i></i>Connecting'; }
-    $('ch-mode').className = 'chip ' + (s.dryRun ? 'a' : 'r'); $('ch-mode').textContent = s.dryRun ? 'Dry run' : 'Live orders';
-    $('ch-arm').className = 'chip ' + (s.armed ? 'g' : ''); $('ch-arm').textContent = s.armed ? 'Armed' : 'Disarmed';
-    var arm = $('b-arm'); arm.textContent = s.armed ? 'Disarm' : 'Arm'; arm.className = 'btn big ' + (s.armed ? 'stop' : 'go');
-    $('t-dry').checked = !!s.dryRun;
-
-    if (document.activeElement !== $('i-maxqty')) $('i-maxqty').value = s.settings.maxQty;
-    $('t-autofix').checked = !!s.settings.autoFix;
-    $('t-join').checked = !!s.settings.joinOpen;
-
-    // logins
-    $('conns').innerHTML = s.conns.length ? s.conns.map(function (c) {
-      var bad = c.status !== 'ok';
-      return '<div class="conn"><div style="flex:1;min-width:0"><div class="nm">' + esc(c.tvName) + '</div>'
-        + '<div class="muted">' + (bad ? '<span class="halt-r">' + esc(c.error || c.status) + '</span>' : 'Connected') + '</div></div>'
-        + (bad ? '<button class="btn sm go" data-reconnect="1">Reconnect</button>' : '')
-        + '<button class="btn sm warn" data-rmconn="' + esc(c.id) + '">Remove</button></div>';
-    }).join('') : '<p class="muted">No logins connected yet.</p>';
-
-    // leader + follower pickers
-    var leaderKey = s.leader ? s.leader.key : '';
-    var fKeys = s.followers.map(function (f) { return f.key; });
-    var connName = {}; s.conns.forEach(function (c) { connName[c.id] = c.tvName; });
-    function opt(a) { return '<option value="' + esc(a.key) + '">' + esc(a.name) + ' · ' + a.env + ' · ' + esc(connName[a.connId] || '') + '</option>'; }
-    if (document.activeElement !== $('s-leader')) {
-      $('s-leader').innerHTML = '<option value="">Choose leader account…</option>' + s.accounts.map(opt).join('');
-      $('s-leader').value = leaderKey;
-    }
-    if (document.activeElement !== $('s-follower')) {
-      var free = s.accounts.filter(function (a) { return a.key !== leaderKey && fKeys.indexOf(a.key) < 0; });
-      $('s-follower').innerHTML = '<option value="">' + (free.length ? 'Add follower…' : 'No accounts left') + '</option>' + free.map(opt).join('');
-    }
-    $('s-leader').disabled = $('b-leader').disabled = !!s.armed;
-
-    var la = s.leader && s.accounts.find(function (a) { return a.key === s.leader.key; });
-    $('leader-info').innerHTML = s.leader
-      ? '<div class="row"><b>' + esc(s.leader.accountName) + '</b><span class="env ' + s.leader.env + '">' + s.leader.env + '</span></div>'
-        + '<div class="pos" style="margin-top:8px">Position: ' + posStr(s.armed ? s.leaderPos : (la && la.positions)) + '</div>'
-        + (la ? '<div class="muted" style="margin-top:4px">Day ' + money(la.dayPnL) + ' · Net liq ' + money(la.netLiq) + '</div>' : '')
-      : '<p class="muted">No leader set.</p>';
-
-    // followers (don't rebuild while typing in it)
-    if (!$('ftb').contains(document.activeElement)) {
-      $('ftb').innerHTML = s.followers.length ? s.followers.map(function (f) {
-        var cls = f.halted ? 'halt' : (f.enabled ? '' : 'off');
-        var differs = s.armed && !s.dryRun && JSON.stringify(f.tracked) !== JSON.stringify(f.observed);
-        var status = f.halted
-          ? '<span class="halt-r">HALTED: ' + esc(f.haltReason) + '</span> <button class="btn sm" data-reset="' + esc(f.key) + '">Reset</button>'
-          : (f.sitting && f.sitting.length ? '<span class="muted">Sitting out ' + esc(f.sitting.join(', ')) + ' until leader is flat</span>'
-          : (f.enabled ? '<span class="ok-r">Ready</span>' : '<span class="muted">Off</span>'));
-        return '<tr class="' + cls + '" data-k="' + esc(f.key) + '">'
-          + '<td data-l="On"><input class="ck" type="checkbox" data-f="enabled"' + (f.enabled ? ' checked' : '') + '></td>'
-          + '<td data-l="Account"><b>' + esc(f.accountName) + '</b> <span class="env ' + f.env + '">' + f.env + '</span><div class="muted">' + esc(connName[f.connId] || '') + '</div></td>'
-          + '<td data-l="Group"><input type="number" min="1" max="9" step="1" data-f="group" value="' + f.group + '" style="width:54px"></td>'
-          + '<td data-l="Mult"><input type="number" min="0" max="50" step="0.25" data-f="mult" value="' + f.mult + '"></td>'
-          + '<td data-l="Fixed qty"><input type="number" min="0" max="100" step="1" data-f="fixedQty" value="' + f.fixedQty + '"></td>'
-          + '<td data-l="Daily loss $"><input type="number" min="0" step="50" data-f="dailyLoss" value="' + f.dailyLoss + '" style="width:90px"></td>'
-          + '<td data-l="Net-liq floor $"><input type="number" min="0" step="100" data-f="minNetLiq" value="' + f.minNetLiq + '" style="width:100px"></td>'
-          + '<td data-l="Position" class="pos">' + posStr(f.observed) + (differs ? '<div class="muted">engine: ' + posStr(f.tracked) + '</div>' : '') + (s.dryRun && s.armed ? '<div class="muted">sim: ' + posStr(f.tracked) + '</div>' : '') + '</td>'
-          + '<td data-l="Day P&L · Net liq" class="pos">' + money(f.dayPnL) + ' · ' + money(f.netLiq) + '</td>'
-          + '<td data-l="Status">' + status + '</td>'
-          + '<td data-l=""><div class="row" style="flex-wrap:nowrap"><button class="btn sm warn" data-flat="' + esc(f.key) + '">Flatten</button><button class="btn sm" data-rm="' + esc(f.key) + '">✕</button></div></td>'
-          + '</tr>';
-      }).join('') : '<tr><td colspan="11" class="muted">No followers yet.</td></tr>';
-    }
-
-    // log, newest first
-    var log = $('log');
-    var html = s.log.slice().reverse().map(function (l) {
-      var d = new Date(l.t);
-      var ts = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      return '<div class="' + esc(l.lvl) + '"><span class="t">' + ts + '</span>' + esc(l.msg) + '</div>';
-    }).join('') || '<div class="info">Nothing yet.</div>';
-    if (log._last !== html) { log.innerHTML = html; log._last = html; }
+    renderTop();
+    var r = { live: renderLive, groups: renderGroups, accounts: renderAccounts, trades: renderTrades, log: renderLog, setup: renderSetup }[tab];
+    r && r();
+  }
+  function setTab(t) {
+    tab = t; try { sessionStorage.setItem('cp_tab', t); } catch (e) {}
+    document.querySelectorAll('#tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === t); });
+    document.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('on', p.id === 'p-' + t); });
+    if (S) render(S, true);
   }
 
   function refresh() {
     return api('/api/copier/state').then(function (d) {
-      if (d.__status === 404) { document.body.classList.remove('cp-on'); stop(); return; }
-      if (d.__status !== 200) return;
-      if (!document.body.classList.contains('cp-on')) { document.body.classList.add('cp-on'); document.title = 'FSD-X Copier'; }
+      if (d.__s === 404) { document.body.classList.remove('cp-on'); stop(); return; }
+      if (d.__s !== 200) return;
+      if (!document.body.classList.contains('cp-on')) { document.body.classList.add('cp-on'); document.title = 'FSD-X Copier'; setTab(tab); }
       render(d);
     }).catch(function () {});
   }
-  function start() { stop(); pollT = setInterval(function () { if (!document.hidden && !busy) refresh(); }, 2000); }
+  function start() { stop(); pollT = setInterval(function () { if (!document.hidden && !busy) refresh(); }, 2000); setInterval(tickClock, 1000); tickClock(); }
   function stop() { clearInterval(pollT); pollT = null; }
 
-  /* ── Wire up ── */
-  $('b-arm').onclick = function () {
+  /* ── events ── */
+  $('tabs').addEventListener('click', function (e) { var b = e.target.closest('button[data-tab]'); if (b) setTab(b.dataset.tab); });
+
+  function armClick() {
     if (!S) return;
-    if (S.armed) return act({ op: 'disarm' }, 'Disarmed — open positions left as they are');
-    if (!S.dryRun) {
-      confirmBox('Arm in LIVE mode?', 'Every leader fill will send real orders to ' + S.followers.filter(function (f) { return f.enabled && !f.halted; }).length + ' follower account(s).', 'Arm live')
-        .then(function (y) { if (y) act({ op: 'arm' }, 'Armed — LIVE'); });
-    } else act({ op: 'arm' }, 'Armed — dry run');
-  };
-  $('t-dry').onchange = function (e) {
-    var on = e.target.checked;
-    if (on) return act({ op: 'dryRun', on: true }, 'Dry run on');
-    e.target.checked = true;
-    confirmBox('Switch to LIVE orders?', 'Follower orders will be sent for real' + (S && S.armed ? ', starting with the next leader fill.' : ' once you arm.'), 'Go live')
-      .then(function (y) { if (y) act({ op: 'dryRun', on: false }, 'Live orders on'); });
-  };
-  $('b-flat-f').onclick = function () {
-    confirmBox('Flatten all followers?', 'Closes every open position on every follower account. Real orders, even in dry run. The leader is left alone.', 'Flatten followers')
-      .then(function (y) { if (y) act({ op: 'flattenAll', includeLeader: false }, 'Followers flattened'); });
-  };
-  $('b-flat-all').onclick = function () {
-    confirmBox('Flatten EVERYTHING?', 'Closes every open position on the leader and all followers. Real orders, even in dry run.', 'Flatten all')
-      .then(function (y) { if (y) act({ op: 'flattenAll', includeLeader: true }, 'Everything flattened'); });
-  };
-  $('b-flat-group').onclick = function () {
-    var g = $('s-group').value;
-    confirmBox('Flatten group ' + g + '?', 'Closes every open position on group ' + g + ' followers. Real orders, even in dry run.', 'Flatten group ' + g)
-      .then(function (y) { if (y) act({ op: 'flattenGroup', group: +g }, 'Group ' + g + ' flattened'); });
-  };
-  $('b-refresh').onclick = function () { act({ op: 'refreshAccounts' }, 'Accounts refreshed'); };
-  $('b-clearlog').onclick = function () { act({ op: 'clearLog' }); };
-  $('b-leader').onclick = function () { var k = $('s-leader').value; if (k) act({ op: 'setLeader', key: k }, 'Leader set'); };
-  $('b-add').onclick = function () { var k = $('s-follower').value; if (k) act({ op: 'addFollower', key: k }, 'Follower added'); };
-  $('i-maxqty').onchange = function (e) { act({ op: 'settings', patch: { maxQty: +e.target.value } }, 'Saved'); };
-  $('t-autofix').onchange = function (e) { act({ op: 'settings', patch: { autoFix: e.target.checked } }, 'Saved'); };
-  $('t-join').onchange = function (e) { act({ op: 'settings', patch: { joinOpen: e.target.checked } }, 'Saved'); };
-
-  function connect() {
-    api('/api/copier/start', {}).then(function (d) {
-      if (d.url) location.href = d.url; else toast(d.error || 'Could not start', true);
-    });
+    if (S.armed) return act({ op: 'disarm' }, 'Disarmed — positions left as they are');
+    var n = S.groups.reduce(function (s, g) { return s + (g.enabled ? g.followers.filter(function (f) { return f.enabled; }).length : 0); }, 0);
+    if (!S.dryRun) confirmBox('Arm with LIVE orders?', 'Leader fills will send real orders to ' + n + ' follower account(s).', 'Arm live').then(function (y) { if (y) act({ op: 'arm' }, 'Armed — LIVE'); });
+    else act({ op: 'arm' }, 'Armed — dry run');
   }
-  $('b-connect').onclick = connect;
-  $('conns').onclick = function (e) {
-    var b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.reconnect) return connect();
-    if (b.dataset.rmconn) confirmBox('Remove this login?', 'Its accounts are removed from the leader/followers. Positions are not touched.', 'Remove')
-      .then(function (y) { if (y) act({ op: 'removeConn', connId: b.dataset.rmconn }, 'Login removed'); });
+  $('b-arm').onclick = armClick; $('b-arm-m').onclick = armClick;
+  $('t-dry').onchange = function (e) {
+    if (e.target.checked) return act({ op: 'dryRun', on: true }, 'Dry run on');
+    e.target.checked = true;
+    confirmBox('Switch to LIVE orders?', 'Follower orders will be sent for real' + (S.armed ? ' from the next leader fill.' : ' once you arm.'), 'Go live').then(function (y) { if (y) act({ op: 'dryRun', on: false }, 'Live orders on'); });
   };
+  document.querySelectorAll('[data-exit]').forEach(function (b) {
+    b.onclick = function () {
+      confirmBox('EXIT EVERYTHING?', 'Stops copying and closes every open position on every leader and follower. Real orders, even in dry run.', 'Exit everything')
+        .then(function (y) { if (y) act({ op: 'exitAll' }, 'Everything flattened · disarmed'); });
+    };
+  });
 
-  var ftb = $('ftb');
-  ftb.onchange = function (e) {
-    var tr = e.target.closest('tr'), f = e.target.dataset.f; if (!tr || !f) return;
-    var patch = {}; patch[f] = e.target.type === 'checkbox' ? e.target.checked : +e.target.value;
-    e.target.blur();
-    act({ op: 'updateFollower', key: tr.dataset.k, patch: patch }, 'Saved');
-  };
-  ftb.onclick = function (e) {
-    var b = e.target.closest('button'); if (!b) return;
-    if (b.dataset.reset) return act({ op: 'updateFollower', key: b.dataset.reset, patch: { resetHalt: true } }, 'Halt cleared');
-    if (b.dataset.flat) return confirmBox('Flatten this follower?', 'Closes its open positions. Real orders, even in dry run.', 'Flatten')
-      .then(function (y) { if (y) act({ op: 'flattenFollower', key: b.dataset.flat }, 'Flattened'); });
-    if (b.dataset.rm) return confirmBox('Remove this follower?', 'Its positions are not touched.', 'Remove')
-      .then(function (y) { if (y) act({ op: 'removeFollower', key: b.dataset.rm }, 'Follower removed'); });
-  };
+  var app = $('cp-app');
+  app.addEventListener('click', function (e) {
+    var b = e.target.closest('button, a[data-resetpeak], tr[data-trade]'); if (!b || !S) return;
+    var d = b.dataset;
+    if (d.flatAcct) return confirmBox('Flatten ' + aname(d.flatAcct) + '?', 'Closes its open positions. Real orders, even in dry run.', 'Flatten').then(function (y) { if (y) act({ op: 'flattenAccount', key: d.flatAcct }, 'Flattened'); });
+    if (d.flatGroup) { var g0 = S.groups.find(function (g) { return g.id === d.flatGroup; });
+      return confirmBox('Flatten ' + g0.name + '?', 'Closes every open position on its followers. The leader is left alone. Real orders, even in dry run.', 'Flatten group').then(function (y) { if (y) act({ op: 'flattenGroup', id: d.flatGroup }, 'Group flattened'); }); }
+    if (d.gtoggle) { var g1 = S.groups.find(function (g) { return g.id === d.gtoggle; }); return act({ op: 'updateGroup', id: g1.id, patch: { enabled: !g1.enabled } }, g1.enabled ? 'Paused — exits still copy' : 'Resumed'); }
+    if (b.id === 'b-newgroup') return act({ op: 'addGroup' }, 'Group created');
+    if (d.delgroup !== undefined) { var gc = b.closest('[data-gcard]').dataset.gcard; return confirmBox('Delete this group?', 'Its followers stop copying. Positions are not touched.', 'Delete').then(function (y) { if (y) act({ op: 'deleteGroup', id: gc }, 'Group deleted'); }); }
+    if (d.rmf !== undefined) { var tr = b.closest('tr'); return confirmBox('Remove ' + aname(tr.dataset.k) + '?', 'It stops copying. Its positions are not touched.', 'Remove').then(function (y) { if (y) act({ op: 'removeFollower', groupId: tr.dataset.g, key: tr.dataset.k }, 'Removed'); }); }
+    if (d.dir) { var gd = b.closest('[data-gcard]').dataset.gcard; return act({ op: 'updateGroup', id: gd, patch: { direction: d.dir } }, 'Saved'); }
+    if (d.day !== undefined) {
+      var gw = S.groups.find(function (g) { return g.id === b.closest('[data-gcard]').dataset.gcard; });
+      var days = gw.window.days.slice(), i = +d.day, at = days.indexOf(i);
+      if (at >= 0) days.splice(at, 1); else days.push(i);
+      return act({ op: 'updateGroup', id: gw.id, patch: { window: { days: days } } }, 'Saved');
+    }
+    if (d.editrisk !== undefined) { var ek = b.closest('tr').dataset.k; openAcct = openAcct === ek ? null : ek; return renderAccounts(); }
+    if (d.resethalt !== undefined) return act({ op: 'updateAccount', key: b.closest('tr').dataset.k, patch: { resetHalt: true } }, 'Halt cleared');
+    if (d.resetpeak !== undefined) { e.preventDefault(); return act({ op: 'updateAccount', key: b.closest('tr').dataset.k, patch: { resetPeak: true } }, 'Peak reset'); }
+    if (d.trade) { openTrade = openTrade === d.trade ? null : d.trade; return renderTrades(); }
+    if (d.logf) { logFilter = d.logf; return renderLog(); }
+    if (b.id === 'b-clearlog') return act({ op: 'clearLog' });
+    if (b.id === 'b-cleartrades') return confirmBox('Clear trade history?', 'Removes the list on this page. Nothing at Tradovate changes.', 'Clear', true).then(function (y) { if (y) act({ op: 'clearTrades' }, 'Cleared'); });
+    if (b.id === 'b-refresh') return act({ op: 'refreshAccounts' }, 'Accounts refreshed');
+    if (d.connect !== undefined) return api('/api/copier/start', {}).then(function (r) { if (r.url) location.href = r.url; else toast(r.error || 'Could not start', true); });
+    if (d.rmconn) return confirmBox('Remove this login?', 'Its accounts leave every group. Positions are not touched.', 'Remove').then(function (y) { if (y) act({ op: 'removeConn', connId: d.rmconn }, 'Login removed'); });
+  });
+
+  app.addEventListener('change', function (e) {
+    var t = e.target, d = t.dataset, v = t.type === 'checkbox' ? t.checked : t.value;
+    var gc = t.closest('[data-gcard]'), tr = t.closest('tr');
+    function done() { t.blur(); }
+    if (d.gf && gc) {
+      var p = {}; p[d.gf] = d.gf === 'maxQty' ? +v : v; done();
+      return act({ op: 'updateGroup', id: gc.dataset.gcard, patch: p }, 'Saved');
+    }
+    if (d.gw && gc) { var w = {}; w[d.gw] = v; done(); return act({ op: 'updateGroup', id: gc.dataset.gcard, patch: { window: w } }, 'Saved'); }
+    if (d.addf !== undefined && gc && v) { done(); return act({ op: 'addFollower', groupId: gc.dataset.gcard, key: v }, 'Follower added'); }
+    if (d.ff && tr) { var fp = {}; fp[d.ff] = t.type === 'checkbox' ? v : +v; done(); return act({ op: 'updateFollower', groupId: tr.dataset.g, key: tr.dataset.k, patch: fp }, 'Saved'); }
+    if (d.af && tr) { var ap = {}; ap[d.af] = d.af === 'type' ? v : +v; done(); return act({ op: 'updateAccount', key: tr.dataset.k, patch: ap }, 'Saved'); }
+    if (d.set) { var sp = {}; sp[d.set] = t.type === 'checkbox' ? v : +v; done(); return act({ op: 'settings', patch: sp }, 'Saved'); }
+  });
 
   // Back from Tradovate's consent screen
   var h = new URLSearchParams(location.hash.slice(1));
   if (h.get('copier')) {
     var st = h.get('copier');
-    setTimeout(function () {
-      if (st === 'connected') toast('Tradovate login connected');
-      else toast('Tradovate connection ' + st + (h.get('d') ? ': ' + h.get('d') : ''), true);
-    }, 400);
+    tab = 'setup';
+    setTimeout(function () { st === 'connected' ? toast('Tradovate login connected') : toast('Tradovate connection ' + st + (h.get('d') ? ': ' + h.get('d') : ''), true); }, 400);
     history.replaceState(null, '', location.pathname);
   }
 
