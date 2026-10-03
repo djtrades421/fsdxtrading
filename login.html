@@ -256,7 +256,8 @@
       userinfo:      'Whop signed you in but did not share your account details. Try again, or use your email below.',
       noemail:       'Whop did not share an email address, so we could not create your account. Sign up with your email below instead.',
       keyinuse:      'Your Whop membership is already linked to a different site account. Contact fsdxteam@gmail.com and we will merge them.',
-      whopoff:       'Sign in with Whop is switched off for your account. Use your email and password below. You can switch it back on from your profile.',
+      whopoff:       'Sign in with Whop is closed for your account. Use your email and password below. Forgot it? Use Forgot password.',
+      haspassword:   'Your account is already set up with a password, so Sign in with Whop is closed. It is only for first-time setup. Use your email and password below. Forgot it? Use Forgot password.',
       notconfigured: 'Whop sign-in is not switched on yet. Use your email below for now.'
     };
 
@@ -324,7 +325,7 @@
           + (detail ? ' [' + detail + ']' : ''), 'error');
         // No retry button when they deliberately backed out, or when the door
         // is switched off — retrying is guaranteed to fail again.
-        if (qErr !== 'denied' && qErr !== 'whopoff') addRetryButton('login-msg');
+        if (qErr !== 'denied' && qErr !== 'whopoff' && qErr !== 'haspassword') addRetryButton('login-msg');
         return;
       }
       if (!code) return;
@@ -355,7 +356,9 @@
           localStorage.setItem('fsdx_tier', data.tier || 'pro');
           localStorage.setItem('fsdx_plan', data.plan || '');
           localStorage.setItem('fsdx_whop_status', data.whopStatus || '');
-          window.location.href = 'dashboard.html';
+          // No password yet → straight to setup. Whop sign-in is only the
+          // first step; the account isn't finished until a password is set.
+          window.location.href = data.needsPassword ? 'profile.html?setup=1' : 'dashboard.html';
         } else {
           btns.forEach(b => b.disabled = false);
           showMsg('login-msg', data.error || 'Sign-in failed. Please try again.', 'error');

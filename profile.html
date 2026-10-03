@@ -154,7 +154,7 @@
             <div class="flex items-start justify-between mb-2">
               <div>
                 <h2 class="text-sm font-black text-white">Sign in with Whop</h2>
-                <p class="text-zinc-500 text-xs mt-1">Used once to set your account up. You can close this door when you no longer need it.</p>
+                <p class="text-zinc-500 text-xs mt-1">Only for first-time setup. It closes automatically once your password is set.</p>
               </div>
               <div id="whoplogin-badge" class="hidden px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider"></div>
             </div>
@@ -174,7 +174,7 @@
             <div id="no-password-note" class="hidden rounded-xl px-4 py-3 text-xs mb-5 border border-white/10 bg-zinc-900/60 text-zinc-400 leading-relaxed">
               <span class="text-white font-bold block mb-0.5">You don't have a password yet</span>
               You signed in with Whop, so there's nothing to replace — just pick a password below.
-              Continue with Whop keeps working either way.
+              Once it's set, Sign in with Whop closes automatically and you'll use your email and password from then on.
             </div>
 
             <div class="space-y-4">
@@ -301,6 +301,27 @@
     // true so a failed profile load never hides the current-password field on
     // someone who does have one.
     let _hasPassword = true;
+    let _twoFactorOn = false;
+
+    /* Setup banner — pinned above the security cards until the account is
+       finished (password set, then 2FA). Scrolls to the step it names. */
+    function showSetupBanner(title, text, scrollToId) {
+      let el = document.getElementById('setup-banner');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'setup-banner';
+        el.className = 'rounded-2xl px-5 py-4 text-sm border bg-emerald-950/40 border-emerald-500/30 text-emerald-400 mb-6';
+        const anchor = document.getElementById('password-heading');
+        const card = anchor && anchor.closest('.rounded-2xl');
+        const host = card ? card.parentElement : document.getElementById('page-content');
+        host.insertBefore(el, host.firstChild);
+      }
+      el.innerHTML = '<span class="text-white font-black block mb-1">' + title + '</span>' + text;
+      el.classList.remove('hidden');
+      const target = document.getElementById(scrollToId);
+      if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
+    }
+    function hideSetupBanner() { const el = document.getElementById('setup-banner'); if (el) el.classList.add('hidden'); }
 
     /* Reshape the password card for an account that has never had a password:
        no "current password" field, an explanation, and a heading that matches
@@ -522,10 +543,30 @@
           body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw })
         });
         const data = await res.json();
+        if (data.success && data.wasFirstPassword && data.newToken) {
+          // First password: setup is finished. Keep them signed in (the worker
+          // minted a fresh session) and walk them straight to 2FA.
+          localStorage.setItem('fsdx_token', data.newToken);
+          _hasPassword = true;
+          currentUser.hasPassword = true;
+          currentUser.whopLoginEnabled = data.whopLoginEnabled;
+          showMsg('password-msg', data.whopLoginEnabled
+            ? 'Password set. Sign in with Whop closes as soon as your membership key is linked.'
+            : 'Password set. Sign in with Whop is now closed — use your email and password from now on.', 'success');
+          renderPasswordCard(true);
+          renderWhopLogin(data.whopLoginEnabled, true);
+          renderTwoFactorScope(currentUser.twoFactorEnabled || false, true);
+          hideSetupBanner();
+          ['current-password', 'new-password', 'confirm-password'].forEach(id => document.getElementById(id).value = '');
+          try { checkStrength(); checkMatch(); } catch (e) {}
+          if (!data.twoFactorEnabled) {
+            showSetupBanner('Last step: turn on two-factor', 'Your password is set. Add a code from an authenticator app so a stolen password alone can\'t get into your account.', 'twofa-actions');
+          }
+          btn.disabled = false; btn.textContent = 'Update Password';
+          return;
+        }
         if (data.success) {
-          showMsg('password-msg', data.wasFirstPassword
-            ? 'Password set. You can now sign in with your email or with Whop. Please log in again.'
-            : 'Password updated! Please log in again.', 'success');
+          showMsg('password-msg', 'Password updated! Please log in again.', 'success');
           _hasPassword = true;
           // Turning Whop sign-in off only becomes possible once a password
           // exists — reflect that immediately instead of after a reload.
@@ -606,6 +647,10 @@
           document.getElementById('twofa-code').value = '';
           showMsg('twofa-msg', '✓ Two-factor authentication is now enabled.', 'success');
           render2FAActions(true);
+          _twoFactorOn = true; if (currentUser) currentUser.twoFactorEnabled = true;
+          hideSetupBanner();
+          renderWhopLogin(currentUser.whopLoginEnabled !== false, _hasPassword);
+          renderTwoFactorScope(true, _hasPassword);
         } else {
           showMsg('twofa-msg', data.error || 'Invalid code.', 'error');
         }
@@ -632,6 +677,9 @@
           document.getElementById('twofa-disable-pw').value = '';
           showMsg('twofa-msg', '2FA has been disabled.', 'success');
           render2FAActions(false);
+          _twoFactorOn = false; if (currentUser) currentUser.twoFactorEnabled = false;
+          renderWhopLogin(currentUser.whopLoginEnabled !== false, _hasPassword);
+          renderTwoFactorScope(false, _hasPassword);
         } else {
           showMsg('twofa-msg', data.error || 'Failed to disable.', 'error');
         }
@@ -659,28 +707,27 @@
             : 'bg-zinc-800 border border-white/10 text-zinc-500');
       badge.textContent = enabled ? '● On' : '○ Off';
 
+      badge.textContent = enabled ? '● Open' : '● Closed';
+      actions.innerHTML = '';
+
       if (!enabled) {
-        note.innerHTML = `<span class="text-white font-bold block mb-0.5">Switched off</span>
-          Continue with Whop won't work for this account. Sign in with your email and password.
+        note.innerHTML = `<span class="text-white font-bold block mb-0.5">Closed — setup is finished</span>
+          Your account has a password, so you sign in with your email and password${_twoFactorOn ? ' and your 2FA code' : ''}.
+          Sign in with Whop was only for first-time setup and can't be reopened.
           Your membership and renewals are unaffected — they still come from Whop.`;
-        actions.innerHTML = `<button onclick="setWhopLogin(true)" id="whoplogin-btn"
-          class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 hover:border-green-500/30 text-zinc-300 hover:text-green-400 font-bold text-xs rounded-xl transition">Turn back on</button>`;
         return;
       }
 
       if (!hasPassword) {
-        note.innerHTML = `<span class="text-white font-bold block mb-0.5">This is your only way in</span>
-          Set a password below first. Turning this off without one would lock you out of your account.`;
-        actions.innerHTML = `<button disabled
-          class="px-4 py-2 bg-zinc-900/50 border border-white/5 text-zinc-600 font-bold text-xs rounded-xl cursor-not-allowed">Turn off</button>`;
+        note.innerHTML = `<span class="text-white font-bold block mb-0.5">Your only way in — for now</span>
+          Set a password below. As soon as it's saved, Sign in with Whop closes automatically
+          and your email and password become your login.`;
         return;
       }
 
-      note.innerHTML = `<span class="text-white font-bold block mb-0.5">You have a password now</span>
-        Turning this off closes the Whop door, so email and password becomes the only way in —
-        and two-factor then covers your whole account. You can switch it back on any time.`;
-      actions.innerHTML = `<button onclick="setWhopLogin(false)" id="whoplogin-btn"
-        class="px-4 py-2 border border-white/10 hover:border-red-500/30 text-zinc-400 hover:text-red-400 font-bold text-xs rounded-xl transition">Turn off Whop sign-in</button>`;
+      note.innerHTML = `<span class="text-white font-bold block mb-0.5">Closes when your key is linked</span>
+        You have a password. Sign in with Whop stays open only until your membership key is attached,
+        then it closes automatically.`;
     }
 
     async function setWhopLogin(enabled) {
@@ -731,6 +778,12 @@
           This code protects email and password sign-in, which your account doesn't use yet.
           To secure the way you actually log in, ${whopLink}.
           Set a password below if you'd rather have both.`;
+      } else if (currentUser && currentUser.whopLoginEnabled === false) {
+        el.innerHTML = enabled
+          ? `<span class="text-white font-bold block mb-0.5">Covers your whole account</span>
+             Email and password is the only way in, and it asks for your code every time.`
+          : `<span class="text-white font-bold block mb-0.5">Recommended</span>
+             Email and password is the only way into your account. Turn this on so a stolen password alone can't get in.`;
       } else if (enabled) {
         el.innerHTML = `<span class="text-white font-bold block mb-0.5">Covers email sign-in</span>
           Your password login now asks for a code. Continue with Whop is verified by Whop
@@ -819,12 +872,19 @@
         document.getElementById('account-created').textContent = currentUser.createdAt ? new Date(currentUser.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '—';
         setupKeyReveal(currentUser.whopKey);
 
+        _twoFactorOn = !!currentUser.twoFactorEnabled;
         renderPasswordCard(currentUser.hasPassword !== false);
         render2FAActions(currentUser.twoFactorEnabled || false);
         renderTwoFactorScope(currentUser.twoFactorEnabled || false, currentUser.hasPassword !== false);
         renderWhopLogin(currentUser.whopLoginEnabled !== false, currentUser.hasPassword !== false);
         document.getElementById('loading-screen').classList.add('hidden');
         document.getElementById('page-content').classList.remove('hidden');
+
+        // Came in through Sign in with Whop with no password yet:
+        // finishing setup is the first thing on the page.
+        if (currentUser.hasPassword === false) {
+          showSetupBanner('Finish setting up your account', 'Set a password below. Sign in with Whop is only for first-time setup and closes automatically once your password is saved. Then turn on two-factor.', 'password-heading');
+        }
 
       } catch (err) {
         window.location.href = 'login.html';
