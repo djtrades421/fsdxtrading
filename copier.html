@@ -23,7 +23,7 @@
     body.cp-on #cp-404 { display:none !important; }
     body.cp-on #cp-app { display:block; }
 
-    #cp-app {
+    #cp-app, .ov, #modal, #toast {
       --acc: var(--fx-orange, #FF6B1F);
       --line: var(--fx-line, rgba(120,160,210,.13));
       --mono: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -35,9 +35,9 @@
       --warn: #FBBF24; --warn-bg: rgba(251,191,36,.10);
       --acc-bg: color-mix(in srgb, var(--acc) 12%, transparent);
       color: var(--tx); font-size: 14px; line-height: 1.45; font-family: var(--mono); font-variant-numeric: tabular-nums; -webkit-font-smoothing: antialiased;
-      padding-bottom: calc(84px + env(safe-area-inset-bottom));
     }
-    #cp-app * { box-sizing: border-box; }
+    #cp-app { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+    #cp-app *, .ov *, #modal * { box-sizing: border-box; }
     .wrap { max-width: 1360px; margin: 0 auto; padding: 0 20px 0 26px; }
     @media (max-width: 720px) { .wrap { padding: 0 12px 0 16px; } }
     .mono { font-family: var(--mono); }
@@ -216,7 +216,89 @@
              padding: 11px 16px; border-radius: 10px; background: #111821; border: 1px solid var(--line); font-weight: 600; font-size: 13px; max-width: calc(100vw - 32px); }
     .toast.on { display: block; } .toast.err { border-color: rgba(248,113,113,.6); color: #FCA5A5; }
     @media (min-width: 721px) { .toast { bottom: 24px; } }
+
+    /* ── v3 additions ── */
+    .info2 { color: #93C5FD; } .blue { color: #93C5FD; }
+    .dot.info { background: #93C5FD; }
+    .chip.info { color: #93C5FD; background: rgba(147,197,253,.10); border-color: transparent; }
+    .alerts { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+    .alert { display: flex; align-items: center; gap: 12px; padding: 11px 14px; border-radius: 10px; font-weight: 600; font-size: 13px; }
+    .alert .dot { flex: none; }
+    .alert .m { flex: 1; min-width: 0; }
+    .alert.dn { background: var(--dn-bg); color: #FCA5A5; } .alert.dn .dot { background: var(--dn); }
+    .alert.wrn { background: var(--warn-bg); color: #FCD34D; } .alert.wrn .dot { background: var(--warn); }
+    .alert.info { background: rgba(147,197,253,.10); color: #BFDBFE; } .alert.info .dot { background: #93C5FD; }
+    .alert .x { appearance: none; border: 0; background: transparent; color: inherit; font: 600 18px/1 var(--mono); width: 30px; height: 30px; border-radius: 8px; cursor: pointer; }
+    .alert .x:hover { background: rgba(255,255,255,.06); }
+    .split { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+    .split > .main { flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+    .split > .rail { flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+    .split > .main > .card + .card, .split > .rail > .card + .card { margin-top: 0; }
+    .tl { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid rgba(120,160,210,.10); font-size: 13px; }
+    .tl .n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tl .ms { width: 64px; text-align: right; font-weight: 600; }
+    .guard { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-top: 1px solid rgba(120,160,210,.10); }
+    .guard .dot { margin-top: 6px; }
+    .guard b { display: block; font-size: 13.5px; font-weight: 600; }
+    .guard span { display: block; font-size: 12.5px; color: var(--mut); margin-top: 2px; }
+    .stat3 { display: flex; gap: 18px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); font-size: 13px; }
+    .stat3 div div:first-child { color: var(--dim); font-size: 12px; }
+    .stat3 div div:last-child { font-weight: 700; }
+
+    /* accounts */
+    .toolbar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 12px; }
+    .search { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px; border-radius: 9px; border: 1px solid var(--line); background: rgba(0,0,0,.35); width: min(280px, 100%); color: var(--dim); }
+    .search input { flex: 1; min-width: 0; background: transparent; border: 0; color: var(--tx); font: 500 13.5px var(--mono); outline: none; }
+    .bulk { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 11px; background: var(--acc-bg); border: 1px solid color-mix(in srgb, var(--acc) 45%, transparent); margin-bottom: 12px; }
+    .bulk .cnt { font-weight: 700; color: #FFB489; }
+    .bulk label { font-size: 13px; color: var(--mut); display: inline-flex; align-items: center; gap: 6px; }
+    .ck { width: 16px; height: 16px; accent-color: var(--acc); }
+    .nick-edit { display: inline-flex; align-items: center; gap: 6px; }
+    .icon-btn { appearance: none; border: 0; background: transparent; color: var(--dim); width: 26px; height: 26px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+    .icon-btn:hover { color: var(--tx); background: rgba(255,255,255,.06); }
+    .rulegrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+    .rulebox { display: flex; gap: 12px; align-items: flex-start; padding: 13px; border-radius: 11px; background: rgba(0,0,0,.22); border: 1px solid var(--line); }
+    .rulebox .t { font-weight: 700; font-size: 13.5px; }
+    .rulebox .h { font-size: 12.5px; color: var(--mut); margin-top: 3px; }
+    .rulebox .v { display: flex; align-items: center; gap: 8px; margin-top: 9px; font-size: 12.5px; color: var(--dim); }
+    .rulebox .inp { width: 110px; text-align: right; }
+    .sec-t { font: 600 11.5px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--dim); margin: 4px 0 10px; }
+
+    /* templates */
+    .tpl-list { flex: 1 1 260px; max-width: 320px; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+    .tpl-item { appearance: none; text-align: left; padding: 12px 14px; border-radius: 11px; border: 1px solid var(--line); background: var(--card); color: var(--tx); cursor: pointer; font: inherit; }
+    .tpl-item.on { border-color: color-mix(in srgb, var(--acc) 50%, transparent); background: var(--acc-bg); }
+    .tpl-item b { display: block; font-weight: 700; }
+    .tpl-item span { display: block; font-size: 12.5px; color: var(--dim); margin-top: 2px; }
+    @media (max-width: 720px) { .tpl-list { max-width: none; } }
+
+    /* overlays: preflight + wizard */
+    .ov { position: fixed; inset: 0; z-index: 58; display: none; background: rgba(2,4,8,.86); overflow-y: auto; padding: 24px 16px; }
+    .ov.on { display: block; }
+    .ov .sheet { max-width: 600px; margin: 4vh auto; background: #0B1017; border: 1px solid var(--line); border-radius: 18px; padding: 26px; }
+    .ov .sheet.wide { max-width: 940px; }
+    .eyebrow { font: 600 12px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: #FF8A4C; }
+    .ov h2 { margin: 6px 0 4px; font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+    .ov .lead { margin: 0 0 18px; color: var(--mut); font-size: 14.5px; }
+    .chk { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-top: 1px solid rgba(120,160,210,.10); }
+    .chk .ic { width: 22px; height: 22px; border-radius: 50%; flex: none; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+    .chk .ic.ok { background: var(--up-bg); color: var(--up); } .chk .ic.warn { background: var(--warn-bg); color: var(--warn); } .chk .ic.bad { background: var(--dn-bg); color: var(--dn); }
+    .chk b { display: block; font-weight: 600; } .chk span { display: block; font-size: 12.5px; color: var(--mut); margin-top: 2px; }
+    .steps { list-style: none; margin: 0 0 26px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+    .steps li { flex: 1 1 110px; min-width: 0; }
+    .steps .bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.10); }
+    .steps li.done .bar, .steps li.cur .bar { background: var(--acc); }
+    .steps .lb { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12.5px; font-weight: 600; color: var(--dim); }
+    .steps li.cur .lb { color: var(--tx); } .steps li.done .lb { color: var(--mut); }
+    .steps .c { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: rgba(255,255,255,.08); }
+    .steps li.cur .c { background: var(--acc); color: #0B0B0B; } .steps li.done .c { background: var(--acc-bg); color: #FF8A4C; }
+    .pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+    .pick label { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.2); cursor: pointer; }
+    .pick label.on { border-color: color-mix(in srgb, var(--acc) 50%, transparent); background: var(--acc-bg); }
+    .pick .nm { flex: 1; min-width: 0; } .pick .nm b { display: block; } .pick .nm span { display: block; font-size: 11.5px; color: var(--dim); }
+    .wz-foot { display: flex; align-items: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
   </style>
+
 </head>
 <body class="text-white bg-black min-h-screen">
 
@@ -249,12 +331,13 @@
     <main class="wrap">
       <div class="ban dn" id="ban-live">● LIVE — follower orders are being sent.</div>
       <div class="ban wrn" id="ban-cfg">The copier OAuth app isn't configured. Add TRADOVATE_COPIER_CLIENT_ID and TRADOVATE_COPIER_CLIENT_SECRET in Cloudflare.</div>
-      <div class="ban wrn" id="ban-feed"></div>
+      <div class="alerts" id="alerts"></div>
 
       <nav class="tabs" id="tabs">
         <button data-tab="live" class="on">Live</button>
         <button data-tab="groups">Groups</button>
         <button data-tab="accounts">Accounts</button>
+        <button data-tab="templates">Templates</button>
         <button data-tab="trades">Trades</button>
         <button data-tab="log">Log</button>
         <button data-tab="setup">Setup</button>
@@ -263,6 +346,7 @@
       <section class="pane on" id="p-live"></section>
       <section class="pane" id="p-groups"></section>
       <section class="pane" id="p-accounts"></section>
+      <section class="pane" id="p-templates"></section>
       <section class="pane" id="p-trades"></section>
       <section class="pane" id="p-log"></section>
       <section class="pane" id="p-setup"></section>
@@ -270,9 +354,12 @@
 
     <div class="mbar">
       <button class="btn pri" id="b-arm-m">Arm</button>
-      <button class="btn kill" data-exit>Exit all</button>
+      <button class="btn kill" data-exit>Exit everything</button>
     </div>
   </div>
+
+  <div class="ov" id="ov-pre"><div class="sheet" id="pre-body"></div></div>
+  <div class="ov" id="ov-wz"><div class="sheet wide" id="wz-body"></div></div>
 
   <div class="modal" id="modal"><div class="box">
     <h4 id="m-t"></h4><p id="m-p"></p>
@@ -289,34 +376,66 @@
   if (!token) return;                                          // stays a 404 page
 
   var S = null, busy = false, pollT = null, tab = 'live', logFilter = 'all', openTrade = null, openAcct = null;
+  var acctFilter = 'all', acctSearch = '', selected = {}, nickEdit = null;
+  var tplSel = null, tplDraft = null;
+  var wz = null, pre = null;
+  var lastLogSeen = 0;
   try { tab = sessionStorage.getItem('cp_tab') || 'live'; } catch (e) {}
+  var dismissed = {};
+  try { dismissed = JSON.parse(sessionStorage.getItem('cp_dismissed') || '{}'); } catch (e) {}
   var $ = function (id) { return document.getElementById(id); };
   var DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   var TYPES = ['eval', 'funded', 'sim', 'live'];
+  var RULES = [
+    { sec: 'Prop-firm protection', k: 'size', t: 'Account size $', h: 'Starting balance (e.g. 50000). Needed for pass protection and consistency.', step: 1000 },
+    { sec: 'Prop-firm protection', k: 'target', t: 'Pass protection — profit target $', h: 'At size + target net liq, flatten and lock the account. A later loss can\'t undo the pass.', step: 100 },
+    { sec: 'Prop-firm protection', k: 'perTradeLoss', t: 'Max loss per trade $', h: 'If one trade loses this much on the account, flatten it and halt it for the day.', step: 50 },
+    { sec: 'Prop-firm protection', k: 'consistencyPct', t: 'Consistency guard %', h: 'Stop new entries once today\'s profit reaches this % of the target (or total profit).', step: 5 },
+    { sec: 'Prop-firm protection', k: 'maxTradesDay', t: 'Max trades per day', h: 'After this many entries the account only exits until the 5pm roll.', step: 1 },
+    { sec: 'Drawdown and daily limits', k: 'trail', t: 'Trailing drawdown $', h: 'Floor = highest net liq seen − this. Halt + flatten at the floor.', step: 100 },
+    { sec: 'Drawdown and daily limits', k: 'floor', t: 'Fixed net-liq floor $', h: 'Halt + flatten when net liq reaches this.', step: 100 },
+    { sec: 'Drawdown and daily limits', k: 'dailyLoss', t: 'Daily loss limit $', h: 'Halt + flatten at −this day P&L. Clears at the 5pm CT roll.', step: 50 },
+    { sec: 'Drawdown and daily limits', k: 'dailyProfit', t: 'Daily profit lock $', h: 'Halt + flatten at +this day P&L. Clears at the 5pm CT roll.', step: 50 },
+    { sec: 'Drawdown and daily limits', k: 'maxPos', t: 'Max position (contracts)', h: 'Never holds more than this. Clamps size, doesn\'t halt.', step: 1 },
+    { sec: 'News blackout', k: 'newsOn', bool: true, t: 'Block entries around news', h: 'High-impact US events from the site\'s calendar. Exits still copy.' },
+    { sec: 'News blackout', k: 'newsBefore', t: 'Minutes before', h: 'Blackout starts this long before the release.', step: 1 },
+    { sec: 'News blackout', k: 'newsAfter', t: 'Minutes after', h: 'Blackout ends this long after.', step: 1 },
+    { sec: 'News blackout', k: 'newsFlatten', bool: true, t: 'Flatten before news', h: 'Close open positions when the blackout starts.' }
+  ];
 
   /* ── helpers ── */
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function money(n, plus) {
     if (n == null || isNaN(n)) return '<span class="dim">—</span>';
-    var s = '$' + Math.abs(n).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    var s = '$' + Math.abs(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
     return n < 0 ? '-' + s : (plus && n > 0 ? '+' + s : s);
   }
   function pnl(n) { if (n == null || isNaN(n)) return '<span class="dim">—</span>'; return '<span class="' + (n > 0 ? 'up' : n < 0 ? 'dn' : 'mut') + '">' + money(n, true) + '</span>'; }
+  function strip(h) { return String(h).replace(/<[^>]+>/g, ''); }
+  function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
   function posHtml(m) {
     var k = Object.keys(m || {});
     if (!k.length) return '<span class="dim">flat</span>';
     return '<span>' + k.map(function (s) { var q = m[s]; return '<span class="' + (q > 0 ? 'up' : 'dn') + '">' + (q > 0 ? '+' : '') + q + '</span> <span class="mut">' + esc(s) + '</span>'; }).join(' &nbsp;') + '</span>';
   }
   function acc(key) { return S.accounts.find(function (a) { return a.key === key; }); }
-  function aname(key) { var a = acc(key); return a ? a.name : '—'; }
+  function nm(a) { return a ? (a.cfg.nick || a.name) : '—'; }
+  function aname(key) { return nm(acc(key)); }
   function envTag(a) { return a ? '<span class="tag' + (a.env === 'live' ? ' live' : '') + '">' + a.env + '</span>' : ''; }
   function typeTag(t) { return '<span class="tag ' + t + '">' + t + '</span>'; }
+  function firmTag(a) { return a && a.cfg.firm ? '<span class="tag">' + esc(a.cfg.firm) + '</span>' : ''; }
+  function ctParts(ms) {
+    var p = {}; new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })
+      .formatToParts(new Date(ms)).forEach(function (x) { p[x.type] = x.value; });
+    return { dow: { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 }[p.weekday], sec: (+p.hour % 24) * 3600 + (+p.minute) * 60 + (+p.second) };
+  }
   function fmtTime(ms, withDate) {
-    var d = new Date(ms);
     var o = { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'America/Chicago' };
     if (withDate) { o.month = 'short'; o.day = 'numeric'; delete o.second; }
-    return d.toLocaleString([], o);
+    return new Date(ms).toLocaleString([], o);
   }
+  function ctShort(ms) { return new Date(ms).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }); }
+  function dur(sec) { sec = Math.max(0, Math.round(sec)); var h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60; return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s).padStart(2, '0'); }
   function editing(el) { var a = document.activeElement; return a && el.contains(a) && /INPUT|SELECT|TEXTAREA/.test(a.tagName); }
   function toast(msg, err) {
     var t = $('toast'); t.textContent = msg; t.className = 'toast on' + (err ? ' err' : '');
@@ -339,15 +458,15 @@
     }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { d.__s = r.status; return d; }); });
   }
   function act(body, okMsg) {
-    if (busy) return Promise.resolve();
+    if (busy) return Promise.resolve(null);
     busy = true;
     return api('/api/copier/action', body).then(function (d) {
       busy = false;
       if (d.__s !== 200) { toast(d.error || 'Failed', true); refresh(); return null; }
-      if (d.state) { d.state.configured = S ? S.configured : true; render(d.state, true); }
+      if (d.state) { d.state.configured = S ? S.configured : true; render(d.state); }
       if (okMsg) toast(okMsg);
       return d;
-    }).catch(function () { busy = false; toast('Connection error', true); });
+    }).catch(function () { busy = false; toast('Connection error', true); return null; });
   }
 
   /* ── derived ── */
@@ -363,122 +482,218 @@
     var w = g.window;
     if (!w.on) return 'Any time';
     var d = w.days.length === 7 ? 'Every day' : (w.days.join(',') === '1,2,3,4,5' ? 'Mon–Fri' : w.days.map(function (x) { return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][x]; }).join(' '));
-    return d + ' · ' + w.start + '–' + w.end + ' CT' + (w.flattenAtEnd ? ' · flatten at end' : '');
+    return d + ' ' + w.start + '–' + w.end + ' CT' + (w.flattenAtEnd ? ' · flatten at end' : '');
   }
+  function hm(s) { var m = /^(\d{1,2}):(\d{2})$/.exec(s || ''); return m ? (+m[1]) * 3600 + (+m[2]) * 60 : null; }
+  function windowCountdown() {           // soonest close among open windows, else soonest open
+    var p = ctParts(Date.now()), best = null;
+    S.groups.forEach(function (g) {
+      var w = g.window; if (!w.on || !g.enabled) return;
+      var s = hm(w.start), e = hm(w.end); if (s == null || e == null) return;
+      if (g.inWindow) { var left = e > p.sec ? e - p.sec : e + 86400 - p.sec; if (!best || best.k !== 'c' || left < best.s) best = { k: 'c', s: left }; }
+      else if (!best || best.k !== 'c') { var til = s > p.sec ? s - p.sec : s + 86400 - p.sec; if (w.days.indexOf(s > p.sec ? p.dow : (p.dow + 1) % 7) >= 0 && (!best || til < best.s)) best = { k: 'o', s: til }; }
+    });
+    return best;
+  }
+  function rollIn() { var p = ctParts(Date.now()), r = 17 * 3600; return r > p.sec ? r - p.sec : r + 86400 - p.sec; }
   function acctStatus(a) {
-    if (a.cfg.halted) return { dot: 'bad', html: '<div class="hr">' + esc(a.cfg.haltReason) + '</div>' };
+    var c = a.cfg;
+    if (c.halted && c.haltKind === 'passed') return { dot: 'info', html: '<span class="blue">Passed — locked</span>' };
+    if (c.halted) return { dot: 'bad', html: '<div class="hr">' + esc(c.haltReason) + '</div>' };
     var g = a.groupId && S.groups.find(function (x) { return x.id === a.groupId; });
     var f = g && g.followers.find(function (x) { return x.key === a.key; });
     if (f && !f.enabled) return { dot: 'off', html: '<span class="mut">Paused · exits only</span>' };
+    if (a.blocked) return { dot: 'wrn', html: '<span style="color:#FCD34D">' + esc(a.blocked) + ' · exits only</span>' };
     if (f && f.sitting && f.sitting.length) return { dot: 'wrn', html: '<span class="mut">Sitting out ' + esc(f.sitting.join(', ')) + '</span>' };
-    if (a.role === 'leader') return { dot: S.armed ? 'ok' : 'off', html: '<span class="mut">Leader</span>' };
+    if (a.role === 'leader') return { dot: S.armed ? 'info' : 'off', html: '<span class="blue">Leader</span>' };
     if (a.role === 'follower') return { dot: S.armed && g.enabled ? 'ok' : 'off', html: S.armed && g.enabled ? '<span class="up">Ready</span>' : '<span class="mut">Idle</span>' };
     return { dot: 'off', html: '<span class="dim">Not in a group</span>' };
   }
-  function ddMeter(a) {
-    if (a.ddLeft == null) return '';
-    var ac = a.cfg, room = ac.trail > 0 ? ac.trail : (a.netLiq && a.floor ? Math.max(1, a.netLiq - a.floor + 1) : 1);
-    var pct = Math.max(0, Math.min(100, (a.ddLeft / room) * 100));
-    return '<div class="meter"><i class="' + (pct < 25 ? 'd' : pct < 50 ? 'w' : '') + '" style="width:' + pct.toFixed(0) + '%"></i></div>';
+  function meter(pct, cls) { pct = Math.max(0, Math.min(100, pct)); return '<div class="meter"><i class="' + (cls || '') + '" style="width:' + pct.toFixed(0) + '%"></i></div>'; }
+  function ddCell(a) {
+    if (a.ddLeft == null) return '<span class="dim">—</span>';
+    var room = a.cfg.trail > 0 ? a.cfg.trail : Math.max(1, (a.netLiq || 0) - (a.floor || 0));
+    var pct = a.ddLeft / room * 100;
+    return money(a.ddLeft) + meter(pct, pct < 25 ? 'd' : pct < 50 ? 'w' : '');
+  }
+  function tgtCell(a) {
+    if (a.cfg.halted && a.cfg.haltKind === 'passed') return '<span class="blue">Passed ✓</span>' + meter(100, '');
+    if (a.targetProgress == null) return '<span class="dim">—</span>';
+    var made = (a.netLiq || 0) - a.cfg.size;
+    return '<span class="mut">' + strip(money(made)) + ' / ' + strip(money(a.cfg.target)) + '</span>' + '<div class="meter"><i style="width:' + Math.max(0, Math.min(100, a.targetProgress * 100)).toFixed(0) + '%;background:var(--acc)"></i></div>';
+  }
+  function speedCell(ms) { if (ms == null) return '<span class="dim">—</span>'; return '<span class="' + (ms > 300 ? 'dn' : ms > 200 ? '' : 'up') + '"' + (ms > 200 && ms <= 300 ? ' style="color:#FCD34D"' : '') + '>' + ms + ' ms</span>'; }
+  function slipCell(t) { if (t == null) return '<span class="dim">—</span>'; return '<span class="mut">' + (t > 0 ? '+' : '') + t + ' t</span>'; }
+  function avg(arr) { var v = arr.filter(function (x) { return x != null; }); return v.length ? v.reduce(function (s, x) { return s + x; }, 0) / v.length : null; }
+
+  /* ── alerts (derived; dismissible) ── */
+  function alertList() {
+    var out = [];
+    S.accounts.forEach(function (a) {
+      if (!a.role || a.role === 'leader') return;
+      if (a.cfg.halted && a.cfg.haltKind === 'passed') out.push({ id: 'p' + a.key + a.cfg.haltReason, c: 'info', m: nm(a) + ' passed — ' + a.cfg.haltReason + '. Locked, no new trades.' });
+      else if (a.cfg.halted) out.push({ id: 'h' + a.key + a.cfg.haltReason, c: 'dn', m: nm(a) + ' halted — ' + a.cfg.haltReason + '.', view: a.key });
+      else if (a.cfg.speedAvg > 300) out.push({ id: 's' + a.key, c: 'wrn', m: nm(a) + ' is copying slowly (' + a.cfg.speedAvg + ' ms avg).' });
+    });
+    if (S.armed) (S.feeds || []).forEach(function (f) { if (!f.live) out.push({ id: 'f' + f.key + Math.floor(Date.now() / 600000), c: 'wrn', m: 'Leader feed reconnecting: ' + f.label + '. Followers catch up automatically.' }); });
+    var now = Date.now();
+    (S.news || []).forEach(function (e) {
+      if (e.t > now && e.t - now < 90 * 60000) out.push({ id: 'n' + e.t, c: 'wrn', m: 'News at ' + ctShort(e.t) + ' CT — ' + e.title + '. Accounts with news blackout on won\'t open new trades around it.', tpl: true });
+    });
+    return out.filter(function (x) { return !dismissed[x.id]; });
+  }
+  function renderAlerts() {
+    $('alerts').innerHTML = alertList().map(function (x) {
+      return '<div class="alert ' + x.c + '"><span class="dot"></span><span class="m">' + esc(x.m) + '</span>'
+        + (x.view ? '<button class="btn xs" data-view-acct="' + esc(x.view) + '">View</button>' : '')
+        + '<button class="x" aria-label="Dismiss" data-dismiss="' + esc(x.id) + '">×</button></div>';
+    }).join('');
+  }
+  function notifyNew() {
+    var fresh = S.log.filter(function (l) { return l.t > lastLogSeen; });
+    if (lastLogSeen && 'Notification' in window && Notification.permission === 'granted') {
+      fresh.filter(function (l) { return l.lvl === 'err' || /^PASSED/.test(l.msg); }).slice(-3).forEach(function (l) {
+        try { new Notification('FSD-X Copier', { body: l.msg, tag: 'cp' + l.t }); } catch (e) {}
+      });
+    }
+    if (S.log.length) lastLogSeen = Math.max(lastLogSeen, S.log[S.log.length - 1].t);
   }
 
-  /* ── render: header ── */
+  /* ── header ── */
   function renderTop() {
     var feeds = S.feeds || [], live = feeds.filter(function (f) { return f.live; }).length;
-    var halted = S.accounts.filter(function (a) { return a.cfg.halted && a.role; }).length;
     var chips = [];
     chips.push(S.armed ? '<span class="chip on"><i></i>Armed</span>' : '<span class="chip"><i></i>Disarmed</span>');
     chips.push(S.dryRun ? '<span class="chip wrn">Dry run</span>' : '<span class="chip bad">Live orders</span>');
-    if (S.armed) chips.push(live === feeds.length && feeds.length ? '<span class="chip on"><i></i>Feed ' + live + '/' + feeds.length + '</span>' : '<span class="chip bad"><i></i>Feed ' + live + '/' + feeds.length + '</span>');
-    if (halted) chips.push('<span class="chip bad">' + halted + ' halted</span>');
+    if (S.armed) chips.push('<span class="chip ' + (live === feeds.length && feeds.length ? 'on' : 'bad') + '"><i></i>Feeds ' + live + '/' + feeds.length + '</span>');
+    var wc = windowCountdown();
+    if (wc) chips.push('<span class="chip" data-cd="win" data-k="' + wc.k + '">' + (wc.k === 'c' ? 'Window closes in ' : 'Window opens in ') + dur(wc.s) + '</span>');
+    chips.push('<span class="chip" data-cd="roll">5pm roll in ' + dur(rollIn()) + '</span>');
     $('chips').innerHTML = chips.join('');
     [$('b-arm'), $('b-arm-m')].forEach(function (b) { b.textContent = S.armed ? 'Disarm' : 'Arm'; b.className = 'btn ' + (b.id === 'b-arm' ? 'lg ' : '') + (S.armed ? 'arm-on' : 'pri'); });
     $('t-dry').checked = !!S.dryRun;
     $('ban-live').className = 'ban dn' + (S.armed && !S.dryRun ? ' on' : '');
     $('ban-cfg').className = 'ban wrn' + (S.configured === false ? ' on' : '');
-    var down = S.armed ? feeds.filter(function (f) { return !f.live; }) : [];
-    $('ban-feed').className = 'ban wrn' + (down.length ? ' on' : '');
-    $('ban-feed').textContent = down.length ? 'Leader feed reconnecting: ' + down.map(function (f) { return f.label; }).join(', ') + '. Followers catch up automatically when it\'s back.' : '';
-    var hc = S.accounts.filter(function (a) { return a.cfg.halted && a.role; }).length;
+    var hc = S.accounts.filter(function (a) { return a.cfg.halted && a.cfg.haltKind !== 'passed' && a.role; }).length;
     $('tabs').querySelector('[data-tab=accounts]').innerHTML = 'Accounts' + (hc ? '<span class="badge">' + hc + '</span>' : '');
+    renderAlerts();
   }
   function tickClock() {
     $('clock').textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'America/Chicago' }) + ' CT';
+    if (!S) return;
+    var r = document.querySelector('[data-cd=roll]'); if (r) r.textContent = '5pm roll in ' + dur(rollIn());
+    var w = document.querySelector('[data-cd=win]'), wc = windowCountdown();
+    if (w && wc) w.textContent = (wc.k === 'c' ? 'Window closes in ' : 'Window opens in ') + dur(wc.s);
   }
 
-  /* ── render: LIVE ── */
+  /* ── LIVE ── */
+  function kpi(l, v, s) { return '<div class="kpi"><div class="lbl">' + l + '</div><div class="v">' + v + '</div><div class="s">' + s + '</div></div>'; }
+  function sum(arr, f) { var s = 0, any = false; arr.forEach(function (a) { if (a[f] != null) { s += a[f]; any = true; } }); return any ? s : null; }
   function renderLive() {
     var el = $('p-live');
     var fol = S.accounts.filter(function (a) { return a.role === 'follower'; });
-    var sum = function (arr, f) { var s = 0, any = false; arr.forEach(function (a) { if (a[f] != null) { s += a[f]; any = true; } }); return any ? s : null; };
-    var byType = {}; TYPES.forEach(function (t) { byType[t] = sum(fol.filter(function (a) { return a.cfg.type === t; }), 'dayPnL'); });
-    var open = fol.filter(function (a) { return Object.keys(a.positions || {}).length; }).length;
-    var halted = fol.filter(function (a) { return a.cfg.halted; }).length;
+    var ofType = function (t) { return fol.filter(function (a) { return a.cfg.type === t; }); };
+    var sp = avg(fol.map(function (a) { return a.cfg.speedAvg; })), sl = avg(fol.map(function (a) { return a.cfg.slipAvg; }));
+    var p95 = (function () { var v = fol.map(function (a) { return a.cfg.speedAvg; }).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; }); return v.length ? v[Math.min(v.length - 1, Math.floor(v.length * .95))] : null; })();
+    var halted = fol.filter(function (a) { return a.cfg.halted && a.cfg.haltKind !== 'passed'; }).length;
     var html = '<div class="kpis">'
-      + kpi('Followers · day P&L', pnl(sum(fol, 'dayPnL')), 'Open ' + strip(pnl(sum(fol, 'openPnL'))))
-      + kpi('Funded · day', pnl(byType.funded), plural(fol.filter(function (a) { return a.cfg.type === 'funded'; }).length, 'account'))
-      + kpi('Eval · day', pnl(byType.eval), plural(fol.filter(function (a) { return a.cfg.type === 'eval'; }).length, 'account'))
-      + kpi('In a position', '<span>' + open + '</span><span class="dim"> / ' + fol.length + '</span>', 'follower accounts')
+      + kpi('Followers · day', pnl(sum(fol, 'dayPnL')), 'Open ' + strip(pnl(sum(fol, 'openPnL'))))
+      + kpi('Funded · day', pnl(sum(ofType('funded'), 'dayPnL')), plural(ofType('funded').length, 'account'))
+      + kpi('Eval · day', pnl(sum(ofType('eval'), 'dayPnL')), plural(ofType('eval').length, 'account'))
+      + kpi('Copy speed', sp == null ? '<span class="dim">—</span>' : Math.round(sp) + ' ms', p95 == null ? 'leader fill → follower order' : 'slowest account ' + p95 + ' ms')
+      + kpi('Slippage', sl == null ? '<span class="dim">—</span>' : (sl > 0 ? '+' : '') + sl.toFixed(2) + ' t', 'avg per entry fill, ticks')
       + kpi('Halted', '<span class="' + (halted ? 'dn' : '') + '">' + halted + '</span>', halted ? 'see Accounts' : 'all clear')
       + '</div>';
     if (!S.groups.length) {
-      html += '<div class="card empty"><b>No copy groups yet</b>Connect a Tradovate login under Setup, then create a group under Groups.</div>';
-    } else {
-      html += '<div class="grid2">' + S.groups.map(liveGroup).join('') + '</div>';
+      html += '<div class="card empty"><b>No copy groups yet</b>Run the setup wizard to connect a login, pick a leader and add followers.<div style="margin-top:14px"><button class="btn pri" data-wizard>Start setup</button></div></div>';
+      el.innerHTML = html; return;
     }
+    html += '<div class="split"><div class="main">' + S.groups.map(liveGroup).join('') + '</div><div class="rail">' + currentTrade() + protection() + '</div></div>';
     el.innerHTML = html;
   }
-  function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
-  function strip(h) { return h.replace(/<[^>]+>/g, ''); }
-  function kpi(l, v, s) { return '<div class="kpi"><div class="lbl">' + l + '</div><div class="v">' + v + '</div><div class="s">' + s + '</div></div>'; }
   function liveGroup(g) {
     var st = groupStatus(g), la = g.leader && acc(g.leader);
     var rows = g.followers.map(function (f) {
       var a = acc(f.key); if (!a) return '';
       var as = acctStatus(a);
-      return '<tr class="' + (a.cfg.halted ? 'halted' : (!f.enabled ? 'paused' : '')) + '">'
-        + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + as.dot + '"></span><span class="an">' + esc(a.name) + '</span>' + typeTag(a.cfg.type) + '</div></td>'
+      return '<tr class="' + (a.cfg.halted && a.cfg.haltKind !== 'passed' ? 'halted' : (!f.enabled ? 'paused' : '')) + '">'
+        + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + as.dot + '"></span><span class="an">' + esc(nm(a)) + '</span>' + typeTag(a.cfg.type) + '</div><div class="sub" style="margin-left:16px">' + esc(a.name) + (a.cfg.firm ? ' · ' + esc(a.cfg.firm) : '') + '</div></td>'
         + '<td data-l="Position" class="num">' + posHtml(a.positions) + '</td>'
-        + '<td data-l="Open" class="num r">' + pnl(a.openPnL) + '</td>'
         + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
-        + '<td data-l="DD left" class="num r">' + (a.ddLeft == null ? '<span class="dim">—</span>' : money(a.ddLeft)) + '</td>'
+        + '<td data-l="Speed" class="num r">' + speedCell(a.cfg.speedAvg) + '</td>'
+        + '<td data-l="Slip" class="num r">' + slipCell(a.cfg.slipAvg) + '</td>'
+        + '<td data-l="Drawdown left" class="num">' + ddCell(a) + '</td>'
+        + '<td data-l="Target">' + (a.cfg.halted || a.blocked || !f.enabled ? as.html : tgtCell(a)) + '</td>'
         + '<td data-l="" class="r"><button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></td>'
         + '</tr>';
     }).join('');
+    var trades = g.followers.map(function (f) { var a = acc(f.key); return a ? a.tradesToday : 0; });
     return '<div class="card">'
       + '<div class="gl-top"><h3 style="margin:0;font-size:17px;font-weight:800">' + esc(g.name) + '</h3><span class="chip ' + st.c + '">' + (st.c === 'on' ? '<i></i>' : '') + st.t + '</span>'
+      + '<span class="sub" style="font-size:12.5px">' + esc(windowText(g)) + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + '</span>'
       + '<span class="sp"></span>'
       + '<button class="btn sm" data-gtoggle="' + g.id + '">' + (g.enabled ? 'Pause' : 'Resume') + '</button>'
       + '<button class="btn sm ghost-dn" data-flat-group="' + g.id + '">Flatten group</button></div>'
-      + '<div class="sub" style="margin-top:6px">' + esc(windowText(g)) + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + '</div>'
-      + '<div class="gl-leader"><div><div class="lbl">Leader</div><div class="an" style="margin-top:4px">' + (la ? esc(la.name) + ' ' + envTag(la) : '<span class="dim">not set</span>') + '</div></div>'
-      + '<div class="bigpos">' + posHtml(S.armed ? g.leaderPos : (la && la.positions)) + '</div><span class="sp"></span>'
-      + (la ? '<div style="text-align:right"><div class="lbl">Day</div><div class="mono" style="margin-top:4px;font-weight:700">' + pnl(la.dayPnL) + '</div></div>' : '') + '</div>'
-      + (rows ? '<div class="tw"><table class="t cards"><thead><tr><th>Follower</th><th>Position</th><th class="r">Open</th><th class="r">Day</th><th class="r">DD left</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+      + '<div class="gl-leader"><div><div class="lbl">Leader</div><div class="an" style="margin-top:4px">' + (la ? esc(nm(la)) + ' ' + envTag(la) : '<span class="dim">not set</span>') + '</div></div>'
+      + '<div class="bigpos">' + posHtml(S.armed ? g.leaderPos : (la && la.positions)) + '</div>'
+      + (la ? '<div class="mut" style="font-size:13px">Day ' + strip(pnl(la.dayPnL)) + ' · open ' + strip(pnl(la.openPnL)) + '</div>' : '')
+      + '<span class="sp"></span><div style="text-align:right"><div class="lbl">Entries today</div><div style="margin-top:4px;font-weight:700">' + (trades.length ? Math.max.apply(null, trades) : 0) + '</div></div></div>'
+      + (rows ? '<div class="tw"><table class="t cards"><thead><tr><th>Account</th><th>Position</th><th class="r">Day</th><th class="r">Speed</th><th class="r">Slip</th><th>Drawdown left</th><th>Target</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
               : '<div class="empty" style="padding:18px">No followers. Add them under Groups.</div>')
       + '</div>';
   }
+  function currentTrade() {
+    var t = (S.openTrades || [])[0];
+    if (!t) return '<div class="card"><div class="card-h" style="margin-bottom:4px"><h3>Current trade</h3></div><div class="note" style="margin:0">No open trade. Each leader entry shows here with every account\'s fill time and slippage.</div></div>';
+    var fills = t.fills.map(function (f) {
+      var c = f.ms > 300 ? 'dn' : f.ms > 200 ? '' : 'up';
+      return '<div class="tl"><span class="dot ' + (f.ms > 300 ? 'bad' : f.ms > 200 ? 'wrn' : 'ok') + '"></span><span class="n">' + esc(aname(f.k)) + ' ' + (f.qty > 0 ? '+' : '') + f.qty + '</span>'
+        + '<span class="mut">' + (f.px ? f.px.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '') + (f.slip != null ? ' · ' + (f.slip > 0 ? '+' : '') + f.slip + 't' : '') + '</span>'
+        + '<span class="ms ' + c + '"' + (f.ms > 200 && f.ms <= 300 ? ' style="color:#FCD34D"' : '') + '>+' + f.ms + '</span></div>';
+    }).join('');
+    var ms = avg(t.fills.map(function (f) { return f.ms; })), sl = avg(t.fills.map(function (f) { return f.slip; }));
+    return '<div class="card"><div class="card-h" style="margin-bottom:4px"><h3>Current trade</h3><span class="sp"></span><span class="sub">opened ' + fmtTime(t.openedAt) + '</span></div>'
+      + '<div class="mut" style="font-size:13px;margin-bottom:10px">' + esc(aname(t.leader)) + ' ' + (t.side === 'Long' ? 'long' : 'short') + ' ' + t.qty + ' ' + esc(t.sym) + (t.leaderPx ? ' @ ' + t.leaderPx.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '') + '</div>'
+      + '<div class="tl"><span class="dot info"></span><span class="n">Leader filled</span><span class="mut">' + (t.leaderPx ? t.leaderPx.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '') + '</span><span class="ms mut">0</span></div>'
+      + (fills || '<div class="note">Waiting for follower fills…</div>')
+      + '<div class="stat3"><div><div>Filled</div><div>' + t.fills.length + ' / ' + t.expected + '</div></div><div><div>Avg speed</div><div>' + (ms == null ? '—' : Math.round(ms) + ' ms') + '</div></div><div><div>Avg slip</div><div>' + (sl == null ? '—' : (sl > 0 ? '+' : '') + sl.toFixed(2) + ' t') + '</div></div></div></div>';
+  }
+  function protection() {
+    var items = [];
+    S.accounts.forEach(function (a) {
+      if (a.role !== 'follower') return;
+      var c = a.cfg;
+      if (c.halted && c.haltKind === 'passed') items.push({ d: 'info', t: 'Pass protection', s: nm(a) + ' — ' + c.haltReason + '. Locked.' });
+      else if (c.halted) items.push({ d: 'bad', t: 'Halted', s: nm(a) + ' — ' + c.haltReason + '.' });
+      else if (a.blocked) items.push({ d: 'wrn', t: 'Entries blocked', s: nm(a) + ' — ' + a.blocked + '.' });
+    });
+    var now = Date.now();
+    (S.news || []).filter(function (e) { return e.t > now - 15 * 60000; }).slice(0, 3).forEach(function (e) { items.push({ d: 'wrn', t: 'News ' + ctShort(e.t) + ' CT', s: e.title }); });
+    var mt = S.accounts.filter(function (a) { return a.role === 'follower' && a.cfg.maxTradesDay > 0; });
+    if (mt.length) items.push({ d: 'ok', t: 'Max trades per day', s: mt.map(function (a) { return nm(a) + ' ' + a.tradesToday + '/' + a.cfg.maxTradesDay; }).join(' · ') });
+    if (!items.length) items.push({ d: 'ok', t: 'All clear', s: 'No halts, locks or blocked entries.' });
+    return '<div class="card"><div class="card-h" style="margin-bottom:4px"><h3>Protection today</h3><span class="sp"></span><button class="btn xs" data-tab-go="templates">Rules</button></div>'
+      + items.map(function (i) { return '<div class="guard"><span class="dot ' + i.d + '"></span><div><b>' + esc(i.t) + '</b><span>' + esc(i.s) + '</span></div></div>'; }).join('') + '</div>';
+  }
 
-  /* ── render: GROUPS ── */
+  /* ── GROUPS ── */
+  function acctOpt(a, sel) { return '<option value="' + esc(a.key) + '"' + (a.key === sel ? ' selected' : '') + '>' + esc(nm(a)) + ' · ' + a.env + ' · ' + esc(a.conn) + '</option>'; }
   function renderGroups() {
     var el = $('p-groups');
     if (editing(el)) return;
     var used = {}; S.groups.forEach(function (g) { g.followers.forEach(function (f) { used[f.key] = g.name; }); });
     var leaders = {}; S.groups.forEach(function (g) { if (g.leader) leaders[g.leader] = 1; });
     var html = '<div class="card-h"><div class="note" style="margin:0;flex:1">Each group copies one leader to its followers with its own rules. A leader can run several groups; an account follows one group.</div>'
-      + '<button class="btn pri" id="b-newgroup">+ New group</button></div>';
-    if (!S.groups.length) html += '<div class="card empty"><b>No groups</b>Create one to get started.</div>';
+      + '<button class="btn" data-wizard>Setup wizard</button><button class="btn pri" id="b-newgroup">+ New group</button></div>';
+    if (!S.groups.length) html += '<div class="card empty"><b>No groups</b>Create one, or run the setup wizard.</div>';
     html += S.groups.map(function (g) {
-      var opts = function (sel, filter) {
-        return S.accounts.filter(filter).map(function (a) { return '<option value="' + esc(a.key) + '"' + (a.key === sel ? ' selected' : '') + '>' + esc(a.name) + ' · ' + a.env + ' · ' + esc(a.conn) + '</option>'; }).join('');
-      };
-      var leaderOpts = '<option value="">Choose leader…</option>' + opts(g.leader, function (a) { return !used[a.key]; });
+      var leaderOpts = '<option value="">Choose leader…</option>' + S.accounts.filter(function (a) { return !used[a.key]; }).map(function (a) { return acctOpt(a, g.leader); }).join('');
       var addOpts = S.accounts.filter(function (a) { return !used[a.key] && !leaders[a.key]; });
       var fr = g.followers.map(function (f) {
         var a = acc(f.key);
         return '<tr data-g="' + g.id + '" data-k="' + esc(f.key) + '" class="' + (f.enabled ? '' : 'paused') + '">'
           + '<td class="first"><label class="tog"><input type="checkbox" data-ff="enabled"' + (f.enabled ? ' checked' : '') + '><b></b></label></td>'
-          + '<td data-l="Account"><span class="an">' + esc(a ? a.name : f.key) + '</span> ' + envTag(a) + (a ? ' ' + typeTag(a.cfg.type) : '') + '<div class="sub">' + esc(a ? a.conn : '') + '</div></td>'
+          + '<td data-l="Account"><span class="an">' + esc(nm(a)) + '</span> ' + envTag(a) + (a ? ' ' + typeTag(a.cfg.type) : '') + '<div class="sub">' + esc(a ? a.name + ' · ' + a.conn : '') + '</div></td>'
           + '<td data-l="Multiplier"><input class="inp n s" type="number" min="0" max="50" step="0.25" data-ff="mult" value="' + f.mult + '"' + (f.fixedQty > 0 ? ' disabled' : '') + '></td>'
           + '<td data-l="Fixed qty"><input class="inp n s" type="number" min="0" max="100" step="1" data-ff="fixedQty" value="' + f.fixedQty + '"></td>'
           + '<td data-l="Invert"><label class="tog"><input type="checkbox" data-ff="invert"' + (f.invert ? ' checked' : '') + '><b></b></label></td>'
@@ -502,63 +717,115 @@
         + '</div>'
         + '<div class="card-h" style="margin-bottom:6px"><span class="lbl">Followers · ' + g.followers.length + '</span><span class="sp"></span>'
         + '<select class="sel" data-addf' + (addOpts.length ? '' : ' disabled') + '><option value="">' + (addOpts.length ? 'Add follower…' : 'No free accounts') + '</option>'
-        + addOpts.map(function (a) { return '<option value="' + esc(a.key) + '">' + esc(a.name) + ' · ' + a.env + ' · ' + esc(a.conn) + '</option>'; }).join('') + '</select></div>'
+        + addOpts.map(function (a) { return acctOpt(a); }).join('') + '</select></div>'
         + (fr ? '<div class="tw"><table class="t cards"><thead><tr><th>On</th><th>Account</th><th>Mult</th><th>Fixed qty</th><th>Invert</th><th></th></tr></thead><tbody>' + fr + '</tbody></table></div>' : '<div class="empty" style="padding:16px">No followers yet.</div>')
-        + '<p class="note">Size = leader × Mult, rounded, minimum 1. Fixed qty &gt; 0 overrides Mult. Outside the window, when paused, or for a symbol/direction this group doesn\'t trade, followers only exit — they never open or add.</p>'
+        + '<p class="note">Size = leader × Mult, rounded, minimum 1. Fixed qty &gt; 0 overrides Mult. Paused, outside the window, or a symbol/direction this group doesn\'t trade: followers only exit.</p>'
         + '</div>';
     }).join('');
     el.innerHTML = html;
   }
 
-  /* ── render: ACCOUNTS ── */
+  /* ── ACCOUNTS ── */
   function renderAccounts() {
     var el = $('p-accounts');
     if (editing(el)) return;
     if (!S.accounts.length) { el.innerHTML = '<div class="card empty"><b>No accounts</b>Connect a Tradovate login under Setup.</div>'; return; }
     var gname = {}; S.groups.forEach(function (g) { gname[g.id] = g.name; });
-    var list = S.accounts.slice().sort(function (a, b) { var r = function (x) { return x.role === 'leader' ? 0 : x.role === 'follower' ? 1 : 2; }; return r(a) - r(b) || a.name.localeCompare(b.name); });
+    var cnt = { all: S.accounts.length, eval: 0, funded: 0, halted: 0 };
+    S.accounts.forEach(function (a) { if (a.cfg.type === 'eval') cnt.eval++; if (a.cfg.type === 'funded') cnt.funded++; if (a.cfg.halted && a.cfg.haltKind !== 'passed') cnt.halted++; });
+    var q = acctSearch.toLowerCase();
+    var list = S.accounts.filter(function (a) {
+      if (acctFilter === 'eval' && a.cfg.type !== 'eval') return false;
+      if (acctFilter === 'funded' && a.cfg.type !== 'funded') return false;
+      if (acctFilter === 'halted' && !(a.cfg.halted && a.cfg.haltKind !== 'passed')) return false;
+      return !q || (nm(a) + ' ' + a.name + ' ' + (a.cfg.firm || '') + ' ' + a.conn).toLowerCase().indexOf(q) >= 0;
+    }).sort(function (a, b) { var r = function (x) { return x.role === 'leader' ? 0 : x.role === 'follower' ? 1 : 2; }; return r(a) - r(b) || nm(a).localeCompare(nm(b)); });
+    var selKeys = Object.keys(selected).filter(function (k) { return selected[k] && acc(k); });
     var tot = { net: 0, day: 0, open: 0 };
     var rows = list.map(function (a) {
-      var ac = a.cfg, st = acctStatus(a);
+      var c = a.cfg, st = acctStatus(a), isOpen = openAcct === a.key;
       if (a.role === 'follower') { tot.net += a.netLiq || 0; tot.day += a.dayPnL || 0; tot.open += a.openPnL || 0; }
-      var parts = [];
-      if (ac.dailyLoss) parts.push('Loss ' + strip(money(ac.dailyLoss)));
-      if (ac.dailyProfit) parts.push('Lock ' + strip(money(ac.dailyProfit)));
-      if (ac.maxPos) parts.push('Max ' + ac.maxPos);
-      if (ac.floor) parts.push('Floor ' + strip(money(ac.floor)));
-      if (ac.trail) parts.push('Trail ' + strip(money(ac.trail)));
-      var isOpen = openAcct === a.key;
-      var risk = a.role === 'leader' ? '<span class="dim">Leaders aren\'t auto-halted</span>' :
-        '<button class="btn xs' + (isOpen ? ' pri' : '') + '" data-editrisk>' + (isOpen ? 'Done' : 'Edit') + '</button> <span class="sub">' + (parts.join(' · ') || 'No limits') + '</span>';
-      return '<tr data-k="' + esc(a.key) + '" class="' + (ac.halted ? 'halted' : '') + '">'
-        + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + st.dot + '"></span><div><span class="an">' + esc(a.name) + '</span> ' + envTag(a)
-        + '<div class="sub">' + esc(a.conn) + (a.role ? ' · ' + (a.role === 'leader' ? 'Leader' : esc(gname[a.groupId] || '')) : '') + '</div></div></div></td>'
-        + '<td data-l="Type"><select class="sel" data-af="type">' + TYPES.map(function (t) { return '<option' + (t === ac.type ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></td>'
+      var nameCell = nickEdit === a.key
+        ? '<span class="nick-edit"><input class="inp" style="width:170px" data-nick value="' + esc(c.nick || a.name) + '" maxlength="30"><button class="btn xs pri" data-nick-save>Save</button></span>'
+        : '<span class="nick-edit"><span class="an">' + esc(nm(a)) + '</span><button class="icon-btn" data-nick-edit aria-label="Rename"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></span>';
+      return '<tr data-k="' + esc(a.key) + '" class="' + (c.halted && c.haltKind !== 'passed' ? 'halted' : '') + '">'
+        + '<td class="first"><input type="checkbox" class="ck" data-sel' + (selected[a.key] ? ' checked' : '') + ' aria-label="Select ' + esc(nm(a)) + '"></td>'
+        + '<td data-l="Account"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + st.dot + '"></span><div>' + nameCell
+        + '<div class="sub">' + esc(a.name) + ' · ' + esc(a.conn) + (a.role ? ' · ' + (a.role === 'leader' ? 'Leader' : esc(gname[a.groupId] || '')) : '') + '</div></div></div></td>'
+        + '<td data-l="Firm · type"><div class="row" style="gap:4px;flex-wrap:nowrap">' + firmTag(a) + '<select class="sel" style="height:28px;font-size:12.5px" data-af="type">' + TYPES.map(function (t) { return '<option' + (t === c.type ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></div></td>'
+        + '<td data-l="Template" class="sub" style="font-size:13px">' + (a.role === 'leader' ? '—' : esc(a.templateName || (RULES.some(function (r) { return !r.bool && r.k !== 'newsBefore' && r.k !== 'newsAfter' && c[r.k] > 0; }) ? 'Custom' : 'None'))) + '</td>'
         + '<td data-l="Net liq" class="num r">' + money(a.netLiq) + '</td>'
-        + '<td data-l="Day P&L" class="num r">' + pnl(a.dayPnL) + '</td>'
-        + '<td data-l="Open" class="num r">' + pnl(a.openPnL) + '</td>'
-        + '<td data-l="Position" class="num">' + posHtml(a.positions) + '</td>'
-        + '<td data-l="DD left" class="num r">' + (a.ddLeft == null ? '<span class="dim">—</span>' : money(a.ddLeft) + ddMeter(a)) + (ac.trail > 0 && ac.peak != null ? '<div class="sub">peak ' + strip(money(ac.peak)) + ' <a href="#" data-resetpeak class="acc">reset</a></div>' : '') + '</td>'
-        + '<td data-l="Risk rules">' + risk + '</td>'
-        + '<td data-l="Status">' + st.html + (ac.halted ? '<button class="btn xs" style="margin-top:6px" data-resethalt>Reset halt</button>' : '') + '</td>'
-        + '<td data-l="" class="r"><button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></td></tr>'
-        + (isOpen && a.role !== 'leader' ? '<tr class="edit" data-k="' + esc(a.key) + '"><td colspan="10"><div class="rules" style="margin:4px 0 6px">'
-          + rf('dailyLoss', ac.dailyLoss, 'Daily loss limit $', 'Day P&L at or below −this → halt + flatten. Clears at 5pm CT.', 50)
-          + rf('dailyProfit', ac.dailyProfit, 'Daily profit lock $', 'Day P&L at or above +this → halt + flatten. Clears at 5pm CT.', 50)
-          + rf('maxPos', ac.maxPos, 'Max position (contracts)', 'Never holds more than this. Clamps size, doesn\'t halt.', 1)
-          + rf('floor', ac.floor, 'Net-liq floor $', 'Net liq at or below this → halt + flatten until reset.', 100)
-          + rf('trail', ac.trail, 'Trailing drawdown $', 'Floor = highest net liq seen − this. Set to your firm\'s drawdown.', 100)
-          + '</div><div class="sub" style="margin-bottom:6px">0 = off. Saved as you change each box.</div></td></tr>' : '');
+        + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
+        + '<td data-l="Drawdown left" class="num">' + ddCell(a) + '</td>'
+        + '<td data-l="Target">' + tgtCell(a) + '</td>'
+        + '<td data-l="Ping" class="num r">' + (a.ping == null ? '<span class="dim">—</span>' : '<span class="' + (a.ping > 200 ? '' : 'mut') + '"' + (a.ping > 200 ? ' style="color:#FCD34D"' : '') + '>' + a.ping + ' ms</span>') + '</td>'
+        + '<td data-l="Status">' + st.html + (c.halted ? '<div><button class="btn xs" style="margin-top:6px" data-resethalt>' + (c.haltKind === 'passed' ? 'Unlock' : 'Reset halt') + '</button></div>' : '') + '</td>'
+        + '<td data-l="" class="r"><div class="row" style="flex-wrap:nowrap;justify-content:flex-end">' + (a.role === 'leader' ? '' : '<button class="btn xs' + (isOpen ? ' pri' : '') + '" data-editrisk>' + (isOpen ? 'Done' : 'Rules') + '</button>') + '<button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></div></td></tr>'
+        + (isOpen && a.role !== 'leader' ? '<tr class="edit" data-k="' + esc(a.key) + '"><td colspan="11">' + rulesEditor(c, 'af') + (c.trail > 0 && c.peak != null ? '<div class="sub" style="margin:8px 2px">Trailing peak ' + strip(money(c.peak)) + ' · <a href="#" data-resetpeak class="acc">reset to current net liq</a></div>' : '') + '</td></tr>' : '');
     }).join('');
-    el.innerHTML = '<div class="card"><div class="tw"><table class="t cards"><thead><tr><th>Account</th><th>Type</th><th class="r">Net liq</th><th class="r">Day P&amp;L</th><th class="r">Open</th><th>Position</th><th class="r">DD left</th>'
-      + '<th>Risk rules</th><th>Status</th><th></th></tr></thead><tbody>' + rows
-      + '<tr class="tot"><td>Followers total</td><td></td><td class="num r">' + money(tot.net) + '</td><td class="num r">' + pnl(tot.day) + '</td><td class="num r">' + pnl(tot.open) + '</td><td colspan="5"></td></tr>'
+    var tplOpts = '<option value="">Apply template…</option>' + S.templates.map(function (t) { return '<option value="' + esc(t.id) + '">' + esc(t.name) + '</option>'; }).join('');
+    var grpOpts = '<option value="">Move to group…</option>' + S.groups.map(function (g) { return '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>'; }).join('');
+    el.innerHTML = '<div class="toolbar"><label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="text" id="acct-q" placeholder="Search accounts" value="' + esc(acctSearch) + '"></label>'
+      + '<div class="seg">' + [['all', 'All ' + cnt.all], ['eval', 'Eval ' + cnt.eval], ['funded', 'Funded ' + cnt.funded], ['halted', 'Halted ' + cnt.halted]].map(function (f) { return '<button data-afilter="' + f[0] + '" class="' + (acctFilter === f[0] ? 'on' : '') + '" style="text-transform:none">' + f[1] + '</button>'; }).join('') + '</div>'
+      + '<span class="sp"></span><button class="btn" data-testconn>Test connections</button></div>'
+      + (selKeys.length ? '<div class="bulk"><span class="cnt">' + selKeys.length + ' selected</span><span class="sp"></span>'
+        + '<select class="sel" data-bulk="template">' + tplOpts + '</select>'
+        + '<select class="sel" data-bulk="groupId">' + grpOpts + '</select>'
+        + '<select class="sel" data-bulk="type"><option value="">Set type…</option>' + TYPES.map(function (t) { return '<option>' + t + '</option>'; }).join('') + '</select>'
+        + '<label>Multiplier <input class="inp n s" type="number" min="0" step="0.25" id="bulk-mult" placeholder="—"></label><button class="btn sm" data-bulk-mult>Set</button>'
+        + '<button class="btn sm" data-bulk-pause="0">Pause</button><button class="btn sm" data-bulk-pause="1">Resume</button>'
+        + '<button class="btn sm" data-bulk-clear>Clear</button></div>' : '')
+      + '<div class="card"><div class="tw"><table class="t cards"><thead><tr><th style="width:30px"><input type="checkbox" class="ck" data-selall aria-label="Select all"></th><th>Account</th><th>Firm · type</th><th>Template</th><th class="r">Net liq</th><th class="r">Day</th><th>Drawdown left</th><th>Target</th><th class="r">Ping</th><th>Status</th><th></th></tr></thead><tbody>' + rows
+      + '<tr class="tot"><td></td><td>Followers total</td><td></td><td></td><td class="num r">' + money(tot.net) + '</td><td class="num r">' + pnl(tot.day) + '</td><td colspan="5"></td></tr>'
       + '</tbody></table></div>'
-      + '<p class="note">Balances refresh every 20s while this page is open. Daily loss and profit lock halt + flatten the account and clear at the 5pm CT session roll. Floor and trailing DD halt + flatten until you reset. Trailing DD floor = highest net liq seen − amount.</p></div>';
+      + '<p class="note">Firm is guessed from the account name; click the pencil to rename. Rules: daily loss and profit lock clear at the 5pm CT roll; pass protection, floor and trailing drawdown stay until you reset. Balances refresh every 20s while this page is open (every 5s for accounts in a trade with a per-trade limit).</p></div>';
   }
-  function rf(f, v, t, help, step) { return '<div class="rule"><span class="lbl">' + t + '</span><input class="inp n" style="width:120px" type="number" min="0" step="' + step + '" data-af="' + f + '" value="' + (v || 0) + '"><div class="note" style="margin-top:6px">' + help + '</div></div>'; }
+  function rulesEditor(c, attr) {
+    var secs = [];
+    RULES.forEach(function (r) { if (secs.indexOf(r.sec) < 0) secs.push(r.sec); });
+    return secs.map(function (sec) {
+      return '<div class="sec-t">' + sec + '</div><div class="rulegrid" style="margin-bottom:14px">' + RULES.filter(function (r) { return r.sec === sec; }).map(function (r) {
+        if (r.bool) return '<div class="rulebox"><label class="tog"><input type="checkbox" data-' + attr + '="' + r.k + '"' + (c[r.k] ? ' checked' : '') + '><b></b></label><div><div class="t">' + r.t + '</div><div class="h">' + r.h + '</div></div></div>';
+        return '<div class="rulebox"><div style="flex:1;min-width:0"><div class="t">' + r.t + '</div><div class="h">' + r.h + '</div><div class="v"><input class="inp" type="number" min="0" step="' + r.step + '" data-' + attr + '="' + r.k + '" value="' + (c[r.k] || 0) + '"><span>0 = off</span></div></div></div>';
+      }).join('') + '</div>';
+    }).join('');
+  }
 
-  /* ── render: TRADES ── */
+  /* ── TEMPLATES ── */
+  function renderTemplates() {
+    var el = $('p-templates');
+    if (editing(el)) return;
+    if (tplSel && !tplDraft) {
+      var t0 = S.templates.find(function (t) { return t.id === tplSel; });
+      if (t0) tplDraft = { id: t0.id, name: t0.name, rules: Object.assign({}, t0.rules) }; else tplSel = null;
+    }
+    var users = function (id) { return S.accounts.filter(function (a) { return a.cfg.template === id; }).length; };
+    var list = '<div class="tpl-list"><button class="btn pri" data-tpl-new>+ New template</button>'
+      + S.templates.map(function (t) {
+        var r = t.rules, bits = [];
+        if (r.size) bits.push(strip(money(r.size)));
+        if (r.trail) bits.push('trail ' + strip(money(r.trail)));
+        if (r.target) bits.push('target ' + strip(money(r.target)));
+        return '<button class="tpl-item' + (tplSel === t.id ? ' on' : '') + '" data-tpl="' + esc(t.id) + '"><b>' + esc(t.name) + '</b><span>' + plural(users(t.id), 'account') + (bits.length ? ' · ' + bits.join(' · ') : '') + '</span></button>';
+      }).join('')
+      + '<p class="note">Your own presets per firm and size. Check each firm\'s current rules — they change.</p></div>';
+    var ed;
+    if (!tplDraft) {
+      ed = '<div class="card empty" style="flex:999 1 600px"><b>' + (S.templates.length ? 'Pick a template' : 'No templates yet') + '</b>A template holds a firm\'s rules — size, profit target, drawdown, loss limits, news blackout. Apply it to many accounts at once from Accounts.</div>';
+    } else {
+      var n = tplDraft.id ? users(tplDraft.id) : 0;
+      ed = '<div class="card" style="flex:999 1 600px;min-width:0"><div class="card-h">'
+        + '<input class="inp" style="font-weight:700;font-size:16px;height:40px;width:min(300px,100%)" id="tpl-name" value="' + esc(tplDraft.name) + '" placeholder="e.g. Apex 50K Eval">'
+        + '<span class="sub" style="font-size:13px">' + (tplDraft.id ? 'Used by ' + plural(n, 'account') : 'New') + '</span><span class="sp"></span>'
+        + (tplDraft.id ? '<button class="btn sm ghost-dn" data-tpl-del>Delete</button>' : '')
+        + '<button class="btn pri" data-tpl-save>' + (n ? 'Save & apply to ' + n : 'Save') + '</button></div>'
+        + rulesEditor(tplDraft.rules, 'tr')
+        + '<div class="ban wrn on" style="margin-top:4px">Every rule is exits-safe: a blocked or locked account still closes with the leader. It just never opens or adds.</div></div>';
+    }
+    el.innerHTML = '<div class="split">' + list + ed + '</div>';
+  }
+
+  /* ── TRADES ── */
   function renderTrades() {
     var el = $('p-trades');
     var tr = S.trades || [];
@@ -570,23 +837,27 @@
     if (!tr.length) { el.innerHTML = html + '<div class="card empty"><b>No trades yet</b>Each leader round trip shows here with P&amp;L per account, split Funded / Eval.</div>'; return; }
     var rows = tr.map(function (t) {
       var o = openTrade === t.id;
-      var detail = o ? '<tr><td colspan="7" style="background:rgba(0,0,0,.2)">' + Object.keys(t.pnl).map(function (k) {
-        var a = acc(k); return '<span style="display:inline-block;margin:3px 16px 3px 0"><span class="mut">' + esc(a ? a.name : k) + (k === t.leader ? ' (leader)' : '') + '</span> <span class="mono">' + pnl(t.pnl[k]) + '</span></span>';
+      var fms = {}; (t.fills || []).forEach(function (f) { fms[f.k] = f; });
+      var sp = avg((t.fills || []).map(function (f) { return f.ms; }));
+      var detail = o ? '<tr><td colspan="8" style="background:rgba(0,0,0,.2);white-space:normal">' + Object.keys(t.pnl).map(function (k) {
+        var f = fms[k];
+        return '<span style="display:inline-block;margin:3px 18px 3px 0"><span class="mut">' + esc(aname(k)) + (k === t.leader ? ' (leader)' : '') + '</span> ' + pnl(t.pnl[k]) + (f ? ' <span class="sub">' + f.ms + ' ms' + (f.slip != null ? ' · ' + (f.slip > 0 ? '+' : '') + f.slip + 't' : '') + '</span>' : '') + '</span>';
       }).join('') + '</td></tr>' : '';
       return '<tr data-trade="' + esc(t.id) + '" style="cursor:pointer"><td class="first num">' + fmtTime(t.closedAt, true) + '</td>'
-        + '<td data-l="Trade"><span class="an">' + esc(t.sym) + '</span> <span class="' + (t.side === 'Long' ? 'up' : 'dn') + '">' + t.side + '</span> <span class="mut mono">×' + t.qty + '</span></td>'
+        + '<td data-l="Trade"><span class="an">' + esc(t.sym) + '</span> <span class="' + (t.side === 'Long' ? 'up' : 'dn') + '">' + t.side + '</span> <span class="mut">×' + t.qty + '</span></td>'
         + '<td data-l="Group" class="sub">' + esc((t.groups || []).join(', ')) + '</td>'
         + '<td data-l="Leader" class="num r">' + pnl(t.pnl[t.leader]) + '</td>'
         + '<td data-l="Funded" class="num r">' + pnl(t.byType.funded) + '</td>'
         + '<td data-l="Eval" class="num r">' + pnl(t.byType.eval) + '</td>'
+        + '<td data-l="Speed" class="num r">' + speedCell(sp == null ? null : Math.round(sp)) + '</td>'
         + '<td data-l="" class="r dim">' + (o ? '▴' : '▾') + '</td></tr>' + detail;
     }).join('');
     el.innerHTML = html + '<div class="card"><div class="card-h"><span class="lbl">Copied trades</span><span class="sp"></span><button class="btn xs" id="b-cleartrades">Clear</button></div>'
-      + '<div class="tw"><table class="t cards"><thead><tr><th>Closed</th><th>Trade</th><th>Group</th><th class="r">Leader</th><th class="r">Funded</th><th class="r">Eval</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
-      + '<p class="note">P&amp;L per trade = change in each account\'s realized P&amp;L from open to close (includes fees). Tap a row for every account.</p></div>';
+      + '<div class="tw"><table class="t cards"><thead><tr><th>Closed</th><th>Trade</th><th>Group</th><th class="r">Leader</th><th class="r">Funded</th><th class="r">Eval</th><th class="r">Avg speed</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+      + '<p class="note">P&amp;L per trade = change in each account\'s realized P&amp;L from open to close (fees included). Your full history lives in the journal through the Tradovate tracker. Tap a row for every account.</p></div>';
   }
 
-  /* ── render: LOG ── */
+  /* ── LOG ── */
   var LOGF = { all: null, orders: ['ok', 'dry'], errors: ['err', 'warn'], leader: ['lead'] };
   function renderLog() {
     var el = $('p-log');
@@ -599,41 +870,130 @@
       + '<span class="sp"></span><button class="btn xs" id="b-clearlog">Clear</button></div><div class="log">' + body + '</div></div>';
   }
 
-  /* ── render: SETUP ── */
+  /* ── SETUP ── */
   function renderSetup() {
     var el = $('p-setup');
     if (editing(el)) return;
     var conns = S.conns.map(function (c) {
       var bad = c.status !== 'ok', n = S.accounts.filter(function (a) { return a.connId === c.id; }).length;
-      return '<tr><td class="first"><span class="dot ' + (bad ? 'bad' : 'ok') + '"></span> <span class="an">' + esc(c.tvName) + '</span><div class="sub">' + n + ' account' + (n === 1 ? '' : 's') + (bad ? ' · <span class="dn">' + esc(c.error || c.status) + '</span>' : '') + '</div></td>'
+      return '<tr><td class="first"><span class="dot ' + (bad ? 'bad' : 'ok') + '"></span> <span class="an">' + esc(c.tvName) + '</span><div class="sub">' + plural(n, 'account') + (c.ping != null ? ' · ping ' + c.ping + ' ms' : '') + (bad ? ' · <span class="dn">' + esc(c.error || c.status) + '</span>' : '') + '</div></td>'
         + '<td class="r">' + (bad ? '<button class="btn xs pri" data-connect>Reconnect</button> ' : '') + '<button class="btn xs ghost-dn" data-rmconn="' + esc(c.id) + '">Remove</button></td></tr>';
     }).join('');
-    var s = S.settings;
+    var s = S.settings, perm = 'Notification' in window ? Notification.permission : 'unsupported';
     el.innerHTML = '<div class="grid2"><div class="card"><div class="card-h"><h3>Tradovate logins</h3><span class="sp"></span><button class="btn sm" id="b-refresh">Refresh accounts</button><button class="btn sm pri" data-connect>+ Connect</button></div>'
       + (conns ? '<table class="t"><tbody>' + conns + '</tbody></table>' : '<div class="empty" style="padding:18px">No logins yet.</div>')
-      + '<p class="note">Uses the copier OAuth app (order permission), separate from the read-only tracker on Accounts. Connect each prop firm login once; every account under it shows up.</p></div>'
+      + '<div class="row" style="margin-top:12px"><button class="btn sm" data-testconn>Test connections</button><button class="btn sm" data-wizard>Setup wizard</button></div>'
+      + '<p class="note">Uses the copier OAuth app (order permission), separate from the read-only tracker. Connect each prop firm login once; every account under it shows up.</p></div>'
+      + '<div class="card"><div class="card-h"><h3>Alerts</h3></div>'
+      + '<div class="row" style="margin-bottom:6px"><span style="flex:1">Browser notifications on this device</span>'
+      + (perm === 'granted' ? '<span class="chip on"><i></i>On</span>' : perm === 'denied' ? '<span class="chip bad">Blocked in browser settings</span>' : perm === 'unsupported' ? '<span class="chip">Not supported</span>' : '<button class="btn sm pri" data-notify>Turn on</button>') + '</div>'
+      + '<p class="note" style="margin-bottom:16px">Halts, passes, failed orders and feed drops pop up while this page is open in a tab.</p>'
+      + '<span class="lbl">Discord webhook</span><div class="row" style="margin-top:7px"><input class="inp" style="flex:1;min-width:220px" data-set="discordWebhook" placeholder="https://discord.com/api/webhooks/…" value="' + esc(s.discordWebhook || '') + '"><button class="btn sm" data-testalert>Send test</button></div>'
+      + '<p class="note">Posts halts, passes, failed orders and feed drops to a channel — works even with the page closed. Use a private channel only you can see. Discord → channel settings → Integrations → Webhooks.</p></div>'
       + '<div class="card"><div class="card-h"><h3>Engine settings</h3></div>'
       + '<label class="tog" style="display:flex;margin-bottom:12px"><input type="checkbox" data-set="autoFix"' + (s.autoFix ? ' checked' : '') + '><b></b><span>Auto-fix out-of-sync followers <span class="dim">(after 20s)</span></span></label>'
       + '<label class="tog" style="display:flex;margin-bottom:14px"><input type="checkbox" data-set="joinOpen"' + (s.joinOpen ? ' checked' : '') + '><b></b><span>On arm, join a trade the leader is already in</span></label>'
       + '<div class="row"><span style="flex:1">Circuit breaker — max automatic orders per account per minute</span><input class="inp n" type="number" min="3" max="200" data-set="maxOrdersPerMin" value="' + s.maxOrdersPerMin + '"></div>'
-      + '<p class="note">The breaker blocks every automatic order on an account that suddenly fires too many — protection against a runaway loop. Manual flatten still works; reset it on Accounts.</p>'
       + '<p class="note"><b class="acc">Flatten buttons always send real orders</b>, even in dry run. Disarm stops copying and leaves positions open. Exit everything stops copying and closes every leader and follower.</p></div></div>';
   }
 
+  /* ── PREFLIGHT ── */
+  function openPreflight() {
+    pre = { loading: true }; renderPre(); $('ov-pre').className = 'ov on';
+    act({ op: 'preflight' }).then(function (d) { if (!d) { closePre(); return; } pre = { checks: d.checks }; renderPre(); });
+  }
+  function closePre() { pre = null; $('ov-pre').className = 'ov'; }
+  function renderPre() {
+    var b = $('pre-body');
+    if (!pre) { b.innerHTML = ''; return; }
+    if (pre.loading) { b.innerHTML = '<div class="eyebrow">Before arming</div><h2>Running checks…</h2><p class="lead">Logins, positions, rules and today\'s news.</p>'; return; }
+    var bad = pre.checks.filter(function (c) { return c.level === 'bad'; }).length, warn = pre.checks.filter(function (c) { return c.level === 'warn' && c.title !== 'Order mode'; }).length;
+    var ic = { ok: '✓', warn: '!', bad: '✕' };
+    var nf = S.groups.reduce(function (n, g) { return n + (g.enabled ? g.followers.filter(function (f) { return f.enabled; }).length : 0); }, 0);
+    b.innerHTML = '<div class="eyebrow">Before arming</div><h2>Pre-arm checklist</h2><p class="lead">' + plural(S.groups.length, 'group') + ' · ' + plural(nf, 'follower') + ' · ' + (S.dryRun ? '<b style="color:#FCD34D">Dry run</b>' : '<b class="dn">LIVE orders</b>') + '</p>'
+      + pre.checks.map(function (c) {
+        return '<div class="chk"><span class="ic ' + c.level + '">' + ic[c.level] + '</span><div style="flex:1;min-width:0"><b>' + esc(c.title) + '</b><span>' + esc(c.text) + '</span></div>'
+          + (c.fix ? '<button class="btn xs" data-pre-fix="' + esc(c.fix) + '">' + ({ accounts: 'Open Accounts', groups: 'Open Groups', setup: 'Open Setup' }[c.fix] || 'Fix') + '</button>' : '') + '</div>';
+      }).join('')
+      + '<div class="wz-foot"><button class="btn" data-pre-cancel>Cancel</button><span class="sp"></span>'
+      + (S.dryRun ? '<button class="btn pri" data-pre-arm' + (bad ? ' disabled' : '') + '>Arm in dry run</button>'
+                 : '<button class="btn" data-pre-arm-dry' + (bad ? ' disabled' : '') + '>Arm in dry run</button><button class="btn kill" data-pre-arm' + (bad ? ' disabled' : '') + '>Arm live' + (warn ? ' — ' + plural(warn, 'warning') : '') + '</button>')
+      + '</div>' + (bad ? '<p class="note dn">Fix the red items first.</p>' : '');
+  }
+
+  /* ── WIZARD ── */
+  var WZ = ['Connect logins', 'Pick leader', 'Pick followers', 'Size & risk', 'Dry-run test', 'Go live'];
+  function openWizard() {
+    var g = S.groups[0];
+    wz = { step: S.conns.length ? (g && g.leader ? 2 : 1) : 0, groupId: g ? g.id : null, picked: {}, mult: (g && g.followers[0] && g.followers[0].mult) || 1, template: '' };
+    if (g) g.followers.forEach(function (f) { wz.picked[f.key] = true; });
+    renderWz(); $('ov-wz').className = 'ov on';
+  }
+  function closeWz() { wz = null; $('ov-wz').className = 'ov'; render(S); }
+  function wzGroup() { return wz.groupId && S.groups.find(function (g) { return g.id === wz.groupId; }); }
+  function renderWz() {
+    var b = $('wz-body');
+    if (!wz || editing(b)) return;
+    var g = wzGroup();
+    var steps = '<ol class="steps">' + WZ.map(function (l, i) { return '<li class="' + (i < wz.step ? 'done' : i === wz.step ? 'cur' : '') + '"><div class="bar"></div><div class="lb"><span class="c">' + (i < wz.step ? '✓' : i + 1) + '</span>' + l + '</div></li>'; }).join('') + '</ol>';
+    var body = '', next = '', back = wz.step > 0 ? '<button class="btn" data-wz-back>Back</button>' : '';
+    if (wz.step === 0) {
+      body = '<h2>Connect your Tradovate logins</h2><p class="lead">One per prop firm. Every account under a login shows up automatically.</p>'
+        + (S.conns.length ? S.conns.map(function (c) { return '<div class="chk"><span class="ic ' + (c.status === 'ok' ? 'ok' : 'bad') + '">' + (c.status === 'ok' ? '✓' : '✕') + '</span><div><b>' + esc(c.tvName) + '</b><span>' + plural(S.accounts.filter(function (a) { return a.connId === c.id; }).length, 'account') + '</span></div></div>'; }).join('') : '<div class="empty" style="padding:18px">No logins yet.</div>')
+        + '<div class="row" style="margin-top:14px"><button class="btn pri" data-connect>+ Connect a login</button><button class="btn" id="b-refresh">Refresh accounts</button></div>';
+      next = '<button class="btn pri" data-wz-next' + (S.accounts.length ? '' : ' disabled') + '>Next: pick leader</button>';
+    } else if (wz.step === 1) {
+      body = '<h2>Pick your leader</h2><p class="lead">The account you trade. Its fills get copied.</p>'
+        + '<div class="pick">' + S.accounts.map(function (a) { var on = g && g.leader === a.key; return '<label class="' + (on ? 'on' : '') + '"><input type="radio" name="wzl" class="ck" data-wz-leader="' + esc(a.key) + '"' + (on ? ' checked' : '') + '><span class="nm"><b>' + esc(nm(a)) + '</b><span>' + esc(a.name) + ' · ' + a.env + '</span></span>' + typeTag(a.cfg.type) + '</label>'; }).join('') + '</div>'
+        + (S.armed ? '<p class="note dn">Disarm before changing the leader.</p>' : '');
+      next = '<button class="btn pri" data-wz-next' + (g && g.leader ? '' : ' disabled') + '>Next: pick followers</button>';
+    } else if (wz.step === 2) {
+      var firms = {};
+      S.accounts.forEach(function (a) { if (g && a.key === g.leader) return; var other = S.groups.find(function (x) { return x !== g && (x.leader === a.key || x.followers.some(function (f) { return f.key === a.key; })); }); if (other) return; var f = a.cfg.firm || a.conn || 'Other'; (firms[f] = firms[f] || []).push(a); });
+      var n = Object.keys(wz.picked).filter(function (k) { return wz.picked[k]; }).length;
+      body = '<h2>Pick the accounts that copy</h2><p class="lead">They follow <b style="color:var(--tx)">' + esc(aname(g.leader)) + '</b>. Grouped by firm so you can grab a whole set.</p>'
+        + Object.keys(firms).map(function (f) {
+          var list = firms[f], all = list.every(function (a) { return wz.picked[a.key]; });
+          return '<div class="card" style="margin-bottom:10px"><div class="row" style="margin-bottom:10px"><input type="checkbox" class="ck" data-wz-firm="' + esc(f) + '"' + (all ? ' checked' : '') + '><b>' + esc(f) + '</b><span class="sub">' + plural(list.length, 'account') + '</span></div><div class="pick">'
+            + list.map(function (a) { var on = !!wz.picked[a.key]; return '<label class="' + (on ? 'on' : '') + '"><input type="checkbox" class="ck" data-wz-pick="' + esc(a.key) + '"' + (on ? ' checked' : '') + '><span class="nm"><b>' + esc(nm(a)) + '</b><span>' + esc(a.name) + '</span></span>' + typeTag(a.cfg.type) + '</label>'; }).join('') + '</div></div>';
+        }).join('');
+      next = '<span class="mut" style="font-size:13px">' + plural(n, 'account') + ' selected</span><button class="btn pri" data-wz-next' + (n ? '' : ' disabled') + '>Next: size &amp; risk</button>';
+    } else if (wz.step === 3) {
+      body = '<h2>Size and risk</h2><p class="lead">Applies to all ' + plural(g.followers.length, 'follower') + ' in ' + esc(g.name) + '. Fine-tune any account later under Accounts.</p>'
+        + '<div class="rules"><div class="rule"><span class="lbl">Multiplier</span><input class="inp n" type="number" min="0.25" step="0.25" id="wz-mult" value="' + wz.mult + '"><div class="note">Leader 1 contract → each follower ' + wz.mult + '.</div></div>'
+        + '<div class="rule"><span class="lbl">Risk template</span><select class="sel" style="width:100%" id="wz-tpl"><option value="">None — I\'ll set rules myself</option>' + S.templates.map(function (t) { return '<option value="' + esc(t.id) + '"' + (wz.template === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>'; }).join('') + '</select>'
+        + '<div class="note">' + (S.templates.length ? 'Copies the template\'s rules onto every follower.' : 'No templates yet — make one under Templates (e.g. "Apex 50K Eval").') + '</div></div></div>';
+      next = '<button class="btn pri" data-wz-apply>Apply &amp; continue</button>';
+    } else if (wz.step === 4) {
+      var dry = S.log.filter(function (l) { return l.lvl === 'dry' || l.lvl === 'lead'; }).slice(-6).reverse();
+      body = '<h2>Dry-run test</h2><p class="lead">Arm in dry run, then take a small trade on the leader. Every follower should show a "would Buy/Sell" line below. Nothing is sent.</p>'
+        + '<div class="row" style="margin-bottom:14px">' + (S.armed ? '<span class="chip on"><i></i>Armed' + (S.dryRun ? ' · dry run' : ' · LIVE') + '</span>' : '<button class="btn pri" data-wz-dryarm>Arm in dry run</button>') + '</div>'
+        + '<div class="card log" style="max-height:260px">' + (dry.map(function (l) { return '<div class="' + l.lvl + '"><span class="t">' + fmtTime(l.t) + '</span><span class="m">' + esc(l.msg) + '</span></div>'; }).join('') || '<div class="info"><span class="m">Waiting for a leader trade…</span></div>') + '</div>';
+      next = '<button class="btn pri" data-wz-next>Looks right — next</button>';
+    } else {
+      body = '<h2>Go live</h2><p class="lead">Turn dry run off and run the pre-arm checklist. You can always come back to dry run from the top bar, and Exit everything closes all positions instantly.</p>'
+        + '<div class="row"><button class="btn kill" data-wz-live>Switch to live &amp; run checklist</button><button class="btn" data-wz-close>Stay in dry run</button></div>';
+      next = '';
+    }
+    b.innerHTML = '<div class="row" style="margin-bottom:6px"><div class="eyebrow">Setup · step ' + (wz.step + 1) + ' of 6</div><span class="sp"></span><button class="btn xs" data-wz-close>Close</button></div>'
+      + steps + body + '<div class="wz-foot">' + back + '<span class="sp"></span>' + next + '</div>';
+  }
+
   /* ── render all ── */
-  function render(s, force) {
+  function render(s) {
     S = s;
     renderTop();
-    var r = { live: renderLive, groups: renderGroups, accounts: renderAccounts, trades: renderTrades, log: renderLog, setup: renderSetup }[tab];
+    notifyNew();
+    var r = { live: renderLive, groups: renderGroups, accounts: renderAccounts, templates: renderTemplates, trades: renderTrades, log: renderLog, setup: renderSetup }[tab];
     r && r();
+    if (wz) renderWz();
   }
   function setTab(t) {
     tab = t; try { sessionStorage.setItem('cp_tab', t); } catch (e) {}
     document.querySelectorAll('#tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === t); });
     document.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('on', p.id === 'p-' + t); });
-    if (S) render(S, true);
+    if (S) render(S);
   }
-
   function refresh() {
     return api('/api/copier/state').then(function (d) {
       if (d.__s === 404) { document.body.classList.remove('cp-on'); stop(); return; }
@@ -647,14 +1007,7 @@
 
   /* ── events ── */
   $('tabs').addEventListener('click', function (e) { var b = e.target.closest('button[data-tab]'); if (b) setTab(b.dataset.tab); });
-
-  function armClick() {
-    if (!S) return;
-    if (S.armed) return act({ op: 'disarm' }, 'Disarmed — positions left as they are');
-    var n = S.groups.reduce(function (s, g) { return s + (g.enabled ? g.followers.filter(function (f) { return f.enabled; }).length : 0); }, 0);
-    if (!S.dryRun) confirmBox('Arm with LIVE orders?', 'Leader fills will send real orders to ' + n + ' follower account(s).', 'Arm live').then(function (y) { if (y) act({ op: 'arm' }, 'Armed — LIVE'); });
-    else act({ op: 'arm' }, 'Armed — dry run');
-  }
+  function armClick() { if (!S) return; if (S.armed) return act({ op: 'disarm' }, 'Disarmed — positions left as they are'); openPreflight(); }
   $('b-arm').onclick = armClick; $('b-arm-m').onclick = armClick;
   $('t-dry').onchange = function (e) {
     if (e.target.checked) return act({ op: 'dryRun', on: true }, 'Dry run on');
@@ -667,11 +1020,16 @@
         .then(function (y) { if (y) act({ op: 'exitAll' }, 'Everything flattened · disarmed'); });
     };
   });
+  function connect() { api('/api/copier/start', {}).then(function (r) { if (r.url) location.href = r.url; else toast(r.error || 'Could not start', true); }); }
+  function selKeys() { return Object.keys(selected).filter(function (k) { return selected[k] && acc(k); }); }
 
-  var app = $('cp-app');
-  app.addEventListener('click', function (e) {
-    var b = e.target.closest('button, a[data-resetpeak], tr[data-trade]'); if (!b || !S) return;
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('button, a[data-resetpeak], tr[data-trade]'); if (!b || !S || !document.body.classList.contains('cp-on')) return;
     var d = b.dataset;
+    if (d.dismiss) { dismissed[d.dismiss] = 1; try { sessionStorage.setItem('cp_dismissed', JSON.stringify(dismissed)); } catch (x) {} return renderAlerts(); }
+    if (d.viewAcct) { acctFilter = 'all'; acctSearch = ''; openAcct = null; setTab('accounts'); return; }
+    if (d.tabGo) return setTab(d.tabGo);
+    if (d.wizard !== undefined) return openWizard();
     if (d.flatAcct) return confirmBox('Flatten ' + aname(d.flatAcct) + '?', 'Closes its open positions. Real orders, even in dry run.', 'Flatten').then(function (y) { if (y) act({ op: 'flattenAccount', key: d.flatAcct }, 'Flattened'); });
     if (d.flatGroup) { var g0 = S.groups.find(function (g) { return g.id === d.flatGroup; });
       return confirmBox('Flatten ' + g0.name + '?', 'Closes every open position on its followers. The leader is left alone. Real orders, even in dry run.', 'Flatten group').then(function (y) { if (y) act({ op: 'flattenGroup', id: d.flatGroup }, 'Group flattened'); }); }
@@ -686,43 +1044,117 @@
       if (at >= 0) days.splice(at, 1); else days.push(i);
       return act({ op: 'updateGroup', id: gw.id, patch: { window: { days: days } } }, 'Saved');
     }
+    // accounts
+    if (d.afilter) { acctFilter = d.afilter; return renderAccounts(); }
+    if (d.nickEdit !== undefined) { nickEdit = b.closest('tr').dataset.k; renderAccounts(); var ni = document.querySelector('[data-nick]'); if (ni) { ni.focus(); ni.select(); } return; }
+    if (d.nickSave !== undefined) { var ni2 = document.querySelector('[data-nick]'), nk = b.closest('tr').dataset.k, v = (ni2 || {}).value || ''; if (ni2) ni2.blur(); nickEdit = null; return act({ op: 'updateAccount', key: nk, patch: { nick: v } }, 'Renamed'); }
     if (d.editrisk !== undefined) { var ek = b.closest('tr').dataset.k; openAcct = openAcct === ek ? null : ek; return renderAccounts(); }
-    if (d.resethalt !== undefined) return act({ op: 'updateAccount', key: b.closest('tr').dataset.k, patch: { resetHalt: true } }, 'Halt cleared');
+    if (d.resethalt !== undefined) return act({ op: 'updateAccount', key: b.closest('tr').dataset.k, patch: { resetHalt: true } }, 'Cleared');
     if (d.resetpeak !== undefined) { e.preventDefault(); return act({ op: 'updateAccount', key: b.closest('tr').dataset.k, patch: { resetPeak: true } }, 'Peak reset'); }
+    if (d.testconn !== undefined) return act({ op: 'testConnections' }, 'Connections tested');
+    if (d.bulkMult !== undefined) { var mv = +($('bulk-mult') || {}).value; if (!(mv > 0)) return toast('Enter a multiplier', true); return act({ op: 'bulk', keys: selKeys(), patch: { mult: mv } }, 'Multiplier set'); }
+    if (d.bulkPause !== undefined) return act({ op: 'bulk', keys: selKeys(), patch: { enabled: d.bulkPause === '1' } }, d.bulkPause === '1' ? 'Resumed' : 'Paused — exits still copy');
+    if (d.bulkClear !== undefined) { selected = {}; return renderAccounts(); }
+    // templates
+    if (d.tplNew !== undefined) { tplSel = null; tplDraft = { id: null, name: '', rules: { size: 0, target: 0, perTradeLoss: 0, consistencyPct: 0, maxTradesDay: 0, dailyLoss: 0, dailyProfit: 0, maxPos: 0, floor: 0, trail: 0, newsOn: false, newsBefore: 5, newsAfter: 10, newsFlatten: false } }; return renderTemplates(); }
+    if (d.tpl) { tplSel = d.tpl; tplDraft = null; return renderTemplates(); }
+    if (d.tplSave !== undefined) {
+      var name = ($('tpl-name') || {}).value || tplDraft.name;
+      return act({ op: 'saveTemplate', id: tplDraft.id, name: name, rules: tplDraft.rules, reapply: true }, 'Template saved').then(function (r) { if (r && r.templateId) { tplSel = r.templateId; tplDraft = null; renderTemplates(); } });
+    }
+    if (d.tplDel !== undefined) return confirmBox('Delete ' + tplDraft.name + '?', 'Accounts using it keep their current rules (shown as Custom).', 'Delete').then(function (y) { if (y) act({ op: 'deleteTemplate', id: tplDraft.id }, 'Deleted').then(function () { tplSel = null; tplDraft = null; renderTemplates(); }); });
+    // trades / log
     if (d.trade) { openTrade = openTrade === d.trade ? null : d.trade; return renderTrades(); }
     if (d.logf) { logFilter = d.logf; return renderLog(); }
     if (b.id === 'b-clearlog') return act({ op: 'clearLog' });
     if (b.id === 'b-cleartrades') return confirmBox('Clear trade history?', 'Removes the list on this page. Nothing at Tradovate changes.', 'Clear', true).then(function (y) { if (y) act({ op: 'clearTrades' }, 'Cleared'); });
+    // setup
     if (b.id === 'b-refresh') return act({ op: 'refreshAccounts' }, 'Accounts refreshed');
-    if (d.connect !== undefined) return api('/api/copier/start', {}).then(function (r) { if (r.url) location.href = r.url; else toast(r.error || 'Could not start', true); });
+    if (d.connect !== undefined) return connect();
     if (d.rmconn) return confirmBox('Remove this login?', 'Its accounts leave every group. Positions are not touched.', 'Remove').then(function (y) { if (y) act({ op: 'removeConn', connId: d.rmconn }, 'Login removed'); });
+    if (d.notify !== undefined) { if ('Notification' in window) Notification.requestPermission().then(function () { renderSetup(); }); return; }
+    if (d.testalert !== undefined) return act({ op: 'testAlert' }, 'Test sent — check Discord');
+    // preflight
+    if (d.preCancel !== undefined) return closePre();
+    if (d.preFix) { closePre(); return setTab(d.preFix); }
+    if (d.preArmDry !== undefined) { closePre(); return act({ op: 'dryRun', on: true }).then(function () { return act({ op: 'arm' }, 'Armed — dry run'); }); }
+    if (d.preArm !== undefined) { closePre(); return act({ op: 'arm' }, S.dryRun ? 'Armed — dry run' : 'Armed — LIVE'); }
+    // wizard
+    if (d.wzClose !== undefined) return closeWz();
+    if (d.wzBack !== undefined) { wz.step = Math.max(0, wz.step - 1); return renderWz(); }
+    if (d.wzNext !== undefined) { wz.step = Math.min(5, wz.step + 1); return renderWz(); }
+    if (d.wzApply !== undefined) {
+      var g = wzGroup(), keys = g.followers.map(function (f) { return f.key; });
+      wz.mult = +($('wz-mult') || {}).value || 1; wz.template = ($('wz-tpl') || {}).value || '';
+      var p = { mult: wz.mult }; if (wz.template) p.template = wz.template;
+      return act({ op: 'bulk', keys: keys, patch: p }, 'Applied').then(function (r) { if (r) { wz.step = 4; renderWz(); } });
+    }
+    if (d.wzDryarm !== undefined) return act({ op: 'dryRun', on: true }).then(function () { return act({ op: 'arm' }, 'Armed — dry run'); }).then(renderWz);
+    if (d.wzLive !== undefined) {
+      return confirmBox('Switch to LIVE orders?', 'Dry run turns off. The pre-arm checklist runs next.', 'Go live').then(function (y) {
+        if (!y) return;
+        var chain = S.armed ? act({ op: 'disarm' }) : Promise.resolve();
+        chain.then(function () { return act({ op: 'dryRun', on: false }); }).then(function () { closeWz(); openPreflight(); });
+      });
+    }
   });
 
-  app.addEventListener('change', function (e) {
+  document.addEventListener('change', function (e) {
+    if (!S || !document.body.classList.contains('cp-on')) return;
     var t = e.target, d = t.dataset, v = t.type === 'checkbox' ? t.checked : t.value;
     var gc = t.closest('[data-gcard]'), tr = t.closest('tr');
     function done() { t.blur(); }
-    if (d.gf && gc) {
-      var p = {}; p[d.gf] = d.gf === 'maxQty' ? +v : v; done();
-      return act({ op: 'updateGroup', id: gc.dataset.gcard, patch: p }, 'Saved');
-    }
+    if (d.gf && gc) { var p = {}; p[d.gf] = d.gf === 'maxQty' ? +v : v; done(); return act({ op: 'updateGroup', id: gc.dataset.gcard, patch: p }, 'Saved'); }
     if (d.gw && gc) { var w = {}; w[d.gw] = v; done(); return act({ op: 'updateGroup', id: gc.dataset.gcard, patch: { window: w } }, 'Saved'); }
     if (d.addf !== undefined && gc && v) { done(); return act({ op: 'addFollower', groupId: gc.dataset.gcard, key: v }, 'Follower added'); }
     if (d.ff && tr) { var fp = {}; fp[d.ff] = t.type === 'checkbox' ? v : +v; done(); return act({ op: 'updateFollower', groupId: tr.dataset.g, key: tr.dataset.k, patch: fp }, 'Saved'); }
-    if (d.af && tr) { var ap = {}; ap[d.af] = d.af === 'type' ? v : +v; done(); return act({ op: 'updateAccount', key: tr.dataset.k, patch: ap }, 'Saved'); }
-    if (d.set) { var sp = {}; sp[d.set] = t.type === 'checkbox' ? v : +v; done(); return act({ op: 'settings', patch: sp }, 'Saved'); }
+    if (d.af && tr) { var ap = {}; ap[d.af] = d.af === 'type' ? v : (t.type === 'checkbox' ? v : +v); done(); return act({ op: 'updateAccount', key: tr.dataset.k, patch: ap }, 'Saved'); }
+    if (d.tr !== undefined && tplDraft) { tplDraft.rules[d.tr] = t.type === 'checkbox' ? v : +v; return; }
+    if (d.set) { var sp = {}; sp[d.set] = t.type === 'checkbox' ? v : (d.set === 'discordWebhook' ? v : +v); done(); return act({ op: 'settings', patch: sp }, 'Saved'); }
+    if (d.sel !== undefined && tr) { selected[tr.dataset.k] = t.checked; return renderAccounts(); }
+    if (d.selall !== undefined) { document.querySelectorAll('#p-accounts tr[data-k]:not(.edit)').forEach(function (r) { selected[r.dataset.k] = t.checked; }); return renderAccounts(); }
+    if (d.bulk && v) { var bp = {}; bp[d.bulk] = v; return act({ op: 'bulk', keys: selKeys(), patch: bp }, 'Updated ' + plural(selKeys().length, 'account')); }
+    if (t.id === 'tpl-name' && tplDraft) { tplDraft.name = v; return; }
+    // wizard
+    if (d.wzLeader) {
+      var lk = d.wzLeader;
+      var go = function () { return act({ op: 'updateGroup', id: wz.groupId, patch: { leader: lk } }); };
+      if (!wz.groupId) return act({ op: 'addGroup', name: 'Group 1' }).then(function (r) { if (r) { wz.groupId = r.groupId; return go().then(renderWz); } });
+      return go().then(renderWz);
+    }
+    if (d.wzPick || d.wzFirm !== undefined) {
+      var g = wzGroup(); if (!g) return;
+      var keys = d.wzPick ? [d.wzPick] : S.accounts.filter(function (a) { return (a.cfg.firm || a.conn || 'Other') === d.wzFirm && a.key !== g.leader; }).map(function (a) { return a.key; });
+      keys.forEach(function (k) { wz.picked[k] = t.checked; });
+      if (t.checked) return act({ op: 'bulk', keys: keys, patch: { groupId: g.id } }).then(renderWz);
+      var chain = Promise.resolve();
+      keys.forEach(function (k) { if (g.followers.some(function (f) { return f.key === k; })) chain = chain.then(function () { return act({ op: 'removeFollower', groupId: g.id, key: k }); }); });
+      return chain.then(renderWz);
+    }
+  });
+  document.addEventListener('input', function (e) {
+    if (e.target.id === 'acct-q') { acctSearch = e.target.value; var pos = e.target.selectionStart; renderAccountsForce(); var q = $('acct-q'); if (q) { q.focus(); try { q.setSelectionRange(pos, pos); } catch (x) {} } }
+  });
+  function renderAccountsForce() { var a = document.activeElement; if (a) a.blur(); renderAccounts(); }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-nick]')) { var b = document.querySelector('[data-nick-save]'); if (b) b.click(); }
+    if (e.key === 'Escape') { if (nickEdit) { nickEdit = null; renderAccountsForce(); } }
   });
 
   // Back from Tradovate's consent screen
   var h = new URLSearchParams(location.hash.slice(1));
-  if (h.get('copier')) {
-    var st = h.get('copier');
+  var cameBack = h.get('copier');
+  if (cameBack) {
     tab = 'setup';
-    setTimeout(function () { st === 'connected' ? toast('Tradovate login connected') : toast('Tradovate connection ' + st + (h.get('d') ? ': ' + h.get('d') : ''), true); }, 400);
+    setTimeout(function () { cameBack === 'connected' ? toast('Tradovate login connected') : toast('Tradovate connection ' + cameBack + (h.get('d') ? ': ' + h.get('d') : ''), true); }, 400);
     history.replaceState(null, '', location.pathname);
   }
 
-  refresh().then(function () { if (document.body.classList.contains('cp-on')) start(); });
+  refresh().then(function () {
+    if (!document.body.classList.contains('cp-on')) return;
+    start();
+    if (S && !S.groups.length && !S.armed && cameBack !== 'error') openWizard();
+  });
 })();
 </script>
 </body>
