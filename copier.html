@@ -155,6 +155,8 @@
     table.t tr.tot td { border-top: 1px solid color-mix(in srgb, var(--tx) 22%, transparent); font-weight: 700; }
     table.t tr.halted td { background: rgba(248,113,113,.045); }
     table.t tr.paused td { opacity: .55; }
+    table.t tr.paused td:last-child, table.t tr.paused td[data-l="Status"] { opacity: 1; }
+    .pz { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #FCD34D; background: var(--warn-bg); }
     table.t tr.edit td { border-top: 0; white-space: normal; padding-top: 0; }
     .an { font-weight: 700; }
     .sub { font-size: 11.5px; color: var(--dim); }
@@ -499,6 +501,16 @@
     return best;
   }
   function rollIn() { var p = ctParts(Date.now()), r = 17 * 3600; return r > p.sec ? r - p.sec : r + 86400 - p.sec; }
+  function folOf(a) {
+    var g = a.role === 'follower' && a.groupId && S.groups.find(function (x) { return x.id === a.groupId; });
+    var f = g && g.followers.find(function (x) { return x.key === a.key; });
+    return f ? { g: g, f: f } : null;
+  }
+  function isPaused(a) { var o = folOf(a); return !!(o && !o.f.enabled); }
+  function pauseBtn(a) {
+    var o = folOf(a); if (!o) return '';
+    return '<button class="btn xs' + (o.f.enabled ? '' : ' pri') + '" data-fpause="' + esc(o.g.id) + '" data-fkey="' + esc(a.key) + '" title="' + (o.f.enabled ? 'Stop new trades on this account. Exits still copy.' : 'Start copying new trades again') + '">' + (o.f.enabled ? 'Pause' : 'Resume') + '</button>';
+  }
   function acctStatus(a) {
     var c = a.cfg;
     if (c.halted && c.haltKind === 'passed') return { dot: 'info', html: '<span class="blue">Passed — locked</span>' };
@@ -507,7 +519,8 @@
     if (c.halted) return { dot: 'bad', html: '<div class="hr">' + esc(c.haltReason) + '</div>' };
     var g = a.groupId && S.groups.find(function (x) { return x.id === a.groupId; });
     var f = g && g.followers.find(function (x) { return x.key === a.key; });
-    if (f && !f.enabled) return { dot: 'off', html: '<span class="mut">Paused · exits only</span>' };
+    if (f && !f.enabled) return { dot: 'wrn', html: '<span class="pz">Paused</span><div class="sub">No new trades · exits still copy</div>' };
+    if (f && g && !g.enabled) return { dot: 'wrn', html: '<span class="pz">Group paused</span><div class="sub">No new trades · exits still copy</div>' };
     if (a.blocked) return { dot: 'wrn', html: '<span style="color:#FCD34D">' + esc(a.blocked) + ' · exits only</span>' };
     if (f && f.sitting && f.sitting.length) return { dot: 'wrn', html: '<span class="mut">Sitting out ' + esc(f.sitting.join(', ')) + '</span>' };
     if (a.role === 'leader') return { dot: S.armed ? 'info' : 'off', html: '<span class="blue">Leader</span>' };
@@ -628,7 +641,7 @@
         + '<td data-l="Today\'s limits">' + limitsCell(a) + '</td>'
         + '<td data-l="Speed" class="num r">' + speedCell(a.cfg.speedAvg) + '</td>'
         + '<td data-l="Status">' + as.html + '</td>'
-        + '<td data-l="" class="r"><button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></td>'
+        + '<td data-l="" class="r"><div class="row" style="flex-wrap:nowrap;justify-content:flex-end">' + pauseBtn(a) + '<button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></div></td>'
         + '</tr>';
     }).join('');
     var trades = g.followers.map(function (f) { var a = acc(f.key); return a ? a.tradesToday : 0; });
@@ -747,12 +760,13 @@
     if (editing(el) && !force) return;
     if (!S.accounts.length) { el.innerHTML = '<div class="card empty"><b>No accounts</b>Connect a Tradovate login under Setup.</div>'; return; }
     var gname = {}; S.groups.forEach(function (g) { gname[g.id] = g.name; });
-    var cnt = { all: S.accounts.length, eval: 0, funded: 0, sim: 0, live: 0, halted: 0 };
-    S.accounts.forEach(function (a) { cnt[a.cfg.type] = (cnt[a.cfg.type] || 0) + 1; if (a.cfg.halted && a.cfg.haltKind !== 'passed') cnt.halted++; });
+    var cnt = { all: S.accounts.length, eval: 0, funded: 0, sim: 0, live: 0, halted: 0, paused: 0 };
+    S.accounts.forEach(function (a) { cnt[a.cfg.type] = (cnt[a.cfg.type] || 0) + 1; if (a.cfg.halted && a.cfg.haltKind !== 'passed') cnt.halted++; if (isPaused(a)) cnt.paused++; });
     var q = acctSearch.toLowerCase();
     var list = S.accounts.filter(function (a) {
       if (TYPES.indexOf(acctFilter) >= 0 && a.cfg.type !== acctFilter) return false;
       if (acctFilter === 'halted' && !(a.cfg.halted && a.cfg.haltKind !== 'passed')) return false;
+      if (acctFilter === 'paused' && !isPaused(a)) return false;
       return !q || (nm(a) + ' ' + a.name + ' ' + (a.cfg.firm || '') + ' ' + a.conn).toLowerCase().indexOf(q) >= 0;
     }).sort(function (a, b) { var r = function (x) { return x.role === 'leader' ? 0 : x.role === 'follower' ? 1 : 2; }; return r(a) - r(b) || nm(a).localeCompare(nm(b)); });
     var selKeys = Object.keys(selected).filter(function (k) { return selected[k] && acc(k); });
@@ -761,7 +775,7 @@
       var c = a.cfg, st = acctStatus(a), isOpen = openAcct === a.key;
       if (a.role === 'follower') { tot.net += a.netLiq || 0; tot.day += a.dayPnL || 0; tot.open += a.openPnL || 0; }
       var nameCell = '<span class="an">' + esc(nm(a)) + '</span>';
-      return '<tr data-k="' + esc(a.key) + '" class="' + (c.halted && c.haltKind !== 'passed' ? 'halted' : '') + '">'
+      return '<tr data-k="' + esc(a.key) + '" class="' + (c.halted && c.haltKind !== 'passed' ? 'halted' : isPaused(a) ? 'paused' : '') + '">'
         + '<td class="first"><input type="checkbox" class="ck" data-sel' + (selected[a.key] ? ' checked' : '') + ' aria-label="Select ' + esc(nm(a)) + '"></td>'
         + '<td data-l="Account"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + st.dot + '"></span><div>' + nameCell
         + '<div class="sub">' + esc(a.name) + ' · ' + esc(a.conn) + (a.role ? ' · ' + (a.role === 'leader' ? 'Leader' : esc(gname[a.groupId] || '')) : '') + '</div></div></div></td>'
@@ -771,13 +785,13 @@
         + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
         + '<td data-l="Today\'s limits">' + limitsCell(a) + '</td>'
         + '<td data-l="Status">' + st.html + (c.halted ? '<div><button class="btn xs" style="margin-top:6px" data-resethalt>' + (c.haltKind === 'passed' ? 'Unlock' : 'Reset halt') + '</button></div>' : '') + '</td>'
-        + '<td data-l="" class="r"><div class="row" style="flex-wrap:nowrap;justify-content:flex-end">' + '<button class="btn xs' + (isOpen ? ' pri' : '') + '" data-editrisk>' + (isOpen ? 'Done' : 'Edit') + '</button>' + '<button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></div></td></tr>'
+        + '<td data-l="" class="r"><div class="row" style="flex-wrap:nowrap;justify-content:flex-end">' + '<button class="btn xs' + (isOpen ? ' pri' : '') + '" data-editrisk>' + (isOpen ? 'Done' : 'Edit') + '</button>' + pauseBtn(a) + '<button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></div></td></tr>'
         + (isOpen ? '<tr class="edit" data-k="' + esc(a.key) + '"><td colspan="11">' + acctEditor(a) + '</td></tr>' : '');
     }).join('');
     var tplOpts = '<option value="">Apply template…</option>' + S.templates.map(function (t) { return '<option value="' + esc(t.id) + '">' + esc(t.name) + '</option>'; }).join('');
     var grpOpts = '<option value="">Move to group…</option>' + S.groups.map(function (g) { return '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>'; }).join('');
     el.innerHTML = '<div class="toolbar"><label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="text" id="acct-q" placeholder="Search accounts" value="' + esc(acctSearch) + '"></label>'
-      + '<div class="seg">' + [['all', 'All ' + cnt.all], ['eval', 'Eval ' + cnt.eval], ['funded', 'Funded ' + cnt.funded], ['sim', 'Sim ' + cnt.sim], ['live', 'Live ' + cnt.live], ['halted', 'Halted ' + cnt.halted]].map(function (f) { return '<button data-afilter="' + f[0] + '" class="' + (acctFilter === f[0] ? 'on' : '') + '" style="text-transform:none">' + f[1] + '</button>'; }).join('') + '</div>'
+      + '<div class="seg">' + [['all', 'All ' + cnt.all], ['eval', 'Eval ' + cnt.eval], ['funded', 'Funded ' + cnt.funded], ['sim', 'Sim ' + cnt.sim], ['live', 'Live ' + cnt.live], ['paused', 'Paused ' + cnt.paused], ['halted', 'Halted ' + cnt.halted]].map(function (f) { return '<button data-afilter="' + f[0] + '" class="' + (acctFilter === f[0] ? 'on' : '') + '" style="text-transform:none">' + f[1] + '</button>'; }).join('') + '</div>'
       + '<span class="sp"></span><button class="btn" data-testconn>Test connections</button></div>'
       + (selKeys.length ? '<div class="bulk"><span class="cnt">' + selKeys.length + ' selected — change them all at once</span><span class="sp"></span>'
         + '<select class="sel" data-bulk="template">' + tplOpts + '</select>'
@@ -1115,6 +1129,11 @@
       return act({ op: 'updateGroup', id: gw.id, patch: { window: { days: days } } }, 'Saved');
     }
     // accounts
+    if (d.fpause) {
+      var pg = S.groups.find(function (x) { return x.id === d.fpause; }), pf = pg && pg.followers.find(function (x) { return x.key === d.fkey; });
+      if (!pf) return;
+      return act({ op: 'updateFollower', groupId: pg.id, key: pf.key, patch: { enabled: !pf.enabled } }, pf.enabled ? 'Paused — exits still copy' : 'Resumed');
+    }
     if (d.afilter) { acctFilter = d.afilter; return renderAccounts(); }
     if (d.nickEdit !== undefined) { nickEdit = b.closest('tr').dataset.k; renderAccounts(); var ni = document.querySelector('[data-nick]'); if (ni) { ni.focus(); ni.select(); } return; }
     if (d.nickSave !== undefined) { var ni2 = document.querySelector('[data-nick]'), fi2 = document.querySelector('[data-firm]'), nk = b.closest('tr').dataset.k, v = (ni2 || {}).value || ''; if (ni2) ni2.blur(); if (fi2) fi2.blur(); nickEdit = null; return act({ op: 'updateAccount', key: nk, patch: { nick: v, firm: (fi2 || {}).value || '' } }, 'Saved'); }
