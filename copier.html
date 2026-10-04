@@ -88,6 +88,7 @@
     .inp.n.s { width: 64px; }
     .inp.t { width: 84px; text-align: center; }
     .sel { padding-right: 26px; }
+    .sel option { background: #0B1017; color: #E9EDF3; }
     .tog { display: inline-flex; align-items: center; gap: 9px; cursor: pointer; user-select: none; font-size: 13px; color: var(--mut); }
     .tog input { display: none; }
     .tog b { position: relative; width: 36px; height: 20px; border-radius: 999px; background: rgba(255,255,255,.12); flex: none; transition: .15s; }
@@ -731,12 +732,11 @@
     if (editing(el)) return;
     if (!S.accounts.length) { el.innerHTML = '<div class="card empty"><b>No accounts</b>Connect a Tradovate login under Setup.</div>'; return; }
     var gname = {}; S.groups.forEach(function (g) { gname[g.id] = g.name; });
-    var cnt = { all: S.accounts.length, eval: 0, funded: 0, halted: 0 };
-    S.accounts.forEach(function (a) { if (a.cfg.type === 'eval') cnt.eval++; if (a.cfg.type === 'funded') cnt.funded++; if (a.cfg.halted && a.cfg.haltKind !== 'passed') cnt.halted++; });
+    var cnt = { all: S.accounts.length, eval: 0, funded: 0, sim: 0, live: 0, halted: 0 };
+    S.accounts.forEach(function (a) { cnt[a.cfg.type] = (cnt[a.cfg.type] || 0) + 1; if (a.cfg.halted && a.cfg.haltKind !== 'passed') cnt.halted++; });
     var q = acctSearch.toLowerCase();
     var list = S.accounts.filter(function (a) {
-      if (acctFilter === 'eval' && a.cfg.type !== 'eval') return false;
-      if (acctFilter === 'funded' && a.cfg.type !== 'funded') return false;
+      if (TYPES.indexOf(acctFilter) >= 0 && a.cfg.type !== acctFilter) return false;
       if (acctFilter === 'halted' && !(a.cfg.halted && a.cfg.haltKind !== 'passed')) return false;
       return !q || (nm(a) + ' ' + a.name + ' ' + (a.cfg.firm || '') + ' ' + a.conn).toLowerCase().indexOf(q) >= 0;
     }).sort(function (a, b) { var r = function (x) { return x.role === 'leader' ? 0 : x.role === 'follower' ? 1 : 2; }; return r(a) - r(b) || nm(a).localeCompare(nm(b)); });
@@ -746,14 +746,14 @@
       var c = a.cfg, st = acctStatus(a), isOpen = openAcct === a.key;
       if (a.role === 'follower') { tot.net += a.netLiq || 0; tot.day += a.dayPnL || 0; tot.open += a.openPnL || 0; }
       var nameCell = nickEdit === a.key
-        ? '<span class="nick-edit"><input class="inp" style="width:170px" data-nick value="' + esc(c.nick || a.name) + '" maxlength="30"><button class="btn xs pri" data-nick-save>Save</button></span>'
+        ? '<span class="nick-edit"><input class="inp" style="width:160px" data-nick value="' + esc(c.nick || a.name) + '" maxlength="30" aria-label="Nickname"><input class="inp" style="width:110px" data-firm value="' + esc(c.firm || '') + '" maxlength="20" placeholder="Firm" aria-label="Firm"><button class="btn xs pri" data-nick-save>Save</button></span>'
         : '<span class="nick-edit"><span class="an">' + esc(nm(a)) + '</span><button class="icon-btn" data-nick-edit aria-label="Rename"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg></button></span>';
       return '<tr data-k="' + esc(a.key) + '" class="' + (c.halted && c.haltKind !== 'passed' ? 'halted' : '') + '">'
         + '<td class="first"><input type="checkbox" class="ck" data-sel' + (selected[a.key] ? ' checked' : '') + ' aria-label="Select ' + esc(nm(a)) + '"></td>'
         + '<td data-l="Account"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + st.dot + '"></span><div>' + nameCell
         + '<div class="sub">' + esc(a.name) + ' · ' + esc(a.conn) + (a.role ? ' · ' + (a.role === 'leader' ? 'Leader' : esc(gname[a.groupId] || '')) : '') + '</div></div></div></td>'
         + '<td data-l="Firm · type"><div class="row" style="gap:4px;flex-wrap:nowrap">' + firmTag(a) + '<select class="sel" style="height:28px;font-size:12.5px" data-af="type">' + TYPES.map(function (t) { return '<option' + (t === c.type ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select></div></td>'
-        + '<td data-l="Template" class="sub" style="font-size:13px">' + (a.role === 'leader' ? '—' : esc(a.templateName || (RULES.some(function (r) { return !r.bool && r.k !== 'newsBefore' && r.k !== 'newsAfter' && c[r.k] > 0; }) ? 'Custom' : 'None'))) + '</td>'
+        + '<td data-l="Template">' + (a.role === 'leader' ? '<span class="dim">— leader</span>' : tplSelect(a)) + '</td>'
         + '<td data-l="Net liq" class="num r">' + money(a.netLiq) + '</td>'
         + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
         + '<td data-l="Drawdown left" class="num">' + ddCell(a) + '</td>'
@@ -766,7 +766,7 @@
     var tplOpts = '<option value="">Apply template…</option>' + S.templates.map(function (t) { return '<option value="' + esc(t.id) + '">' + esc(t.name) + '</option>'; }).join('');
     var grpOpts = '<option value="">Move to group…</option>' + S.groups.map(function (g) { return '<option value="' + esc(g.id) + '">' + esc(g.name) + '</option>'; }).join('');
     el.innerHTML = '<div class="toolbar"><label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input type="text" id="acct-q" placeholder="Search accounts" value="' + esc(acctSearch) + '"></label>'
-      + '<div class="seg">' + [['all', 'All ' + cnt.all], ['eval', 'Eval ' + cnt.eval], ['funded', 'Funded ' + cnt.funded], ['halted', 'Halted ' + cnt.halted]].map(function (f) { return '<button data-afilter="' + f[0] + '" class="' + (acctFilter === f[0] ? 'on' : '') + '" style="text-transform:none">' + f[1] + '</button>'; }).join('') + '</div>'
+      + '<div class="seg">' + [['all', 'All ' + cnt.all], ['eval', 'Eval ' + cnt.eval], ['funded', 'Funded ' + cnt.funded], ['sim', 'Sim ' + cnt.sim], ['live', 'Live ' + cnt.live], ['halted', 'Halted ' + cnt.halted]].map(function (f) { return '<button data-afilter="' + f[0] + '" class="' + (acctFilter === f[0] ? 'on' : '') + '" style="text-transform:none">' + f[1] + '</button>'; }).join('') + '</div>'
       + '<span class="sp"></span><button class="btn" data-testconn>Test connections</button></div>'
       + (selKeys.length ? '<div class="bulk"><span class="cnt">' + selKeys.length + ' selected</span><span class="sp"></span>'
         + '<select class="sel" data-bulk="template">' + tplOpts + '</select>'
@@ -778,7 +778,15 @@
       + '<div class="card"><div class="tw"><table class="t cards"><thead><tr><th style="width:30px"><input type="checkbox" class="ck" data-selall aria-label="Select all"></th><th>Account</th><th>Firm · type</th><th>Template</th><th class="r">Net liq</th><th class="r">Day</th><th>Drawdown left</th><th>Target</th><th class="r">Ping</th><th>Status</th><th></th></tr></thead><tbody>' + rows
       + '<tr class="tot"><td></td><td>Followers total</td><td></td><td></td><td class="num r">' + money(tot.net) + '</td><td class="num r">' + pnl(tot.day) + '</td><td colspan="5"></td></tr>'
       + '</tbody></table></div>'
-      + '<p class="note">Firm is guessed from the account name; click the pencil to rename. Rules: daily loss and profit lock clear at the 5pm CT roll; pass protection, floor and trailing drawdown stay until you reset. Balances refresh every 20s while this page is open (every 5s for accounts in a trade with a per-trade limit).</p></div>';
+      + '<p class="note">Firm is guessed from the account name; click the pencil to rename it or set the firm. Pick a template in the Template column to apply its rules. Rules: daily loss and profit lock clear at the 5pm CT roll; pass protection, floor and trailing drawdown stay until you reset. Balances refresh every 20s while this page is open (every 5s for accounts in a trade with a per-trade limit).</p></div>';
+  }
+  function hasCustom(c) { return RULES.some(function (r) { return !r.bool && r.k !== 'newsBefore' && r.k !== 'newsAfter' && c[r.k] > 0; }); }
+  function tplSelect(a) {
+    var c = a.cfg;
+    return '<select class="sel" style="height:30px;font-size:13px;max-width:170px" data-acct-tpl>'
+      + '<option value="">' + (hasCustom(c) && !c.template ? 'Custom rules' : 'No template') + '</option>'
+      + S.templates.map(function (t) { return '<option value="' + esc(t.id) + '"' + (c.template === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>'; }).join('')
+      + '</select>';
   }
   function rulesEditor(c, attr) {
     var secs = [];
@@ -808,7 +816,8 @@
         if (r.target) bits.push('target ' + strip(money(r.target)));
         return '<button class="tpl-item' + (tplSel === t.id ? ' on' : '') + '" data-tpl="' + esc(t.id) + '"><b>' + esc(t.name) + '</b><span>' + plural(users(t.id), 'account') + (bits.length ? ' · ' + bits.join(' · ') : '') + '</span></button>';
       }).join('')
-      + '<p class="note">Your own presets per firm and size. Check each firm\'s current rules — they change.</p></div>';
+      + '<div class="card" style="padding:14px"><div class="lbl" style="margin-bottom:8px">How templates work</div><div class="sub" style="font-size:12.5px;line-height:1.6">1. Make one per firm and size, e.g. "Apex 50K Eval".<br>2. Tick the accounts that use it, under the rules.<br>3. Or pick it per account in the Template column on Accounts, or for many at once with bulk select.<br>Editing and saving updates every account that uses it.</div></div>'
+      + '<p class="note">Check each firm\'s current rules — they change.</p></div>';
     var ed;
     if (!tplDraft) {
       ed = '<div class="card empty" style="flex:999 1 600px"><b>' + (S.templates.length ? 'Pick a template' : 'No templates yet') + '</b>A template holds a firm\'s rules — size, profit target, drawdown, loss limits, news blackout. Apply it to many accounts at once from Accounts.</div>';
@@ -820,9 +829,21 @@
         + (tplDraft.id ? '<button class="btn sm ghost-dn" data-tpl-del>Delete</button>' : '')
         + '<button class="btn pri" data-tpl-save>' + (n ? 'Save & apply to ' + n : 'Save') + '</button></div>'
         + rulesEditor(tplDraft.rules, 'tr')
+        + '<div class="sec-t" style="margin-top:6px">Accounts using this template</div>'
+        + (tplDraft.id ? tplUsers() : '<div class="note" style="margin:0 0 14px">Save the template first, then tick the accounts that should use it.</div>')
         + '<div class="ban wrn on" style="margin-top:4px">Every rule is exits-safe: a blocked or locked account still closes with the leader. It just never opens or adds.</div></div>';
     }
     el.innerHTML = '<div class="split">' + list + ed + '</div>';
+  }
+
+  function tplUsers() {
+    var list = S.accounts.filter(function (a) { return a.role !== 'leader'; });
+    if (!list.length) return '<div class="note" style="margin:0 0 14px">No accounts yet.</div>';
+    return '<div class="pick" style="margin-bottom:8px">' + list.map(function (a) {
+      var on = a.cfg.template === tplDraft.id, other = !on && a.templateName;
+      return '<label class="' + (on ? 'on' : '') + '"><input type="checkbox" class="ck" data-tpl-user="' + esc(a.key) + '"' + (on ? ' checked' : '') + '>'
+        + '<span class="nm"><b>' + esc(nm(a)) + '</b><span>' + esc(a.name) + (other ? ' · now: ' + esc(a.templateName) : '') + '</span></span>' + typeTag(a.cfg.type) + '</label>';
+    }).join('') + '</div><div class="note" style="margin:0 0 14px">Ticking applies this template\'s rules to that account right away. Unticking unlinks it and keeps its current rules.</div>';
   }
 
   /* ── TRADES ── */
@@ -1047,7 +1068,7 @@
     // accounts
     if (d.afilter) { acctFilter = d.afilter; return renderAccounts(); }
     if (d.nickEdit !== undefined) { nickEdit = b.closest('tr').dataset.k; renderAccounts(); var ni = document.querySelector('[data-nick]'); if (ni) { ni.focus(); ni.select(); } return; }
-    if (d.nickSave !== undefined) { var ni2 = document.querySelector('[data-nick]'), nk = b.closest('tr').dataset.k, v = (ni2 || {}).value || ''; if (ni2) ni2.blur(); nickEdit = null; return act({ op: 'updateAccount', key: nk, patch: { nick: v } }, 'Renamed'); }
+    if (d.nickSave !== undefined) { var ni2 = document.querySelector('[data-nick]'), fi2 = document.querySelector('[data-firm]'), nk = b.closest('tr').dataset.k, v = (ni2 || {}).value || ''; if (ni2) ni2.blur(); if (fi2) fi2.blur(); nickEdit = null; return act({ op: 'updateAccount', key: nk, patch: { nick: v, firm: (fi2 || {}).value || '' } }, 'Saved'); }
     if (d.editrisk !== undefined) { var ek = b.closest('tr').dataset.k; openAcct = openAcct === ek ? null : ek; return renderAccounts(); }
     if (d.resethalt !== undefined) return act({ op: 'updateAccount', key: b.closest('tr').dataset.k, patch: { resetHalt: true } }, 'Cleared');
     if (d.resetpeak !== undefined) { e.preventDefault(); return act({ op: 'updateAccount', key: b.closest('tr').dataset.k, patch: { resetPeak: true } }, 'Peak reset'); }
@@ -1111,6 +1132,8 @@
     if (d.af && tr) { var ap = {}; ap[d.af] = d.af === 'type' ? v : (t.type === 'checkbox' ? v : +v); done(); return act({ op: 'updateAccount', key: tr.dataset.k, patch: ap }, 'Saved'); }
     if (d.tr !== undefined && tplDraft) { tplDraft.rules[d.tr] = t.type === 'checkbox' ? v : +v; return; }
     if (d.set) { var sp = {}; sp[d.set] = t.type === 'checkbox' ? v : (d.set === 'discordWebhook' ? v : +v); done(); return act({ op: 'settings', patch: sp }, 'Saved'); }
+    if (d.acctTpl !== undefined && tr) { done(); return act({ op: 'bulk', keys: [tr.dataset.k], patch: { template: v } }, v ? 'Template applied' : 'Template removed — rules kept'); }
+    if (d.tplUser && tplDraft && tplDraft.id) { t.blur(); return act({ op: 'bulk', keys: [d.tplUser], patch: { template: t.checked ? tplDraft.id : '' } }, t.checked ? 'Applied to ' + aname(d.tplUser) : 'Unlinked ' + aname(d.tplUser) + ' — rules kept'); }
     if (d.sel !== undefined && tr) { selected[tr.dataset.k] = t.checked; return renderAccounts(); }
     if (d.selall !== undefined) { document.querySelectorAll('#p-accounts tr[data-k]:not(.edit)').forEach(function (r) { selected[r.dataset.k] = t.checked; }); return renderAccounts(); }
     if (d.bulk && v) { var bp = {}; bp[d.bulk] = v; return act({ op: 'bulk', keys: selKeys(), patch: bp }, 'Updated ' + plural(selKeys().length, 'account')); }
@@ -1137,7 +1160,7 @@
   });
   function renderAccountsForce() { var a = document.activeElement; if (a) a.blur(); renderAccounts(); }
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-nick]')) { var b = document.querySelector('[data-nick-save]'); if (b) b.click(); }
+    if (e.key === 'Enter' && e.target.matches && e.target.matches('[data-nick], [data-firm]')) { var b = document.querySelector('[data-nick-save]'); if (b) b.click(); }
     if (e.key === 'Escape') { if (nickEdit) { nickEdit = null; renderAccountsForce(); } }
   });
 
