@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Knightfall for NinjaTrader 8 — Coming Soon | FSD-X Trading</title>
+  <meta name="description" content="Knightfall MK2 is coming to NinjaTrader 8 as a native strategy. Run it hands-free or trade it manually from one chart — no webhooks, no third-party bridge. Submitted to NinjaTrader for review; follow the Discord for launch news." />
+  <meta name="author" content="DJ Trades" />
+  <meta name="keywords" content="Knightfall NinjaTrader, NinjaTrader 8 ORB strategy, NT8 automated strategy, MNQ automated trading, FSD-X NinjaTrader, opening range breakout NinjaTrader" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Knightfall for NinjaTrader 8 — Coming Soon" />
+  <meta property="og:description" content="The graded ORB engine, native on NinjaTrader 8. Hands-free or manual, all in one. In review with NinjaTrader now." />
+  <meta property="og:image" content="https://www.fsdxtrading.com/nt8-knightfall-live.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Knightfall for NinjaTrader 8 — Coming Soon" />
+  <meta name="twitter:description" content="The graded ORB engine, native on NinjaTrader 8. Hands-free or manual, all in one. In review with NinjaTrader now." />
+  <meta name="twitter:image" content="https://www.fsdxtrading.com/nt8-knightfall-live.png" />
+  <link rel="canonical" href="https://www.fsdxtrading.com/ninjatrader.html" />
+  <meta property="og:url" content="https://www.fsdxtrading.com/ninjatrader.html" />
+  <link rel="stylesheet" href="tailwind.css">
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <style>
+    body { background-color: #000; }
+    @keyframes pulse-ring { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
+    .beta-dot { animation: pulse-ring 2s ease-in-out infinite; }
+    details > summary { list-style: none; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] .faq-x { transform: rotate(45deg); }
+    #follow { scroll-margin-top: 80px; }
+    .nt-step-line { position:absolute; left: 13px; top: 30px; bottom: -14px; width: 1px; background: rgba(255,255,255,.08); }
+  </style>
+  <script src="analytics.js"></script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "https://www.fsdxtrading.com/ninjatrader.html#page",
+  "name": "Knightfall for NinjaTrader 8 — Coming Soon",
+  "url": "https://www.fsdxtrading.com/ninjatrader.html",
+  "description": "Announcement page for the NinjaTrader 8 version of the FSD-X Knightfall MK2 opening range breakout strategy. The NinjaTrader version is built and has been submitted to NinjaTrader for review. It is not yet available and has no release date. It runs natively inside NinjaTrader 8 in either hands-free (automated) or manual mode, without webhooks or a third-party automation bridge. It is planned as part of the FSD-X membership; final details will be announced at launch.",
+  "isPartOf": { "@id": "https://www.fsdxtrading.com/#website" },
+  "publisher": { "@id": "https://www.fsdxtrading.com/#organization" }
+}
+  </script>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+    <div class="w-full flex-1">
+
+      <!-- ===================== HERO ===================== -->
+      <section class="flex items-center px-6 md:px-12 border-b border-white/10 py-16 lg:py-20 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-6xl w-full mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+          <div class="min-w-0">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-4">// Knightfall MK2 · NinjaTrader 8</div>
+
+            <div class="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/[0.06]">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400 beta-dot"></span>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-green-400">Coming soon · In review with NinjaTrader</span>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
+              Knightfall is coming<br class="hidden sm:block"> to NinjaTrader.<br>
+              <span class="text-green-400">Native. All in one.</span>
+            </h1>
+
+            <p class="mt-6 text-zinc-300 text-lg leading-relaxed">
+              The same graded ORB engine, rebuilt as a <span class="text-white font-semibold">native NinjaTrader 8 strategy</span>. Let it trade hands-free, or trade it yourself off the same chart. One script.
+            </p>
+            <p class="mt-3 text-zinc-400 text-base leading-relaxed">
+              No webhooks. No alert setup. No third-party bridge between your chart and your account.
+            </p>
+            <p class="mt-3 text-zinc-500 text-sm leading-relaxed">
+              It's built and submitted to NinjaTrader for review. There's no release date until it's approved &mdash; the Discord hears first.
+            </p>
+
+            <div class="mt-9 flex flex-col sm:flex-row items-stretch gap-4 max-w-lg">
+              <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center flex-1 shadow-lg shadow-green-500/10 whitespace-nowrap">Get Launch Updates in Discord</a>
+              <a href="#follow" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl text-center font-medium whitespace-nowrap">Follow Along</a>
+            </div>
+            <p class="mt-4 text-sm text-zinc-500">Knightfall on TradingView is live today. <a href="memberships.html" class="text-green-400 hover:underline font-semibold">See the membership &rarr;</a></p>
+          </div>
+
+          <figure class="min-w-0">
+            <div class="rounded-2xl overflow-hidden border border-white/10 bg-black shadow-2xl shadow-black/60">
+              <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold flex items-center justify-between gap-3">
+                <span>// NinjaTrader 8 · MNQ 5m · Sim account</span>
+                <span class="text-green-400 whitespace-nowrap">● Preview</span>
+              </div>
+              <picture>
+                <source srcset="nt8-knightfall-live.webp" type="image/webp">
+                <img src="nt8-knightfall-live.png" alt="Knightfall MK2 running natively in NinjaTrader 8 on an MNQ 5-minute chart — ORB box, entry, stop and target orders on the chart, Market Context dashboard showing a graded bull breakout" class="w-full h-auto block" width="1215" height="872" decoding="async">
+              </picture>
+            </div>
+            <figcaption class="mt-3 text-[11px] text-zinc-600 leading-relaxed">
+              Pre-release build on a NinjaTrader sim account (Sim101). Shown to illustrate the dashboard and on-chart orders. Dollar figures on screen are simulated &mdash; not a performance result and not indicative of future results.
+            </figcaption>
+          </figure>
+
+        </div>
+      </section>
+
+      <!-- ===================== WHAT CHANGES ===================== -->
+      <section class="pt-16 pb-6 lg:pt-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// What's Different on NinjaTrader</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Everything in one place.</h2>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
+            On TradingView, hands-free trading means a paid plan for webhooks, alert setup, and a bridge service to reach your broker. On NinjaTrader, the strategy lives on the platform that places the order.
+          </p>
+
+          <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-3">01</div>
+              <div class="text-white font-bold mb-1.5">Hands-free or manual</div>
+              <p class="text-zinc-400 text-sm leading-relaxed">One strategy, two ways to run it. Let it take and manage the trade, or keep the read and click the trade yourself.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-3">02</div>
+              <div class="text-white font-bold mb-1.5">Native execution</div>
+              <p class="text-zinc-400 text-sm leading-relaxed">Orders go from NinjaTrader to the account you connect. No webhook, no alert message, no service in the middle to pay for or break.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-3">03</div>
+              <div class="text-white font-bold mb-1.5">Orders on your chart</div>
+              <p class="text-zinc-400 text-sm leading-relaxed">Stop and target sit on the chart as working orders. You see exactly what's live at your account, right next to the setup.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-3">04</div>
+              <div class="text-white font-bold mb-1.5">Same grading engine</div>
+              <p class="text-zinc-400 text-sm leading-relaxed">The Knightfall read you know: every breakout graded, ORB size checked against its 5-day average, stops and targets placed by the same rules.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-3">05</div>
+              <div class="text-white font-bold mb-1.5">Risk in dollars and R</div>
+              <p class="text-zinc-400 text-sm leading-relaxed">The dashboard shows what's at risk and the R to each target before you're in &mdash; sized to the risk setting you choose.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
+              <div class="text-green-400 font-black text-sm mb-3">06</div>
+              <div class="text-white font-bold mb-1.5">Fewer moving parts</div>
+              <p class="text-zinc-400 text-sm leading-relaxed">One platform for charting, the read and execution. Less to set up, less to monitor, fewer places for something to go wrong.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== INSIDE THE DASHBOARD ===================== -->
+      <section class="pt-14 pb-6 lg:pt-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Inside the Dashboard</div>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">The whole read. One panel.</h2>
+            <p class="mt-4 text-zinc-400 text-sm leading-relaxed">
+              The Market Context panel carries over from TradingView, rebuilt for NinjaTrader. Top to bottom, it answers the questions you'd otherwise be asking yourself at 8:45.
+            </p>
+          </div>
+          <div class="space-y-3">
+            <div class="flex gap-4 border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <div class="text-green-400 font-black text-xs shrink-0 w-6 pt-0.5">A</div>
+              <div><div class="text-white font-bold text-sm">Market context</div><p class="text-zinc-400 text-sm leading-relaxed mt-0.5">Today's ORB range against the 5-day average, volume, and the trend read. Is this a morning worth trading?</p></div>
+            </div>
+            <div class="flex gap-4 border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <div class="text-green-400 font-black text-xs shrink-0 w-6 pt-0.5">B</div>
+              <div><div class="text-white font-bold text-sm">The setup and its grade</div><p class="text-zinc-400 text-sm leading-relaxed mt-0.5">Breakout direction, letter grade and score. The grade sets the size.</p></div>
+            </div>
+            <div class="flex gap-4 border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <div class="text-green-400 font-black text-xs shrink-0 w-6 pt-0.5">C</div>
+              <div><div class="text-white font-bold text-sm">Every level, and why it's there</div><p class="text-zinc-400 text-sm leading-relaxed mt-0.5">Entry, stop, TP1, TP2, the 50% mark and watch levels &mdash; each tagged with its source, like a round number or volatility.</p></div>
+            </div>
+            <div class="flex gap-4 border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <div class="text-green-400 font-black text-xs shrink-0 w-6 pt-0.5">D</div>
+              <div><div class="text-white font-bold text-sm">The verdict</div><p class="text-zinc-400 text-sm leading-relaxed mt-0.5">Take the trade or skip it, with any weak spots called out so you know what you're signing up for.</p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== STATUS ===================== -->
+      <section class="pt-14 pb-6 lg:pt-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-start">
+          <div>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Where It Stands</div>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Built. Now in review.</h2>
+            <p class="mt-4 text-zinc-400 text-sm leading-relaxed">
+              Third-party NinjaTrader add-ons go through NinjaTrader's review before they ship. That's where Knightfall is right now. We won't guess at a date &mdash; when it's approved, members hear it first in the Discord.
+            </p>
+          </div>
+          <ol class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6 sm:p-7 space-y-5">
+            <li class="relative flex gap-4">
+              <span class="nt-step-line"></span>
+              <span class="relative z-10 w-7 h-7 rounded-full bg-green-500 text-black text-xs font-black flex items-center justify-center shrink-0">&#10003;</span>
+              <div><div class="text-white font-bold text-sm">Built for NinjaTrader 8</div><p class="text-zinc-500 text-xs mt-0.5">Strategy, dashboard and on-chart orders.</p></div>
+            </li>
+            <li class="relative flex gap-4">
+              <span class="nt-step-line"></span>
+              <span class="relative z-10 w-7 h-7 rounded-full bg-green-500 text-black text-xs font-black flex items-center justify-center shrink-0">&#10003;</span>
+              <div><div class="text-white font-bold text-sm">Running on sim</div><p class="text-zinc-500 text-xs mt-0.5">Hands-free and manual modes on a NinjaTrader sim account.</p></div>
+            </li>
+            <li class="relative flex gap-4">
+              <span class="nt-step-line"></span>
+              <span class="relative z-10 w-7 h-7 rounded-full border border-green-500/40 bg-green-500/10 flex items-center justify-center shrink-0"><span class="w-2 h-2 rounded-full bg-green-400 beta-dot"></span></span>
+              <div><div class="text-green-400 font-bold text-sm">Submitted to NinjaTrader &mdash; in review</div><p class="text-zinc-500 text-xs mt-0.5">We're here now.</p></div>
+            </li>
+            <li class="relative flex gap-4">
+              <span class="nt-step-line"></span>
+              <span class="relative z-10 w-7 h-7 rounded-full border border-white/15 shrink-0"></span>
+              <div><div class="text-zinc-400 font-bold text-sm">Approval</div><p class="text-zinc-600 text-xs mt-0.5">Release date set once this clears.</p></div>
+            </li>
+            <li class="relative flex gap-4">
+              <span class="relative z-10 w-7 h-7 rounded-full border border-white/15 shrink-0"></span>
+              <div><div class="text-zinc-400 font-bold text-sm">Launch to members</div><p class="text-zinc-600 text-xs mt-0.5">Setup guide and walkthrough on day one.</p></div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ===================== FAQ ===================== -->
+      <section class="pt-14 pb-6 lg:pt-20 px-6 md:px-12">
+        <div class="max-w-3xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Quick Answers</div>
+          <h2 class="text-2xl sm:text-3xl font-black tracking-tight mb-8">What we can tell you now.</h2>
+          <div class="space-y-3">
+            <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">When does it launch?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
+              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">No date yet. It's waiting on NinjaTrader's review. We'll announce it in the Discord and on our socials as soon as it's approved.</p>
+            </details>
+            <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">Will it be part of the membership?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
+              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">That's the plan &mdash; it's built as part of the FSD-X package, like everything else. Final details come with the launch announcement.</p>
+            </details>
+            <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">Do I need TradingView or a bridge service for it?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
+              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">No. It runs inside NinjaTrader 8 and places orders through the account you connect there. No webhooks, alerts or third-party automation service.</p>
+            </details>
+            <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">Can I use it on prop firm accounts?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
+              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">If your firm lets you connect through NinjaTrader and allows automated trading. Rules vary by firm &mdash; check yours before running it hands-free. Manual mode is always an option.</p>
+            </details>
+            <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">What do I do until then?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
+              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">Knightfall and the <a href="autotrader.html" class="text-green-400 hover:underline">Auto-Trader</a> are live on TradingView now. Join the Discord to follow the NinjaTrader launch.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== FOLLOW ===================== -->
+      <section id="follow" class="pt-14 pb-16 lg:pt-20 lg:pb-24 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-center mb-10">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Stay in the Loop</div>
+            <h2 class="text-3xl sm:text-4xl font-black tracking-tight">Be there when it drops.</h2>
+            <p class="mt-3 text-zinc-400 text-sm">Launch news hits the Discord first, then our socials.</p>
+          </div>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="group border border-green-500/30 bg-green-500/[0.05] hover:bg-green-500/[0.09] rounded-2xl p-5 transition">
+              <div class="text-green-400 text-[10px] font-bold uppercase tracking-widest mb-2">First to know</div>
+              <div class="text-white font-bold">Discord</div>
+              <p class="text-zinc-400 text-xs mt-1 leading-relaxed">Free to join. Announcements, previews and the launch.</p>
+              <div class="mt-4 text-green-400 text-xs font-bold">Join free &rarr;</div>
+            </a>
+            <a href="https://www.youtube.com/@FSD-XTrading" target="_blank" rel="noopener noreferrer" class="group border border-white/10 bg-zinc-950/60 hover:border-green-500/30 rounded-2xl p-5 transition">
+              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-2">Walkthroughs</div>
+              <div class="text-white font-bold">YouTube</div>
+              <p class="text-zinc-400 text-xs mt-1 leading-relaxed">Setup videos and the NinjaTrader walkthrough at launch.</p>
+              <div class="mt-4 text-zinc-300 group-hover:text-green-400 text-xs font-bold transition">Subscribe &rarr;</div>
+            </a>
+            <a href="https://www.instagram.com/fsdx_trading/" target="_blank" rel="noopener noreferrer" class="group border border-white/10 bg-zinc-950/60 hover:border-green-500/30 rounded-2xl p-5 transition">
+              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-2">Updates</div>
+              <div class="text-white font-bold">Instagram</div>
+              <p class="text-zinc-400 text-xs mt-1 leading-relaxed">Screenshots and short clips as it gets closer.</p>
+              <div class="mt-4 text-zinc-300 group-hover:text-green-400 text-xs font-bold transition">Follow &rarr;</div>
+            </a>
+            <a href="https://x.com/FSDXTrading" target="_blank" rel="noopener noreferrer" class="group border border-white/10 bg-zinc-950/60 hover:border-green-500/30 rounded-2xl p-5 transition">
+              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-widest mb-2">Updates</div>
+              <div class="text-white font-bold">X</div>
+              <p class="text-zinc-400 text-xs mt-1 leading-relaxed">Quick status updates and launch day.</p>
+              <div class="mt-4 text-zinc-300 group-hover:text-green-400 text-xs font-bold transition">Follow &rarr;</div>
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Futures & Forex Risk Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
+        </div>
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Pre-Release & Automation Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">The NinjaTrader version of Knightfall is pre-release software pending NinjaTrader review. Features, availability and timing may change, and it may not be released. Screens shown are from a simulated account and do not represent actual trading. FSD-X is an independent software provider, not a broker or financial advisor. When run hands-free, the strategy places orders on the account the user connects in NinjaTrader; the user is solely responsible for that account, its settings, and compliance with broker and prop-firm rules (some restrict or prohibit automated trading). Always validate on a sim account before risking real capital.</p>
+        </div>
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Trademark Notice</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">NinjaTrader® is a registered trademark of NinjaTrader Group, LLC. No NinjaTrader company has any affiliation with the owner, developer, or provider of the products or services described herein, or any interest, ownership or otherwise, in any such product or service, or endorses, recommends or approves any such product or service.</p>
+        </div>
+        <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+          <a href="index.html" class="hover:text-green-400 transition">Home</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="ninjatrader.html" class="hover:text-green-400 transition">NinjaTrader</a>
+          <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
+          <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
+          <a href="faq.html" class="hover:text-green-400 transition">FAQ</a>
+          <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+          <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
+        </nav>
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
+          <div>FSD-X Trading (FSDX Trading) by DJ Trades • NinjaTrader® Vendor Ecosystem Partner</div>
+          <div>&copy; 2026 FSD-X Trading by DJ Trades. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      sidebar.classList.toggle('-translate-x-full');
+    }
+  </script>
+  <script src="checkout-gate.js?v=20260924a"></script>
+  <script src="nav-loader.js?v=20260924a"></script>
+</body>
+</html>

@@ -168,7 +168,7 @@ window.toggleMobileMenu = function () {
   if (document.getElementById('fsdx-search-js')) return;
   var sc = document.createElement('script');
   sc.id = 'fsdx-search-js';
-  sc.src = 'fsdx-search.js?v=20260913b';
+  sc.src = 'fsdx-search.js?v=20261004a';
   sc.defer = true;
   (document.head || document.documentElement).appendChild(sc);
 })();
@@ -472,7 +472,7 @@ function prepareNavLabels(root) {
   // blank the nav just as thoroughly, so check the status and the body, and
   // give a flaky network one retry before giving up.
   function loadNavHtml(attempt) {
-    return fetch('nav.html?v=20260913b')
+    return fetch('nav.html?v=20261004a')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
@@ -659,7 +659,8 @@ function prepareNavLabels(root) {
           ['index.html', 'Home'], ['compare.html', 'Compare Plans'],
           ['suite.html', "What's in the Membership"],
           ['platform.html', 'The Platform'],
-          ['autotrader.html', 'ORB Auto-Trader'], ['results.html', 'Backtest Results'],
+          ['autotrader.html', 'ORB Auto-Trader'], ['ninjatrader.html', 'NinjaTrader 8'],
+          ['results.html', 'Backtest Results'],
           ['nightwing.html', 'Nightwing'], ['raven.html', 'Raven'],
           ['memberships.html', 'Membership'], ['knowledge.html', 'Knowledge Base'],
           ['partners.html', 'Partner Program'], ['contact.html', 'Contact & Help']

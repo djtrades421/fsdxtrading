@@ -37,6 +37,7 @@
     {t:'Nexus 2.0',             u:'suite.html#tool-nexus',     g:'Products', kw:'chrome extension journal optimizer sidepanel'},
     {t:'The Platform',          u:'platform.html',             g:'Products', kw:'member platform dashboard journal importer csv import backtest workspace tracker accounts playbook workspace included'},
     {t:'ORB Auto-Trader',       u:'autotrader.html',           g:'Products', kw:'automation pickmytrade tradovate hands off at'},
+    {t:'Knightfall for NinjaTrader 8 (Coming Soon)', u:'ninjatrader.html', g:'Products', kw:'ninjatrader nt8 ninja native automated hands free manual coming soon launch'},
     {t:'Raven',                 u:'raven.html',                g:'Products', kw:'orb raven levels indicator breakout no grading stop target position size'},
     {t:'Compare Plans',         u:'compare.html',              g:'Products', kw:'compare comparison plans tiers pricing difference which one nightwing raven membership free'},
 
