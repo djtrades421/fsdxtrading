@@ -476,6 +476,9 @@
     if (!g.followers.length) return { t: 'No followers', c: 'wrn' };
     if (!g.enabled) return { t: 'Paused', c: '' };
     if (!S.armed) return { t: 'Disarmed', c: '' };
+    var la = acc(g.leader);
+    if (la && la.cfg.halted) return { t: la.cfg.haltKind === 'passed' ? 'Leader passed · exits only' : 'Leader halted · exits only', c: la.cfg.haltKind === 'passed' ? 'info' : 'bad' };
+    if (la && la.blocked) return { t: 'Leader: ' + la.blocked + ' · exits only', c: 'wrn' };
     if (!g.inWindow) return { t: 'Outside window', c: 'wrn' };
     return { t: 'Copying', c: 'on' };
   }
@@ -518,7 +521,6 @@
     return money(a.ddLeft) + meter(pct, pct < 25 ? 'd' : pct < 50 ? 'w' : '');
   }
   function tgtCell(a) {
-    if (a.role === 'leader') return '<span class="dim">—</span>';
     if (a.cfg.halted && a.cfg.haltKind === 'passed') return '<span class="blue">Passed ✓</span>' + meter(100, '');
     if (a.targetProgress == null) return '<span class="dim">—</span>';
     var made = (a.netLiq || 0) - a.cfg.size;
@@ -764,7 +766,7 @@
         + '<td data-l="Account"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + st.dot + '"></span><div>' + nameCell
         + '<div class="sub">' + esc(a.name) + ' · ' + esc(a.conn) + (a.role ? ' · ' + (a.role === 'leader' ? 'Leader' : esc(gname[a.groupId] || '')) : '') + '</div></div></div></td>'
         + '<td data-l="Firm · type"><div class="row" style="gap:4px;flex-wrap:nowrap">' + firmTag(a) + typeTag(c.type) + '</div></td>'
-        + '<td data-l="Template" style="font-size:13px">' + (a.role === 'leader' ? '<span class="dim">— leader</span>' : a.templateName ? esc(a.templateName) : '<span class="mut">' + (hasCustom(c) ? 'Custom rules' : 'None') + '</span>') + '</td>'
+        + '<td data-l="Template" style="font-size:13px">' + (a.templateName ? esc(a.templateName) : '<span class="mut">' + (hasCustom(c) ? 'Custom rules' : 'None') + '</span>') + '</td>'
         + '<td data-l="Net liq" class="num r">' + money(a.netLiq) + '</td>'
         + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
         + '<td data-l="Drawdown left" class="num">' + ddCell(a) + '</td>'
@@ -803,13 +805,14 @@
       + field('Type', '<select class="sel" style="width:100%" data-af="type">' + TYPES.map(function (t) { return '<option' + (t === c.type ? ' selected' : '') + '>' + t + '</option>'; }).join('') + '</select>');
     if (leadOf.length) {
       html += field('Role', '<div style="padding-top:6px"><b class="blue">Leader</b> of ' + esc(leadOf.join(', ')) + '</div>', 'Change leaders on the Groups tab.');
+      html += field('Risk template', tplSelect(a), c.template ? 'Changing a rule below unlinks it (becomes Custom).' : 'Same prop-firm rules as its followers, e.g. "Apex 50K".');
     } else {
       html += field('Copies in group', '<select class="sel" style="width:100%" data-acct-group><option value="">Not copying</option>' + S.groups.map(function (x) { return '<option value="' + esc(x.id) + '"' + (g && g.id === x.id ? ' selected' : '') + '>' + esc(x.name) + '</option>'; }).join('') + '</select>');
       if (f) html += field('Size', '<div class="row" style="flex-wrap:nowrap"><input class="inp n s" type="number" min="0" max="50" step="0.25" data-acct-mult value="' + f.mult + '"' + (f.fixedQty > 0 ? ' disabled' : '') + '><span class="sub">× leader</span><span class="sub" style="margin-left:6px">or fixed</span><input class="inp n s" type="number" min="0" max="100" step="1" data-acct-fixed value="' + f.fixedQty + '"></div>', 'Fixed qty &gt; 0 overrides the multiplier.');
       html += field('Risk template', tplSelect(a), c.template ? 'Changing a rule below unlinks it (becomes Custom).' : 'Pick one to copy its rules onto this account.');
     }
     html += '</div>';
-    if (leadOf.length) return html + '<div class="note" style="margin:0 0 6px">Risk rules only act on followers — a leader is never halted or flattened automatically.</div>';
+    if (leadOf.length) html += '<div class="ban wrn on" style="margin:0 0 14px">On a leader: a loss or target rule flattens the leader (its followers exit with it) and stops new copies until you reset it. Consistency, max trades and news stop followers from copying new entries — the copier can\'t stop you placing trades on the leader yourself, so you\'ll get an alert instead.</div>';
     return html + '<div class="sec-t">Risk rules' + (a.templateName ? ' · from ' + esc(a.templateName) : '') + '</div>' + rulesEditor(c, 'af')
       + (c.trail > 0 && c.peak != null ? '<div class="sub" style="margin:8px 2px">Trailing peak ' + strip(money(c.peak)) + ' · <a href="#" data-resetpeak class="acc">reset to current net liq</a></div>' : '');
   }
@@ -840,7 +843,7 @@
       var t0 = S.templates.find(function (t) { return t.id === tplSel; });
       if (t0) tplDraft = { id: t0.id, name: t0.name, rules: Object.assign({}, t0.rules) }; else tplSel = null;
     }
-    var users = function (id) { return S.accounts.filter(function (a) { return a.cfg.template === id && a.role !== 'leader'; }).length; };
+    var users = function (id) { return S.accounts.filter(function (a) { return a.cfg.template === id; }).length; };
     var list = '<div class="tpl-list"><button class="btn pri" data-tpl-new>+ New template</button>'
       + S.templates.map(function (t) {
         var r = t.rules, bits = [];
@@ -870,12 +873,12 @@
   }
 
   function tplUsers() {
-    var list = S.accounts.filter(function (a) { return a.role !== 'leader'; });
-    if (!list.length) return '<div class="note" style="margin:0 0 14px">No follower accounts yet. Templates apply to accounts that copy — your leader account isn\'t listed because rules never halt or flatten a leader.</div>';
+    var list = S.accounts.slice().sort(function (a, b) { return (a.role === 'leader' ? 0 : 1) - (b.role === 'leader' ? 0 : 1); });
+    if (!list.length) return '<div class="note" style="margin:0 0 14px">No accounts yet.</div>';
     return '<div class="pick" style="margin-bottom:8px">' + list.map(function (a) {
       var on = a.cfg.template === tplDraft.id, other = !on && a.templateName;
       return '<label class="' + (on ? 'on' : '') + '"><input type="checkbox" class="ck" data-tpl-user="' + esc(a.key) + '"' + (on ? ' checked' : '') + '>'
-        + '<span class="nm"><b>' + esc(nm(a)) + '</b><span>' + esc(a.name) + (other ? ' · now: ' + esc(a.templateName) : '') + '</span></span>' + typeTag(a.cfg.type) + '</label>';
+        + '<span class="nm"><b>' + esc(nm(a)) + '</b><span>' + esc(a.name) + (a.role === 'leader' ? ' · leader' : '') + (other ? ' · now: ' + esc(a.templateName) : '') + '</span></span>' + typeTag(a.cfg.type) + '</label>';
     }).join('') + '</div><div class="note" style="margin:0 0 14px">Ticking applies this template\'s rules to that account right away. Unticking unlinks it and keeps its current rules.</div>';
   }
 
