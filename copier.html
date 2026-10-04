@@ -190,6 +190,10 @@
     .log > div { display: flex; gap: 12px; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,.03); }
     .log .t { color: var(--dim); flex: none; min-width: 92px; }
     .log .m { word-break: break-word; }
+    .lc { display: inline-block; min-width: 18px; margin-left: 4px; padding: 0 5px; border-radius: 999px; font-size: 11px; line-height: 17px; text-align: center; background: rgba(255,255,255,.08); color: var(--dim); }
+    .lc.e { background: var(--dn-bg); color: #FCA5A5; } .lc.w { background: var(--warn-bg); color: #FCD34D; }
+    .lt { display: inline-block; margin-right: 8px; padding: 0 7px; border-radius: 5px; font-size: 10.5px; font-weight: 800; letter-spacing: .03em; text-transform: uppercase; line-height: 17px; vertical-align: 1px; }
+    .lt.e { background: var(--dn-bg); color: #FCA5A5; } .lt.w { background: var(--warn-bg); color: #FCD34D; }
     .log .ok .m { color: #86EFAC; } .log .err .m { color: #FCA5A5; } .log .warn .m { color: #FCD34D; }
     .log .dry .m { color: #C4B5FD; } .log .lead .m { color: #93C5FD; } .log .info .m { color: var(--mut); }
 
@@ -951,15 +955,20 @@
   }
 
   /* ── LOG ── */
-  var LOGF = { all: null, orders: ['ok', 'dry'], errors: ['err', 'warn'], leader: ['lead'] };
+  var LOGF = { all: null, orders: ['ok', 'dry'], errors: ['err'], warnings: ['warn'], leader: ['lead'] };
   function renderLog() {
     var el = $('p-log');
     var f = LOGF[logFilter];
     var items = S.log.slice().reverse().filter(function (l) { return !f || f.indexOf(l.lvl) >= 0; });
-    var body = items.map(function (l) { return '<div class="' + esc(l.lvl) + '"><span class="t">' + fmtTime(l.t) + '</span><span class="m">' + esc(l.msg) + '</span></div>'; }).join('') || '<div class="info"><span class="m">Nothing here.</span></div>';
+    var tag = { err: '<span class="lt e">Error</span>', warn: '<span class="lt w">Warning</span>' };
+    var body = items.map(function (l) { return '<div class="' + esc(l.lvl) + '"><span class="t">' + fmtTime(l.t) + '</span><span class="m">' + (tag[l.lvl] || '') + esc(l.msg) + '</span></div>'; }).join('') || '<div class="info"><span class="m">Nothing here.</span></div>';
     if (el._b === body && el._f === logFilter) return;
     el._b = body; el._f = logFilter;
-    el.innerHTML = '<div class="card"><div class="logf">' + Object.keys(LOGF).map(function (k) { return '<button style="text-transform:capitalize" class="btn xs' + (k === logFilter ? ' pri' : '') + '" data-logf="' + k + '">' + k + '</button>'; }).join('')
+    el.innerHTML = '<div class="card"><div class="logf">' + Object.keys(LOGF).map(function (k) {
+        var n = LOGF[k] && (k === 'errors' || k === 'warnings') ? S.log.filter(function (l) { return LOGF[k].indexOf(l.lvl) >= 0; }).length : null;
+        var badge = n == null ? '' : ' <span class="lc ' + (n ? (k === 'errors' ? 'e' : 'w') : '') + '">' + n + '</span>';
+        return '<button style="text-transform:capitalize" class="btn xs' + (k === logFilter ? ' pri' : '') + '" data-logf="' + k + '">' + k + badge + '</button>';
+      }).join('')
       + '<span class="sp"></span><button class="btn xs" id="b-clearlog">Clear</button></div><div class="log">' + body + '</div></div>';
   }
 
