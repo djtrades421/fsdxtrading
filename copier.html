@@ -258,7 +258,7 @@
     .icon-btn { appearance: none; border: 0; background: transparent; color: var(--dim); width: 26px; height: 26px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
     .icon-btn:hover { color: var(--tx); background: rgba(255,255,255,.06); }
     .rulegrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
-    .rulegrid.big2 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+    .rulegrid.big2 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
     .rulebox { display: flex; gap: 12px; align-items: flex-start; padding: 13px; border-radius: 11px; background: rgba(0,0,0,.22); border: 1px solid var(--line); }
     .rulebox .t { font-weight: 700; font-size: 13.5px; }
     .rulebox .h { font-size: 12.5px; color: var(--mut); margin-top: 3px; }
@@ -389,20 +389,17 @@
   var DAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
   var TYPES = ['eval', 'funded', 'sim', 'live'];
   var RULES = [
-    { sec: 'Daily limits', k: 'dailyProfit', t: 'Max profit today $', h: 'When this account is up this much today, it closes out and stops for the day. Other accounts keep going. Use it for consistency rules, e.g. 50% of a $3,000 target → 1450.', step: 50 },
-    { sec: 'Daily limits', k: 'dailyLoss', t: 'Max loss today $', h: 'When this account is down this much today, it closes out and stops for the day. Other accounts keep going.', step: 50 },
-    { sec: 'More rules', adv: true, k: 'maxTradesDay', t: 'Max trades per day', h: 'After this many entries the account only exits until the 5pm roll.', step: 1 },
-    { sec: 'More rules', adv: true, k: 'perTradeLoss', t: 'Max loss per trade $', h: 'If one trade loses this much on the account, close it and stop for the day.', step: 50 },
-    { sec: 'More rules', adv: true, k: 'maxPos', t: 'Max position (contracts)', h: 'Never holds more than this. Caps the size, doesn\'t stop it.', step: 1 },
-    { sec: 'More rules', adv: true, k: 'floor', t: 'Close below net liq $', h: 'If net liq drops to this, close and stop until you reset it. E.g. the account\'s liquidation level.', step: 100 },
-    { sec: 'More rules', adv: true, k: 'size', t: 'Account size $', h: 'Starting balance. Only needed for the pass lock below.', step: 1000 },
-    { sec: 'More rules', adv: true, k: 'target', t: 'Pass lock — profit target $', h: 'When net liq reaches size + this, close and lock the account so a later loss can\'t undo a pass.', step: 100 },
-    { sec: 'More rules', adv: true, k: 'trail', t: 'Trailing drawdown $', h: 'Close when net liq falls this far below the highest it has been since the copier started watching it.', step: 100 },
-    { sec: 'More rules', adv: true, k: 'consistencyPct', t: 'Consistency %', h: 'Stop new entries once today\'s profit reaches this % of the pass target. Most people use Max profit today instead.', step: 5 },
-    { sec: 'News', adv: true, k: 'newsOn', bool: true, t: 'No new trades around news', h: 'High-impact US events from the site\'s calendar. Exits still copy.' },
-    { sec: 'News', adv: true, k: 'newsBefore', t: 'Minutes before', h: 'Starts this long before the release.', step: 1 },
-    { sec: 'News', adv: true, k: 'newsAfter', t: 'Minutes after', h: 'Ends this long after.', step: 1 },
-    { sec: 'News', adv: true, k: 'newsFlatten', bool: true, t: 'Close positions before news', h: 'Flatten when the news window starts.' }
+    { sec: 'Daily limits', k: 'dailyProfit', t: 'Max profit today $', h: 'When this account is up this much today, it closes out and stops until 5pm CT. Other accounts keep going.', step: 50 },
+    { sec: 'Daily limits', k: 'dailyLoss', t: 'Max loss today $', h: 'When this account is down this much today, it closes out and stops until 5pm CT. Other accounts keep going.', step: 50 },
+    { sec: 'Per trade', k: 'perTradeLoss', t: 'Max loss per trade $', h: 'If one trade is down this much on this account, it closes out and stops for the day.', step: 50 },
+    { sec: 'Per trade', k: 'maxTradesDay', t: 'Max trades per day', h: 'After this many entries, no new trades until 5pm CT. Exits still copy.', step: 1 },
+    { sec: 'Per trade', k: 'maxPos', t: 'Max contracts', h: 'Safety cap. Never holds more than this, even if something sends too many.', step: 1 },
+    { sec: 'Pass protection', k: 'size', t: 'Account size $', h: 'Starting balance, e.g. 50000.', step: 1000 },
+    { sec: 'Pass protection', k: 'target', t: 'Profit target $', h: 'E.g. 3200. When net liq hits size + this — even mid-trade — the account closes and locks so a reversal can\'t undo the pass. Stays locked until you unlock it.', step: 100 },
+    { sec: 'News', k: 'newsOn', bool: true, t: 'No new trades around news', h: 'High-impact US events. Exits still copy.' },
+    { sec: 'News', k: 'newsBefore', t: 'Minutes before', h: 'Starts this long before the release.', step: 1 },
+    { sec: 'News', k: 'newsAfter', t: 'Minutes after', h: 'Ends this long after.', step: 1 },
+    { sec: 'News', k: 'newsFlatten', bool: true, t: 'Close positions before news', h: 'Flatten when the news window starts.' }
   ];
   var advOpen = {};
 
@@ -814,8 +811,7 @@
     }
     html += '</div>';
     if (leadOf.length) html += '<div class="ban wrn on" style="margin:0 0 14px">Leader hits its daily limit → the leader closes out, its followers exit with it, and no new copies until the 5pm CT roll. Give the leader the most room so followers stop on their own limits first.</div>';
-    return html + '<div class="sec-t">Risk rules' + (a.templateName ? ' · from ' + esc(a.templateName) : '') + '</div>' + rulesEditor(c, 'af', a.key)
-      + (c.trail > 0 && c.peak != null ? '<div class="sub" style="margin:8px 2px">Trailing peak ' + strip(money(c.peak)) + ' · <a href="#" data-resetpeak class="acc">reset to current net liq</a></div>' : '');
+    return html + '<div class="sec-t">Risk rules' + (a.templateName ? ' · from ' + esc(a.templateName) : '') + '</div>' + rulesEditor(c, 'af', a.key);
   }
   function hasCustom(c) { return RULES.some(function (r) { return !r.bool && r.k !== 'newsBefore' && r.k !== 'newsAfter' && c[r.k] > 0; }); }
   function tplSelect(a) {
@@ -830,22 +826,24 @@
     return '<div class="rulebox"><div style="flex:1;min-width:0"><div class="t">' + r.t + '</div><div class="h">' + r.h + '</div><div class="v"><input class="inp" type="number" min="0" step="' + r.step + '" data-' + attr + '="' + r.k + '" value="' + (c[r.k] || 0) + '"><span>0 = off</span></div></div></div>';
   }
   function rulesEditor(c, attr, id) {
-    var main = RULES.filter(function (r) { return !r.adv; }), adv = RULES.filter(function (r) { return r.adv; });
-    var used = adv.filter(function (r) { return r.bool ? c[r.k] : (r.k !== 'newsBefore' && r.k !== 'newsAfter' && c[r.k] > 0); });
-    var key = attr + ':' + (id || ''), open = advOpen[key] != null ? advOpen[key] : used.length > 0;
-    return '<div class="rulegrid big2" style="margin-bottom:12px">' + main.map(function (r) { return ruleBox(r, c, attr); }).join('') + '</div>'
-      + '<button class="btn sm" data-adv="' + esc(key) + '" style="margin-bottom:12px">' + (open ? '▾ Hide more rules' : '▸ More rules (optional)') + (used.length ? ' · ' + used.length + ' on' : '') + '</button>'
-      + (open ? '<div class="rulegrid" style="margin-bottom:14px">' + adv.map(function (r) { return ruleBox(r, c, attr); }).join('') + '</div>' : '');
+    var secs = [];
+    RULES.forEach(function (r) { if (secs.indexOf(r.sec) < 0) secs.push(r.sec); });
+    return secs.map(function (sc) {
+      return '<div class="sec-t" style="margin-top:6px">' + esc(sc) + '</div><div class="rulegrid big2" style="margin-bottom:12px">'
+        + RULES.filter(function (r) { return r.sec === sc; }).map(function (r) { return ruleBox(r, c, attr); }).join('') + '</div>';
+    }).join('');
   }
+
   function limitsCell(a) {
     var c = a.cfg, d = a.dayPnL;
-    if (!(c.dailyProfit > 0) && !(c.dailyLoss > 0)) return '<span class="dim">No limits</span>';
+    var pass = c.size > 0 && c.target > 0 ? '<div class="sub" style="margin-top:3px">Pass ' + (a.netLiq != null ? strip(money(Math.max(0, a.netLiq - c.size))) + ' of ' : '') + strip(money(c.target)) + '</div>' : '';
+    if (!(c.dailyProfit > 0) && !(c.dailyLoss > 0)) return pass || '<span class="dim">No limits</span>';
     var txt = (c.dailyProfit > 0 ? '<span class="up">+' + strip(money(c.dailyProfit)) + '</span>' : '<span class="dim">—</span>') + ' <span class="dim">/</span> ' + (c.dailyLoss > 0 ? '<span class="dn">-' + strip(money(c.dailyLoss)) + '</span>' : '<span class="dim">—</span>');
     var bar = '';
     if (d != null && d > 0 && c.dailyProfit > 0) bar = meter(d / c.dailyProfit * 100, '');
     else if (d != null && d < 0 && c.dailyLoss > 0) { var p = -d / c.dailyLoss * 100; bar = meter(p, p > 75 ? 'd' : 'w'); }
     else bar = meter(0, '');
-    return '<div style="font-size:13px">' + txt + '</div>' + bar;
+    return '<div style="font-size:13px">' + txt + '</div>' + bar + pass;
   }
 
   /* ── TEMPLATES ── */
@@ -862,14 +860,15 @@
         var r = t.rules, bits = [];
         if (r.dailyProfit) bits.push('+' + strip(money(r.dailyProfit)));
         if (r.dailyLoss) bits.push('-' + strip(money(r.dailyLoss)));
-        if (!bits.length) bits.push('no daily limits');
+        if (r.target) bits.push('pass ' + strip(money(r.target)));
+        if (!bits.length) bits.push('no limits');
         return '<button class="tpl-item' + (tplSel === t.id ? ' on' : '') + '" data-tpl="' + esc(t.id) + '"><b>' + esc(t.name) + '</b><span>' + plural(users(t.id), 'account') + (bits.length ? ' · ' + bits.join(' · ') : '') + '</span></button>';
       }).join('')
-      + '<div class="card" style="padding:14px"><div class="lbl" style="margin-bottom:8px">How templates work</div><div class="sub" style="font-size:12.5px;line-height:1.6">Optional. Save the daily limits you use a lot — e.g. "Apex 50K: +1450 / -800" — then tick the accounts that use them. Or skip templates and set each account under Accounts → Edit.</div></div>'
+      + '<div class="card" style="padding:14px"><div class="lbl" style="margin-bottom:8px">How templates work</div><div class="sub" style="font-size:12.5px;line-height:1.6">Set it once, use it on 20 accounts. E.g. "Apex 50K": +1450 / -800 a day, pass at $3,200. Tick the accounts here, or select them under Accounts and pick the template in the bulk bar. Change the template later and every account on it updates.</div></div>'
       + '<p class="note">Check each firm\'s current rules — they change.</p></div>';
     var ed;
     if (!tplDraft) {
-      ed = '<div class="card empty" style="flex:999 1 600px"><b>' + (S.templates.length ? 'Pick a template' : 'No templates yet') + '</b>A template is a saved pair of daily limits — max profit and max loss today. Tick the accounts that use it.</div>';
+      ed = '<div class="card empty" style="flex:999 1 600px"><b>' + (S.templates.length ? 'Pick a template' : 'No templates yet') + '</b>A template is a saved set of limits — max profit today, max loss today, and the pass target. Tick the accounts that use it and they all get it at once.</div>';
     } else {
       var n = tplDraft.id ? users(tplDraft.id) : 0;
       ed = '<div class="card" style="flex:999 1 600px;min-width:0"><div class="card-h">'
@@ -1128,7 +1127,7 @@
     if (d.bulkPause !== undefined) return act({ op: 'bulk', keys: selKeys(), patch: { enabled: d.bulkPause === '1' } }, d.bulkPause === '1' ? 'Resumed' : 'Paused — exits still copy');
     if (d.bulkClear !== undefined) { selected = {}; return renderAccounts(); }
     // templates
-    if (d.tplNew !== undefined) { tplSel = null; tplDraft = { id: null, name: '', rules: { size: 0, target: 0, perTradeLoss: 0, consistencyPct: 0, maxTradesDay: 0, dailyLoss: 0, dailyProfit: 0, maxPos: 0, floor: 0, trail: 0, newsOn: false, newsBefore: 5, newsAfter: 10, newsFlatten: false } }; return renderTemplates(); }
+    if (d.tplNew !== undefined) { tplSel = null; tplDraft = { id: null, name: '', rules: { size: 0, target: 0, perTradeLoss: 0, maxTradesDay: 0, dailyLoss: 0, dailyProfit: 0, maxPos: 0, newsOn: false, newsBefore: 5, newsAfter: 10, newsFlatten: false } }; return renderTemplates(); }
     if (d.tpl) { tplSel = d.tpl; tplDraft = null; return renderTemplates(); }
     if (d.tplSave !== undefined) {
       var name = ($('tpl-name') || {}).value || tplDraft.name;
