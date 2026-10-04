@@ -156,6 +156,7 @@
     table.t tr.halted td { background: rgba(248,113,113,.045); }
     table.t tr.paused td { opacity: .55; }
     table.t tr.paused td:last-child, table.t tr.paused td[data-l="Status"] { opacity: 1; }
+    .sz { display: inline-block; min-width: 38px; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 13px; text-align: center; background: rgba(255,255,255,.06); font-variant-numeric: tabular-nums; }
     .pz { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #FCD34D; background: var(--warn-bg); }
     table.t tr.edit td { border-top: 0; white-space: normal; padding-top: 0; }
     .an { font-weight: 700; }
@@ -506,6 +507,13 @@
     var f = g && g.followers.find(function (x) { return x.key === a.key; });
     return f ? { g: g, f: f } : null;
   }
+  function sizeCell(a) {
+    if (a.role === 'leader') return '<span class="dim">Leader</span>';
+    var o = folOf(a); if (!o) return '<span class="dim">—</span>';
+    var f = o.f, txt = f.fixedQty > 0 ? f.fixedQty + ' fixed' : '×' + (+f.mult || 0);
+    return '<span class="sz" title="' + (f.fixedQty > 0 ? 'Always ' + f.fixedQty + ' contract(s), whatever the leader trades' : 'Leader qty × ' + f.mult) + '">' + esc(txt) + '</span>'
+      + (f.invert ? ' <span class="pz" style="font-size:11px" title="Trades the opposite direction">Inverted</span>' : '');
+  }
   function isPaused(a) { var o = folOf(a); return !!(o && !o.f.enabled); }
   function pauseBtn(a) {
     var o = folOf(a); if (!o) return '';
@@ -636,6 +644,7 @@
       var as = acctStatus(a);
       return '<tr class="' + (a.cfg.halted && a.cfg.haltKind !== 'passed' ? 'halted' : (!f.enabled ? 'paused' : '')) + '">'
         + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + as.dot + '"></span><span class="an">' + esc(nm(a)) + '</span>' + typeTag(a.cfg.type) + '</div><div class="sub" style="margin-left:16px">' + esc(a.name) + (a.cfg.firm ? ' · ' + esc(a.cfg.firm) : '') + '</div></td>'
+        + '<td data-l="Size">' + sizeCell(a) + '</td>'
         + '<td data-l="Position" class="num">' + posHtml(a.positions) + '</td>'
         + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
         + '<td data-l="Today\'s limits">' + limitsCell(a) + '</td>'
@@ -655,7 +664,7 @@
       + '<div class="bigpos">' + posHtml(S.armed ? g.leaderPos : (la && la.positions)) + '</div>'
       + (la ? '<div class="mut" style="font-size:13px">Day ' + strip(pnl(la.dayPnL)) + ' · open ' + strip(pnl(la.openPnL)) + '</div>' : '')
       + '<span class="sp"></span><div style="text-align:right"><div class="lbl">Entries today</div><div style="margin-top:4px;font-weight:700">' + (trades.length ? Math.max.apply(null, trades) : 0) + '</div></div></div>'
-      + (rows ? '<div class="tw"><table class="t cards"><thead><tr><th>Account</th><th>Position</th><th class="r">Day</th><th>Today\'s limits</th><th class="r">Speed</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
+      + (rows ? '<div class="tw"><table class="t cards"><thead><tr><th>Account</th><th>Size</th><th>Position</th><th class="r">Day</th><th>Today\'s limits</th><th class="r">Speed</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
               : '<div class="empty" style="padding:18px">No followers. Add them under Groups.</div>')
       + '</div>';
   }
@@ -781,6 +790,7 @@
         + '<div class="sub">' + esc(a.name) + ' · ' + esc(a.conn) + (a.role ? ' · ' + (a.role === 'leader' ? 'Leader' : esc(gname[a.groupId] || '')) : '') + '</div></div></div></td>'
         + '<td data-l="Firm · type"><div class="row" style="gap:4px;flex-wrap:nowrap">' + firmTag(a) + typeTag(c.type) + '</div></td>'
         + '<td data-l="Template" style="font-size:13px">' + (a.templateName ? esc(a.templateName) : '<span class="mut">' + (hasCustom(c) ? 'Custom rules' : 'None') + '</span>') + '</td>'
+        + '<td data-l="Size">' + sizeCell(a) + '</td>'
         + '<td data-l="Net liq" class="num r">' + money(a.netLiq) + '</td>'
         + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
         + '<td data-l="Today\'s limits">' + limitsCell(a) + '</td>'
@@ -801,7 +811,7 @@
         + '<button class="btn sm" data-bulk-pause="0">Pause</button><button class="btn sm" data-bulk-pause="1">Resume</button>'
         + '<button class="btn sm" data-bulk-clear>Clear</button></div>' : '')
       + (selKeys.length ? '' : '<div class="note" style="margin:0 0 10px">Click <b>Edit</b> on an account to change its name, group, size, template and rules. Tick several boxes to change them all at once.</div>')
-      + '<div class="card"><div class="tw"><table class="t cards"><thead><tr><th style="width:30px"><input type="checkbox" class="ck" data-selall aria-label="Select all"></th><th>Account</th><th>Firm · type</th><th>Template</th><th class="r">Net liq</th><th class="r">Day</th><th>Today\'s limits</th><th>Status</th><th></th></tr></thead><tbody>' + rows
+      + '<div class="card"><div class="tw"><table class="t cards"><thead><tr><th style="width:30px"><input type="checkbox" class="ck" data-selall aria-label="Select all"></th><th>Account</th><th>Firm · type</th><th>Template</th><th>Size</th><th class="r">Net liq</th><th class="r">Day</th><th>Today\'s limits</th><th>Status</th><th></th></tr></thead><tbody>' + rows
       + '<tr class="tot"><td></td><td>Followers total</td><td></td><td></td><td class="num r">' + money(tot.net) + '</td><td class="num r">' + pnl(tot.day) + '</td><td colspan="3"></td></tr>'
       + '</tbody></table></div>'
       + '<p class="note">Firm is guessed from the account name — change it under Edit. Daily limits reset at the 5pm CT roll. Accounts in a trade are checked every 5 seconds.</p></div>';
