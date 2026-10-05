@@ -11,11 +11,12 @@
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="copier-terms.js?v=20261005"></script>
   <!--
-    FSD-X Copy Trader — control page. ADMIN ONLY.
-    Not linked anywhere, not in the sitemap, noindex. Everyone sees the normal
-    404 page; the controls only appear when the API confirms an admin session.
-    The real lock is on the server: every /api/copier route returns 404 to
-    anyone who isn't admin.
+    FSD-X Copy Trader — control page.
+    Not in the sitemap, noindex. The VIP nav shows a link to it only for
+    sessions with copier access. Everyone else sees the normal 404 page; the
+    controls only appear when the API confirms access (admin, COPIER_GRANTS,
+    or a Whop copier membership — see copierAccess() in the Worker).
+    The real lock is on the server: every /api/copier route 404s otherwise.
     Colours come from fsdx-theme.js (--fx-orange / --fx-line / --fx-mono), so
     the page follows the site's palette swap. Green/red = P&L only.
   -->
@@ -357,7 +358,7 @@
 
   <div id="cp-app">
     <header class="top"><div class="wrap">
-      <div class="brand">FSD-X <b>COPIER</b><span>ADMIN</span></div>
+      <a class="brand" href="dashboard.html" title="Back to your dashboard" style="color:inherit;text-decoration:none">FSD-X <b>COPY TRADER</b></a>
       <div class="chips" id="chips"></div>
       <div class="sp"></div>
       <div class="clock" id="clock"></div>
@@ -1234,7 +1235,7 @@
     return api('/api/copier/state').then(function (d) {
       if (d.__s === 404) { document.body.classList.remove('cp-on'); stop(); return; }
       if (d.__s !== 200) return;
-      if (!document.body.classList.contains('cp-on')) { document.body.classList.add('cp-on'); document.title = 'FSD-X Copier'; setTab(tab); }
+      if (!document.body.classList.contains('cp-on')) { document.body.classList.add('cp-on'); document.title = 'FSD-X Copy Trader'; setTab(tab); }
       render(d);
       if (needTerms() && !termsLater && $('ov-terms').className !== 'ov on') showTerms();
     }).catch(function () {});

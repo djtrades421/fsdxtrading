@@ -2424,6 +2424,7 @@
       const n = (name || '').toLowerCase();
       if (!n) return '';
       if (n.includes('raven')) return 'Raven';
+      if (n.includes('copy trader') || n.includes('copier')) return 'Copy Trader';
       if (n.includes('nightwing')) return 'Nightwing';
       if (n.includes('site access') && n.includes('nexus')) return 'Nightwing';
       if (n.includes('lifetime') || isLifetime) return 'Lifetime';

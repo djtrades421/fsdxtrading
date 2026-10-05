@@ -414,7 +414,7 @@
     'use strict';
     var plan = null;
     try { plan = localStorage.getItem('fsdx_plan'); } catch (e) { return; }
-    if (plan !== 'site' && plan !== 'raven') return;
+    if (plan !== 'site' && plan !== 'raven' && plan !== 'copier') return;   // copier = Nightwing walkthrough
 
     var IS_RAVEN = plan === 'raven';
 
@@ -433,7 +433,7 @@
       'step-6': 'No indicators to add. Your tools are the platform and Nexus.'
     };
 
-    var TIER_NAME = IS_RAVEN ? 'Raven' : 'Nightwing';
+    var TIER_NAME = IS_RAVEN ? 'Raven' : plan === 'copier' ? 'Copy Trader' : 'Nightwing';
 
     function mark() {
       Object.keys(NOT_YOURS).forEach(function (id) {

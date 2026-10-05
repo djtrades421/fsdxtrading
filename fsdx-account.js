@@ -194,7 +194,7 @@
    *  (Nightwing or Raven). An unknown or missing plan is never locked out —
    *  a mapping gap must not cost a VIP member their tools. */
   function lacksFeature(plan, feature) {
-    if (plan !== 'site' && plan !== 'raven') return false;
+    if (plan !== 'site' && plan !== 'raven' && plan !== 'copier') return false;
     return feature === 'scout';
   }
 

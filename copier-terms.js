@@ -20,6 +20,7 @@ window.FSDX_COPIER_TERMS = {
   points: [
     "The Copy Trader places <strong>real orders</strong> on your accounts. Use it at your own risk. <strong>Test on demo or sim accounts first.</strong>",
     "It copies trades <strong>between Tradovate accounts you own or control</strong>. It never copies FSD-X, another member, or a signal provider. It is <strong>not a signal service, not a managed account, and not financial advice</strong>.",
+    "Your plan includes the Copy Trader, the FSD-X member platform, and Nexus 2.0. It <strong>does not include</strong> the FSD-X indicator suite, the Auto-Trader, Scout Alerts, the live trade room, or the VIP Discord channels.",
     "Software can fail. Outages, disconnects, API limits, delayed or rejected orders, partial fills, slippage, and <strong>missed or duplicate orders</strong> can all happen.",
     "Followers copy the leader's <strong>position only, not its stop or target orders</strong>. If the copier stops for any reason, <strong>followers have no stop of their own</strong>. Risk limits are checked on a timer and <strong>can be exceeded</strong> in fast markets.",
     "<strong>You</strong> are responsible for every account and position. Watch your accounts while it runs and be ready to <strong>flatten manually</strong> on Tradovate at any time.",
