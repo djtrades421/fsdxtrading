@@ -103,5 +103,12 @@
   X-Robots-Tag: noindex, nofollow
 /copier-terms.html
   X-Robots-Tag: noindex, nofollow
+# copier.html gets a second, stricter Content-Security-Policy. Pages joins a
+# repeated header with a comma, which browsers treat as TWO policies and
+# enforce both, so this can only tighten the site-wide one: no third-party
+# scripts, no images or calls to outside hosts (nothing to leak a token to),
+# and no framing (no click-jacking the Arm / Exit buttons). If the copier page
+# ever loads something new from another host, add it here too.
 /copier.html
   X-Robots-Tag: noindex, nofollow
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self' https://nexus-validator.dfuentes4211.workers.dev; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'none'; form-action 'self'

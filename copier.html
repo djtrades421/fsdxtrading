@@ -347,6 +347,10 @@
     .tm-ok input { width: 18px; height: 18px; margin-top: 1px; flex: none; accent-color: var(--acc); cursor: pointer; }
     .tm-ok span { font-weight: 600; font-size: 13.5px; line-height: 1.45; }
     .tm-ver { font-size: 12px; color: var(--dim); margin-top: 12px; }
+    .st-code { width: 100%; height: 54px; border-radius: 12px; border: 1px solid var(--line); background: rgba(0,0,0,.3); color: var(--tx);
+               font: 800 26px/1 var(--mono); letter-spacing: .45em; text-align: center; }
+    .st-code:focus { outline: none; border-color: var(--acc); }
+    .st-err { color: var(--dn); font-size: 13px; min-height: 18px; margin-top: 8px; }
     .wz-foot { display: flex; align-items: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
   </style>
 
@@ -419,6 +423,7 @@
 
   <div class="ov" id="ov-pre"><div class="sheet" id="pre-body"></div></div>
   <div class="ov" id="ov-wz"><div class="sheet wide" id="wz-body"></div></div>
+  <div class="ov" id="ov-step" role="dialog" aria-modal="true"><div class="sheet" id="st-body"></div></div>
   <div class="ov" id="ov-terms" role="dialog" aria-modal="true" aria-labelledby="tm-title"><div class="sheet" id="tm-body"></div></div>
 
   <div class="modal" id="modal"><div class="box">
@@ -520,7 +525,7 @@
     busy = true;
     return api('/api/copier/action', body).then(function (d) {
       busy = false;
-      if (d.__s !== 200) { if (termsBlocked(d)) showTerms(); else toast(d.error || 'Failed', true); refresh(); return null; }
+      if (d.__s !== 200) { if (termsBlocked(d)) showTerms(); else if (stepBlocked(d)) showStep(d.code, function () { act(body, okMsg); }); else toast(d.error || 'Failed', true); refresh(); return null; }
       if (d.state) { d.state.configured = S ? S.configured : true; render(d.state, true); }
       if (okMsg) toast(okMsg);
       return d;
@@ -570,6 +575,54 @@
   function hideTerms() { $('ov-terms').className = 'ov'; }
   // true = go ahead; false = terms shown instead
   function termsGate() { if (!needTerms()) return true; showTerms(); return false; }
+
+  /* ── 2FA step-up ─────────────────────────────────────────────────────────
+     Connect, Arm and Live need a fresh authenticator code (once per 8h per
+     session). The server enforces it; this just asks at the right moment.
+     Admin sessions are exempt. Stopping never needs a code. */
+  var stepNext = null;
+  function stepBlocked(d) { return d && (d.code === 'stepup' || d.code === 'need2fa'); }
+  function secure(fn) {
+    var su = S && S.stepUp;
+    if (!su || !su.required) return fn();
+    if (!su.has2fa) return showStep('need2fa');
+    if (su.until && su.until > Date.now() + 5000) return fn();
+    showStep('stepup', fn);
+  }
+  function showStep(kind, then) {
+    stepNext = then || null;
+    var b = $('st-body');
+    if (kind === 'need2fa') {
+      b.innerHTML = '<div class="eyebrow">Security</div><h2>Turn on two-factor first</h2>'
+        + '<p class="lead">Connecting a Tradovate login, arming, and live orders need a code from your authenticator app. Turn on two-factor in your Profile, then come back.</p>'
+        + '<div class="wz-foot"><button class="btn" id="st-no">Not now</button><span class="sp"></span><a class="btn pri" href="profile.html">Open Profile</a></div>';
+    } else {
+      b.innerHTML = '<div class="eyebrow">Security check</div><h2>Enter your 2FA code</h2>'
+        + '<p class="lead">The 6-digit code from your authenticator app. Good for 8 hours on this device.</p>'
+        + '<input class="st-code" id="st-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••">'
+        + '<div class="st-err" id="st-err"></div>'
+        + '<div class="wz-foot"><button class="btn" id="st-no">Cancel</button><span class="sp"></span><button class="btn pri" id="st-yes">Confirm</button></div>';
+      var go = function () {
+        var code = ($('st-code').value || '').replace(/\D/g, '');
+        if (code.length !== 6) { $('st-err').textContent = 'Enter all 6 digits.'; return; }
+        $('st-yes').disabled = true;
+        api('/api/copier/action', { op: 'stepUp', code: code }).then(function (d) {
+          $('st-yes').disabled = false;
+          if (d.__s !== 200) { if (d.code === 'need2fa') return showStep('need2fa'); $('st-err').textContent = d.error || 'Could not verify'; $('st-code').select(); return; }
+          if (S && S.stepUp) S.stepUp.until = d.until;
+          $('ov-step').className = 'ov';
+          toast('Verified');
+          var f = stepNext; stepNext = null; if (f) f();
+        }).catch(function () { $('st-yes').disabled = false; $('st-err').textContent = 'Connection error'; });
+      };
+      $('st-yes').onclick = go;
+      $('st-code').onkeydown = function (e) { if (e.key === 'Enter') go(); };
+      $('st-code').oninput = function (e) { var v = e.target.value.replace(/\D/g, ''); e.target.value = v; if (v.length === 6) go(); };
+    }
+    $('st-no').onclick = function () { stepNext = null; $('ov-step').className = 'ov'; };
+    $('ov-step').className = 'ov on';
+    var inp = $('st-code'); if (inp) setTimeout(function () { inp.focus(); }, 50);
+  }
 
   /* ── derived ── */
   function groupStatus(g) {
@@ -1266,13 +1319,13 @@
 
   /* ── events ── */
   $('tabs').addEventListener('click', function (e) { var b = e.target.closest('button[data-tab]'); if (b) setTab(b.dataset.tab); });
-  function armClick() { if (!S) return; if (S.armed) return act({ op: 'disarm' }, 'Disarmed — positions left as they are'); if (!termsGate()) return; openPreflight(); }
+  function armClick() { if (!S) return; if (S.armed) return act({ op: 'disarm' }, 'Disarmed — positions left as they are'); if (!termsGate()) return; secure(openPreflight); }
   $('b-arm').onclick = armClick; $('b-arm-m').onclick = armClick;
   $('t-dry').onchange = function (e) {
     if (e.target.checked) return act({ op: 'dryRun', on: true }, 'Dry run on');
     e.target.checked = true;
     if (!termsGate()) return;
-    confirmBox('Switch to LIVE orders?', 'Follower orders will be sent for real' + (S.armed ? ' from the next leader fill.' : ' once you arm.'), 'Go live').then(function (y) { if (y) act({ op: 'dryRun', on: false }, 'Live orders on'); });
+    secure(function () { confirmBox('Switch to LIVE orders?', 'Follower orders will be sent for real' + (S.armed ? ' from the next leader fill.' : ' once you arm.'), 'Go live').then(function (y) { if (y) act({ op: 'dryRun', on: false }, 'Live orders on'); }); });
   };
   document.querySelectorAll('[data-exit]').forEach(function (b) {
     b.onclick = function () {
@@ -1282,7 +1335,14 @@
   });
   function connect() {
     if (!termsGate()) return;
-    api('/api/copier/start', {}).then(function (r) { if (r.url) location.href = r.url; else if (termsBlocked(r)) showTerms(); else toast(r.error || 'Could not start', true); });
+    secure(function () {
+      api('/api/copier/start', {}).then(function (r) {
+        if (r.url) location.href = r.url;
+        else if (termsBlocked(r)) showTerms();
+        else if (stepBlocked(r)) showStep(r.code, connect);
+        else toast(r.error || 'Could not start', true);
+      });
+    });
   }
   function selKeys() { return Object.keys(selected).filter(function (k) { return selected[k] && acc(k); }); }
 
