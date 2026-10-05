@@ -422,8 +422,8 @@
   function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
   function posHtml(m) {
     var k = Object.keys(m || {});
-    if (!k.length) return '<span class="dim">flat</span>';
-    return '<span>' + k.map(function (s) { var q = m[s]; return '<span class="' + (q > 0 ? 'up' : 'dn') + '">' + (q > 0 ? '+' : '') + q + '</span> <span class="mut">' + esc(s) + '</span>'; }).join(' &nbsp;') + '</span>';
+    if (!k.length) return '<span class="dim">Flat</span>';
+    return '<span>' + k.map(function (s) { var q = m[s]; return '<span class="' + (q > 0 ? 'up' : 'dn') + '">' + (q > 0 ? 'Long ' : 'Short ') + Math.abs(q) + '</span> <span class="mut">' + esc(s) + '</span>'; }).join(' &nbsp;') + '</span>';
   }
   function acc(key) { return S.accounts.find(function (a) { return a.key === key; }); }
   function nm(a) { return a ? (a.cfg.nick || a.name) : '—'; }
@@ -485,7 +485,7 @@
     var la = acc(g.leader);
     if (la && la.cfg.halted) return { t: la.cfg.haltKind === 'passed' ? 'Leader passed · exits only' : 'Leader halted · exits only', c: la.cfg.haltKind === 'passed' ? 'info' : 'bad' };
     if (la && la.blocked) return { t: 'Leader: ' + la.blocked + ' · exits only', c: 'wrn' };
-    if (!g.inWindow) return { t: 'Outside window', c: 'wrn' };
+    if (!g.inWindow) return { t: 'Outside window · entries skipped', c: 'wrn' };
     return { t: 'Copying', c: 'on' };
   }
   function windowText(g) {
@@ -536,6 +536,7 @@
     if (a.blocked) return { dot: 'wrn', html: '<span style="color:#FCD34D">' + esc(a.blocked) + ' · exits only</span>' };
     if (f && f.sitting && f.sitting.length) return { dot: 'wrn', html: '<span class="mut">Sitting out ' + esc(f.sitting.join(', ')) + '</span>' };
     if (a.role === 'leader') return { dot: S.armed ? 'info' : 'off', html: '<span class="blue">Leader</span>' };
+    if (a.role === 'follower' && S.armed && g.enabled && g.window && g.window.on && !g.inWindow) return { dot: 'wrn', html: '<span class="pz">Outside window</span><div class="sub">Entries skipped · exits still copy</div>' };
     if (a.role === 'follower') return { dot: S.armed && g.enabled ? 'ok' : 'off', html: S.armed && g.enabled ? '<span class="up">Ready</span>' : '<span class="mut">Idle</span>' };
     return { dot: 'off', html: '<span class="dim">Not in a group</span>' };
   }
@@ -626,10 +627,13 @@
     var sp = avg(fol.map(function (a) { return a.cfg.speedAvg; })), sl = avg(fol.map(function (a) { return a.cfg.slipAvg; }));
     var p95 = (function () { var v = fol.map(function (a) { return a.cfg.speedAvg; }).filter(function (x) { return x != null; }).sort(function (a, b) { return a - b; }); return v.length ? v[Math.min(v.length - 1, Math.floor(v.length * .95))] : null; })();
     var halted = fol.filter(function (a) { return a.cfg.halted && a.cfg.haltKind !== 'passed'; }).length;
+    var leads = S.accounts.filter(function (a) { return a.role === 'leader'; });
+    var allIn = leads.concat(fol);
     var html = '<div class="kpis">'
-      + kpi('Followers · day', pnl(sum(fol, 'dayPnL')), 'Open ' + strip(pnl(sum(fol, 'openPnL'))))
-      + kpi('Funded · day', pnl(sum(ofType('funded'), 'dayPnL')), plural(ofType('funded').length, 'account'))
-      + kpi('Eval · day', pnl(sum(ofType('eval'), 'dayPnL')), plural(ofType('eval').length, 'account'))
+      + kpi('Total P&amp;L · today', pnl(sum(allIn, 'dayPnL')), 'Leaders ' + strip(pnl(sum(leads, 'dayPnL'))) + ' · followers ' + strip(pnl(sum(fol, 'dayPnL'))))
+      + kpi('Followers · today', pnl(sum(fol, 'dayPnL')), 'Open ' + strip(pnl(sum(fol, 'openPnL'))) + ' · ' + plural(fol.length, 'account'))
+      + (ofType('funded').length ? kpi('Funded · today', pnl(sum(ofType('funded'), 'dayPnL')), plural(ofType('funded').length, 'account')) : '')
+      + (ofType('eval').length ? kpi('Eval · today', pnl(sum(ofType('eval'), 'dayPnL')), plural(ofType('eval').length, 'account')) : '')
       + kpi('Copy speed', sp == null ? '<span class="dim">—</span>' : Math.round(sp) + ' ms', p95 == null ? 'leader fill → follower order' : 'slowest account ' + p95 + ' ms')
       + kpi('Slippage', sl == null ? '<span class="dim">—</span>' : (sl > 0 ? '+' : '') + sl.toFixed(2) + ' t', 'avg per entry fill, ticks')
       + kpi('Halted', '<span class="' + (halted ? 'dn' : '') + '">' + halted + '</span>', halted ? 'see Accounts' : 'all clear')
@@ -658,6 +662,7 @@
         + '</tr>';
     }).join('');
     var trades = g.followers.map(function (f) { var a = acc(f.key); return a ? a.tradesToday : 0; });
+    var gAccts = (la ? [la] : []).concat(g.followers.map(function (f) { return acc(f.key); }).filter(Boolean));
     return '<div class="card">'
       + '<div class="gl-top"><h3 style="margin:0;font-size:17px;font-weight:800">' + esc(g.name) + '</h3><span class="chip ' + st.c + '">' + (st.c === 'on' ? '<i></i>' : '') + st.t + '</span>'
       + '<span class="sub" style="font-size:12.5px">' + esc(windowText(g)) + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + '</span>'
@@ -666,8 +671,10 @@
       + '<button class="btn sm ghost-dn" data-flat-group="' + g.id + '">Flatten group</button></div>'
       + '<div class="gl-leader"><div><div class="lbl">Leader</div><div class="an" style="margin-top:4px">' + (la ? esc(nm(la)) + ' ' + envTag(la) : '<span class="dim">not set</span>') + '</div></div>'
       + '<div class="bigpos">' + posHtml(S.armed ? g.leaderPos : (la && la.positions)) + '</div>'
-      + (la ? '<div class="mut" style="font-size:13px">Day ' + strip(pnl(la.dayPnL)) + ' · open ' + strip(pnl(la.openPnL)) + '</div>' : '')
-      + '<span class="sp"></span><div style="text-align:right"><div class="lbl">Entries today</div><div style="margin-top:4px;font-weight:700">' + (trades.length ? Math.max.apply(null, trades) : 0) + '</div></div></div>'
+      + (la ? '<div class="mut" style="font-size:13px">Leader today ' + strip(pnl(la.dayPnL)) + ' · open ' + strip(pnl(la.openPnL)) + '</div>' : '')
+      + '<span class="sp"></span>'
+      + '<div style="text-align:right"><div class="lbl">Group P&amp;L today</div><div style="margin-top:4px;font-weight:800;font-size:18px">' + pnl(sum(gAccts, 'dayPnL')) + '</div><div class="sub">open ' + strip(pnl(sum(gAccts, 'openPnL'))) + ' · ' + plural(gAccts.length, 'account') + '</div></div>'
+      + '<div style="text-align:right;margin-left:22px"><div class="lbl">Entries today</div><div style="margin-top:4px;font-weight:700;font-size:18px">' + (trades.length ? Math.max.apply(null, trades) : 0) + '</div></div></div>'
       + (rows ? '<div class="tw"><table class="t cards"><thead><tr><th>Account</th><th>Size</th><th>Position</th><th class="r">Day</th><th>Today\'s limits</th><th class="r">Speed</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
               : '<div class="empty" style="padding:18px">No followers. Add them under Groups.</div>')
       + '</div>';
