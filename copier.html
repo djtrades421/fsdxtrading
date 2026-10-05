@@ -153,12 +153,22 @@
     table.t td { padding: 10px 8px; border-top: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
     table.t td.num { font-size: 14px; font-weight: 500; }
     table.t tr.tot td { border-top: 1px solid color-mix(in srgb, var(--tx) 22%, transparent); font-weight: 700; }
-    table.t tr.halted td { background: rgba(248,113,113,.045); }
+    table.t tr.halted td { background: rgba(248,113,113,.09); }
+    table.t tr.halted td.first, table.t tr.halted td:first-child { box-shadow: inset 3px 0 0 #F87171; }
+    table.t tr.stopped td { background: rgba(252,211,77,.05); }
+    table.t tr.stopped td:first-child { box-shadow: inset 3px 0 0 #FCD34D; }
+    table.t tr.oos td { background: rgba(252,211,77,.08); }
+    table.t tr.oos td:first-child { box-shadow: inset 3px 0 0 #FCD34D; }
+    table.t tr.intrade td { background: rgba(74,222,128,.06); }
+    table.t tr.intrade td:first-child { box-shadow: inset 3px 0 0 #4ADE80; }
     table.t tr.paused td { opacity: .55; }
     table.t tr.paused td:last-child, table.t tr.paused td[data-l="Status"] { opacity: 1; }
     .sz { display: inline-block; min-width: 38px; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 13px; text-align: center; background: rgba(255,255,255,.06); font-variant-numeric: tabular-nums; }
     table.t tr.leadrow td { background: rgba(147,197,253,.05); }
     table.t tr.leadrow td.first { box-shadow: inset 3px 0 0 #93C5FD; }
+    table.t tr.leadrow.intrade td { background: rgba(74,222,128,.06); }
+    table.t tr.leadrow.halted td { background: rgba(248,113,113,.09); }
+    table.t tr.leadrow.halted td.first { box-shadow: inset 3px 0 0 #F87171; }
     .tag.lead { color: #93C5FD; background: rgba(147,197,253,.12); border-color: transparent; }
     table.ct { width: 100%; border-collapse: collapse; font-size: 13px; }
     table.ct th { text-align: left; font: 600 11px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--dim); padding: 6px 4px; border-bottom: 1px solid var(--line); }
@@ -540,7 +550,8 @@
     if (c.halted && c.haltKind === 'passed') return { dot: 'info', html: '<span class="blue">Passed — locked</span>' };
     if (c.halted && c.haltKind === 'daily' && /profit/.test(c.haltReason || '')) return { dot: 'info', html: '<span class="up">Done for today</span><div class="sub">hit max profit</div>' };
     if (c.halted && c.haltKind === 'daily') return { dot: 'bad', html: '<span class="dn">Stopped for today</span><div class="sub" style="white-space:normal;max-width:220px">' + esc(c.haltReason) + '</div>' };
-    if (c.halted) return { dot: 'bad', html: '<div class="hr">' + esc(c.haltReason) + '</div>' };
+    if (c.halted) return { dot: 'bad', html: '<span class="dn" style="font-weight:700">' + (c.haltKind === 'breaker' ? 'Safety stop · flattened' : c.haltKind === 'cap' ? 'Stopped · max per order' : 'Stopped') + '</span><div class="sub" style="white-space:normal;max-width:240px">' + esc(c.haltReason) + '</div>' };
+    if (a.oos) return { dot: 'wrn', html: '<span style="color:#FCD34D;font-weight:700">Out of sync</span><div class="sub">Doesn\'t match the leader</div>' };
     var g = a.groupId && S.groups.find(function (x) { return x.id === a.groupId; });
     var f = g && g.followers.find(function (x) { return x.key === a.key; });
     if (f && !f.enabled) return { dot: 'wrn', html: '<span class="pz">Paused</span><div class="sub">No new trades · exits still copy</div>' };
@@ -570,12 +581,21 @@
   function avg(arr) { var v = arr.filter(function (x) { return x != null; }); return v.length ? v.reduce(function (s, x) { return s + x; }, 0) / v.length : null; }
 
   /* ── alerts (derived; dismissible) ── */
+  function haltTitle(a) {
+    var k = a.cfg.haltKind;
+    return k === 'cap' ? 'stopped by max per order' : k === 'breaker' ? 'safety stop' : k === 'daily' ? 'stopped for today' : k === 'passed' ? 'passed' : 'stopped';
+  }
   function alertList() {
     var out = [];
     S.accounts.forEach(function (a) {
       if (!a.role || a.role === 'leader') return;
       if (a.cfg.halted && a.cfg.haltKind === 'passed') out.push({ id: 'p' + a.key + a.cfg.haltReason, c: 'info', m: nm(a) + ' passed — ' + a.cfg.haltReason + '. Locked, no new trades.' });
-      else if (a.cfg.halted) out.push({ id: 'h' + a.key + a.cfg.haltReason, c: 'dn', m: nm(a) + ' halted — ' + a.cfg.haltReason + '.', view: a.key });
+      else if (a.cfg.halted) {
+        var hk = a.cfg.haltKind, hm = haltTitle(a) + ' — ' + a.cfg.haltReason + '.';
+        if (hk === 'daily') out.push({ id: 'h' + a.key + a.cfg.haltReason, c: 'wrn', m: nm(a) + ': ' + hm + ' Back after the 5pm CT roll.', view: a.key });
+        else out.push({ id: 'h' + a.key + a.cfg.haltReason, c: 'dn', m: nm(a) + ': ' + hm + (hk === 'breaker' ? ' It was flattened.' : ' Exits still copy.'), view: a.key, reset: a.key, raise: hk === 'cap' ? a.groupId : null, flat: hk !== 'breaker' && Object.keys(a.positions || {}).length ? a.key : null });
+      }
+      else if (a.oos) out.push({ id: 'o' + a.key + Math.floor(Date.now() / 300000), c: 'wrn', m: nm(a) + ' doesn\'t match its leader\'s position. ' + (S.settings && S.settings.autoFix ? 'Auto-fix will correct it in about 20s.' : 'Turn on auto-fix in Setup, or flatten it.'), view: a.key, flat: a.key });
       else if (a.cfg.speedAvg > 300) out.push({ id: 's' + a.key, c: 'wrn', m: nm(a) + ' is copying slowly (' + a.cfg.speedAvg + ' ms avg).' });
     });
     if (S.armed) (S.feeds || []).forEach(function (f) { if (!f.live) out.push({ id: 'f' + f.key + Math.floor(Date.now() / 600000), c: 'wrn', m: 'Leader feed reconnecting: ' + f.label + '. Followers catch up automatically.' }); });
@@ -588,6 +608,9 @@
   function renderAlerts() {
     $('alerts').innerHTML = alertList().map(function (x) {
       return '<div class="alert ' + x.c + '"><span class="dot"></span><span class="m">' + esc(x.m) + '</span>'
+        + (x.raise ? '<button class="btn xs pri" data-raise="' + esc(x.raise) + '">Raise limit</button>' : '')
+        + (x.reset ? '<button class="btn xs" data-reset-acct="' + esc(x.reset) + '">Reset</button>' : '')
+        + (x.flat ? '<button class="btn xs ghost-dn" data-flat-acct="' + esc(x.flat) + '">Flatten</button>' : '')
         + (x.view ? '<button class="btn xs" data-view-acct="' + esc(x.view) + '">View</button>' : '')
         + '<button class="x" aria-label="Dismiss" data-dismiss="' + esc(x.id) + '">×</button></div>';
     }).join('');
@@ -663,7 +686,10 @@
     function row(a, isLead, f) {
       var as = isLead ? leadStatus(g, a) : acctStatus(a);
       var pos = isLead && S.armed ? g.leaderPos : a.positions;
-      return '<tr class="' + (isLead ? 'leadrow' : (a.cfg.halted && a.cfg.haltKind !== 'passed' ? 'halted' : (f && !f.enabled ? 'paused' : ''))) + '">'
+      var inTrade = Object.keys(pos || {}).length > 0;
+      var cls = a.cfg.halted && a.cfg.haltKind !== 'passed' ? (a.cfg.haltKind === 'daily' ? 'stopped' : 'halted')
+        : a.oos ? 'oos' : (f && !f.enabled) ? 'paused' : inTrade ? 'intrade' : '';
+      return '<tr class="' + (isLead ? 'leadrow ' : '') + cls + '">'
         + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + as.dot + '"></span><span class="an">' + esc(nm(a)) + '</span>' + (isLead ? '<span class="tag lead">Leader</span>' : typeTag(a.cfg.type)) + '</div><div class="sub" style="margin-left:16px">' + esc(a.name) + (a.cfg.firm ? ' · ' + esc(a.cfg.firm) : '') + '</div></td>'
         + '<td data-l="Size">' + (isLead ? '<span class="dim">—</span>' : sizeCell(a)) + '</td>'
         + '<td data-l="Position" class="num">' + posHtml(pos) + '</td>'
@@ -671,7 +697,7 @@
         + '<td data-l="Day P&amp;L" class="num r">' + pnl(a.dayPnL) + '</td>'
         + '<td data-l="Today\'s limits">' + limitsCell(a) + '</td>'
         + '<td data-l="Status">' + as.html + '</td>'
-        + '<td data-l="" class="r"><div class="row" style="flex-wrap:nowrap;justify-content:flex-end">' + (isLead ? '' : pauseBtn(a)) + '<button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></div></td>'
+        + '<td data-l="" class="r"><div class="row" style="flex-wrap:nowrap;justify-content:flex-end">' + (a.cfg.halted && a.cfg.haltKind !== 'daily' ? '<button class="btn xs" data-reset-acct="' + esc(a.key) + '">' + (a.cfg.haltKind === 'passed' ? 'Unlock' : 'Reset') + '</button>' : '') + (isLead ? '' : pauseBtn(a)) + '<button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></div></td>'
         + '</tr>';
     }
     var fl = g.followers.map(function (f) { var a = acc(f.key); return a ? { a: a, f: f } : null; }).filter(Boolean);
@@ -683,7 +709,7 @@
       + '<td data-l="Open P&amp;L" class="num r">' + pnl(sum(gAccts, 'openPnL')) + '</td><td data-l="Day P&amp;L" class="num r">' + pnl(sum(gAccts, 'dayPnL')) + '</td><td colspan="3"></td></tr>' : '';
     return '<div class="card">'
       + '<div class="gl-top"><h3 style="margin:0;font-size:17px;font-weight:800">' + esc(g.name) + '</h3><span class="chip ' + st.c + '">' + (st.c === 'on' ? '<i></i>' : '') + st.t + '</span>'
-      + '<span class="sub" style="font-size:12.5px">' + esc(windowText(g)) + ' · max ' + g.maxQty + ' per order' + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + ' · ' + entries + (entries === 1 ? ' entry' : ' entries') + ' today' + '</span>'
+      + '<span class="sub" style="font-size:12.5px">' + esc(windowText(g)) + (g.maxQty ? ' · max ' + g.maxQty + ' per order' : '') + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + ' · ' + entries + (entries === 1 ? ' entry' : ' entries') + ' today' + '</span>'
       + '<span class="sp"></span>'
       + '<button class="btn sm" data-gtoggle="' + g.id + '">' + (g.enabled ? 'Pause' : 'Resume') + '</button>'
       + '<button class="btn sm ghost-dn" data-flat-group="' + g.id + '">Flatten group</button></div>'
@@ -776,8 +802,8 @@
         + '<label class="tog" style="margin-top:9px"><input type="checkbox" data-gw="flattenAtEnd"' + (w.flattenAtEnd ? ' checked' : '') + (w.on ? '' : ' disabled') + '><b></b><span>Flatten followers at end</span></label></div>'
         + '<div class="rule"><span class="lbl">Direction</span><div class="seg">' + ['both', 'long', 'short'].map(function (d) { return '<button data-dir="' + d + '" class="' + (g.direction === d ? 'on' : '') + '">' + d + '</button>'; }).join('') + '</div>'
         + '<span class="lbl" style="margin-top:12px">Symbols</span><input class="inp" style="width:100%" data-gf="symbols" placeholder="All — or e.g. MNQ, NQ" value="' + esc(g.symbols) + '"></div>'
-        + '<div class="rule"><span class="lbl">Max contracts per order</span><input class="inp n" type="number" min="1" max="200" data-gf="maxQty" value="' + g.maxQty + '">'
-        + '<div class="note" style="margin-top:6px">An opening order bigger than this halts that account (exits still copy).</div></div>'
+        + '<div class="rule"><span class="lbl">Max contracts per order</span><input class="inp n" type="number" min="0" max="500" data-gf="maxQty" placeholder="No limit" value="' + (g.maxQty || '') + '">'
+        + '<div class="note" style="margin-top:6px">Optional fat-finger guard. If a follower would open more than this in one order, it stops (exits still copy). Blank = no limit.</div></div>'
         + '</div>'
         + '<div class="card-h" style="margin-bottom:6px"><span class="lbl">Followers · ' + g.followers.length + '</span><span class="sp"></span>'
         + '<select class="sel" data-addf' + (addOpts.length ? '' : ' disabled') + '><option value="">' + (addOpts.length ? 'Add follower…' : 'No free accounts') + '</option>'
@@ -1029,8 +1055,26 @@
       + '<div class="card"><div class="card-h"><h3>Engine settings</h3></div>'
       + '<label class="tog" style="display:flex;margin-bottom:12px"><input type="checkbox" data-set="autoFix"' + (s.autoFix ? ' checked' : '') + '><b></b><span>Auto-fix out-of-sync followers <span class="dim">(after 20s)</span></span></label>'
       + '<label class="tog" style="display:flex;margin-bottom:14px"><input type="checkbox" data-set="joinOpen"' + (s.joinOpen ? ' checked' : '') + '><b></b><span>On arm, join a trade the leader is already in</span></label>'
-      + '<div class="row"><span style="flex:1">Circuit breaker — max automatic orders per account per minute</span><input class="inp n" type="number" min="3" max="200" data-set="maxOrdersPerMin" value="' + s.maxOrdersPerMin + '"></div>'
-      + '<p class="note"><b class="acc">Flatten buttons always send real orders</b>, even in dry run. Disarm stops copying and leaves positions open. Exit everything stops copying and closes every leader and follower.</p></div></div>';
+      + '<p class="note"><b class="acc">Flatten buttons always send real orders</b>, even in dry run. Disarm stops copying and leaves positions open. Exit everything stops copying and closes every leader and follower.</p></div>'
+      + safetyCard() + '</div>';
+  }
+
+  function safetyCard() {
+    var fol = S.accounts.filter(function (a) { return a.role === 'follower'; });
+    var n = function (fn) { return fol.filter(fn).length; };
+    var lim = n(function (a) { return a.cfg.dailyLoss > 0 || a.cfg.dailyProfit > 0; });
+    var pass = n(function (a) { return a.cfg.size > 0 && a.cfg.target > 0; });
+    var ptl = n(function (a) { return a.cfg.perTradeLoss > 0; });
+    var caps = S.groups.map(function (g) { return esc(g.name) + ': ' + (g.maxQty ? g.maxQty : 'no limit'); }).join(' · ') || 'no groups';
+    var row = function (on, t, d) { return '<div class="guard"><span class="dot ' + (on ? 'ok' : 'off') + '"></span><div><b>' + t + '</b><span>' + d + '</span></div></div>'; };
+    return '<div class="card"><div class="card-h"><h3>Safety</h3></div>'
+      + row(true, 'Safety stop · always on', 'If an account\'s orders run ahead of its leader (4 in a row with no leader move) or pass 120 a minute, it\'s flattened and stopped. Fast normal trading never trips it.')
+      + row(S.groups.some(function (g) { return g.maxQty > 0; }), 'Max contracts per order', caps + ' · change under Groups')
+      + row(lim > 0, 'Daily profit / loss limits', lim + ' of ' + fol.length + ' followers · set under Accounts or Templates')
+      + row(ptl > 0, 'Max loss per trade', ptl + ' of ' + fol.length + ' followers')
+      + row(pass > 0, 'Pass protection', pass + ' of ' + fol.length + ' followers')
+      + row(!!(S.settings && S.settings.autoFix), 'Auto-fix out-of-sync followers', S.settings && S.settings.autoFix ? 'On — corrects a mismatch after 20s' : 'Off — mismatches are flagged, not fixed')
+      + '</div>';
   }
 
   /* ── PREFLIGHT ── */
@@ -1098,7 +1142,8 @@
       body = '<h2>Size and risk</h2><p class="lead">Applies to all ' + plural(g.followers.length, 'follower') + ' in ' + esc(g.name) + '. Fine-tune any account later under Accounts.</p>'
         + '<div class="rules"><div class="rule"><span class="lbl">Multiplier</span><input class="inp n" type="number" min="0.25" step="0.25" id="wz-mult" value="' + wz.mult + '"><div class="note">Leader 1 contract → each follower ' + wz.mult + '.</div></div>'
         + '<div class="rule"><span class="lbl">Risk template</span><select class="sel" style="width:100%" id="wz-tpl"><option value="">None — I\'ll set rules myself</option>' + S.templates.map(function (t) { return '<option value="' + esc(t.id) + '"' + (wz.template === t.id ? ' selected' : '') + '>' + esc(t.name) + '</option>'; }).join('') + '</select>'
-        + '<div class="note">' + (S.templates.length ? 'Copies the template\'s rules onto every follower.' : 'No templates yet — make one under Templates (e.g. "Apex 50K Eval").') + '</div></div></div>';
+        + '<div class="note">' + (S.templates.length ? 'Copies the template\'s rules onto every follower.' : 'No templates yet — make one under Templates (e.g. "Apex 50K Eval").') + '</div></div>'
+        + '<div class="rule"><span class="lbl">Max contracts per order <span class="dim">(optional)</span></span><input class="inp n" type="number" min="0" max="500" id="wz-max" placeholder="No limit" value="' + (g.maxQty || '') + '"><div class="note">Fat-finger guard. If a follower would open more than this in one order, it stops instead. Blank = no limit.</div></div></div>';
       next = '<button class="btn pri" data-wz-apply>Apply &amp; continue</button>';
     } else if (wz.step === 4) {
       var dry = S.log.filter(function (l) { return l.lvl === 'dry' || l.lvl === 'lead'; }).slice(-6).reverse();
@@ -1182,6 +1227,8 @@
       return act({ op: 'updateGroup', id: gw.id, patch: { window: { days: days } } }, 'Saved');
     }
     // accounts
+    if (d.resetAcct) return act({ op: 'updateAccount', key: d.resetAcct, patch: { resetHalt: true } }, 'Reset — copying again');
+    if (d.raise) { setTab('groups'); return; }
     if (d.ctall !== undefined) { ctAll = !ctAll; return renderLive(); }
     if (d.fpause) {
       var pg = S.groups.find(function (x) { return x.id === d.fpause; }), pf = pg && pg.followers.find(function (x) { return x.key === d.fkey; });
@@ -1231,7 +1278,8 @@
       var g = wzGroup(), keys = g.followers.map(function (f) { return f.key; });
       wz.mult = +($('wz-mult') || {}).value || 1; wz.template = ($('wz-tpl') || {}).value || '';
       var p = { mult: wz.mult }; if (wz.template) p.template = wz.template;
-      return act({ op: 'bulk', keys: keys, patch: p }, 'Applied').then(function (r) { if (r) { wz.step = 4; renderWz(); } });
+      var mx = Math.max(0, parseInt(($('wz-max') || {}).value, 10) || 0);
+      return act({ op: 'updateGroup', id: g.id, patch: { maxQty: mx } }).then(function () { return act({ op: 'bulk', keys: keys, patch: p }, 'Applied'); }).then(function (r) { if (r) { wz.step = 4; renderWz(); } });
     }
     if (d.wzDryarm !== undefined) return act({ op: 'dryRun', on: true }).then(function () { return act({ op: 'arm' }, 'Armed — dry run'); }).then(renderWz);
     if (d.wzLive !== undefined) {
@@ -1248,7 +1296,7 @@
     var t = e.target, d = t.dataset, v = t.type === 'checkbox' ? t.checked : t.value;
     var gc = t.closest('[data-gcard]'), tr = t.closest('tr');
     function done() { t.blur(); }
-    if (d.gf && gc) { var p = {}; p[d.gf] = d.gf === 'maxQty' ? +v : v; done(); return act({ op: 'updateGroup', id: gc.dataset.gcard, patch: p }, 'Saved'); }
+    if (d.gf && gc) { var p = {}; p[d.gf] = d.gf === 'maxQty' ? (Math.max(0, parseInt(v, 10) || 0)) : v; done(); return act({ op: 'updateGroup', id: gc.dataset.gcard, patch: p }, 'Saved'); }
     if (d.gw && gc) { var w = {}; w[d.gw] = v; done(); return act({ op: 'updateGroup', id: gc.dataset.gcard, patch: { window: w } }, 'Saved'); }
     if (d.addf !== undefined && gc && v) { done(); return act({ op: 'addFollower', groupId: gc.dataset.gcard, key: v }, 'Follower added'); }
     if (d.ff && tr) { var fp = {}; fp[d.ff] = t.type === 'checkbox' ? v : +v; done(); return act({ op: 'updateFollower', groupId: tr.dataset.g, key: tr.dataset.k, patch: fp }, 'Saved'); }
