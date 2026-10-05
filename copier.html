@@ -9,6 +9,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="copier-terms.js?v=20261005"></script>
   <!--
     FSD-X Copy Trader — control page. ADMIN ONLY.
     Not linked anywhere, not in the sitemap, noindex. Everyone sees the normal
@@ -327,6 +328,14 @@
     .pick label { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.2); cursor: pointer; }
     .pick label.on { border-color: color-mix(in srgb, var(--acc) 50%, transparent); background: var(--acc-bg); }
     .pick .nm { flex: 1; min-width: 0; } .pick .nm b { display: block; } .pick .nm span { display: block; font-size: 11.5px; color: var(--dim); }
+    /* terms gate */
+    .tm-pts { list-style: disc; margin: 0 0 18px; padding-left: 18px; display: flex; flex-direction: column; gap: 9px; color: var(--mut); font-size: 13.5px; line-height: 1.5; }
+    .tm-pts strong { color: var(--tx); font-weight: 700; }
+    .tm-pts a { color: #FF8A4C; text-decoration: underline; }
+    .tm-ok { display: flex; align-items: flex-start; gap: 11px; padding: 13px 14px; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,.03); cursor: pointer; user-select: none; }
+    .tm-ok input { width: 18px; height: 18px; margin-top: 1px; flex: none; accent-color: var(--acc); cursor: pointer; }
+    .tm-ok span { font-weight: 600; font-size: 13.5px; line-height: 1.45; }
+    .tm-ver { font-size: 12px; color: var(--dim); margin-top: 12px; }
     .wz-foot { display: flex; align-items: center; gap: 12px; margin-top: 24px; flex-wrap: wrap; }
   </style>
 
@@ -391,6 +400,7 @@
 
   <div class="ov" id="ov-pre"><div class="sheet" id="pre-body"></div></div>
   <div class="ov" id="ov-wz"><div class="sheet wide" id="wz-body"></div></div>
+  <div class="ov" id="ov-terms" role="dialog" aria-modal="true" aria-labelledby="tm-title"><div class="sheet" id="tm-body"></div></div>
 
   <div class="modal" id="modal"><div class="box">
     <h4 id="m-t"></h4><p id="m-p"></p>
@@ -491,12 +501,56 @@
     busy = true;
     return api('/api/copier/action', body).then(function (d) {
       busy = false;
-      if (d.__s !== 200) { toast(d.error || 'Failed', true); refresh(); return null; }
+      if (d.__s !== 200) { if (termsBlocked(d)) showTerms(); else toast(d.error || 'Failed', true); refresh(); return null; }
       if (d.state) { d.state.configured = S ? S.configured : true; render(d.state, true); }
       if (okMsg) toast(okMsg);
       return d;
     }).catch(function () { busy = false; toast('Connection error', true); return null; });
   }
+
+  /* ── terms gate ──────────────────────────────────────────────────────────
+     First visit, or the terms version changed → ask before anything that
+     starts copying. "Not now" closes it so Disarm / Flatten / Exit everything
+     stay reachable; the server still refuses connect, arm and go-live until
+     the current version is accepted, and those buttons reopen this. */
+  var termsLater = false;
+  function needTerms() { return !!(S && S.terms && !S.terms.accepted); }
+  function termsBlocked(d) { return d && (d.code === 'terms' || d.code === 'terms_stale' || /Copy Trader Terms/.test(d.error || '')); }
+  function showTerms() {
+    var T = window.FSDX_COPIER_TERMS, want = S && S.terms ? S.terms.version : null;
+    var body = $('tm-body');
+    if (!T || (want && T.version !== want)) {
+      body.innerHTML = '<div class="eyebrow">Terms updated</div><h2 id="tm-title">Reload to see the new terms</h2>' +
+        '<p class="lead">This page has an older copy of the Copy Trader Terms. Reload to review the current version.</p>' +
+        '<div class="wz-foot"><button class="btn" id="tm-later">Not now</button><button class="btn pri" id="tm-reload">Reload</button></div>';
+      $('tm-reload').onclick = function () { location.reload(); };
+    } else {
+      var again = S && S.terms && S.terms.acceptedVersion;
+      body.innerHTML = '<div class="eyebrow">' + (again ? 'Terms updated' : 'Before you start') + '</div>' +
+        '<h2 id="tm-title">' + esc(T.title) + '</h2>' +
+        '<p class="lead">' + (again ? 'The terms changed since you last accepted. Review and accept to keep connecting, arming, and going live.' : 'Accept these once before you connect a Tradovate login or arm the copier.') + '</p>' +
+        '<ul class="tm-pts">' + T.points.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' +   // trusted static text from copier-terms.js
+        '<label class="tm-ok"><input type="checkbox" id="tm-chk"><span>' + esc(T.agree) + '</span></label>' +
+        '<div class="tm-ver">Version ' + esc(T.version) + (again ? ' · you last accepted ' + esc(S.terms.acceptedVersion) : '') + '</div>' +
+        '<div class="wz-foot"><button class="btn" id="tm-later">Not now</button><span class="sp"></span><button class="btn pri" id="tm-yes" disabled>Accept</button></div>';
+      $('tm-chk').onchange = function (e) { $('tm-yes').disabled = !e.target.checked; };
+      $('tm-yes').onclick = function () {
+        if (!$('tm-chk').checked) return;
+        $('tm-yes').disabled = true;
+        api('/api/copier/action', { op: 'acceptTerms', version: T.version, agree: true }).then(function (d) {
+          if (d.__s !== 200) { toast(d.error || 'Could not save', true); if (d.code === 'terms_stale') showTerms(); else $('tm-yes').disabled = false; return; }
+          hideTerms();
+          if (d.state) { d.state.configured = S ? S.configured : true; render(d.state, true); }
+          toast('Terms accepted');
+        }).catch(function () { $('tm-yes').disabled = false; toast('Connection error', true); });
+      };
+    }
+    $('tm-later').onclick = function () { termsLater = true; hideTerms(); };
+    $('ov-terms').className = 'ov on';
+  }
+  function hideTerms() { $('ov-terms').className = 'ov'; }
+  // true = go ahead; false = terms shown instead
+  function termsGate() { if (!needTerms()) return true; showTerms(); return false; }
 
   /* ── derived ── */
   function groupStatus(g) {
@@ -1182,6 +1236,7 @@
       if (d.__s !== 200) return;
       if (!document.body.classList.contains('cp-on')) { document.body.classList.add('cp-on'); document.title = 'FSD-X Copier'; setTab(tab); }
       render(d);
+      if (needTerms() && !termsLater && $('ov-terms').className !== 'ov on') showTerms();
     }).catch(function () {});
   }
   function start() { stop(); pollT = setInterval(function () { if (!document.hidden && !busy) refresh(); }, 2000); setInterval(tickClock, 1000); tickClock(); }
@@ -1189,11 +1244,12 @@
 
   /* ── events ── */
   $('tabs').addEventListener('click', function (e) { var b = e.target.closest('button[data-tab]'); if (b) setTab(b.dataset.tab); });
-  function armClick() { if (!S) return; if (S.armed) return act({ op: 'disarm' }, 'Disarmed — positions left as they are'); openPreflight(); }
+  function armClick() { if (!S) return; if (S.armed) return act({ op: 'disarm' }, 'Disarmed — positions left as they are'); if (!termsGate()) return; openPreflight(); }
   $('b-arm').onclick = armClick; $('b-arm-m').onclick = armClick;
   $('t-dry').onchange = function (e) {
     if (e.target.checked) return act({ op: 'dryRun', on: true }, 'Dry run on');
     e.target.checked = true;
+    if (!termsGate()) return;
     confirmBox('Switch to LIVE orders?', 'Follower orders will be sent for real' + (S.armed ? ' from the next leader fill.' : ' once you arm.'), 'Go live').then(function (y) { if (y) act({ op: 'dryRun', on: false }, 'Live orders on'); });
   };
   document.querySelectorAll('[data-exit]').forEach(function (b) {
@@ -1202,7 +1258,10 @@
         .then(function (y) { if (y) act({ op: 'exitAll' }, 'Everything flattened · disarmed'); });
     };
   });
-  function connect() { api('/api/copier/start', {}).then(function (r) { if (r.url) location.href = r.url; else toast(r.error || 'Could not start', true); }); }
+  function connect() {
+    if (!termsGate()) return;
+    api('/api/copier/start', {}).then(function (r) { if (r.url) location.href = r.url; else if (termsBlocked(r)) showTerms(); else toast(r.error || 'Could not start', true); });
+  }
   function selKeys() { return Object.keys(selected).filter(function (k) { return selected[k] && acc(k); }); }
 
   document.addEventListener('click', function (e) {
@@ -1361,7 +1420,7 @@
   refresh().then(function () {
     if (!document.body.classList.contains('cp-on')) return;
     start();
-    if (S && !S.groups.length && !S.armed && cameBack !== 'error') openWizard();
+    if (S && !S.groups.length && !S.armed && cameBack !== 'error' && !needTerms()) openWizard();
   });
 })();
 </script>

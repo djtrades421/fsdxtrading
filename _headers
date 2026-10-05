@@ -94,3 +94,14 @@
 
 /*.csv
   Cache-Control: public, max-age=86400
+
+# ── Copy Trader — not launched ─────────────────────────────────────────────
+# Hidden until Tradovate/NinjaTrader approval. Pages also carry a noindex meta
+# tag; this covers crawlers that skip the HTML. Remove copy-trader.html and
+# copier-terms.html from here at launch. copier.html stays noindex for good.
+/copy-trader.html
+  X-Robots-Tag: noindex, nofollow
+/copier-terms.html
+  X-Robots-Tag: noindex, nofollow
+/copier.html
+  X-Robots-Tag: noindex, nofollow
