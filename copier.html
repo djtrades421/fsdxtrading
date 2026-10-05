@@ -157,6 +157,17 @@
     table.t tr.paused td { opacity: .55; }
     table.t tr.paused td:last-child, table.t tr.paused td[data-l="Status"] { opacity: 1; }
     .sz { display: inline-block; min-width: 38px; padding: 2px 8px; border-radius: 6px; font-weight: 700; font-size: 13px; text-align: center; background: rgba(255,255,255,.06); font-variant-numeric: tabular-nums; }
+    table.t tr.leadrow td { background: rgba(147,197,253,.05); }
+    table.t tr.leadrow td.first { box-shadow: inset 3px 0 0 #93C5FD; }
+    .tag.lead { color: #93C5FD; background: rgba(147,197,253,.12); border-color: transparent; }
+    table.ct { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.ct th { text-align: left; font: 600 11px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--dim); padding: 6px 4px; border-bottom: 1px solid var(--line); }
+    table.ct td { padding: 8px 4px; border-top: 1px solid rgba(120,160,210,.10); white-space: nowrap; }
+    table.ct td:first-child { max-width: 140px; overflow: hidden; text-overflow: ellipsis; }
+    table.ct .r { text-align: right; }
+    .duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; margin-bottom: 14px; align-items: start; }
+    .duo > .card, .stack > .card + .card { margin-top: 0; }
+    .stack { display: flex; flex-direction: column; gap: 14px; }
     .pz { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; color: #FCD34D; background: var(--warn-bg); }
     table.t tr.edit td { border-top: 0; white-space: normal; padding-top: 0; }
     .an { font-weight: 700; }
@@ -174,6 +185,7 @@
       table.t.cards td::before { content: attr(data-l); font: 600 11px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
       table.t.cards td.first::before { display: none; }
       table.t.cards tr.tot { display: none; }
+      table.t.cards tr.tot.gtot { display: block; }
       table.t.cards tr.edit td::before { display: none; }
       table.t.cards tr.edit td { display: block; }
       .gl-leader > div:last-child { text-align: left !important; }
@@ -385,7 +397,7 @@
   if (!token) return;                                          // stays a 404 page
 
   var S = null, busy = false, pollT = null, tab = 'live', logFilter = 'all', openTrade = null, openAcct = null;
-  var acctFilter = 'all', acctSearch = '', selected = {}, nickEdit = null;
+  var ctAll = false, acctFilter = 'all', acctSearch = '', selected = {}, nickEdit = null;
   var tplSel = null, tplDraft = null;
   var wz = null, pre = null;
   var lastLogSeen = 0;
@@ -642,58 +654,73 @@
       html += '<div class="card empty"><b>No copy groups yet</b>Run the setup wizard to connect a login, pick a leader and add followers.<div style="margin-top:14px"><button class="btn pri" data-wizard>Start setup</button></div></div>';
       el.innerHTML = html; return;
     }
-    html += '<div class="split"><div class="main">' + S.groups.map(liveGroup).join('') + '</div><div class="rail">' + currentTrade() + protection() + '</div></div>';
+    html += '<div class="stack">' + S.groups.map(liveGroup).join('') + '</div>'
+      + '<div class="duo" style="margin-top:14px">' + currentTrade() + protection() + '</div>';
     el.innerHTML = html;
   }
   function liveGroup(g) {
     var st = groupStatus(g), la = g.leader && acc(g.leader);
-    var rows = g.followers.map(function (f) {
-      var a = acc(f.key); if (!a) return '';
-      var as = acctStatus(a);
-      return '<tr class="' + (a.cfg.halted && a.cfg.haltKind !== 'passed' ? 'halted' : (!f.enabled ? 'paused' : '')) + '">'
-        + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + as.dot + '"></span><span class="an">' + esc(nm(a)) + '</span>' + typeTag(a.cfg.type) + '</div><div class="sub" style="margin-left:16px">' + esc(a.name) + (a.cfg.firm ? ' · ' + esc(a.cfg.firm) : '') + '</div></td>'
-        + '<td data-l="Size">' + sizeCell(a) + '</td>'
-        + '<td data-l="Position" class="num">' + posHtml(a.positions) + '</td>'
-        + '<td data-l="Day" class="num r">' + pnl(a.dayPnL) + '</td>'
+    function row(a, isLead, f) {
+      var as = isLead ? leadStatus(g, a) : acctStatus(a);
+      var pos = isLead && S.armed ? g.leaderPos : a.positions;
+      return '<tr class="' + (isLead ? 'leadrow' : (a.cfg.halted && a.cfg.haltKind !== 'passed' ? 'halted' : (f && !f.enabled ? 'paused' : ''))) + '">'
+        + '<td class="first"><div class="row" style="gap:8px;flex-wrap:nowrap"><span class="dot ' + as.dot + '"></span><span class="an">' + esc(nm(a)) + '</span>' + (isLead ? '<span class="tag lead">Leader</span>' : typeTag(a.cfg.type)) + '</div><div class="sub" style="margin-left:16px">' + esc(a.name) + (a.cfg.firm ? ' · ' + esc(a.cfg.firm) : '') + '</div></td>'
+        + '<td data-l="Size">' + (isLead ? '<span class="dim">—</span>' : sizeCell(a)) + '</td>'
+        + '<td data-l="Position" class="num">' + posHtml(pos) + '</td>'
+        + '<td data-l="Open P&amp;L" class="num r">' + pnl(a.openPnL) + '</td>'
+        + '<td data-l="Day P&amp;L" class="num r">' + pnl(a.dayPnL) + '</td>'
         + '<td data-l="Today\'s limits">' + limitsCell(a) + '</td>'
-        + '<td data-l="Speed" class="num r">' + speedCell(a.cfg.speedAvg) + '</td>'
         + '<td data-l="Status">' + as.html + '</td>'
-        + '<td data-l="" class="r"><div class="row" style="flex-wrap:nowrap;justify-content:flex-end">' + pauseBtn(a) + '<button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></div></td>'
+        + '<td data-l="" class="r"><div class="row" style="flex-wrap:nowrap;justify-content:flex-end">' + (isLead ? '' : pauseBtn(a)) + '<button class="btn xs ghost-dn" data-flat-acct="' + esc(a.key) + '">Flatten</button></div></td>'
         + '</tr>';
-    }).join('');
-    var trades = g.followers.map(function (f) { var a = acc(f.key); return a ? a.tradesToday : 0; });
-    var gAccts = (la ? [la] : []).concat(g.followers.map(function (f) { return acc(f.key); }).filter(Boolean));
+    }
+    var fl = g.followers.map(function (f) { var a = acc(f.key); return a ? { a: a, f: f } : null; }).filter(Boolean);
+    var gAccts = (la ? [la] : []).concat(fl.map(function (x) { return x.a; }));
+    var rows = (la ? row(la, true) : '<tr class="leadrow"><td class="first" colspan="8"><span class="dim">No leader set — pick one under Groups.</span></td></tr>')
+      + fl.map(function (x) { return row(x.a, false, x.f); }).join('');
+    var entries = fl.length ? Math.max.apply(null, fl.map(function (x) { return x.a.tradesToday || 0; })) : 0;
+    var total = gAccts.length ? '<tr class="tot gtot"><td class="first">Group total <span class="sub" style="font-weight:500">· ' + plural(gAccts.length, 'account') + '</span></td><td></td><td></td>'
+      + '<td data-l="Open P&amp;L" class="num r">' + pnl(sum(gAccts, 'openPnL')) + '</td><td data-l="Day P&amp;L" class="num r">' + pnl(sum(gAccts, 'dayPnL')) + '</td><td colspan="3"></td></tr>' : '';
     return '<div class="card">'
       + '<div class="gl-top"><h3 style="margin:0;font-size:17px;font-weight:800">' + esc(g.name) + '</h3><span class="chip ' + st.c + '">' + (st.c === 'on' ? '<i></i>' : '') + st.t + '</span>'
-      + '<span class="sub" style="font-size:12.5px">' + esc(windowText(g)) + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + '</span>'
+      + '<span class="sub" style="font-size:12.5px">' + esc(windowText(g)) + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + ' · ' + entries + (entries === 1 ? ' entry' : ' entries') + ' today' + '</span>'
       + '<span class="sp"></span>'
       + '<button class="btn sm" data-gtoggle="' + g.id + '">' + (g.enabled ? 'Pause' : 'Resume') + '</button>'
       + '<button class="btn sm ghost-dn" data-flat-group="' + g.id + '">Flatten group</button></div>'
-      + '<div class="gl-leader"><div><div class="lbl">Leader</div><div class="an" style="margin-top:4px">' + (la ? esc(nm(la)) + ' ' + envTag(la) : '<span class="dim">not set</span>') + '</div></div>'
-      + '<div class="bigpos">' + posHtml(S.armed ? g.leaderPos : (la && la.positions)) + '</div>'
-      + (la ? '<div class="mut" style="font-size:13px">Leader today ' + strip(pnl(la.dayPnL)) + ' · open ' + strip(pnl(la.openPnL)) + '</div>' : '')
-      + '<span class="sp"></span>'
-      + '<div style="text-align:right"><div class="lbl">Group P&amp;L today</div><div style="margin-top:4px;font-weight:800;font-size:18px">' + pnl(sum(gAccts, 'dayPnL')) + '</div><div class="sub">open ' + strip(pnl(sum(gAccts, 'openPnL'))) + ' · ' + plural(gAccts.length, 'account') + '</div></div>'
-      + '<div style="text-align:right;margin-left:22px"><div class="lbl">Entries today</div><div style="margin-top:4px;font-weight:700;font-size:18px">' + (trades.length ? Math.max.apply(null, trades) : 0) + '</div></div></div>'
-      + (rows ? '<div class="tw"><table class="t cards"><thead><tr><th>Account</th><th>Size</th><th>Position</th><th class="r">Day</th><th>Today\'s limits</th><th class="r">Speed</th><th>Status</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div>'
-              : '<div class="empty" style="padding:18px">No followers. Add them under Groups.</div>')
+      + '<div class="tw" style="margin-top:12px"><table class="t cards gtab"><thead><tr><th>Account</th><th>Size</th><th>Position</th><th class="r">Open P&amp;L</th><th class="r">Day P&amp;L</th><th>Today\'s limits</th><th>Status</th><th></th></tr></thead><tbody>' + rows + total + '</tbody></table></div>'
+      + (fl.length ? '' : '<div class="empty" style="padding:14px">No followers. Add them under Groups.</div>')
       + '</div>';
+  }
+  function leadStatus(g, a) {
+    var c = a.cfg;
+    if (c.halted && c.haltKind === 'passed') return { dot: 'info', html: '<span class="blue">Passed — locked</span><div class="sub">Followers exits only</div>' };
+    if (c.halted) return { dot: 'bad', html: '<span class="dn">Stopped</span><div class="sub" style="white-space:normal;max-width:220px">' + esc(c.haltReason) + '</div>' };
+    if (a.blocked) return { dot: 'wrn', html: '<span style="color:#FCD34D">' + esc(a.blocked) + '</span><div class="sub">New entries not copied</div>' };
+    var feed = (S.feeds || []).find(function (f) { return f.key === a.key; });
+    if (S.armed && feed && !feed.live) return { dot: 'wrn', html: '<span style="color:#FCD34D">Feed reconnecting</span>' };
+    return { dot: S.armed ? 'info' : 'off', html: S.armed ? '<span class="blue">Leading</span>' : '<span class="mut">Disarmed</span>' };
   }
   function currentTrade() {
     var t = (S.openTrades || [])[0];
-    if (!t) return '<div class="card"><div class="card-h" style="margin-bottom:4px"><h3>Current trade</h3></div><div class="note" style="margin:0">No open trade. Each leader entry shows here with every account\'s fill time and slippage.</div></div>';
-    var fills = t.fills.map(function (f) {
-      var c = f.ms > 300 ? 'dn' : f.ms > 200 ? '' : 'up';
-      return '<div class="tl"><span class="dot ' + (f.ms > 300 ? 'bad' : f.ms > 200 ? 'wrn' : 'ok') + '"></span><span class="n">' + esc(aname(f.k)) + ' ' + (f.qty > 0 ? '+' : '') + f.qty + '</span>'
-        + '<span class="mut">' + (f.px ? f.px.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '') + (f.slip != null ? ' · ' + (f.slip > 0 ? '+' : '') + f.slip + 't' : '') + '</span>'
-        + '<span class="ms ' + c + '"' + (f.ms > 200 && f.ms <= 300 ? ' style="color:#FCD34D"' : '') + '>+' + f.ms + '</span></div>';
+    if (!t) return '<div class="card"><div class="card-h" style="margin-bottom:4px"><h3>Current trade</h3></div><div class="note" style="margin:0">No open trade. When the leader enters, every account\'s fill price, slippage and copy speed shows here.</div></div>';
+    var px = function (v) { return v ? v.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '—'; };
+    var lead = '<tr><td><span class="dot info"></span> ' + esc(aname(t.leader)) + ' <span class="tag lead">Leader</span></td><td class="num">' + (t.side === 'Long' ? 'Long ' : 'Short ') + t.qty + '</td><td class="num r">' + px(t.leaderPx) + '</td><td class="num r dim">—</td><td class="num r dim">—</td></tr>';
+    var list = t.fills.slice().sort(function (a, b) { return (b.ms || 0) - (a.ms || 0); });
+    var LIM = 5, more = list.length - LIM;
+    if (!ctAll && more > 0) list = list.slice(0, LIM);
+    var fills = list.map(function (f) {
+      var c = f.ms > 300 ? 'dn' : f.ms > 200 ? 'w' : 'up';
+      return '<tr><td><span class="dot ' + (f.ms > 300 ? 'bad' : f.ms > 200 ? 'wrn' : 'ok') + '"></span> ' + esc(aname(f.k)) + '</td><td class="num">' + (f.qty > 0 ? 'Buy ' : 'Sell ') + Math.abs(f.qty) + '</td><td class="num r">' + px(f.px) + '</td>'
+        + '<td class="num r">' + (f.slip == null ? '<span class="dim">—</span>' : (f.slip > 0 ? '+' : '') + f.slip + ' t') + '</td>'
+        + '<td class="num r ' + (c === 'w' ? '' : c) + '"' + (c === 'w' ? ' style="color:#FCD34D"' : '') + '>' + f.ms + ' ms</td></tr>';
     }).join('');
     var ms = avg(t.fills.map(function (f) { return f.ms; })), sl = avg(t.fills.map(function (f) { return f.slip; }));
     return '<div class="card"><div class="card-h" style="margin-bottom:4px"><h3>Current trade</h3><span class="sp"></span><span class="sub">opened ' + fmtTime(t.openedAt) + '</span></div>'
-      + '<div class="mut" style="font-size:13px;margin-bottom:10px">' + esc(aname(t.leader)) + ' ' + (t.side === 'Long' ? 'long' : 'short') + ' ' + t.qty + ' ' + esc(t.sym) + (t.leaderPx ? ' @ ' + t.leaderPx.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '') + '</div>'
-      + '<div class="tl"><span class="dot info"></span><span class="n">Leader filled</span><span class="mut">' + (t.leaderPx ? t.leaderPx.toLocaleString(undefined, { minimumFractionDigits: 2 }) : '') + '</span><span class="ms mut">0</span></div>'
-      + (fills || '<div class="note">Waiting for follower fills…</div>')
-      + '<div class="stat3"><div><div>Filled</div><div>' + t.fills.length + ' / ' + t.expected + '</div></div><div><div>Avg speed</div><div>' + (ms == null ? '—' : Math.round(ms) + ' ms') + '</div></div><div><div>Avg slip</div><div>' + (sl == null ? '—' : (sl > 0 ? '+' : '') + sl.toFixed(2) + ' t') + '</div></div></div></div>';
+      + '<div class="mut" style="font-size:13px;margin-bottom:10px">' + (t.side === 'Long' ? 'Long ' : 'Short ') + t.qty + ' ' + esc(t.sym) + (t.leaderPx ? ' @ ' + px(t.leaderPx) : '') + '</div>'
+      + '<table class="ct"><thead><tr><th>Account</th><th>Order</th><th class="r">Fill</th><th class="r">Slip</th><th class="r">Speed</th></tr></thead><tbody>' + lead + (fills || '<tr><td colspan="5" class="dim">Waiting for follower fills…</td></tr>') + '</tbody></table>'
+      + (more > 0 ? '<button class="btn xs" data-ctall style="margin-top:10px">' + (ctAll ? 'Show slowest 5 only' : 'Show all ' + t.fills.length + ' fills') + '</button>' + (ctAll ? '' : '<span class="sub" style="margin-left:8px">Slowest first</span>') : '')
+      + '<div class="stat3"><div><div>Followers filled</div><div>' + t.fills.length + ' / ' + t.expected + '</div></div><div><div>Avg speed</div><div>' + (ms == null ? '—' : Math.round(ms) + ' ms') + '</div></div><div><div>Avg slippage</div><div>' + (sl == null ? '—' : (sl > 0 ? '+' : '') + sl.toFixed(2) + ' ticks') + '</div></div></div>'
+      + '<div class="sub" style="margin-top:8px">Slip = follower fill vs leader fill, in ticks. Speed = leader fill seen → follower order sent.</div></div>';
   }
   function protection() {
     var items = [];
@@ -1155,6 +1182,7 @@
       return act({ op: 'updateGroup', id: gw.id, patch: { window: { days: days } } }, 'Saved');
     }
     // accounts
+    if (d.ctall !== undefined) { ctAll = !ctAll; return renderLive(); }
     if (d.fpause) {
       var pg = S.groups.find(function (x) { return x.id === d.fpause; }), pf = pg && pg.followers.find(function (x) { return x.key === d.fkey; });
       if (!pf) return;
