@@ -22,6 +22,16 @@
   -->
   <style>
     #cp-app { display:none; }
+    /* Site sidebar (nav-loader.js). Only once access is confirmed — the 404
+       everyone else sees stays a plain full-screen page. */
+    body:not(.cp-on) #sidebar-panel { display: none !important; }
+    @media (min-width: 768px) {
+      body.cp-on .cp-main { padding-left: 16rem; transition: padding-left .18s ease; }
+      html.nav-collapsed body.cp-on .cp-main { padding-left: 4.5rem; }
+      html.nav-collapsed #cp-app main.wrap { padding-left: 26px !important; }   /* nav-loader pads every <main> when collapsed; keep .wrap's own */
+    }
+    #cp-menu { display: none; }
+    @media (max-width: 767px) { body.cp-on #cp-menu { display: inline-flex; } }
     body.cp-on #cp-404 { display:none !important; }
     body.cp-on #cp-app { display:block; }
 
@@ -356,8 +366,14 @@
     </div>
   </div>
 
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <div class="cp-main">
   <div id="cp-app">
     <header class="top"><div class="wrap">
+      <button type="button" id="cp-menu" class="btn" onclick="window.toggleMobileMenu && toggleMobileMenu()" aria-label="Menu" style="height:34px;padding:0 10px">&#9776;</button>
       <a class="brand" href="dashboard.html" title="Back to your dashboard" style="color:inherit;text-decoration:none">FSD-X <b>COPY TRADER</b></a>
       <div class="chips" id="chips"></div>
       <div class="sp"></div>
@@ -398,6 +414,8 @@
       <button class="btn kill" data-exit>Exit everything</button>
     </div>
   </div>
+
+  </div><!-- /.cp-main -->
 
   <div class="ov" id="ov-pre"><div class="sheet" id="pre-body"></div></div>
   <div class="ov" id="ov-wz"><div class="sheet wide" id="wz-body"></div></div>
@@ -1235,7 +1253,10 @@
     return api('/api/copier/state').then(function (d) {
       if (d.__s === 404) { document.body.classList.remove('cp-on'); stop(); return; }
       if (d.__s !== 200) return;
-      if (!document.body.classList.contains('cp-on')) { document.body.classList.add('cp-on'); document.title = 'FSD-X Copy Trader'; setTab(tab); }
+      if (!document.body.classList.contains('cp-on')) {
+        document.body.classList.add('cp-on'); document.title = 'FSD-X Copy Trader'; setTab(tab);
+        if (!window._cpNav) { window._cpNav = 1; var ns = document.createElement('script'); ns.src = 'nav-loader.js?v=20261005'; document.body.appendChild(ns); }
+      }
       render(d);
       if (needTerms() && !termsLater && $('ov-terms').className !== 'ov on') showTerms();
     }).catch(function () {});
