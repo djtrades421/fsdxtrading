@@ -683,7 +683,7 @@
       + '<td data-l="Open P&amp;L" class="num r">' + pnl(sum(gAccts, 'openPnL')) + '</td><td data-l="Day P&amp;L" class="num r">' + pnl(sum(gAccts, 'dayPnL')) + '</td><td colspan="3"></td></tr>' : '';
     return '<div class="card">'
       + '<div class="gl-top"><h3 style="margin:0;font-size:17px;font-weight:800">' + esc(g.name) + '</h3><span class="chip ' + st.c + '">' + (st.c === 'on' ? '<i></i>' : '') + st.t + '</span>'
-      + '<span class="sub" style="font-size:12.5px">' + esc(windowText(g)) + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + ' · ' + entries + (entries === 1 ? ' entry' : ' entries') + ' today' + '</span>'
+      + '<span class="sub" style="font-size:12.5px">' + esc(windowText(g)) + ' · max ' + g.maxQty + ' per order' + (g.symbols ? ' · ' + esc(g.symbols) + ' only' : '') + (g.direction !== 'both' ? ' · ' + g.direction + ' only' : '') + ' · ' + entries + (entries === 1 ? ' entry' : ' entries') + ' today' + '</span>'
       + '<span class="sp"></span>'
       + '<button class="btn sm" data-gtoggle="' + g.id + '">' + (g.enabled ? 'Pause' : 'Resume') + '</button>'
       + '<button class="btn sm ghost-dn" data-flat-group="' + g.id + '">Flatten group</button></div>'
@@ -710,14 +710,14 @@
     if (!ctAll && more > 0) list = list.slice(0, LIM);
     var fills = list.map(function (f) {
       var c = f.ms > 300 ? 'dn' : f.ms > 200 ? 'w' : 'up';
-      return '<tr><td><span class="dot ' + (f.ms > 300 ? 'bad' : f.ms > 200 ? 'wrn' : 'ok') + '"></span> ' + esc(aname(f.k)) + '</td><td class="num">' + (f.qty > 0 ? 'Buy ' : 'Sell ') + Math.abs(f.qty) + '</td><td class="num r">' + px(f.px) + '</td>'
+      return '<tr><td><span class="dot ' + (f.ms > 300 ? 'bad' : f.ms > 200 ? 'wrn' : 'ok') + '"></span> ' + esc(aname(f.k)) + '</td><td class="num">' + (f.qty === 0 ? 'Flat' : (f.qty > 0 ? 'Buy ' : 'Sell ') + Math.abs(f.qty)) + (f.orders > 1 ? ' <span class="sub">· ' + f.orders + ' orders</span>' : '') + '</td><td class="num r">' + px(f.px) + '</td>'
         + '<td class="num r">' + (f.slip == null ? '<span class="dim">—</span>' : (f.slip > 0 ? '+' : '') + f.slip + ' t') + '</td>'
         + '<td class="num r ' + (c === 'w' ? '' : c) + '"' + (c === 'w' ? ' style="color:#FCD34D"' : '') + '>' + f.ms + ' ms</td></tr>';
     }).join('');
     var ms = avg(t.fills.map(function (f) { return f.ms; })), sl = avg(t.fills.map(function (f) { return f.slip; }));
     return '<div class="card"><div class="card-h" style="margin-bottom:4px"><h3>Current trade</h3><span class="sp"></span><span class="sub">opened ' + fmtTime(t.openedAt) + '</span></div>'
       + '<div class="mut" style="font-size:13px;margin-bottom:10px">' + (t.side === 'Long' ? 'Long ' : 'Short ') + t.qty + ' ' + esc(t.sym) + (t.leaderPx ? ' @ ' + px(t.leaderPx) : '') + '</div>'
-      + '<table class="ct"><thead><tr><th>Account</th><th>Order</th><th class="r">Fill</th><th class="r">Slip</th><th class="r">Speed</th></tr></thead><tbody>' + lead + (fills || '<tr><td colspan="5" class="dim">Waiting for follower fills…</td></tr>') + '</tbody></table>'
+      + '<table class="ct"><thead><tr><th>Account</th><th>Copied</th><th class="r">Entry fill</th><th class="r">Slip</th><th class="r">Avg speed</th></tr></thead><tbody>' + lead + (fills || '<tr><td colspan="5" class="dim">Waiting for follower fills…</td></tr>') + '</tbody></table>'
       + (more > 0 ? '<button class="btn xs" data-ctall style="margin-top:10px">' + (ctAll ? 'Show slowest 5 only' : 'Show all ' + t.fills.length + ' fills') + '</button>' + (ctAll ? '' : '<span class="sub" style="margin-left:8px">Slowest first</span>') : '')
       + '<div class="stat3"><div><div>Followers filled</div><div>' + t.fills.length + ' / ' + t.expected + '</div></div><div><div>Avg speed</div><div>' + (ms == null ? '—' : Math.round(ms) + ' ms') + '</div></div><div><div>Avg slippage</div><div>' + (sl == null ? '—' : (sl > 0 ? '+' : '') + sl.toFixed(2) + ' ticks') + '</div></div></div>'
       + '<div class="sub" style="margin-top:8px">Slip = follower fill vs leader fill, in ticks. Speed = leader fill seen → follower order sent.</div></div>';
