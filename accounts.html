@@ -100,6 +100,78 @@
     .tab-btn.active { color: #22c55e; border-bottom-color: #22c55e; }
     .sub-panel { display: none; }
     .sub-panel.active { display: block; }
+      /* ── Fleet setup wizard (#fw) ──────────────────────────────────────
+       Self-contained styles: tailwind.css is a compiled build, so new
+       utility classes would not exist. Mirrors the copier wizard's look. */
+    #fw { --acc: var(--fx-orange, #FF6B1F); --acc-bg: rgba(255,107,31,.12); --line: rgba(120,160,210,.13);
+          --tx: #E9EDF3; --mut: #94A0B2; --dim: #66727F; --up: #34D399; --warn: #FBBF24; --dn: #F87171;
+          position: fixed; inset: 0; z-index: 60; display: none; background: rgba(2,4,8,.86); overflow-y: auto; padding: 24px 16px; color: var(--tx); }
+    #fw.on { display: block; }
+    #fw .sheet { max-width: 680px; margin: 3vh auto; background: #0B1017; border: 1px solid var(--line); border-radius: 18px; padding: 24px; }
+    #fw .top { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+    #fw .eyebrow { font: 700 11.5px Inter, system-ui, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #FF8A4C; }
+    #fw .sp { flex: 1; }
+    #fw h2 { margin: 4px 0 4px; font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
+    #fw .lead { margin: 0 0 18px; color: var(--mut); font-size: 14px; line-height: 1.5; }
+    #fw .steps { list-style: none; margin: 0 0 22px; padding: 0; display: flex; gap: 6px; }
+    #fw .steps li { flex: 1 1 0; min-width: 0; }
+    #fw .steps .bar { height: 4px; border-radius: 2px; background: rgba(255,255,255,.10); }
+    #fw .steps li.done .bar, #fw .steps li.cur .bar { background: var(--acc); }
+    #fw .steps .lb { margin-top: 7px; font-size: 11.5px; font-weight: 600; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #fw .steps li.cur .lb { color: var(--tx); }
+    @media (max-width: 560px) { #fw .steps .lb { display: none; } #fw .sheet { padding: 18px; } }
+    #fw .btn { appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 38px; padding: 0 14px; border-radius: 10px;
+               border: 1px solid var(--line); background: rgba(255,255,255,.03); color: var(--tx); font: 600 13.5px Inter, system-ui, sans-serif; cursor: pointer; white-space: nowrap; }
+    #fw .btn:hover { border-color: rgba(233,237,243,.3); }
+    #fw .btn:disabled { opacity: .4; cursor: not-allowed; }
+    #fw .btn.pri { background: var(--acc); border-color: var(--acc); color: #0B0B0B; font-weight: 800; }
+    #fw .btn.xs { height: 28px; padding: 0 10px; font-size: 12.5px; border-radius: 7px; }
+    #fw .row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    #fw .foot { display: flex; align-items: center; gap: 12px; margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+    #fw .card { background: rgba(255,255,255,.022); border: 1px solid var(--line); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    #fw .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap: 14px; }
+    #fw .f label, #fw .lbl { display: block; font-size: 12px; font-weight: 600; color: var(--mut); margin-bottom: 6px; }
+    #fw .f .h { font-size: 11.5px; color: var(--dim); margin-top: 5px; line-height: 1.4; }
+    #fw .inp { width: 100%; box-sizing: border-box; background: rgba(0,0,0,.35); color: var(--tx); border: 1px solid var(--line); border-radius: 9px; height: 38px; padding: 0 11px; font: 500 14px Inter, system-ui, sans-serif; }
+    #fw .inp:focus { outline: none; border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-bg); }
+    #fw select.inp option { background: #0B1017; }
+    #fw .seg { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }
+    #fw .seg button { appearance: none; height: 38px; border-radius: 9px; border: 1px solid var(--line); background: transparent; color: var(--mut); font: 700 12.5px Inter, system-ui, sans-serif; cursor: pointer; }
+    #fw .seg button.on { border-color: rgba(255,107,31,.55); background: var(--acc-bg); color: #FF8A4C; }
+    #fw .pick { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 6px; }
+    #fw .pick label { display: flex; align-items: center; gap: 10px; padding: 10px 11px; border-radius: 9px; border: 1px solid var(--line); background: rgba(0,0,0,.2); cursor: pointer; min-width: 0; }
+    #fw .pick label.on { border-color: rgba(255,107,31,.5); background: var(--acc-bg); }
+    #fw .pick .nm { flex: 1; min-width: 0; } #fw .pick .nm b { display: block; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    #fw .pick .nm span { display: block; font-size: 11px; color: var(--dim); }
+    #fw .ck { width: 16px; height: 16px; accent-color: var(--acc); flex: none; }
+    #fw .tag { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 5px; border: 1px solid; white-space: nowrap; }
+    #fw .tag.need { color: #c4b5fd; border-color: rgba(167,139,250,.4); background: rgba(167,139,250,.1); }
+    #fw .tag.ok { color: var(--mut); border-color: var(--line); }
+    #fw .chk { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-top: 1px solid rgba(120,160,210,.10); }
+    #fw .chk:first-child { border-top: 0; }
+    #fw .ic { width: 22px; height: 22px; border-radius: 50%; flex: none; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+    #fw .ic.ok { background: rgba(52,211,153,.12); color: var(--up); } #fw .ic.bad { background: rgba(248,113,113,.12); color: var(--dn); }
+    #fw .chk b { display: block; font-weight: 600; font-size: 13.5px; } #fw .chk span { display: block; font-size: 12px; color: var(--mut); margin-top: 2px; }
+    #fw .hint { font-size: 12.5px; color: var(--mut); background: rgba(255,255,255,.03); border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; line-height: 1.5; }
+    #fw .msg { font-size: 12.5px; border-radius: 9px; padding: 9px 12px; margin-top: 12px; }
+    #fw .msg.err { color: var(--dn); background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.3); }
+    #fw .msg.ok { color: var(--up); background: rgba(52,211,153,.08); border: 1px solid rgba(52,211,153,.3); }
+    #fw .wl { display: grid; grid-template-columns: 40px minmax(0,1fr) 92px 92px; gap: 10px; align-items: center; padding: 11px 0; border-top: 1px solid rgba(120,160,210,.10); }
+    #fw .wl:first-of-type { border-top: 0; }
+    #fw .wl.off .t, #fw .wl.off .inp { opacity: .4; }
+    #fw .wl .t b { display: block; font-size: 13.5px; } #fw .wl .t span { display: block; font-size: 11.5px; color: var(--dim); margin-top: 2px; line-height: 1.4; }
+    #fw .wl .inp { height: 34px; text-align: right; }
+    #fw .wl .inp.w { border-color: rgba(251,191,36,.35); } #fw .wl .inp.u { border-color: rgba(248,113,113,.35); }
+    #fw .wlh { display: grid; grid-template-columns: 40px minmax(0,1fr) 92px 92px; gap: 10px; font-size: 10.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--dim); padding-bottom: 6px; }
+    @media (max-width: 520px) { #fw .wl, #fw .wlh { grid-template-columns: 40px minmax(0,1fr) 70px 70px; } }
+    #fw .sw { appearance: none; -webkit-appearance: none; width: 36px; height: 20px; border-radius: 99px; background: rgba(255,255,255,.12); position: relative; cursor: pointer; margin: 0; }
+    #fw .sw::after { content: ''; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 99px; background: #e4e4e7; transition: left .15s; }
+    #fw .sw:checked { background: var(--acc); } #fw .sw:checked::after { left: 19px; }
+    #fw table.rv { width: 100%; border-collapse: collapse; font-size: 13px; }
+    #fw table.rv td { padding: 7px 0; border-top: 1px solid rgba(120,160,210,.10); vertical-align: top; }
+    #fw table.rv td:first-child { color: var(--mut); width: 46%; padding-right: 12px; }
+    #fw table.rv tr:first-child td { border-top: 0; }
+    #fw a.lnk { color: #FF8A4C; text-decoration: underline; }
   </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
@@ -129,10 +201,13 @@
               <h1 class="text-3xl font-black tracking-tight">Accounts</h1>
               <p class="text-zinc-500 text-sm mt-1">Every account, its rules and its warnings — all in one place</p>
             </div>
+            <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="openFleetWizard()" id="fw-open-btn" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white text-xs font-bold rounded-xl transition whitespace-nowrap">Setup wizard</button>
             <button onclick="openNewCard()" id="new-tracker-btn" class="inline-flex shrink-0 items-center justify-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition whitespace-nowrap">
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
               Add Account
             </button>
+            </div>
           </div>
 
           <!-- Tabs -->
@@ -321,6 +396,9 @@
   <!-- New/Edit Modal — "Account setup". One form per account: the account,
        firm rules, warnings, your rules. IDs are the same ones the save/load
        code has always used; stage + goal are hidden inputs set by buttons. -->
+  <!-- Fleet setup wizard — filled by fwRender() -->
+  <div id="fw" role="dialog" aria-modal="true" aria-label="Fleet setup"><div class="sheet" id="fw-body"></div></div>
+
   <div id="tracker-modal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4">
     <div class="bg-zinc-950 border border-white/10 rounded-2xl w-full max-w-5xl max-h-[92vh] overflow-y-auto" style="background-color:#0a0f1a" role="dialog" aria-labelledby="modal-title">
 
@@ -585,7 +663,14 @@
         if (res.newAccounts.length) bits.push(res.newAccounts.length + ' new account' + (res.newAccounts.length === 1 ? '' : 's') + ' added — set up rules in Fleet');
         if (bits.length) flToast(bits.join(' · ') + '.');
         tvLoadStatus();
-      }, () => document.getElementById('tracker-modal').classList.contains('hidden'));
+        fwOnSync();
+      }, () => document.getElementById('tracker-modal').classList.contains('hidden') && !(fw && fw.step >= 2));
+      // Back from Tradovate's connect screen after starting it in the wizard,
+      // or a brand-new member with nothing set up yet: open the wizard.
+      let fwResume = false; try { fwResume = sessionStorage.getItem('fsdx_fw_resume') === '1'; sessionStorage.removeItem('fsdx_fw_resume'); } catch (e) {}
+      let fwSeen = false; try { fwSeen = localStorage.getItem('fsdx_fw_seen') === '1'; } catch (e) {}
+      if (fwResume) openFleetWizard(0);
+      else if (!trackerLoadFailed && !trackerCards.length && !fwSeen) openFleetWizard(0);
     }
 
     // ── Tradovate sync (read-only OAuth) ──
@@ -2427,10 +2512,22 @@
         root.innerHTML = summary + nudge + `<div class="text-center py-20">
           <h3 class="text-xl font-black mb-2">No accounts tracked yet</h3>
           <p class="text-zinc-500 text-sm mb-6 max-w-md mx-auto">Set up a tracker per account — firm rules, payout line and your own warning lines. Then every import tells you which accounts need attention.</p>
-          <button onclick="openNewCard()" class="${CL.primary}">+ New Tracker</button>
+          <div class="flex gap-3 justify-center flex-wrap">
+            <button onclick="openFleetWizard()" class="${CL.primary}">Start setup wizard</button>
+            <button onclick="openNewCard()" class="${CL.ghost}">+ Add one account</button>
+          </div>
         </div>`;
         return;
       }
+      // Accounts Tradovate added that still have no rules → point at the wizard.
+      const nNeeds = active.filter(r => r.card.needsSetup).length;
+      const needsBox = nNeeds ? `<div class="border border-purple-500/30 bg-purple-500/[0.06] rounded-2xl px-5 py-4 flex items-center justify-between gap-4 flex-wrap">
+          <div class="min-w-0" style="flex:1 1 260px">
+            <div class="text-sm font-black text-white">${nNeeds} account${nNeeds === 1 ? '' : 's'} need${nNeeds === 1 ? 's' : ''} setup</div>
+            <div class="text-xs text-zinc-400 mt-1">No firm rules or warning lines yet, so ${nNeeds === 1 ? 'it' : 'they'} can't flag anything. The wizard sets up a whole set at once.</div>
+          </div>
+          <button onclick="openFleetWizard(1)" class="${CL.primary}">Run setup wizard</button>
+        </div>` : '';
 
       // ── Fleet table ──
       const chipDefs = [
@@ -2501,7 +2598,454 @@
       </section>
       <div class="text-[10px] text-zinc-600">Click a row for the full detail. Warnings use the lines you set on each tracker and your imported trades — they're a reminder, not a statement of what your firm has done. Check the firm's dashboard for the official numbers.</div>`;
 
-      root.innerHTML = summary + kpis + attnBox + byFirm + nudge + table;
+      root.innerHTML = needsBox + summary + kpis + attnBox + byFirm + nudge + table;
+    }
+
+    // ══════════════════════════════════════════════════════════
+    //  FLEET SETUP WIZARD
+    //  A guided path through the same setup the account form does:
+    //  get accounts in → pick the ones that share rules → firm & stage →
+    //  firm rules → warning lines → review & save.
+    //  It writes the SAME fields saveCard() writes, through the same guarded
+    //  saveTrackerCards() / saveAccountsToKV() path, with the same rollback.
+    //  No new storage and no second data model — anything set here opens
+    //  normally in the full account form afterwards.
+    // ══════════════════════════════════════════════════════════
+    const FW_STEPS = ['Accounts', 'Pick', 'Firm & stage', 'Firm rules', 'Warnings', 'Review'];
+    let fw = null;                 // wizard state while open, null when closed
+    const fwOpen = () => !!fw;
+
+    function fwSetupable() {       // single-account cards that aren't archived
+      return trackerCards.filter(c => c.filterName && !c.filterType && (c.stage || '') !== 'archived');
+    }
+    function fwNum(v) { return v === '' || v === null || v === undefined || isNaN(parseFloat(v)) ? null : parseFloat(v); }
+    function fwR50(v) { return Math.max(50, Math.round(v / 50) * 50); }
+    function fwMoney(v) { return v == null ? '—' : '$' + Math.round(v).toLocaleString(); }
+
+    function openFleetWizard(startStep) {
+      const cards = fwSetupable();
+      fw = {
+        step: startStep != null ? startStep : (cards.length ? 1 : 0),
+        picked: {}, f: null, tv: null, tvErr: '', msg: null, saved: 0, busy: false, addOpen: !cards.length
+      };
+      cards.forEach(c => { if (c.needsSetup) fw.picked[c.id] = true; });
+      try { localStorage.setItem('fsdx_fw_seen', '1'); } catch (e) {}
+      // Firm suggestions — the same list the account form builds when it opens.
+      const firms = [...new Set(trackerCards.map(c => (c.firm || '').trim()).filter(Boolean))].sort();
+      document.getElementById('tc-firm-list').innerHTML = firms.map(f => `<option value="${esc(f)}"></option>`).join('');
+      document.getElementById('fw').classList.add('on');
+      document.body.style.overflow = 'hidden';
+      fwRender();
+      fwLoadTv();
+    }
+    function closeFleetWizard() {
+      fw = null;
+      document.getElementById('fw').classList.remove('on');
+      document.body.style.overflow = '';
+      renderFleet(); renderList(); renderAccountsList();
+    }
+
+    async function fwLoadTv() {
+      if (!fw) return;
+      try {
+        const r = await fetch(TV_API + '/status', { headers: tvHeaders() });
+        const d = await r.json();
+        if (!fw) return;
+        if (!r.ok) { fw.tvErr = d.error || 'Could not load Tradovate status.'; fw.tv = null; }
+        else { fw.tv = d; fw.tvErr = ''; }
+      } catch (e) { if (fw) { fw.tvErr = 'Could not reach the server.'; fw.tv = null; } }
+      if (fw && fw.step === 0) fwRender();
+    }
+
+    // Defaults for steps 3–5: the first picked account that already has rules,
+    // so re-running the wizard on configured accounts shows what's there.
+    function fwInitForm() {
+      const ids = Object.keys(fw.picked).filter(k => fw.picked[k]);
+      const cards = ids.map(id => trackerCards.find(c => c.id === id)).filter(Boolean);
+      const src = cards.find(c => !c.needsSetup && (c.maxDD || c.accountSize)) || {};
+      const firm = (cards.find(c => c.firm) || {}).firm || '';
+      const acct = src.filterName ? journalAccounts.find(a => a.name === src.filterName) : null;
+      const st = src.id ? FSDXTracker.stageOf(src, journalAccounts) : '';
+      fw.f = {
+        firm, stage: ['eval', 'queued', 'funded', 'personal'].includes(st) ? st : 'eval',
+        size: src.accountSize ?? '', comm: acct && acct.commissionRate != null ? acct.commissionRate : '',
+        maxDD: src.maxDD ?? '', ddType: src.ddType || 'trailing', lock: FSDXTracker.lockProfit(src) ?? '',
+        target: src.profitTarget ?? '', daily: src.firmDaily ?? '', payoutLine: src.payoutLine ?? '',
+        minDays: src.minDays ?? '', inactivity: src.inactivityDays ?? '',
+        alerts: null, alertsFrom: src.id ? src : null
+      };
+    }
+
+    // Suggested warning lines, from the firm rules just entered. The member
+    // can change every one; these are only starting points, never firm rules.
+    function fwSuggestAlerts() {
+      const f = fw.f, src = f.alertsFrom;
+      const dd = fwNum(f.maxDD), inact = fwNum(f.inactivity), daily = fwNum(f.daily);
+      const cfg = id => src ? FSDXTracker.alertCfg(src, id) : null;
+      const out = {};
+      out.cushion = cfg('cushion') && src.maxDD ? cfg('cushion')
+        : { on: !!dd, warn: dd ? fwR50(dd * 0.375) : 750, urgent: dd ? fwR50(dd * 0.2) : 400 };
+      out.dailyLoss = cfg('dailyLoss') && src.firmDaily ? cfg('dailyLoss') : { on: !!daily, warn: 60, urgent: 85 };
+      out.inactivity = cfg('inactivity') && src.inactivityDays ? cfg('inactivity')
+        : { on: !!inact, warn: inact ? Math.max(1, inact - 4) : 10, urgent: inact ? Math.max(1, inact - 2) : 13 };
+      out.target = cfg('target') || { on: true, warn: 500 };
+      out.payout = cfg('payout') || { on: true, warn: null };
+      return out;
+    }
+
+    function fwPickedCards() {
+      return Object.keys(fw.picked).filter(k => fw.picked[k]).map(id => trackerCards.find(c => c.id === id)).filter(Boolean);
+    }
+
+    function fwStepsBar() {
+      return '<ol class="steps">' + FW_STEPS.map((l, i) => `<li class="${i < fw.step ? 'done' : i === fw.step ? 'cur' : ''}"><div class="bar"></div><div class="lb">${i + 1}. ${l}</div></li>`).join('') + '</ol>';
+    }
+
+    function fwField(id, label, val, hint, opts) {
+      opts = opts || {};
+      return `<div class="f"><label for="${id}">${label}</label><input id="${id}" class="inp" type="${opts.type || 'number'}" ${opts.type === 'text' ? '' : 'min="0" step="any" inputmode="decimal"'} placeholder="${esc(opts.ph || '')}" value="${esc(val ?? '')}" ${opts.list ? 'list="' + opts.list + '"' : ''} data-fw="${opts.key || ''}">${hint ? `<div class="h">${hint}</div>` : ''}</div>`;
+    }
+
+    function fwLockLine() {
+      const f = fw.f, size = fwNum(f.size), dd = fwNum(f.maxDD), lp = fwNum(f.lock);
+      if (!(size > 0) || !(dd > 0)) return 'Enter the account size and max drawdown and this line shows where your floor sits.';
+      if (f.ddType === 'static') return 'Static drawdown: the floor stays at ' + fwMoney(size - dd) + '.';
+      if (!(lp > 0)) return 'Floor starts at ' + fwMoney(size - dd) + ' and keeps trailing your high — it never stops.';
+      return 'Floor starts at ' + fwMoney(size - dd) + ', trails your high, and stops at ' + fwMoney(size + lp - dd) + ' once you\'re up +' + fwMoney(lp) + '.';
+    }
+
+    function fwRender() {
+      const el = document.getElementById('fw-body');
+      if (!fw || !el) return;
+      let body = '', next = '';
+      const back = fw.step > 0 && fw.step < 6 ? '<button class="btn" data-fwa="back">Back</button>' : '';
+      const cards = fwSetupable();
+
+      if (fw.step === 0) {
+        const conns = (fw.tv && fw.tv.connections) || [];
+        const configured = !fw.tv || fw.tv.configured !== false;
+        const needs = cards.filter(c => c.needsSetup).length;
+        body = `<h2>Get your accounts in</h2>
+          <p class="lead">Connect Tradovate and every account under each login is added for you, with trades importing on their own. Not on Tradovate, or want to add one by hand? Use the form below.</p>
+          <div class="card">
+            <div class="lbl">Tradovate logins</div>
+            ${fw.tv === null && !fw.tvErr ? '<div class="h" style="color:var(--dim);font-size:12.5px">Checking…</div>' : ''}
+            ${fw.tvErr ? `<div class="msg err">${esc(fw.tvErr)}</div>` : ''}
+            ${conns.map(c => `<div class="chk"><span class="ic ${c.status === 'ok' ? 'ok' : 'bad'}">${c.status === 'ok' ? '✓' : '!'}</span><div><b>${esc(c.tvName || c.name || 'Tradovate login')}</b><span>${(c.accounts || []).length} account${(c.accounts || []).length === 1 ? '' : 's'}${c.status === 'ok' ? '' : ' · reconnect needed'}</span></div></div>`).join('')}
+            ${fw.tv && !conns.length ? '<div style="font-size:12.5px;color:var(--dim)">No login connected yet. Each prop firm usually has its own Tradovate login — connect each one.</div>' : ''}
+            <div class="row" style="margin-top:12px">
+              ${configured ? `<button class="btn pri" data-fwa="connect">${conns.length ? '+ Connect another login' : 'Connect Tradovate'}</button>` : '<span style="font-size:12.5px;color:var(--dim)">Tradovate sync isn\'t switched on yet.</span>'}
+              ${conns.length ? '<button class="btn" data-fwa="sync">Sync now</button>' : ''}
+            </div>
+            <div style="font-size:11.5px;color:var(--dim);margin-top:10px">Read-only. FSD-X can't place, change or cancel orders.</div>
+          </div>
+          <details class="card" ${fw.addOpen ? 'open' : ''} id="fw-add">
+            <summary style="cursor:pointer;font-weight:700;font-size:13.5px">Add an account by hand</summary>
+            <div class="grid" style="margin-top:12px">
+              ${fwField('fw-add-name', 'Name', (fw.addVals || {}).name || '', 'What you call it, e.g. "Apex 50K 01".', { type: 'text', ph: 'e.g. Apex 50K 01' })}
+              ${fwField('fw-add-num', 'Account # <span style="color:var(--dim);font-weight:500">— optional</span>', (fw.addVals || {}).num || '', 'Must match the Account column in your export so imports land here.', { type: 'text', ph: 'e.g. APEX12345' })}
+              ${fwField('fw-add-firm', 'Firm <span style="color:var(--dim);font-weight:500">— optional</span>', (fw.addVals || {}).firm || '', '', { type: 'text', ph: 'e.g. Apex', list: 'tc-firm-list' })}
+            </div>
+            <div class="row" style="margin-top:12px"><button class="btn" data-fwa="add">+ Add account</button></div>
+          </details>
+          <div class="hint">${cards.length ? `<b style="color:var(--tx)">${cards.length} account${cards.length === 1 ? '' : 's'}</b> in your Fleet${needs ? ` · <b style="color:#c4b5fd">${needs} need${needs === 1 ? 's' : ''} setup</b>` : ''}.` : 'No accounts yet. Connect a login or add one by hand to continue.'}</div>`;
+        next = `<button class="btn pri" data-fwa="next" ${cards.length ? '' : 'disabled'}>Next: pick accounts</button>`;
+      }
+
+      else if (fw.step === 1) {
+        const firms = {};
+        cards.forEach(c => { const f = (c.firm || '').trim() || 'No firm set'; (firms[f] = firms[f] || []).push(c); });
+        const n = fwPickedCards().length;
+        body = `<h2>Pick the accounts that share rules</h2>
+          <p class="lead">Everything you tick gets the same firm rules and warning lines. Usually that's one firm and one account size at a time — run the wizard again for the next set.</p>
+          ${Object.keys(firms).sort((a, b) => a === 'No firm set' ? 1 : b === 'No firm set' ? -1 : a.localeCompare(b)).map(f => {
+            const list = firms[f], all = list.every(c => fw.picked[c.id]);
+            return `<div class="card"><div class="row" style="margin-bottom:10px"><input type="checkbox" class="ck" data-fw-firm="${esc(f)}" ${all ? 'checked' : ''} aria-label="Select all ${esc(f)}"><b style="font-size:13.5px">${esc(f)}</b><span style="font-size:12px;color:var(--dim)">${list.length} account${list.length === 1 ? '' : 's'}</span></div>
+              <div class="pick">${list.map(c => {
+                const on = !!fw.picked[c.id], st = FSDXTracker.stageOf(c, journalAccounts);
+                const a = journalAccounts.find(x => x.name === c.filterName);
+                return `<label class="${on ? 'on' : ''}"><input type="checkbox" class="ck" data-fw-pick="${esc(c.id)}" ${on ? 'checked' : ''}><span class="nm"><b>${esc(c.label || c.filterName)}</b><span>${esc(a && a.accountNumber ? a.accountNumber : c.filterName)}${c.accountSize ? ' · ' + fwMoney(c.accountSize) : ''}</span></span>${c.needsSetup ? '<span class="tag need">NEEDS SETUP</span>' : `<span class="tag ok">${esc(({ eval: 'Eval', queued: 'Queued', funded: 'Funded', personal: 'Personal' })[st] || '—')}</span>`}</label>`;
+              }).join('')}</div></div>`;
+          }).join('')}`;
+        next = `<span style="font-size:13px;color:var(--mut)">${n} selected</span><button class="btn pri" data-fwa="next" ${n ? '' : 'disabled'}>Next: firm &amp; stage</button>`;
+      }
+
+      else if (fw.step === 2) {
+        const f = fw.f, others = trackerCards.filter(c => !c.needsSetup && !fw.picked[c.id] && (c.maxDD || c.accountSize));
+        const n = fwPickedCards().length;
+        body = `<h2>Firm and stage</h2>
+          <p class="lead">For the ${n} account${n === 1 ? '' : 's'} you picked.</p>
+          ${others.length ? `<div class="card"><div class="f"><label for="fw-copy">Same rules as an account you already set up?</label><select id="fw-copy" class="inp"><option value="">No — I'll enter them</option>${others.map(c => `<option value="${esc(c.id)}">${esc(c.label || 'Account')}${c.firm ? ' · ' + esc(c.firm) : ''}</option>`).join('')}</select><div class="h">Fills in the next three steps. You can still change anything.</div></div></div>` : ''}
+          <div class="grid">
+            ${fwField('fw-firm', 'Firm', f.firm, 'Groups your accounts by firm in Fleet.', { type: 'text', ph: 'e.g. Apex', list: 'tc-firm-list', key: 'firm' })}
+            ${fwField('fw-size', 'Account size ($)', f.size, 'The starting balance, e.g. 50000.', { ph: '50000', key: 'size' })}
+          </div>
+          <div class="f" style="margin-top:14px"><div class="lbl">Stage</div><div class="seg">${[['eval', 'Evaluation'], ['queued', 'Passed · queued'], ['funded', 'Funded'], ['personal', 'Personal']].map(([v, l]) => `<button type="button" class="${f.stage === v ? 'on' : ''}" data-fw-stage="${v}">${l}</button>`).join('')}</div>
+            <div class="h">Evaluation tracks progress to the profit target. Funded tracks progress to your payout line.</div></div>
+          <div class="grid" style="margin-top:14px">
+            ${fwField('fw-comm', 'Commission ($ per side) <span style="color:var(--dim);font-weight:500">— optional</span>', f.comm, 'All-in rate, charged on entry and exit. Synced from Tradovate? Leave blank to use the fees Tradovate reports.', { ph: 'e.g. 0.52', key: 'comm' })}
+          </div>`;
+        next = `<button class="btn pri" data-fwa="next">Next: firm rules</button>`;
+      }
+
+      else if (fw.step === 3) {
+        const f = fw.f;
+        body = `<h2>Firm rules</h2>
+          <p class="lead">Copy these from your firm's rules page. Leave blank anything your firm doesn't have. Firms change their rules, so check the page — nothing here is filled in for you.</p>
+          <div class="f"><div class="lbl">Drawdown type</div><div class="seg">${[['trailing', 'Trailing'], ['eod', 'End of day'], ['static', 'Static']].map(([v, l]) => `<button type="button" class="${f.ddType === v ? 'on' : ''}" data-fw-dd="${v}">${l}</button>`).join('')}</div></div>
+          <div class="grid" style="margin-top:14px">
+            ${fwField('fw-maxdd', 'Max drawdown ($)', f.maxDD, 'How far below your high (or start) the floor sits.', { ph: '2000', key: 'maxDD' })}
+            ${f.ddType === 'static' ? '' : fwField('fw-lock', 'Trailing stops at (+$ profit)', f.lock, 'The profit where the firm stops trailing the floor. Blank = never stops.', { ph: 'e.g. 2100', key: 'lock' })}
+            ${f.stage === 'eval' ? fwField('fw-target', 'Profit target ($)', f.target, 'What you need to pass.', { ph: '3000', key: 'target' }) : ''}
+            ${fwField('fw-daily', 'Daily loss limit ($)', f.daily, 'Leave blank if your firm has none.', { ph: 'optional', key: 'daily' })}
+            ${f.stage === 'funded' || f.stage === 'queued' ? fwField('fw-payout', 'Payout line (+$ profit)', f.payoutLine, 'The profit you need before you can request a payout.', { ph: 'optional', key: 'payoutLine' }) : ''}
+            ${f.stage === 'funded' || f.stage === 'queued' ? fwField('fw-mindays', 'Min trading days / payout', f.minDays, '', { ph: 'optional', key: 'minDays' }) : ''}
+            ${fwField('fw-inact', 'Inactivity limit (days)', f.inactivity, 'Days without a trade before the firm can close the account. Counted from your last trade, not your last upload.', { ph: 'optional', key: 'inactivity' })}
+          </div>
+          <div class="hint" id="fw-lockline" style="margin-top:14px">${esc(fwLockLine())}</div>`;
+        next = `<button class="btn pri" data-fwa="next">Next: warnings</button>`;
+      }
+
+      else if (fw.step === 4) {
+        const f = fw.f; if (!f.alerts) f.alerts = fwSuggestAlerts();
+        const A = f.alerts;
+        const row = (id, name, hint, unit, urgent) => {
+          const c = A[id];
+          return `<div class="wl ${c.on ? '' : 'off'}" id="fw-wl-${id}">
+            <div><input type="checkbox" class="sw" data-fw-al-on="${id}" ${c.on ? 'checked' : ''} aria-label="${esc(name)}"></div>
+            <div class="t"><b>${name}</b><span>${hint}</span></div>
+            <div><input class="inp w" type="number" min="0" step="any" data-fw-al="${id}|warn" value="${c.warn ?? ''}" placeholder="${unit}" aria-label="${esc(name)} heads-up"></div>
+            <div>${urgent === false ? '<div style="text-align:center;color:var(--dim);font-size:12px">—</div>' : `<input class="inp u" type="number" min="0" step="any" data-fw-al="${id}|urgent" value="${c.urgent ?? ''}" placeholder="${unit}" aria-label="${esc(name)} urgent">`}</div>
+          </div>`;
+        };
+        const goalRow = f.stage === 'eval'
+          ? row('target', 'Profit target', 'Green flag when you hit it. Heads-up = $ still to go.', '$ to go', false)
+          : (f.stage === 'funded' || f.stage === 'queued') ? row('payout', 'Payout line reached', 'Green flag at your payout line. Heads-up = $ still to go (optional).', '$ to go', false) : '';
+        body = `<h2>Your warning lines</h2>
+          <p class="lead">Your own lines, set before the firm's. Heads-up flags yellow, urgent flags red at the top of Fleet. We've suggested starting points from the rules you entered — change any of them.</p>
+          <div class="card">
+            <div class="wlh"><span></span><span>Watch for</span><span style="color:var(--warn)">Heads-up</span><span style="color:var(--dn)">Urgent</span></div>
+            ${row('cushion', 'Cushion to floor', '$ left before the drawdown floor.' + (fwNum(f.maxDD) ? '' : ' Needs a max drawdown.'), '$ left')}
+            ${row('dailyLoss', 'Firm daily loss used', '% of the daily limit used in a session.' + (fwNum(f.daily) ? '' : ' Needs a daily loss limit.'), '%')}
+            ${row('inactivity', 'Inactivity', 'Days since your last trade.' + (fwNum(f.inactivity) ? ' Your firm limit is ' + fwNum(f.inactivity) + ' days.' : ''), 'days')}
+            ${goalRow}
+          </div>
+          <div style="font-size:12px;color:var(--dim)">More warnings — pullback from high, consistency, renewal date — are in each account's full setup.</div>`;
+        next = `<button class="btn pri" data-fwa="next">Next: review</button>`;
+      }
+
+      else if (fw.step === 5) {
+        const f = fw.f, list = fwPickedCards(), A = f.alerts || fwSuggestAlerts();
+        const stageName = { eval: 'Evaluation', queued: 'Passed · queued', funded: 'Funded', personal: 'Personal' }[f.stage];
+        const on = Object.keys(A).filter(k => A[k].on && (k !== 'target' || f.stage === 'eval') && (k !== 'payout' || f.stage === 'funded' || f.stage === 'queued'));
+        const names = { cushion: 'Cushion', dailyLoss: 'Daily loss', inactivity: 'Inactivity', target: 'Target', payout: 'Payout line' };
+        const r = (k, v) => v === null || v === '' || v === undefined ? '' : `<tr><td>${k}</td><td>${v}</td></tr>`;
+        body = `<h2>Review and save</h2>
+          <p class="lead">Applies to ${list.length} account${list.length === 1 ? '' : 's'}. Names, dates, logged payouts and any warning you've snoozed stay as they are.</p>
+          <div class="card"><div class="lbl">Accounts</div><div style="font-size:13px;line-height:1.7">${list.map(c => esc(c.label || c.filterName)).join(' · ')}</div></div>
+          <div class="card"><table class="rv">
+            ${r('Firm', esc(f.firm) || '<span style="color:var(--dim)">not set</span>')}
+            ${r('Stage', stageName)}
+            ${r('Account size', fwNum(f.size) != null ? fwMoney(fwNum(f.size)) : '')}
+            ${r('Commission', fwNum(f.comm) != null ? '$' + fwNum(f.comm) + ' per side' : 'From Tradovate (or none)')}
+            ${r('Drawdown', (fwNum(f.maxDD) != null ? fwMoney(fwNum(f.maxDD)) + ' · ' : '') + ({ trailing: 'Trailing', eod: 'End of day', static: 'Static' })[f.ddType])}
+            ${f.ddType !== 'static' && fwNum(f.lock) != null ? r('Trailing stops at', '+' + fwMoney(fwNum(f.lock))) : ''}
+            ${f.stage === 'eval' ? r('Profit target', fwNum(f.target) != null ? fwMoney(fwNum(f.target)) : '') : ''}
+            ${r('Daily loss limit', fwNum(f.daily) != null ? fwMoney(fwNum(f.daily)) : '')}
+            ${f.stage === 'funded' || f.stage === 'queued' ? r('Payout line', fwNum(f.payoutLine) != null ? '+' + fwMoney(fwNum(f.payoutLine)) : '') : ''}
+            ${f.stage === 'funded' || f.stage === 'queued' ? r('Min days / payout', fwNum(f.minDays) ?? '') : ''}
+            ${r('Inactivity limit', fwNum(f.inactivity) != null ? fwNum(f.inactivity) + ' days' : '')}
+            ${r('Warnings on', on.length ? on.map(k => names[k]).join(', ') : 'none')}
+          </table></div>
+          <div class="hint">${esc(fwLockLine())}</div>
+          ${fw.msg ? `<div class="msg ${fw.msg[1]}">${esc(fw.msg[0])}</div>` : ''}`;
+        next = `<button class="btn pri" data-fwa="save" ${fw.busy ? 'disabled' : ''}>${fw.busy ? 'Saving…' : 'Save ' + list.length + ' account' + (list.length === 1 ? '' : 's')}</button>`;
+      }
+
+      else {   // 6 = done
+        const left = fwSetupable().filter(c => c.needsSetup).length;
+        body = `<h2>Saved</h2>
+          <p class="lead">${fw.saved} account${fw.saved === 1 ? '' : 's'} set up. Warnings now run on every import${fw.tv && (fw.tv.connections || []).length ? ' and every Tradovate sync' : ''}.</p>
+          ${left ? `<div class="hint"><b style="color:#c4b5fd">${left} account${left === 1 ? '' : 's'} still need${left === 1 ? 's' : ''} setup.</b> Run the next set — a different firm or account size.</div>` : '<div class="hint">Every account in your Fleet is set up.</div>'}
+          <div style="font-size:12px;color:var(--dim);margin-top:12px">Pop-up alerts for new warnings are under the Alerts tab.</div>`;
+        next = `${left ? '<button class="btn" data-fwa="again">Set up the next set</button>' : ''}<button class="btn pri" data-fwa="close">Done — open Fleet</button>`;
+      }
+
+      const head = `<div class="top"><div class="eyebrow">Fleet setup${fw.step < 6 ? ' · step ' + (fw.step + 1) + ' of 6' : ''}</div><span class="sp"></span><button class="btn xs" data-fwa="close" aria-label="Close setup">Close</button></div>`;
+      el.innerHTML = head + (fw.step < 6 ? fwStepsBar() : '') + body
+        + `<div class="foot">${back}<span class="sp"></span>${next}</div>`
+        + (fw.step === 0 && fw.msg ? `<div class="msg ${fw.msg[1]}">${esc(fw.msg[0])}</div>` : '');
+    }
+
+    // Read the visible inputs of steps 2–4 into fw.f before leaving the step.
+    function fwReadStep() {
+      if (!fw || !fw.f) return;
+      document.querySelectorAll('#fw-body [data-fw]').forEach(inp => { const k = inp.dataset.fw; if (k) fw.f[k] = inp.value.trim(); });
+    }
+
+    function fwApplyCopy(id) {
+      const src = trackerCards.find(c => c.id === id); if (!src) return;
+      const f = fw.f, a = journalAccounts.find(x => x.name === src.filterName);
+      Object.assign(f, {
+        firm: f.firm || src.firm || '', size: src.accountSize ?? '', maxDD: src.maxDD ?? '', ddType: src.ddType || 'trailing',
+        lock: FSDXTracker.lockProfit(src) ?? '', target: src.profitTarget ?? '', daily: src.firmDaily ?? '',
+        payoutLine: src.payoutLine ?? '', minDays: src.minDays ?? '', inactivity: src.inactivityDays ?? '',
+        comm: f.comm !== '' ? f.comm : (a && a.commissionRate != null ? a.commissionRate : ''),
+        alerts: null, alertsFrom: src
+      });
+      const st = FSDXTracker.stageOf(src, journalAccounts);
+      if (['eval', 'queued', 'funded', 'personal'].includes(st)) f.stage = st;
+    }
+
+    async function fwAddAccount() {
+      const name = (document.getElementById('fw-add-name').value || '').trim();
+      const num = normAcctNum(document.getElementById('fw-add-num').value);
+      const firm = (document.getElementById('fw-add-firm').value || '').trim();
+      fw.addOpen = true; fw.msg = null;
+      fw.addVals = { name, num: document.getElementById('fw-add-num').value, firm };   // kept if we bounce back with an error
+      if (!name) { fw.msg = ['Give the account a name.', 'err']; return fwRender(); }
+      if (journalAccounts.some(a => a.name === name) || trackerCards.some(c => (c.label || '') === name)) { fw.msg = ['"' + name + '" already exists.', 'err']; return fwRender(); }
+      if (num) { const clash = journalAccounts.find(a => normAcctNum(a.accountNumber) === num); if (clash) { fw.msg = ['Account # already used by "' + clash.name + '".', 'err']; return fwRender(); } }
+      const beforeCards = trackerCards.slice(), beforeAccts = JSON.parse(JSON.stringify(journalAccounts));
+      const card = { id: Date.now().toString() + Math.random().toString(36).slice(2), label: name, filterType: '', filterName: name,
+                     accountSize: null, needsSetup: true, stage: '', firm, createdAt: new Date().toISOString(), alerts: {} };
+      journalAccounts.push({ id: Date.now().toString(), name, accountNumber: num, accountSize: null, accountType: '', commissionRate: null });
+      trackerCards.unshift(card);
+      if (!await saveTrackerCards()) { trackerCards = beforeCards; journalAccounts = beforeAccts; fw.msg = ['Could not save — ' + trackerLastError, 'err']; return fwRender(); }
+      try { await saveAccountsToKV(); } catch (e) { fw.msg = ['Added, but the account # could not be saved — set it in the account\'s setup.', 'err']; }
+      fw.picked[card.id] = true;
+      fw.addVals = null;
+      if (!fw.msg) fw.msg = ['Added ' + name + '.', 'ok'];
+      fwRender();
+    }
+
+    async function fwSave() {
+      if (fw.busy) return;
+      const f = fw.f, list = fwPickedCards(), A = f.alerts || fwSuggestAlerts();
+      const regType = f.stage === 'eval' ? 'Evaluation' : f.stage === 'personal' ? 'Personal' : 'Funded';
+      const comm = fwNum(f.comm), size = fwNum(f.size);
+      const isFunded = f.stage === 'funded' || f.stage === 'queued';
+      fw.busy = true; fw.msg = null; fwRender();
+
+      const beforeCards = trackerCards.slice(), beforeAccts = JSON.parse(JSON.stringify(journalAccounts));
+      const ids = new Set(list.map(c => c.id));
+      const commChanged = [];
+      trackerCards = trackerCards.map(c => {
+        if (!ids.has(c.id)) return c;
+        const alerts = JSON.parse(JSON.stringify(c.alerts || {}));
+        Object.keys(A).forEach(k => { alerts[k] = Object.assign({}, alerts[k] || {}, { on: !!A[k].on, warn: A[k].warn ?? null, urgent: A[k].urgent ?? null }); });
+        const n = { ...c,
+          firm: f.firm, stage: f.stage, accountSize: size, maxDD: fwNum(f.maxDD), ddType: f.ddType,
+          floorLockProfit: f.ddType === 'static' ? null : fwNum(f.lock), floorLock: null,
+          profitTarget: f.stage === 'eval' ? fwNum(f.target) : (c.profitTarget ?? null),
+          firmDaily: fwNum(f.daily),
+          payoutLine: isFunded ? fwNum(f.payoutLine) : (c.payoutLine ?? null),
+          minDays: isFunded ? fwNum(f.minDays) : (c.minDays ?? null),
+          inactivityDays: fwNum(f.inactivity), alerts };
+        delete n.needsSetup; delete n.floorLockBuffer; delete n.prevStage;
+        if (!n.createdAt) n.createdAt = new Date().toISOString();
+        const acct = journalAccounts.find(a => a.name === c.filterName);
+        if (acct) {
+          if (comm !== null && String(acct.commissionRate) !== String(comm)) commChanged.push(acct.name);
+          Object.assign(acct, { accountType: regType, accountSize: size != null ? size : acct.accountSize,
+                                commissionRate: comm !== null ? Math.max(0, comm) : acct.commissionRate });
+        }
+        return n;
+      });
+
+      if (!await saveTrackerCards()) {
+        trackerCards = beforeCards; journalAccounts = beforeAccts;
+        fw.busy = false; fw.msg = ['Could not save — ' + trackerLastError + '. Nothing was changed.', 'err']; return fwRender();
+      }
+      try { await saveAccountsToKV(); }
+      catch (e) { flToast('Rules saved, but size / commission could not be — try again from the account\'s setup.', true); }
+      // Commission changed on synced accounts → re-price their past synced
+      // trades, exactly as the account form does.
+      try {
+        if (window.FSDXTv && commChanged.length) {
+          let trades = journalTrades, changed = 0;
+          commChanged.forEach(nm => { const rp = FSDXTv.reprice(trades, journalAccounts, nm); if (rp.changed) { trades = rp.trades; changed += rp.changed; } });
+          if (changed) {
+            await fetch(JOURNAL_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ action: 'save-all', key: whopKey, payload: { trades } }) });
+            journalTrades = trades;
+            flToast(changed + ' synced trade' + (changed === 1 ? '' : 's') + ' re-priced at the new commission.');
+          }
+        }
+        if (window.FSDXTv && comm !== null) FSDXTv.run({ whopKey }).then(res => { if (res.added) { loadJournalData().then(() => { renderFleet(); renderList(); }); flToast(res.added + ' waiting trade' + (res.added === 1 ? '' : 's') + ' imported from Tradovate.'); } });
+      } catch (e) { console.warn('[FSDX] wizard re-price skipped', e); }
+
+      fw.saved = list.length; fw.busy = false; fw.picked = {}; fw.f = null; fw.msg = null; fw.step = 6;
+      fwRender(); renderFleet(); renderList(); renderAccountsList();
+    }
+
+    function fwGo(step) {
+      fwReadStep();
+      if (step === 2 && fw.step === 1) fwInitForm();
+      // Rules changed since the warnings were suggested → suggest again. Unchanged
+      // rules keep any warning edits the member already made.
+      if (step === 4 && fw.step === 3) { const rk = [fw.f.maxDD, fw.f.daily, fw.f.inactivity, fw.f.stage].join('|'); if (rk !== fw.f._rk) { fw.f.alerts = null; fw.f._rk = rk; } }
+      fw.step = step; fw.msg = null; fwRender();
+      const sh = document.querySelector('#fw .sheet'); if (sh) sh.scrollIntoView({ block: 'start' });
+    }
+
+    document.addEventListener('click', e => {
+      if (!fw) return;
+      const t = e.target.closest('[data-fwa],[data-fw-stage],[data-fw-dd]'); if (!t || !t.closest('#fw')) return;
+      const a = t.dataset.fwa;
+      if (t.dataset.fwStage) { fwReadStep(); fw.f.stage = t.dataset.fwStage; return fwRender(); }
+      if (t.dataset.fwDd) { fwReadStep(); fw.f.ddType = t.dataset.fwDd; return fwRender(); }
+      if (a === 'close') return closeFleetWizard();
+      if (a === 'back') return fwGo(fw.step - 1);
+      if (a === 'next') return fwGo(fw.step + 1);
+      if (a === 'again') { fw.step = 1; fwSetupable().forEach(c => { if (c.needsSetup) fw.picked[c.id] = true; }); return fwRender(); }
+      if (a === 'save') { fwReadStep(); return fwSave(); }
+      if (a === 'add') return fwAddAccount();
+      if (a === 'connect') {
+        try { sessionStorage.setItem('fsdx_fw_resume', '1'); } catch (e2) {}
+        t.disabled = true;
+        return fetch(TV_API + '/start', { method: 'POST', headers: tvHeaders() }).then(r => r.json().then(d => ({ r, d })))
+          .then(({ r, d }) => { if (!r.ok || !d.url) { fw.msg = [d.error || 'Could not start the connection.', 'err']; fwRender(); return; } window.location.href = d.url; })
+          .catch(() => { fw.msg = ['Could not reach the server.', 'err']; fwRender(); });
+      }
+      if (a === 'sync') {
+        t.disabled = true; t.textContent = 'Syncing…';
+        return fetch(TV_API + '/sync', { method: 'POST', headers: tvHeaders() })
+          .then(() => window.FSDXTv ? FSDXTv.run({ whopKey }) : { added: 0, newAccounts: [] })
+          .then(async res => {
+            await Promise.all([loadJournalData(), loadTrackerCards()]);
+            fwSetupable().forEach(c => { if (c.needsSetup) fw.picked[c.id] = true; });
+            fw.msg = ['Synced. ' + ((res.newAccounts || []).length ? res.newAccounts.length + ' new account' + (res.newAccounts.length === 1 ? '' : 's') + ' added.' : 'No new accounts.'), 'ok'];
+            fwLoadTv(); fwRender();
+          }).catch(() => { fw.msg = ['Sync failed — try again.', 'err']; fwRender(); });
+      }
+    });
+    document.addEventListener('change', e => {
+      if (!fw || !e.target.closest('#fw')) return;
+      const t = e.target, d = t.dataset;
+      if (d.fwPick) { fw.picked[d.fwPick] = t.checked; return fwRender(); }
+      if (d.fwFirm !== undefined) {
+        fwSetupable().filter(c => ((c.firm || '').trim() || 'No firm set') === d.fwFirm).forEach(c => { fw.picked[c.id] = t.checked; });
+        return fwRender();
+      }
+      if (t.id === 'fw-copy' && t.value) { fwReadStep(); fwApplyCopy(t.value); return fwRender(); }
+      if (d.fwAlOn) { fw.f.alerts[d.fwAlOn].on = t.checked; document.getElementById('fw-wl-' + d.fwAlOn).classList.toggle('off', !t.checked); return; }
+      if (d.fwAl) { const [id, k] = d.fwAl.split('|'); fw.f.alerts[id][k] = fwNum(t.value); return; }
+    });
+    document.addEventListener('input', e => {
+      if (!fw || !fw.f || !e.target.closest('#fw')) return;
+      const k = e.target.dataset.fw;
+      if (k === 'maxDD' || k === 'lock' || k === 'size') { fw.f[k] = e.target.value.trim(); const ln = document.getElementById('fw-lockline'); if (ln) ln.textContent = fwLockLine(); }
+    });
+    document.addEventListener('keydown', e => { if (fw && e.key === 'Escape') closeFleetWizard(); });
+
+    // A Tradovate pass finished while the wizard is open (e.g. right after
+    // coming back from the connect screen): pick up the new accounts.
+    function fwOnSync() {
+      if (!fw) return;
+      fwSetupable().forEach(c => { if (c.needsSetup && fw.picked[c.id] === undefined) fw.picked[c.id] = true; });
+      if (fw.step <= 1) fwRender();
+      fwLoadTv();
     }
 
     init();
