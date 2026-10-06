@@ -5,14 +5,14 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X Member Platform — Dashboard, Trade Journal, CSV Import &amp; Backtest Logging</title>
-  <meta name="description" content="The FSD-X membership includes a full trader platform on this site: dashboard, trade journal, broker CSV importer for Tradovate and TradingView exports, a backtest workspace, and a multi-account prop-firm tracker. Included with every plan — not an add-on." />
+  <meta name="description" content="The FSD-X member platform: dashboard, trade journal, Tradovate auto-sync and CSV importer, a backtest workspace, and a Fleet manager for running many prop accounts. From $9.99/month with Nightwing, and included in Raven and the full membership." />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="FSD-X Member Platform — the workspace included with the membership" />
-  <meta property="og:description" content="Dashboard, trade journal, broker CSV importer, backtest workspace and multi-account prop-firm tracker — all included with the FSD-X membership at no extra cost." />
+  <meta property="og:title" content="FSD-X Member Platform — journal, backtests and a Fleet manager for prop accounts" />
+  <meta property="og:description" content="Dashboard, trade journal, Tradovate auto-sync, backtest workspace and a Fleet manager for prop accounts. From $9.99/month with Nightwing." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="FSD-X Member Platform — the workspace included with the membership" />
-  <meta name="twitter:description" content="Dashboard, trade journal, broker CSV importer, backtest workspace and multi-account prop-firm tracker — all included with the FSD-X membership at no extra cost." />
+  <meta name="twitter:title" content="FSD-X Member Platform — journal, backtests and a Fleet manager for prop accounts" />
+  <meta name="twitter:description" content="Dashboard, trade journal, Tradovate auto-sync, backtest workspace and a Fleet manager for prop accounts. From $9.99/month with Nightwing." />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
@@ -55,9 +55,8 @@
   "operatingSystem": "Web browser",
   "browserRequirements": "Requires JavaScript",
   "url": "https://www.fsdxtrading.com/platform.html",
-  "description": "A full trader workspace hosted on fsdxtrading.com and included with the FSD-X Trading Membership at no extra cost. Members get a dashboard with P&L, win rate, equity curve, market-session clocks and an economic calendar; a trade journal with a calendar view and grade breakdowns; a broker trade importer that reads Tradovate order exports and TradingView strategy exports, deduplicates across overlapping files and applies real per-contract commissions; a backtest workspace that turns an imported CSV into stats, an equity curve and a calendar; a multi-account prop-firm tracker with trailing and end-of-day drawdown rules; a Scout alert feed; and the written playbook. The platform is one of twelve components of the membership and is not sold or priced separately.",
+  "description": "A full trader workspace hosted on fsdxtrading.com. Sold on its own with the Nexus 2.0 extension as Nightwing ($9.99/month), and included at no extra cost in Raven and the FSD-X Trading Membership. Members get a dashboard with P&L, win rate, equity curve, market-session clocks and an economic calendar; a trade journal with a calendar view and grade breakdowns; a broker trade importer that reads Tradovate order exports and TradingView strategy exports, deduplicates across overlapping files and applies real per-contract commissions; a backtest workspace that turns an imported CSV into stats, an equity curve and a calendar; a Fleet manager for running many prop accounts, with per-account warning lines, inactivity limits, eval and funded stages and payout tracking; read-only Tradovate sync that pulls accounts, balances and fills every 30 minutes; and the written playbook. The Scout alert feed is part of the full membership only.",
   "publisher": { "@id": "https://www.fsdxtrading.com/#organization" },
-  "isPartOf": { "@id": "https://www.fsdxtrading.com/#membership" },
   "isAccessibleForFree": false,
   "featureList": [
     "Member dashboard — P&L, win rate, equity curve with range filters, economic calendar, London/New York/Tokyo session clocks",
@@ -66,20 +65,22 @@
     "Flat-to-flat campaign accounting with real per-contract commissions applied on import",
     "Cross-file duplicate detection at fill-timestamp resolution, so re-uploading an overlapping export adds only new trades",
     "Backtest workspace — logged backtest sessions kept separate from live trades, each with stats, equity curve and calendar",
+    "Fleet manager — one setup per prop account: stage (eval or funded), max drawdown, profit target, payout line, minimum days and inactivity limit",
+    "Early-warning lines set before the firm's own limits, flagged on the Fleet tab, the dashboard and optional pop-ups",
+    "Read-only Tradovate sync — accounts, balances and fills every 30 minutes, no CSV export",
     "Multi-account prop-firm tracker — trailing and end-of-day drawdown rules, per-account headroom and target progress",
     "Account registry — nickname, account number, size, type and commission rate per prop account",
-    "Scout alert feed — graded setups delivered as they form",
+    "Scout alert feed — graded setups delivered as they form (full membership only)",
     "The written playbook — entry, stop, target and grading rules in full"
   ],
   "offers": {
     "@type": "Offer",
-    "name": "Included with the FSD-X Trading Membership",
-    "price": "129.00",
+    "name": "Nightwing — the member platform + Nexus 2.0",
+    "price": "9.99",
     "priceCurrency": "USD",
-    "url": "https://www.fsdxtrading.com/memberships.html",
+    "url": "https://www.fsdxtrading.com/nightwing.html",
     "availability": "https://schema.org/InStock",
-    "itemOffered": { "@id": "https://www.fsdxtrading.com/#membership" },
-    "description": "This is the price of the complete FSD-X membership, not of the platform on its own. The platform is included with every plan alongside the indicator suite, the Auto Trader, the live trade room, the monthly one-on-one call and the VIP Discord."
+    "description": "Monthly price of Nightwing, which is this platform plus the Nexus 2.0 extension on their own, with a 7-day free trial on the monthly plan. The platform is also included at no extra cost in Raven ($29.99/month) and the full FSD-X membership ($129/month)."
   }
 }
   </script>
@@ -113,19 +114,18 @@
       <!-- ═══ HERO ═══ -->
       <section class="pt-12 pb-10 md:pt-20 md:pb-14 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Included With Every Membership</div>
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// The Member Platform</div>
           <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-            The membership isn't just an indicator.<br class="hidden md:block" />
-            It comes with the platform too.
+            Your journal, your backtests and every prop account.<br class="hidden md:block" />
+            One login.
           </h1>
           <p class="mt-5 text-zinc-400 text-sm md:text-base max-w-3xl leading-relaxed">
-            Most people describe FSD-X as a TradingView script. That's the part you see from the outside.
-            Behind the login there's a full trader workspace built into this site — a dashboard, a trade
-            journal, a broker importer that reads your prop-account exports, a backtest workspace, and a
-            multi-account drawdown tracker.
+            Behind the login at fsdxtrading.com there's a full trader workspace: a dashboard, a trade
+            journal, a broker importer, a backtest workspace, and a Fleet manager built for traders running
+            many prop accounts at once. Connect Tradovate and your accounts and trades fill in on their own.
           </p>
           <div class="mt-5 border border-green-500/20 bg-green-500/[0.04] rounded-xl px-4 py-3 max-w-3xl">
-            <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Included in Nightwing, Raven and the full membership</span> &mdash; at no extra cost on any of them. The platform is not a membership-only feature, and it's the reason the $9.99 tier exists at all. <a href="compare.html" class="text-green-400 hover:underline font-semibold">See what else each one includes &rarr;</a></p>
+            <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">From $9.99/month with Nightwing.</span> Also included at no extra cost in Raven and the full membership. You don't need the membership to use it. <a href="compare.html" class="text-green-400 hover:underline font-semibold">See what else each one includes &rarr;</a></p>
           </div>
 
           <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -138,26 +138,26 @@
               <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Broker export formats read</div>
             </div>
             <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
-              <div class="text-2xl font-black text-white">$0</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Extra cost — included</div>
+              <div class="text-2xl font-black text-white">30 min</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Tradovate auto-sync</div>
             </div>
             <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
-              <div class="text-2xl font-black text-white">12</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Components in the membership</div>
+              <div class="text-2xl font-black text-white">$9.99</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">A month, with Nightwing</div>
             </div>
           </div>
 
           <div class="mt-7 flex flex-wrap gap-3">
-            <a href="memberships.html" class="px-5 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl transition">Start Your 30-Day Free Trial →</a>
-            <a href="suite.html" class="px-5 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs rounded-xl transition">See the indicator suite</a>
+            <a href="nightwing.html" class="px-5 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl transition">Get the platform &mdash; $9.99 →</a>
+            <a href="compare.html" class="px-5 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs rounded-xl transition">Compare all plans</a>
           </div>
 
           <!-- This page describes the platform, which is exactly what Nightwing
                sells on its own. Sending every reader to the $129 page was the
                single worst mis-route on the site. -->
           <p class="mt-4 text-[12.5px] text-zinc-500 leading-relaxed max-w-xl">
-            Only want the platform? <a href="nightwing.html" class="text-green-400 hover:underline font-semibold">Nightwing</a>
-            is this workspace plus the Nexus extension for $9.99/month, without the indicator suite &mdash; 7-day free trial.
+            Nightwing is this workspace plus the Nexus extension, with a 7-day free trial on monthly. Want the graded system,
+            the Auto Trader and the live room too? <a href="memberships.html" class="text-green-400 hover:underline font-semibold">The full membership</a> includes all of it.
           </p>
         </div>
       </section>
@@ -168,10 +168,9 @@
 
           <div>
             <div class="text-[10px] text-green-400 uppercase tracking-widest mb-3">// What's behind the login</div>
-            <h2 class="text-2xl md:text-3xl font-black text-white">Seven tools, one login, no extra charge</h2>
+            <h2 class="text-2xl md:text-3xl font-black text-white">Seven tools, one login</h2>
             <p class="text-zinc-400 text-sm mt-3 max-w-2xl leading-relaxed">
-              These live at fsdxtrading.com and open in a browser. Nothing to install, and nothing here is a
-              separate subscription. Member pages are behind a login, which is why they don't show up in a
+              These live at fsdxtrading.com and open in a browser. Nothing to install. Member pages are behind a login, which is why they don't show up in a
               search result — this page is the public description of them.
             </p>
           </div>
@@ -291,27 +290,34 @@
           <!-- Accounts -->
           <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
             <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">05 — Accounts &amp; Drawdown Trackers</span>
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">05 — Fleet Manager &amp; Tradovate Sync</span>
             </div>
             <figure class="m-0 border-b border-white/5 bg-black">
               <img src="shot-accounts.png" width="1400" height="620" loading="lazy" alt="The accounts page on the Trackers tab: a funded prop account with total and daily P&amp;L, win rate, days traded, firm rules, personal rules with a discipline score, and loss-streak counters." class="block w-full h-auto">
             </figure>
             <div class="p-6 md:p-8">
-              <h3 class="text-xl font-black text-white mb-3">Built for people running more than one eval</h3>
+              <h3 class="text-xl font-black text-white mb-3">Built for traders running a fleet of prop accounts</h3>
               <p class="text-zinc-400 text-sm leading-relaxed mb-5">
-                Register each prop account with its nickname, account number, size, type and commission
-                rate, then attach a tracker to it. The tracker models the firm's rules — trailing or
-                end-of-day drawdown — and shows headroom and progress toward the target for each account
-                separately. If a tracker stops matching anything because an account was renamed, it says so
-                on the card instead of quietly reporting zero.
+                Set each account up once: stage (eval or funded), max drawdown, profit target, payout line,
+                minimum days and an inactivity limit. Then set your own warning lines ahead of the firm's.
+                After the session, Fleet shows which accounts are close to the floor, which haven't traded
+                in too long, and which have hit a target or a payout line. Warnings show on the Fleet tab and
+                the dashboard, with optional pop-ups.
+              </p>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                Connect your Tradovate logins and accounts, balances and fills sync every 30 minutes, with no
+                CSV exports. The connection is read-only: FSD-X can't place, change or cancel an order.
+                Not on Tradovate? The CSV importer still works.
               </p>
               <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Account registry with per-account live stats</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Trailing and end-of-day drawdown rule support</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Headroom and target progress per account</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Combined totals across accounts</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Import history, with delete-by-account</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Warns you when a tracker's filter has gone stale</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Read-only Tradovate sync, every 30 minutes</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Your own warning lines, set before the firm's</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Inactivity limit counted from your last trade</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Eval and funded stages, with target and payout progress</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Trailing and end-of-day drawdown rules</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Copy one account's setup to the rest in one save</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Payout log, so balance and cushion stay right</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Archive a passed eval and keep its history</div>
               </div>
             </div>
           </div>
@@ -320,7 +326,7 @@
           <div class="grid md:grid-cols-2 gap-6">
             <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
               <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-                <span class="text-xs font-bold text-green-400 uppercase tracking-widest">06 — Scout Alerts</span>
+                <span class="text-xs font-bold text-green-400 uppercase tracking-widest">06 — Scout Alerts</span><span class="ml-auto text-[10px] font-bold uppercase tracking-wider text-zinc-400 border border-white/10 rounded px-1.5 py-0.5">Full membership only</span>
               </div>
               <figure class="m-0 border-b border-white/5 bg-black">
                 <img src="shot-scout.png" width="1400" height="793" loading="lazy" alt="The Scout alert feed on the site: graded setup alerts listed by day with filters for date range, type, direction and grade." class="block w-full h-auto">
@@ -355,12 +361,12 @@
           <!-- Context -->
           <div class="border border-white/10 bg-zinc-950/30 rounded-2xl p-6 md:p-8">
             <div class="text-[10px] text-green-400 uppercase tracking-widest mb-3">// Where this sits</div>
-            <h3 class="text-xl font-black text-white mb-3">One of twelve things the membership covers</h3>
+            <h3 class="text-xl font-black text-white mb-3">Three ways to get it</h3>
             <p class="text-zinc-400 text-sm leading-relaxed mb-5">
-              The platform on this page is included with the membership — not an upsell, not a separate
-              subscription, and not a different tier. The same membership covers the indicator suite, the
-              hands-off Auto Trader, the live trade room every market morning, the monthly 1-on-1 call,
-              the training library and the VIP Discord channels. One price, all of it.
+              <span class="text-white font-semibold">Nightwing, $9.99/month</span> &mdash; this platform and Nexus 2.0. Bring your own strategy.<br>
+              <span class="text-white font-semibold">Raven, $29.99/month</span> &mdash; everything in Nightwing, plus the Raven indicator: stop, targets and sizing on every ORB break.<br>
+              <span class="text-white font-semibold">Full membership, $129/month</span> &mdash; everything above, plus the graded Knightfall system, the Auto Trader,
+              Scout alerts, the live trade room and the monthly 1-on-1 call.
             </p>
             <div class="flex flex-wrap gap-2 text-xs">
               <a href="suite.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Indicator suite →</a>
@@ -369,7 +375,10 @@
               <a href="knowledge.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Training library →</a>
               <a href="results.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Backtest research →</a>
               <a href="track-record.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Live track record →</a>
+              <a href="nightwing.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Nightwing →</a>
+              <a href="raven.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Raven →</a>
               <a href="memberships.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">What's in the membership →</a>
+              <a href="compare.html" class="px-3 py-1.5 border border-white/10 hover:border-green-500/30 rounded-lg text-zinc-300 hover:text-green-400 transition">Compare all plans →</a>
             </div>
           </div>
 
@@ -399,20 +408,17 @@
     <!-- TRIAL CTA BAND -->
     <section class="py-12 px-6 md:px-12 border-t border-white/10 bg-gradient-to-b from-zinc-950/40 to-black">
       <div class="max-w-3xl mx-auto text-center">
-        <h2 class="text-2xl md:text-3xl font-black text-white leading-tight">The tools and the workspace, in one membership.</h2>
-        <p class="text-zinc-400 text-sm mt-3 leading-relaxed max-w-xl mx-auto">Start the 30-day free trial and the whole platform opens with it — dashboard, journal, importer, backtests and trackers.</p>
+        <h2 class="text-2xl md:text-3xl font-black text-white leading-tight">Start with the platform. Add the system when you want it.</h2>
+        <p class="text-zinc-400 text-sm mt-3 leading-relaxed max-w-xl mx-auto">Nightwing opens the whole platform for $9.99/month, with a 7-day free trial on monthly. The full membership adds the graded system, the Auto Trader and the live room, with a 30-day free trial.</p>
         <div class="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
-          <a href="memberships.html" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">
-            Start Your 30-Day Free Trial →
+          <a href="nightwing.html" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">
+            Get Nightwing &mdash; $9.99 →
           </a>
-          <a href="results.html" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl font-medium text-white">
-            See the backtest data
+          <a href="memberships.html" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl font-medium text-white">
+            See the full membership
           </a>
         </div>
-        <p class="text-[11px] text-zinc-500 mt-4">$129/mo after trial · Cancel anytime in one click via Whop</p>
-        <p class="text-[12.5px] text-zinc-400 mt-4">
-          Don't need the indicators? <a href="nightwing.html" class="text-green-400 hover:underline font-semibold">Nightwing gives you this platform + Nexus for $9.99/month</a>.
-        </p>
+        <p class="text-[11px] text-zinc-500 mt-4">Cancel anytime in one click via Whop</p>
         <p class="text-[11px] text-zinc-400 mt-3 max-w-xl mx-auto leading-relaxed">
           Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not necessarily indicative of future results.
         </p>
