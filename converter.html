@@ -41,7 +41,7 @@
         </div>
         <div>
           <h1 class="text-base font-black text-white">Trade Importer</h1>
-          <p class="text-xs text-zinc-500">Universal importer — TradingView · Tradovate · FSD-X ORB Pro · Auto-detected</p>
+          <p class="text-xs text-zinc-500">Universal importer — TradingView · Tradovate · FSD-X ORB PRO · Auto-detected</p>
         </div>
       </div>
     </div>
@@ -58,7 +58,7 @@
                 <span class="text-green-400 text-[10px] font-black">FX</span>
               </div>
               <div>
-                <div class="text-xs font-bold text-white mb-0.5">FSD-X ORB Pro</div>
+                <div class="text-xs font-bold text-white mb-0.5">FSD-X ORB PRO</div>
                 <div class="text-[11px] text-zinc-500">TradingView strategy export with full grade extraction (A+/A/B+/B/C+/C) and signal data.</div>
               </div>
             </div>
@@ -119,7 +119,7 @@
               </div>
               <div class="text-sm font-bold text-zinc-300 mb-1">Drop your CSVs here</div>
               <div class="text-xs text-zinc-600">One file or many — each routes to its own account by account #</div>
-              <div class="text-[10px] text-zinc-700 mt-1">TradingView export · Tradovate Orders · FSD-X ORB Pro · Journal export — auto-detected</div>
+              <div class="text-[10px] text-zinc-700 mt-1">TradingView export · Tradovate Orders · FSD-X ORB PRO · Journal export — auto-detected</div>
             </div>
           </div>
 
@@ -541,7 +541,7 @@
       }
       // Old TradingView format: "Trade #", "Net P&L"
       if (firstLine.includes('Trade #') || firstLine.includes('Net P&L') || firstLine.includes('Profit')) {
-        // FSD-X ORB Pro signals in old format
+        // FSD-X ORB PRO signals in old format
         if (rows.some(r => /ORB\s+(Long|Short)\s+(A\+|A|B\+|B|C\+|C)/i.test(r['Signal'] || ''))) return 'fsdx';
         return 'tv';
       }
@@ -550,8 +550,8 @@
 
     function getFormatBadgeHTML(mode) {
       const configs = {
-        fsdx: { bg: 'bg-green-500/10 border-green-500/30 text-green-400', dot: 'bg-green-400', label: 'FSD-X ORB Pro Detected ✓' },
-        fsdx_new: { bg: 'bg-green-500/10 border-green-500/30 text-green-400', dot: 'bg-green-400', label: 'FSD-X ORB Pro (New Format) ✓' },
+        fsdx: { bg: 'bg-green-500/10 border-green-500/30 text-green-400', dot: 'bg-green-400', label: 'FSD-X ORB PRO Detected ✓' },
+        fsdx_new: { bg: 'bg-green-500/10 border-green-500/30 text-green-400', dot: 'bg-green-400', label: 'FSD-X ORB PRO (New Format) ✓' },
         tv:   { bg: 'bg-blue-500/10 border-blue-500/30 text-blue-400',   dot: 'bg-blue-400',   label: 'TradingView Strategy Detected ✓' },
         tv_new: { bg: 'bg-blue-500/10 border-blue-500/30 text-blue-400', dot: 'bg-blue-400',   label: 'TradingView Strategy (New Format) ✓' },
         tradovate: { bg: 'bg-purple-500/10 border-purple-500/30 text-purple-400', dot: 'bg-purple-400', label: 'Tradovate Orders Detected ✓' },
@@ -596,7 +596,7 @@
 
       if (!anyOk) {
         const why = loadedFiles.length === 1 ? (loadedFiles[0].error || 'Unrecognized format') : 'None of these files could be read';
-        return showError(why + '. Supported: TradingView List of Trades export, Tradovate Orders export, FSD-X ORB Pro strategy export, or an FSD-X journal export.');
+        return showError(why + '. Supported: TradingView List of Trades export, Tradovate Orders export, FSD-X ORB PRO strategy export, or an FSD-X journal export.');
       }
 
       const ok = loadedFiles.filter(f => !f.error);
@@ -680,7 +680,7 @@
 
     // Per-file summary shown in place of the single-format info blurb.
     function getMultiFileInfoHTML() {
-      const labels = { fsdx: 'FSD-X ORB Pro', fsdx_new: 'FSD-X ORB Pro', tv: 'TradingView', tv_new: 'TradingView', tradovate: 'Tradovate Orders', journal: 'Journal export' };
+      const labels = { fsdx: 'FSD-X ORB PRO', fsdx_new: 'FSD-X ORB PRO', tv: 'TradingView', tv_new: 'TradingView', tradovate: 'Tradovate Orders', journal: 'Journal export' };
       const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
       const rows = loadedFiles.map(f => {
         const bad = !!f.error;
