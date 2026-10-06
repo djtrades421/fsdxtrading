@@ -46,7 +46,7 @@ window.toggleMobileMenu = function () {
       'index', 'suite', 'autotrader', 'results', 'track-record', 'memberships',
       'nightwing', 'raven', 'compare', 'free-indicators', 'platform', 'partners', 'giveaways',
       'knowledge', 'faq', 'contact', 'schedule', 'disclosures', 'affiliates',
-      'setup', 'welcome', '404'
+      'setup', 'welcome', '404', 'tradingview-update'
     ];
 
     var rawPath = location.pathname || '/';

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>What TradingView’s Nov 1 change means — FSD-X Trading</title>
+  <meta name="description" content="From November 1, 2026 TradingView requires paid private scripts to be sold through its Marketplace. What that changes for FSD-X members on TradingView, and what it doesn’t change for NinjaTrader, the platform, Nexus and the Discord." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="What TradingView’s Nov 1 change means — FSD-X Trading" />
+  <meta property="og:description" content="From November 1, 2026 TradingView requires paid private scripts to be sold through its Marketplace. What that changes for FSD-X members on TradingView, and what it doesn’t change for NinjaTrader, the platform, Nexus and the Discord." />
+  <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="What TradingView’s Nov 1 change means — FSD-X Trading" />
+  <meta name="twitter:description" content="From November 1, 2026 TradingView requires paid private scripts to be sold through its Marketplace. What that changes for FSD-X members on TradingView, and what it doesn’t change for NinjaTrader, the platform, Nexus and the Discord." />
+  <link rel="stylesheet" href="tailwind.css">
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <style>
+    body { background-color: #000; }
+    .tvu-card { border:1px solid rgba(255,255,255,.1); background:rgba(9,9,11,.5); border-radius:16px; padding:22px; }
+    .tvu-card h3 { font-weight:900; font-size:17px; margin:8px 0 6px; color:#fff; }
+    .tvu-card p, .tvu-card li { color:#a1a1aa; font-size:13.5px; line-height:1.6; }
+    .tvu-card ul { list-style:disc; padding-left:18px; margin-top:8px; }
+    .tvu-card li + li { margin-top:4px; }
+    .tvu-tag { display:inline-block; font-size:10px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:6px; border:1px solid; }
+    .tvu-tag.chg { color:#fbbf24; border-color:rgba(251,191,36,.4); background:rgba(251,191,36,.08); }
+    .tvu-tag.ok  { color:#34d399; border-color:rgba(52,211,153,.4); background:rgba(52,211,153,.08); }
+    .tvu-q { border-top:1px solid rgba(255,255,255,.06); padding:16px 0; }
+    .tvu-q b { display:block; color:#fff; font-size:14.5px; margin-bottom:5px; }
+    .tvu-q p { color:#a1a1aa; font-size:13.5px; line-height:1.6; }
+    .tvu-q a, .tvu-card a { color:#4ade80; text-decoration:underline; }
+  </style>
+  <link rel="canonical" href="https://www.fsdxtrading.com/tradingview-update.html" />
+  <meta property="og:url" content="https://www.fsdxtrading.com/tradingview-update.html" />
+  <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
+  <script src="analytics.js"></script>
+</head>
+
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+    <div class="w-full flex-1">
+
+      <!-- PAGE HEADER -->
+      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// TradingView change &middot; November 1, 2026</div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">What TradingView&rsquo;s change means for you</h1>
+          <p class="mt-4 text-zinc-400 text-xs md:text-sm max-w-3xl leading-relaxed">
+            TradingView is changing its rules for private (invite-only) scripts. From <span class="text-white font-semibold">November 1, 2026</span>,
+            access to a paid private script can only be sold through the TradingView Marketplace. It can&rsquo;t be sold through Whop,
+            sold by us directly, or bundled into a membership. This is TradingView&rsquo;s decision, and it applies to every script seller on TradingView, not just us.
+          </p>
+          <p class="mt-3 text-zinc-500 text-xs max-w-3xl leading-relaxed">
+            Source: <a href="https://www.tradingview.com/blog/en/commercial-scripts-move-to-marketplace-61291/" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">TradingView&rsquo;s announcement</a>.
+            We&rsquo;ve applied to TradingView&rsquo;s Marketplace program and are waiting on their answer. This page will be updated as soon as we have it.
+          </p>
+        </div>
+      </section>
+
+      <!-- WHO IT AFFECTS -->
+      <section class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Who it affects</div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div class="tvu-card">
+              <span class="tvu-tag chg">Changes</span>
+              <h3>Our scripts on TradingView</h3>
+              <p>ORB PRO Knightfall, the Auto Trader strategy, Raven, Stack V1 and the Volume Engine on TradingView.</p>
+              <ul>
+                <li>After October 31, new access is bought through the TradingView Marketplace, billed by TradingView.</li>
+                <li>We can&rsquo;t include it in a Whop membership or plan anymore.</li>
+                <li>Marketplace pricing and the steps will be posted here once TradingView confirms them.</li>
+              </ul>
+            </div>
+            <div class="tvu-card">
+              <span class="tvu-tag ok">No change</span>
+              <h3>NinjaTrader</h3>
+              <p>The NinjaTrader version of Knightfall is in review with NinjaTrader. When it&rsquo;s released, it&rsquo;s sold directly through us on Whop, the same way the membership works today. TradingView&rsquo;s rules don&rsquo;t apply to it.</p>
+            </div>
+            <div class="tvu-card">
+              <span class="tvu-tag ok">No change</span>
+              <h3>The platform, Nexus and the Discord</h3>
+              <p>The member platform (journal, backtests, Fleet, Tradovate sync), Nexus 2.0, Nightwing, the Discord and the live trade room all stay on Whop. None of them are TradingView scripts.</p>
+            </div>
+            <div class="tvu-card">
+              <span class="tvu-tag ok">No change</span>
+              <h3>Arkham, our free indicator</h3>
+              <p>Arkham is a free, public script. Nothing changes &mdash; it stays free on TradingView.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- IN PRACTICE -->
+      <section class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// If you trade on TradingView</div>
+          <h2 class="text-2xl md:text-3xl font-black tracking-tight">Two subscriptions instead of one</h2>
+          <div class="grid md:grid-cols-2 gap-4 mt-6">
+            <div class="tvu-card">
+              <h3>1 &middot; The scripts &mdash; from TradingView</h3>
+              <p>Bought on the TradingView Marketplace and billed by TradingView. That&rsquo;s the only way TradingView allows it from November 1.</p>
+            </div>
+            <div class="tvu-card">
+              <h3>2 &middot; Everything else &mdash; from us</h3>
+              <p>If you also want the member platform, Nexus, the Discord channels and the live trade room, that&rsquo;s a separate subscription with us on Whop. We&rsquo;ll post exactly what it includes and what it costs before November 1.</p>
+            </div>
+          </div>
+          <p class="mt-5 text-zinc-500 text-xs leading-relaxed max-w-3xl">Prefer one subscription? When the NinjaTrader version is released, NinjaTrader members get the strategy and everything else in one plan with us, as it works today.</p>
+        </div>
+      </section>
+
+      <!-- ALREADY A MEMBER -->
+      <section class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-3xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Questions</div>
+          <h2 class="text-2xl md:text-3xl font-black tracking-tight mb-4">Already a member?</h2>
+          <div class="tvu-q"><b>Do I lose TradingView access on November 1?</b>
+            <p>No. TradingView has said access paid for before November 1 continues for the period already purchased, including lifetime access.</p></div>
+          <div class="tvu-q"><b>What happens when my membership renews after October 31?</b>
+            <p>We can&rsquo;t renew the TradingView part through Whop after that date. Your platform, Nexus and Discord access carry on as normal. We&rsquo;ll post the steps for keeping TradingView access in the Discord <span class="text-white font-semibold">#announcements</span> channel and on this page before November 1.</p></div>
+          <div class="tvu-q"><b>I bought lifetime access. Am I covered?</b>
+            <p>Yes. Lifetime spots bought before November 1 keep their TradingView access for life, per TradingView&rsquo;s announcement, and include the NinjaTrader version when it&rsquo;s released.</p></div>
+          <div class="tvu-q"><b>Do I have to switch to NinjaTrader?</b>
+            <p>No. You can stay on TradingView. NinjaTrader is an option if you&rsquo;d rather keep everything in one plan with us.</p></div>
+          <div class="tvu-q"><b>Will prices change?</b>
+            <p>TradingView&rsquo;s Marketplace sets how script access is billed, so TradingView pricing isn&rsquo;t final yet. It&rsquo;ll be posted here before November 1.</p></div>
+          <div class="tvu-q"><b>Who do I ask?</b>
+            <p>Message us on <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer">Discord</a> or through the <a href="contact.html">contact page</a>.</p></div>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Risk Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
+        </div>
+        <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+          <a href="index.html" class="hover:text-green-400 transition">Home</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
+          <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
+          <a href="knowledge.html" class="hover:text-green-400 transition">Knowledge Base</a>
+          <a href="affiliates.html" class="hover:text-green-400 transition">Prop Firm Discounts</a>
+          <a href="faq.html" class="hover:text-green-400 transition">FAQ</a>
+          <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+          <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
+        </nav>
+
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
+          <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
+          <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+
+  </main>
+
+  <script>
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar-panel');
+      if (sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.remove('-translate-x-full');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+      }
+    }
+  </script>
+
+  <script src="nav-loader.js?v=20260924a"></script>
+</body>
+</html>
