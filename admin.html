@@ -189,6 +189,49 @@
       html.admin-nav-collapsed #admin-aside .nav-btn svg { width: 1.1rem; height: 1.1rem; }
       html.admin-nav-collapsed #admin-collapse-icon { transform: rotate(180deg); }
     }
+  
+    /* ── Activity log, bell, pop-ups (scoped; tailwind.css is compiled) ── */
+    #act-bell { position:relative; display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border-radius:10px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03); color:#a1a1aa; cursor:pointer; }
+    #act-bell:hover { color:#fff; border-color:rgba(255,255,255,.25); }
+    #act-bell-n { position:absolute; top:-6px; right:-6px; min-width:18px; height:18px; padding:0 5px; border-radius:99px; background:#FF6B1F; color:#0b0b0b; font:800 10.5px/18px Inter,system-ui,sans-serif; text-align:center; }
+    #act-bell-n.rv, #act-nav-n.rv { background:#a78bfa; }
+    #act-nav-n::after { content:attr(data-n); }
+    #act-nav-n { margin-left:auto; font:800 10px/1 Inter,system-ui,sans-serif; padding:3px 6px; border-radius:99px; background:#FF6B1F; color:#0b0b0b; white-space:nowrap; }
+    #act-toasts { position:fixed; right:16px; bottom:16px; z-index:80; display:flex; flex-direction:column; gap:10px; width:min(360px, calc(100vw - 32px)); pointer-events:none; }
+    .act-toast { pointer-events:auto; background:#0B1017; border:1px solid rgba(120,160,210,.2); border-radius:14px; padding:12px 14px; box-shadow:0 12px 40px rgba(0,0,0,.5); transform:translateY(12px); opacity:0; transition:all .25s; }
+    .act-toast.on { transform:none; opacity:1; }
+    .act-toast-h { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px; font-size:12.5px; color:#fff; }
+    .act-x { background:none; border:0; color:#71717a; cursor:pointer; font-size:13px; }
+    .act-toast-go { width:100%; margin-top:8px; height:32px; border-radius:9px; border:1px solid rgba(255,107,31,.45); background:rgba(255,107,31,.1); color:#FF8A4C; font:700 12px Inter,system-ui,sans-serif; cursor:pointer; }
+    .act-row { display:flex; gap:10px; align-items:flex-start; padding:6px 0; border-top:1px solid rgba(255,255,255,.05); }
+    .act-row b { display:block; font-size:12.5px; color:#f4f4f5; } .act-row span { display:block; font-size:11.5px; color:#a1a1aa; }
+    .act-row i, .act-item > i { flex:none; width:8px; height:8px; border-radius:50%; margin-top:5px; background:#71717a; }
+    .lv-good > i { background:#34d399; } .lv-money > i { background:#4ade80; box-shadow:0 0 0 3px rgba(74,222,128,.15); }
+    .lv-info > i { background:#60a5fa; } .lv-warn > i { background:#fbbf24; } .lv-bad > i { background:#f87171; } .lv-review > i { background:#a78bfa; box-shadow:0 0 0 3px rgba(167,139,250,.2); }
+    .act-bar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+    .act-chips { display:flex; gap:6px; flex-wrap:wrap; }
+    .act-chip { font:700 12px Inter,system-ui,sans-serif; color:#a1a1aa; border:1px solid rgba(255,255,255,.1); background:transparent; border-radius:99px; padding:6px 11px; cursor:pointer; }
+    .act-chip span { color:#71717a; margin-left:3px; } .act-chip.on { color:#FF8A4C; border-color:rgba(255,107,31,.5); background:rgba(255,107,31,.08); }
+    .act-actions { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .act-b { font:700 11.5px Inter,system-ui,sans-serif; color:#d4d4d8; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03); border-radius:8px; padding:5px 10px; cursor:pointer; white-space:nowrap; }
+    .act-b:hover { color:#fff; border-color:rgba(255,255,255,.3); } .act-b.pri { color:#c4b5fd; border-color:rgba(167,139,250,.45); background:rgba(167,139,250,.08); }
+    .act-list { border:1px solid rgba(255,255,255,.08); border-radius:14px; background:rgba(9,9,11,.4); padding:4px 14px; }
+    .act-day { font:800 10.5px Inter,system-ui,sans-serif; letter-spacing:.1em; text-transform:uppercase; color:#71717a; padding:12px 0 4px; }
+    .act-item { display:flex; gap:12px; align-items:flex-start; padding:10px 0; border-top:1px solid rgba(255,255,255,.05); }
+    .act-day + .act-item { border-top:0; }
+    .act-item.unread .act-t b { color:#fff; } .act-item.unread { background:linear-gradient(90deg,rgba(255,107,31,.05),transparent 40%); }
+    .act-main { flex:1; min-width:0; } .act-t { display:flex; gap:8px; align-items:center; flex-wrap:wrap; } .act-t b { font-size:13px; color:#d4d4d8; }
+    .act-s { font-size:12px; color:#a1a1aa; margin-top:2px; overflow-wrap:anywhere; }
+    .act-r { display:flex; gap:8px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+    .act-tag { font:800 9.5px Inter,system-ui,sans-serif; letter-spacing:.06em; text-transform:uppercase; padding:2px 6px; border-radius:5px; border:1px solid rgba(255,255,255,.15); color:#a1a1aa; }
+    .act-tag.rv { color:#c4b5fd; border-color:rgba(167,139,250,.45); background:rgba(167,139,250,.1); }
+    .act-dim { color:#71717a; font-size:11.5px; } .act-empty { color:#a1a1aa; font-size:13px; padding:18px 4px; }
+    .act-watch { margin-top:16px; border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px; background:rgba(9,9,11,.4); }
+    .act-watch summary { cursor:pointer; font-size:13px; font-weight:700; color:#e4e4e7; }
+    .act-wgrid { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr)); gap:6px; }
+    .act-w { display:flex; gap:8px; align-items:center; font-size:12px; color:#d4d4d8; cursor:pointer; }
+    .act-w input { accent-color:#FF6B1F; }
+    @media (max-width:640px) { .act-item { flex-wrap:wrap; } .act-r { width:100%; justify-content:flex-start; padding-left:20px; } }
   </style>
   <script>
     // Applied before paint so a collapsed sidebar never flashes open.
@@ -239,6 +282,10 @@
         <a href="dashboard.html" class="md:hidden text-zinc-500 hover:text-white transition p-2" aria-label="Back to dashboard">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955a1.126 1.126 0 011.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75"/></svg>
         </a>
+        <button id="act-bell" onclick="switchTab('activity')" aria-label="Activity" title="Activity">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+          <span id="act-bell-n" style="display:none">0</span>
+        </button>
         <button onclick="handleLogout()" class="text-xs text-zinc-500 hover:text-white transition flex items-center gap-1.5 p-1">
           <svg class="w-4 h-4 md:w-3.5 md:h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"/></svg>
           <span class="hidden sm:inline">Logout</span>
@@ -280,6 +327,11 @@
             class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left active-nav">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
             Members
+          </button>
+          <button onclick="switchTab('activity')" id="tab-activity"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+            <span class="nav-label">Activity</span><span id="act-nav-n" style="display:none"></span>
           </button>
           <button onclick="switchTab('roster')" id="tab-roster"
             class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
@@ -855,6 +907,18 @@
       </div>
 
       <!-- ROSTER TAB -->
+      <!-- ACTIVITY TAB — what changed since the last Whop sync -->
+      <div id="panel-activity" class="tab-panel">
+        <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+          <div>
+            <h2 class="text-sm font-black text-white">Activity</h2>
+            <p class="text-xs text-zinc-600 mt-0.5">New members and trials, conversions, cancellations, past due, plan changes and payments — logged on every Whop sync.</p>
+          </div>
+          <button onclick="syncFromWhop()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">⟳ Sync Whop now</button>
+        </div>
+        <div id="activity-content"></div>
+      </div>
+
       <div id="panel-roster" class="tab-panel">
         <!-- Import bar -->
         <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
@@ -1704,7 +1768,7 @@
     let allMembers = [];
 
     function switchTab(tab) {
-      ['members','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history','traffic','trackrec','course','copierhealth'].forEach(t => {
+      ['members','activity','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history','traffic','trackrec','course','copierhealth'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('tab-' + t);
         if (btn) btn.classList.remove('active-nav');
@@ -1712,8 +1776,8 @@
       document.getElementById('panel-' + tab).classList.add('active');
       const activeBtn = document.getElementById('tab-' + tab);
       if (activeBtn) activeBtn.classList.add('active-nav');
-      if (tab !== 'traffic') stopTrafficAuto();
-      if (tab !== 'roster') stopRosterAuto();
+      // Auto-refresh (roster sync + traffic) keeps running across tabs — the
+      // admin is usually left open on the side. Toggles are remembered.
       // Members was the only tab that never refetched. It loaded once at init,
       // so a member who signed up while the admin page sat open simply never
       // appeared — the data was stale, not missing.
@@ -1725,6 +1789,7 @@
       if (tab === 'roster') { cleanRosterNotes(); renderRoster(); }
       if (tab === 'payments') renderPayments();
       if (tab === 'flags') renderFlags();
+      if (tab === 'activity') openActivityTab();
       if (tab === 'analytics') renderAnalytics();
       if (tab === 'traffic') loadTraffic();
       if (tab === 'course') loadCourse();
@@ -2201,6 +2266,7 @@
     let trafficAutoTimer = null;
     function toggleTrafficAuto() {
       const on = document.getElementById('traffic-auto')?.checked;
+      try { localStorage.setItem('fsdx_traffic_auto', on ? '1' : '0'); } catch (e) {}
       if (on) {
         if (trafficAutoTimer) clearInterval(trafficAutoTimer);
         trafficAutoTimer = setInterval(() => {
@@ -3418,18 +3484,22 @@
     let rosterAutoTimer = null;
     const ROSTER_AUTO_MS = 15 * 60 * 1000;
 
+    function rosterSyncDue() {
+      let last = 0; try { last = Date.parse(localStorage.getItem('fsdx_whop_last_sync') || '') || 0; } catch (e) {}
+      return Date.now() - last >= ROSTER_AUTO_MS - 5000;
+    }
     function toggleRosterAuto() {
       const on = document.getElementById('roster-auto')?.checked;
+      try { localStorage.setItem('fsdx_roster_auto', on ? '1' : '0'); } catch (e) {}
       if (on) {
         if (rosterAutoTimer) clearInterval(rosterAutoTimer);
         rosterAutoTimer = setInterval(() => {
-          // Only sync while the roster tab is actually on screen and the
-          // browser tab is in the foreground.
-          const panel = document.getElementById('panel-roster');
-          if (!panel || !panel.classList.contains('active')) return;
+          // Runs on any admin tab — the panel is usually left open on the
+          // side. Skips while the browser tab is hidden; the visibility
+          // handler below catches up as soon as it's shown again.
           if (document.hidden) return;
-          syncFromWhop({ auto: true });
-        }, ROSTER_AUTO_MS);
+          if (rosterSyncDue()) syncFromWhop({ auto: true });
+        }, 60 * 1000);
       } else if (rosterAutoTimer) {
         clearInterval(rosterAutoTimer);
         rosterAutoTimer = null;
@@ -3489,6 +3559,7 @@
         // 3. Process memberships — same merge logic as CSV import
         btn.textContent = '⟳ Updating roster...';
         const incoming = memData.data || [];
+        const _actBefore = actSnapshot();          // Activity: roster as it was before this merge
 
         // The worker sends product titles, not plan labels — PLAN_MAP lives here
         // and stays the single source of truth for naming. Relabel before the
@@ -3651,6 +3722,10 @@
         paymentsData = [...paymentsData, ...newPayments].sort((a,b) => (b.paidAt||'') > (a.paidAt||'') ? 1 : -1);
         rawPaymentRows = paymentsData;
 
+        // Activity: log what changed (new, converted, canceling, ended, payments…)
+        let _actFresh = [];
+        try { _actFresh = actDetect(_actBefore, newPayments); } catch (e) { console.error('[activity] detect failed', e); }
+
         // 5. Store raw membership rows for expand view
         rawMembershipRows = incoming;
         saveRawMembershipsToKV();
@@ -3684,6 +3759,7 @@
           stamp.classList.remove('hidden');
         }
         try { localStorage.setItem('fsdx_whop_last_sync', new Date().toISOString()); } catch(e) {}
+        if (_actFresh.length) actToast(_actFresh, _actFresh.length + ' change' + (_actFresh.length === 1 ? '' : 's') + ' from this sync');
 
         btn.textContent = partial
           ? `⚠ Partial (${incoming.length} members)`
@@ -7244,7 +7320,318 @@
       await loadRosterFromKV();
       runFlagDetection();
       window._rosterLoaded = true;
+      activityOnLogin();               // unread pop-up + optional background sync
+      initAutoRefresh();
     }
+
+    // Auto-sync (Whop, every 15 min) and traffic auto-refresh (every 60s while
+    // the Traffic tab is open) are ON by default and remembered per browser.
+    function initAutoRefresh() {
+      let ra = '1', ta = '1';
+      try { ra = localStorage.getItem('fsdx_roster_auto') ?? '1'; ta = localStorage.getItem('fsdx_traffic_auto') ?? '1'; } catch (e) {}
+      const rcb = document.getElementById('roster-auto'), tcb = document.getElementById('traffic-auto');
+      if (rcb) { rcb.checked = ra !== '0'; toggleRosterAuto(); }
+      if (tcb) { tcb.checked = ta !== '0'; toggleTrafficAuto(); }
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) return;
+        if (document.getElementById('roster-auto')?.checked && rosterSyncDue()) syncFromWhop({ auto: true });
+        if (document.getElementById('traffic-auto')?.checked && document.getElementById('panel-traffic')?.classList.contains('active')) loadTraffic();
+      });
+    }
+
+    /* ══════════════════════════════════════════════════════════════════
+       ACTIVITY — what changed since the last Whop sync
+       Every sync compares the roster before and after the merge and logs
+       what changed: new members and trials, conversions, cancellations,
+       past-due, plan changes, payments, failed payments, refunds. New
+       events pop up bottom-right (like Scout alerts on the site), sit in
+       the Activity tab, and count on the bell in the header.
+
+       Watch list: tick a product and every NEW buyer of it is logged as
+       "Needs review" and stays flagged until marked reviewed. That's the
+       manual safeguard for any product that needs a human check (e.g. a
+       Discord-only add-on bought by someone who never bought the script).
+
+       Storage: two KV records through the same journal endpoint the
+       roster uses — events, and a one-row config (watch list, baseline).
+       First run only records a baseline, so years of history don't flood
+       the log.
+       ══════════════════════════════════════════════════════════════════ */
+    let activityData = [];
+    let activityCfg = { watch: [], baselineAt: '', syncOnLogin: true };
+    let actFilter = 'all';
+    const ACT_MAX = 600;
+    const actKey = () => 'admin_activity:' + (window._adminKey || '');
+    const actCfgKey = () => 'admin_activity_cfg:' + (window._adminKey || '');
+    const ACT_TYPES = {
+      new:       { lv: 'good',   label: 'New member' },
+      trial:     { lv: 'info',   label: 'New trial' },
+      returned:  { lv: 'good',   label: 'Returning member' },
+      converted: { lv: 'good',   label: 'Trial converted' },
+      canceling: { lv: 'warn',   label: 'Cancellation scheduled' },
+      resumed:   { lv: 'good',   label: 'Cancellation reversed' },
+      ended:     { lv: 'bad',    label: 'Membership ended' },
+      pastdue:   { lv: 'bad',    label: 'Past due' },
+      plan:      { lv: 'info',   label: 'Plan changed' },
+      payment:   { lv: 'money',  label: 'Payment' },
+      payfail:   { lv: 'bad',    label: 'Payment failed' },
+      refund:    { lv: 'warn',   label: 'Refund' },
+      note:      { lv: 'info',   label: 'Note' }
+    };
+
+    async function loadActivity() {
+      try {
+        const [er, cr] = await Promise.all([
+          fetch(JOURNAL_URL_ADMIN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'get-trades', key: actKey() }) }),
+          fetch(JOURNAL_URL_ADMIN, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'get-trades', key: actCfgKey() }) })
+        ]);
+        const [ed, cd] = await Promise.all([er.json(), cr.json()]);
+        activityData = Array.isArray(ed.trades) ? ed.trades : [];
+        const c = Array.isArray(cd.trades) && cd.trades[0] ? cd.trades[0] : {};
+        activityCfg = { watch: Array.isArray(c.watch) ? c.watch : [], baselineAt: c.baselineAt || '', syncOnLogin: c.syncOnLogin !== false };
+      } catch (e) { console.error('[activity] load failed', e); }
+      actBadge();
+    }
+    async function saveActivity() {
+      if (activityData.length > ACT_MAX) activityData = activityData.slice(0, ACT_MAX);
+      try {
+        await fetch(JOURNAL_URL_ADMIN, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'save-all', key: actKey(), payload: { trades: activityData } }) });
+      } catch (e) { console.error('[activity] save failed', e); }
+    }
+    async function saveActivityCfg() {
+      try {
+        await fetch(JOURNAL_URL_ADMIN, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'save-all', key: actCfgKey(), payload: { trades: [activityCfg] } }) });
+      } catch (e) { console.error('[activity] cfg save failed', e); }
+    }
+
+    // ── Snapshot before a sync merges ──
+    const actPersonKey = r => (r && r.email ? r.email.toLowerCase() : '') || (r && r.whopKey) || '';
+    const actPlan = r => (r && (r.accessType || r.planName)) || '';
+    function actSnapshot() {
+      const roster = new Map();
+      rosterData.forEach(r => { const k = actPersonKey(r); if (k) roster.set(k, { status: r.status || '', plan: actPlan(r), cap: !!r.cancelAtPeriodEnd, renewal: r.renewal || '', name: r.name || r.whopUsername || '', email: r.email || '', productId: r.productId || '' }); });
+      const hist = new Set(historyData.map(h => (h.email || '').toLowerCase()).filter(Boolean));
+      return { roster, hist };
+    }
+
+    function actWatched(productId, plan) {
+      const w = activityCfg.watch || [];
+      return w.some(x => x && (x === productId || (plan && x === plan)));
+    }
+    function actMake(type, r, extra) {
+      const t = ACT_TYPES[type] || ACT_TYPES.note;
+      const ev = Object.assign({
+        id: '', at: new Date().toISOString(), type, lv: t.lv, title: t.label,
+        name: (r && (r.name || r.whopUsername)) || '', email: (r && r.email) || '',
+        plan: actPlan(r), productId: (r && r.productId) || '', detail: '', amount: null,
+        read: false, review: false, reviewed: false
+      }, extra || {});
+      if (!ev.id) ev.id = type + ':' + (ev.email || ev.name) + ':' + ev.at.slice(0, 10) + ':' + (ev.detail || '');
+      return ev;
+    }
+
+    // ── After the merge: what changed ──
+    function actDetect(before, newPayments) {
+      // First time the log runs: record a baseline, log nothing.
+      if (!activityCfg.baselineAt) {
+        activityCfg.baselineAt = new Date().toISOString();
+        saveActivityCfg();
+        const ev = actMake('note', null, { title: 'Activity tracking started', detail: 'Changes are logged from the next sync on.', read: true, id: 'note:baseline' });
+        activityData.unshift(ev);
+        saveActivity(); actBadge(); if (document.getElementById('panel-activity')?.classList.contains('active')) renderActivity();
+        return [];
+      }
+      const out = [];
+      const nowKeys = new Set();
+      rosterData.forEach(r => {
+        const k = actPersonKey(r); if (!k) return; nowKeys.add(k);
+        const b = before.roster.get(k), st = r.status || '';
+        if (!b) {
+          if (r.manualEntry) return;                         // hand-added rows aren't Whop events
+          const type = before.hist.has(k) ? 'returned' : st === 'trialing' ? 'trial' : 'new';
+          const ev = actMake(type, r, { detail: actPlan(r) });
+          if (actWatched(r.productId, actPlan(r))) { ev.review = true; ev.lv = 'review'; }
+          out.push(ev);
+          return;
+        }
+        if (b.status !== st) {
+          if (['cancelled', 'canceled', 'expired', 'churned'].includes(st)) out.push(actMake('ended', r, { detail: actPlan(r) + (b.status === 'trialing' ? ' · trial not converted' : '') }));
+          else if (b.status === 'trialing' && st === 'active') out.push(actMake('converted', r, { detail: actPlan(r) }));
+          else if (st === 'past_due') out.push(actMake('pastdue', r, { detail: actPlan(r) }));
+          else if (st === 'canceling' && b.status !== 'canceling') out.push(actMake('canceling', r, { detail: r.renewal ? 'Access ends ' + String(r.renewal).slice(0, 10) : actPlan(r) }));
+          else if (b.status === 'canceling' && st === 'active') out.push(actMake('resumed', r, { detail: actPlan(r) }));
+        } else if (!b.cap && r.cancelAtPeriodEnd && st !== 'canceling') {
+          out.push(actMake('canceling', r, { detail: r.renewal ? 'Access ends ' + String(r.renewal).slice(0, 10) : actPlan(r) }));
+        } else if (b.cap && !r.cancelAtPeriodEnd && st === 'active') {
+          out.push(actMake('resumed', r, { detail: actPlan(r) }));
+        }
+        if (b.plan && actPlan(r) && b.plan !== actPlan(r)) out.push(actMake('plan', r, { detail: b.plan + ' → ' + actPlan(r) }));
+      });
+      // In the roster before, gone now → moved to history (churned / archived).
+      before.roster.forEach((b, k) => {
+        if (nowKeys.has(k)) return;
+        out.push(actMake('ended', { name: b.name, email: b.email, accessType: b.plan, productId: b.productId }, { detail: b.plan }));
+      });
+      // Payments that landed since the baseline.
+      const since = activityCfg.baselineAt;
+      (newPayments || []).forEach(p => {
+        if (!p.paidAt || p.paidAt < since) return;
+        const who = rosterData.find(r => (r.email || '').toLowerCase() === (p.email || '').toLowerCase()) || historyData.find(h => (h.email || '').toLowerCase() === (p.email || '').toLowerCase()) || { email: p.email };
+        const base = { at: p.paidAt, plan: p.description || actPlan(who), productId: p.productId || '', amount: p.amount || 0 };
+        const paid = p.status === 'paid' || p.status === 'succeeded';
+        if (paid) {
+          const ev = actMake('payment', who, Object.assign({ id: 'pay:' + p.id, title: 'Payment $' + (p.amount || 0).toFixed(2), detail: p.description || '' }, base));
+          out.push(ev);
+          if (p.refundedAmount > 0) out.push(actMake('refund', who, Object.assign({ id: 'refund:' + p.id, title: 'Refund $' + p.refundedAmount.toFixed(2), detail: p.description || '' }, base)));
+        } else if (p.status === 'failed' || (p.status === 'open' && p.failureReason)) {
+          out.push(actMake('payfail', who, Object.assign({ id: 'payfail:' + p.id, title: 'Payment failed $' + (p.amount || 0).toFixed(2), detail: p.failureReason || p.description || '' }, base)));
+        }
+      });
+      // Dedupe against what's already logged, newest first.
+      const seen = new Set(activityData.map(e => e.id));
+      const fresh = out.filter(e => !seen.has(e.id)).sort((a, b) => (b.at || '').localeCompare(a.at || ''));
+      if (fresh.length) {
+        activityData = fresh.concat(activityData);
+        saveActivity();
+      }
+      actBadge();
+      if (document.getElementById('panel-activity')?.classList.contains('active')) renderActivity();
+      return fresh;
+    }
+
+    // ── Bell badge ──
+    function actUnread() { return activityData.filter(e => !e.read).length; }
+    function actOpenReviews() { return activityData.filter(e => e.review && !e.reviewed).length; }
+    function actBadge() {
+      const n = actUnread(), r = actOpenReviews();
+      const b = document.getElementById('act-bell-n');
+      if (b) { b.textContent = n > 99 ? '99+' : n; b.style.display = n ? '' : 'none'; b.classList.toggle('rv', r > 0); }
+      const nb = document.getElementById('act-nav-n');
+      if (nb) { nb.dataset.n = r ? r + ' to review' : String(n || ''); nb.style.display = (n || r) ? '' : 'none'; nb.classList.toggle('rv', r > 0); }
+    }
+
+    // ── Pop-ups (bottom right) ──
+    function actToast(events, headline) {
+      if (!events || !events.length) return;
+      const wrap = document.getElementById('act-toasts'); if (!wrap) return;
+      const show = events.slice(0, 4);
+      const more = events.length - show.length;
+      const card = document.createElement('div');
+      card.className = 'act-toast';
+      card.innerHTML = `<div class="act-toast-h"><b>${esc(headline || 'Since your last sync')}</b><button aria-label="Dismiss" class="act-x">✕</button></div>`
+        + show.map(e => `<div class="act-row lv-${e.lv}"><i></i><div><b>${esc(e.title)}</b><span>${esc([e.name || e.email, e.detail].filter(Boolean).join(' · '))}</span></div></div>`).join('')
+        + `<button class="act-toast-go">${more > 0 ? '+' + more + ' more · ' : ''}Open activity →</button>`;
+      card.querySelector('.act-x').onclick = () => card.remove();
+      card.querySelector('.act-toast-go').onclick = () => { card.remove(); switchTab('activity'); };
+      wrap.appendChild(card);
+      setTimeout(() => card.classList.add('on'), 20);
+      setTimeout(() => { if (card.isConnected) { card.classList.remove('on'); setTimeout(() => card.remove(), 300); } }, 20000);
+    }
+
+    // ── Activity tab ──
+    function actAgo(iso) {
+      const m = Math.round((Date.now() - Date.parse(iso)) / 60000);
+      if (!(m >= 0)) return '';
+      if (m < 1) return 'just now'; if (m < 60) return m + 'm ago';
+      const h = Math.round(m / 60); if (h < 36) return h + 'h ago';
+      return Math.round(h / 24) + 'd ago';
+    }
+    function actGroupOf(e) {
+      if (e.review) return 'review';
+      if (['payment', 'payfail', 'refund'].includes(e.type)) return 'money';
+      if (['canceling', 'ended', 'pastdue', 'payfail'].includes(e.type)) return 'risk';
+      return 'members';
+    }
+    function renderActivity() {
+      const el = document.getElementById('activity-content'); if (!el) return;
+      const list = activityData.filter(e => {
+        if (actFilter === 'all') return true;
+        if (actFilter === 'unread') return !e.read;
+        if (actFilter === 'review') return e.review && !e.reviewed;
+        if (actFilter === 'risk') return ['canceling', 'ended', 'pastdue', 'payfail', 'refund'].includes(e.type);
+        return actGroupOf(e) === actFilter;
+      });
+      const cnt = f => activityData.filter(e => f === 'unread' ? !e.read : f === 'review' ? (e.review && !e.reviewed) : f === 'risk' ? ['canceling', 'ended', 'pastdue', 'payfail', 'refund'].includes(e.type) : actGroupOf(e) === f).length;
+      const chips = [['all', 'All', activityData.length], ['unread', 'Unread', cnt('unread')], ['review', 'Needs review', cnt('review')], ['members', 'Members', cnt('members')], ['money', 'Payments', cnt('money')], ['risk', 'Churn risk', cnt('risk')]];
+      // Products seen on the roster, for the watch list.
+      const prods = new Map();
+      rosterData.concat(historyData).forEach(r => { const pl = actPlan(r), id = r.productId || ''; const k = id || pl; if (k && !prods.has(k)) prods.set(k, pl || id); });
+      const watchHtml = [...prods.entries()].sort((a, b) => String(a[1]).localeCompare(String(b[1]))).map(([k, label]) =>
+        `<label class="act-w"><input type="checkbox" data-act-watch="${esc(k)}" ${activityCfg.watch.includes(k) ? 'checked' : ''}><span>${esc(label)}</span></label>`).join('') || '<div class="act-dim">Sync the roster to list products.</div>';
+      // Group by day.
+      let last = '', rows = '';
+      list.slice(0, 300).forEach(e => {
+        const d = (e.at || '').slice(0, 10);
+        if (d !== last) { last = d; rows += `<div class="act-day">${esc(new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }))}</div>`; }
+        rows += `<div class="act-item lv-${e.lv}${e.read ? '' : ' unread'}">
+          <i></i>
+          <div class="act-main">
+            <div class="act-t"><b>${esc(e.title)}</b>${e.review && !e.reviewed ? '<span class="act-tag rv">Needs review</span>' : ''}${e.review && e.reviewed ? '<span class="act-tag">Reviewed</span>' : ''}</div>
+            <div class="act-s">${esc([e.name, e.email && e.email !== e.name ? e.email : '', e.detail].filter(Boolean).join(' · '))}</div>
+          </div>
+          <div class="act-r">
+            <span class="act-dim">${esc(actAgo(e.at))}</span>
+            ${e.email ? `<button class="act-b" data-act-find="${esc(e.email)}">Roster</button>` : ''}
+            ${e.review && !e.reviewed ? `<button class="act-b pri" data-act-review="${esc(e.id)}">Mark reviewed</button>` : ''}
+          </div>
+        </div>`;
+      });
+      el.innerHTML = `
+        <div class="act-bar">
+          <div class="act-chips">${chips.map(([k, l, n]) => `<button class="act-chip${actFilter === k ? ' on' : ''}" data-act-filter="${k}">${l} <span>${n}</span></button>`).join('')}</div>
+          <div class="act-actions">
+            <label class="act-w" title="Run a background Whop sync when the admin opens, if the last one is over 15 minutes old"><input type="checkbox" id="act-sync-login" ${activityCfg.syncOnLogin ? 'checked' : ''}><span>Sync on open</span></label>
+            <button class="act-b" data-act-readall="1">Mark all read</button>
+          </div>
+        </div>
+        ${!activityCfg.baselineAt ? '<div class="act-empty">Run <b>Sync Whop</b> once to start tracking. The first sync sets a starting point; changes are logged from the sync after that.</div>' : ''}
+        <div class="act-list">${rows || '<div class="act-empty">Nothing here.</div>'}</div>
+        <details class="act-watch">
+          <summary>Watch list — flag every new buyer for review <span class="act-dim">(${activityCfg.watch.length} watched)</span></summary>
+          <p class="act-dim" style="margin:8px 0 10px">Tick a product and every <b>new</b> member on it is logged as <b>Needs review</b> and stays flagged until you mark it reviewed. Use it for anything that needs a manual check before you trust it.</p>
+          <div class="act-wgrid">${watchHtml}</div>
+        </details>`;
+    }
+    function actMarkAllRead() { let ch = false; activityData.forEach(e => { if (!e.read) { e.read = true; ch = true; } }); if (ch) saveActivity(); actBadge(); }
+
+    document.addEventListener('click', ev => {
+      const t = ev.target.closest('[data-act-filter],[data-act-readall],[data-act-review],[data-act-find]');
+      if (!t) return;
+      if (t.dataset.actFilter) { actFilter = t.dataset.actFilter; return renderActivity(); }
+      if (t.dataset.actReadall) { actMarkAllRead(); return renderActivity(); }
+      if (t.dataset.actReview) { const e = activityData.find(x => x.id === t.dataset.actReview); if (e) { e.reviewed = true; e.read = true; saveActivity(); actBadge(); renderActivity(); } return; }
+      if (t.dataset.actFind) {
+        switchTab('roster');
+        const box = document.getElementById('rf-search');
+        if (box) { box.value = t.dataset.actFind; box.dispatchEvent(new Event('input', { bubbles: true })); }
+        return;
+      }
+    });
+    document.addEventListener('change', ev => {
+      const t = ev.target;
+      if (t.dataset && t.dataset.actWatch !== undefined) {
+        const k = t.dataset.actWatch;
+        activityCfg.watch = activityCfg.watch.filter(x => x !== k);
+        if (t.checked) activityCfg.watch.push(k);
+        saveActivityCfg(); renderActivity(); return;
+      }
+      if (t.id === 'act-sync-login') { activityCfg.syncOnLogin = t.checked; saveActivityCfg(); }
+    });
+
+    // Opening the Activity tab counts as having seen what's there.
+    function openActivityTab() { document.querySelectorAll('#act-toasts .act-toast').forEach(c => c.remove()); renderActivity(); setTimeout(() => { actMarkAllRead(); }, 1500); }
+
+    // On admin open: show what's unread, then (optionally) sync in the background.
+    async function activityOnLogin() {
+      await loadActivity();
+      const unread = activityData.filter(e => !e.read && e.type !== 'note');
+      if (unread.length) actToast(unread, unread.length + ' update' + (unread.length === 1 ? '' : 's') + ' since you were last here');
+      let last = 0; try { last = Date.parse(localStorage.getItem('fsdx_whop_last_sync') || '') || 0; } catch (e) {}
+      if (activityCfg.syncOnLogin && Date.now() - last > 15 * 60 * 1000) syncFromWhop({ auto: true });
+    }
+
 
   </script>
 
@@ -7734,4 +8121,5 @@
   })();
   </script>
 
+  <div id="act-toasts" aria-live="polite"></div>
 </html>
