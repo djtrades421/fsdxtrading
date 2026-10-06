@@ -21,6 +21,44 @@
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
     body { background-color: #000; }
+  
+    /* ── Homepage value stack (#what-you-get) — scoped; tailwind.css is a compiled build ── */
+    .vs-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:16px; margin-top:20px; }
+    .vs-card { border:1px solid rgba(255,255,255,.1); background:rgba(0,0,0,.4); border-radius:18px; padding:22px; display:flex; flex-direction:column; }
+    .vs-card.hl { border-color:rgba(255,107,31,.35); background:rgba(255,107,31,.05); }
+    @media (min-width:1024px) { .vs-grid { grid-template-columns:repeat(6,1fr); } .vs-card { grid-column:span 2; } .vs-card:nth-child(n+4) { grid-column:span 3; } }
+    .vs-k { font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:#71717a; margin-bottom:6px; }
+    .vs-card h3 { font-size:18px; font-weight:900; color:#fff; margin:0 0 12px; }
+    .vs-li { display:flex; gap:10px; align-items:flex-start; padding:9px 0; border-top:1px solid rgba(255,255,255,.06); }
+    .vs-li:first-of-type { border-top:0; padding-top:0; }
+    .vs-li .ck { flex:none; width:18px; height:18px; border-radius:50%; background:rgba(74,222,128,.12); color:#4ade80; font-size:11px; font-weight:900; display:inline-flex; align-items:center; justify-content:center; margin-top:1px; }
+    .vs-li b { display:block; color:#f4f4f5; font-size:14px; font-weight:700; }
+    .vs-li span.d { display:block; color:#a1a1aa; font-size:12.5px; line-height:1.5; margin-top:2px; }
+    .vs-soon { display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#fbbf24; border:1px solid rgba(251,191,36,.4); background:rgba(251,191,36,.08); border-radius:5px; padding:2px 6px; margin-left:6px; vertical-align:2px; }
+    .vs-live { display:inline-block; font-size:9.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:#4ade80; border:1px solid rgba(74,222,128,.4); background:rgba(74,222,128,.08); border-radius:5px; padding:2px 6px; margin-left:6px; vertical-align:2px; }
+    .vs-foot { margin-top:auto; padding-top:12px; font-size:12px; }
+    .vs-foot a { color:#4ade80; font-weight:700; text-decoration:none; }
+    .vs-foot a:hover { text-decoration:underline; }
+    .vs-note { color:#71717a; font-size:11.5px; line-height:1.5; margin-top:10px; }
+    .vs-note a { color:#fbbf24; }
+    .vs-soonband { margin-top:20px; display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr)); gap:16px; }
+    .vs-soonc { border:1px solid rgba(251,191,36,.35); background:linear-gradient(180deg,rgba(251,191,36,.07),rgba(251,191,36,.02)); border-radius:18px; padding:22px; }
+    .vs-soonc .vs-k { color:#fbbf24; }
+    .vs-soonc h3 { font-size:19px; font-weight:900; color:#fff; margin:0 0 8px; }
+    .vs-soonc p { color:#a1a1aa; font-size:13.5px; line-height:1.6; }
+    .vs-soonc .inc { margin-top:12px; font-size:12px; font-weight:700; color:#fde68a; }
+    .vs-soonc a { color:#fbbf24; font-weight:700; font-size:12.5px; text-decoration:none; }
+    .vs-chips { display:flex; flex-wrap:wrap; gap:6px; margin-top:16px; max-width:36rem; }
+    .vs-chip { font-size:11.5px; font-weight:600; color:#d4d4d8; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03); border-radius:999px; padding:5px 10px; white-space:nowrap; }
+    .vs-chip.s { color:#fde68a; border-color:rgba(251,191,36,.35); }
+  
+    a.vs-a { text-decoration:none; color:inherit; transition:border-color .15s, background .15s; }
+    a.vs-a:hover { border-color:rgba(74,222,128,.35); }
+    .vs-p { color:#a1a1aa; font-size:13.5px; line-height:1.55; margin:-4px 0 12px; }
+    .vs-tags { display:flex; flex-wrap:wrap; gap:6px; }
+    .vs-tag { font-size:11.5px; font-weight:600; color:#d4d4d8; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.03); border-radius:999px; padding:4px 9px; white-space:nowrap; }
+    .vs-tag.s { color:#fde68a; border-color:rgba(251,191,36,.35); }
+    .vs-foot span { color:#4ade80; font-weight:700; }
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/" />
   <meta property="og:url" content="https://www.fsdxtrading.com/" />
@@ -341,9 +379,9 @@
       <section id="hero" class="min-h-screen flex items-center justify-center px-6 md:px-12 border-b border-white/10 py-16 lg:py-20">
         <div class="max-w-7xl w-full grid lg:grid-cols-2 gap-12 items-start lg:items-center">
           <div>
-            <a href="#ninjatrader" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 hover:border-green-500/40 hover:bg-green-500/20 transition text-green-400 text-xs font-semibold tracking-wide mb-6">
+            <a href="#coming-soon" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 hover:border-green-500/40 hover:bg-green-500/20 transition text-green-400 text-xs font-semibold tracking-wide mb-6">
               <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-              <span>Coming soon: Knightfall on NinjaTrader® 8 &rarr;</span>
+              <span>Coming soon: Knightfall on NinjaTrader® 8 &middot; Copy Trader &rarr;</span>
             </a>
 
             <h1 class="text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1]">
@@ -358,6 +396,20 @@
             <p class="mt-4 text-zinc-500 text-sm max-w-xl leading-relaxed">
               Built for the prop-firm trader. Most traders fail evals on one bad morning — this is a system built around not having one.
             </p>
+
+            <!-- What the membership covers, at a glance — detail in #what-you-get -->
+            <div class="vs-chips" aria-label="Included in the full membership">
+              <span class="vs-chip">Knightfall + 3 indicators</span>
+              <span class="vs-chip">Auto Trader</span>
+              <span class="vs-chip">Fleet account manager</span>
+              <span class="vs-chip">Tradovate auto-sync</span>
+              <span class="vs-chip">Journal &amp; backtests</span>
+              <span class="vs-chip">Nexus 2.0</span>
+              <span class="vs-chip">Live room every weekday</span>
+              <span class="vs-chip s">NinjaTrader 8 &middot; soon</span>
+              <span class="vs-chip s">Copy Trader &middot; soon</span>
+            </div>
+            <a href="#what-you-get" class="inline-block mt-3 text-green-400 hover:text-green-300 text-xs font-semibold transition">Everything in the full membership &darr;</a>
 
 
 
@@ -518,62 +570,86 @@
         </div>
       </section>
 
-      <!-- ═══ WHAT YOU GET — ONE MEMBERSHIP (compact; full detail lives on suite.html) ═══ -->
+      <!-- ═══ WHAT YOU GET — the full membership, not just Knightfall ═══
+           Five groups, then a coming-soon band. Detail pages: suite, autotrader,
+           platform, nightwing (Nexus), schedule. Styles: .vs-* in <head>. -->
       <section id="what-you-get" class="py-24 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-4">
-            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">One membership · everything unlocks</div>
-            <h2 class="text-3xl md:text-4xl font-black">Everything you need to run the system</h2>
-            <p class="text-zinc-400 text-sm mt-3 max-w-xl mx-auto">No tiers inside the membership. One price unlocks the signals, the tools, the live room and the community.</p>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">The full membership &middot; $129/mo</div>
+            <h2 class="text-3xl md:text-4xl font-black">More than Knightfall. A lot more.</h2>
+            <p class="text-zinc-400 text-sm mt-3 max-w-2xl mx-auto leading-relaxed">Knightfall is the core, but the full membership comes with everything we&rsquo;ve built around it: the indicators, the automation, a platform for your accounts and backtests, a side panel for your chart, and people to trade the open with. Only want part of it? <a href="compare.html" class="text-green-400 hover:underline font-semibold">Compare plans</a>.</p>
           </div>
 
           <a href="suite.html#tool-orbpro" class="mt-12 grid lg:grid-cols-2 gap-8 items-center border border-green-500/20 hover:border-green-500/45 bg-green-500/[0.04] hover:bg-green-500/[0.07] rounded-3xl p-8 transition group">
             <div>
-              <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">The core · Knightfall MK2 (ORB PRO)</div>
-              <h3 class="text-2xl font-black mb-3 group-hover:text-green-400 transition">The signal engine <span class="text-green-400 opacity-0 group-hover:opacity-100 transition">→</span></h3>
-              <p class="text-zinc-400 text-sm leading-relaxed">Grades every opening-range breakout A+ through C as it forms, and hands you the exact stop and target for the setup. Everything else is built around it.</p>
+              <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">The core &middot; ORB PRO Knightfall MK2</div>
+              <h3 class="text-2xl font-black mb-3 group-hover:text-green-400 transition">The graded system <span class="text-green-400 opacity-0 group-hover:opacity-100 transition">→</span></h3>
+              <p class="text-zinc-400 text-sm leading-relaxed">Grades every opening-range breakout A+ through C as it forms, filters the ones that don't qualify, and hands you the exact stop and target. Everything below is built around it.</p>
             </div>
             <div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
-              <img src="screenshot-orbpro.png" alt="FSD-X Knightfall MK2 ORB PRO signal on an MNQ 5-minute chart" class="w-full h-auto" width="1105" height="682" loading="lazy" decoding="async">
+              <img src="screenshot-orbpro.png" alt="FSD-X ORB PRO Knightfall MK2 signal on an MNQ 5-minute chart" class="w-full h-auto" width="1105" height="682" loading="lazy" decoding="async">
             </div>
           </a>
 
-          <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <a href="autotrader.html" class="block border border-white/10 hover:border-green-500/30 bg-black/40 hover:bg-white/[0.03] rounded-2xl p-5 transition group">
-              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-wider mb-2">Execution</div>
-              <div class="text-white font-bold text-sm mb-1 group-hover:text-green-400 transition">ORB Auto-Trader <span class="text-green-400 opacity-0 group-hover:opacity-100 transition">→</span></div>
-              <p class="text-zinc-400 text-xs leading-relaxed">The same Knightfall trades, placed for you. Trade it yourself or let it run.</p>
+          <div class="vs-grid">
+            <a href="platform.html" class="vs-card hl vs-a">
+              <div class="vs-k">Your accounts &amp; data</div>
+              <h3>The member platform</h3>
+              <p class="vs-p">Every prop account, trade and backtest in one place, with warnings before the firm&rsquo;s limits.</p>
+              <div class="vs-tags"><span class="vs-tag">Fleet manager</span><span class="vs-tag">Tradovate auto-sync</span><span class="vs-tag">Trade journal</span><span class="vs-tag">Backtest workspace</span><span class="vs-tag">Playbook</span></div>
+              <div class="vs-foot"><span>See the platform &rarr;</span></div>
             </a>
-            <a href="suite.html#tool-volume" class="block border border-white/10 hover:border-green-500/30 bg-black/40 hover:bg-white/[0.03] rounded-2xl p-5 transition group">
-              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-wider mb-2">Indicators</div>
-              <div class="text-white font-bold text-sm mb-1 group-hover:text-green-400 transition">Volume &amp; Stack V1 <span class="text-green-400 opacity-0 group-hover:opacity-100 transition">→</span></div>
-              <p class="text-zinc-400 text-xs leading-relaxed">Confirm the breakout and stay out of the low-quality mornings.</p>
+            <a href="autotrader.html" class="vs-card vs-a">
+              <div class="vs-k">Automation</div>
+              <h3>Trade it, or let it run</h3>
+              <p class="vs-p">Knightfall placed for you through the broker you connect.</p>
+              <div class="vs-tags"><span class="vs-tag">Auto Trader</span><span class="vs-tag s">NinjaTrader 8 · soon</span><span class="vs-tag s">Copy Trader · soon</span></div>
+              <div class="vs-foot"><span>How the Auto Trader works &rarr;</span></div>
             </a>
-            <a href="suite.html#tool-nexus" class="block border border-white/10 hover:border-green-500/30 bg-black/40 hover:bg-white/[0.03] rounded-2xl p-5 transition group">
-              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-wider mb-2">TradingView side panel</div>
-              <div class="text-white font-bold text-sm mb-1 group-hover:text-green-400 transition">Nexus 2.0 <span class="text-green-400 opacity-0 group-hover:opacity-100 transition">→</span></div>
-              <p class="text-zinc-400 text-xs leading-relaxed">Trade, journal and analyze next to your chart. No tab switching.</p>
+            <a href="suite.html" class="vs-card vs-a">
+              <div class="vs-k">On your chart</div>
+              <h3>Knightfall + 3 indicators</h3>
+              <p class="vs-p">The graded system plus the tools around it.</p>
+              <div class="vs-tags"><span class="vs-tag">Knightfall MK2</span><span class="vs-tag">Raven</span><span class="vs-tag">Stack V1</span><span class="vs-tag">Volume Engine</span></div>
+              <div class="vs-foot"><span>See the indicators &rarr;</span></div>
             </a>
-            <a href="platform.html" class="block border border-white/10 hover:border-green-500/30 bg-black/40 hover:bg-white/[0.03] rounded-2xl p-5 transition group">
-              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-wider mb-2">Web platform</div>
-              <div class="text-white font-bold text-sm mb-1 group-hover:text-green-400 transition">Member Platform <span class="text-green-400 opacity-0 group-hover:opacity-100 transition">→</span></div>
-              <p class="text-zinc-400 text-xs leading-relaxed">Dashboard, trade journal, broker importer, backtest log and prop-account tracker.</p>
+            <a href="suite.html#tool-nexus" class="vs-card vs-a">
+              <div class="vs-k">Beside your chart</div>
+              <h3>Nexus 2.0 side panel</h3>
+              <p class="vs-p">The tools you&rsquo;d open five tabs for, next to your TradingView chart.</p>
+              <div class="vs-tags"><span class="vs-tag">Strategy optimizer</span><span class="vs-tag">Eval simulator</span><span class="vs-tag">Sizing &amp; journal</span></div>
+              <div class="vs-foot"><span>See Nexus 2.0 &rarr;</span></div>
             </a>
-            <a href="schedule.html" class="block border border-white/10 hover:border-green-500/30 bg-black/40 hover:bg-white/[0.03] rounded-2xl p-5 transition group">
-              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-wider mb-2">Live</div>
-              <div class="text-white font-bold text-sm mb-1 group-hover:text-green-400 transition">Live Trade Room <span class="text-green-400 opacity-0 group-hover:opacity-100 transition">→</span></div>
-              <p class="text-zinc-400 text-xs leading-relaxed">Every market morning at 8:30 AM CT, plus a Monday gameplan session.</p>
+            <a href="schedule.html" class="vs-card vs-a">
+              <div class="vs-k">People &amp; support</div>
+              <h3>You don&rsquo;t trade the open alone</h3>
+              <p class="vs-p">Live with us every weekday at 8:30 AM CT.</p>
+              <div class="vs-tags"><span class="vs-tag">Live trade room</span><span class="vs-tag">SCOUT alerts</span><span class="vs-tag">VIP Discord</span><span class="vs-tag">Course &amp; 1-on-1</span></div>
+              <div class="vs-foot"><span>See the live sessions &rarr;</span></div>
             </a>
-            <a href="suite.html" class="block border border-white/10 hover:border-green-500/30 bg-black/40 hover:bg-white/[0.03] rounded-2xl p-5 transition group">
-              <div class="text-zinc-500 text-[10px] font-bold uppercase tracking-wider mb-2">Support</div>
-              <div class="text-white font-bold text-sm mb-1 group-hover:text-green-400 transition">Alerts, training &amp; 1-on-1 <span class="text-green-400 opacity-0 group-hover:opacity-100 transition">→</span></div>
-              <p class="text-zinc-400 text-xs leading-relaxed">Scout alert stream, walkthrough library and a monthly 1-on-1 call.</p>
-            </a>
+          </div>
+
+          <!-- Coming soon — kept prominent on purpose -->
+          <div id="coming-soon" class="vs-soonband">
+            <div class="vs-soonc">
+              <div class="vs-k">Coming soon &middot; in review with NinjaTrader</div>
+              <h3>Knightfall on NinjaTrader 8</h3>
+              <p>The same graded system, native on NinjaTrader 8, with automation built in.</p>
+              <div class="inc">Included in the membership when it launches.</div>
+              <div style="margin-top:10px"><a href="ninjatrader.html">Follow the launch &rarr;</a></div>
+            </div>
+            <div class="vs-soonc">
+              <div class="vs-k">Coming soon</div>
+              <h3>Copy Trader</h3>
+              <p>Trade one Tradovate account and the rest follow, with their own size and risk rules. No per-account fees.</p>
+              <div class="inc">Included in the membership when it launches.</div>
+            </div>
           </div>
 
           <div class="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <a href="#pricing" class="inline-block bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">Start 30-Day Free Trial</a>
-            <a href="suite.html" class="inline-block border border-white/15 hover:bg-white/[0.06] transition px-8 py-4 rounded-2xl font-bold text-white">See everything in the membership</a>
+            <a href="compare.html" class="inline-block border border-white/15 hover:bg-white/[0.06] transition px-8 py-4 rounded-2xl font-bold text-white">Compare all plans</a>
           </div>
         </div>
       </section>
