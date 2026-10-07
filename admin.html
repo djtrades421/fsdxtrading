@@ -1308,7 +1308,7 @@
         <div class="flex items-center justify-between mb-1 flex-wrap gap-3">
           <div>
             <h2 class="text-sm font-black text-white">📈 Public Track Record</h2>
-            <p class="text-xs text-zinc-600 mt-0.5">Import the Knightfall strategy export, merge new trades, publish <span id="tr-file-label" class="text-zinc-400 font-mono">track-record.json</span></p>
+            <p class="text-xs text-zinc-600 mt-0.5">Import the FSD-X ORB Pro export, merge new trades, mark version updates, publish <span id="tr-file-label" class="text-zinc-400 font-mono">track-record.json</span></p>
           </div>
           <a href="track-record.html" target="_blank" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">View Page ↗</a>
         </div>
@@ -1338,7 +1338,7 @@
               <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Inception (locked start)</label>
               <input type="date" id="tr-inception" value="2026-05-01"
                 class="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:border-green-500/50 outline-none"/>
-              <p class="text-[10px] text-zinc-600 mt-1">Trades before this date are never imported.</p>
+              <p class="text-[10px] text-zinc-600 mt-1">First day of the continuous record. Trades before it are never imported.</p>
             </div>
             <div>
               <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Public release date</label>
@@ -1359,6 +1359,25 @@
               <p class="text-[10px] text-zinc-600 mt-1">Set by the record picked above. The export must be run on this same setting.</p>
             </div>
           </div>
+        </div>
+
+        <!-- Version timeline + context tags -->
+        <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
+          <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-1">// Version Timeline</div>
+          <p class="text-[10px] text-zinc-600 mb-3">One continuous record. A cut only marks the day a new version took over &mdash; nothing resets.
+            Shared by both risk files: edit once, then publish $400 and $250.</p>
+          <div id="tr-vers" class="space-y-2 mb-3"></div>
+          <div class="grid md:grid-cols-[110px_150px_1fr_auto] gap-2 items-center">
+            <input id="trv-label" placeholder="MK3" class="bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none"/>
+            <input id="trv-date" type="date" class="bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none"/>
+            <input id="trv-note" placeholder="One line: what changed" class="bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none"/>
+            <button type="button" onclick="trVerAdd()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-200 font-bold text-xs rounded-xl">+ Add cut</button>
+          </div>
+          <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mt-5 mb-1">// Context Tags</div>
+          <p class="text-[10px] text-zinc-600 mb-2">One per line: <span class="font-mono text-zinc-400">2026-10-14 CPI</span>. Tag every calendar event, win or loss &mdash; never only the red days.</p>
+          <textarea id="tr-events" rows="5" class="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-[11px] font-mono text-zinc-300 outline-none"></textarea>
+          <button type="button" onclick="trMetaSave()" class="mt-2 px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl">Apply timeline + tags</button>
+          <span id="tr-meta-msg" class="text-[11px] text-zinc-500 ml-2"></span>
         </div>
 
         <!-- Upload -->
@@ -7667,6 +7686,7 @@
     const TR_FILES   = { '400': 'track-record.json', '250': 'track-record-250.json' };
     const TR_CACHE   = {};     // published data per profile
     let TR_PROFILE   = '400';
+    let TR_BACKFILLED = 0;
 
     const trMoney = n => (n < 0 ? '-' : '+') + '$' + Math.abs(n).toLocaleString('en-US', {maximumFractionDigits:0});
 
@@ -7737,6 +7757,7 @@
       if (m.inception) document.getElementById('tr-inception').value = m.inception;
       if (m.public_release) document.getElementById('tr-release').value = m.public_release;
       if (m.commission_rt != null) document.getElementById('tr-comm').value = m.commission_rt;
+      trPaintMeta();
       if (m.risk_profile != null && String(m.risk_profile) !== TR_PROFILE) {
         document.getElementById('tr-current').innerHTML = '<span class="text-red-400 font-bold">' + TR_FILES[TR_PROFILE] +
           ' says it is the $' + esc(String(m.risk_profile)) + ' profile, not $' + TR_PROFILE + '. Check which file was pushed before importing.</span>';
@@ -7754,6 +7775,49 @@
           ${m.inception || '?'} &rarr; ${m.last_trade_date || '?'} &middot; $${m.risk_profile || '?'} risk profile &middot; commissions $${Number(m.commission_rt||0).toFixed(2)} RT/contract &middot; generated ${m.generated || '?'}
         </div>`;
     }
+
+    function trPaintMeta() {
+      const m = (TR_PUBLISHED && TR_PUBLISHED.meta) || {};
+      const vs = (m.versions || []).slice().sort((a, b) => a.start.localeCompare(b.start));
+      document.getElementById('tr-vers').innerHTML = vs.length ? vs.map((v, i) => `
+        <div class="flex items-center gap-3 bg-black border border-white/5 rounded-xl px-3 py-2 text-xs">
+          <span class="font-black text-green-400 w-14">${esc(v.label)}</span>
+          <span class="text-zinc-400 w-28">${esc(v.start)}</span>
+          <span class="text-zinc-500 flex-1">${esc(v.note || '')}</span>
+          ${i ? `<button type="button" onclick="trVerDel('${esc(v.start)}')" class="text-zinc-600 hover:text-red-400 text-[11px]">remove</button>` : '<span class="text-[10px] text-zinc-700">start</span>'}
+        </div>`).join('') : '<div class="text-[11px] text-zinc-600">No versions yet.</div>';
+      document.getElementById('tr-events').value = Object.keys(m.events || {}).sort()
+        .flatMap(d => m.events[d].map(t => d + ' ' + t)).join('\n');
+    }
+    function trMetaEnsure() { TR_PUBLISHED.meta = TR_PUBLISHED.meta || {}; TR_PUBLISHED.meta.versions = TR_PUBLISHED.meta.versions || []; }
+    function trVerAdd() {
+      const label = document.getElementById('trv-label').value.trim(), start = document.getElementById('trv-date').value,
+            note = document.getElementById('trv-note').value.trim();
+      if (!label || !start) { alert('Label and date are required.'); return; }
+      trMetaEnsure();
+      if (TR_PUBLISHED.meta.versions.some(v => v.start === start)) { alert('There is already a cut on ' + start + '.'); return; }
+      TR_PUBLISHED.meta.versions.push({ id: label.toLowerCase().replace(/[^a-z0-9]+/g, ''), label, start, note });
+      ['trv-label', 'trv-date', 'trv-note'].forEach(id => document.getElementById(id).value = '');
+      trPaintMeta(); trMetaMsg('Cut added. Import (or re-run Merge) to build the file, then publish both risk files.');
+    }
+    function trVerDel(start) {
+      if (!confirm('Remove the version cut on ' + start + '? Trades are not affected.')) return;
+      trMetaEnsure(); TR_PUBLISHED.meta.versions = TR_PUBLISHED.meta.versions.filter(v => v.start !== start); trPaintMeta();
+    }
+    function trMetaSave() {
+      trMetaEnsure();
+      const ev = {}; let bad = 0;
+      document.getElementById('tr-events').value.split(/\n/).forEach(l => {
+        const m = l.trim().match(/^(\d{4}-\d{2}-\d{2})\s+(.+)$/);
+        if (!l.trim()) return; if (!m) { bad++; return; }
+        (ev[m[1]] = ev[m[1]] || []).includes(m[2].trim()) || ev[m[1]].push(m[2].trim());
+      });
+      TR_PUBLISHED.meta.events = ev;
+      // Re-emit the published file with the new timeline/tags and no trade changes.
+      TR_PARSED = []; trBuild('skip');
+      trMetaMsg(bad ? bad + ' line(s) skipped — use YYYY-MM-DD Label.' : 'Applied. Download below and publish; repeat for the other risk file.');
+    }
+    function trMetaMsg(t) { document.getElementById('tr-meta-msg').textContent = t; }
 
     function trCard(label, val, cls) {
       return `<div class="bg-black border border-white/5 rounded-xl px-3 py-2">
@@ -7789,6 +7853,16 @@
       return m ? m[1] : '';
     }
 
+    // Closed-by comes from the outcome, not the order label: the stop is
+    // bracketed to the TP1 order, so a stopped trade exports as "L-TP1".
+    const TR_EXIT_LABEL = { TP1:'Target', TP2:'Target 2', STOP:'Stop', EOD:'End of day', EOD_EARLY:'Early close' };
+    function trExitType(label, gross) {
+      if (/EOD/i.test(label || '')) return /Early|Half/i.test(label) ? 'EOD_EARLY' : 'EOD';
+      if (gross > 0) return /TP2/.test(label || '') ? 'TP2' : 'TP1';
+      return 'STOP';
+    }
+    const trNum = (r, ...keys) => { for (const k of keys) if (r[k] != null && r[k] !== '') return parseFloat(r[k]); return null; };
+
     function trConvert(rows, inception, comm) {
       const pairs = {};
       rows.forEach(r => {
@@ -7818,9 +7892,12 @@
           entry: parseFloat(p.entry['Price USD']) || 0,
           exit: parseFloat(p.exit['Price USD']) || 0,
           exit_reason: p.exit['Signal'] || '',
+          exit_type: trExitType(p.exit['Signal'], gross),
           gross: +gross.toFixed(2),
           commission: +c.toFixed(2),
-          pnl: +(gross - c).toFixed(2)
+          pnl: +(gross - c).toFixed(2),
+          mfe: trNum(p.entry, 'Favorable excursion USD'),
+          mae: trNum(p.entry, 'Adverse excursion USD')
         });
       });
       out.sort((a, b) => (a.date + a.entry_time).localeCompare(b.date + b.entry_time));
@@ -7905,7 +7982,7 @@
           <td class="px-2 py-1.5 font-bold ${t.dir==='LONG'?'text-emerald-400':'text-red-400'}">${t.dir}</td>
           <td class="px-2 py-1.5 text-zinc-400">${esc(t.grade || '—')}</td>
           <td class="px-2 py-1.5 text-right text-zinc-500">${t.contracts}</td>
-          <td class="px-2 py-1.5 text-zinc-500">${esc(t.exit_reason)}</td>
+          <td class="px-2 py-1.5 text-zinc-500">${esc(TR_EXIT_LABEL[t.exit_type] || t.exit_type)}${t.mfe != null ? ' <span class="text-zinc-700">· max +$' + Math.round(t.mfe) + '</span>' : ''}</td>
           <td class="px-3 py-1.5 text-right font-bold ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${trMoney(t.pnl)}</td>
           <td class="px-3 py-1.5 text-right">${isNew
             ? '<span class="text-green-400 font-bold">NEW</span>'
@@ -7927,14 +8004,31 @@
         trades = TR_PARSED.slice();
       } else {
         const pubDates = new Set((TR_PUBLISHED.trades || []).map(t => t.date));
-        trades = (TR_PUBLISHED.trades || []).concat(TR_PARSED.filter(t => !pubDates.has(t.date)));
+        // Backfill only: a published trade that matches this export on date,
+        // entry time, side and entry price gains its exit type and max open
+        // profit. Its P&L is never touched.
+        const key = t => [t.date, t.entry_time, t.dir, Number(t.entry)].join('|');
+        const fromExport = new Map(TR_PARSED.map(t => [key(t), t]));
+        let filled = 0;
+        const pub = (TR_PUBLISHED.trades || []).map(t => {
+          const m = fromExport.get(key(t)); const o = Object.assign({}, t);
+          if (!o.exit_type) o.exit_type = trExitType(o.exit_reason, o.gross);
+          if (m && o.mfe == null && m.mfe != null) { o.mfe = m.mfe; o.mae = m.mae; filled++; }
+          return o;
+        });
+        TR_BACKFILLED = filled;
+        trades = pub.concat(TR_PARSED.filter(t => !pubDates.has(t.date)));
       }
 
       trades.sort((a, b) => (a.date + a.entry_time).localeCompare(b.date + b.entry_time));
 
+      const pm = (TR_PUBLISHED && TR_PUBLISHED.meta) || {};
       TR_RESULT = {
         meta: {
-          version: 'Knightfall',
+          product: 'FSD-X ORB Pro',
+          execution: 'unmanaged',
+          versions: pm.versions || [],
+          events: pm.events || {},
           inception,
           public_release: document.getElementById('tr-release').value,
           instrument: 'MNQ',
@@ -7959,7 +8053,8 @@
         </div>
         <span class="text-zinc-500">${mode === 'replace'
           ? 'Full rebuild from this export.'
-          : (added > 0 ? added + ' trade' + (added !== 1 ? 's' : '') + ' added.' : 'Nothing new — file unchanged.')}
+          : (added > 0 ? added + ' trade' + (added !== 1 ? 's' : '') + ' added.' : 'No new trades.') +
+            (TR_BACKFILLED ? ' Max open profit filled in on ' + TR_BACKFILLED + ' published trade' + (TR_BACKFILLED !== 1 ? 's' : '') + ' (P&L unchanged).' : '')}
         Covers ${TR_RESULT.meta.inception} → ${TR_RESULT.meta.last_trade_date}.</span>`;
 
       document.getElementById('tr-publish').classList.remove('hidden');

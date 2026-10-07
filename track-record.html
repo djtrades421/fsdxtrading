@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Live Track Record</title>
-  <meta name="description" content="Knightfall, FSD-X ORB PRO. Every setup it has signaled on MNQ since May 1, 2026: wins and losses, posted after the close, on the $400 and $250 risk profiles. Not a signal feed." />
+  <meta name="description" content="FSD-X ORB Pro live record. Every setup it has signaled on MNQ since December 16, 2025, across every version update: wins and losses, run unmanaged to target, stop or end of day, posted after the close. Not a signal feed." />
   <link rel="stylesheet" href="tailwind.css">
   <style>
     /* Header + risk-profile card: stacked on mobile, side by side on desktop */
@@ -32,14 +32,26 @@
     }
     .tr-row:hover { background: rgba(255,255,255,0.02); }
     #equity-chart-wrap svg { display: block; overflow: visible; }
+    .ev-chip { display:inline-block; font-size:9px; font-weight:800; letter-spacing:.04em; padding:1px 5px; border-radius:4px;
+               background:rgba(255,255,255,0.06); color:#a1a1aa; border:1px solid rgba(255,255,255,0.08); white-space:nowrap; }
+    .ex-chip { display:inline-block; font-size:10px; font-weight:800; padding:2px 6px; border-radius:5px; white-space:nowrap; }
+    .ex-TP1,.ex-TP2 { background:rgba(34,197,94,0.10); color:#4ade80; }
+    .ex-STOP        { background:rgba(239,68,68,0.10); color:#f87171; }
+    .ex-EOD,.ex-EOD_EARLY { background:rgba(234,179,8,0.10); color:#facc15; }
+    .ver-chip { display:inline-block; font-size:9px; font-weight:900; letter-spacing:.06em; padding:1px 5px; border-radius:4px;
+                background:rgba(34,197,94,0.08); color:#86efac; border:1px solid rgba(34,197,94,0.2); }
+    .cal-tags { display:flex; flex-wrap:wrap; gap:2px; margin-top:4px; }
+    @media (max-width: 640px) { .cal-tags { display:none; } }
+    .ver-seg { position:relative; }
+    .ver-seg + .ver-seg { border-left:1px dashed rgba(255,255,255,0.15); }
   </style>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Dataset",
   "@id": "https://www.fsdxtrading.com/track-record.html#live",
-  "name": "FSD-X ORB PRO (Knightfall) — Live Signal Record",
-  "description": "Every setup the FSD-X ORB PRO (Knightfall) strategy has signaled on MNQ since public tracking began on 1 May 2026 — wins and losses, nothing removed. Published on the $400 risk profile and posted after the close. This records what the strategy signaled, not any individual's fills or account P&L. Important context: FSD-X ORB PRO has been running since 2025 and Knightfall is an updated version of that same system, not a new or separate strategy. 1 May 2026 is the date public tracking began, not the date the strategy started. The separate 7-year backtest on the research page is simulated and is not blended with this live record. Futures trading involves substantial risk of loss; past performance is not necessarily indicative of future results.",
+  "name": "FSD-X ORB Pro — Live Signal Record",
+  "description": "Every setup FSD-X ORB Pro has signaled on MNQ since 16 December 2025 — one continuous record across each version update, wins and losses, nothing removed. Each trade runs unmanaged to its target, stop or the end of the session: no breakevens, no partial exits, no manual intervention. Published on the $400 and $250 risk profiles and posted after the close. This records what the system signaled, not any individual's fills or account P&L. The separate 7-year backtest on the research page is simulated and is not blended with this record. Futures trading involves substantial risk of loss; past performance is not necessarily indicative of future results.",
   "url": "https://www.fsdxtrading.com/track-record.html",
   "creator": {
     "@id": "https://www.fsdxtrading.com/#organization"
@@ -48,7 +60,7 @@
     "@id": "https://www.fsdxtrading.com/#organization"
   },
   "license": "https://www.fsdxtrading.com/disclosures.html",
-  "temporalCoverage": "2026-05-01/..",
+  "temporalCoverage": "2025-12-16/..",
   "measurementTechnique": "Recorded strategy signals, published after each session close",
   "about": {
     "@id": "https://www.fsdxtrading.com/#membership"
@@ -104,15 +116,14 @@
         <div>
           <div class="flex items-center gap-2.5 mb-2 flex-wrap">
             <span class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold">// Live Track Record</span>
-            <span id="m-version" class="px-2 py-0.5 rounded-md bg-green-500/10 border border-green-500/25 text-green-400 text-[10px] font-black tracking-wider">KNIGHTFALL</span>
+            <span class="px-2 py-0.5 rounded-md bg-green-500/10 border border-green-500/25 text-green-400 text-[10px] font-black tracking-wider">FSD-X ORB PRO</span>
           </div>
           <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">Every Setup. Wins and Losses.</h1>
           <p class="text-zinc-400 text-sm max-w-3xl mb-5">
-            FSD-X ORB PRO isn't new &mdash; it's been running since 2025, with
-            <a href="results.html" class="text-zinc-300 underline hover:text-green-400">seven years of backtest research</a> behind it.
-            This page tracks <span class="text-white font-semibold">Knightfall</span> from May 1, 2026, the day public tracking began:
-            every setup it has signaled on MNQ, wins and losses, nothing removed, nothing cherry-picked.
-            Posted after the close &mdash; this is a record, not a signal feed. Results are shown at the
+            One continuous record of <span class="text-white font-semibold">FSD-X ORB Pro</span> from December 16, 2025: every setup it has
+            signaled on MNQ, wins and losses, nothing removed. When the system is updated, the record doesn't restart &mdash; it keeps
+            running, and the timeline marks the day the new version took over. This is what you'd have seen running it the whole way through.
+            Posted after the close &mdash; a record, not a signal feed. Results are shown at the
             <span id="p-risk" class="text-white font-semibold">$400 risk profile</span>.
             <span id="p-risk-note" class="hidden">Switch profiles below: the signals are identical, only contract size and dollars change.</span>
           </p>
@@ -121,7 +132,7 @@
                with more than one product in the nav, this has to be stated
                rather than inferred from the product name in the paragraph. -->
           <div class="border border-white/10 bg-zinc-950/40 rounded-xl px-4 py-3 max-w-3xl mb-5">
-            <p class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">This is ORB PRO (Knightfall)'s record.</span> It tracks a strategy that grades and filters every breakout before it signals. <a href="raven.html" class="text-green-400 hover:underline font-semibold">Raven</a> marks every breakout and draws the levels without grading or filtering, and it doesn't track outcomes at all &mdash; it has no record of its own, here or anywhere.</p>
+            <p class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">This is FSD-X ORB Pro's record.</span> It tracks a strategy that grades and filters every breakout before it signals. <a href="raven.html" class="text-green-400 hover:underline font-semibold">Raven</a> marks every breakout and draws the levels without grading or filtering, and it doesn't track outcomes at all &mdash; it has no record of its own, here or anywhere.</p>
           </div>
 
           <!-- Risk profile toggle. Hidden unless track-record-250.json exists. -->
@@ -133,8 +144,8 @@
           </div>
 
           <div class="flex flex-wrap gap-x-6 gap-y-2 text-[11px]">
-            <div><span class="text-zinc-600 uppercase tracking-wider">Tracking since</span> <span id="m-inception" class="text-white font-bold ml-1">&mdash;</span></div>
-            <div><span class="text-zinc-600 uppercase tracking-wider">Public release</span> <span id="m-release" class="text-white font-bold ml-1">&mdash;</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Record starts</span> <span id="m-inception" class="text-white font-bold ml-1">&mdash;</span></div>
+            <div><span class="text-zinc-600 uppercase tracking-wider">Current version</span> <span id="m-current" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Instrument</span> <span id="m-inst" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Risk profile</span> <span id="m-risk" class="text-white font-bold ml-1">&mdash;</span></div>
             <div><span class="text-zinc-600 uppercase tracking-wider">Data through</span> <span id="m-through" class="text-green-400 font-bold ml-1">&mdash;</span></div>
@@ -191,6 +202,35 @@
       <div class="flex-1 px-6 md:px-10 py-8">
         <div class="max-w-7xl mx-auto space-y-8">
 
+          <!-- ── How this record is executed ── -->
+          <div class="border border-green-500/20 bg-green-500/[0.04] rounded-2xl p-5 md:p-6">
+            <div class="text-green-400 uppercase tracking-[0.2em] text-[10px] font-bold mb-2">// How every trade here is run</div>
+            <h2 class="text-lg font-black text-white mb-2">Unmanaged. The system's rules, nothing added.</h2>
+            <p class="text-[13px] text-zinc-400 leading-relaxed max-w-4xl mb-4">
+              Every trade on this page enters on the signal and closes one of three ways: it hits its target, it hits its stop, or the
+              session ends. Nobody moves the stop, takes partials, or closes early. That's deliberate &mdash; it shows the system on its own.
+              How you manage a trade is your call, and your results will differ from this record, better or worse.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-TP1 mr-2">TARGET</span><span class="text-[12px] text-zinc-400">Price reaches the profit target</span></div>
+              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-STOP mr-2">STOP</span><span class="text-[12px] text-zinc-400">Price reaches the stop loss</span></div>
+              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-EOD mr-2">END OF DAY</span><span class="text-[12px] text-zinc-400">Neither hit &mdash; closed at the session close</span></div>
+            </div>
+            <div class="flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-zinc-500">
+              <span>✕ No breakeven stops</span><span>✕ No partial exits</span><span>✕ No trailing</span><span>✕ No manual exits</span><span>✕ No re-entries after a stop</span>
+            </div>
+          </div>
+
+          <!-- ── Version timeline ── -->
+          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+            <div class="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+              <h2 class="text-sm font-black uppercase tracking-wider text-white">Update Timeline</h2>
+              <span class="text-[11px] text-zinc-600">One record. Each update is marked, nothing resets.</span>
+            </div>
+            <p class="text-[11px] text-zinc-600 mb-4">The headline numbers above cover the whole run. Per-version numbers are here for context.</p>
+            <div id="ver-strip" class="flex flex-col md:flex-row border border-white/10 rounded-xl overflow-hidden"></div>
+          </div>
+
           <!-- ── Stat cards ── -->
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="stat-cards"></div>
 
@@ -203,7 +243,7 @@
               </div>
               <div class="text-right">
                 <div id="chart-legend" class="text-xs text-zinc-500"></div>
-                <div class="text-[10px] text-zinc-600 mt-1">Net of commissions &middot; as signaled</div>
+                <div class="text-[10px] text-zinc-600 mt-1">Net of commissions &middot; unmanaged &middot; dashed lines mark version updates</div>
               </div>
             </div>
             <div id="equity-chart-wrap" class="relative mt-5" style="height:340px"></div>
@@ -249,7 +289,7 @@
             </div>
             <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
               <h2 class="text-sm font-black uppercase tracking-wider text-white mb-1">How Trades Closed</h2>
-              <p class="text-[11px] text-zinc-600 mb-4">Every exit is taken by the engine &mdash; target, stop, or end of session.</p>
+              <p class="text-[11px] text-zinc-600 mb-4">Every exit is taken by the system &mdash; target, stop, or end of session. Nothing else.</p>
               <div id="exit-table" class="space-y-2"></div>
             </div>
           </div>
@@ -259,7 +299,7 @@
             <div class="p-5 pb-3 flex items-center justify-between flex-wrap gap-3">
               <div>
                 <h2 class="text-sm font-black uppercase tracking-wider text-white">Trade Log</h2>
-                <p class="text-[11px] text-zinc-600 mt-0.5">Most recent first. Every signal, unfiltered.</p>
+                <p class="text-[11px] text-zinc-600 mt-0.5">Most recent first. Every signal, unfiltered. <span class="text-zinc-500">Max open profit</span> = the best the trade got to before it closed.</p>
               </div>
               <div class="flex gap-1.5" id="log-filters">
                 <button onclick="setLogFilter('all')" data-f="all" class="log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-green-500/10 border-green-500/40 text-green-400">All</button>
@@ -278,6 +318,8 @@
                     <th class="text-right font-bold px-3 py-2.5">Entry</th>
                     <th class="text-right font-bold px-3 py-2.5">Exit</th>
                     <th class="text-left font-bold px-3 py-2.5">Closed By</th>
+                    <th class="text-right font-bold px-3 py-2.5">Max Open Profit</th>
+                    <th class="text-left font-bold px-3 py-2.5">Context</th>
                     <th class="text-right font-bold px-5 py-2.5">Net P&amp;L</th>
                   </tr>
                 </thead>
@@ -300,7 +342,7 @@
           <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-5 text-[11px] text-yellow-300/70 leading-relaxed">
             <div class="font-black uppercase tracking-wider text-yellow-400/90 mb-2 text-[10px]">// Important — Please Read</div>
             <p class="mb-2">
-              This page shows the signal output of the FSD-X ORB PRO strategy, Knightfall, on MNQ &mdash; every setup it generated
+              This page shows the signal output of FSD-X ORB Pro on MNQ &mdash; every setup it generated
               over the period shown, wins and losses, with no trades removed. Results are shown <span class="font-bold">as signaled</span>,
               at the position size the strategy itself assigns using the <span id="d-risk" class="font-bold">$400</span>
               risk-per-trade profile (which produces 1&ndash;3 MNQ contracts depending on grade and stop distance), net of an assumed
@@ -313,10 +355,17 @@
               therefore different dollar results, from the same signals. The sample shown here is small and is not a statistically reliable basis for
               projecting future performance.
             </p>
-            <p>
-              Signals from before May 1, 2026 are not represented here. The seven-year backtest shown on our
-              <a href="results.html" class="underline hover:text-yellow-200">research data</a> page is simulated and covers the
-              strategy logic over historical data; this page covers only what Knightfall has signaled since tracking began on May 1, 2026.
+            <p class="mb-2">
+              The record is continuous across version updates. Trades from December 16, 2025 to April 30, 2026 were signaled by
+              ORB Pro v5, an indicator version; they come from that version's own trade list and were checked against the trades called
+              in the live room at the time. Later trades come from the strategy versions marked on the timeline. Each trade is shown
+              unmanaged &mdash; held to its target, stop or the session close, with no breakevens, partial exits or discretionary exits
+              &mdash; which is how the system signals it, not how any individual trader manages it. Event labels (CPI, NFP, FOMC, holidays)
+              are applied from the economic calendar to every day they fall on, win or loss; they are context, not an adjustment.
+            </p>
+            <p class="mb-2">
+              The seven-year backtest on our <a href="results.html" class="underline hover:text-yellow-200">research data</a> page is
+              simulated over historical data and is not blended with this record.
             </p>
             <p>
               Futures trading involves substantial risk of loss and is not suitable for every investor. Past performance is not
@@ -325,7 +374,7 @@
           </div>
 
           <div class="text-center text-[10px] text-zinc-700 pb-4">
-            Generated from the strategy's own trade record &middot; last updated <span id="m-gen">&mdash;</span>
+            Generated from the system's own trade record &middot; last updated <span id="m-gen">&mdash;</span>
           </div>
 
         </div>
@@ -351,6 +400,28 @@
     const pdate = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
     const fmtDate = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
     const fmtShort = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+
+    // ── Version cuts, exit types, event context ──
+    // One continuous record. A version cut is a marker, never a reset.
+    const VERS = () => ((DATA && DATA.meta && DATA.meta.versions) || []).slice().sort((a,b) => a.start.localeCompare(b.start));
+    function verOf(date) { let v = null; VERS().forEach(x => { if (date >= x.start) v = x; }); return v; }
+    const EXIT_LABEL = { TP1:'Target', TP2:'Target 2', STOP:'Stop', EOD:'End of day', EOD_EARLY:'Early close' };
+    function exitType(t) {
+      if (t.exit_type) return t.exit_type;
+      const r = t.exit_reason || '';
+      if (/EOD/i.test(r)) return /Early|Half/i.test(r) ? 'EOD_EARLY' : 'EOD';
+      if (t.gross > 0) return /TP2/.test(r) ? 'TP2' : 'TP1';
+      return 'STOP';
+    }
+    const exitChip = t => { const k = exitType(t); return `<span class="ex-chip ex-${k}">${EXIT_LABEL[k] || _e(k)}</span>`; };
+    const eventsOn = d => ((DATA && DATA.meta && DATA.meta.events) || {})[d] || [];
+    const evChips = d => eventsOn(d).map(x => `<span class="ev-chip">${_e(x)}</span>`).join(' ');
+    function mfeText(t) {
+      if (t.mfe == null) return '<span class="text-zinc-700">&mdash;</span>';
+      const k = exitType(t);
+      const cls = k === 'STOP' && t.mfe > 0 ? 'text-yellow-400' : 'text-zinc-400';
+      return `<span class="${cls}">+$${Math.round(t.mfe).toLocaleString()}</span>`;
+    }
 
     // ── Risk profiles: one JSON per profile, published from admin ──
     // $400 stays the default and keeps its original filename, so every
@@ -404,7 +475,8 @@
     function render() {
       const m = DATA.meta || {};
       document.getElementById('m-inception').textContent = fmtDate(m.inception);
-      document.getElementById('m-release').textContent  = fmtDate(m.public_release);
+      const vs = VERS(); const cur = vs[vs.length - 1];
+      document.getElementById('m-current').textContent  = cur ? cur.label + ' · since ' + fmtShort(cur.start) : '—';
       document.getElementById('m-inst').textContent     = m.instrument || 'MNQ';
       document.getElementById('m-risk').textContent     = m.risk_profile ? '$' + Number(m.risk_profile).toLocaleString() + ' profile' : '—';
       if (m.risk_profile) {
@@ -420,7 +492,7 @@
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('page-content').classList.remove('hidden');
 
-      renderStats(); renderGrades(); renderExits(); renderLog();
+      renderStats(); renderVersions(); renderGrades(); renderExits(); renderLog();
       calRef = pdate(TRADES[TRADES.length - 1].date); calRef.setDate(1); renderCal();
 
       // Draw the chart only once the container has a real width to measure.
@@ -441,6 +513,29 @@
         worst: list.length ? Math.min(...list.map(t => t.pnl)) : 0,
         days: new Set(list.map(t => t.date)).size
       };
+    }
+
+    function renderVersions() {
+      const vs = VERS(), el = document.getElementById('ver-strip');
+      if (!vs.length) { el.parentElement.classList.add('hidden'); return; }
+      el.innerHTML = vs.map((v, i) => {
+        const end = vs[i+1] ? vs[i+1].start : null;
+        const list = TRADES.filter(t => t.date >= v.start && (!end || t.date < end));
+        const s = stats(list);
+        const last = list.length ? list[list.length-1].date : null;
+        const range = fmtShort(v.start) + (end ? ' – ' + fmtShort(last || v.start) : ' – now');
+        return `<div class="ver-seg flex-1 p-4 ${i === vs.length-1 ? 'bg-green-500/[0.03]' : ''}" style="flex:${Math.max(list.length, 25)} 1 0;min-width:0">
+          <div class="flex items-center gap-2 mb-1"><span class="ver-chip">${_e(v.label)}</span>
+            <span class="text-[11px] text-zinc-500">${range}</span>
+            ${i === vs.length-1 ? '<span class="text-[9px] font-black text-green-400 uppercase tracking-wider">current</span>' : ''}</div>
+          <div class="text-[11px] text-zinc-500 leading-snug mb-2">${_e(v.note || '')}</div>
+          <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px]">
+            <span class="text-zinc-400">${s.n} trades</span>
+            <span class="text-zinc-400">${s.n ? s.winRate.toFixed(0) + '% win' : ''}</span>
+            <span class="text-zinc-400">${s.n ? 'PF ' + s.pf.toFixed(2) : ''}</span>
+            <span class="font-black ${s.net >= 0 ? 'text-emerald-400' : 'text-red-400'}">${s.n ? money(s.net) : '—'}</span>
+          </div></div>`;
+      }).join('');
     }
 
     function card(label, value, cls) {
@@ -480,7 +575,8 @@
           date: t.date, pnl,
           result: pnl > 0 ? 'WIN' : 'LOSS',
           grade: t.grade || '', time: t.entry_time || '',
-          dir: t.dir || '', qty: t.contracts || 1
+          dir: t.dir || '', qty: t.contracts || 1,
+          ex: exitType(t), ver: (verOf(t.date) || {}).label || ''
         });
       });
 
@@ -589,11 +685,21 @@
         const x = toX(i+1), prevX = toX(i), sliceW = Math.max(8, x - prevX);
         const col = p.result === 'WIN' ? '#22c55e' : '#ef4444';
         const sign = p.pnl >= 0 ? '+' : '-';
-        const line2 = p.dir + (p.grade ? ' [' + p.grade + ']' : '') + ' · ' + p.qty + 'c';
+        const line2 = p.dir + (p.grade ? ' [' + p.grade + ']' : '') + ' · ' + p.qty + 'c' + (p.ex ? ' · ' + (EXIT_LABEL[p.ex] || p.ex) : '') + (p.ver ? ' · ' + p.ver : '');
         const tip = [p.date || '', line2, sign + '$' + Math.abs(p.pnl).toFixed(2) + ' → $' + p.equity.toFixed(2)].join('·||·');
         return '<rect x="' + (prevX + (x-prevX)*0.1).toFixed(1) + '" y="' + PAD_T + '" width="' + sliceW.toFixed(1) +
           '" height="' + CH + '" fill="transparent" onmouseenter="showChartTooltip(event,\'' + tip + '\',\'' + col + '\',' +
           x.toFixed(1) + ',' + toY(p.equity).toFixed(1) + ')" onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>';
+      }).join('');
+
+      // Version cut markers: dashed line at the first trade of each later version.
+      const verMarks = VERS().slice(1).map(v => {
+        const i = points.findIndex(p => p.date && p.date >= v.start);
+        if (i < 1) return '';
+        const x = ((toX(i - 1) + toX(i)) / 2).toFixed(1);
+        return '<line x1="' + x + '" y1="' + PAD_T + '" x2="' + x + '" y2="' + (PAD_T + CH) + '" stroke="rgba(134,239,172,0.45)" stroke-width="1" stroke-dasharray="3,4"/>' +
+          '<rect x="' + (+x + 4) + '" y="' + (PAD_T + 2) + '" width="' + (v.label.length * 7 + 46) + '" height="16" rx="4" fill="rgba(9,9,11,0.9)" stroke="rgba(34,197,94,0.3)"/>' +
+          '<text x="' + (+x + 9) + '" y="' + (PAD_T + 13.5) + '" fill="#86efac" font-size="10" font-weight="800" font-family="ui-monospace,monospace">' + _e(v.label) + ' · ' + _e(fmtShort(v.start)) + '</text>';
       }).join('');
 
       const lastLineCol = isPos ? '#22c55e' : '#ef4444';
@@ -619,7 +725,7 @@
       wrap.innerHTML =
         '<svg id="' + uid + '-svg" width="100%" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">' +
           '<defs><clipPath id="' + uid + '-clip"><rect x="' + PAD_L + '" y="' + (PAD_T-2) + '" width="' + (CW+1) + '" height="' + (CH+4) + '"/></clipPath></defs>' +
-          gridLines + xLabels +
+          gridLines + xLabels + verMarks +
           '<g clip-path="url(#' + uid + '-clip)">' + segmentSVG + crosshairLine + crosshairDot + hoverRects + '</g>' +
         '</svg>' +
         '<div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:11px;white-space:nowrap;font-family:ui-monospace,monospace;color:#e4e4e7;box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>';
@@ -758,6 +864,14 @@
             dateDiv.className = (isToday ? 'text-xs font-black text-green-400' : 'text-xs font-bold text-zinc-600') + ' text-right';
             dateDiv.textContent = d;
             cell.appendChild(dateDiv);
+            const cut = VERS().slice(1).find(v => v.start === key);
+            const evs = eventsOn(key);
+            if (evs.length || cut) {
+              const tg = document.createElement('div');
+              tg.className = 'cal-tags';
+              tg.innerHTML = (cut ? `<span class="ver-chip">${_e(cut.label)} live</span>` : '') + evChips(key);
+              cell.appendChild(tg);
+            }
 
             if (list) {
               const net = list.reduce((a,t) => a + t.pnl, 0);
@@ -801,7 +915,7 @@
       const el = document.getElementById('cal-detail');
       el.innerHTML = `
         <div class="flex items-baseline justify-between mb-3">
-          <div class="text-sm font-black text-white">${fmtDate(key)}</div>
+          <div class="text-sm font-black text-white">${fmtDate(key)} <span class="ml-2 align-middle">${evChips(key)}</span> <span class="ver-chip ml-1 align-middle">${_e((verOf(key)||{}).label||'')}</span></div>
           <div class="text-sm font-black ${net>=0?'text-emerald-400':'text-red-400'}">${money(net)}</div>
         </div>
         <div class="space-y-1.5">` +
@@ -811,7 +925,7 @@
             <span class="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 font-bold text-[10px]">${_e(t.grade||'—')}</span>
             <span class="text-zinc-600 text-[11px]">${_e(t.contracts)}c</span>
             <span class="text-zinc-500 text-[11px] hidden sm:inline">${t.entry_time} → ${t.exit_time}</span>
-            <span class="text-zinc-500 text-[11px] flex-1 truncate">${_e(t.exit_reason)}</span>
+            <span class="flex-1">${exitChip(t)} <span class="text-zinc-600 text-[11px] ml-1">max open ${t.mfe == null ? '—' : '+$' + Math.round(t.mfe)}</span></span>
             <span class="font-black ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${money(t.pnl)}</span>
           </div>`).join('') + '</div>';
       el.classList.remove('hidden');
@@ -844,7 +958,7 @@
 
     function renderExits() {
       const e = {};
-      TRADES.forEach(t => { const k = t.exit_reason || '—'; (e[k] = e[k] || []).push(t); });
+      TRADES.forEach(t => { const k = EXIT_LABEL[exitType(t)] || '—'; (e[k] = e[k] || []).push(t); });
       const keys = Object.keys(e).sort((a,b) => e[b].length - e[a].length);
       const total = TRADES.length;
       document.getElementById('exit-table').innerHTML = keys.map(k => {
@@ -871,16 +985,18 @@
       if (logFilter === 'loss') list = list.filter(t => t.pnl <= 0);
       document.getElementById('log-body').innerHTML = list.map(t => `
         <tr class="tr-row border-b border-white/5">
-          <td class="px-5 py-2.5 text-zinc-300 whitespace-nowrap">${fmtShort(t.date)}</td>
+          <td class="px-5 py-2.5 text-zinc-300 whitespace-nowrap">${fmtShort(t.date)} <span class="text-zinc-600 text-[10px]">'${t.date.slice(2,4)}</span></td>
           <td class="px-3 py-2.5"><span class="font-bold ${t.dir==='LONG'?'text-emerald-400':'text-red-400'}">${t.dir}</span></td>
           <td class="px-3 py-2.5"><span class="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 font-bold text-[10px]">${_e(t.grade||'—')}</span></td>
           <td class="px-3 py-2.5 text-right text-zinc-400">${_e(t.contracts)}</td>
           <td class="px-3 py-2.5 text-right text-zinc-400 tabular-nums">${t.entry.toLocaleString()}</td>
           <td class="px-3 py-2.5 text-right text-zinc-400 tabular-nums">${t.exit.toLocaleString()}</td>
-          <td class="px-3 py-2.5 text-zinc-500 whitespace-nowrap">${_e(t.exit_reason)}</td>
+          <td class="px-3 py-2.5 whitespace-nowrap">${exitChip(t)}</td>
+          <td class="px-3 py-2.5 text-right tabular-nums">${mfeText(t)}</td>
+          <td class="px-3 py-2.5"><div class="flex flex-wrap gap-1">${(() => { const v = verOf(t.date); return v && VERS().indexOf(v) > 0 && TRADES.find(x => x.date >= v.start) === t ? `<span class="ver-chip">${_e(v.label)} live</span>` : ''; })()}${evChips(t.date)}</div></td>
           <td class="px-5 py-2.5 text-right font-black tabular-nums ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${money2(t.pnl)}</td>
         </tr>`).join('') ||
-        '<tr><td colspan="8" class="px-5 py-8 text-center text-zinc-600 text-xs">No trades match that filter.</td></tr>';
+        '<tr><td colspan="10" class="px-5 py-8 text-center text-zinc-600 text-xs">No trades match that filter.</td></tr>';
     }
 
     function toggleMobileMenu() {

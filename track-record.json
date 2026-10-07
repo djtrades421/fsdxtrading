@@ -1,16 +1,1067 @@
 {
  "meta": {
-  "version": "Knightfall",
-  "inception": "2026-05-01",
+  "inception": "2025-12-16",
   "public_release": "2026-06-15",
   "instrument": "MNQ",
   "risk_profile": 400,
   "session": "New York open (8:30 AM CT)",
   "commission_rt": 1.04,
   "generated": "2026-10-06",
-  "last_trade_date": "2026-10-05"
+  "last_trade_date": "2026-10-05",
+  "product": "FSD-X ORB Pro",
+  "versions": [
+   {
+    "id": "v5",
+    "label": "v5",
+    "start": "2025-12-16",
+    "note": "Indicator version (pre-strategy)."
+   },
+   {
+    "id": "mk1",
+    "label": "MK1",
+    "start": "2026-05-01",
+    "note": "Rebuilt as a strategy."
+   },
+   {
+    "id": "mk2",
+    "label": "MK2",
+    "start": "2026-09-14",
+    "tbc": true,
+    "note": "Lookahead fixes and day-start side lockout."
+   }
+  ],
+  "events": {
+   "2025-12-16": [
+    "NFP"
+   ],
+   "2025-12-18": [
+    "CPI"
+   ],
+   "2025-12-23": [
+    "Holiday week"
+   ],
+   "2025-12-24": [
+    "Holiday / early close"
+   ],
+   "2025-12-26": [
+    "Holiday week"
+   ],
+   "2025-12-29": [
+    "Holiday week"
+   ],
+   "2025-12-30": [
+    "Holiday week"
+   ],
+   "2025-12-31": [
+    "Holiday week"
+   ],
+   "2026-01-02": [
+    "Holiday week"
+   ],
+   "2026-01-09": [
+    "NFP"
+   ],
+   "2026-01-13": [
+    "CPI"
+   ],
+   "2026-01-19": [
+    "Holiday / early close"
+   ],
+   "2026-01-28": [
+    "FOMC"
+   ],
+   "2026-02-11": [
+    "NFP"
+   ],
+   "2026-02-13": [
+    "CPI"
+   ],
+   "2026-02-16": [
+    "Holiday / early close"
+   ],
+   "2026-03-06": [
+    "NFP"
+   ],
+   "2026-03-11": [
+    "CPI"
+   ],
+   "2026-03-18": [
+    "FOMC"
+   ],
+   "2026-04-03": [
+    "NFP",
+    "Holiday / early close"
+   ],
+   "2026-04-10": [
+    "CPI"
+   ],
+   "2026-04-29": [
+    "FOMC"
+   ],
+   "2026-05-08": [
+    "NFP"
+   ],
+   "2026-05-12": [
+    "CPI"
+   ],
+   "2026-05-25": [
+    "Holiday / early close"
+   ],
+   "2026-06-05": [
+    "NFP"
+   ],
+   "2026-06-10": [
+    "CPI"
+   ],
+   "2026-06-17": [
+    "FOMC"
+   ],
+   "2026-06-19": [
+    "Holiday / early close"
+   ],
+   "2026-07-02": [
+    "NFP"
+   ],
+   "2026-07-03": [
+    "Holiday / early close"
+   ],
+   "2026-07-14": [
+    "CPI"
+   ],
+   "2026-07-29": [
+    "FOMC"
+   ],
+   "2026-08-07": [
+    "NFP"
+   ],
+   "2026-08-12": [
+    "CPI"
+   ],
+   "2026-09-04": [
+    "NFP"
+   ],
+   "2026-09-07": [
+    "Holiday / early close"
+   ],
+   "2026-09-11": [
+    "CPI"
+   ],
+   "2026-09-16": [
+    "FOMC"
+   ],
+   "2026-10-02": [
+    "NFP"
+   ],
+   "2026-10-14": [
+    "CPI"
+   ],
+   "2026-10-28": [
+    "FOMC"
+   ]
+  },
+  "execution": "unmanaged"
  },
  "trades": [
+  {
+   "id": "2025-12-16-v5-1",
+   "date": "2025-12-16",
+   "entry_time": "11:55",
+   "exit_time": "12:35",
+   "dir": "SHORT",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25200.75,
+   "exit": 25280.5,
+   "exit_reason": "S-TP1",
+   "exit_type": "STOP",
+   "gross": -319.0,
+   "commission": 2.08,
+   "pnl": -321.08,
+   "mfe": 123.0,
+   "mae": -319.0
+  },
+  {
+   "id": "2025-12-23-v5-2",
+   "date": "2025-12-23",
+   "entry_time": "10:00",
+   "exit_time": "15:25",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25739.5,
+   "exit": 25816.0,
+   "exit_reason": "EOD Close",
+   "exit_type": "EOD",
+   "gross": 306.0,
+   "commission": 2.08,
+   "pnl": 303.92,
+   "mfe": 331.0,
+   "mae": -46.0
+  },
+  {
+   "id": "2025-12-24-v5-3",
+   "date": "2025-12-24",
+   "entry_time": "09:10",
+   "exit_time": "11:45",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25827.75,
+   "exit": 25874.5,
+   "exit_reason": "EOD Close (Early/Half-Day)",
+   "exit_type": "EOD_EARLY",
+   "gross": 187.0,
+   "commission": 2.08,
+   "pnl": 184.92,
+   "mfe": 242.0,
+   "mae": -95.0
+  },
+  {
+   "id": "2025-12-30-v5-4",
+   "date": "2025-12-30",
+   "entry_time": "08:45",
+   "exit_time": "15:25",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25736.25,
+   "exit": 25685.75,
+   "exit_reason": "EOD Close",
+   "exit_type": "EOD",
+   "gross": -202.0,
+   "commission": 2.08,
+   "pnl": -204.08,
+   "mfe": 231.0,
+   "mae": -272.0
+  },
+  {
+   "id": "2026-01-02-v5-5",
+   "date": "2026-01-02",
+   "entry_time": "08:45",
+   "exit_time": "09:10",
+   "dir": "LONG",
+   "grade": "A+",
+   "contracts": 3,
+   "entry": 25755.0,
+   "exit": 25678.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -462.0,
+   "commission": 3.12,
+   "pnl": -465.12,
+   "mfe": 291.0,
+   "mae": -462.0
+  },
+  {
+   "id": "2026-01-02-v5-6",
+   "date": "2026-01-02",
+   "entry_time": "09:10",
+   "exit_time": "09:20",
+   "dir": "SHORT",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25604.0,
+   "exit": 25515.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 356.0,
+   "commission": 2.08,
+   "pnl": 353.92,
+   "mfe": 356.0,
+   "mae": -9.0
+  },
+  {
+   "id": "2026-01-05-v5-7",
+   "date": "2026-01-05",
+   "entry_time": "10:05",
+   "exit_time": "11:30",
+   "dir": "LONG",
+   "grade": "B+",
+   "contracts": 3,
+   "entry": 25687.25,
+   "exit": 25609.25,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -468.0,
+   "commission": 3.12,
+   "pnl": -471.12,
+   "mfe": 124.5,
+   "mae": -468.0
+  },
+  {
+   "id": "2026-01-06-v5-8",
+   "date": "2026-01-06",
+   "entry_time": "08:45",
+   "exit_time": "11:35",
+   "dir": "LONG",
+   "grade": "B+",
+   "contracts": 3,
+   "entry": 25710.0,
+   "exit": 25785.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 450.0,
+   "commission": 3.12,
+   "pnl": 446.88,
+   "mfe": 450.0,
+   "mae": -426.0
+  },
+  {
+   "id": "2026-01-07-v5-9",
+   "date": "2026-01-07",
+   "entry_time": "09:25",
+   "exit_time": "10:40",
+   "dir": "LONG",
+   "grade": "A",
+   "contracts": 3,
+   "entry": 25866.0,
+   "exit": 25935.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 414.0,
+   "commission": 3.12,
+   "pnl": 410.88,
+   "mfe": 414.0,
+   "mae": -342.0
+  },
+  {
+   "id": "2026-01-09-v5-10",
+   "date": "2026-01-09",
+   "entry_time": "09:20",
+   "exit_time": "09:30",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25799.75,
+   "exit": 25878.5,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 315.0,
+   "commission": 2.08,
+   "pnl": 312.92,
+   "mfe": 315.0,
+   "mae": -7.0
+  },
+  {
+   "id": "2026-01-09-v5-11",
+   "date": "2026-01-09",
+   "entry_time": "09:55",
+   "exit_time": "10:05",
+   "dir": "LONG",
+   "grade": "B+",
+   "contracts": 3,
+   "entry": 25811.75,
+   "exit": 25878.5,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 400.5,
+   "commission": 3.12,
+   "pnl": 397.38,
+   "mfe": 400.5,
+   "mae": -6.0
+  },
+  {
+   "id": "2026-01-12-v5-12",
+   "date": "2026-01-12",
+   "entry_time": "08:50",
+   "exit_time": "11:00",
+   "dir": "LONG",
+   "grade": "B+",
+   "contracts": 3,
+   "entry": 25893.5,
+   "exit": 25971.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 465.0,
+   "commission": 3.12,
+   "pnl": 461.88,
+   "mfe": 465.0,
+   "mae": -180.0
+  },
+  {
+   "id": "2026-01-13-v5-13",
+   "date": "2026-01-13",
+   "entry_time": "09:00",
+   "exit_time": "09:15",
+   "dir": "SHORT",
+   "grade": "C",
+   "contracts": 2,
+   "entry": 25930.25,
+   "exit": 25865.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 261.0,
+   "commission": 2.08,
+   "pnl": 258.92,
+   "mfe": 261.0,
+   "mae": -110.0
+  },
+  {
+   "id": "2026-01-20-v5-14",
+   "date": "2026-01-20",
+   "entry_time": "12:30",
+   "exit_time": "13:20",
+   "dir": "SHORT",
+   "grade": "B+",
+   "contracts": 3,
+   "entry": 25227.0,
+   "exit": 25161.5,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 393.0,
+   "commission": 3.12,
+   "pnl": 389.88,
+   "mfe": 393.0,
+   "mae": -64.5
+  },
+  {
+   "id": "2026-01-21-v5-15",
+   "date": "2026-01-21",
+   "entry_time": "08:45",
+   "exit_time": "08:55",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25236.0,
+   "exit": 25335.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 396.0,
+   "commission": 2.08,
+   "pnl": 393.92,
+   "mfe": 396.0,
+   "mae": -30.0
+  },
+  {
+   "id": "2026-01-26-v5-16",
+   "date": "2026-01-26",
+   "entry_time": "08:55",
+   "exit_time": "10:30",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25838.0,
+   "exit": 25920.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 328.0,
+   "commission": 2.08,
+   "pnl": 325.92,
+   "mfe": 328.0,
+   "mae": -140.0
+  },
+  {
+   "id": "2026-01-27-v5-17",
+   "date": "2026-01-27",
+   "entry_time": "08:50",
+   "exit_time": "15:25",
+   "dir": "LONG",
+   "grade": "A+",
+   "contracts": 2,
+   "entry": 26037.5,
+   "exit": 26095.25,
+   "exit_reason": "EOD Close",
+   "exit_type": "EOD",
+   "gross": 231.0,
+   "commission": 2.08,
+   "pnl": 228.92,
+   "mfe": 308.0,
+   "mae": -62.0
+  },
+  {
+   "id": "2026-02-04-v5-18",
+   "date": "2026-02-04",
+   "entry_time": "08:55",
+   "exit_time": "10:05",
+   "dir": "SHORT",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 25199.5,
+   "exit": 25065.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 538.0,
+   "commission": 2.08,
+   "pnl": 535.92,
+   "mfe": 538.0,
+   "mae": -425.0
+  },
+  {
+   "id": "2026-02-06-v5-19",
+   "date": "2026-02-06",
+   "entry_time": "08:45",
+   "exit_time": "09:00",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 24931.5,
+   "exit": 24807.5,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -496.0,
+   "commission": 2.08,
+   "pnl": -498.08,
+   "mfe": 210.0,
+   "mae": -496.0
+  },
+  {
+   "id": "2026-02-11-v5-20",
+   "date": "2026-02-11",
+   "entry_time": "08:55",
+   "exit_time": "09:10",
+   "dir": "SHORT",
+   "grade": "B+",
+   "contracts": 2,
+   "entry": 25305.0,
+   "exit": 25162.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 572.0,
+   "commission": 2.08,
+   "pnl": 569.92,
+   "mfe": 572.0,
+   "mae": -151.0
+  },
+  {
+   "id": "2026-02-16-v5-21",
+   "date": "2026-02-16",
+   "entry_time": "09:25",
+   "exit_time": "11:45",
+   "dir": "SHORT",
+   "grade": "C",
+   "contracts": 1,
+   "entry": 24709.75,
+   "exit": 24759.0,
+   "exit_reason": "EOD Close (Early/Half-Day)",
+   "exit_type": "EOD_EARLY",
+   "gross": -98.5,
+   "commission": 1.04,
+   "pnl": -99.54,
+   "mfe": 78.5,
+   "mae": -111.0
+  },
+  {
+   "id": "2026-02-23-v5-22",
+   "date": "2026-02-23",
+   "entry_time": "09:00",
+   "exit_time": "10:00",
+   "dir": "SHORT",
+   "grade": "A+",
+   "contracts": 2,
+   "entry": 24866.5,
+   "exit": 24717.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 598.0,
+   "commission": 2.08,
+   "pnl": 595.92,
+   "mfe": 598.0,
+   "mae": -253.0
+  },
+  {
+   "id": "2026-03-03-v5-23",
+   "date": "2026-03-03",
+   "entry_time": "08:45",
+   "exit_time": "09:25",
+   "dir": "SHORT",
+   "grade": "A+",
+   "contracts": 2,
+   "entry": 24501.75,
+   "exit": 24384.5,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 469.0,
+   "commission": 2.08,
+   "pnl": 466.92,
+   "mfe": 469.0,
+   "mae": -261.0
+  },
+  {
+   "id": "2026-03-05-v5-24",
+   "date": "2026-03-05",
+   "entry_time": "08:50",
+   "exit_time": "09:20",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25142.75,
+   "exit": 25028.25,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -458.0,
+   "commission": 2.08,
+   "pnl": -460.08,
+   "mfe": 262.0,
+   "mae": -458.0
+  },
+  {
+   "id": "2026-03-11-v5-25",
+   "date": "2026-03-11",
+   "entry_time": "09:00",
+   "exit_time": "09:25",
+   "dir": "LONG",
+   "grade": "C+",
+   "contracts": 1,
+   "entry": 25122.5,
+   "exit": 25000.75,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -243.5,
+   "commission": 1.04,
+   "pnl": -244.54,
+   "mfe": 53.5,
+   "mae": -243.5
+  },
+  {
+   "id": "2026-03-12-v5-26",
+   "date": "2026-03-12",
+   "entry_time": "08:45",
+   "exit_time": "09:25",
+   "dir": "SHORT",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 24736.5,
+   "exit": 24626.75,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 439.0,
+   "commission": 2.08,
+   "pnl": 436.92,
+   "mfe": 439.0,
+   "mae": -122.0
+  },
+  {
+   "id": "2026-03-13-v5-27",
+   "date": "2026-03-13",
+   "entry_time": "09:40",
+   "exit_time": "09:55",
+   "dir": "SHORT",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 24595.25,
+   "exit": 24482.75,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 450.0,
+   "commission": 2.08,
+   "pnl": 447.92,
+   "mfe": 450.0,
+   "mae": -10.0
+  },
+  {
+   "id": "2026-03-20-v5-28",
+   "date": "2026-03-20",
+   "entry_time": "08:50",
+   "exit_time": "12:30",
+   "dir": "SHORT",
+   "grade": "A+",
+   "contracts": 2,
+   "entry": 24363.5,
+   "exit": 24215.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 594.0,
+   "commission": 2.08,
+   "pnl": 591.92,
+   "mfe": 594.0,
+   "mae": -31.0
+  },
+  {
+   "id": "2026-03-25-v5-29",
+   "date": "2026-03-25",
+   "entry_time": "08:45",
+   "exit_time": "15:25",
+   "dir": "SHORT",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 24418.25,
+   "exit": 24352.25,
+   "exit_reason": "EOD Close",
+   "exit_type": "EOD",
+   "gross": 264.0,
+   "commission": 2.08,
+   "pnl": 261.92,
+   "mfe": 524.0,
+   "mae": -404.0
+  },
+  {
+   "id": "2026-03-26-v5-30",
+   "date": "2026-03-26",
+   "entry_time": "10:30",
+   "exit_time": "12:40",
+   "dir": "SHORT",
+   "grade": "B+",
+   "contracts": 2,
+   "entry": 24063.25,
+   "exit": 23919.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 577.0,
+   "commission": 2.08,
+   "pnl": 574.92,
+   "mfe": 577.0,
+   "mae": -256.0
+  },
+  {
+   "id": "2026-03-27-v5-31",
+   "date": "2026-03-27",
+   "entry_time": "08:50",
+   "exit_time": "12:25",
+   "dir": "SHORT",
+   "grade": "A+",
+   "contracts": 2,
+   "entry": 23525.25,
+   "exit": 23400.25,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 500.0,
+   "commission": 2.08,
+   "pnl": 497.92,
+   "mfe": 500.0,
+   "mae": -343.0
+  },
+  {
+   "id": "2026-03-30-v5-32",
+   "date": "2026-03-30",
+   "entry_time": "11:00",
+   "exit_time": "12:15",
+   "dir": "SHORT",
+   "grade": "B+",
+   "contracts": 2,
+   "entry": 23327.0,
+   "exit": 23215.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 448.0,
+   "commission": 2.08,
+   "pnl": 445.92,
+   "mfe": 448.0,
+   "mae": -81.0
+  },
+  {
+   "id": "2026-04-06-v5-33",
+   "date": "2026-04-06",
+   "entry_time": "08:50",
+   "exit_time": "12:10",
+   "dir": "LONG",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 24380.75,
+   "exit": 24247.5,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -533.0,
+   "commission": 2.08,
+   "pnl": -535.08,
+   "mfe": 289.0,
+   "mae": -533.0
+  },
+  {
+   "id": "2026-04-09-v5-34",
+   "date": "2026-04-09",
+   "entry_time": "10:30",
+   "exit_time": "15:25",
+   "dir": "LONG",
+   "grade": "A",
+   "contracts": 1,
+   "entry": 25122.25,
+   "exit": 25240.0,
+   "exit_reason": "EOD Close",
+   "exit_type": "EOD",
+   "gross": 235.5,
+   "commission": 1.04,
+   "pnl": 234.46,
+   "mfe": 302.0,
+   "mae": -65.5
+  },
+  {
+   "id": "2026-04-10-v5-35",
+   "date": "2026-04-10",
+   "entry_time": "10:20",
+   "exit_time": "10:55",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 25388.5,
+   "exit": 25267.75,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -483.0,
+   "commission": 2.08,
+   "pnl": -485.08,
+   "mfe": 2.0,
+   "mae": -483.0
+  },
+  {
+   "id": "2026-04-13-v5-36",
+   "date": "2026-04-13",
+   "entry_time": "08:45",
+   "exit_time": "11:25",
+   "dir": "LONG",
+   "grade": "B+",
+   "contracts": 2,
+   "entry": 25271.0,
+   "exit": 25381.5,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 442.0,
+   "commission": 2.08,
+   "pnl": 439.92,
+   "mfe": 442.0,
+   "mae": -168.0
+  },
+  {
+   "id": "2026-04-14-v5-37",
+   "date": "2026-04-14",
+   "entry_time": "09:05",
+   "exit_time": "10:50",
+   "dir": "LONG",
+   "grade": "A+",
+   "contracts": 2,
+   "entry": 25758.5,
+   "exit": 25885.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 506.0,
+   "commission": 2.08,
+   "pnl": 503.92,
+   "mfe": 506.0,
+   "mae": -65.0
+  },
+  {
+   "id": "2026-04-15-v5-38",
+   "date": "2026-04-15",
+   "entry_time": "08:55",
+   "exit_time": "10:10",
+   "dir": "LONG",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 26069.0,
+   "exit": 26185.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 464.0,
+   "commission": 2.08,
+   "pnl": 461.92,
+   "mfe": 464.0,
+   "mae": -87.0
+  },
+  {
+   "id": "2026-04-16-v5-39",
+   "date": "2026-04-16",
+   "entry_time": "10:05",
+   "exit_time": "15:25",
+   "dir": "LONG",
+   "grade": "B+",
+   "contracts": 2,
+   "entry": 26464.5,
+   "exit": 26458.0,
+   "exit_reason": "EOD Close",
+   "exit_type": "EOD",
+   "gross": -26.0,
+   "commission": 2.08,
+   "pnl": -28.08,
+   "mfe": 393.0,
+   "mae": -438.0
+  },
+  {
+   "id": "2026-04-17-v5-40",
+   "date": "2026-04-17",
+   "entry_time": "08:55",
+   "exit_time": "09:40",
+   "dir": "LONG",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 26731.5,
+   "exit": 26837.5,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 424.0,
+   "commission": 2.08,
+   "pnl": 421.92,
+   "mfe": 424.0,
+   "mae": -130.0
+  },
+  {
+   "id": "2026-04-21-v5-41",
+   "date": "2026-04-21",
+   "entry_time": "08:55",
+   "exit_time": "09:55",
+   "dir": "LONG",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 26839.0,
+   "exit": 26736.75,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -409.0,
+   "commission": 2.08,
+   "pnl": -411.08,
+   "mfe": 184.0,
+   "mae": -409.0
+  },
+  {
+   "id": "2026-04-21-v5-42",
+   "date": "2026-04-21",
+   "entry_time": "10:00",
+   "exit_time": "14:40",
+   "dir": "SHORT",
+   "grade": "C",
+   "contracts": 1,
+   "entry": 26691.75,
+   "exit": 26584.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 215.5,
+   "commission": 1.04,
+   "pnl": 214.46,
+   "mfe": 215.5,
+   "mae": -193.0
+  },
+  {
+   "id": "2026-04-22-v5-43",
+   "date": "2026-04-22",
+   "entry_time": "09:10",
+   "exit_time": "12:10",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 26922.5,
+   "exit": 27035.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 450.0,
+   "commission": 2.08,
+   "pnl": 447.92,
+   "mfe": 450.0,
+   "mae": -3.0
+  },
+  {
+   "id": "2026-04-23-v5-44",
+   "date": "2026-04-23",
+   "entry_time": "08:45",
+   "exit_time": "09:00",
+   "dir": "LONG",
+   "grade": "A+",
+   "contracts": 2,
+   "entry": 27080.0,
+   "exit": 26981.25,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -395.0,
+   "commission": 2.08,
+   "pnl": -397.08,
+   "mfe": 8.0,
+   "mae": -395.0
+  },
+  {
+   "id": "2026-04-23-v5-45",
+   "date": "2026-04-23",
+   "entry_time": "09:50",
+   "exit_time": "12:05",
+   "dir": "LONG",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 27074.5,
+   "exit": 26975.75,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -395.0,
+   "commission": 2.08,
+   "pnl": -397.08,
+   "mfe": 326.0,
+   "mae": -395.0
+  },
+  {
+   "id": "2026-04-23-v5-46",
+   "date": "2026-04-23",
+   "entry_time": "12:05",
+   "exit_time": "12:20",
+   "dir": "SHORT",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 26954.5,
+   "exit": 26865.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 358.0,
+   "commission": 2.08,
+   "pnl": 355.92,
+   "mfe": 358.0,
+   "mae": -52.0
+  },
+  {
+   "id": "2026-04-24-v5-47",
+   "date": "2026-04-24",
+   "entry_time": "08:50",
+   "exit_time": "09:45",
+   "dir": "SHORT",
+   "grade": "C",
+   "contracts": 1,
+   "entry": 27173.0,
+   "exit": 27277.0,
+   "exit_reason": "S-TP1",
+   "exit_type": "STOP",
+   "gross": -208.0,
+   "commission": 1.04,
+   "pnl": -209.04,
+   "mfe": 86.0,
+   "mae": -208.0
+  },
+  {
+   "id": "2026-04-24-v5-48",
+   "date": "2026-04-24",
+   "entry_time": "09:45",
+   "exit_time": "10:40",
+   "dir": "LONG",
+   "grade": "B+",
+   "contracts": 2,
+   "entry": 27261.25,
+   "exit": 27385.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 495.0,
+   "commission": 2.08,
+   "pnl": 492.92,
+   "mfe": 495.0,
+   "mae": -58.0
+  },
+  {
+   "id": "2026-04-27-v5-49",
+   "date": "2026-04-27",
+   "entry_time": "12:30",
+   "exit_time": "15:25",
+   "dir": "LONG",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 27437.75,
+   "exit": 27424.75,
+   "exit_reason": "EOD Close",
+   "exit_type": "EOD",
+   "gross": -52.0,
+   "commission": 2.08,
+   "pnl": -54.08,
+   "mfe": 58.0,
+   "mae": -192.0
+  },
+  {
+   "id": "2026-04-30-v5-50",
+   "date": "2026-04-30",
+   "entry_time": "12:35",
+   "exit_time": "13:00",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 27498.25,
+   "exit": 27585.0,
+   "exit_reason": "L-TP1",
+   "exit_type": "TP1",
+   "gross": 347.0,
+   "commission": 2.08,
+   "pnl": 344.92,
+   "mfe": 347.0,
+   "mae": -33.0
+  },
   {
    "id": "2026-05-04-1054",
    "date": "2026-05-04",
@@ -23,8 +1074,10 @@
    "exit": 27802.75,
    "exit_reason": "L-TP1",
    "gross": -375,
-   "commission": 1.04,
-   "pnl": -376.04
+   "commission": 2.08,
+   "pnl": -377.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-05-1055",
@@ -38,8 +1091,10 @@
    "exit": 28189.75,
    "exit_reason": "L-TP1",
    "gross": 328,
-   "commission": 1.04,
-   "pnl": 326.96
+   "commission": 2.08,
+   "pnl": 325.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-06-1056",
@@ -53,8 +1108,10 @@
    "exit": 28402,
    "exit_reason": "L-TP1",
    "gross": -373,
-   "commission": 1.04,
-   "pnl": -374.04
+   "commission": 2.08,
+   "pnl": -375.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-06-1057",
@@ -68,8 +1125,10 @@
    "exit": 28585,
    "exit_reason": "L-TP1",
    "gross": 399,
-   "commission": 1.04,
-   "pnl": 397.96
+   "commission": 2.08,
+   "pnl": 396.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-07-1058",
@@ -83,8 +1142,10 @@
    "exit": 28885,
    "exit_reason": "L-TP1",
    "gross": 392,
-   "commission": 1.04,
-   "pnl": 390.96
+   "commission": 2.08,
+   "pnl": 389.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-11-1059",
@@ -98,8 +1159,10 @@
    "exit": 29332.75,
    "exit_reason": "L-TP1",
    "gross": -430,
-   "commission": 1.04,
-   "pnl": -431.04
+   "commission": 2.08,
+   "pnl": -432.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-13-1060",
@@ -113,8 +1176,10 @@
    "exit": 29245.25,
    "exit_reason": "S-TP1",
    "gross": -438,
-   "commission": 1.04,
-   "pnl": -439.04
+   "commission": 2.08,
+   "pnl": -440.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-13-1061",
@@ -128,8 +1193,10 @@
    "exit": 29414,
    "exit_reason": "L-TP1",
    "gross": 415,
-   "commission": 1.04,
-   "pnl": 413.96
+   "commission": 2.08,
+   "pnl": 412.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-14-1062",
@@ -143,8 +1210,10 @@
    "exit": 29555.75,
    "exit_reason": "L-TP1",
    "gross": -441,
-   "commission": 1.04,
-   "pnl": -442.04
+   "commission": 2.08,
+   "pnl": -443.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-14-1063",
@@ -158,8 +1227,10 @@
    "exit": 29735.75,
    "exit_reason": "L-TP1",
    "gross": 401,
-   "commission": 1.04,
-   "pnl": 399.96
+   "commission": 2.08,
+   "pnl": 398.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-14-1064",
@@ -173,8 +1244,10 @@
    "exit": 29713.25,
    "exit_reason": "L-TP1",
    "gross": 390,
-   "commission": 1.56,
-   "pnl": 388.44
+   "commission": 3.12,
+   "pnl": 386.88,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-19-1065",
@@ -188,8 +1261,10 @@
    "exit": 28954,
    "exit_reason": "L-TP1",
    "gross": -461,
-   "commission": 1.04,
-   "pnl": -462.04
+   "commission": 2.08,
+   "pnl": -463.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-20-1066",
@@ -203,8 +1278,10 @@
    "exit": 29280.75,
    "exit_reason": "L-TP1",
    "gross": 453,
-   "commission": 1.04,
-   "pnl": 451.96
+   "commission": 2.08,
+   "pnl": 450.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-21-1067",
@@ -218,8 +1295,10 @@
    "exit": 29174,
    "exit_reason": "L-TP1",
    "gross": -483,
-   "commission": 1.04,
-   "pnl": -484.04
+   "commission": 2.08,
+   "pnl": -485.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-21-1068",
@@ -233,8 +1312,10 @@
    "exit": 29405.75,
    "exit_reason": "L-TP1",
    "gross": 443,
-   "commission": 1.04,
-   "pnl": 441.96
+   "commission": 2.08,
+   "pnl": 440.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-22-1069",
@@ -248,8 +1329,10 @@
    "exit": 29629.75,
    "exit_reason": "L-TP1",
    "gross": -427,
-   "commission": 1.04,
-   "pnl": -428.04
+   "commission": 2.08,
+   "pnl": -429.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-26-1070",
@@ -263,8 +1346,10 @@
    "exit": 30085,
    "exit_reason": "L-TP1",
    "gross": 446,
-   "commission": 1.04,
-   "pnl": 444.96
+   "commission": 2.08,
+   "pnl": 443.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-26-1071",
@@ -278,8 +1363,10 @@
    "exit": 30035,
    "exit_reason": "L-TP1",
    "gross": 436.5,
-   "commission": 1.56,
-   "pnl": 434.94
+   "commission": 3.12,
+   "pnl": 433.38,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-28-1072",
@@ -293,8 +1380,10 @@
    "exit": 30051,
    "exit_reason": "S-TP1",
    "gross": -238.5,
-   "commission": 0.52,
-   "pnl": -239.02
+   "commission": 1.04,
+   "pnl": -239.54,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-05-28-1073",
@@ -308,8 +1397,10 @@
    "exit": 30285,
    "exit_reason": "L-TP1",
    "gross": 495,
-   "commission": 1.04,
-   "pnl": 493.96
+   "commission": 2.08,
+   "pnl": 492.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-05-29-1074",
@@ -323,8 +1414,10 @@
    "exit": 30364.25,
    "exit_reason": "L-TP1",
    "gross": -489,
-   "commission": 1.04,
-   "pnl": -490.04
+   "commission": 2.08,
+   "pnl": -491.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-06-01-1075",
@@ -338,8 +1431,10 @@
    "exit": 30566.5,
    "exit_reason": "L-TP1",
    "gross": 415,
-   "commission": 1.04,
-   "pnl": 413.96
+   "commission": 2.08,
+   "pnl": 412.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-06-02-1076",
@@ -353,8 +1448,10 @@
    "exit": 30735,
    "exit_reason": "L-TP1",
    "gross": 524,
-   "commission": 1.04,
-   "pnl": 522.96
+   "commission": 2.08,
+   "pnl": 521.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-06-04-1077",
@@ -368,8 +1465,10 @@
    "exit": 30469.75,
    "exit_reason": "L-TP1",
    "gross": 400,
-   "commission": 1.04,
-   "pnl": 398.96
+   "commission": 2.08,
+   "pnl": 397.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-06-10-1078",
@@ -383,8 +1482,10 @@
    "exit": 28595.5,
    "exit_reason": "S-TP1",
    "gross": 306.5,
-   "commission": 0.52,
-   "pnl": 305.98
+   "commission": 1.04,
+   "pnl": 305.46,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-06-11-1079",
@@ -398,8 +1499,10 @@
    "exit": 28804.75,
    "exit_reason": "S-TP1",
    "gross": -311,
-   "commission": 0.52,
-   "pnl": -311.52
+   "commission": 1.04,
+   "pnl": -312.04,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-06-12-1080",
@@ -413,8 +1516,10 @@
    "exit": 29685,
    "exit_reason": "L-TP1",
    "gross": 345.5,
-   "commission": 0.52,
-   "pnl": 344.98
+   "commission": 1.04,
+   "pnl": 344.46,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-06-12-1081",
@@ -428,8 +1533,10 @@
    "exit": 29685,
    "exit_reason": "L-TP1",
    "gross": 326,
-   "commission": 0.52,
-   "pnl": 325.48
+   "commission": 1.04,
+   "pnl": 324.96,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-06-15-1082",
@@ -443,8 +1550,10 @@
    "exit": 30849,
    "exit_reason": "EOD Close",
    "gross": 137,
-   "commission": 0.52,
-   "pnl": 136.48
+   "commission": 1.04,
+   "pnl": 135.96,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-06-16-1083",
@@ -458,8 +1567,10 @@
    "exit": 30749.75,
    "exit_reason": "L-TP1",
    "gross": -447,
-   "commission": 1.04,
-   "pnl": -448.04
+   "commission": 2.08,
+   "pnl": -449.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-06-17-1084",
@@ -473,8 +1584,10 @@
    "exit": 30365.75,
    "exit_reason": "L-TP1",
    "gross": -350,
-   "commission": 0.52,
-   "pnl": -350.52
+   "commission": 1.04,
+   "pnl": -351.04,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-06-18-1085",
@@ -488,8 +1601,10 @@
    "exit": 30730.25,
    "exit_reason": "EOD Close",
    "gross": 213,
-   "commission": 0.52,
-   "pnl": 212.48
+   "commission": 1.04,
+   "pnl": 211.96,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-06-22-1086",
@@ -503,8 +1618,10 @@
    "exit": 30762.5,
    "exit_reason": "L-TP1",
    "gross": -350,
-   "commission": 0.52,
-   "pnl": -350.52
+   "commission": 1.04,
+   "pnl": -351.04,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-06-29-1087",
@@ -518,8 +1635,10 @@
    "exit": 29377.75,
    "exit_reason": "S-TP1",
    "gross": 330,
-   "commission": 0.52,
-   "pnl": 329.48
+   "commission": 1.04,
+   "pnl": 328.96,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-06-30-1088",
@@ -533,8 +1652,10 @@
    "exit": 30458.5,
    "exit_reason": "L-TP1",
    "gross": 330,
-   "commission": 0.52,
-   "pnl": 329.48
+   "commission": 1.04,
+   "pnl": 328.96,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-07-02-1089",
@@ -548,8 +1669,10 @@
    "exit": 30059,
    "exit_reason": "L-TP1",
    "gross": -350,
-   "commission": 0.52,
-   "pnl": -350.52
+   "commission": 1.04,
+   "pnl": -351.04,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-07-07-1090",
@@ -563,8 +1686,10 @@
    "exit": 29289,
    "exit_reason": "S-TP1",
    "gross": 332.5,
-   "commission": 0.52,
-   "pnl": 331.98
+   "commission": 1.04,
+   "pnl": 331.46,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-07-08-1091",
@@ -578,8 +1703,10 @@
    "exit": 29348.75,
    "exit_reason": "S-TP1",
    "gross": -350,
-   "commission": 0.52,
-   "pnl": -350.52
+   "commission": 1.04,
+   "pnl": -351.04,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-07-10-1092",
@@ -593,8 +1720,10 @@
    "exit": 29770,
    "exit_reason": "L-TP1",
    "gross": -343,
-   "commission": 0.52,
-   "pnl": -343.52
+   "commission": 1.04,
+   "pnl": -344.04,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-07-10-1093",
@@ -608,8 +1737,10 @@
    "exit": 30055,
    "exit_reason": "EOD Close",
    "gross": 212,
-   "commission": 0.52,
-   "pnl": 211.48
+   "commission": 1.04,
+   "pnl": 210.96,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-07-13-1094",
@@ -623,8 +1754,10 @@
    "exit": 29710.25,
    "exit_reason": "S-TP1",
    "gross": -339.5,
-   "commission": 0.52,
-   "pnl": -340.02
+   "commission": 1.04,
+   "pnl": -340.54,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-07-13-1095",
@@ -638,8 +1771,10 @@
    "exit": 29437,
    "exit_reason": "EOD Close",
    "gross": 150,
-   "commission": 0.52,
-   "pnl": 149.48
+   "commission": 1.04,
+   "pnl": 148.96,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-07-16-1096",
@@ -653,8 +1788,10 @@
    "exit": 29431,
    "exit_reason": "S-TP1",
    "gross": -316.5,
-   "commission": 0.52,
-   "pnl": -317.02
+   "commission": 1.04,
+   "pnl": -317.54,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-07-16-1097",
@@ -668,8 +1805,10 @@
    "exit": 29115,
    "exit_reason": "S-TP1",
    "gross": 356.5,
-   "commission": 0.52,
-   "pnl": 355.98
+   "commission": 1.04,
+   "pnl": 355.46,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-07-23-1098",
@@ -683,8 +1822,10 @@
    "exit": 28507.25,
    "exit_reason": "S-TP1",
    "gross": 275,
-   "commission": 0.52,
-   "pnl": 274.48
+   "commission": 1.04,
+   "pnl": 273.96,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-07-23-1099",
@@ -698,8 +1839,10 @@
    "exit": 28515,
    "exit_reason": "S-TP1",
    "gross": 488,
-   "commission": 1.04,
-   "pnl": 486.96
+   "commission": 2.08,
+   "pnl": 485.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-07-24-1100",
@@ -713,8 +1856,10 @@
    "exit": 28292.25,
    "exit_reason": "S-TP1",
    "gross": 287,
-   "commission": 0.52,
-   "pnl": 286.48
+   "commission": 1.04,
+   "pnl": 285.96,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-07-28-1101",
@@ -728,8 +1873,10 @@
    "exit": 27842.25,
    "exit_reason": "S-TP1",
    "gross": -291,
-   "commission": 0.52,
-   "pnl": -291.52
+   "commission": 1.04,
+   "pnl": -292.04,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-08-04-1102",
@@ -743,8 +1890,10 @@
    "exit": 29635,
    "exit_reason": "L-TP1",
    "gross": 351,
-   "commission": 0.52,
-   "pnl": 350.48
+   "commission": 1.04,
+   "pnl": 349.96,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-08-07-1103",
@@ -758,8 +1907,10 @@
    "exit": 29804.5,
    "exit_reason": "EOD Close",
    "gross": -44.5,
-   "commission": 0.52,
-   "pnl": -45.02
+   "commission": 1.04,
+   "pnl": -45.54,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-08-10-1104",
@@ -773,8 +1924,10 @@
    "exit": 29751.25,
    "exit_reason": "EOD Close",
    "gross": -246.5,
-   "commission": 0.52,
-   "pnl": -247.02
+   "commission": 1.04,
+   "pnl": -247.54,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-08-11-1105",
@@ -788,8 +1941,10 @@
    "exit": 29674.5,
    "exit_reason": "EOD Close",
    "gross": -27.5,
-   "commission": 0.52,
-   "pnl": -28.02
+   "commission": 1.04,
+   "pnl": -28.54,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-08-12-1106",
@@ -803,8 +1958,10 @@
    "exit": 29819.5,
    "exit_reason": "EOD Close",
    "gross": 59.5,
-   "commission": 0.52,
-   "pnl": 58.98
+   "commission": 1.04,
+   "pnl": 58.46,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-08-17-1107",
@@ -818,8 +1975,10 @@
    "exit": 30155.5,
    "exit_reason": "L-TP1",
    "gross": -456,
-   "commission": 1.04,
-   "pnl": -457.04
+   "commission": 2.08,
+   "pnl": -458.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-08-24-1108",
@@ -833,8 +1992,10 @@
    "exit": 29080.5,
    "exit_reason": "S-TP1",
    "gross": -419,
-   "commission": 1.04,
-   "pnl": -420.04
+   "commission": 2.08,
+   "pnl": -421.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-08-27-1109",
@@ -848,8 +2009,10 @@
    "exit": 29685,
    "exit_reason": "L-TP1",
    "gross": 369,
-   "commission": 1.04,
-   "pnl": 367.96
+   "commission": 2.08,
+   "pnl": 366.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-08-28-1110",
@@ -863,8 +2026,10 @@
    "exit": 29643.25,
    "exit_reason": "L-TP1",
    "gross": -364,
-   "commission": 1.04,
-   "pnl": -365.04
+   "commission": 2.08,
+   "pnl": -366.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-09-02-1111",
@@ -878,8 +2043,10 @@
    "exit": 29124,
    "exit_reason": "S-TP1",
    "gross": -378,
-   "commission": 1.04,
-   "pnl": -379.04
+   "commission": 2.08,
+   "pnl": -380.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-09-04-1112",
@@ -893,8 +2060,10 @@
    "exit": 29564.5,
    "exit_reason": "L-TP1",
    "gross": -190.5,
-   "commission": 0.52,
-   "pnl": -191.02
+   "commission": 1.04,
+   "pnl": -191.54,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-09-17-1113",
@@ -908,8 +2077,10 @@
    "exit": 29715.25,
    "exit_reason": "EOD Close",
    "gross": -51,
-   "commission": 0.52,
-   "pnl": -51.52
+   "commission": 1.04,
+   "pnl": -52.04,
+   "exit_type": "EOD",
+   "mfe": null
   },
   {
    "id": "2026-09-21-1114",
@@ -923,8 +2094,10 @@
    "exit": 30485,
    "exit_reason": "L-TP1",
    "gross": 505,
-   "commission": 1.04,
-   "pnl": 503.96
+   "commission": 2.08,
+   "pnl": 502.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-09-22-1115",
@@ -938,8 +2111,10 @@
    "exit": 31037.75,
    "exit_reason": "L-TP1",
    "gross": 385,
-   "commission": 1.04,
-   "pnl": 383.96
+   "commission": 2.08,
+   "pnl": 382.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-09-23-1116",
@@ -953,8 +2128,10 @@
    "exit": 30765,
    "exit_reason": "S-TP1",
    "gross": 458,
-   "commission": 1.04,
-   "pnl": 456.96
+   "commission": 2.08,
+   "pnl": 455.92,
+   "exit_type": "TP1",
+   "mfe": null
   },
   {
    "id": "2026-09-24-1117",
@@ -968,8 +2145,10 @@
    "exit": 30524.5,
    "exit_reason": "L-TP1",
    "gross": -424,
-   "commission": 1.04,
-   "pnl": -425.04
+   "commission": 2.08,
+   "pnl": -426.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-09-25-1118",
@@ -983,8 +2162,10 @@
    "exit": 30805.5,
    "exit_reason": "L-TP1",
    "gross": -421,
-   "commission": 1.04,
-   "pnl": -422.04
+   "commission": 2.08,
+   "pnl": -423.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-09-25-1119",
@@ -998,8 +2179,10 @@
    "exit": 30846.5,
    "exit_reason": "S-TP1",
    "gross": -421,
-   "commission": 1.04,
-   "pnl": -422.04
+   "commission": 2.08,
+   "pnl": -423.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-09-25-1120",
@@ -1013,8 +2196,10 @@
    "exit": 30857.25,
    "exit_reason": "S-TP1",
    "gross": -210.5,
-   "commission": 0.52,
-   "pnl": -211.02
+   "commission": 1.04,
+   "pnl": -211.54,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-09-30-20",
@@ -1029,7 +2214,9 @@
    "exit_reason": "L-TP1",
    "gross": -443,
    "commission": 2.08,
-   "pnl": -445.08
+   "pnl": -445.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-10-02-21",
@@ -1044,7 +2231,9 @@
    "exit_reason": "L-TP1",
    "gross": -449,
    "commission": 2.08,
-   "pnl": -451.08
+   "pnl": -451.08,
+   "exit_type": "STOP",
+   "mfe": null
   },
   {
    "id": "2026-10-05-22",
@@ -1059,7 +2248,9 @@
    "exit_reason": "L-TP1",
    "gross": 416,
    "commission": 2.08,
-   "pnl": 413.92
+   "pnl": 413.92,
+   "exit_type": "TP1",
+   "mfe": null
   }
  ]
 }
