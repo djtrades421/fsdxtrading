@@ -149,7 +149,7 @@
     points: [
       "Lifetime Access is a <strong>one-time payment of $399</strong>. There is <strong>no free trial</strong> and the payment is <strong>non-refundable</strong>.",
       "It covers <strong>everything in the FSD-X Pro membership as it exists today</strong> — the indicator suite on TradingView, the Auto-Trader, Nexus 2.0, the member platform, SCOUT alerts, the VIP Discord and live room, and the monthly one-on-one call — for as long as FSD-X offers it.",
-      "It also includes the <strong>NinjaTrader version of Knightfall when it launches</strong>. It is pending NinjaTrader's approval and <strong>no release date is promised</strong>.",
+      "It also includes the <strong>NinjaTrader version of Knightfall when it launches</strong>. It has been approved by NinjaTrader and is in final prep; <strong>no release date is promised</strong>.",
       "It <strong>does not include</strong> new products or tools released after your purchase.",
       "TradingView access is granted to the <strong>one TradingView username</strong> you enter at checkout. Access is limited to <strong>one person</strong>; sharing, reselling, or redistributing it ends access without refund.",
       "All FSD-X software is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service. Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No result is guaranteed.",
