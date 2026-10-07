@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X Releases</title>
+  <meta name="description" content="What FSD-X has shipped, what's been updated, and what's in the works: ORB Pro Knightfall, the indicators, the member platform, Nexus and NinjaTrader." />
+  <link rel="stylesheet" href="tailwind.css">
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20260924a"></script>
+  <script src="analytics.js"></script>
+  <style>
+    body { background-color: #000; }
+    .rl-wrap { max-width: 1100px; margin: 0 auto; }
+    .rl-eyebrow { color: #4ade80; text-transform: uppercase; letter-spacing: .3em; font-size: 10px; font-weight: 700; }
+    .rl-chip { display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:800; letter-spacing:.06em;
+               text-transform:uppercase; padding:3px 8px; border-radius:6px; white-space:nowrap; border:1px solid transparent; }
+    .st-review  { background:rgba(234,179,8,.10);  color:#facc15; border-color:rgba(234,179,8,.25); }
+    .st-testing { background:rgba(59,130,246,.10); color:#93c5fd; border-color:rgba(59,130,246,.25); }
+    .st-planned { background:rgba(255,255,255,.04); color:#a1a1aa; border-color:rgba(255,255,255,.10); }
+    .st-waiting { background:rgba(168,85,247,.10); color:#d8b4fe; border-color:rgba(168,85,247,.25); }
+    .st-dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
+    .st-testing .st-dot, .st-review .st-dot { animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes pulse { 50% { opacity:.3 } }
+    @media (prefers-reduced-motion: reduce) { .st-dot { animation:none !important } }
+    .ty-new     { background:rgba(34,197,94,.10);  color:#4ade80; }
+    .ty-update  { background:rgba(255,255,255,.05); color:#d4d4d8; }
+    .ty-fix     { background:rgba(239,68,68,.08);  color:#fca5a5; }
+    .ty-site    { background:rgba(249,115,22,.10); color:#fdba74; }
+
+    .wip-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; }
+    .wip { background:#09090b; border:1px solid rgba(255,255,255,.10); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:10px; min-width:0; }
+    .wip h3 { font-size:15px; font-weight:900; color:#fff; line-height:1.25; }
+    .wip p  { font-size:12.5px; color:#a1a1aa; line-height:1.55; }
+    .wip .prod { font-size:10px; color:#71717a; text-transform:uppercase; letter-spacing:.14em; font-weight:700; }
+    .wip .when { margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,.06); font-size:11px; color:#71717a; }
+
+    .flt { display:flex; flex-wrap:wrap; gap:6px; }
+    .flt button { font-size:11px; font-weight:700; padding:5px 10px; border-radius:8px; border:1px solid rgba(255,255,255,.10);
+                  background:#18181b; color:#a1a1aa; cursor:pointer; }
+    .flt button[aria-pressed="true"] { background:rgba(34,197,94,.10); border-color:rgba(34,197,94,.4); color:#4ade80; }
+    .flt button:focus-visible, .wip:focus-visible { outline:2px solid #4ade80; outline-offset:2px; }
+
+    .tl-month { font-size:11px; font-weight:900; letter-spacing:.2em; text-transform:uppercase; color:#52525b; padding:22px 0 10px; }
+    .tl { position:relative; padding-left:26px; }
+    .tl::before { content:""; position:absolute; left:7px; top:6px; bottom:6px; width:1px; background:rgba(255,255,255,.10); }
+    .tl-item { position:relative; padding:0 0 18px; }
+    .tl-item::before { content:""; position:absolute; left:-23px; top:5px; width:9px; height:9px; border-radius:50%;
+                       background:#09090b; border:2px solid #3f3f46; }
+    .tl-item.is-new::before { border-color:#22c55e; background:#22c55e; box-shadow:0 0 0 4px rgba(34,197,94,.12); }
+    .tl-head { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:4px; }
+    .tl-date { font-size:11px; color:#71717a; font-variant-numeric:tabular-nums; min-width:52px; }
+    .tl-title { font-size:14px; font-weight:800; color:#f4f4f5; }
+    .tl-prod { font-size:10px; color:#71717a; text-transform:uppercase; letter-spacing:.12em; font-weight:700; }
+    .tl-body { font-size:12.5px; color:#a1a1aa; line-height:1.55; max-width:68ch; }
+    .tl-body a { color:#4ade80; text-decoration:underline; text-underline-offset:2px; }
+    .empty { font-size:12px; color:#52525b; padding:20px 0; }
+  </style>
+</head>
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div class="border-b border-white/10 bg-zinc-950/60 px-6 md:px-10 pt-10 pb-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="rl-eyebrow mb-2">// Releases</div>
+        <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">What's shipped. What's next.</h1>
+        <p class="text-zinc-400 text-sm max-w-3xl">
+          Every release and update across FSD-X, newest first, plus what's being built right now.
+          When a product gets an update, it shows up here with the date and what changed.
+        </p>
+      </div>
+    </div>
+
+    <div class="flex-1 px-6 md:px-10 py-8">
+      <div class="max-w-7xl mx-auto space-y-10">
+
+        <!-- In the works -->
+        <section aria-labelledby="wip-h">
+          <div class="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+            <h2 id="wip-h" class="text-sm font-black uppercase tracking-wider text-white">In the works</h2>
+            <span class="text-[11px] text-zinc-600">Status, not a date. Plans can change.</span>
+          </div>
+          <p class="text-[11px] text-zinc-600 mb-4">These aren't released. Nothing here is promised by a date &mdash; when one ships, it moves down into the timeline.</p>
+          <div id="wip" class="wip-grid"></div>
+        </section>
+
+        <!-- Timeline -->
+        <section aria-labelledby="tl-h">
+          <div class="flex items-center justify-between flex-wrap gap-3 mb-2">
+            <h2 id="tl-h" class="text-sm font-black uppercase tracking-wider text-white">Release history</h2>
+            <div id="flt" class="flt" role="group" aria-label="Filter by product"></div>
+          </div>
+          <div id="tl"></div>
+        </section>
+
+        <div class="text-center text-[10px] text-zinc-700 pb-4">
+          Release notes describe what changed in the software. They aren't a statement about trading results.
+          See <a href="disclosures.html" class="underline">Disclosures</a>.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ── Release data ──
+        let RELEASES = [], shipped = [], products = [], cur = 'All', NEWEST = '';
+
+    const STATUS = {
+      review:  { label:'In review',     cls:'st-review'  },
+      approved:{ label:'Approved · final prep', cls:'st-review' },
+      testing: { label:'In testing',    cls:'st-testing' },
+      waiting: { label:'Waiting on partner', cls:'st-waiting' },
+      planned: { label:'Planned',       cls:'st-planned' },
+    };
+    const TYPE = { new:'New', update:'Update', fix:'Fix', site:'Site' };
+    const _e = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const MONL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const fmtDay = d => d.length > 7 ? MON[+d.slice(5,7)-1] + ' ' + (+d.slice(8,10)) : MON[+d.slice(5,7)-1];
+
+    function paintAll() {
+    // In the works
+    document.getElementById('wip').innerHTML = RELEASES.filter(r => r.status !== 'shipped').map(r => {
+      const s = STATUS[r.status] || STATUS.planned;
+      return `<article class="wip">
+        <div class="flex items-center justify-between gap-2" style="flex-wrap:wrap"><span class="prod" style="white-space:nowrap">${_e(r.product)}</span>
+          <span class="rl-chip ${s.cls}"><span class="st-dot"></span>${s.label}</span></div>
+        <h3>${_e(r.title)}</h3>
+        <p>${_e(r.body)}</p>
+        <div class="when">No release date yet</div>
+      </article>`;
+    }).join('');
+
+    // Timeline + product filter
+    shipped = RELEASES.filter(r => r.status === 'shipped').sort((a, b) => b.date.localeCompare(a.date));
+    products = ['All', ...new Set(shipped.map(r => r.product))];
+    cur = 'All';
+    NEWEST = shipped.length ? shipped[0].date : '';
+
+    function paintFilter() {
+      document.getElementById('flt').innerHTML = products.map(p =>
+        `<button type="button" aria-pressed="${p === cur}" data-p="${_e(p)}">${_e(p)}</button>`).join('');
+      document.querySelectorAll('#flt button').forEach(b => b.onclick = () => { cur = b.dataset.p; paintFilter(); paintTl(); });
+    }
+    function paintTl() {
+      const list = shipped.filter(r => cur === 'All' || r.product === cur);
+      let html = '', month = '';
+      list.forEach(r => {
+        const m = r.date.slice(0, 7);
+        if (m !== month) {
+          if (month) html += '</div>';
+          month = m;
+          html += `<div class="tl-month">${MONL[+m.slice(5,7)-1]} ${m.slice(0,4)}</div><div class="tl">`;
+        }
+        html += `<div class="tl-item ${r.date === NEWEST ? 'is-new' : ''}">
+          <div class="tl-head">
+            <span class="tl-date">${fmtDay(r.date)}</span>
+            <span class="rl-chip ty-${r.type}">${TYPE[r.type] || _e(r.type)}</span>
+            <span class="tl-prod">${_e(r.product)}</span>
+          </div>
+          <div class="tl-title" style="padding-left:60px">${_e(r.title)}</div>
+          <div class="tl-body" style="padding-left:60px">${r.body}</div>
+        </div>`;
+      });
+      if (month) html += '</div>';
+      document.getElementById('tl').innerHTML = html || '<div class="empty">Nothing released for this product yet.</div>';
+    }
+    paintFilter(); paintTl();
+    }
+    fetch('releases.json?v=' + Date.now()).then(r => r.ok ? r.json() : Promise.reject())
+      .then(d => { RELEASES = d.releases || []; paintAll(); })
+      .catch(() => { document.getElementById('tl').innerHTML = '<div class="empty">Release list didn\'t load. Refresh to try again.</div>'; });
+
+    function toggleMobileMenu() { document.getElementById('sidebar-panel').classList.toggle('-translate-x-full'); }
+  </script>
+</body>
+</html>

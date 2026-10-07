@@ -1,0 +1,109 @@
+{
+ "_how": "Add an item and push. status: shipped | approved | review | testing | waiting | planned. Shipped items need date (YYYY-MM-DD or YYYY-MM) and type (new | update | fix | site). Unreleased items never get a date.",
+ "releases": [
+  {
+   "status": "approved",
+   "product": "NinjaTrader 8",
+   "title": "ORB Pro Knightfall MK2 for NinjaTrader 8",
+   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader; final prep for release. Auto Trade on or alert-only, no webhooks or bridge service."
+  },
+  {
+   "status": "testing",
+   "product": "NinjaTrader 8",
+   "title": "Trailing stop and auto breakeven (NT8 v1.1)",
+   "body": "Off, Breakeven Only, Trail Only, or Breakeven then Trail, matching the TradingView options."
+  },
+  {
+   "status": "waiting",
+   "product": "TradingView",
+   "title": "TradingView Marketplace move",
+   "body": "TradingView is moving paid invite-only scripts to its Marketplace. How FSD-X scripts are delivered on TradingView may change. Waiting on TradingView."
+  },
+  {
+   "status": "planned",
+   "product": "Indicators",
+   "title": "Indicators on NinjaTrader 8",
+   "body": "One-to-one NinjaTrader versions of the TradingView indicators, after the strategy port."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-07",
+   "type": "new",
+   "product": "NinjaTrader 8",
+   "title": "FSD-X is an official NinjaTrader Ecosystem vendor",
+   "body": "NinjaTrader approved FSD-X as an Ecosystem vendor and the NinjaTrader 8 version passed review. Release comes after final prep. <a href=\"ninjatrader.html\">NinjaTrader 8</a>."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-07",
+   "type": "site",
+   "product": "Live Track Record",
+   "title": "Live track record: one continuous timeline",
+   "body": "The record now runs from Dec 16, 2025 under FSD-X ORB Pro, with version updates marked on the timeline. Each trade shows how it closed and the most it was up before closing. <a href=\"track-record.html\">View the record</a>."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-09-27",
+   "type": "new",
+   "product": "Platform",
+   "title": "Fleet accounts",
+   "body": "Track a whole fleet of eval and funded accounts in one place on the Accounts page."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-09",
+   "type": "new",
+   "product": "Raven",
+   "title": "Raven launched",
+   "body": "Same ORB detection, stop and target engine as Knightfall, with no grading or filtering. Every breakout is drawn both ways and the read is yours. <a href=\"raven.html\">About Raven</a>."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-09",
+   "type": "new",
+   "product": "Nightwing",
+   "title": "Nightwing tools subscription",
+   "body": "The member platform and Nexus 2.0 on their own, without the full membership. <a href=\"nightwing.html\">About Nightwing</a>."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-09",
+   "type": "new",
+   "product": "Indicators",
+   "title": "Free Indicators page",
+   "body": "A home for the free scripts, starting with the Arkham ORB Indicator. <a href=\"free-indicators.html\">Free Indicators</a>."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-09-13",
+   "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall MK2 backtest data refreshed",
+   "body": "Lookahead fixes and the day-start side lockout. Backtest research data republished from the new exports."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-09",
+   "type": "update",
+   "product": "Nexus",
+   "title": "Nexus 2.0.47",
+   "body": "Nexus now knows which plan you're on and only shows the features that come with it."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-05-01",
+   "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall MK2 goes live",
+   "body": "ORB Pro rebuilt as a strategy, replacing the v5 indicator. Grades, stops and targets are handled by the engine."
+  },
+  {
+   "status": "shipped",
+   "date": "2025-12",
+   "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "ORB Pro v5",
+   "body": "The indicator version of ORB Pro that ran into spring 2026."
+  }
+ ]
+}

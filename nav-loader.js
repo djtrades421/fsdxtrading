@@ -46,7 +46,7 @@ window.toggleMobileMenu = function () {
       'index', 'suite', 'autotrader', 'results', 'track-record', 'memberships',
       'nightwing', 'raven', 'compare', 'free-indicators', 'platform', 'partners', 'giveaways',
       'knowledge', 'faq', 'contact', 'schedule', 'disclosures', 'affiliates',
-      'setup', 'welcome', '404', 'tradingview-update'
+      'setup', 'welcome', '404', 'tradingview-update', 'releases'
     ];
 
     var rawPath = location.pathname || '/';
@@ -207,6 +207,26 @@ function toggleNavGroup(id) {
   var b = g.querySelector('.nav-ghead');
   if (b) b.setAttribute('aria-expanded', open ? 'true' : 'false');
   try { localStorage.setItem('fsdx_navgrp_' + id, open ? '1' : '0'); } catch (e) {}
+}
+
+function fsdxReleasesBadge() {
+  var pill = document.getElementById('nav-rel-new');
+  if (!pill) return;
+  var show = function (newest) {
+    if (!newest) return;
+    var d = newest.length === 7 ? newest + '-01' : newest;
+    var age = (Date.now() - new Date(d + 'T12:00:00').getTime()) / 86400000;
+    if (age >= 0 && age <= 14) pill.style.display = '';
+  };
+  var cached = null;
+  try { cached = sessionStorage.getItem('fsdx_rel_newest'); } catch (e) {}
+  if (cached !== null) { show(cached); return; }
+  fetch('releases.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+    var newest = '';
+    ((j && j.releases) || []).forEach(function (x) { if (x.status === 'shipped' && x.date > newest) newest = x.date; });
+    try { sessionStorage.setItem('fsdx_rel_newest', newest); } catch (e) {}
+    show(newest);
+  }).catch(function () {});
 }
 
 function applyNavGroupState(id, defaultOpen) {
@@ -472,7 +492,7 @@ function prepareNavLabels(root) {
   // blank the nav just as thoroughly, so check the status and the body, and
   // give a flaky network one retry before giving up.
   function loadNavHtml(attempt) {
-    return fetch('nav.html?v=20261004a')
+    return fetch('nav.html?v=20261007a')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
@@ -511,6 +531,10 @@ function prepareNavLabels(root) {
           link.classList.add('text-green-400', 'font-bold');
         }
       });
+
+      // "New" pill on Releases: shows when something shipped in the last 14 days.
+      // Reads releases.json once per session; any failure just leaves it hidden.
+      try { fsdxReleasesBadge(); } catch (e) {}
 
       // Red count of urgent account warnings on the Accounts link
       try { window.fsdxRenderFleetBadge && window.fsdxRenderFleetBadge(); } catch (e) {}
@@ -694,6 +718,7 @@ function prepareNavLabels(root) {
           ['suite.html', "What's in the Membership"],
           ['platform.html', 'The Platform'],
           ['autotrader.html', 'ORB Auto-Trader'], ['ninjatrader.html', 'NinjaTrader 8'],
+          ['releases.html', 'Releases'],
           ['results.html', 'Backtest Results'],
           ['nightwing.html', 'Nightwing'], ['raven.html', 'Raven'],
           ['memberships.html', 'Membership'], ['knowledge.html', 'Knowledge Base'],
