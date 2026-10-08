@@ -58,6 +58,23 @@
     .pf-why li.no:before{content:"!";color:#fbbf24}
     .pf-why li.x{color:#a1a1aa}
     .pf-why li.x:before{content:"\2715";color:#f87171}
+    .pf-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .pf-tabs{display:flex;gap:6px}
+    .pf-tab{font-size:12px;font-weight:800;color:#d4d4d8;background:#18181b;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:8px 14px;cursor:pointer;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+    .pf-tab:hover{border-color:rgba(74,222,128,.5)}
+    .pf-tab[aria-expanded="true"]{background:rgba(74,222,128,.12);border-color:#4ade80;color:#4ade80}
+    .pf-badge{font-size:10px;font-weight:900;background:#4ade80;color:#000;border-radius:999px;padding:1px 7px}
+    .pf-warn-sm{font-size:11px;line-height:1.5;color:rgba(252,211,77,.85);margin-top:10px}
+    .pf-warn-sm strong{color:#fcd34d}
+    .pf-panel{border:1px solid rgba(255,255,255,.07);background:rgba(9,9,11,.5);border-radius:14px;padding:14px 16px;margin-top:12px}
+    .pf-hint{font-size:11.5px;color:#71717a;margin-bottom:8px}
+    .pf-qrow{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+    .pf-qlabel{flex:0 0 150px;font-size:11px;font-weight:800;color:#d4d4d8}
+    .pf-qlabel span{display:block;font-weight:600;font-size:10px;color:#52525b}
+    .pf-chip{padding:5px 11px}
+    .pf-chip[aria-pressed="true"]:after{content:""}
+    [data-multi] .pf-chip[aria-pressed="true"]:before{content:"\2713  "}
+    @media (max-width:640px){.pf-qrow{flex-direction:column;align-items:flex-start;gap:6px}.pf-qlabel{flex:none}.pf-qlabel span{display:inline;margin-left:6px}}
     .pf-tag{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.08em;color:#fbbf24;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle}
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/affiliates.html" />
@@ -110,86 +127,75 @@
         <div class="max-w-5xl mx-auto">
 
           <!-- ═══ FIND YOUR FIT ═══ -->
-          <div class="mb-10">
-            <h2 class="text-sm font-black text-white">Prop firm finder: which firm fits how you trade?</h2>
-            <p class="text-xs text-zinc-500 mt-1 mb-4 leading-relaxed">Take the quick match, filter by the rules that matter to you, or tick up to three firms to compare side by side.
-              We list the downsides too. The right firm is the one that fits you, partner or not.</p>
-
-            <div class="pf-warn mb-4">
-              <strong>Last updated October 8, 2026.</strong> Prop firm rules change constantly. By the time you read this, fees, deadlines or drawdown rules
-              may already be different. We update this page as often as we can, but always confirm the current terms on the firm's own site before you buy.
-              Nothing here is financial advice.
-            </div>
-
-            <div class="pf-box mb-4" id="pf-engine">
-              <div class="pf-rank" style="margin-bottom:4px">Quick match</div>
-              <p class="text-xs text-zinc-500 mb-4 leading-relaxed">Not sure what you need? Answer five questions and we'll rank the firms on this page for how you trade, with the reasons.</p>
-              <div class="pf-groups">
-                <div class="pf-q"><div class="pf-label">1. How long do you expect to need to pass?</div><div class="pf-chips" data-q="pace">
-                  <button class="pf-chip" aria-pressed="false" data-val="fast">Under 2 weeks</button>
-                  <button class="pf-chip" aria-pressed="true" data-val="unsure">Not sure</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="slow">I want to take my time</button></div></div>
-                <div class="pf-q"><div class="pf-label">2. What platform do you trade on?</div><div class="pf-chips" data-q="plat">
-                  <button class="pf-chip" aria-pressed="false" data-val="NinjaTrader">NinjaTrader</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="TradingView">TradingView</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="Tradovate">Tradovate</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="Rithmic">Rithmic</button>
-                  <button class="pf-chip" aria-pressed="true" data-val="">Not sure</button></div></div>
-                <div class="pf-q"><div class="pf-label">3. Will you automate your trading?</div><div class="pf-chips" data-q="auto">
-                  <button class="pf-chip" aria-pressed="true" data-val="no">No, I trade manually</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="own">My own bot or strategy</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="third">A third-party tool or copier</button></div></div>
-                <div class="pf-q"><div class="pf-label">4. Which drawdown do you want?</div><div class="pf-chips" data-q="dd">
-                  <button class="pf-chip" aria-pressed="false" data-val="EOD">End of day</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="Intraday">Intraday trailing</button>
-                  <button class="pf-chip" aria-pressed="true" data-val="">No preference</button></div></div>
-                <div class="pf-q"><div class="pf-label">5. How do you want to pay?</div><div class="pf-chips" data-q="pay">
-                  <button class="pf-chip" aria-pressed="false" data-val="allin">One price, no extra fees</button>
-                  <button class="pf-chip" aria-pressed="true" data-val="">Doesn't matter</button></div></div>
+          <div class="mb-8">
+            <div class="pf-head">
+              <div>
+                <h2 class="text-sm font-black text-white">Prop firm finder</h2>
+                <p class="text-xs text-zinc-500 mt-0.5">Match, filter or compare. We list the downsides too.</p>
               </div>
-              <div class="pf-bar" style="margin-top:4px">
-                <span>Ranks only the firms listed on this page. Other firms may suit you better.</span>
+              <div class="pf-tabs" role="tablist">
+                <button class="pf-tab" type="button" data-tab="engine" aria-expanded="false">&#9889; Quick match</button>
+                <button class="pf-tab" type="button" data-tab="filters" aria-expanded="false">Filters<span id="pf-fcount" class="pf-badge" style="display:none"></span></button>
+              </div>
+            </div>
+            <p class="pf-warn-sm"><strong>Updated Oct 8, 2026.</strong> Prop firm rules change often and may differ by the time you read this.
+              We update as often as we can. Always confirm on the firm's own site before you buy. Not financial advice.</p>
+
+            <!-- QUICK MATCH -->
+            <div class="pf-panel" id="pf-panel-engine" hidden>
+              <p class="pf-hint">Answer what applies. Pick more than one where it fits. We'll rank the firms on this page and show why.</p>
+              <div class="pf-qrow"><div class="pf-qlabel">How long to pass?</div><div class="pf-chips" data-q="pace">
+                <button class="pf-chip" aria-pressed="false" data-val="fast">Under 2 weeks</button>
+                <button class="pf-chip" aria-pressed="true" data-val="unsure">Not sure</button>
+                <button class="pf-chip" aria-pressed="false" data-val="slow">Taking my time</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Platforms you use <span>pick all</span></div><div class="pf-chips" data-q="plat" data-multi>
+                <button class="pf-chip" aria-pressed="false" data-val="NinjaTrader">NinjaTrader</button>
+                <button class="pf-chip" aria-pressed="false" data-val="TradingView">TradingView</button>
+                <button class="pf-chip" aria-pressed="false" data-val="Tradovate">Tradovate</button>
+                <button class="pf-chip" aria-pressed="false" data-val="Rithmic">Rithmic</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Automation <span>pick all, or none</span></div><div class="pf-chips" data-q="auto" data-multi>
+                <button class="pf-chip" aria-pressed="false" data-val="own">My own bot / strategy</button>
+                <button class="pf-chip" aria-pressed="false" data-val="third">Third-party tool / copier</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Drawdown</div><div class="pf-chips" data-q="dd">
+                <button class="pf-chip" aria-pressed="false" data-val="EOD">End of day</button>
+                <button class="pf-chip" aria-pressed="false" data-val="Intraday">Intraday trailing</button>
+                <button class="pf-chip" aria-pressed="true" data-val="">No preference</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Pricing</div><div class="pf-chips" data-q="pay">
+                <button class="pf-chip" aria-pressed="false" data-val="allin">One price, no extra fees</button>
+                <button class="pf-chip" aria-pressed="true" data-val="">Doesn't matter</button></div></div>
+              <div class="pf-bar">
+                <span>Ranks only the firms on this page. Others may suit you better.</span>
                 <button class="pf-btn" id="pf-run" type="button">Show my matches &rarr;</button>
               </div>
               <div id="pf-results"></div>
             </div>
 
-            <div class="pf-box">
-              <div class="pf-label" style="color:#d4d4d8;font-size:11px;letter-spacing:.06em;text-transform:none">Or filter the list yourself</div>
-              <div class="pf-groups">
-                <div><div class="pf-label">How you pay</div><div class="pf-chips" data-group="fee">
-                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="one">One-time fee</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="monthly">Monthly</button></div></div>
-                <div><div class="pf-label">Deadline to pass</div><div class="pf-chips" data-group="clock">
-                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="none">No deadline</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="limit">Has deadline</button></div></div>
-                <div><div class="pf-label">Drawdown</div><div class="pf-chips" data-group="dd">
-                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="EOD">EOD available</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="Intraday">Intraday available</button></div></div>
-                <div><div class="pf-label">Activation fee after passing</div><div class="pf-chips" data-group="act">
-                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="no">No activation fee</button></div></div>
-                <div><div class="pf-label">Platform you use</div><div class="pf-chips" data-group="plat">
-                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="NinjaTrader">NinjaTrader</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="TradingView">TradingView</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="Tradovate">Tradovate</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="Rithmic">Rithmic</button></div></div>
-                <div><div class="pf-label">Automation</div><div class="pf-chips" data-group="auto">
-                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="own">Own bots OK</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="yes">Third-party bots OK</button></div></div>
-                <div><div class="pf-label">Minimum days to pass</div><div class="pf-chips" data-group="mind">
-                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
-                  <button class="pf-chip" aria-pressed="false" data-val="none">No minimum</button></div></div>
-              </div>
+            <!-- FILTERS -->
+            <div class="pf-panel" id="pf-panel-filters" hidden>
+              <div class="pf-qrow"><div class="pf-qlabel">Eval fee</div><div class="pf-chips" data-group="fee">
+                <button class="pf-chip" aria-pressed="false" data-val="one">One-time</button>
+                <button class="pf-chip" aria-pressed="false" data-val="monthly">Monthly</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Deadline</div><div class="pf-chips" data-group="clock">
+                <button class="pf-chip" aria-pressed="false" data-val="none">No deadline</button>
+                <button class="pf-chip" aria-pressed="false" data-val="limit">Has deadline</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Drawdown <span>offers all picked</span></div><div class="pf-chips" data-group="dd" data-multi>
+                <button class="pf-chip" aria-pressed="false" data-val="EOD">EOD</button>
+                <button class="pf-chip" aria-pressed="false" data-val="Intraday">Intraday</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Platforms <span>works with all picked</span></div><div class="pf-chips" data-group="plat" data-multi>
+                <button class="pf-chip" aria-pressed="false" data-val="NinjaTrader">NinjaTrader</button>
+                <button class="pf-chip" aria-pressed="false" data-val="TradingView">TradingView</button>
+                <button class="pf-chip" aria-pressed="false" data-val="Tradovate">Tradovate</button>
+                <button class="pf-chip" aria-pressed="false" data-val="Rithmic">Rithmic</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Automation <span>allows all picked</span></div><div class="pf-chips" data-group="auto" data-multi>
+                <button class="pf-chip" aria-pressed="false" data-val="own">Own bots</button>
+                <button class="pf-chip" aria-pressed="false" data-val="yes">Third-party bots</button></div></div>
+              <div class="pf-qrow"><div class="pf-qlabel">Other</div><div class="pf-chips" data-group="misc" data-multi>
+                <button class="pf-chip" aria-pressed="false" data-val="noact">No activation fee</button>
+                <button class="pf-chip" aria-pressed="false" data-val="nomind">No minimum days</button></div></div>
               <div class="pf-bar">
                 <span id="pf-count">Showing all firms</span>
                 <span style="display:flex;gap:16px">
-                  <button class="pf-link" id="pf-reset" type="button">Reset filters</button>
+                  <button class="pf-link" id="pf-reset" type="button">Clear filters</button>
                   <button class="pf-link" id="pf-compare-top" type="button">Compare selected &rarr;</button>
                 </span>
               </div>
@@ -579,20 +585,21 @@
     }
 
     /* ── FINDER: filters + compare ─────────────────────────────────────── */
-    var PF_EMPTY = { fee:'', clock:'', dd:'', act:'', plat:'', auto:'', mind:'' };
-    var PF = Object.assign({}, PF_EMPTY);
+    function pfEmpty() { return { fee:'', clock:'', dd:[], plat:[], auto:[], misc:[] }; }
+    var PF = pfEmpty();
     var PF_SEL = [];
 
     function pfMatch(p) {
       var k = p.k || {};
+      function all(want, have) { return want.every(function (w) { return (have || []).indexOf(w) >= 0; }); }
       if (PF.fee && k.fee !== PF.fee) return false;
       if (PF.clock && k.clock !== PF.clock) return false;
-      if (PF.dd && (k.dd || []).indexOf(PF.dd) < 0) return false;
-      if (PF.act === 'no' && k.act === 'yes') return false;   // 'mixed' stays: some plans have none
-      if (PF.plat && (p.plat || []).indexOf(PF.plat) < 0) return false;
-      if (PF.auto === 'own' && !(k.auto === 'own' || k.auto === 'yes')) return false;
-      if (PF.auto === 'yes' && k.auto !== 'yes') return false;
-      if (PF.mind && k.mind !== PF.mind) return false;
+      if (!all(PF.dd, k.dd)) return false;
+      if (!all(PF.plat, p.plat)) return false;
+      if (PF.auto.indexOf('own') >= 0 && !(k.auto === 'own' || k.auto === 'yes')) return false;
+      if (PF.auto.indexOf('yes') >= 0 && k.auto !== 'yes') return false;
+      if (PF.misc.indexOf('noact') >= 0 && k.act === 'yes') return false;   // 'mixed' stays: some plans have none
+      if (PF.misc.indexOf('nomind') >= 0 && k.mind !== 'none') return false;
       return true;
     }
 
@@ -607,7 +614,10 @@
         if (d && d.classList.contains('detail') && !ok) d.classList.add('hidden');
         if (ok) shown++;
       });
-      var any = Object.keys(PF).some(function (x) { return PF[x]; });
+      var n = Object.keys(PF).reduce(function (t, x) { return t + (Array.isArray(PF[x]) ? PF[x].length : (PF[x] ? 1 : 0)); }, 0);
+      var any = n > 0;
+      var badge = document.getElementById('pf-fcount');
+      badge.style.display = n ? '' : 'none'; badge.textContent = n;
       document.getElementById('pf-count').textContent = any
         ? shown + ' of ' + FIRMS.length + ' firms match'
         : 'Showing all ' + FIRMS.length + ' firms';
@@ -615,10 +625,8 @@
     }
 
     function pfReset() {
-      PF = Object.assign({}, PF_EMPTY);
-      document.querySelectorAll('.pf-chips[data-group] .pf-chip').forEach(function (b) {
-        b.setAttribute('aria-pressed', b.getAttribute('data-val') === '' ? 'true' : 'false');
-      });
+      var e = pfEmpty(); Object.keys(e).forEach(function (x) { PF[x] = e[x]; });   // mutate in place: chip handlers hold this object
+      document.querySelectorAll('.pf-chips[data-group] .pf-chip').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
       pfApply();
     }
 
@@ -697,7 +705,7 @@
        Scores each firm against the answers. Hard mismatches (wrong platform,
        automation banned) knock a firm to the bottom; soft ones cost points.
        Every point change writes a plain-English reason shown to the member. */
-    var PQ = { pace:'unsure', plat:'', auto:'no', dd:'', pay:'' };
+    var PQ = { pace:'unsure', plat:[], auto:[], dd:'', pay:'' };
 
     function pfScore(p) {
       var k = p.k || {}, sc = 100, why = [], hard = false;
@@ -717,20 +725,28 @@
         else ok('No minimum days. Can pass quickly');
       }
       // platform
-      if (PQ.plat) {
-        if ((p.plat || []).indexOf(PQ.plat) < 0) x('Doesn\'t support ' + PQ.plat);
-        else ok('Works with ' + PQ.plat);
+      if (PQ.plat.length) {
+        var has = PQ.plat.filter(function (v) { return (p.plat || []).indexOf(v) >= 0; });
+        var miss = PQ.plat.filter(function (v) { return has.indexOf(v) < 0; });
+        if (!has.length) x('Doesn\'t support ' + miss.join(', '));
+        else {
+          ok('Works with ' + has.join(', '));
+          if (miss.length) no('Doesn\'t support ' + miss.join(', '), 6 * miss.length);
+        }
       }
       // automation
-      if (PQ.auto === 'own') {
-        if (k.auto === 'no') x('Bans automation on futures accounts');
-        else if (k.auto === 'limited') no('Automation restricted. Fully automated not allowed on funded', 25);
-        else ok('Allows your own automated strategy');
-      } else if (PQ.auto === 'third') {
-        if (k.auto === 'no') x('Bans automation on futures accounts');
-        else if (k.auto === 'own') x('Only allows bots you built yourself');
-        else if (k.auto === 'limited') no('Automation restricted. Ask before running a third-party tool', 35);
-        else ok('Allows third-party bots and EAs');
+      var wOwn = PQ.auto.indexOf('own') >= 0, wThird = PQ.auto.indexOf('third') >= 0;
+      if ((wOwn || wThird) && k.auto === 'no') x('Bans automation on futures accounts');
+      else {
+        if (wOwn) {
+          if (k.auto === 'limited') no('Own bot: restricted. Fully automated not allowed on funded', 25);
+          else ok('Allows your own automated strategy');
+        }
+        if (wThird) {
+          if (k.auto === 'own') x('Third-party tools and copiers not allowed. Self-built only');
+          else if (k.auto === 'limited') no('Third-party tool: restricted. Ask the firm first', 35);
+          else ok('Allows third-party bots and EAs');
+        }
       }
       // drawdown
       if (PQ.dd) {
@@ -788,24 +804,44 @@
     }
 
     function pfInit() {
-      document.querySelectorAll('[data-q]').forEach(function (g) {
+      // chip click: multi groups toggle into an array; single groups toggle one value.
+      // Filter singles can be clicked off (back to "any"); quiz singles always keep one picked.
+      function chipClick(g, store, key, canClear, after) {
         g.addEventListener('click', function (e) {
           var b = e.target.closest('.pf-chip'); if (!b) return;
-          g.querySelectorAll('.pf-chip').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
-          b.setAttribute('aria-pressed', 'true');
-          PQ[g.getAttribute('data-q')] = b.getAttribute('data-val');
+          var v = b.getAttribute('data-val');
+          if (g.hasAttribute('data-multi')) {
+            var on = b.getAttribute('aria-pressed') !== 'true';
+            b.setAttribute('aria-pressed', on ? 'true' : 'false');
+            store[key] = Array.prototype.filter.call(g.querySelectorAll('.pf-chip'), function (x) {
+              return x.getAttribute('aria-pressed') === 'true'; }).map(function (x) { return x.getAttribute('data-val'); });
+          } else {
+            var was = b.getAttribute('aria-pressed') === 'true';
+            g.querySelectorAll('.pf-chip').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+            if (was && canClear) { store[key] = ''; }
+            else { b.setAttribute('aria-pressed', 'true'); store[key] = v; }
+          }
+          after();
+        });
+      }
+      document.querySelectorAll('.pf-chips[data-q]').forEach(function (g) {
+        chipClick(g, PQ, g.getAttribute('data-q'), false, function () {
           if (document.getElementById('pf-results').innerHTML) pfRun();
+        });
+      });
+      document.querySelectorAll('.pf-tab').forEach(function (t) {
+        t.addEventListener('click', function () {
+          var open = t.getAttribute('aria-expanded') !== 'true';
+          document.querySelectorAll('.pf-tab').forEach(function (o) {
+            o.setAttribute('aria-expanded', 'false');
+            document.getElementById('pf-panel-' + o.getAttribute('data-tab')).hidden = true;
+          });
+          if (open) { t.setAttribute('aria-expanded', 'true'); document.getElementById('pf-panel-' + t.getAttribute('data-tab')).hidden = false; }
         });
       });
       document.getElementById('pf-run').addEventListener('click', pfRun);
       document.querySelectorAll('.pf-chips[data-group]').forEach(function (g) {
-        g.addEventListener('click', function (e) {
-          var b = e.target.closest('.pf-chip'); if (!b) return;
-          g.querySelectorAll('.pf-chip').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
-          b.setAttribute('aria-pressed', 'true');
-          PF[g.getAttribute('data-group')] = b.getAttribute('data-val');
-          pfApply();
-        });
+        chipClick(g, PF, g.getAttribute('data-group'), true, pfApply);
       });
       document.getElementById('pf-reset').addEventListener('click', pfReset);
       document.getElementById('pf-compare-top').addEventListener('click', function () {
