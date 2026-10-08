@@ -7587,6 +7587,7 @@
       return Math.round(h / 24) + 'd ago';
     }
     function actGroupOf(e) {
+      if (e.type === 'note') return 'note';       // system notes aren't member events
       if (e.review) return 'review';
       if (['payment', 'payfail', 'refund'].includes(e.type)) return 'money';
       if (['canceling', 'ended', 'pastdue', 'payfail'].includes(e.type)) return 'risk';
