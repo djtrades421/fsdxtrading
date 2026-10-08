@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prop Firm Discounts — FSD-X Trading Partners</title>
-  <meta name="description" content="Compare prop firm discounts side by side — Apex, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
   <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
@@ -17,6 +17,35 @@
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
     body { background-color: #000; }
+    /* ── prop firm finder (scoped, no Tailwind dependency) ── */
+    .pf-box{border:1px solid rgba(255,255,255,.07);background:rgba(9,9,11,.5);border-radius:16px;padding:18px}
+    .pf-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#71717a;margin-bottom:8px}
+    .pf-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+    .pf-chips{display:flex;flex-wrap:wrap;gap:6px}
+    .pf-chip{font-size:11px;font-weight:700;color:#a1a1aa;background:#18181b;border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:6px 12px;cursor:pointer;transition:.15s}
+    .pf-chip:hover{border-color:rgba(255,255,255,.25);color:#fff}
+    .pf-chip[aria-pressed="true"]{color:#000;background:#4ade80;border-color:#4ade80}
+    .pf-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.05);font-size:12px;color:#a1a1aa}
+    .pf-link{background:none;border:0;color:#4ade80;font-weight:700;font-size:12px;cursor:pointer;padding:0}
+    .pf-link:hover{color:#86efac}
+    .pf-warn{border:1px solid rgba(251,191,36,.25);background:rgba(251,191,36,.06);color:#fcd34d;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.6}
+    .pf-cb{width:16px;height:16px;accent-color:#4ade80;cursor:pointer}
+    .pf-empty{padding:28px 12px;text-align:center;font-size:12px;color:#71717a}
+    .pf-tray{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:60;display:none;align-items:center;gap:12px;background:#09090b;border:1px solid rgba(74,222,128,.35);box-shadow:0 10px 30px rgba(0,0,0,.6);border-radius:999px;padding:8px 8px 8px 16px;font-size:12px;color:#d4d4d8;max-width:calc(100vw - 32px)}
+    .pf-tray.on{display:flex}
+    .pf-btn{background:#4ade80;color:#000;font-weight:900;font-size:12px;border:0;border-radius:999px;padding:9px 16px;cursor:pointer;white-space:nowrap}
+    .pf-btn[disabled]{opacity:.4;cursor:not-allowed}
+    .pf-cmp{display:grid;gap:12px}
+    .pf-card{border:1px solid rgba(255,255,255,.08);background:rgba(9,9,11,.7);border-radius:14px;padding:16px;display:flex;flex-direction:column}
+    .pf-card h3{font-size:15px;font-weight:900;color:#fff}
+    .pf-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
+    .pf-row span:first-child{color:#71717a}
+    .pf-row span:last-child{color:#e4e4e7;font-weight:700;text-align:right}
+    .pf-good{color:#4ade80!important}
+    .pf-bad{color:#fbbf24!important}
+    .pf-note{font-size:11.5px;line-height:1.55;color:#a1a1aa;margin-top:10px}
+    .pf-note b{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+    .pf-tag{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.08em;color:#fbbf24;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle}
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/affiliates.html" />
   <meta property="og:url" content="https://www.fsdxtrading.com/affiliates.html" />
@@ -67,6 +96,46 @@
       <section class="py-12 md:py-16 px-6 md:px-12">
         <div class="max-w-5xl mx-auto">
 
+          <!-- ═══ FIND YOUR FIT ═══ -->
+          <div class="mb-10">
+            <h2 class="text-sm font-black text-white">Find the firm that fits how you trade</h2>
+            <p class="text-xs text-zinc-500 mt-1 mb-4 leading-relaxed">Filter by what matters to you, then tick up to three firms to compare side by side.
+              We list the downsides too. The right firm is the one that fits you, partner or not.</p>
+
+            <div class="pf-warn mb-4">
+              <strong>Last updated October 8, 2026.</strong> Prop firm rules change constantly. By the time you read this, fees, deadlines or drawdown rules
+              may already be different. We update this page as often as we can, but always confirm the current terms on the firm's own site before you buy.
+              Nothing here is financial advice.
+            </div>
+
+            <div class="pf-box">
+              <div class="pf-groups">
+                <div><div class="pf-label">How you pay</div><div class="pf-chips" data-group="fee">
+                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="one">One-time fee</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="monthly">Monthly</button></div></div>
+                <div><div class="pf-label">Deadline to pass</div><div class="pf-chips" data-group="clock">
+                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="none">No deadline</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="limit">Has deadline</button></div></div>
+                <div><div class="pf-label">Drawdown</div><div class="pf-chips" data-group="dd">
+                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="EOD">EOD available</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="Intraday">Intraday available</button></div></div>
+                <div><div class="pf-label">Activation fee after passing</div><div class="pf-chips" data-group="act">
+                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="no">No activation fee</button></div></div>
+              </div>
+              <div class="pf-bar">
+                <span id="pf-count">Showing all firms</span>
+                <span style="display:flex;gap:16px">
+                  <button class="pf-link" id="pf-reset" type="button">Reset filters</button>
+                  <button class="pf-link" id="pf-compare-top" type="button">Compare selected &rarr;</button>
+                </span>
+              </div>
+            </div>
+          </div>
+
           <!-- ═══ PROP FIRMS ═══ -->
           <div class="flex items-end justify-between gap-4 flex-wrap mb-4">
             <div>
@@ -78,6 +147,7 @@
           <div class="overflow-x-auto -mx-1 px-1">
             <table class="w-full text-sm" style="border-collapse:collapse">
               <thead><tr>
+                <th class="text-left text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 pl-3 border-b border-white/10 w-8" title="Tick to compare">Cmp</th>
                 <th class="text-left text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 pl-3 pr-2.5 border-b border-white/10">Firm</th>
                 <th class="text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Discount</th>
                 <th class="hidden sm:table-cell text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Drawdown</th>
@@ -88,6 +158,19 @@
               </tr></thead>
               <tbody id="firm-rows"></tbody>
             </table>
+            <div id="pf-empty" class="pf-empty" style="display:none">No firm matches every filter. Try loosening one, or <button class="pf-link" type="button" onclick="pfReset()">reset filters</button>.</div>
+          </div>
+
+          <!-- ═══ COMPARE PANEL ═══ -->
+          <div id="pf-compare" class="mt-8 scroll-mt-24" style="display:none">
+            <div class="flex items-end justify-between gap-4 flex-wrap mb-3">
+              <div>
+                <h2 class="text-sm font-black text-white">Side by side</h2>
+                <p class="text-xs text-zinc-600 mt-0.5">As of October 8, 2026. Verify on each firm's site before buying.</p>
+              </div>
+              <button class="pf-link" type="button" onclick="pfClear()">Clear comparison</button>
+            </div>
+            <div id="pf-cmp-grid" class="pf-cmp"></div>
           </div>
           <p class="text-[11px] text-zinc-600 mt-3 leading-relaxed">
             <span class="text-zinc-400 font-bold">EOD drawdown</span> recalculates once per day from the closing
@@ -216,6 +299,9 @@
        ════════════════════════════════════════════════════════════════════ */
     const FIRMS = [
       { n:'Apex Trader Funding', ty:'Futures prop firm', pct:90, std:20, code:'DJFSDX', dd:'EOD or Intraday', fee:'One-time', clock:'30 days',
+        k:{fee:'one', clock:'limit', dd:['EOD','Intraday'], act:'yes'}, act:'Yes, on most plans (paid when you pass)',
+        fit:'You want the biggest discount on this list and expect to pass inside a month.',
+        watch:'Hard 30-day deadline with no extensions. Most plans charge an activation fee once you pass.',
         url:'https://apextraderfunding.com/member/aff/go/johnnyutah421', feat:true,
         why:'One of the largest and most established futures prop firms, with evaluation accounts across a wide range of sizes and a straightforward path from eval to funded. The go-to funding option for most of the FSD-X community.',
         pts:['Wide range of evaluation account sizes','One-step evaluation to funded','Multiple concurrent accounts allowed','Frequent deep discount windows'],
@@ -223,24 +309,36 @@
         note:'Evaluations are a one-time fee with 30 days to pass. Most plans charge an activation fee once you pass; check which plan you pick at checkout. Older legacy accounts stay on monthly billing until closed.' },
 
       { n:'Bulenox', ty:'Futures prop firm', pct:83, std:45, stdCode:'DJFSDX21', code:'DJFSDX', dd:'EOD or Trailing', fee:'One-time', clock:'30 days*',
+        k:{fee:'one', clock:'limit', dd:['EOD','Intraday'], act:'mixed'}, act:'Depends on plan (none on Fast Track / Momentum)',
+        fit:'You want one payment with no activation fee (Fast Track or Momentum), or a choice between EOD and trailing drawdown.',
+        watch:'The Qualification plan gives 30 days of access plus an activation fee after you pass. Your drawdown type is locked for the life of the account.',
         url:'https://tinyurl.com/bulenox21',
         why:'Flexible account sizes with aggressive rotating discount windows. Good option for traders running multiple accounts simultaneously.',
         pts:['Flexible account sizes','Suits running multiple accounts','Fast Track and Momentum plans: no activation fee','Drawdown type is locked for the life of the account'], rules:[],
         note:'*Qualification plan: one-time payment with 30 days of access, plus a Master activation fee after you pass. Fast Track and Momentum are single payments with no activation fee.' },
 
       { n:'TradeDay', ty:'Futures prop firm', pct:40, code:'DJFSDX', dd:'EOD or Intraday', fee:'Monthly', clock:'None stated',
+        k:{fee:'monthly', clock:'none', dd:['EOD','Intraday'], act:'no'}, act:'None',
+        fit:'You want no deadline and no activation fee, and you expect to pass fairly quickly.',
+        watch:'Billed monthly until you pass or cancel, so a slow eval costs more every month.',
         url:'https://tinyurl.com/tradedayfsdx',
         why:'Built around EOD trailing drawdown — your intraday drawdown resets at end of day rather than tracking from your peak. Less pressure during live sessions.',
         pts:['EOD or intraday trailing drawdown','No activation fee','No stated deadline to pass'], rules:[],
         note:'Evaluations bill monthly until you pass or cancel, so taking longer costs more. No activation fee once you pass.' },
 
-      { n:'E8 Markets', ty:'Multi-asset prop firm', pct:35, code:'DJFSDX', dd:'EOD', fee:'One-time', clock:'None stated',
+      { n:'E8 Markets', ty:'Multi-asset prop firm', pct:35, code:'DJFSDX', dd:'EOD', fee:'One-time', clock:'None stated', verify:true,
+        k:{fee:'one', clock:'none', dd:['EOD'], act:'no'}, act:'None stated',
+        fit:'You want EOD drawdown with no stated deadline, or want futures and forex under one roof.',
+        watch:'Reviews disagree on whether E8 futures evals are one-time or monthly, and terms differ between Signature and Zero accounts. Confirm on E8 before you buy.',
         url:'https://tinyurl.com/e8djfsdx',
         why:'Multi-asset prop firm covering futures, forex, and indices. Good option if you want to diversify across different markets beyond just NQ/MNQ.',
         pts:['Futures, forex and indices','EOD trailing drawdown on futures accounts','No minimum trading days (Signature)'], rules:[],
         note:'Futures fee model and activation terms differ by account type (Signature vs Zero). Confirm on E8 before you buy.' },
 
       { n:'FundedNext', ty:'Multi-asset prop firm', pct:0, pctLabel:'Varies', code:'DJFSDX', dd:'EOD', fee:'One-time', clock:'None',
+        k:{fee:'one', clock:'none', dd:['EOD'], act:'no'}, act:'None',
+        fit:'You want one fee, no deadline and no activation fee. This is the least time pressure on the list.',
+        watch:'Challenge accounts are deactivated after 7 days in a row with no trades. The discount varies by product.',
         url:'https://fundednext.com/?fpr=DJFSDX',
         why:'Futures, CFD, forex and crypto challenge paths under one account. FundedNext runs a large catalogue of challenges and the discount is set per product, so the amount you get depends on which account you pick.',
         pts:['Futures, CFD, forex and crypto paths','Discount applied per product line','Futures: one-time fee, no time limit, no activation fee','New and returning buyer offers'], rules:[],
@@ -313,6 +411,8 @@
                 + '<span class="font-mono text-zinc-300 bg-zinc-900 border border-white/5 rounded px-1.5 py-0.5">'
                 + escA(p.stdCode) + '</span></div>'
               : '')
+        +   (p.fit ? '<div class="pf-note"><b class="pf-good">Good fit if</b>' + escA(p.fit) + '</div>' : '')
+        +   (p.watch ? '<div class="pf-note"><b class="pf-bad">Watch out for</b>' + escA(p.watch) + '</div>' : '')
         +   (p.note ? '<div class="text-[11px] text-zinc-600 mt-3">' + escA(p.note) + '</div>' : '')
         +   '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer"'
         +     ' class="sm:hidden mt-4 block w-full text-center py-2.5 bg-green-500 hover:bg-green-400'
@@ -324,7 +424,9 @@
       var fr = document.getElementById('firm-rows');
       var tr = document.getElementById('tool-rows');
       if (fr) fr.innerHTML = FIRMS.map(function (p, i) {
-        return '<tr id="' + slug(p.n) + '" onclick="togglePartner(this)" class="cursor-pointer hover:bg-white/[0.025] transition scroll-mt-24">'
+        return '<tr id="' + slug(p.n) + '" data-firm="' + i + '" onclick="togglePartner(this)" class="cursor-pointer hover:bg-white/[0.025] transition scroll-mt-24">'
+          + '<td class="' + TD + ' pl-3" onclick="event.stopPropagation()">'
+          +   '<input type="checkbox" class="pf-cb" aria-label="Compare ' + escA(p.n) + '" onchange="pfToggle(' + i + ', this)"></td>'
           + '<td class="' + TD + ' pl-3">'
           +   '<div class="font-bold text-white flex items-center gap-2">' + escA(p.n)
           +     (p.feat ? '<span class="text-[9px] font-black tracking-wider text-green-400 bg-green-500/10 border border-green-500/20 rounded px-1.5 py-0.5">BIGGEST</span>' : '')
@@ -338,7 +440,7 @@
           +   (p.dd ? '<span class="text-[10px] font-black tracking-wide text-green-400 bg-green-500/10 border border-green-500/20 rounded px-2 py-1">' + escA(p.dd) + '</span>'
                     : '<span class="text-zinc-700">&mdash;</span>') + '</td>'
           + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell text-xs text-zinc-300">'
-          +   (p.fee ? escA(p.fee) : '<span class="text-zinc-700">&mdash;</span>') + '</td>'
+          +   (p.fee ? escA(p.fee) + (p.verify ? '<span class="pf-tag">VERIFY</span>' : '') : '<span class="text-zinc-700">&mdash;</span>') + '</td>'
           + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell text-xs">'
           +   (p.clock ? (/^none/i.test(p.clock)
                   ? '<span class="text-[10px] font-black tracking-wide text-green-400 bg-green-500/10 border border-green-500/20 rounded px-2 py-1">' + escA(p.clock) + '</span>'
@@ -348,7 +450,7 @@
           + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell">'
           +   '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"'
           +     ' class="text-xs font-bold text-green-400 hover:text-green-300 transition">Open &rarr;</a></td>'
-          + '</tr>' + detailRow(p, 7);
+          + '</tr>' + detailRow(p, 8);
       }).join('');
 
       if (tr) tr.innerHTML = TOOLS.map(function (p) {
@@ -364,6 +466,126 @@
           +     ' class="text-xs font-bold text-green-400 hover:text-green-300 transition">Open &rarr;</a></td>'
           + '</tr>' + detailRow(p, 4);
       }).join('');
+    }
+
+    /* ── FINDER: filters + compare ─────────────────────────────────────── */
+    var PF = { fee:'', clock:'', dd:'', act:'' };
+    var PF_SEL = [];
+
+    function pfMatch(p) {
+      var k = p.k || {};
+      if (PF.fee && k.fee !== PF.fee) return false;
+      if (PF.clock && k.clock !== PF.clock) return false;
+      if (PF.dd && (k.dd || []).indexOf(PF.dd) < 0) return false;
+      if (PF.act === 'no' && k.act === 'yes') return false;   // 'mixed' stays: some plans have none
+      return true;
+    }
+
+    function pfApply() {
+      var shown = 0;
+      FIRMS.forEach(function (p, i) {
+        var row = document.querySelector('#firm-rows tr[data-firm="' + i + '"]');
+        if (!row) return;
+        var ok = pfMatch(p);
+        row.style.display = ok ? '' : 'none';
+        var d = row.nextElementSibling;
+        if (d && d.classList.contains('detail') && !ok) d.classList.add('hidden');
+        if (ok) shown++;
+      });
+      var any = PF.fee || PF.clock || PF.dd || PF.act;
+      document.getElementById('pf-count').textContent = any
+        ? shown + ' of ' + FIRMS.length + ' firms match'
+        : 'Showing all ' + FIRMS.length + ' firms';
+      document.getElementById('pf-empty').style.display = shown ? 'none' : 'block';
+    }
+
+    function pfReset() {
+      PF = { fee:'', clock:'', dd:'', act:'' };
+      document.querySelectorAll('.pf-chips .pf-chip').forEach(function (b) {
+        b.setAttribute('aria-pressed', b.getAttribute('data-val') === '' ? 'true' : 'false');
+      });
+      pfApply();
+    }
+
+    function pfToggle(i, cb) {
+      var at = PF_SEL.indexOf(i);
+      if (cb.checked && at < 0) {
+        if (PF_SEL.length >= 3) { cb.checked = false; pfFlash('Compare up to 3 firms at a time'); return; }
+        PF_SEL.push(i);
+      } else if (!cb.checked && at >= 0) PF_SEL.splice(at, 1);
+      pfTray();
+      if (document.getElementById('pf-compare').style.display !== 'none') pfRender(false);
+    }
+
+    function pfTray() {
+      var t = document.getElementById('pf-tray');
+      var n = PF_SEL.length;
+      t.classList.toggle('on', n > 0);
+      document.getElementById('pf-tray-txt').textContent = n === 1 ? '1 firm selected, pick one more' : n + ' firms selected';
+      document.getElementById('pf-tray-btn').disabled = n < 2;
+    }
+
+    var pfFlashT;
+    function pfFlash(msg) {
+      var el = document.getElementById('pf-tray-txt');
+      document.getElementById('pf-tray').classList.add('on');
+      el.textContent = msg;
+      clearTimeout(pfFlashT); pfFlashT = setTimeout(pfTray, 1800);
+    }
+
+    function pfClear() {
+      PF_SEL = [];
+      document.querySelectorAll('#firm-rows .pf-cb').forEach(function (c) { c.checked = false; });
+      document.getElementById('pf-compare').style.display = 'none';
+      pfTray();
+    }
+
+    function pfCell(label, val, cls) {
+      return '<div class="pf-row"><span>' + label + '</span><span class="' + (cls || '') + '">' + val + '</span></div>';
+    }
+
+    function pfRender(scroll) {
+      var box = document.getElementById('pf-compare');
+      if (PF_SEL.length < 2) { box.style.display = 'none'; return; }
+      var grid = document.getElementById('pf-cmp-grid');
+      grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(220px, 1fr))';
+      grid.innerHTML = PF_SEL.map(function (i) {
+        var p = FIRMS[i], k = p.k || {};
+        var disc = p.pct ? p.pct + '% off' : (p.pctLabel || 'Standard');
+        return '<div class="pf-card">'
+          + '<h3>' + escA(p.n) + '</h3><div class="text-[10.5px] text-zinc-600 mb-2">' + escA(p.ty) + '</div>'
+          + pfCell('Discount', escA(disc), 'pf-good')
+          + pfCell('Code', escA(p.code || 'n/a'))
+          + pfCell('Eval fee', escA(p.fee || 'n/a') + (p.verify ? '<span class="pf-tag">VERIFY</span>' : ''), k.fee === 'one' ? 'pf-good' : 'pf-bad')
+          + pfCell('Deadline to pass', escA(p.clock || 'n/a'), k.clock === 'none' ? 'pf-good' : 'pf-bad')
+          + pfCell('Activation fee', escA(p.act || 'n/a'), k.act === 'no' ? 'pf-good' : (k.act === 'yes' ? 'pf-bad' : ''))
+          + pfCell('Drawdown', escA(p.dd || 'n/a'))
+          + (p.fit ? '<div class="pf-note"><b class="pf-good">Good fit if</b>' + escA(p.fit) + '</div>' : '')
+          + (p.watch ? '<div class="pf-note"><b class="pf-bad">Watch out for</b>' + escA(p.watch) + '</div>' : '')
+          + '<div style="flex:1"></div>'
+          + '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer" class="pf-btn" style="display:block;text-align:center;margin-top:14px;text-decoration:none">Open ' + escA(p.n) + ' &rarr;</a>'
+          + '</div>';
+      }).join('');
+      box.style.display = 'block';
+      if (scroll) { try { box.scrollIntoView({ behavior:'smooth', block:'start' }); } catch (e) { box.scrollIntoView(); } }
+    }
+
+    function pfInit() {
+      document.querySelectorAll('.pf-chips').forEach(function (g) {
+        g.addEventListener('click', function (e) {
+          var b = e.target.closest('.pf-chip'); if (!b) return;
+          g.querySelectorAll('.pf-chip').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+          b.setAttribute('aria-pressed', 'true');
+          PF[g.getAttribute('data-group')] = b.getAttribute('data-val');
+          pfApply();
+        });
+      });
+      document.getElementById('pf-reset').addEventListener('click', pfReset);
+      document.getElementById('pf-compare-top').addEventListener('click', function () {
+        if (PF_SEL.length < 2) pfFlash('Tick 2 or 3 firms in the table to compare'); else pfRender(true);
+      });
+      document.getElementById('pf-tray-btn').addEventListener('click', function () { pfRender(true); });
+      pfApply();
     }
 
     function togglePartner(row) {
@@ -382,7 +604,7 @@
       setTimeout(function(){ row.classList.remove('ring-1','ring-green-500/40'); }, 2600);
     }
     window.addEventListener('hashchange', function(){ openFromHash(); });
-    document.addEventListener('DOMContentLoaded', function(){ renderPartners(); openFromHash(); });
+    document.addEventListener('DOMContentLoaded', function(){ renderPartners(); pfInit(); openFromHash(); });
 
     function copyCode(code, btn) {
       navigator.clipboard.writeText(code).then(() => {
@@ -393,6 +615,11 @@
     }
   </script>
 
+
+  <div id="pf-tray" class="pf-tray" role="status">
+    <span id="pf-tray-txt"></span>
+    <button id="pf-tray-btn" class="pf-btn" type="button" disabled>Compare &rarr;</button>
+  </div>
 
   <script src="nav-loader.js?v=20260924a"></script>
 </body>
