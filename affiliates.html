@@ -40,11 +40,24 @@
     .pf-card h3{font-size:15px;font-weight:900;color:#fff}
     .pf-row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px}
     .pf-row span:first-child{color:#71717a}
-    .pf-row span:last-child{color:#e4e4e7;font-weight:700;text-align:right}
+    .pf-row span:first-child{flex:0 0 38%}
+    .pf-row span:last-child{color:#e4e4e7;font-weight:700;text-align:right;line-height:1.45}
     .pf-good{color:#4ade80!important}
     .pf-bad{color:#fbbf24!important}
     .pf-note{font-size:11.5px;line-height:1.55;color:#a1a1aa;margin-top:10px}
     .pf-note b{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+    .pf-q{margin-bottom:16px}
+    .pf-q .pf-label{color:#d4d4d8;font-size:11px;letter-spacing:.06em;text-transform:none;font-weight:800}
+    .pf-res{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:16px}
+    .pf-rank{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#4ade80}
+    .pf-score{font-size:22px;font-weight:900;color:#fff}
+    .pf-why{list-style:none;padding:0;margin:10px 0 0;font-size:11.5px;line-height:1.5}
+    .pf-why li{padding-left:16px;position:relative;margin-bottom:4px;color:#d4d4d8}
+    .pf-why li:before{position:absolute;left:0;font-weight:900}
+    .pf-why li.ok:before{content:"\2713";color:#4ade80}
+    .pf-why li.no:before{content:"!";color:#fbbf24}
+    .pf-why li.x{color:#a1a1aa}
+    .pf-why li.x:before{content:"\2715";color:#f87171}
     .pf-tag{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.08em;color:#fbbf24;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle}
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/affiliates.html" />
@@ -98,8 +111,8 @@
 
           <!-- ═══ FIND YOUR FIT ═══ -->
           <div class="mb-10">
-            <h2 class="text-sm font-black text-white">Find the firm that fits how you trade</h2>
-            <p class="text-xs text-zinc-500 mt-1 mb-4 leading-relaxed">Filter by what matters to you, then tick up to three firms to compare side by side.
+            <h2 class="text-sm font-black text-white">Prop firm finder: which firm fits how you trade?</h2>
+            <p class="text-xs text-zinc-500 mt-1 mb-4 leading-relaxed">Take the quick match, filter by the rules that matter to you, or tick up to three firms to compare side by side.
               We list the downsides too. The right firm is the one that fits you, partner or not.</p>
 
             <div class="pf-warn mb-4">
@@ -108,7 +121,41 @@
               Nothing here is financial advice.
             </div>
 
+            <div class="pf-box mb-4" id="pf-engine">
+              <div class="pf-rank" style="margin-bottom:4px">Quick match</div>
+              <p class="text-xs text-zinc-500 mb-4 leading-relaxed">Not sure what you need? Answer five questions and we'll rank the firms on this page for how you trade, with the reasons.</p>
+              <div class="pf-groups">
+                <div class="pf-q"><div class="pf-label">1. How long do you expect to need to pass?</div><div class="pf-chips" data-q="pace">
+                  <button class="pf-chip" aria-pressed="false" data-val="fast">Under 2 weeks</button>
+                  <button class="pf-chip" aria-pressed="true" data-val="unsure">Not sure</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="slow">I want to take my time</button></div></div>
+                <div class="pf-q"><div class="pf-label">2. What platform do you trade on?</div><div class="pf-chips" data-q="plat">
+                  <button class="pf-chip" aria-pressed="false" data-val="NinjaTrader">NinjaTrader</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="TradingView">TradingView</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="Tradovate">Tradovate</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="Rithmic">Rithmic</button>
+                  <button class="pf-chip" aria-pressed="true" data-val="">Not sure</button></div></div>
+                <div class="pf-q"><div class="pf-label">3. Will you automate your trading?</div><div class="pf-chips" data-q="auto">
+                  <button class="pf-chip" aria-pressed="true" data-val="no">No, I trade manually</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="own">My own bot or strategy</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="third">A third-party tool or copier</button></div></div>
+                <div class="pf-q"><div class="pf-label">4. Which drawdown do you want?</div><div class="pf-chips" data-q="dd">
+                  <button class="pf-chip" aria-pressed="false" data-val="EOD">End of day</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="Intraday">Intraday trailing</button>
+                  <button class="pf-chip" aria-pressed="true" data-val="">No preference</button></div></div>
+                <div class="pf-q"><div class="pf-label">5. How do you want to pay?</div><div class="pf-chips" data-q="pay">
+                  <button class="pf-chip" aria-pressed="false" data-val="allin">One price, no extra fees</button>
+                  <button class="pf-chip" aria-pressed="true" data-val="">Doesn't matter</button></div></div>
+              </div>
+              <div class="pf-bar" style="margin-top:4px">
+                <span>Ranks only the firms listed on this page. Other firms may suit you better.</span>
+                <button class="pf-btn" id="pf-run" type="button">Show my matches &rarr;</button>
+              </div>
+              <div id="pf-results"></div>
+            </div>
+
             <div class="pf-box">
+              <div class="pf-label" style="color:#d4d4d8;font-size:11px;letter-spacing:.06em;text-transform:none">Or filter the list yourself</div>
               <div class="pf-groups">
                 <div><div class="pf-label">How you pay</div><div class="pf-chips" data-group="fee">
                   <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
@@ -125,6 +172,19 @@
                 <div><div class="pf-label">Activation fee after passing</div><div class="pf-chips" data-group="act">
                   <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
                   <button class="pf-chip" aria-pressed="false" data-val="no">No activation fee</button></div></div>
+                <div><div class="pf-label">Platform you use</div><div class="pf-chips" data-group="plat">
+                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="NinjaTrader">NinjaTrader</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="TradingView">TradingView</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="Tradovate">Tradovate</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="Rithmic">Rithmic</button></div></div>
+                <div><div class="pf-label">Automation</div><div class="pf-chips" data-group="auto">
+                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="own">Own bots OK</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="yes">Third-party bots OK</button></div></div>
+                <div><div class="pf-label">Minimum days to pass</div><div class="pf-chips" data-group="mind">
+                  <button class="pf-chip" aria-pressed="true" data-val="">Any</button>
+                  <button class="pf-chip" aria-pressed="false" data-val="none">No minimum</button></div></div>
               </div>
               <div class="pf-bar">
                 <span id="pf-count">Showing all firms</span>
@@ -190,6 +250,8 @@
           <div class="mt-12 mb-4">
             <h2 class="text-sm font-black text-white">Platform &amp; automation</h2>
             <p class="text-xs text-zinc-600 mt-0.5">What the suite runs on, and what executes the Auto Trader</p>
+            <p class="text-[11px] text-amber-400/80 mt-2 leading-relaxed">Before you automate a prop firm account, check that firm's automation rules.
+              Several firms limit or ban third-party automation. Use the Automation filter above.</p>
           </div>
           <div class="overflow-x-auto -mx-1 px-1">
             <table class="w-full text-sm" style="border-collapse:collapse">
@@ -292,60 +354,105 @@
 
 
     /* ══════════════════════════════════════════════════════════════════════
-       PARTNERS — edit here, the tables build themselves.
-       `dd` is the drawdown rule. Filled in where the firm states it; leave ''
-       and the cell shows a dash. Worth filling the blanks in — it's the column
-       that tells a member whether their firm matches the FSD-X eval modelling.
+       PARTNERS — edit here, the tables, filters and compare cards build themselves.
+       Last full check: October 8, 2026. Re-verify every field when you update.
+       k.*  = filter keys:  fee one|monthly · clock none|limit · dd [EOD,Intraday]
+              act no|yes|mixed · auto yes|own|limited|no · mind none|some
+       plat = platforms the firm supports (used by the Platform filter)
        ════════════════════════════════════════════════════════════════════ */
     const FIRMS = [
-      { n:'Apex Trader Funding', ty:'Futures prop firm', pct:90, std:20, code:'DJFSDX', dd:'EOD or Intraday', fee:'One-time', clock:'30 days',
-        k:{fee:'one', clock:'limit', dd:['EOD','Intraday'], act:'yes'}, act:'Yes, on most plans (paid when you pass)',
+      { n:'Apex Trader Funding', ty:'Futures prop firm', pct:90, std:20, code:'DJFSDX', feat:true,
+        url:'https://apextraderfunding.com/member/aff/go/johnnyutah421',
+        dd:'EOD or Intraday', fee:'One-time', clock:'30 days',
+        act:'Standard plans: yes, due within 7 days of passing. "No Activation Fee" plans: none',
+        dll:'EOD accounts: yes (pauses the day, doesn\'t fail you). Intraday eval: none. Funded: tiered',
+        cons:'Eval: none. Funded: 50% (best day under half of profit since last payout)',
+        mind:'None. Can pass in one day',
+        plat:['NinjaTrader','Tradovate','Rithmic','TradingView'], platTxt:'Rithmic or Tradovate. NinjaTrader via either. TradingView via Tradovate',
+        auto:'Restricted. Semi-auto trade management OK. Fully automated trading not allowed on funded accounts. Ask Apex before running any bot',
+        maxf:'Up to 20 funded (PA) accounts', split:'Check Apex payout policy (changed in 2026)',
+        hold:'News OK (no straddles). Flat by 4:59 PM ET, no overnight',
+        k:{fee:'one', clock:'limit', dd:['EOD','Intraday'], act:'mixed', auto:'limited', mind:'none'},
         fit:'You want the biggest discount on this list and expect to pass inside a month.',
-        watch:'Hard 30-day deadline with no extensions. Most plans charge an activation fee once you pass.',
-        url:'https://apextraderfunding.com/member/aff/go/johnnyutah421', feat:true,
-        why:'One of the largest and most established futures prop firms, with evaluation accounts across a wide range of sizes and a straightforward path from eval to funded. The go-to funding option for most of the FSD-X community.',
-        pts:['Wide range of evaluation account sizes','One-step evaluation to funded','Multiple concurrent accounts allowed','Frequent deep discount windows'],
-        rules:['EOD or Intraday Drawdown','No Payout Denials','No MAE Rule','No 5:1 Risk/Reward Rule','Built-In Scaling','50% Consistency'],
-        note:'Evaluations are a one-time fee with 30 days to pass. Most plans charge an activation fee once you pass; check which plan you pick at checkout. Older legacy accounts stay on monthly billing until closed.' },
+        watch:'Hard 30-day deadline with no extensions. Standard plans add an activation fee after you pass. Funded accounts have a 50% consistency rule and close after a set number of payouts.',
+        why:'One of the largest futures prop firms, with evaluations across a wide range of sizes and a one-step path to funded. The go-to funding option for most of the FSD-X community.',
+        pts:['Wide range of evaluation sizes','One-step evaluation to funded','Up to 20 funded accounts','Choose EOD or intraday drawdown'],
+        rules:['No eval consistency rule','No MAE rule','Built-in scaling','50% consistency (funded)'],
+        note:'Rules shown are for accounts bought on or after March 1, 2026. Older legacy accounts keep their original rules and monthly billing until closed.' },
 
-      { n:'Bulenox', ty:'Futures prop firm', pct:83, std:45, stdCode:'DJFSDX21', code:'DJFSDX', dd:'EOD or Trailing', fee:'One-time', clock:'30 days*',
-        k:{fee:'one', clock:'limit', dd:['EOD','Intraday'], act:'mixed'}, act:'Depends on plan (none on Fast Track / Momentum)',
-        fit:'You want one payment with no activation fee (Fast Track or Momentum), or a choice between EOD and trailing drawdown.',
-        watch:'The Qualification plan gives 30 days of access plus an activation fee after you pass. Your drawdown type is locked for the life of the account.',
+      { n:'Bulenox', ty:'Futures prop firm', pct:83, std:45, stdCode:'DJFSDX21', code:'DJFSDX',
         url:'https://tinyurl.com/bulenox21',
-        why:'Flexible account sizes with aggressive rotating discount windows. Good option for traders running multiple accounts simultaneously.',
-        pts:['Flexible account sizes','Suits running multiple accounts','Fast Track and Momentum plans: no activation fee','Drawdown type is locked for the life of the account'], rules:[],
-        note:'*Qualification plan: one-time payment with 30 days of access, plus a Master activation fee after you pass. Fast Track and Momentum are single payments with no activation fee.' },
+        dd:'EOD or Trailing', fee:'One-time', clock:'30 days',
+        act:'Depends on plan. Original Options 1 & 2: yes ($143 to $498 by size). Momentum and Fast Track: none',
+        dll:'EOD accounts: yes. Trailing accounts: none',
+        cons:'Eval: none. Funded: 40% (Options 1 & 2), 35% (Momentum), 20 to 30% (Fast Track)',
+        mind:'None to pass. 10 trading days before first payout (Options 1 & 2)',
+        plat:['NinjaTrader','Rithmic'], platTxt:'Rithmic only. NinjaTrader and other Rithmic platforms work',
+        auto:'Allowed for your own, self-built tools. Purchased or shared bots aren\'t covered. Third-party API connection costs extra',
+        maxf:'Up to 5 funded (Master) accounts', split:'100% of first $10K, then 90%',
+        hold:'Flat by 3:59 PM CT, no overnight',
+        k:{fee:'one', clock:'limit', dd:['EOD','Intraday'], act:'mixed', auto:'own', mind:'none'},
+        fit:'You want one payment with no activation fee (Momentum or Fast Track), or you run your own NinjaTrader strategies on Rithmic.',
+        watch:'Evaluations expire after 30 days, and a reset doesn\'t restart the clock. Rithmic only, no Tradovate or TradingView. Drawdown type is locked for the life of the account.',
+        why:'Flexible plans, including a no-evaluation Fast Track and an all-in-one Momentum plan. Monthly subscriptions were dropped in August 2026.',
+        pts:['Three plan types: original, Momentum, Fast Track','No activation fee on Momentum or Fast Track','Choose EOD or trailing drawdown','Drawdown type is locked for the life of the account'], rules:[],
+        note:'Plan names and fees changed on August 17, 2026. Check which plan you\'re buying at checkout.' },
 
-      { n:'TradeDay', ty:'Futures prop firm', pct:40, code:'DJFSDX', dd:'EOD or Intraday', fee:'Monthly', clock:'None stated',
-        k:{fee:'monthly', clock:'none', dd:['EOD','Intraday'], act:'no'}, act:'None',
-        fit:'You want no deadline and no activation fee, and you expect to pass fairly quickly.',
-        watch:'Billed monthly until you pass or cancel, so a slow eval costs more every month.',
+      { n:'TradeDay', ty:'Futures prop firm', pct:40, code:'DJFSDX',
         url:'https://tinyurl.com/tradedayfsdx',
-        why:'Built around EOD trailing drawdown — your intraday drawdown resets at end of day rather than tracking from your peak. Less pressure during live sessions.',
-        pts:['EOD or intraday trailing drawdown','No activation fee','No stated deadline to pass'], rules:[],
-        note:'Evaluations bill monthly until you pass or cancel, so taking longer costs more. No activation fee once you pass.' },
+        dd:'EOD or Intraday', fee:'Monthly', clock:'None stated',
+        act:'None',
+        dll:'None stated',
+        cons:'Check TradeDay',
+        mind:'3 to 5 days, depending on the evaluation path',
+        plat:['NinjaTrader','Tradovate','TradingView'], platTxt:'Tradovate, NinjaTrader, TradingView, Jigsaw, Quantower',
+        auto:'Your own system only, on a supported platform. Third-party bots and algos are banned',
+        maxf:'Check TradeDay', split:'Check TradeDay',
+        hold:'Check TradeDay',
+        k:{fee:'monthly', clock:'none', dd:['EOD','Intraday'], act:'no', auto:'own', mind:'some'},
+        fit:'You want no deadline and no activation fee, and you expect to pass fairly quickly.',
+        watch:'Billed monthly until you pass or cancel, so a slow eval costs more each month. You need at least 3 to 5 trading days to pass. Third-party automation is banned.',
+        why:'Choose between EOD and intraday trailing drawdown, with no activation fee when you pass.',
+        pts:['EOD or intraday trailing drawdown','No activation fee','No stated deadline to pass','Supports TradingView and NinjaTrader'], rules:[],
+        note:'Evaluations bill monthly until you pass or cancel.' },
 
-      { n:'E8 Markets', ty:'Multi-asset prop firm', pct:35, code:'DJFSDX', dd:'EOD', fee:'One-time', clock:'None stated', verify:true,
-        k:{fee:'one', clock:'none', dd:['EOD'], act:'no'}, act:'None stated',
-        fit:'You want EOD drawdown with no stated deadline, or want futures and forex under one roof.',
-        watch:'Reviews disagree on whether E8 futures evals are one-time or monthly, and terms differ between Signature and Zero accounts. Confirm on E8 before you buy.',
+      { n:'E8 Markets', ty:'Multi-asset prop firm', pct:35, code:'DJFSDX',
         url:'https://tinyurl.com/e8djfsdx',
-        why:'Multi-asset prop firm covering futures, forex, and indices. Good option if you want to diversify across different markets beyond just NQ/MNQ.',
-        pts:['Futures, forex and indices','EOD trailing drawdown on futures accounts','No minimum trading days (Signature)'], rules:[],
-        note:'Futures fee model and activation terms differ by account type (Signature vs Zero). Confirm on E8 before you buy.' },
+        dd:'EOD', fee:'One-time', clock:'None',
+        act:'None',
+        dll:'Eval: none. Funded Signature: 2% soft daily pause (doesn\'t fail you)',
+        cons:'Signature: none in eval, 35% funded. Zero: 40% in eval, none funded',
+        mind:'None to pass',
+        plat:['NinjaTrader','Tradovate','TradingView'], platTxt:'NinjaTrader or Tradovate. TradingView via Tradovate',
+        auto:'Not allowed. All automation is banned on E8 futures, including semi-automated execution',
+        maxf:'Up to 8 funded per household', split:'80% (Zero: 80% or 100%)',
+        hold:'News OK. Flat by 3:10 PM CT, no overnight',
+        k:{fee:'one', clock:'none', dd:['EOD'], act:'no', auto:'no', mind:'none'},
+        fit:'You trade manually, want EOD drawdown, and want no deadline and no activation fee.',
+        watch:'No automation of any kind on futures accounts. Signature and Zero accounts have different consistency rules, so pick carefully. Earlier in 2026, E8 futures were billed monthly. Confirm one-time billing at checkout.',
+        why:'Multi-asset prop firm covering futures, forex and indices, with two futures account types (Signature and Zero).',
+        pts:['Futures, forex and indices','EOD trailing drawdown','No activation fee','No minimum days to pass'], rules:[] },
 
-      { n:'FundedNext', ty:'Multi-asset prop firm', pct:0, pctLabel:'Varies', code:'DJFSDX', dd:'EOD', fee:'One-time', clock:'None',
-        k:{fee:'one', clock:'none', dd:['EOD'], act:'no'}, act:'None',
-        fit:'You want one fee, no deadline and no activation fee. This is the least time pressure on the list.',
-        watch:'Challenge accounts are deactivated after 7 days in a row with no trades. The discount varies by product.',
+      { n:'FundedNext', ty:'Multi-asset prop firm', pct:0, pctLabel:'Varies', code:'DJFSDX',
         url:'https://fundednext.com/?fpr=DJFSDX',
-        why:'Futures, CFD, forex and crypto challenge paths under one account. FundedNext runs a large catalogue of challenges and the discount is set per product, so the amount you get depends on which account you pick.',
-        pts:['Futures, CFD, forex and crypto paths','Discount applied per product line','Futures: one-time fee, no time limit, no activation fee','New and returning buyer offers'], rules:[],
-        tiers:['Futures challenges — discounted for new buyers, smaller discount for returning buyers',
-               'Stellar / CFD challenges — discounted across 1-step, 2-step and Lite sizes',
-               'Rapid Pro accounts — fixed-dollar discount instead of a percentage'],
-        note:'Discounts vary by account type and size, and FundedNext rotates them. Use the link, apply code DJFSDX at checkout, and the current offer for that specific account shows on the payment screen. Futures challenge accounts are deactivated after 7 days in a row with no trades.' },
+        dd:'EOD', fee:'One-time', clock:'None',
+        act:'None',
+        dll:'None on most plans. Rapid Daily: soft daily limit',
+        cons:'Depends on plan. Flex and Legacy: 40% in eval. Rapid Pro: 40% funded. Rapid Daily: none',
+        mind:'None to pass',
+        plat:['NinjaTrader','Tradovate','TradingView'], platTxt:'Tradovate or NinjaTrader. TradingView via Tradovate. No Rithmic',
+        auto:'Allowed. EAs and bots are permitted in the challenge and funded stages, with no support from FundedNext',
+        maxf:'Up to 5 active accounts', split:'80 to 90% depending on plan',
+        hold:'News OK. Flat by 3:10 PM CT, no overnight',
+        k:{fee:'one', clock:'none', dd:['EOD'], act:'no', auto:'yes', mind:'none'},
+        fit:'You want one fee, no deadline and no activation fee, or you plan to run automation. This is the least time pressure on the list.',
+        watch:'Challenge accounts are deactivated after 7 days in a row with no trades (30 days on funded). Each plan has a different consistency rule. The discount varies by product.',
+        why:'Futures, CFD, forex and crypto challenge paths under one account. The discount is set per product, so the amount you get depends on which account you pick.',
+        pts:['One-time fee, no time limit, no activation fee','Bots and EAs allowed','Several futures plans (Flex, Legacy, Rapid)','Discount applied per product line'], rules:[],
+        tiers:['Futures challenges: discounted for new buyers, smaller discount for returning buyers',
+               'Stellar / CFD challenges: discounted across 1-step, 2-step and Lite sizes',
+               'Rapid Pro accounts: fixed-dollar discount instead of a percentage'],
+        note:'Discounts vary by account type and size, and FundedNext rotates them. Use the link and apply code DJFSDX at checkout. The current offer for that account shows on the payment screen.' },
     ];
 
     const TOOLS = [
@@ -413,6 +520,9 @@
               : '')
         +   (p.fit ? '<div class="pf-note"><b class="pf-good">Good fit if</b>' + escA(p.fit) + '</div>' : '')
         +   (p.watch ? '<div class="pf-note"><b class="pf-bad">Watch out for</b>' + escA(p.watch) + '</div>' : '')
+        +   (p.act ? '<div class="pf-note"><b style="color:#a1a1aa">Activation fee</b>' + escA(p.act) + '</div>' : '')
+        +   (p.auto ? '<div class="pf-note"><b style="color:#a1a1aa">Automation</b>' + escA(p.auto) + '</div>' : '')
+        +   (p.platTxt ? '<div class="pf-note"><b style="color:#a1a1aa">Platforms</b>' + escA(p.platTxt) + '</div>' : '')
         +   (p.note ? '<div class="text-[11px] text-zinc-600 mt-3">' + escA(p.note) + '</div>' : '')
         +   '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer"'
         +     ' class="sm:hidden mt-4 block w-full text-center py-2.5 bg-green-500 hover:bg-green-400'
@@ -469,7 +579,8 @@
     }
 
     /* ── FINDER: filters + compare ─────────────────────────────────────── */
-    var PF = { fee:'', clock:'', dd:'', act:'' };
+    var PF_EMPTY = { fee:'', clock:'', dd:'', act:'', plat:'', auto:'', mind:'' };
+    var PF = Object.assign({}, PF_EMPTY);
     var PF_SEL = [];
 
     function pfMatch(p) {
@@ -478,6 +589,10 @@
       if (PF.clock && k.clock !== PF.clock) return false;
       if (PF.dd && (k.dd || []).indexOf(PF.dd) < 0) return false;
       if (PF.act === 'no' && k.act === 'yes') return false;   // 'mixed' stays: some plans have none
+      if (PF.plat && (p.plat || []).indexOf(PF.plat) < 0) return false;
+      if (PF.auto === 'own' && !(k.auto === 'own' || k.auto === 'yes')) return false;
+      if (PF.auto === 'yes' && k.auto !== 'yes') return false;
+      if (PF.mind && k.mind !== PF.mind) return false;
       return true;
     }
 
@@ -492,7 +607,7 @@
         if (d && d.classList.contains('detail') && !ok) d.classList.add('hidden');
         if (ok) shown++;
       });
-      var any = PF.fee || PF.clock || PF.dd || PF.act;
+      var any = Object.keys(PF).some(function (x) { return PF[x]; });
       document.getElementById('pf-count').textContent = any
         ? shown + ' of ' + FIRMS.length + ' firms match'
         : 'Showing all ' + FIRMS.length + ' firms';
@@ -500,8 +615,8 @@
     }
 
     function pfReset() {
-      PF = { fee:'', clock:'', dd:'', act:'' };
-      document.querySelectorAll('.pf-chips .pf-chip').forEach(function (b) {
+      PF = Object.assign({}, PF_EMPTY);
+      document.querySelectorAll('.pf-chips[data-group] .pf-chip').forEach(function (b) {
         b.setAttribute('aria-pressed', b.getAttribute('data-val') === '' ? 'true' : 'false');
       });
       pfApply();
@@ -560,6 +675,14 @@
           + pfCell('Deadline to pass', escA(p.clock || 'n/a'), k.clock === 'none' ? 'pf-good' : 'pf-bad')
           + pfCell('Activation fee', escA(p.act || 'n/a'), k.act === 'no' ? 'pf-good' : (k.act === 'yes' ? 'pf-bad' : ''))
           + pfCell('Drawdown', escA(p.dd || 'n/a'))
+          + pfCell('Daily loss limit', escA(p.dll || 'n/a'))
+          + pfCell('Consistency rule', escA(p.cons || 'n/a'))
+          + pfCell('Min. days to pass', escA(p.mind || 'n/a'), k.mind === 'none' ? 'pf-good' : 'pf-bad')
+          + pfCell('Platforms', escA(p.platTxt || 'n/a'))
+          + pfCell('Automation', escA(p.auto || 'n/a'), k.auto === 'yes' ? 'pf-good' : (k.auto === 'no' ? 'pf-bad' : ''))
+          + pfCell('Funded accounts', escA(p.maxf || 'n/a'))
+          + pfCell('Profit split', escA(p.split || 'n/a'))
+          + pfCell('News / overnight', escA(p.hold || 'n/a'))
           + (p.fit ? '<div class="pf-note"><b class="pf-good">Good fit if</b>' + escA(p.fit) + '</div>' : '')
           + (p.watch ? '<div class="pf-note"><b class="pf-bad">Watch out for</b>' + escA(p.watch) + '</div>' : '')
           + '<div style="flex:1"></div>'
@@ -570,8 +693,112 @@
       if (scroll) { try { box.scrollIntoView({ behavior:'smooth', block:'start' }); } catch (e) { box.scrollIntoView(); } }
     }
 
+    /* ── QUICK MATCH ENGINE ─────────────────────────────────────────────
+       Scores each firm against the answers. Hard mismatches (wrong platform,
+       automation banned) knock a firm to the bottom; soft ones cost points.
+       Every point change writes a plain-English reason shown to the member. */
+    var PQ = { pace:'unsure', plat:'', auto:'no', dd:'', pay:'' };
+
+    function pfScore(p) {
+      var k = p.k || {}, sc = 100, why = [], hard = false;
+      function ok(t){ why.push(['ok', t]); }
+      function no(t, n){ sc -= n; why.push(['no', t]); }
+      function x(t){ hard = true; why.push(['x', t]); }
+
+      // pace vs deadline + billing
+      if (PQ.pace === 'slow') {
+        if (k.clock === 'limit') no('Has a ' + p.clock + ' deadline to pass', 30); else ok('No deadline to pass');
+        if (k.fee === 'monthly') no('Billed monthly, so taking your time costs more', 20); else ok('One-time fee, no monthly rebill');
+      } else if (PQ.pace === 'unsure') {
+        if (k.clock === 'limit') no(p.clock + ' deadline to pass', 10); else ok('No deadline to pass');
+        if (k.fee === 'monthly') no('Billed monthly until you pass', 8);
+      } else {
+        if (k.mind === 'some') no('Minimum ' + p.mind.split(',')[0].toLowerCase() + ' before you can pass', 8);
+        else ok('No minimum days. Can pass quickly');
+      }
+      // platform
+      if (PQ.plat) {
+        if ((p.plat || []).indexOf(PQ.plat) < 0) x('Doesn\'t support ' + PQ.plat);
+        else ok('Works with ' + PQ.plat);
+      }
+      // automation
+      if (PQ.auto === 'own') {
+        if (k.auto === 'no') x('Bans automation on futures accounts');
+        else if (k.auto === 'limited') no('Automation restricted. Fully automated not allowed on funded', 25);
+        else ok('Allows your own automated strategy');
+      } else if (PQ.auto === 'third') {
+        if (k.auto === 'no') x('Bans automation on futures accounts');
+        else if (k.auto === 'own') x('Only allows bots you built yourself');
+        else if (k.auto === 'limited') no('Automation restricted. Ask before running a third-party tool', 35);
+        else ok('Allows third-party bots and EAs');
+      }
+      // drawdown
+      if (PQ.dd) {
+        if ((k.dd || []).indexOf(PQ.dd) < 0) no('No ' + (PQ.dd === 'EOD' ? 'end-of-day' : 'intraday trailing') + ' drawdown option', 25);
+        else ok((PQ.dd === 'EOD' ? 'End-of-day' : 'Intraday trailing') + ' drawdown available');
+      }
+      // all-in price
+      if (PQ.pay === 'allin') {
+        if (k.act === 'yes') no('Activation fee after you pass', 20);
+        else if (k.act === 'mixed') no('Activation fee on some plans. Pick the no-fee plan', 6);
+        else ok('No activation fee');
+        if (k.fee === 'monthly' && PQ.pace !== 'slow') no('Monthly billing, so the total isn\'t fixed', 12);
+      }
+      return { p:p, sc:Math.max(0, sc), why:why, hard:hard };
+    }
+
+    function pfRun() {
+      var res = FIRMS.map(pfScore).sort(function (a, b) { return b.sc - a.sc; });
+      var good = res.filter(function (r) { return !r.hard && r.sc >= 40; });
+      var out = document.getElementById('pf-results');
+      if (!good.length) {
+        out.innerHTML = '<div class="pf-empty">None of the firms on this page fit those answers. Another prop firm may suit you better, and that\'s fine.</div>';
+        return;
+      }
+      out.innerHTML = '<div class="pf-res">' + good.slice(0, 3).map(function (r, i) {
+        var p = r.p;
+        var lis = r.why.map(function (w) { return '<li class="' + w[0] + '">' + escA(w[1]) + '</li>'; }).join('');
+        return '<div class="pf-card">'
+          + '<div class="pf-rank">' + (i === 0 ? 'Best match' : '#' + (i + 1)) + '</div>'
+          + '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:4px">'
+          +   '<h3>' + escA(p.n) + '</h3><span class="pf-score">' + r.sc + '<span style="font-size:11px;color:#71717a">/100</span></span></div>'
+          + '<ul class="pf-why">' + lis + '</ul>'
+          + (p.watch ? '<div class="pf-note"><b class="pf-bad">Also watch for</b>' + escA(p.watch) + '</div>' : '')
+          + '<div style="flex:1"></div>'
+          + '<button type="button" class="pf-link" style="margin-top:12px;text-align:left" onclick="pfJump(' + FIRMS.indexOf(p) + ')">See full details in the table &darr;</button>'
+          + '</div>';
+      }).join('') + '</div>'
+        + (good.length > 1 ? '<div class="pf-bar"><span>Scores reflect your answers only, as of the date above. Confirm on each firm\'s site.</span>'
+          + '<button class="pf-btn" type="button" onclick="pfCompareTop(' + JSON.stringify(good.slice(0, 3).map(function (r) { return FIRMS.indexOf(r.p); })) + ')">Compare these side by side &rarr;</button></div>' : '');
+    }
+
+    function pfJump(i) {
+      var row = document.querySelector('#firm-rows tr[data-firm="' + i + '"]');
+      if (!row) return;
+      pfReset();
+      var d = row.nextElementSibling;
+      if (d && d.classList.contains('detail')) d.classList.remove('hidden');
+      try { row.scrollIntoView({ block:'center', behavior:'smooth' }); } catch (e) { row.scrollIntoView(); }
+    }
+
+    function pfCompareTop(ids) {
+      PF_SEL = ids.slice(0, 3);
+      document.querySelectorAll('#firm-rows .pf-cb').forEach(function (c, i) { c.checked = PF_SEL.indexOf(i) >= 0; });
+      pfTray(); pfRender(true);
+    }
+
     function pfInit() {
-      document.querySelectorAll('.pf-chips').forEach(function (g) {
+      document.querySelectorAll('[data-q]').forEach(function (g) {
+        g.addEventListener('click', function (e) {
+          var b = e.target.closest('.pf-chip'); if (!b) return;
+          g.querySelectorAll('.pf-chip').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
+          b.setAttribute('aria-pressed', 'true');
+          PQ[g.getAttribute('data-q')] = b.getAttribute('data-val');
+          if (document.getElementById('pf-results').innerHTML) pfRun();
+        });
+      });
+      document.getElementById('pf-run').addEventListener('click', pfRun);
+      document.querySelectorAll('.pf-chips[data-group]').forEach(function (g) {
         g.addEventListener('click', function (e) {
           var b = e.target.closest('.pf-chip'); if (!b) return;
           g.querySelectorAll('.pf-chip').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
