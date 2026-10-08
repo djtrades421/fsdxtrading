@@ -2521,6 +2521,14 @@
       return '';
     }
 
+    // One label for a member's full plan stack ("Plus Monthly → Pro Monthly").
+    // The Whop sync AND the on-load relabel both use this. When they used
+    // different rules, load collapsed the stack to one plan, the next sync
+    // re-expanded it, and Activity logged a fake "Plan changed" every login.
+    function stackedPlanLabel(ids) {
+      return [...new Set((ids || []).filter(Boolean).map(id => planLabelFromId(id)).filter(Boolean))].join(' → ');
+    }
+
     // ── Fallback: resolve a tier label from the Whop PRODUCT NAME ──
     // Only used when the plan ID isn't in PLAN_MAP yet (a new plan, a renamed
     // one). Raven and Nightwing are tested FIRST: Nightwing's Whop product is
@@ -3585,10 +3593,10 @@
         // merge so synced rows read identically to CSV-imported ones.
         incoming.forEach(item => {
           const ids = item.planIds && item.planIds.length ? item.planIds : [item.planId].filter(Boolean);
-          const labels = [...new Set(ids.map(id => planLabelFromId(id)).filter(Boolean))];
-          if (labels.length) {
-            item.accessType = labels.join(' → ');
-            item.planName = item.accessType;
+          const stacked = stackedPlanLabel(ids);
+          if (stacked) {
+            item.accessType = stacked;
+            item.planName = stacked;
           }
           // An active membership on a lifetime plan is lifetime, not a renewal.
           if (/lifetime/i.test(item.accessType || '') && item.status === 'active') {
@@ -4448,12 +4456,15 @@
       rosterData.forEach(r => {
         const emailLower = (r.email || '').toLowerCase();
         let label = '';
+        // 0) A Whop-synced row carries its whole plan stack — label it exactly
+        //    the way the sync does, so load never fights the sync.
+        if (Array.isArray(r.planIds) && r.planIds.length) label = stackedPlanLabel(r.planIds);
         // 1) Prefer the raw membership row(s) — same source as the expanded card
         const matches = rawMembershipRows.filter(m =>
           (emailLower && (m['Email'] || m['Imported email'] || '').toLowerCase() === emailLower) ||
           (r.whopKey && m['Key'] === r.whopKey)
         );
-        for (const m of matches) { const l = planLabelFromId(m['Plan'] || ''); if (l) { label = l; break; } }
+        if (!label) for (const m of matches) { const l = planLabelFromId(m['Plan'] || ''); if (l) { label = l; break; } }
         // 2) Fall back to the plan ID stored on the roster record
         if (!label) label = planLabelFromId(r.planId || '');
         if (label && (r.accessType !== label || r.planName !== label)) {
@@ -7407,7 +7418,21 @@
         const [ed, cd] = await Promise.all([er.json(), cr.json()]);
         activityData = Array.isArray(ed.trades) ? ed.trades : [];
         const c = Array.isArray(cd.trades) && cd.trades[0] ? cd.trades[0] : {};
-        activityCfg = { watch: Array.isArray(c.watch) ? c.watch : [], baselineAt: c.baselineAt || '', syncOnLogin: c.syncOnLogin !== false };
+        activityCfg = { watch: Array.isArray(c.watch) ? c.watch : [], baselineAt: c.baselineAt || '', syncOnLogin: c.syncOnLogin !== false, phantomPurged: !!c.phantomPurged };
+        // One-time cleanup: drop "Plan changed" rows written by the relabel/sync
+        // tug-of-war. Signature: before-plan is a single plan that is also the
+        // first plan of the after-stack ("Plus Monthly → Plus Monthly → Pro Monthly").
+        if (!activityCfg.phantomPurged) {
+          const n = activityData.length;
+          activityData = activityData.filter(e => {
+            if (e.type !== 'plan' || !e.detail || e.detail.includes('⇒')) return true;
+            const parts = e.detail.split('→').map(x => x.trim());
+            return !(parts.length >= 3 && parts[0] === parts[1]);
+          });
+          activityCfg.phantomPurged = true;
+          saveActivityCfg();
+          if (activityData.length !== n) saveActivity();
+        }
       } catch (e) { console.error('[activity] load failed', e); }
       actBadge();
     }
@@ -7434,6 +7459,10 @@
       const hist = new Set(historyData.map(h => (h.email || '').toLowerCase()).filter(Boolean));
       return { roster, hist };
     }
+
+    // Same plans in a different order (or relabeled identically) is not a change.
+    const actPlanSet = p => [...new Set(String(p || '').split('→').map(x => x.trim()).filter(Boolean))].sort().join('|');
+    const actSamePlans = (a, b) => actPlanSet(a) === actPlanSet(b);
 
     function actWatched(productId, plan) {
       const w = activityCfg.watch || [];
@@ -7486,7 +7515,7 @@
         } else if (b.cap && !r.cancelAtPeriodEnd && st === 'active') {
           out.push(actMake('resumed', r, { detail: actPlan(r) }));
         }
-        if (b.plan && actPlan(r) && b.plan !== actPlan(r)) out.push(actMake('plan', r, { detail: b.plan + ' → ' + actPlan(r) }));
+        if (b.plan && actPlan(r) && !actSamePlans(b.plan, actPlan(r))) out.push(actMake('plan', r, { detail: b.plan + ' ⇒ ' + actPlan(r) }));
       });
       // In the roster before, gone now → moved to history (churned / archived).
       before.roster.forEach((b, k) => {
