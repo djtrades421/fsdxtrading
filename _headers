@@ -87,7 +87,11 @@
   Cache-Control: public, max-age=0, must-revalidate
 /results-data.js
   Cache-Control: public, max-age=0, must-revalidate
-/tools/*
+/build_results.py
+  X-Robots-Tag: noindex, nofollow
+/results-config.json
+  X-Robots-Tag: noindex, nofollow
+/README.md
   X-Robots-Tag: noindex, nofollow
 
 /sitemap.xml
