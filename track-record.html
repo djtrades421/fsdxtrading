@@ -202,37 +202,29 @@
       <div class="flex-1 px-6 md:px-10 py-8">
         <div class="max-w-7xl mx-auto space-y-8">
 
-          <!-- ── How this record is executed ── -->
-          <div class="border border-green-500/20 bg-green-500/[0.04] rounded-2xl p-5 md:p-6">
-            <div class="text-green-400 uppercase tracking-[0.2em] text-[10px] font-bold mb-2">// How every trade here is run</div>
-            <h2 class="text-lg font-black text-white mb-2">Unmanaged. The system's rules, nothing added.</h2>
-            <p class="text-[13px] text-zinc-400 leading-relaxed max-w-4xl mb-4">
-              Every trade on this page enters on the signal and closes one of three ways: it hits its target, it hits its stop, or the
-              session ends. Nobody moves the stop, takes partials, or closes early. That's deliberate &mdash; it shows the system on its own.
-              How you manage a trade is your call, and your results will differ from this record, better or worse.
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
-              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-TP1 mr-2">TARGET</span><span class="text-[12px] text-zinc-400">Price reaches the profit target</span></div>
-              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-STOP mr-2">STOP</span><span class="text-[12px] text-zinc-400">Price reaches the stop loss</span></div>
-              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-EOD mr-2">END OF DAY</span><span class="text-[12px] text-zinc-400">Neither hit &mdash; closed at the session close</span></div>
+          <!-- ── All-time stats: the whole record first ── -->
+          <div>
+            <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
+              <h2 class="text-sm font-black uppercase tracking-wider text-white">All-time</h2>
+              <span id="st-range" class="text-[11px] text-zinc-500"></span>
             </div>
-            <div class="flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-zinc-500">
-              <span>✕ No breakeven stops</span><span>✕ No partial exits</span><span>✕ No trailing</span><span>✕ No manual exits</span><span>✕ No re-entries after a stop</span>
-            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="stat-cards"></div>
           </div>
 
-          <!-- ── Version timeline ── -->
+          <!-- ── Where it stands now: the current drawdown, with context ──
+               Shown right under the all-time numbers, never hidden. The
+               backtest figure comes from results-data via build_results.py. -->
           <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
             <div class="flex items-baseline justify-between flex-wrap gap-2 mb-1">
-              <h2 class="text-sm font-black uppercase tracking-wider text-white">Update Timeline</h2>
-              <span class="text-[11px] text-zinc-600">One record. Each update is marked, nothing resets.</span>
+              <h2 class="text-sm font-black uppercase tracking-wider text-white">Where it stands now</h2>
+              <span class="text-[11px] text-zinc-600">Drawdowns are part of the record. Here is today's, next to history.</span>
             </div>
-            <p class="text-[11px] text-zinc-600 mb-4">The headline numbers above cover the whole run. Per-version numbers are here for context.</p>
-            <div id="ver-strip" class="flex flex-col md:flex-row border border-white/10 rounded-xl overflow-hidden"></div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4" id="now-cards"></div>
+            <p id="now-note" class="text-[11px] text-zinc-600 mt-3 leading-relaxed"></p>
+            <span id="bt-dd-400" hidden><!--gen:v1.400.maxdd-->-$2,320<!--/gen--></span>
+            <span id="bt-dd-250" hidden><!--gen:v1.250.maxdd-->-$1,516<!--/gen--></span>
+            <span id="bt-end" hidden><!--gen:meta.end_short-->Sep 30, 2026<!--/gen--></span>
           </div>
-
-          <!-- ── Stat cards ── -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="stat-cards"></div>
 
           <!-- ── Equity curve ── -->
           <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6">
@@ -247,6 +239,36 @@
               </div>
             </div>
             <div id="equity-chart-wrap" class="relative mt-5" style="height:340px"></div>
+          </div>
+
+          <!-- ── How this record is executed ── -->
+          <div class="border border-green-500/20 bg-green-500/[0.04] rounded-2xl p-5 md:p-6">
+            <div class="text-green-400 uppercase tracking-[0.2em] text-[10px] font-bold mb-2">// How every trade here is run</div>
+            <h2 class="text-lg font-black text-white mb-2">Unmanaged. The system's rules, nothing added.</h2>
+            <p class="text-[13px] text-zinc-400 leading-relaxed max-w-4xl mb-4">
+              Every trade on this page enters on the signal and closes by the system's own rules: it hits its target, it hits its stop, or the
+              session ends. From Oct 9, 2026 the record runs Variant 2, which also trails the stop by rule once TP1 is reached. Nobody moves
+              the stop by hand, takes partials, or closes early. That's deliberate &mdash; it shows the system on its own.
+              How you manage a trade is your call, and your results will differ from this record, better or worse.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
+              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-TP1 mr-2">TARGET</span><span class="text-[12px] text-zinc-400">Price reaches the profit target</span></div>
+              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-STOP mr-2">STOP</span><span class="text-[12px] text-zinc-400">Price reaches the stop loss</span></div>
+              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-EOD mr-2">END OF DAY</span><span class="text-[12px] text-zinc-400">Neither hit &mdash; closed at the session close</span></div>
+            </div>
+            <div class="flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-zinc-500">
+              <span>✕ No breakeven stops</span><span>✕ No partial exits</span><span>✕ No manual stop moves</span><span>✕ No manual exits</span><span>✕ No re-entries after a stop</span><span class="text-zinc-600">Trailing: by rule only, Variant 2, from Oct 9, 2026</span>
+            </div>
+          </div>
+
+          <!-- ── Version timeline ── -->
+          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
+            <div class="flex items-baseline justify-between flex-wrap gap-2 mb-1">
+              <h2 class="text-sm font-black uppercase tracking-wider text-white">Update Timeline</h2>
+              <span class="text-[11px] text-zinc-600">One record. Each update is marked, nothing resets.</span>
+            </div>
+            <p class="text-[11px] text-zinc-600 mb-4">The all-time numbers at the top cover the whole run. Per-version numbers are here for context.</p>
+            <div id="ver-strip" class="flex flex-col md:flex-row border border-white/10 rounded-xl overflow-hidden"></div>
           </div>
 
           <!-- ── Calendar ── -->
@@ -405,7 +427,7 @@
     // One continuous record. A version cut is a marker, never a reset.
     const VERS = () => ((DATA && DATA.meta && DATA.meta.versions) || []).slice().sort((a,b) => a.start.localeCompare(b.start));
     function verOf(date) { let v = null; VERS().forEach(x => { if (date >= x.start) v = x; }); return v; }
-    const EXIT_LABEL = { TP1:'Target', TP2:'Target 2', STOP:'Stop', EOD:'End of day', EOD_EARLY:'Early close' };
+    const EXIT_LABEL = { TP1:'Target', TP2:'TP2 / Trail', STOP:'Stop', EOD:'End of day', EOD_EARLY:'Early close' };
     function exitType(t) {
       if (t.exit_type) return t.exit_type;
       const r = t.exit_reason || '';
@@ -557,6 +579,37 @@
         card('Avg Win', money(s.avgW), 'text-emerald-400') +
         card('Avg Loss', money(s.avgL), 'text-red-400') +
         card('Trading Days', s.days, 'text-white');
+      const st = document.getElementById('st-range');
+      if (st && TRADES.length) st.textContent = fmtDate(TRADES[0].date) + ' \u2013 ' + fmtDate(TRADES[TRADES.length - 1].date) + ' \u00b7 every trade';
+      renderNow();
+    }
+
+    // ── Current drawdown vs history ──
+    function renderNow() {
+      const box = document.getElementById('now-cards'); if (!box || !TRADES.length) return;
+      const risk = Number((DATA.meta || {}).risk_profile) || 400;
+      let eq = 0, pk = 0, pkDate = TRADES[0].date, sincePk = 0, worst = 0, worstPk = '', worstTr = '', curPk = TRADES[0].date;
+      TRADES.forEach(t => {
+        eq += t.pnl;
+        if (eq >= pk) { pk = eq; pkDate = t.date; sincePk = 0; }
+        else sincePk++;
+        if (eq - pk < worst) { worst = eq - pk; worstPk = pkDate; worstTr = t.date; }
+      });
+      const cur = eq - pk;
+      const R = v => (Math.abs(v) / risk).toFixed(1) + 'R';
+      const bt = document.getElementById('bt-dd-' + risk);
+      const btTxt = bt ? bt.textContent.trim() : '';
+      const btVal = btTxt ? -Number(btTxt.replace(/[^0-9.]/g, '')) : null;
+      box.innerHTML =
+        card('From the high', cur < 0 ? money(cur) + ' <span class="text-xs text-zinc-500 font-bold">' + R(cur) + '</span>' : 'At a high', cur < 0 ? 'text-red-400' : 'text-emerald-400') +
+        card('Trades since the high', cur < 0 ? sincePk + ' <span class="text-xs text-zinc-500 font-bold">high ' + fmtShort(pkDate) + '</span>' : '0', 'text-white') +
+        card('Deepest live drawdown', money(worst) + ' <span class="text-xs text-zinc-500 font-bold">' + R(worst) + '</span>', 'text-red-400') +
+        card('Deepest in the backtest', btVal != null ? money(btVal) + ' <span class="text-xs text-zinc-500 font-bold">' + R(btVal) + '</span>' : '\u2014', 'text-zinc-300');
+      const end = (document.getElementById('bt-end') || {}).textContent || '';
+      let note = 'R = one full loss at the $' + risk + ' setting. Deepest live drawdown: ' + fmtShort(worstPk) + ' high to ' + fmtShort(worstTr) + ' low. '
+        + 'Backtest figure: Variant 1, 7 years of closed trades through ' + end.trim() + ', gross of costs. This record is net of commissions.';
+      if (btVal != null && worst < btVal) note += ' The live drawdown is deeper than any in the backtest so far.';
+      document.getElementById('now-note').textContent = note;
     }
 
     // ── Cumulative P&L chart (same treatment as the member journal) ──
