@@ -1,6 +1,6 @@
 {
   "_how": "One TradingView 'List of trades' CSV per variant x risk, saved in data/. Set the paths, set 'end' to the last trade date to publish (same cutoff for every profile), then run from the site root: python3 tools/build_results.py --config tools/results-config.json --out results-data.js. A null path keeps that profile's published numbers unchanged.",
-  "end": "2026-09-04",
+  "end": "2026-09-30",
   "updated": "October 2026",
   "variants": {
     "v1": {
@@ -8,8 +8,8 @@
       "short": "V1",
       "note": "Variant 1 settings: the original Knightfall exits. Takes profit at TP1.",
       "exports": {
-        "250": null,
-        "400": null,
+        "250": "../data/knightfall-v1-250.csv",
+        "400": "../data/knightfall-v1-400.csv",
         "500": null,
         "650": null,
         "850": null,

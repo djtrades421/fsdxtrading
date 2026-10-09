@@ -34,5 +34,11 @@ Fields: trades, wins, losses, net, win, pf, ev, maxdd, tvdd, avgwin, avgloss,
 mcw, mcl, profmon, totmon, sharpe, recov, first, last. Pages to patch are listed
 under `pages` in the config.
 
-Not covered yet (edit by hand on a refresh): the JSON-LD block and the
-`<noscript>` tables in results.html, and "1,100+" rounded counts.
+Whole blocks are rebuilt too, between `<!--gen-block:NAME-->` markers:
+the two JSON-LD blocks, the three description meta tags and the `<noscript>`
+summary in results.html.
+
+Mixed dates are fine: if only some settings are refreshed, every date line on the
+page lists which settings run to which date. Refresh them all to one date when you can.
+
+Not covered (edit by hand): rounded counts like "1,100+".

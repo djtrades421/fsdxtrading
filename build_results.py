@@ -148,6 +148,7 @@ def build_D(T):
                 mcl=max([l for s, l in rs if s < 0], default=0), profmon=sum(1 for v in mv if v > 0),
                 totmon=len(mv), avgmon=round(statistics.mean(mv)),
                 sharpe=round(statistics.mean(mv) / statistics.stdev(mv), 3) if len(mv) > 1 else 0,
+                medtrade=round(statistics.median([t['pnl'] for t in T])),
                 recov=round(b['net'] / -dd, 1) if dd else 0, grades=grades, annual=annual, direction=direction,
                 first=fmt_d(T[0]['d']), last=fmt_d(T[-1]['d']))
 
@@ -179,7 +180,7 @@ def episodes(T):
     eq = 0.0
     for i, t in enumerate(T):
         eq += t['pnl']
-        if eq > pk:
+        if eq > pk or (cur and eq >= pk):  # back to the old high counts as recovered
             if cur:
                 cur['recd'], cur['reci'] = t['d'], i
                 eps.append(cur); cur = None
@@ -507,9 +508,8 @@ def gen_value(data, key):
     parts = key.split('.')
     if parts[0] == 'meta':
         end = datetime.strptime(data['end'], '%Y-%m-%d').date()
-        return {'end': end.strftime('%B ') + str(end.day) + end.strftime(', %Y'),
-                'end_short': end.strftime('%b ') + str(end.day) + end.strftime(', %Y'),
-                'updated': data.get('updated', '')}[parts[1]]
+        return {'end': _dlong(end), 'end_short': _dshort(end), 'updated': data.get('updated', ''),
+                'coverage': coverage(data), 'coverage_short': coverage(data, True), 'period': period(data)}[parts[1]]
     v, r = parts[0], parts[1]
     tf = parts[2] if len(parts) == 4 else '7yr'
     field = parts[-1]
@@ -524,10 +524,209 @@ def patch_pages(data, paths):
             n[0] += 1
             return m.group(1) + gen_value(data, m.group(2)) + m.group(4)
         s2 = _GEN.sub(rep, s)
+        s2 = _GENB.sub(lambda m: (n.__setitem__(0, n[0] + 1), m.group(1) + BLOCKS_GEN[m.group(2)](data) + m.group(4))[1], s2)
         if s2 != s:
             open(path, 'w', encoding='utf-8').write(s2)
         print(f'patched {path}: {n[0]} figures' + ('' if s2 != s else ' (no change)'))
 
+
+
+def _dlong(d):
+    return d.strftime('%B ') + str(d.day) + d.strftime(', %Y')
+
+
+def _dshort(d):
+    return d.strftime('%b ') + str(d.day) + d.strftime(', %Y')
+
+
+def _lastdates(data, v='v1'):
+    """{date: [risks]} for the variant's 7-year windows, newest first."""
+    g = OrderedDict()
+    vd = data['variants'][v]
+    for r in vd['risks']:
+        d = datetime.strptime(vd['D'][r]['7yr']['last'], '%b %d, %Y').date()
+        g.setdefault(d, []).append(r)
+    return OrderedDict(sorted(g.items(), reverse=True))
+
+
+def _risklist(rs):
+    rs = ['$' + r for r in rs]
+    return rs[0] if len(rs) == 1 else ', '.join(rs[:-1]) + ' and ' + rs[-1]
+
+
+def coverage(data, short=False):
+    """'September 30, 2026' or '... ($250 and $400); September 4, 2026 ($500, $650, $850 and $1000)'."""
+    g = _lastdates(data)
+    f = _dshort if short else _dlong
+    if len(g) == 1:
+        return f(next(iter(g)))
+    return '; '.join(f'{f(d)} ({_risklist(rs)})' for d, rs in g.items())
+
+
+def period(data):
+    g = list(_lastdates(data).items())
+    s = 'Jun 18, 2019 &ndash; ' + _dshort(g[0][0])
+    for d, rs in g[1:]:
+        s += ' &middot; ' + ('$' + rs[0] + '+' if len(rs) > 1 else '$' + rs[0]) + ' to ' + _dshort(d)
+    return s
+
+
+def _iso(s):
+    return datetime.strptime(s, '%b %d, %Y').date().isoformat()
+
+
+def block_jsonld_backtest(data):
+    v = data['variants']['v1']; D = v['D']['400']['7yr']
+    L, S = D['direction'][0], D['direction'][1]
+    o = OrderedDict([
+        ('@context', 'https://schema.org'), ('@type', 'Dataset'),
+        ('@id', 'https://www.fsdxtrading.com/results.html#backtest'),
+        ('name', 'FSD-X ORB PRO (Knightfall) — 7-Year Backtest Research Dataset'),
+        ('description', 'Hypothetical simulated backtest of the FSD-X ORB PRO opening range breakout strategy on MNQ futures, '
+         f"June 2019 to {datetime.strptime(D['last'], '%b %d, %Y').strftime('%B %Y')}, on the $400 base risk profile with grade-based dynamic sizing "
+         '(Variant 1, the stock settings). These are simulated results, not actual trading, and are gross of commissions, fees and slippage. '
+         'Past performance is not necessarily indicative of future results. FSD-X ORB PRO has been running since 2025; Knightfall is the current '
+         'updated version of the same system, not a separate or new strategy. Performance is broken out by direction: '
+         f"longs {L['win']}% win / {L['pf']:.2f} profit factor, shorts {S['win']}% win / {S['pf']:.2f} profit factor, so the simulated edge is not dependent on a long bias."),
+        ('url', 'https://www.fsdxtrading.com/results.html'),
+        ('creator', {'@id': 'https://www.fsdxtrading.com/#organization'}),
+        ('publisher', {'@id': 'https://www.fsdxtrading.com/#organization'}),
+        ('license', 'https://www.fsdxtrading.com/disclosures.html'),
+        ('temporalCoverage', _iso(D['first']) + '/' + _iso(D['last'])),
+        ('measurementTechnique', 'Historical simulation (backtest) of the published strategy rules'),
+        ('about', {'@id': 'https://www.fsdxtrading.com/#membership'}),
+    ])
+    def pv(name, value, **kw):
+        x = OrderedDict([('@type', 'PropertyValue'), ('name', name), ('value', value)]); x.update(kw); return x
+    yrs = [a['yr'] for a in D['annual']]
+    o['variableMeasured'] = [
+        pv('Simulated win rate', f"{D['win']:.2f}", unitText='percent'),
+        pv('Profit factor (simulated)', f"{D['pf']:.2f}"),
+        pv('Total simulated trades', str(D['trades'])),
+        pv('Winning / losing trades (simulated)', f"{D['wins']} / {D['losses']}"),
+        pv('Hypothetical net P&L (MNQ, $400 risk)', str(D['net']), unitCode='USD'),
+        pv('Max drawdown (simulated)', str(D['maxdd']), unitCode='USD'),
+        pv('Expected value per trade (simulated)', f"{D['ev']:.2f}", unitCode='USD'),
+        pv('Average win / average loss (simulated)', f"{D['avgwin']} / {D['avgloss']}", unitCode='USD'),
+        pv('Max consecutive wins / losses (simulated)', f"{D['mcw']} / {D['mcl']}"),
+        pv('Monthly Sharpe (simulated)', f"{D['sharpe']:.3f}"),
+        pv('Profitable months (simulated)', f"{D['profmon']} of {D['totmon']}"),
+        pv('Backtest period', f"{yrs[0]}-{yrs[-1]}, {len(yrs)} calendar years"),
+        pv('Long trades (simulated)', str(L['n'])),
+        pv('Long win rate (simulated)', f"{L['win']}", unitText='percent'),
+        pv('Long profit factor (simulated)', f"{L['pf']:.2f}"),
+        pv('Long net P&L (simulated)', str(L['net']), unitCode='USD'),
+        pv('Short trades (simulated)', str(S['n'])),
+        pv('Short win rate (simulated)', f"{S['win']}", unitText='percent'),
+        pv('Short profit factor (simulated)', f"{S['pf']:.2f}"),
+        pv('Short net P&L (simulated)', str(S['net']), unitCode='USD'),
+        pv('Median trade (simulated)', str(D['medtrade']), unitCode='USD'),
+        pv('Profit factor by year (simulated)', ', '.join(f"{a['yr']} {a['pf']:.2f}" for a in D['annual'])),
+    ]
+    return '<script type="application/ld+json">' + json.dumps(o, indent=2, ensure_ascii=False) + '</script>'
+
+
+def block_jsonld_profiles(data):
+    parts, firsts, lasts = [], [], []
+    for vk, vd in data['variants'].items():
+        for r in vd['risks']:
+            for tf, tfl in (('7yr', '7-year'), ('2yr', '2-year')):
+                D = vd['D'][r][tf]; L, S = D['direction'][0], D['direction'][1]
+                firsts.append(_iso(D['first'])); lasts.append(_iso(D['last']))
+                vname = vd['label']
+                parts.append(OrderedDict([
+                    ('@type', 'Observation'),
+                    ('name', f'FSD-X ORB PRO (Knightfall MK2) {vname} simulated backtest — ${r} risk per trade, {tfl} window'),
+                    ('description', f'Hypothetical simulated backtest on MNQ, {vname}, at the ${r} risk-per-trade setting with grade-based dynamic sizing, '
+                     f"{tfl} window ({D['first']} to {D['last']}). {D['trades']:,} trades, {_fmt('net', D['net'])} net, {D['win']:.2f}% win rate, "
+                     f"{D['pf']:.2f} profit factor, {_fmt('maxdd', D['maxdd'])} maximum closed-trade drawdown, ${round(D['ev'])} average result per trade. "
+                     f"Longs: {L['n']} trades, {_fmt('net', L['net'])}. Shorts: {S['n']} trades, {_fmt('net', S['net'])}. "
+                     f"Profitable months {D['profmon']} of {D['totmon']}. Gross of commissions, fees and slippage. Not actual trading."),
+                    ('variableMeasured', [
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Variant'), ('value', vname)]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Risk per trade'), ('value', int(r)), ('unitCode', 'USD')]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Window'), ('value', tfl)]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Trades'), ('value', D['trades'])]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Net profit (hypothetical)'), ('value', D['net']), ('unitCode', 'USD')]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Win rate'), ('value', D['win']), ('unitText', 'percent')]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Profit factor'), ('value', D['pf'])]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Maximum drawdown'), ('value', D['maxdd']), ('unitCode', 'USD')]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Average result per trade'), ('value', D['ev']), ('unitCode', 'USD')]),
+                        OrderedDict([('@type', 'PropertyValue'), ('name', 'Profitable months'), ('value', f"{D['profmon']} of {D['totmon']}")]),
+                    ]),
+                ]))
+    o = OrderedDict([
+        ('@context', 'https://schema.org'), ('@type', 'Dataset'),
+        ('@id', 'https://www.fsdxtrading.com/results.html#profiles'),
+        ('name', 'FSD-X ORB PRO (Knightfall MK2) — simulated backtest results by variant and risk profile'),
+        ('description', 'Hypothetical simulated backtest results for the FSD-X ORB PRO (Knightfall MK2) opening range breakout strategy on MNQ 5-minute, '
+         f"June 18 2019 to {coverage(data).replace(', 20', ' 20')}, in two variants (Variant 1 — Stock, Variant 2 — Runner) at several risk-per-trade settings, "
+         'over a full seven-year window and a trailing two-year window. Each variant and risk setting is a separate TradingView Strategy Tester export, '
+         'not a scaled estimate. Figures are gross of commissions, fees and slippage and do not represent actual trading. '
+         'Past performance is not necessarily indicative of future results.'),
+        ('url', 'https://www.fsdxtrading.com/results.html'),
+        ('creator', {'@id': 'https://www.fsdxtrading.com/#organization'}),
+        ('publisher', {'@id': 'https://www.fsdxtrading.com/#organization'}),
+        ('measurementTechnique', 'TradingView Strategy Tester export, closed-trade equity, grade-based dynamic position sizing'),
+        ('temporalCoverage', min(firsts) + '/' + max(lasts)),
+        ('variableMeasured', ['Net profit', 'Win rate', 'Profit factor', 'Maximum drawdown', 'Average result per trade', 'Profitable months']),
+        ('hasPart', parts),
+    ])
+    return '<script type="application/ld+json">\n' + json.dumps(o, indent=1) + '\n  </script>'
+
+
+def _meta_desc_text(data):
+    return ('Hypothetical backtest research data for FSD-X ORB PRO (Knightfall MK2), Variant 1 and Variant 2, on MNQ from June 2019 through '
+            + _dlong(next(iter(_lastdates(data)))) + '. Simulated results — not indicative of future performance.')
+
+
+def _meta_tag(attr, name):
+    return lambda data: f'<meta {attr}="{name}" content="{_meta_desc_text(data)}" />'
+
+
+def block_noscript(data):
+    TDs = 'padding:6px 10px;border-bottom:1px solid #27272a;text-align:left'
+    def table(head, rows):
+        h = ''.join(f'<th style="{TDs}">{x}</th>' for x in head)
+        b = ''.join('<tr>' + ''.join(f'<td style="{TDs}">{c}</td>' for c in r) + '</tr>' for r in rows)
+        return f'<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr>{h}</tr></thead><tbody>{b}</tbody></table>'
+    tag = {'250': 'Conservative', '400': 'Default', '500': 'Aggressive', '650': 'High', '850': 'Very High', '1000': 'Max'}
+    rows = []
+    for vk, vd in data['variants'].items():
+        for r in vd['risks']:
+            D = vd['D'][r]['7yr']
+            rows.append([vd['short'], f'${r}', tag.get(r, ''), f"{D['trades']:,}", _fmt('net', D['net']), f"{D['win']:.2f}%", f"{D['pf']:.2f}",
+                         f"{_fmt('maxdd', D['maxdd'])} <span style=\"color:#71717a\">(TradingView {_fmt('tvdd', D['tvdd'])})</span>",
+                         f"{D['first']} – {D['last']}"])
+    D = data['variants']['v1']['D']['400']['7yr']
+    yr = [[a['yr'], a['trades'], f"{a['win']:.1f}%", f"{a['pf']:.2f}", _fmt('net', a['net']), _fmt('maxdd', a['dd'])] for a in D['annual']]
+    gr = [[f"Grade {g['g']}", g['n'], f"{g['win']:.1f}%", f"{g['pf']:.2f}", _fmt('net', g['net'])] for g in D['grades']]
+    di = [[x['d'], f"{x['n']:,}", f"{x['w']} / {x['l']}", f"{x['win']:.1f}%", f"{x['pf']:.2f}", _fmt('net', x['net'])] for x in D['direction']]
+    H = lambda t, m='22px': f'<h3 style="font-weight:800;color:#fff;margin:{m} 0 6px">{t}</h3>'
+    return ('<noscript>\n        <section class="px-6 md:px-12 py-8 border-b border-white/10">\n'
+            '          <div class="max-w-5xl mx-auto" style="color:#d4d4d8;font-size:13px;line-height:1.7">\n'
+            '            <h2 style="font-weight:900;color:#fff;margin:0 0 6px">Backtest Research — summary</h2>\n'
+            '            <p style="color:#a1a1aa;margin:0 0 18px">The interactive version of this page needs JavaScript. The core figures are below. '
+            f'All results are hypothetical simulated backtest results on MNQ 5-minute from Jun 18, 2019, through {coverage(data, True)}, gross of '
+            'commissions, fees and slippage. Not actual trading. Past performance is not necessarily indicative of future results.</p>\n'
+            '            <p style="color:#a1a1aa;margin:0 0 18px">Knightfall has two variants built on the same breakout rules. V1 (stock) takes profit at TP1. '
+            'V2 (runner) holds for TP2 with a trailing stop.</p>\n'
+            '            ' + H('By variant and risk profile — 7-year window', '18px') + table(
+                ['Variant', 'Risk per trade', 'Profile', 'Trades', 'Net', 'Win rate', 'Profit factor', 'Max drawdown (ours &middot; TradingView)', 'Period'], rows) + '\n'
+            '            ' + H('V1 year by year — $400 risk profile') + table(['Year', 'Trades', 'Win rate', 'Profit factor', 'Net', 'Deepest dip'], yr) + '\n'
+            '            ' + H('V1 by grade — $400 risk profile') + table(['Grade', 'Trades', 'Win rate', 'Profit factor', 'Net'], gr) + '\n'
+            '            ' + H('V1 long vs short — $400 risk profile') + table(['Direction', 'Trades', 'W / L', 'Win rate', 'Profit factor', 'Net'], di) + '\n'
+            f'            <p style="color:#a1a1aa;margin:20px 0 0">Other V1 figures at the $400 setting: average result per trade ${round(D["ev"])}, '
+            f"average win ${D['avgwin']} against average loss {_fmt('avgloss', D['avgloss'])}, longest winning run {D['mcw']} trades, "
+            f"longest losing run {D['mcl']} trades, {D['profmon']} profitable months out of {D['totmon']}, monthly Sharpe {D['sharpe']:.3f}, "
+            f"recovery factor {D['recov']:.1f}x.</p>\n"
+            '          </div>\n        </section>\n      </noscript>')
+
+
+BLOCKS_GEN = {'jsonld-backtest': block_jsonld_backtest, 'jsonld-profiles': block_jsonld_profiles,
+              'meta-desc': _meta_tag('name', 'description'), 'og-desc': _meta_tag('property', 'og:description'),
+              'tw-desc': _meta_tag('name', 'twitter:description'), 'noscript': block_noscript}
+_GENB = _re.compile(r'(<!--gen-block:([\w-]+)-->)(.*?)(<!--/gen-block-->)', _re.S)
 
 def _diff(a, b, p=''):
     if isinstance(a, dict) and isinstance(b, dict):
