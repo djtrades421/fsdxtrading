@@ -10,8 +10,6 @@
      Default = membership terms.
      Add data-gate="autotrader" to a checkout link for the
      heavier Auto-Trader terms.
-     Add data-gate="copier" for the Copy Trader terms. Load
-     copier-terms.js BEFORE this file on that page.
    ============================================================ */
 (function () {
   "use strict";
@@ -160,32 +158,12 @@
     proceed: "Proceed to Checkout"
   };
 
-  /* ---- Copy Trader — separate add-on product (Oct 2026) ----
-     The copier places real orders on the member's own Tradovate accounts, so
-     it gets its own terms, not the membership set. The text lives in
-     copier-terms.js (shared with the in-copier gate on copier.html) so the
-     two can never drift. If that file isn't on the page, fall back to a short
-     version that still sends the buyer to the full terms. */
-  var COPIER = window.FSDX_COPIER_TERMS || {
-    eyebrow: "Before You Continue",
-    title: "FSD-X Copy Trader — Terms of Use",
-    points: [
-      "The Copy Trader places <strong>real orders</strong> on Tradovate accounts <strong>you</strong> own or control. Use it at your own risk and test on demo first.",
-      "Software can fail, and followers copy positions only, not stops or targets. <strong>You</strong> must watch your accounts and flatten manually if needed.",
-      "Prop firm rules are your responsibility. FSD-X is <strong>not liable for any trading loss</strong> and makes no performance claims.",
-      "I have read and agree to the full <a href='copier-terms.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Copy Trader Terms</a>."
-    ],
-    agree: "I accept the FSD-X Copy Trader Terms. I am responsible for every account, position, order, and loss it touches. FSD-X is not liable for any result.",
-    proceed: "Proceed to Checkout"
-  };
-
   // Every VIP data-gate value resolves to the same unified terms (one plan →
   // one gate). Nightwing and Raven are the two products that are genuinely
   // different, and each needs its own terms for the same reason.
   var TERMS = {
     membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED,
-    nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME,
-    copier: COPIER
+    nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME
   };
 
   var pendingUrl = null;

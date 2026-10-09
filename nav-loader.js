@@ -627,7 +627,6 @@ function prepareNavLabels(root) {
                        : plan === 'plus'  ? 'VIP Plus'
                        : plan === 'site'  ? 'Nightwing'
                        : plan === 'raven' ? 'Raven'
-                       : plan === 'copier' ? 'Copy Trader'
                        : 'VIP';
         let tierText;
         if (tier === 'trial') tierText = planName + ' · Trial';
@@ -644,43 +643,10 @@ function prepareNavLabels(root) {
            Refer & Earn is NOT hidden — a Nightwing or Raven subscriber can
            still promote the $129 membership; only the tier itself pays
            nothing. */
-        if (plan === 'site' || plan === 'raven' || plan === 'copier') {
+        if (plan === 'site' || plan === 'raven') {
           document.querySelectorAll('#nav-content a[href="alerts.html"]')
             .forEach(el => el.classList.add('hidden'));
         }
-
-        /* Copy Trader — standalone add-on. The link only appears when the
-           server says this session has copier access (admin, COPIER_GRANTS,
-           or a Whop copier membership). No access → the API 404s and nothing
-           is added, so the copier stays invisible to everyone else. The
-           answer is cached for the tab session (10 min) so this is one call,
-           not one per page. */
-        (function () {
-          function addLink() {
-            var anchor = document.querySelector('#nav-content a[href="accounts.html"]');
-            if (!anchor || document.getElementById('nav-copier')) return;
-            var a = document.createElement('a');
-            a.id = 'nav-copier';
-            a.href = 'copier.html';
-            var here = /\/copier\.html$/.test(location.pathname);
-            a.className = 'nav-link ' + (here ? 'text-green-400' : 'text-zinc-400') + ' hover:text-green-400 font-medium transition text-sm flex items-center gap-2';
-            a.innerHTML = '<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">'
-              + '<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25"/></svg>'
-              + '<span class="nav-label">Copy Trader</span>';
-            anchor.parentNode.insertBefore(a, anchor.nextSibling);
-          }
-          try {
-            var c = JSON.parse(sessionStorage.getItem('fsdx_copier') || 'null');
-            if (c && c.t === token.slice(0, 8) && Date.now() - c.at < 600000) { if (c.ok) addLink(); return; }
-          } catch (e) {}
-          fetch('https://nexus-validator.dfuentes4211.workers.dev/api/copier/access', {
-            headers: { 'Authorization': 'Bearer ' + token }
-          }).then(function (r) {
-            var ok = r.status === 200;
-            try { sessionStorage.setItem('fsdx_copier', JSON.stringify({ ok: ok, at: Date.now(), t: token.slice(0, 8) })); } catch (e) {}
-            if (ok) addLink();
-          }).catch(function () { /* no link on error */ });
-        })();
       }
     })
     .catch(function (err) {
@@ -703,7 +669,7 @@ function prepareNavLabels(root) {
         // Same tools-tier rule as the real nav above.
         try {
           var fbPlan = localStorage.getItem('fsdx_plan');
-          if (fbPlan === 'site' || fbPlan === 'raven' || fbPlan === 'copier') {
+          if (fbPlan === 'site' || fbPlan === 'raven') {
             vip = vip.filter(function (l) { return l[0] !== 'alerts.html'; });
           }
         } catch (e) {}

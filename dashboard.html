@@ -1207,14 +1207,12 @@
         }
       }
 
-      if (user.plan === 'site' || user.plan === 'copier') {
+      if (user.plan === 'site') {
         const indTitle = document.getElementById('wm-ind-title');
         const indBody  = document.getElementById('wm-ind-body');
         if (indTitle && indBody) {
           indTitle.textContent = 'Install the Nexus extension';
-          indBody.innerHTML = (user.plan === 'copier'
-              ? 'Your Copy Trader plan includes the full platform and Nexus 2.0. Open the Copy Trader from the menu. For Nexus, install the Chrome extension, '
-              : 'Nightwing is the platform and Nexus 2.0. Install the Chrome extension, ')
+          indBody.innerHTML = 'Nightwing is the platform and Nexus 2.0. Install the Chrome extension, '
             + 'then paste in your licence key when it asks. '
             + '<a href="nexus-guide.html" class="text-green-400 hover:underline font-bold">Nexus setup guide &rarr;</a>';
         }
@@ -1240,7 +1238,7 @@
          Only an explicitly known 'site' plan loses the mention; an unknown
          plan keeps it, same fail-open rule used everywhere else. */
       const scoutFrag = document.getElementById('wm-scout-frag');
-      if (scoutFrag) scoutFrag.classList.toggle('hidden', user.plan === 'site' || user.plan === 'raven' || user.plan === 'copier');
+      if (scoutFrag) scoutFrag.classList.toggle('hidden', user.plan === 'site' || user.plan === 'raven');
 
       /* Number whatever is actually on screen, in order. Hardcoded numbers go
          wrong the moment a step hides — and steps here hide by design. */
@@ -1440,7 +1438,6 @@
         const planName = memberPlan === 'pro'   ? 'VIP Pro'
                        : memberPlan === 'site'  ? 'Nightwing'
                        : memberPlan === 'raven' ? 'Raven'
-                       : memberPlan === 'copier' ? 'Copy Trader'
                        : 'VIP Plus';
         if (effectiveStatus === 'completed')      sc.label = planName + ' Lifetime';
         else if (effectiveStatus === 'trialing')  sc.label = planName + ' Trial';
