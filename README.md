@@ -6,8 +6,9 @@ results.html (all tabs), playbook.html (eval data) and the figures marked
 
 ## Refresh the data
 
-1. Export each profile from the TradingView Strategy Tester (Deep Backtesting,
-   full range → List of trades → Export). One CSV per variant × risk setting.
+1. Export each profile from the TradingView Strategy Tester. Settings for every run:
+   Deep Backtesting, full range, Initial capital $1M, **High detalization**.
+   Then List of trades → Export. One CSV per variant × risk setting.
 2. Save them in the site root as `knightfall-v1-400.csv`, `knightfall-v2-250.csv`, etc. They are public downloads.
 3. In `results-config.json`, point each setting at its CSV and set `end` to the
    last trade date to publish. Every profile is cut at that same date.
