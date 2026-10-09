@@ -85,6 +85,10 @@
 
 /releases.json
   Cache-Control: public, max-age=0, must-revalidate
+/results-data.js
+  Cache-Control: public, max-age=0, must-revalidate
+/tools/*
+  X-Robots-Tag: noindex, nofollow
 
 /sitemap.xml
   Cache-Control: public, max-age=3600
