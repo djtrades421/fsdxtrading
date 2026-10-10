@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — NinjaTrader 8 Hub</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="tailwind.css">
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20260924a"></script>
+  <script src="fsdx-account.js?v=20260913b"></script>
+  <style>
+    body { background-color: #000; }
+    /* NT hub — scoped styles. Colours come from the theme's CSS vars where set. */
+    .nt-card { border:1px solid rgba(255,255,255,.10); background:rgba(9,9,11,1); border-radius:16px; padding:22px; }
+    .nt-pill { display:inline-flex; align-items:center; gap:6px; font-size:10px; font-weight:900; letter-spacing:.14em;
+               text-transform:uppercase; padding:4px 10px; border-radius:999px; border:1px solid; }
+    .nt-pill .dot { width:6px; height:6px; border-radius:50%; background:currentColor; }
+    .nt-pill.pending { color:#F5A524; border-color:rgba(245,165,36,.35); background:rgba(245,165,36,.08); }
+    .nt-pill.active  { color:#2FBF7E; border-color:rgba(47,191,126,.35); background:rgba(47,191,126,.08); }
+    .nt-pill.removed { color:#E2534B; border-color:rgba(226,83,75,.35); background:rgba(226,83,75,.08); }
+    .nt-pill.update  { color:#FF6B1F; border-color:rgba(255,107,31,.40); background:rgba(255,107,31,.10); }
+    .nt-pill.none    { color:#A2AEBF; border-color:rgba(162,174,191,.25); background:rgba(162,174,191,.06); }
+    .nt-btn { display:inline-flex; align-items:center; gap:8px; border:0; cursor:pointer; border-radius:12px;
+              padding:12px 20px; font-size:12px; font-weight:900; letter-spacing:.06em; text-transform:uppercase;
+              background:linear-gradient(135deg,#FF9247,#FF6B1F 52%,#EB550D); color:#0B1119; transition:filter .15s; }
+    .nt-btn:hover { filter:brightness(1.08); }
+    .nt-btn:disabled { opacity:.55; cursor:default; filter:none; }
+    .nt-btn.ghost { background:#18181b; color:#fff; border:1px solid rgba(255,255,255,.12); }
+    .nt-input { flex:1; min-width:0; background:#05080D; border:1px solid rgba(120,160,210,.18); border-radius:10px;
+                padding:11px 13px; color:#E6EAF0; font-size:13px; outline:none; }
+    .nt-input:focus { border-color:rgba(255,107,31,.5); }
+    .nt-msg { font-size:12px; padding:9px 12px; border-radius:8px; margin-top:10px; display:none; }
+    .nt-msg.err { display:block; background:rgba(226,83,75,.12); color:#E2534B; }
+    .nt-msg.ok  { display:block; background:rgba(47,191,126,.12); color:#2FBF7E; }
+    .nt-kv { display:flex; justify-content:space-between; gap:12px; font-size:12px; padding:8px 0; border-top:1px solid rgba(255,255,255,.06); }
+    .nt-kv span:first-child { color:#71717a; }
+    .nt-kv span:last-child { color:#e4e4e7; font-weight:700; text-align:right; word-break:break-all; }
+    .nt-steps { counter-reset:s; list-style:none; margin:0; padding:0; }
+    .nt-steps > li { counter-increment:s; position:relative; padding:0 0 18px 40px; font-size:13px; color:#a1a1aa; line-height:1.6; }
+    .nt-steps > li:before { content:counter(s); position:absolute; left:0; top:0; width:26px; height:26px; border-radius:8px;
+                            display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900;
+                            color:#FF6B1F; background:rgba(255,107,31,.10); border:1px solid rgba(255,107,31,.28); }
+    .nt-steps b, .nt-p b { color:#fff; }
+    .nt-p { font-size:13px; color:#a1a1aa; line-height:1.65; }
+    .nt-code { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:#fff; background:rgba(255,255,255,.06);
+               padding:1px 6px; border-radius:5px; }
+    .nt-shot { margin-top:10px; border:1px dashed rgba(255,255,255,.14); border-radius:12px; padding:18px; text-align:center;
+               font-size:11px; color:#52525b; background:rgba(255,255,255,.015); }
+    .nt-shot img { max-width:100%; border-radius:8px; display:block; margin:0 auto; }
+    .nt-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .nt-table th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:#71717a; font-weight:900;
+                   padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.10); }
+    .nt-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,.06); color:#a1a1aa; vertical-align:top; line-height:1.5; }
+    .nt-table td:first-child { color:#fff; font-weight:700; white-space:nowrap; }
+    .nt-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .nt-toc a { display:block; font-size:12px; color:#a1a1aa; padding:5px 0; }
+    .nt-toc a:hover { color:#FF6B1F; }
+    .nt-notes { white-space:pre-line; font-size:12.5px; color:#a1a1aa; line-height:1.65; }
+    .faq-body { display:none; } .faq.open .faq-body { display:block; } .faq.open .faq-chev { transform:rotate(90deg); }
+    .nt-banner { border:1px solid rgba(255,107,31,.35); background:rgba(255,107,31,.07); border-radius:14px; padding:14px 16px;
+                 display:flex; gap:12px; align-items:flex-start; }
+    @media (max-width:640px){ .nt-card{padding:18px} .nt-row{flex-direction:column} }
+  </style>
+</head>
+
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <div id="loading-screen" class="flex-1 flex items-center justify-center">
+      <div class="text-center">
+        <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin mx-auto mb-4"></div>
+        <p class="text-zinc-500 text-sm">Checking your license...</p>
+      </div>
+    </div>
+
+    <div id="nt-content" class="hidden flex-1 flex flex-col">
+
+      <!-- ══════════════ HERO + STATUS ══════════════ -->
+      <section class="pt-12 pb-10 md:pt-16 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// NinjaTrader 8</div>
+          <h1 class="text-3xl md:text-5xl font-black tracking-tight">ORB Pro (Knightfall) for NinjaTrader</h1>
+          <p class="mt-4 text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
+            Your license, your download and everything you need to install it. Licenses are tied to the
+            email you log into NinjaTrader with.
+          </p>
+
+          <div id="nt-banner-slot" class="mt-6"></div>
+
+          <div class="grid md:grid-cols-2 gap-4 mt-6">
+            <!-- License card -->
+            <div class="nt-card" id="nt-license-card">
+              <div class="flex items-center justify-between gap-3 mb-3">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Your license</div>
+                <span id="nt-pill" class="nt-pill none"><span class="dot"></span><span id="nt-pill-text">—</span></span>
+              </div>
+              <div id="nt-license-body"></div>
+            </div>
+
+            <!-- Download card -->
+            <div class="nt-card" id="nt-download-card">
+              <div class="flex items-center justify-between gap-3 mb-3">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Download</div>
+                <span id="nt-ver-tag" class="text-[11px] text-zinc-500"></span>
+              </div>
+              <div id="nt-download-body"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ WHAT'S NEW ══════════════ -->
+      <section id="whats-new" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">What's new</h2>
+          <p class="text-xs text-zinc-600 mt-1">Release notes for the current version.</p>
+          <div class="nt-card mt-6" id="nt-whatsnew">
+            <p class="nt-p">No release published yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ INSTALL GUIDE ══════════════ -->
+      <section id="install" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">Install and set up</h2>
+          <p class="text-xs text-zinc-600 mt-1">About 10 minutes. Do it once. Updates are a re-import.</p>
+
+          <div class="grid md:grid-cols-4 gap-6 mt-6">
+            <nav class="nt-toc hidden md:block">
+              <a href="#need">What you need</a>
+              <a href="#s1">1. Install</a>
+              <a href="#s2">2. Chart settings</a>
+              <a href="#s3">3. Add the strategy</a>
+              <a href="#s4">4. Key settings</a>
+              <a href="#s5">5. Trail Mode</a>
+              <a href="#s6">6. Dashboard and chart</a>
+              <a href="#s7">7. Before going live</a>
+              <a href="#s8">8. Updating</a>
+              <a href="#trouble">Troubleshooting</a>
+            </nav>
+
+            <div class="md:col-span-3 space-y-5" style="min-width:0">
+
+              <div class="nt-card" id="need">
+                <h3 class="text-base font-black text-white mb-3">What you need</h3>
+                <ul class="nt-steps">
+                  <li><b>NinjaTrader 8</b>, version 8.1 or later. A free NinjaTrader account works.</li>
+                  <li><b>An active license</b> on the same email you log into NinjaTrader with. Your license card above shows which email it's on.</li>
+                  <li><b>MNQ or NQ futures data</b> from a connected data feed or broker.</li>
+                  <li><b>An account to run it on.</b> Start on <span class="nt-code">Sim101</span>. Move to a live or prop account only after you've watched it run.</li>
+                </ul>
+                <p class="nt-p mt-1">Don't have NinjaTrader yet?
+                  <a href="https://ninjatraderus.pxf.io/aNeX4q" target="_blank" rel="noopener noreferrer sponsored" class="text-green-400 font-bold">Create a free NinjaTrader account</a>.
+                  <span class="text-zinc-600 text-[11px]">Affiliate link. FSD-X may earn a commission.</span></p>
+              </div>
+
+              <div class="nt-card" id="s1">
+                <h3 class="text-base font-black text-white mb-3">1. Install</h3>
+                <ol class="nt-steps">
+                  <li>Download the <span class="nt-code">.zip</span> above. <b>Don't unzip it.</b></li>
+                  <li>In the NinjaTrader Control Center, go to <b>Tools → Import → NinjaScript Add-On</b>.
+                    <div class="nt-shot" data-shot="nt-import-menu">Screenshot: Tools → Import menu</div></li>
+                  <li>Select the <span class="nt-code">.zip</span> and click <b>Open</b>. Confirm the import message.</li>
+                  <li><b>Restart NinjaTrader.</b> Your license is checked when you log in.</li>
+                </ol>
+              </div>
+
+              <div class="nt-card" id="s2">
+                <h3 class="text-base font-black text-white mb-2">2. Chart settings</h3>
+                <p class="nt-p mb-3">Use these exact settings. Grades, stops and targets depend on them.</p>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>Setting</th><th>Value</th><th>Where</th></tr>
+                    <tr><td>Instrument</td><td>MNQ or NQ, current front month</td><td>Chart → Data Series</td></tr>
+                    <tr><td>Bar type</td><td>Minute, value <b class="text-white">5</b></td><td>Data Series</td></tr>
+                    <tr><td>Trading hours</td><td><b class="text-white">CME US Index Futures ETH</b></td><td>Data Series</td></tr>
+                    <tr><td>Days to load</td><td><b class="text-white">365</b></td><td>Data Series</td></tr>
+                    <tr><td>Merge policy</td><td><b class="text-white">Merge non back adjusted</b></td><td>Tools → Options → Market Data</td></tr>
+                  </table>
+                </div>
+                <div class="nt-shot" data-shot="nt-data-series">Screenshot: Data Series window</div>
+                <p class="nt-p mt-3"><b>Why 365 days:</b> the strategy reads a 4-hour trend, a 5-day ORB average and a 14-day volatility average. A short chart gives wrong grades and targets. The dashboard shows <b>WARMING UP</b> in red until enough history loads.</p>
+              </div>
+
+              <div class="nt-card" id="s3">
+                <h3 class="text-base font-black text-white mb-3">3. Add the strategy</h3>
+                <ol class="nt-steps">
+                  <li>Right-click the chart → <b>Strategies</b>.</li>
+                  <li>Under Available, double-click <b>KnightfallORB</b>.</li>
+                  <li>Pick your <b>Account</b>. Use <span class="nt-code">Sim101</span> first.</li>
+                  <li>Leave <b>Start behavior</b> on <b>Wait until flat</b>. If you enable it mid-session, it waits instead of jumping into a trade already running.</li>
+                  <li>Tick <b>Enabled</b>, then click <b>OK</b>.
+                    <div class="nt-shot" data-shot="nt-strategies-window">Screenshot: Strategies window with KnightfallORB enabled</div></li>
+                </ol>
+                <p class="nt-p">Changing settings restarts the strategy. If the chart markings disappear, open Strategies and check <b>Enabled</b> is still ticked.</p>
+                <p class="nt-p mt-2"><b>One strategy per account.</b> Don't place manual trades on an account it's trading. For several accounts, enable it on each one or use a trade copier.</p>
+              </div>
+
+              <div class="nt-card" id="s4">
+                <h3 class="text-base font-black text-white mb-2">4. Key settings</h3>
+                <p class="nt-p mb-3">The defaults are the standard setup. Change only what you need.</p>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+                    <tr><td>Auto Trade</td><td>On</td><td>On = places live orders. Off = signals only: a popup and sound with direction, grade, contracts, entry, stop and TP1. You place the trade yourself.</td></tr>
+                    <tr><td>Risk Per Trade ($)</td><td>400</td><td>Dollar risk used to size each trade</td></tr>
+                    <tr><td>$ Per Point</td><td>2</td><td><b class="text-white">2 for MNQ</b>, <b class="text-white">20 for NQ</b></td></tr>
+                    <tr><td>Minimum Grade</td><td>C</td><td>Lowest grade that can trade</td></tr>
+                    <tr><td>Partials Mode</td><td>None</td><td>None = full exit at TP1. Other options split the position or target TP2</td></tr>
+                    <tr><td>Max Trades Per Session</td><td>3</td><td>Entries allowed per day</td></tr>
+                    <tr><td>Entry Cutoff Time</td><td>1245</td><td>No new entries after 12:45 PM CT</td></tr>
+                    <tr><td>Flatten By</td><td>1530</td><td>Closes any open trade at 3:30 PM CT. Half-days close at 11:50 AM CT</td></tr>
+                    <tr><td>Daily Loss Limit ($)</td><td>0 (off)</td><td>Stops new entries once realized losses reach this amount</td></tr>
+                    <tr><td>Static Sizing</td><td>Off</td><td>On = every valid trade gets full size regardless of grade</td></tr>
+                    <tr><td>+1 Contract After a Loss</td><td>Off</td><td>Adds one contract to the next trade after a loss</td></tr>
+                  </table>
+                </div>
+                <p class="nt-p mt-3">Display settings only change what's drawn. They never affect trades.</p>
+              </div>
+
+              <div class="nt-card" id="s5">
+                <h3 class="text-base font-black text-white mb-2">5. Trail Mode (optional)</h3>
+                <p class="nt-p mb-3">Moves your stop once a trade is working. <b>Off by default.</b> Backtest any change before you use it live.</p>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+                    <tr><td>Trail Mode</td><td>Off</td><td><b class="text-white">Off</b>: stop stays put. <b class="text-white">BreakevenOnly</b>: moves the stop to entry once the trigger is hit. <b class="text-white">TrailOnly</b>: trails the stop behind price. <b class="text-white">BreakevenThenTrail</b>: breakeven first, then trails.</td></tr>
+                    <tr><td>Trigger Units</td><td>Points</td><td>Points, or % of the distance to TP1</td></tr>
+                    <tr><td>Breakeven Trigger</td><td>40</td><td>How far in profit before the stop moves to entry</td></tr>
+                    <tr><td>Breakeven Offset</td><td>0</td><td>Points past entry to place the breakeven stop</td></tr>
+                    <tr><td>Trail Trigger</td><td>50</td><td>How far in profit before trailing starts</td></tr>
+                    <tr><td>Trail Distance</td><td>30</td><td>How far behind price the trailing stop sits</td></tr>
+                  </table>
+                </div>
+              </div>
+
+              <div class="nt-card" id="s6">
+                <h3 class="text-base font-black text-white mb-2">6. Dashboard and chart</h3>
+                <p class="nt-p mb-3">The dashboard sits top right. <b>Red rows at the top are warnings.</b> Fix them before trading.</p>
+                <div class="nt-shot" data-shot="nt-dashboard">Screenshot: dashboard with a breakout block</div>
+                <div class="nt-scroll mt-3">
+                  <table class="nt-table">
+                    <tr><th>Row</th><th>What it shows</th></tr>
+                    <tr><td>ORB range</td><td>Size of today's opening range (8:30–8:45 CT), in points</td></tr>
+                    <tr><td>5D avg</td><td>Average ORB of the last 5 sessions. Green = ideal band, yellow = outside it, red = extreme</td></tr>
+                    <tr><td>Trend row</td><td>The 4-hour trend. <b class="text-white">[shift?]</b> means the current 4-hour bar is leaning toward a different state</td></tr>
+                    <tr><td>Breakout header</td><td>Direction, grade, score and contracts at your risk setting</td></tr>
+                    <tr><td>TP1 / TP2 / stop</td><td>Levels, what set them and distance in points</td></tr>
+                    <tr><td>TAKE TRADE / NO TRADE</td><td>Whether the setup passes every rule, with the reason underneath</td></tr>
+                  </table>
+                </div>
+                <p class="nt-p mt-3"><b>Live preview:</b> while the breakout candle is still forming, the grade, levels and verdict update live, and the candle is colored by its current grade. The grade is final when the candle closes. That's when the strategy enters. If price falls back inside the range first, the preview clears.</p>
+                <div class="nt-scroll mt-3">
+                  <table class="nt-table">
+                    <tr><th>Marking</th><th>Meaning</th></tr>
+                    <tr><td>Blue box</td><td>Today's opening range. High in green, low in red</td></tr>
+                    <tr><td>Triangle + letter</td><td>A breakout and its grade (A+ to F)</td></tr>
+                    <tr><td>Colored candle</td><td>A tradeable setup: lime A+/A, green B+/B, yellow C+/C. No color = not valid</td></tr>
+                    <tr><td>White / red dashed</td><td>Entry and stop</td></tr>
+                    <tr><td>Green line + box</td><td>TP1</td></tr>
+                    <tr><td>Teal dotted line + box</td><td>TP2</td></tr>
+                    <tr><td>Yellow dashed</td><td>50% of the way to TP1</td></tr>
+                    <tr><td>Orange dashed</td><td>Watch level</td></tr>
+                    <tr><td>Faded short stubs</td><td>Levels of your open trade after a newer breakout moved the main lines</td></tr>
+                  </table>
+                </div>
+                <p class="nt-p mt-3">One setup is drawn at a time. Setup lines clear at the 5 PM CT session roll.</p>
+              </div>
+
+              <div class="nt-card" id="s7">
+                <h3 class="text-base font-black text-white mb-3">7. Before trading a live account</h3>
+                <ul class="nt-steps">
+                  <li><b>Run it on Sim101 first</b> for at least a few sessions. Check entries, stops, targets and the 3:30 PM flatten.</li>
+                  <li><b>Keep NinjaTrader running and connected</b> during the session. It only manages trades while it's running. A VPS is recommended.</li>
+                  <li><b>Built-in safety:</b> flattens at 3:30 PM CT (and before half-day closes), NinjaTrader's session-close exit runs as a backup, and if an order is rejected it cancels, flattens, turns itself off and alerts you.</li>
+                  <li><b>Rollover:</b> a red <b>ROLLOVER</b> warning shows about 8 days before expiry. Switch the chart to the next contract month and re-enable.</li>
+                  <li><b>You're responsible for your account.</b> Watch it, especially the first weeks. Check your prop firm's rules on automation before running it there.</li>
+                </ul>
+              </div>
+
+              <div class="nt-card" id="s8">
+                <h3 class="text-base font-black text-white mb-3">8. Updating</h3>
+                <ol class="nt-steps">
+                  <li>When a new version is out, you'll see <b>Update available</b> at the top of this page.</li>
+                  <li>Download it, then <b>Tools → Import → NinjaScript Add-On</b> and pick the new zip. Say yes to replace.</li>
+                  <li>Restart NinjaTrader. Your license and your saved settings carry over.</li>
+                </ol>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ TROUBLESHOOTING ══════════════ -->
+      <section id="trouble" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">Troubleshooting</h2>
+          <p class="text-xs text-zinc-600 mt-1">Tap a question.</p>
+          <div id="faq-list" class="mt-4 divide-y divide-white/5 border-y border-white/5"></div>
+        </div>
+      </section>
+
+      <!-- ══════════════ PREVIOUS VERSIONS ══════════════ -->
+      <section id="versions" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">Previous versions</h2>
+          <p class="text-xs text-zinc-600 mt-1">Only use an older version if support asks you to.</p>
+          <div id="nt-versions" class="mt-4 text-xs text-zinc-600">None yet.</div>
+        </div>
+      </section>
+
+      <!-- ══════════════ HELP ══════════════ -->
+      <section id="help" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-sm font-black text-white uppercase tracking-wider">Need help?</h2>
+          <p class="text-xs text-zinc-600 mt-1">Send a screenshot of the problem and your NinjaTrader email.</p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="nt-btn">DM us on Discord &rarr;</a>
+            <a href="mailto:fsdxteam@gmail.com?subject=NinjaTrader%20help" class="nt-btn ghost">Email fsdxteam@gmail.com</a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="py-8 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+          <p class="text-[10.5px] text-zinc-600 leading-relaxed">
+            FSD-X ORB Pro (Knightfall) is a software tool and does not provide individual investment advice.
+            Futures trading involves substantial risk of loss and is not suitable for everyone. Backtested and
+            hypothetical results have inherent limitations and do not represent actual trading. Automated
+            strategies can fail because of software, data, connection or platform issues. You are responsible
+            for the accounts you run it on and every trade placed on them. See
+            <a href="disclosures.html" class="text-green-400/80 hover:text-green-400 font-bold">Disclosures</a>.
+          </p>
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+  var API = 'https://nexus-validator.dfuentes4211.workers.dev';
+  var token = null;
+  try { token = localStorage.getItem('fsdx_token'); } catch (e) {}
+  if (!token) { window.location.href = 'login.html?next=ninjatrader-members.html'; return; }
+
+  var STATE = null;
+
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); }
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    try { return new Date(iso).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric', timeZone:'America/Chicago' }); }
+    catch (e) { return iso.slice(0, 10); }
+  }
+  function fmtSize(n) { return n ? (n / 1024 / 1024 >= 1 ? (n / 1048576).toFixed(1) + ' MB' : Math.round(n / 1024) + ' KB') : ''; }
+  function $(id) { return document.getElementById(id); }
+
+  function setPill(kind, text) {
+    $('nt-pill').className = 'nt-pill ' + kind;
+    $('nt-pill-text').textContent = text;
+  }
+
+  function emailForm(prefill, label, btnText) {
+    return ''
+      + '<p class="nt-p mb-3">' + label + '</p>'
+      + '<div class="flex gap-2 nt-row">'
+      +   '<input id="nt-email-in" class="nt-input" type="email" autocomplete="email" placeholder="you@email.com" value="' + esc(prefill || '') + '">'
+      +   '<button id="nt-email-btn" class="nt-btn">' + btnText + '</button>'
+      + '</div>'
+      + '<div id="nt-email-msg" class="nt-msg"></div>'
+      + '<p class="text-[11px] text-zinc-600 mt-3">Use the exact email you log into NinjaTrader with. A different email means the strategy won\'t run.</p>';
+  }
+
+  function bindEmailForm() {
+    var btn = $('nt-email-btn'), input = $('nt-email-in');
+    if (!btn) return;
+    function go() {
+      var v = (input.value || '').trim();
+      var m = $('nt-email-msg');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { m.textContent = 'Enter a valid email.'; m.className = 'nt-msg err'; return; }
+      btn.disabled = true; btn.textContent = 'Saving…';
+      fetch(API + '/api/nt/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ ntEmail: v })
+      }).then(function (r) { return r.json(); }).then(function (d) {
+        if (d && d.success) { m.textContent = 'Saved. We\'ll set up your license and email you when it\'s ready.'; m.className = 'nt-msg ok'; setTimeout(load, 900); }
+        else { m.textContent = (d && d.error) || 'Could not save. Try again.'; m.className = 'nt-msg err'; btn.disabled = false; btn.textContent = 'Save'; }
+      }).catch(function () { m.textContent = 'Connection problem. Try again.'; m.className = 'nt-msg err'; btn.disabled = false; btn.textContent = 'Save'; });
+    }
+    btn.addEventListener('click', go);
+    input.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
+  }
+
+  function renderLicense(d) {
+    var L = d.license, body = '';
+    if (!d.eligible) {
+      if (d.reason === 'plan') {
+        setPill('none', 'Not included');
+        body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') doesn\'t include the NinjaTrader version. It comes with the full FSD-X membership.</p>'
+          + '<div class="mt-4"><a href="memberships.html" class="nt-btn">See the membership &rarr;</a></div>';
+      } else {
+        setPill('removed', 'Access ended');
+        body = '<p class="nt-p">Your membership isn\'t active, so the NinjaTrader license is paused.</p>'
+          + '<div class="mt-4"><a href="memberships.html" class="nt-btn">Rejoin &rarr;</a></div>';
+      }
+    } else if (!L) {
+      setPill('none', 'Not set up');
+      body = emailForm('', 'Confirm the email on your NinjaTrader account so we can add your license.', 'Save');
+    } else if (L.status === 'pending') {
+      setPill('pending', 'Being set up');
+      body = '<p class="nt-p">' + (L.emailChange ? 'We\'re moving your license to your new email.' : 'We\'re adding your license.')
+        + ' Usually within 24 hours. You\'ll get an email when it\'s active.</p>'
+        + '<div class="mt-3"><div class="nt-kv"><span>Licensed to</span><span>' + esc(L.ntEmail) + '</span></div>'
+        + '<div class="nt-kv"><span>Requested</span><span>' + fmtDate(L.requestedAt) + '</span></div></div>'
+        + '<details class="mt-3"><summary class="text-[11px] text-zinc-500 cursor-pointer">Wrong email? Change it</summary><div class="mt-3">'
+        + emailForm(L.ntEmail, 'Enter the right NinjaTrader email.', 'Update') + '</div></details>';
+    } else if (L.status === 'active') {
+      setPill('active', 'Active');
+      body = '<div class="nt-kv"><span>Licensed to</span><span>' + esc(L.ntEmail) + '</span></div>'
+        + '<div class="nt-kv"><span>Active since</span><span>' + fmtDate(L.activatedAt) + '</span></div>'
+        + '<div class="nt-kv"><span>Your version</span><span>' + (L.lastVersion ? 'v' + esc(L.lastVersion) : 'Not downloaded yet') + '</span></div>'
+        + '<details class="mt-3"><summary class="text-[11px] text-zinc-500 cursor-pointer">Changed your NinjaTrader email?</summary><div class="mt-3">'
+        + emailForm('', 'Enter your new NinjaTrader email. Your license moves over within 24 hours.', 'Update') + '</div></details>';
+    } else {
+      setPill('removed', 'Removed');
+      body = '<p class="nt-p">Your license was removed. If your membership is active again, confirm your NinjaTrader email and we\'ll add it back.</p>'
+        + '<div class="mt-3">' + emailForm(L.ntEmail, '', 'Request license') + '</div>';
+    }
+    $('nt-license-body').innerHTML = body;
+    bindEmailForm();
+  }
+
+  function renderDownload(d) {
+    var cur = d.current, L = d.license, html = '';
+    $('nt-ver-tag').textContent = cur ? 'v' + cur.version + ' · ' + fmtDate(cur.uploadedAt) : '';
+    if (d.canDownload && cur) {
+      html = '<p class="nt-p mb-4">The protected strategy file. Import it into NinjaTrader. Don\'t unzip it.</p>'
+        + '<button id="nt-dl-btn" class="nt-btn" data-v="' + esc(cur.version) + '">Download v' + esc(cur.version) + ' &darr;</button>'
+        + '<div id="nt-dl-msg" class="nt-msg"></div>'
+        + '<div class="mt-4"><div class="nt-kv"><span>File</span><span>' + esc(cur.filename) + '</span></div>'
+        + '<div class="nt-kv"><span>Size</span><span>' + fmtSize(cur.size) + '</span></div>'
+        + '<div class="nt-kv"><span>Last downloaded</span><span>' + (L && L.lastDownloadAt ? fmtDate(L.lastDownloadAt) : '—') + '</span></div></div>'
+        + '<div class="mt-4"><a href="#install" class="text-[11px] text-green-400 font-bold">Install steps &darr;</a></div>';
+    } else if (d.eligible && L && L.status === 'active' && !d.live && !d.early) {
+      html = '<p class="nt-p">Your license is ready. Downloads open at launch. We\'ll announce it in Discord and email you.</p>';
+    } else if (d.eligible && L && L.status === 'active' && !cur) {
+      html = '<p class="nt-p">No release has been published yet. Check back soon.</p>';
+    } else if (d.eligible && L && L.status === 'pending') {
+      html = '<p class="nt-p">The download unlocks as soon as your license is active. Read the install steps below while you wait.</p>';
+    } else if (d.eligible) {
+      html = '<p class="nt-p">Confirm your NinjaTrader email first. The download unlocks once your license is active.</p>';
+    } else {
+      html = '<p class="nt-p">Not available on your current plan.</p>';
+    }
+    $('nt-download-body').innerHTML = html;
+    var b = $('nt-dl-btn');
+    if (b) b.addEventListener('click', function () { download(b.getAttribute('data-v'), b, $('nt-dl-msg')); });
+  }
+
+  function renderBanner(d) {
+    var slot = $('nt-banner-slot'), cur = d.current, L = d.license;
+    if (d.canDownload && cur && L && L.lastVersion && L.lastVersion !== cur.version) {
+      slot.innerHTML = '<div class="nt-banner"><span class="nt-pill update"><span class="dot"></span>Update available</span>'
+        + '<div class="flex-1"><div class="text-sm font-black text-white">v' + esc(cur.version) + ' is out</div>'
+        + '<div class="text-[12px] text-zinc-400 mt-1">You\'re on v' + esc(L.lastVersion) + '. <a href="#whats-new" class="text-green-400 font-bold">See what changed</a>, then download and re-import.</div></div></div>';
+    } else if (d.eligible && !d.live && d.early) {
+      slot.innerHTML = '<div class="nt-banner"><span class="nt-pill update"><span class="dot"></span>Early access</span>'
+        + '<div class="flex-1 text-[12px] text-zinc-400">Members can\'t download yet. You\'re seeing this because your account has early access.</div></div>';
+    } else if (d.eligible && !d.live) {
+      slot.innerHTML = '<div class="nt-banner"><span class="nt-pill pending"><span class="dot"></span>Final prep</span>'
+        + '<div class="flex-1 text-[12px] text-zinc-400">Approved by NinjaTrader. Confirm your NinjaTrader email now so your license is ready on launch day.</div></div>';
+    } else { slot.innerHTML = ''; }
+  }
+
+  function renderNotes(d) {
+    var cur = d.current;
+    $('nt-whatsnew').innerHTML = cur
+      ? '<div class="flex items-center gap-3 mb-3"><span class="text-base font-black text-white">v' + esc(cur.version) + '</span><span class="text-[11px] text-zinc-500">' + fmtDate(cur.uploadedAt) + '</span></div>'
+        + '<div class="nt-notes">' + esc(cur.notes || 'No notes for this release.') + '</div>'
+      : '<p class="nt-p">No release published yet.</p>';
+
+    var older = (d.releases || []).filter(function (r) { return !cur || r.version !== cur.version; });
+    if (!older.length) { $('nt-versions').innerHTML = '<span>None yet.</span>'; return; }
+    $('nt-versions').innerHTML = older.map(function (r) {
+      return '<div class="faq py-4 cursor-pointer border-b border-white/5" onclick="this.classList.toggle(\'open\')">'
+        + '<div class="flex items-center gap-3"><svg class="faq-chev w-3 h-3 shrink-0 text-green-500 transition-transform" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>'
+        + '<div class="flex-1 text-xs font-bold text-white">v' + esc(r.version) + ' <span class="text-zinc-600 font-normal">· ' + fmtDate(r.uploadedAt) + '</span></div>'
+        + (d.canDownload ? '<button class="nt-btn ghost" style="padding:7px 12px;font-size:10px" data-oldv="' + esc(r.version) + '" onclick="event.stopPropagation()">Download</button>' : '')
+        + '</div><div class="faq-body nt-notes mt-2 pl-6">' + esc(r.notes || 'No notes.') + '</div></div>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-oldv]'), function (b) {
+      b.addEventListener('click', function () { download(b.getAttribute('data-oldv'), b, null); });
+    });
+  }
+
+  function download(v, btn, msgEl) {
+    var label = btn.innerHTML;
+    btn.disabled = true; btn.textContent = 'Downloading…';
+    fetch(API + '/api/nt/download?v=' + encodeURIComponent(v), { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(function (r) {
+        if (!r.ok) return r.json().then(function (d) { throw new Error((d && d.error) || 'Download failed'); });
+        return r.blob();
+      })
+      .then(function (blob) {
+        var a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'FSDX_ORB_Pro_Knightfall_v' + v + '.zip';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+        btn.disabled = false; btn.innerHTML = label;
+        if (msgEl) { msgEl.textContent = 'Downloaded. Next: Tools → Import → NinjaScript Add-On.'; msgEl.className = 'nt-msg ok'; }
+        setTimeout(load, 1200);
+      })
+      .catch(function (e) {
+        btn.disabled = false; btn.innerHTML = label;
+        if (msgEl) { msgEl.textContent = e.message; msgEl.className = 'nt-msg err'; } else { alert(e.message); }
+      });
+  }
+
+  var FAQ = [
+    ['Nothing draws and there\'s no dashboard',
+     'Your license email has to match the email you\'re logged into NinjaTrader with. Check the "Licensed to" email above. Restart NinjaTrader after your license goes active. Then open Strategies and confirm Enabled is ticked.'],
+    ['NinjaTrader says I\'m not licensed',
+     'Either your license isn\'t active yet (see the card at the top), or you\'re logged into NinjaTrader with a different email. Log out and back into NinjaTrader with the licensed email, or update your email above and we\'ll move the license.'],
+    ['Red WARMING UP row',
+     'Set Days to load to 365 in Data Series and reload the chart.'],
+    ['Red 5-minute bars or ETH warning',
+     'The chart settings don\'t match. Fix Data Series to match step 2: 5-minute bars, CME US Index Futures ETH.'],
+    ['Grades or targets differ from TradingView',
+     'Usually Days to load below 365, trading hours not set to ETH, or a back-adjusted merge policy. Fix those three and reload.'],
+    ['Import failed or says the file is invalid',
+     'Don\'t unzip the file. Import the .zip itself through Tools → Import → NinjaScript Add-On. If it still fails, delete the download and get a fresh copy here.'],
+    ['Strategy turned off after changing settings',
+     'Changing settings restarts it. Open Strategies and tick Enabled again.'],
+    ['Strategy turned off on its own',
+     'Check the Log tab in the Control Center for the error. Send us a screenshot of it in Discord.'],
+    ['Can I run it on more than one account?',
+     'Yes. Enable it on each account, or run it on one account and use a trade copier. Don\'t place manual trades on an account it\'s trading.'],
+    ['Do I need a paid NinjaTrader license?',
+     'No. A free NinjaTrader account can run it in simulation and with supported brokers. Your NinjaTrader platform license is separate from your FSD-X strategy license.']
+  ];
+  function buildFaq() {
+    $('faq-list').innerHTML = FAQ.map(function (f) {
+      return '<div class="faq py-4 cursor-pointer" onclick="this.classList.toggle(\'open\')">'
+        + '<div class="flex items-start gap-3"><svg class="faq-chev w-3 h-3 mt-1 shrink-0 text-green-500 transition-transform" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>'
+        + '<div class="flex-1"><div class="text-xs font-bold text-white">' + f[0] + '</div>'
+        + '<div class="faq-body text-[11.5px] text-zinc-500 mt-2 leading-relaxed">' + f[1] + '</div></div></div></div>';
+    }).join('');
+  }
+
+  function render(d) {
+    STATE = d;
+    renderLicense(d); renderDownload(d); renderBanner(d); renderNotes(d);
+    $('loading-screen').classList.add('hidden');
+    $('nt-content').classList.remove('hidden');
+  }
+
+  function load() {
+    fetch(API + '/api/nt/status', { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(function (r) {
+        if (r.status === 401) { window.location.href = 'login.html?next=ninjatrader-members.html'; throw new Error('auth'); }
+        return r.json();
+      })
+      .then(render)
+      .catch(function (e) {
+        if (e && e.message === 'auth') return;
+        $('loading-screen').innerHTML = '<p class="text-zinc-500 text-sm text-center px-6">Couldn\'t load your license. Refresh, or DM us in Discord if it keeps happening.</p>';
+      });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () { buildFaq(); load(); });
+})();
+</script>
+
+</body>
+</html>

@@ -492,7 +492,7 @@ function prepareNavLabels(root) {
   // blank the nav just as thoroughly, so check the status and the body, and
   // give a flaky network one retry before giving up.
   function loadNavHtml(attempt) {
-    return fetch('nav.html?v=20261007a')
+    return fetch('nav.html?v=20261010a')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
@@ -644,7 +644,7 @@ function prepareNavLabels(root) {
            still promote the $129 membership; only the tier itself pays
            nothing. */
         if (plan === 'site' || plan === 'raven') {
-          document.querySelectorAll('#nav-content a[href="alerts.html"]')
+          document.querySelectorAll('#nav-content a[href="alerts.html"], #nav-content a[href="ninjatrader-members.html"]')
             .forEach(el => el.classList.add('hidden'));
         }
       }
@@ -663,14 +663,15 @@ function prepareNavLabels(root) {
           ['dashboard.html', 'Dashboard'], ['journal.html', 'Journal'],
           ['accounts.html', 'Accounts'], ['playbook.html', 'Playbook'],
           ['backtest.html', 'Backtest'], ['alerts.html', 'Scout Alerts'],
-          ['converter.html', 'Trade Importer'], ['refer.html', 'Refer & Earn'],
+          ['converter.html', 'Trade Importer'], ['ninjatrader-members.html', 'NinjaTrader 8'],
+          ['refer.html', 'Refer & Earn'],
           ['profile.html', 'Profile']
         ]; } catch (e) {}
         // Same tools-tier rule as the real nav above.
         try {
           var fbPlan = localStorage.getItem('fsdx_plan');
           if (fbPlan === 'site' || fbPlan === 'raven') {
-            vip = vip.filter(function (l) { return l[0] !== 'alerts.html'; });
+            vip = vip.filter(function (l) { return l[0] !== 'alerts.html' && l[0] !== 'ninjatrader-members.html'; });
           }
         } catch (e) {}
         /* Labels here must match nav.html. They drifted once already: nav.html
