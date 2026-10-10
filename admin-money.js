@@ -48,6 +48,15 @@
   function priceOf(r) {
     return (r.billingAmountManual ? r.billingAmount : 0) || lastRecurring(r.email) || r.billingAmount || r.renewalPrice || r.initialPrice || 0;
   }
+  // Renewal time of day — same source as the Classic tab (renewalTime in
+  // admin.html): exact from Whop when known, else "≈" from their last charge.
+  function rtime(r) {
+    try { var t = renewalTime(r); return t ? (t.exact ? '' : '≈') + t.time : ''; } catch (e) { return ''; }
+  }
+  function rsort(r) {   // minutes past midnight, for ordering within a day
+    var t = rtime(r).replace('≈', ''); var m = t.match(/(\d+):(\d+)\s*(AM|PM)/i);
+    if (!m) return 9999; var h = (+m[1]) % 12 + (/pm/i.test(m[3]) ? 12 : 0); return h * 60 + (+m[2]);
+  }
   function product(x) { return x.productName || x.planName || x.description || x.accessType || '—'; }
   function isNT(x) { var t = (product(x) || '').toLowerCase(); return /pro|plus|vip|lifetime/.test(t) && !/raven|nightwing|nexus/.test(t); }
 
@@ -99,7 +108,7 @@
       var end = dayOf(r.cancelingDate || (r.status === 'canceling' || r.status === 'trial_cancelled' ? r.renewal : ''));
       if (end && end >= today && end <= horizon) upcoming.push({ day: end, r: r, kind: 'ends', amount: priceOf(r) });
     });
-    upcoming.sort(function (a, b) { return a.day < b.day ? -1 : a.day > b.day ? 1 : b.amount - a.amount; });
+    upcoming.sort(function (a, b) { return a.day < b.day ? -1 : a.day > b.day ? 1 : (rsort(a.r) - rsort(b.r)) || (b.amount - a.amount); });
     var exp7 = upcoming.filter(function (u) { return u.kind !== 'ends' && u.day <= next7; });
     var exp7Net = exp7.reduce(function (s, u) { return s + u.amount; }, 0) * ratio();
 
@@ -191,7 +200,8 @@
       +     '<div id="mn-cal"></div>'
       +     '<div class="flex gap-4 flex-wrap mt-3 text-[10.5px] text-zinc-500">'
       +       '<span><b style="color:#2FBF7E">$</b> collected (net)</span><span><b style="color:#F5A524">~$</b> expected renewals</span>'
-      +       '<span><b style="color:#E2534B">&times;</b> failed</span><span><b style="color:#F5A524">&darr;</b> access ends</span></div></div>'
+      +       '<span><b style="color:#E2534B">&times;</b> failed</span><span><b style="color:#F5A524">&darr;</b> access ends</span>'
+      +       '<span>Times in CT · &asymp; = from their last charge</span></div></div>'
       +   '<div class="ntx-card"><div id="mn-dayhead" class="ntx-h mb-2">Day</div><div id="mn-daybody"></div></div>'
       + '</div>'
       + '<div class="mn-3 mb-5">'
@@ -273,8 +283,9 @@
           var pill = u.kind === 'trial' ? '<span class="mn-pill p-blu">Trial converts</span>'
             : u.kind === 'ends' ? '<span class="mn-pill p-amb">Access ends</span>'
             : '<span class="mn-pill p-grn">Renews</span>';
+          var tm = u.kind !== 'ends' ? rtime(u.r) : '';
           return '<div class="mn-row">' + pill + '<div style="flex:1;min-width:0">' + who(u.r)
-            + '<div class="mn-sub">' + esc(product(u.r)) + '</div></div>'
+            + '<div class="mn-sub">' + esc(product(u.r)) + (tm ? ' · <span class="text-zinc-300">' + esc(tm) + '</span>' : '') + '</div></div>'
             + '<div class="mn-amt' + (u.kind === 'ends' ? ' text-zinc-500' : '') + '">' + (u.kind === 'ends' ? '—' : usd(u.amount, 2)) + '</div></div>';
         }).join('');
     }).join('');
@@ -413,9 +424,10 @@
         + '<div class="mn-sub">' + esc(product(p)) + (reasonLabel(p) ? ' · ' + esc(reasonLabel(p)) : '') + (p.failureReason && p.status !== 'paid' ? ' · ' + esc(p.failureReason) : '') + '</div></div>'
         + '<div class="mn-amt">' + usd(p.amount, 2) + '</div></div>';
     });
-    x.ren.forEach(function (r) {
+    x.ren.slice().sort(function (a, b) { return rsort(a) - rsort(b); }).forEach(function (r) {
+      var tm = rtime(r);
       rows += '<div class="mn-row"><span class="mn-pill ' + (r.status === 'trialing' ? 'p-blu">Trial converts' : 'p-grn">Renews') + '</span><div style="flex:1;min-width:0">' + who(r)
-        + '<div class="mn-sub">' + esc(product(r)) + '</div></div><div class="mn-amt">' + usd(priceOf(r), 2) + '</div></div>';
+        + '<div class="mn-sub">' + esc(product(r)) + (tm ? ' · <span class="text-zinc-300">' + esc(tm) + '</span>' : '') + '</div></div><div class="mn-amt">' + usd(priceOf(r), 2) + '</div></div>';
     });
     x.ends.forEach(function (r) {
       rows += '<div class="mn-row"><span class="mn-pill p-amb">Access ends</span><div style="flex:1;min-width:0">' + who(r)
