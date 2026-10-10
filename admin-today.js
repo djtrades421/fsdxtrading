@@ -144,7 +144,7 @@
     var today = ctDay(), weekAgo = Date.now() - 7 * 864e5;
     var isToday = function (e) { return ctDay(new Date(e.at)) === today; };
     var inWeek = function (e) { return new Date(e.at).getTime() > weekAgo; };
-    var tasks = nt ? nt.records.filter(function (r) { return r.status === 'pending' || r.status === 'remove'; }) : [];
+    var tasks = nt && window.ntIsTask ? nt.records.filter(window.ntIsTask) : [];
     var late = tasks.filter(function (r) { return Date.now() - new Date(r.requestedAt || r.createdAt) > 864e5; }).length;
     var money = evs.filter(function (e) { return e.type === 'payment' && isToday(e); }).reduce(function (s, e) { return s + (Number(e.amount) || 0); }, 0);
     var fails = evs.filter(function (e) { return (e.type === 'payment_failed' || e.type === 'past_due') && inWeek(e); }).length;

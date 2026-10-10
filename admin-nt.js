@@ -192,13 +192,18 @@
       + card(D.settings.live ? 'LIVE' : 'PREP', D.settings.live ? 'Members can download' : 'Final prep · owners only', D.settings.live ? 'green' : 'amber');
   }
 
-  function isTask(r) { return r.status === 'pending' || r.status === 'remove'; }
+  // Something you can act on now. Pending with no NT email = waiting on the member.
+  function isTask(r) { return r.status === 'remove' || (r.status === 'pending' && !!r.ntEmail); }
+  function isWaiting(r) { return r.status === 'pending' && !r.ntEmail; }
+  window.ntIsTask = isTask;
 
   // Shared with the Today tab (window.ntTasksHtml).
   function tasksHtml(data) {
     var list = (data && data.records || []).filter(isTask)
       .sort(function (a, b) { return new Date(a.requestedAt || a.createdAt) - new Date(b.requestedAt || b.createdAt); });
-    if (!list.length) return '<div class="text-[12px] text-zinc-500 py-2">Nothing to do. All NinjaTrader licenses match Whop.</div>';
+    var waitList = (data && data.records || []).filter(isWaiting);
+    var waitHtml = waitingHtml(waitList);
+    if (!list.length) return '<div class="text-[12px] text-zinc-500 py-2">Nothing to do. All NinjaTrader licenses match Whop.</div>' + waitHtml;
     return list.map(function (r) {
       var h = hoursSince(r.requestedAt || r.createdAt);
       var cls = h > 24 ? 'late' : (h > 12 ? 'warn' : '');
@@ -233,7 +238,30 @@
         +   '<div class="text-[11px] font-black ' + (h > 24 ? 'text-red-400' : 'text-zinc-500') + '">waiting ' + ago(r.requestedAt || r.createdAt) + '</div>'
         +   '<div class="flex gap-2 flex-wrap justify-end">' + btns + '</div>'
         + '</div></div>';
-    }).join('');
+    }).join('') + waitHtml;
+  }
+
+  // Members on an NT plan who haven't given a NinjaTrader email. Not a task:
+  // they move to To do on their own once they enter it on the site.
+  function waitingHtml(list) {
+    if (!list.length) return '';
+    var open = (function () { try { return localStorage.getItem('ntx_wait_open') === '1'; } catch (e) { return false; } })();
+    return '<details class="mt-4" ' + (open ? 'open' : '') + ' ontoggle="try{localStorage.setItem(\'ntx_wait_open\',this.open?\'1\':\'0\')}catch(e){}">'
+      + '<summary class="cursor-pointer text-[12px] text-zinc-400 font-bold">Waiting on member (' + list.length + ') '
+      + '<span class="font-normal text-zinc-600">· no NinjaTrader email yet · not counted as to do</span></summary>'
+      + '<div class="flex items-center justify-between gap-2 flex-wrap mt-2 mb-1">'
+      +   '<div class="text-[11px] text-zinc-500">They show up in To do automatically once they add their NT email on the site. Dismiss anyone who won\'t use NinjaTrader.</div>'
+      +   '<button class="ntx-btn" data-bulk="decline_waiting">Dismiss all ' + list.length + '</button>'
+      + '</div>'
+      + list.sort(function (a, b) { return (a.name || a.email).localeCompare(b.name || b.email); }).map(function (r) {
+          return '<div class="flex items-center gap-2 py-2 border-b border-white/5 flex-wrap">'
+            + '<div style="flex:1 1 220px;min-width:0"><span class="text-[12.5px] text-white font-bold">' + esc(r.name || r.email) + '</span> '
+            + '<span class="text-[11px] text-zinc-500">' + esc(r.email) + '</span></div>'
+            + '<button class="ntx-btn" data-act="edit" data-e="' + esc(r.email) + '">Set NT email</button>'
+            + '<button class="ntx-btn" data-act="decline" data-e="' + esc(r.email) + '">Not using NT</button>'
+            + '</div>';
+        }).join('')
+      + '</details>';
   }
   window.ntTasksHtml = tasksHtml;
   window.ntData = function () { return D; };
@@ -241,7 +269,7 @@
   function renderQueue() { $('ntx-queue').innerHTML = tasksHtml(D); }
 
   function renderFilters() {
-    var opts = [['all', 'All'], ['active', 'Active'], ['pending', 'To do'], ['removed', 'Removed']];
+    var opts = [['all', 'All'], ['active', 'Active'], ['pending', 'To do'], ['waiting', 'Waiting'], ['removed', 'Removed'], ['declined', 'Not using']];
     $('ntx-filters').innerHTML = opts.map(function (o) {
       return '<button class="ntx-chip' + (FILTER === o[0] ? ' on' : '') + '" data-filter="' + o[0] + '">' + o[1] + '</button>';
     }).join('') + '<input id="ntx-q" class="ntx-in" placeholder="Search" style="width:150px" value="' + esc(QUERY) + '">';
@@ -251,11 +279,11 @@
 
   function renderRegister() {
     var rows = D.records.filter(function (r) {
-      if (FILTER === 'pending' ? !isTask(r) : (FILTER !== 'all' && r.status !== FILTER)) return false;
+      if (FILTER === 'pending' ? !isTask(r) : FILTER === 'waiting' ? !isWaiting(r) : (FILTER !== 'all' && r.status !== FILTER)) return false;
       if (QUERY && (r.email + ' ' + (r.ntEmail || '') + ' ' + (r.name || '')).toLowerCase().indexOf(QUERY) === -1) return false;
       return true;
     }).sort(function (a, b) {
-      var o = { remove: 0, pending: 0, active: 1, removed: 2 };
+      var o = { remove: 0, pending: 0, active: 1, removed: 2, declined: 3 };
       return (o[a.status] - o[b.status]) || (a.name || a.email).localeCompare(b.name || b.email);
     });
     if (!rows.length) { $('ntx-register').innerHTML = '<div class="py-3 text-zinc-500">No members here yet.</div>'; return; }
@@ -263,6 +291,8 @@
     $('ntx-register').innerHTML = '<table class="ntx-t"><tr><th>Member</th><th>NinjaTrader email</th><th>Status</th><th>Added</th><th>Removed</th><th>Version</th><th></th></tr>'
       + rows.map(function (r) {
         var tag = (r.status === 'remove' ? '<span class="ntx-tag t-removed">To remove</span>'
+            : isWaiting(r) ? '<span class="ntx-tag t-pending">Waiting</span>'
+            : r.status === 'declined' ? '<span class="ntx-tag t-early" style="color:#7C8899;border-color:#253244;background:transparent">Not using</span>'
             : '<span class="ntx-tag t-' + r.status + '">' + (r.status === 'pending' ? 'To do' : r.status) + '</span>')
           + (r.early ? ' <span class="ntx-tag t-early">Early</span>' : '')
           + (isOwnerRec(r) ? ' <span class="ntx-tag t-early">Owner</span>' : '');
@@ -270,7 +300,8 @@
         var acts = '';
         if (r.status === 'active') acts += '<button class="ntx-btn bad" data-act="remove" data-e="' + esc(r.email) + '">Remove</button>';
         if (r.status === 'remove') acts += '<button class="ntx-btn ok" data-act="remove-done" data-e="' + esc(r.email) + '">&#10003; Removed</button>';
-        if (r.status === 'removed') acts += '<button class="ntx-btn" data-act="pending" data-e="' + esc(r.email) + '">Re-add</button>';
+        if (r.status === 'removed' || r.status === 'declined') acts += '<button class="ntx-btn" data-act="pending" data-e="' + esc(r.email) + '">Re-add</button>';
+        if (isWaiting(r)) acts += '<button class="ntx-btn" data-act="decline" data-e="' + esc(r.email) + '">Not using NT</button>';
         acts += '<button class="ntx-btn" data-act="edit" data-e="' + esc(r.email) + '">Edit</button>';
         acts += '<button class="ntx-btn" data-act="early" data-e="' + esc(r.email) + '">' + (r.early ? 'Early off' : 'Early on') + '</button>';
         if (!isOwnerRec(r)) acts += '<button class="ntx-btn bad" data-act="delete" data-e="' + esc(r.email) + '" title="Delete record">&times;</button>';
@@ -332,7 +363,7 @@
     request: 'Requested license', email_change: 'Changed NT email', activated: 'License marked added',
     removed: 'License marked removed', set_pending: 'Moved back to To do', download: 'Downloaded',
     release: 'Release uploaded', release_current: 'Current release set', release_delete: 'Release deleted',
-    admin_add: 'Added by admin', remove_queued: 'Removal queued (membership ended)', remove_cancelled: 'Removal cancelled (back active)', admin_update: 'Edited by admin', admin_delete: 'Record deleted', settings: 'Settings changed'
+    admin_add: 'Added by admin', remove_queued: 'Removal queued (membership ended)', remove_cancelled: 'Removal cancelled (back active)', declined: 'Marked not using NT', admin_update: 'Edited by admin', admin_delete: 'Record deleted', settings: 'Settings changed'
   };
   function renderLog() {
     var log = D.log || [];
@@ -350,7 +381,13 @@
     $('ntx-updated').textContent = 'Updated ' + new Date().toLocaleTimeString('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit' }) + ' CT';
     // Nav badge: open tasks
     var n = D.records.filter(isTask).length;
-    var b = $('nt-nav-n'); if (b) { b.textContent = n; b.style.display = n ? '' : 'none'; }
+    setBadges(n);
+  }
+
+  function setBadges(n) {
+    ['nt-nav-n', 'today-nav-n'].forEach(function (id) {
+      var b = $(id); if (b) { b.textContent = n; b.style.display = n ? '' : 'none'; }
+    });
   }
 
   /* ── Actions ────────────────────────────────────────────────────────── */
@@ -360,11 +397,20 @@
   function find(email) { return D.records.filter(function (r) { return r.email === email; })[0]; }
 
   function onClick(e) {
-    var el = e.target.closest ? e.target.closest('[data-copy],[data-act],[data-rel],[data-filter]') : null;
+    var el = e.target.closest ? e.target.closest('[data-copy],[data-act],[data-rel],[data-filter],[data-bulk]') : null;
     if (!el) return;
     var inNt = $('panel-nt') && $('panel-nt').contains(el), inToday = $('panel-today') && $('panel-today').contains(el);
     if (!inNt && !inToday) return;
     if (el.hasAttribute('data-copy')) { copy(el.getAttribute('data-copy')); return; }
+    if (el.hasAttribute('data-bulk')) {
+      var cnt = D.records.filter(isWaiting).length;
+      if (!window.confirm('Mark all ' + cnt + ' waiting members as "Not using NinjaTrader"?\nAnyone who adds their NT email on the site later goes straight to To do.')) return;
+      el.disabled = true;
+      post('/api/admin/nt/bulk', { action: 'decline_waiting' }).then(function (d) {
+        toast(d.count + ' dismissed'); ntLoad(); if (window.todayLoad && inToday) todayLoad();
+      }).catch(function (x) { el.disabled = false; toast(x.message, true); });
+      return;
+    }
     if (el.hasAttribute('data-filter')) { FILTER = el.getAttribute('data-filter'); renderFilters(); renderRegister(); return; }
 
     if (el.hasAttribute('data-rel')) {
@@ -385,6 +431,8 @@
     if (act === 'activate' || act === 'activate-quiet') {
       if (r.prevNtEmail && !window.confirm('Did you REMOVE ' + r.prevNtEmail + ' and ADD ' + r.ntEmail + ' in the Vendor dashboard?')) { el.disabled = false; return; }
       p = lic(em, 'activate', { notify: act === 'activate' }).then(function (d) { toast(d.emailed ? 'Marked added · welcome email sent' : 'Marked added'); });
+    } else if (act === 'decline') {
+      p = lic(em, 'decline').then(function () { toast('Dismissed · not using NinjaTrader'); });
     } else if (act === 'remove-done') {
       if (!window.confirm('Did you remove ' + (r.ntEmail || em) + ' in the NinjaTrader Vendor dashboard?')) { el.disabled = false; return; }
       p = lic(em, 'remove', { note: r.removeReason || 'Membership ended' }).then(function () { toast('Marked removed'); });
@@ -466,7 +514,7 @@
       if (!tok()) return;
       if (p && p.classList.contains('active')) ntLoad();
       else api('/api/admin/nt').then(function (d) { D = d; var n = d.records.filter(isTask).length;
-        var b = $('nt-nav-n'); if (b) { b.textContent = n; b.style.display = n ? '' : 'none'; } }).catch(function () {});
+        setBadges(n); }).catch(function () {});
     }, 120000);
   }
 
