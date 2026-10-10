@@ -41,7 +41,7 @@
         </div>
         <div>
           <h1 class="text-base font-black text-white">Trade Importer</h1>
-          <p class="text-xs text-zinc-500">Universal importer — TradingView · Tradovate · FSD-X ORB PRO · Auto-detected</p>
+          <p class="text-xs text-zinc-500">Universal importer — TradingView · Tradovate · NinjaTrader · FSD-X ORB PRO · Auto-detected</p>
         </div>
       </div>
     </div>
@@ -52,7 +52,7 @@
         <!-- Supported formats -->
         <div class="border border-white/5 bg-zinc-950/40 rounded-2xl p-5">
           <div class="text-xs font-black text-white uppercase tracking-wider mb-3">Supported Formats</div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="flex items-start gap-3">
               <div class="w-7 h-7 rounded-lg bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
                 <span class="text-green-400 text-[10px] font-black">FX</span>
@@ -81,6 +81,15 @@
                   <span class="px-1.5 py-0.5 rounded text-[9px] font-black bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 uppercase tracking-wide">Beta</span>
                 </div>
                 <div class="text-[11px] text-zinc-500">Live trade history from Tradovate. Export from Account → Orders tab. Entry/exit pairs matched automatically.</div>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div class="w-7 h-7 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0">
+                <span class="text-cyan-400 text-[10px] font-black">NT</span>
+              </div>
+              <div>
+                <div class="text-xs font-bold text-white mb-0.5">NinjaTrader 8 Trades</div>
+                <div class="text-[11px] text-zinc-500">Strategy Analyzer or Account Performance → Trades tab → right-click → Export. Backtest or live, already paired.</div>
               </div>
             </div>
           </div>
@@ -119,7 +128,7 @@
               </div>
               <div class="text-sm font-bold text-zinc-300 mb-1">Drop your CSVs here</div>
               <div class="text-xs text-zinc-600">One file or many — each routes to its own account by account #</div>
-              <div class="text-[10px] text-zinc-700 mt-1">TradingView export · Tradovate Orders · FSD-X ORB PRO · Journal export — auto-detected</div>
+              <div class="text-[10px] text-zinc-700 mt-1">TradingView export · Tradovate Orders · NinjaTrader Trades · FSD-X ORB PRO · Journal export — auto-detected</div>
             </div>
           </div>
 
@@ -528,6 +537,12 @@
       if (fl.includes('# accounts') && fl.includes('tp1 contracts')) {
         return 'journal';
       }
+      // NinjaTrader 8 Trades grid (Strategy Analyzer / Account Performance).
+      // MUST be checked before TradingView — its "Trade number" + "Profit"
+      // headers would otherwise fall into the TV branches and parse 0 trades.
+      if (firstLine.includes('Market pos.') && firstLine.includes('Entry price') && firstLine.includes('Exit price')) {
+        return 'ninja';
+      }
       // Tradovate: has B/S column and Fill Time or avgPrice
       if (firstLine.includes('B/S') || firstLine.includes('Fill Time') || firstLine.includes('avgPrice') || firstLine.includes('filledQty') || (firstLine.includes('Action') && firstLine.includes('Symbol') && firstLine.includes('Avg Price')) || firstLine.includes('Order ID')) {
         return 'tradovate';
@@ -555,6 +570,7 @@
         tv:   { bg: 'bg-blue-500/10 border-blue-500/30 text-blue-400',   dot: 'bg-blue-400',   label: 'TradingView Strategy Detected ✓' },
         tv_new: { bg: 'bg-blue-500/10 border-blue-500/30 text-blue-400', dot: 'bg-blue-400',   label: 'TradingView Strategy (New Format) ✓' },
         tradovate: { bg: 'bg-purple-500/10 border-purple-500/30 text-purple-400', dot: 'bg-purple-400', label: 'Tradovate Orders Detected ✓' },
+        ninja: { bg: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400', dot: 'bg-cyan-400', label: 'NinjaTrader Trades Detected ✓' },
         journal: { bg: 'bg-amber-500/10 border-amber-500/30 text-amber-400', dot: 'bg-amber-400', label: 'FSD-X Journal Export Detected ✓' },
         unknown: { bg: 'bg-zinc-800 border-white/10 text-zinc-400', dot: 'bg-zinc-400', label: 'Unknown Format' },
       };
@@ -569,6 +585,7 @@
         tv:   { bg: 'bg-blue-500/5 border-blue-500/20 text-blue-300/80',   label: 'TradingView Mode', labelColor: 'text-blue-400', desc: 'Standard strategy export. Direction, entry/exit prices, P&L and timestamps mapped automatically. Grade column will be blank.' },
         tv_new: { bg: 'bg-blue-500/5 border-blue-500/20 text-blue-300/80', label: 'TradingView Mode (New Format)', labelColor: 'text-blue-400', desc: 'New TradingView export format. Direction, entry/exit prices, P&L and timestamps mapped automatically. Grade column will be blank.' },
         tradovate: { bg: 'bg-purple-500/5 border-purple-500/20 text-purple-300/80', label: 'Tradovate Mode', labelColor: 'text-purple-400', desc: 'Live order history. Entry/exit fills paired by symbol and time sequence. P&L calculated from fill prices. Grade column will be blank — tag trades manually after import.' },
+        ninja: { bg: 'bg-cyan-500/5 border-cyan-500/20 text-cyan-300/80', label: 'NinjaTrader Mode', labelColor: 'text-cyan-400', desc: 'NinjaTrader 8 Trades export. Trades are already paired, so direction, size, prices, times and P&L come straight from the file. P&L is NinjaTrader\'s own Profit column, so any commission set in NinjaTrader is already included. Entry and exit names are kept in notes.' },
         journal: { bg: 'bg-amber-500/5 border-amber-500/20 text-amber-300/80', label: 'Journal Export Mode', labelColor: 'text-amber-400', desc: 'Already-paired trades from an FSD-X journal export. Nothing is recalculated — P&L, grades and notes come through as-is, and commissions are left alone since they are already deducted. Send these to your journal or into a backtest session.' },
         unknown: { bg: 'bg-zinc-900 border-white/10 text-zinc-400', label: 'Unknown Format', labelColor: 'text-zinc-300', desc: 'Could not auto-detect format. Make sure you are exporting from the correct tab in your platform.' },
       };
@@ -596,7 +613,7 @@
 
       if (!anyOk) {
         const why = loadedFiles.length === 1 ? (loadedFiles[0].error || 'Unrecognized format') : 'None of these files could be read';
-        return showError(why + '. Supported: TradingView List of Trades export, Tradovate Orders export, FSD-X ORB PRO strategy export, or an FSD-X journal export.');
+        return showError(why + '. Supported: TradingView List of Trades export, Tradovate Orders export, NinjaTrader 8 Trades export, FSD-X ORB PRO strategy export, or an FSD-X journal export.');
       }
 
       const ok = loadedFiles.filter(f => !f.error);
@@ -626,6 +643,7 @@
       ok.forEach(f => {
         if (f.mode === 'tradovate') f.rows.forEach(r => { if (r['Account']) ids.push(r['Account']); });
         else if (f.mode === 'journal') f.rows.forEach(r => { if (r['Account #']) ids.push(r['Account #']); });
+        else if (f.mode === 'ninja') f.rows.forEach(r => { const a = ninjaAccountId(r['Account']); if (a) ids.push(a); });
       });
       tradovateAccountIds = [...new Set(ids)];
       renderCommissionSourceNote();
@@ -650,6 +668,13 @@
         }
       }
 
+      // Auto-detect ticker for NinjaTrader ("MNQ 12-26" → MNQ)
+      const firstNt = ok.find(f => f.mode === 'ninja');
+      if (firstNt && !firstTv) {
+        const sym = ninjaRoot((firstNt.rows[0] || {})['Instrument']);
+        if (sym) document.getElementById('opt-ticker').value = sym;
+      }
+
       // Auto-fill session name
       if (dates.length >= 2) {
         const ticker = document.getElementById('opt-ticker').value || 'MNQ';
@@ -667,6 +692,10 @@
       if (f.mode === 'tradovate') {
         return rows.map(r => parseTradovateTime(r['Fill Time'] || r['Date/Time'] || r['Timestamp'] || r['Date'] || '').iso).filter(Boolean);
       }
+      if (f.mode === 'ninja') {
+        const dmy = ninjaIsDayFirst(rows);
+        return rows.map(r => parseNinjaTime(r['Entry time'], dmy).iso).filter(Boolean);
+      }
       if (f.mode === 'journal') {
         return rows.map(r => {
           let d = String(r['Date'] || '').trim();
@@ -680,7 +709,7 @@
 
     // Per-file summary shown in place of the single-format info blurb.
     function getMultiFileInfoHTML() {
-      const labels = { fsdx: 'FSD-X ORB PRO', fsdx_new: 'FSD-X ORB PRO', tv: 'TradingView', tv_new: 'TradingView', tradovate: 'Tradovate Orders', journal: 'Journal export' };
+      const labels = { fsdx: 'FSD-X ORB PRO', fsdx_new: 'FSD-X ORB PRO', tv: 'TradingView', tv_new: 'TradingView', tradovate: 'Tradovate Orders', ninja: 'NinjaTrader Trades', journal: 'Journal export' };
       const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
       const rows = loadedFiles.map(f => {
         const bad = !!f.error;
@@ -951,6 +980,139 @@
     }
 
 
+    // ── NinjaTrader 8 Trades parser ──
+    // NT8's Trades grid (Strategy Analyzer for backtests, Account Performance
+    // for live/sim) exports one row per completed trade, already paired. Nothing
+    // to reconstruct — map columns straight across. "Profit" is NT's per-trade
+    // net figure (its running sum is the "Cum. net profit" column), so it is
+    // used as-is and no commission rate is layered on top. Backtests run with
+    // "Include commission" off stay gross, the same as TradingView imports.
+    function ninjaRoot(instr) {
+      // "MNQ 12-26" → MNQ, "NQ 03-27" → NQ, "MNQZ6" → MNQ
+      const s = String(instr || '').trim().toUpperCase();
+      if (!s) return '';
+      if (/\s/.test(s)) return s.split(/\s+/)[0];
+      return stripExpiry(s, s);
+    }
+    // Strategy Analyzer runs report the account as "Backtest" — not a real
+    // account, so it never routes and never offers "create missing account".
+    function ninjaAccountId(a) {
+      const s = String(a || '').trim();
+      return (!s || /^backtest$/i.test(s)) ? '' : s;
+    }
+    // "($10.00)" → -10, "$1,020.00" → 1020, "-12.5" → -12.5
+    function ninjaMoney(v) {
+      const s = String(v == null ? '' : v).trim();
+      if (!s) return 0;
+      const neg = /^\(.*\)$/.test(s) || /^-/.test(s) || /^\$\s*-/.test(s);
+      const n = parseFloat(s.replace(/[^0-9.]/g, ''));
+      return isNaN(n) ? 0 : (neg ? -n : n);
+    }
+    // NT writes dates in the PC's regional format. US is M/D/YYYY; most other
+    // regions are D/M/YYYY. If any first field is > 12 the file is day-first.
+    function ninjaIsDayFirst(rows) {
+      return (rows || []).some(r => {
+        const m = String(r['Entry time'] || '').match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-]\d{2,4}/);
+        return m && +m[1] > 12;
+      });
+    }
+    // "12/30/2025 8:55:00 AM" or "30/12/2025 14:55:00" or ISO → { iso, time, ts }
+    function parseNinjaTime(raw, dayFirst) {
+      const s = String(raw || '').trim();
+      const pad = n => String(n).padStart(2, '0');
+      if (!s) return { iso: '', time: '', ts: 0 };
+      const m = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{2,4})\s+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*([AaPp][Mm])?/);
+      if (m) {
+        let mo = +m[1], da = +m[2];
+        if (dayFirst) { const t = mo; mo = da; da = t; }
+        const yr = m[3].length === 2 ? 2000 + +m[3] : +m[3];
+        let hh = +m[4];
+        const ap = (m[7] || '').toUpperCase();
+        if (ap === 'PM' && hh < 12) hh += 12;
+        if (ap === 'AM' && hh === 12) hh = 0;
+        return {
+          iso: `${yr}-${pad(mo)}-${pad(da)}`,
+          time: `${pad(hh)}:${m[5]}`,
+          ts: new Date(yr, mo - 1, da, hh, +m[5], +(m[6] || 0)).getTime(),
+        };
+      }
+      const d = new Date(s);
+      if (!isNaN(d.getTime())) {
+        return { iso: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`, time: `${pad(d.getHours())}:${pad(d.getMinutes())}`, ts: d.getTime() };
+      }
+      return { iso: '', time: '', ts: 0 };
+    }
+    // Grade only if the strategy writes one into the entry name ("L1 A+",
+    // "Long B+"). Plain names like "L1" / "S1" leave it blank.
+    function ninjaGrade(name) {
+      const m = String(name || '').match(/(?:^|[\s_\-(])(A\+|A|B\+|B|C\+|C)(?=$|[\s_\-)])/);
+      return m ? m[1] : '';
+    }
+
+    function parseNinjaTrader(rows, ticker, fromDate, toDate) {
+      const trades = [];
+      const dayFirst = ninjaIsDayFirst(rows);
+      rows.forEach(r => {
+        const pos = String(r['Market pos.'] || '').toLowerCase();
+        const direction = pos.includes('short') ? 'SHORT' : pos.includes('long') ? 'LONG' : '';
+        if (!direction) return;
+        const en = parseNinjaTime(r['Entry time'], dayFirst);
+        const ex = parseNinjaTime(r['Exit time'], dayFirst);
+        if (!en.iso) return;
+        if (fromDate && en.iso < fromDate) return;
+        if (toDate && en.iso > toDate) return;
+
+        const qty = Math.abs(parseInt(String(r['Qty'] || '1').replace(/[^0-9\-]/g, ''))) || 1;
+        const net = ninjaMoney(r['Profit']);
+        const fees = ['Commission', 'Clearing Fee', 'Exchange Fee', 'IP Fee', 'NFA Fee']
+          .reduce((a, k) => a + Math.abs(ninjaMoney(r[k])), 0);
+        const entryPrice = String(r['Entry price'] || '').trim();
+        const exitPrice = String(r['Exit price'] || '').trim();
+        const acctId = ninjaAccountId(r['Account']);
+        const acct = acctId ? findAccountByNumber(acctId) : null;
+        const instr = String(r['Instrument'] || '').trim();
+        const strat = String(r['Strategy'] || '').trim();
+        const entryName = String(r['Entry name'] || '').trim();
+        const exitName = String(r['Exit name'] || '').trim();
+
+        trades.push({
+          id: Date.now().toString() + Math.random().toString(36).slice(2),
+          date: en.iso,
+          entryTime: en.time,
+          exitTime: ex.time,
+          ticker: ninjaRoot(instr) || ticker,
+          direction,
+          grade: ninjaGrade(entryName),
+          result: getResult(net),
+          netPnl: parseFloat(net.toFixed(2)),
+          tp1Pnl: parseFloat(net.toFixed(2)),
+          tp1Contracts: qty,
+          tp2Pnl: 0, tp2Contracts: 0,
+          contracts: qty.toString(),
+          entryPrice, entry: entryPrice,
+          exitPrice, tp1Price: exitPrice, tp1Exit: exitPrice,
+          fees: parseFloat(fees.toFixed(2)),
+          commissions: parseFloat(fees.toFixed(2)),
+          mae: ninjaMoney(r['MAE']), mfe: ninjaMoney(r['MFE']),
+          bars: parseInt(r['Bars']) || null,
+          strategy: /knightfall|orb/i.test(strat) ? 'FSD-X ORB PRO' : (strat || 'NinjaTrader Strategy'),
+          notes: _e(['NinjaTrader', instr, strat, [entryName, exitName].filter(Boolean).join(' → ')].filter(Boolean).join(' · ')),
+          accountName: acct ? acct.name : acctId,
+          accountNumber: acctId,
+          accountType: acct ? (acct.accountType || '') : '',
+          accountSize: acct ? (acct.accountSize || null) : null,
+          accountMatched: !!acct,
+          // Full-precision identity: second-resolution times + prices + size.
+          // Trade number is NOT used — it restarts on every export.
+          dedupeKey: [acctId || 'backtest', instr, en.ts, ex.ts, entryPrice, exitPrice, qty, direction].join('|'),
+          source: 'ninjatrader',
+        });
+      });
+      trades.sort((a, b) => (a.date + a.entryTime).localeCompare(b.date + b.entryTime));
+      return trades;
+    }
+
+
     // ── FSD-X Journal export parser (pass-through) ──
     // These rows are already reconciled trades, not raw fills. Nothing is
     // recomputed: P&L is already net, so no commission rate is applied, and the
@@ -1036,6 +1198,8 @@
 
       if (detectedMode === 'journal') {
         trades = parseJournalExport(rows, fromDate, toDate);
+      } else if (detectedMode === 'ninja') {
+        trades = parseNinjaTrader(rows, ticker, fromDate, toDate);
       } else if (detectedMode === 'tradovate') {
         const commPerSide = Math.max(0, parseFloat(document.getElementById('opt-commission').value) || 0);
         trades = parseTradovate(rows, ticker, fromDate, toDate, commPerSide);
@@ -1192,7 +1356,7 @@
       // Auto-fill new session fields
       const primaryMode = ok.length ? ok[0].mode : detectedMode;
       document.getElementById('new-session-ticker').value = ticker;
-      document.getElementById('new-session-strategy').value = primaryMode === 'fsdx' ? 'FSD-X ORB PRO' : primaryMode === 'tradovate' ? 'Live Trade' : primaryMode === 'journal' ? 'Imported' : 'TradingView Strategy';
+      document.getElementById('new-session-strategy').value = primaryMode === 'fsdx' ? 'FSD-X ORB PRO' : primaryMode === 'tradovate' ? 'Live Trade' : primaryMode === 'ninja' ? ((convertedTrades[0] && convertedTrades[0].strategy) || 'NinjaTrader Strategy') : primaryMode === 'journal' ? 'Imported' : 'TradingView Strategy';
       if (fromDate) document.getElementById('new-session-startdate').value = fromDate;
 
       showResults(deduped);
