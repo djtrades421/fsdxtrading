@@ -5,7 +5,7 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X — Live Track Record</title>
-  <meta name="description" content="FSD-X ORB Pro live record. Every setup it has signaled on MNQ since December 16, 2025, across every version update: wins and losses, run unmanaged to target, stop or end of day, posted after the close. Not a signal feed." />
+  <meta name="description" content="FSD-X ORB Pro live record, tracked per variant. Every setup each variant has signaled on MNQ: wins and losses, run unmanaged to its own exits, posted after the close. Not a signal feed." />
   <link rel="stylesheet" href="tailwind.css">
   <style>
     /* Header + risk-profile card: stacked on mobile, side by side on desktop */
@@ -51,7 +51,7 @@
   "@type": "Dataset",
   "@id": "https://www.fsdxtrading.com/track-record.html#live",
   "name": "FSD-X ORB Pro — Live Signal Record",
-  "description": "Every setup FSD-X ORB Pro has signaled on MNQ since 16 December 2025 — one continuous record across each version update, wins and losses, nothing removed. Each trade runs unmanaged to its target, stop or the end of the session: no breakevens, no partial exits, no manual intervention. Published on the $400 and $250 risk profiles and posted after the close. This records what the system signaled, not any individual's fills or account P&L. The separate 7-year backtest on the research page is simulated and is not blended with this record. Futures trading involves substantial risk of loss; past performance is not necessarily indicative of future results.",
+  "description": "Every setup FSD-X ORB Pro has signaled on MNQ, tracked as a separate record for each live variant, wins and losses, nothing removed. Each trade runs unmanaged to its variant's own exits: no breakevens, no partial exits, no manual intervention. Published on the $400 and $250 risk profiles and posted after the close.",
   "url": "https://www.fsdxtrading.com/track-record.html",
   "creator": {
     "@id": "https://www.fsdxtrading.com/#organization"
@@ -89,6 +89,54 @@
   ]
 }
   </script>
+  <style>
+    /* ── Variant track record (Oct 2026) ──
+       Accent follows the site theme (--fx-orange from fsdx-theme.js).
+       Emerald / red stay reserved for P&L. */
+    .trv-controls{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--fx-line,rgba(255,255,255,.1))}
+    .trv-tabs{display:flex;gap:2px;overflow-x:auto;max-width:100%}
+    .trv-tab{appearance:none;background:none;border:0;border-bottom:2px solid transparent;color:#7D8B9E;font-weight:700;font-size:13px;padding:10px 14px 12px;cursor:pointer;white-space:nowrap;transition:color .15s}
+    .trv-tab:hover{color:#CBD3DE}
+    .trv-tab[aria-selected="true"]{color:#fff;border-bottom-color:var(--fx-orange,#22c55e)}
+    .trv-tab small{color:#61707F;font-weight:600;font-size:12px;margin-left:6px}
+    .trv-risk{display:flex;align-items:center;gap:6px;padding-bottom:10px}
+    .trv-k{font-size:10px;color:#61707F;text-transform:uppercase;letter-spacing:.18em;font-weight:700;margin-right:2px}
+    .rp-btn{font-size:12px;font-weight:700;padding:7px 14px;border-radius:9px;border:1px solid var(--fx-line,rgba(255,255,255,.1));background:rgba(14,20,28,.74);color:#A2AEBF;cursor:pointer}
+    .rp-btn[aria-pressed="true"]{border-color:rgba(255,107,31,.4);background:rgba(255,107,31,.10);color:#FFC0A0}
+    .rp-btn[disabled]{opacity:.35;cursor:not-allowed}
+    .trv-tab:focus-visible,.rp-btn:focus-visible{outline:2px solid var(--fx-orange,#22c55e);outline-offset:2px}
+    .trv-running{display:flex;gap:6px 14px;align-items:center;flex-wrap:wrap;background:rgba(255,107,31,.07);border:1px solid rgba(255,107,31,.25);border-radius:14px;padding:13px 18px}
+    .trv-running .now{color:#FFC0A0;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.1em}
+    .trv-running .desc{color:#fff;font-size:14px}
+    .trv-running .meta{margin-left:auto;display:flex;gap:16px;font-size:11px;color:#7D8B9E;flex-wrap:wrap}
+    .trv-running .meta b{color:#fff;font-weight:700;margin-left:4px}
+    @media(max-width:640px){.trv-running .meta{margin-left:0}}
+    .trv-rules{border:1px solid var(--fx-line,rgba(255,255,255,.1));background:rgba(8,13,20,.6);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
+    .trv-rules .top{display:flex;gap:6px 16px;align-items:baseline;flex-wrap:wrap}
+    .trv-rules .top b{font-size:13px;font-weight:800;color:#fff}
+    .trv-rules .top span{font-size:11px;color:#61707F}
+    .trv-exl{display:flex;flex-wrap:wrap;gap:8px 18px}
+    .trv-ex{display:flex;gap:8px;align-items:center;font-size:12px;color:#7D8B9E}
+    .trv-stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+    @media(max-width:1024px){.trv-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+    @media(max-width:560px){.trv-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    .trv-card{background:rgba(8,13,20,.84);border:1px solid var(--fx-line,rgba(255,255,255,.1));border-radius:14px;padding:14px 16px;min-width:0;position:relative}
+    .trv-card::before{content:'';position:absolute;left:14%;right:14%;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(190,220,255,.28),transparent)}
+    .trv-card .k{font-size:10px;color:#61707F;text-transform:uppercase;letter-spacing:.16em;font-weight:700}
+    .trv-card .v{font-size:clamp(18px,2vw,22px);font-weight:800;margin-top:8px;white-space:nowrap;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+    .trv-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:720px}
+    .trv-table th{text-align:left;font-weight:700;color:#61707F;font-size:10px;text-transform:uppercase;letter-spacing:.12em;padding:10px 12px;border-bottom:1px solid rgba(126,170,224,.09)}
+    .trv-table td{padding:11px 12px;border-bottom:1px solid rgba(126,170,224,.07);font-variant-numeric:tabular-nums}
+    .trv-table tr:hover td{background:rgba(255,255,255,.015)}
+    .trv-table td:first-child,.trv-table th:first-child{padding-left:18px}
+    .trv-table td:first-child{border-left:3px solid transparent;padding-left:15px}
+    .trv-table tr.w td:first-child{border-left-color:#34d399}
+    .trv-table tr.l td:first-child{border-left-color:#f87171}
+    .trv-table .r{text-align:right}
+    .ex-TRAIL{background:rgba(34,197,94,0.10);color:#4ade80}
+    .trv-empty{padding:44px 18px;text-align:center;color:#A2AEBF;font-size:13px;line-height:1.6}
+    .trv-empty b{color:#fff}
+  </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
@@ -120,35 +168,17 @@
           </div>
           <h1 class="text-3xl md:text-4xl font-black tracking-tight mb-2">Every Setup. Wins and Losses.</h1>
           <p class="text-zinc-400 text-sm max-w-3xl mb-5">
-            One continuous record of <span class="text-white font-semibold">FSD-X ORB Pro</span> from December 16, 2025: every setup it has
-            signaled on MNQ, wins and losses, nothing removed. When the system is updated, the record doesn't restart &mdash; it keeps
-            running, and the timeline marks the day the new version took over. This is what you'd have seen running it the whole way through.
-            Posted after the close &mdash; a record, not a signal feed. Results are shown at the
-            <span id="p-risk" class="text-white font-semibold">$400 risk profile</span>.
-            <span id="p-risk-note" class="hidden">Switch profiles below: the signals are identical, only contract size and dollars change.</span>
+            Every trade <span class="text-white font-semibold">FSD-X ORB Pro</span> has taken on MNQ, tracked separately for each variant.
+            Each variant runs every session, whether anyone trades it that day or not. Wins and losses, nothing removed.
+            Pick a variant and a risk profile below. Backtest stats for each variant are on the
+            <a href="results.html" class="text-green-400 hover:underline font-semibold">research data</a> page.
+            Posted after the close &mdash; a record, not a signal feed.
           </p>
-
           <!-- Whose record this is. See the matching note on results.html —
                with more than one product in the nav, this has to be stated
                rather than inferred from the product name in the paragraph. -->
           <div class="border border-white/10 bg-zinc-950/40 rounded-xl px-4 py-3 max-w-3xl mb-5">
             <p class="text-[12px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">This is FSD-X ORB Pro's record.</span> It tracks a strategy that grades and filters every breakout before it signals. <a href="raven.html" class="text-green-400 hover:underline font-semibold">Raven</a> marks every breakout and draws the levels without grading or filtering, and it doesn't track outcomes at all &mdash; it has no record of its own, here or anywhere.</p>
-          </div>
-
-          <!-- Risk profile toggle. Hidden unless track-record-250.json exists. -->
-          <div id="risk-toggle" class="hidden items-center gap-2 mb-4 flex-wrap">
-            <span class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mr-1">Risk profile</span>
-            <button type="button" data-rp="400" class="rp-btn px-4 py-2 rounded-lg text-xs font-bold border transition">$400</button>
-            <button type="button" data-rp="250" class="rp-btn px-4 py-2 rounded-lg text-xs font-bold border transition">$250</button>
-            <span class="text-[11px] text-zinc-600 ml-1">Same signals. Different size.</span>
-          </div>
-
-          <div class="flex flex-wrap gap-x-6 gap-y-2 text-[11px]">
-            <div><span class="text-zinc-600 uppercase tracking-wider">Record starts</span> <span id="m-inception" class="text-white font-bold ml-1">&mdash;</span></div>
-            <div><span class="text-zinc-600 uppercase tracking-wider">Current version</span> <span id="m-current" class="text-white font-bold ml-1">&mdash;</span></div>
-            <div><span class="text-zinc-600 uppercase tracking-wider">Instrument</span> <span id="m-inst" class="text-white font-bold ml-1">&mdash;</span></div>
-            <div><span class="text-zinc-600 uppercase tracking-wider">Risk profile</span> <span id="m-risk" class="text-white font-bold ml-1">&mdash;</span></div>
-            <div><span class="text-zinc-600 uppercase tracking-wider">Data through</span> <span id="m-through" class="text-green-400 font-bold ml-1">&mdash;</span></div>
           </div>
         </div>
 
@@ -200,154 +230,39 @@
       </section>
 
       <div class="flex-1 px-6 md:px-10 py-8">
-        <div class="max-w-7xl mx-auto space-y-8">
+        <div class="max-w-7xl mx-auto space-y-6">
 
-          <!-- ── All-time stats: the whole record first ── -->
+          <!-- ── Variant tabs + risk profile ──
+               Variants come from track-record-variants.js. Each variant is its
+               own record; numbers are never combined across variants. -->
+          <div class="trv-controls">
+            <div class="trv-tabs" id="v-tabs" role="tablist" aria-label="Variant"></div>
+            <div class="trv-risk" role="group" aria-label="Risk profile">
+              <span class="trv-k">Risk</span>
+              <button type="button" data-rp="400" class="rp-btn">$400</button>
+              <button type="button" data-rp="250" class="rp-btn">$250</button>
+            </div>
+          </div>
+
+          <!-- ── Now running ── -->
+          <div class="trv-running" id="v-running"></div>
+
+          <!-- ── How this variant closes trades ── -->
+          <div class="trv-rules" id="v-rules"></div>
+
+          <!-- ── All-time stats for the selected variant ── -->
           <div>
-            <div class="flex items-baseline justify-between flex-wrap gap-2 mb-3">
-              <h2 class="text-sm font-black uppercase tracking-wider text-white">All-time</h2>
-              <span id="st-range" class="text-[11px] text-zinc-500"></span>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3" id="stat-cards"></div>
+            <div class="trv-stats" id="stat-cards"></div>
+            <p id="st-range" class="text-[11px] text-zinc-500 mt-3"></p>
           </div>
 
-          <!-- ── Where it stands now: the current drawdown, with context ──
-               Shown right under the all-time numbers, never hidden. The
-               backtest figure comes from results-data via build_results.py. -->
-          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
-            <div class="flex items-baseline justify-between flex-wrap gap-2 mb-1">
-              <h2 class="text-sm font-black uppercase tracking-wider text-white">Where it stands now</h2>
-              <span class="text-[11px] text-zinc-600">Drawdowns are part of the record. Here is today's, next to history.</span>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4" id="now-cards"></div>
-            <p id="now-note" class="text-[11px] text-zinc-600 mt-3 leading-relaxed"></p>
-            <span id="bt-dd-400" hidden><!--gen:v1.400.maxdd-->-$2,320<!--/gen--></span>
-            <span id="bt-dd-250" hidden><!--gen:v1.250.maxdd-->-$1,516<!--/gen--></span>
-            <span id="bt-end" hidden><!--gen:meta.end_short-->Sep 30, 2026<!--/gen--></span>
-          </div>
-
-          <!-- ── Equity curve ── -->
-          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-6">
-            <div class="flex items-start justify-between mb-1 flex-wrap gap-2">
-              <div>
-                <div class="text-xs text-zinc-500 uppercase tracking-[0.2em]">Cumulative P&amp;L</div>
-                <div id="chart-final-pnl" class="text-2xl font-black mt-1"></div>
-              </div>
-              <div class="text-right">
-                <div id="chart-legend" class="text-xs text-zinc-500"></div>
-                <div class="text-[10px] text-zinc-600 mt-1">Net of commissions &middot; unmanaged &middot; dashed lines mark version updates</div>
-              </div>
-            </div>
-            <div id="equity-chart-wrap" class="relative mt-5" style="height:340px"></div>
-          </div>
-
-          <!-- ── How this record is executed ── -->
-          <div class="border border-green-500/20 bg-green-500/[0.04] rounded-2xl p-5 md:p-6">
-            <div class="text-green-400 uppercase tracking-[0.2em] text-[10px] font-bold mb-2">// How every trade here is run</div>
-            <h2 class="text-lg font-black text-white mb-2">Unmanaged. The system's rules, nothing added.</h2>
-            <p class="text-[13px] text-zinc-400 leading-relaxed max-w-4xl mb-4">
-              Every trade on this page enters on the signal and closes by the system's own rules: it hits its target, it hits its stop, or the
-              session ends. From Oct 9, 2026 the record runs Variant 2, which also trails the stop by rule once TP1 is reached. Nobody moves
-              the stop by hand, takes partials, or closes early. That's deliberate &mdash; it shows the system on its own.
-              How you manage a trade is your call, and your results will differ from this record, better or worse.
-            </p>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3">
-              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-TP1 mr-2">TARGET</span><span class="text-[12px] text-zinc-400">Price reaches the profit target</span></div>
-              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-STOP mr-2">STOP</span><span class="text-[12px] text-zinc-400">Price reaches the stop loss</span></div>
-              <div class="bg-black/40 border border-white/5 rounded-xl px-3 py-2.5"><span class="ex-chip ex-EOD mr-2">END OF DAY</span><span class="text-[12px] text-zinc-400">Neither hit &mdash; closed at the session close</span></div>
-            </div>
-            <div class="flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-zinc-500">
-              <span>✕ No breakeven stops</span><span>✕ No partial exits</span><span>✕ No manual stop moves</span><span>✕ No manual exits</span><span>✕ No re-entries after a stop</span><span class="text-zinc-600">Trailing: by rule only, Variant 2, from Oct 9, 2026</span>
-            </div>
-          </div>
-
-          <!-- ── Version timeline ── -->
-          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
-            <div class="flex items-baseline justify-between flex-wrap gap-2 mb-1">
-              <h2 class="text-sm font-black uppercase tracking-wider text-white">Update Timeline</h2>
-              <span class="text-[11px] text-zinc-600">One record. Each update is marked, nothing resets.</span>
-            </div>
-            <p class="text-[11px] text-zinc-600 mb-4">The all-time numbers at the top cover the whole run. Per-version numbers are here for context.</p>
-            <div id="ver-strip" class="flex flex-col md:flex-row border border-white/10 rounded-xl overflow-hidden"></div>
-          </div>
-
-          <!-- ── Calendar ── -->
-          <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
-              <div class="flex items-center gap-3">
-                <button onclick="calMove(-1)" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg></button>
-                <h2 id="cal-label" class="text-lg font-black text-white w-36 text-center">&mdash;</h2>
-                <button onclick="calMove(1)" class="p-2 hover:bg-white/5 rounded-lg transition"><svg class="w-4 h-4 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>
-              </div>
-              <div class="flex gap-4 text-sm flex-wrap items-center">
-                <div><span class="text-zinc-500 text-xs mr-1.5">MONTHLY</span><span id="cal-monthly" class="font-black">&mdash;</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">NET P&amp;L</span><span id="cal-net" class="font-black">&mdash;</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">WIN RATE</span><span id="cal-wr" class="font-black text-emerald-400">&mdash;</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">DAYS</span><span id="cal-days" class="font-black text-zinc-400">&mdash;</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">TRADES</span><span id="cal-trades" class="font-black text-zinc-400">&mdash;</span></div>
-                <div><span class="text-zinc-500 text-xs mr-1.5">GREEN / RED DAYS</span><span id="cal-grd" class="font-black">&mdash;</span></div>
-              </div>
-            </div>
-            <div class="border border-white/10 rounded-2xl overflow-hidden">
-              <div class="grid grid-cols-6 border-b border-white/10 bg-zinc-950/80">
-                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Mon</div>
-                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Tue</div>
-                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Wed</div>
-                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Thu</div>
-                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest">Fri</div>
-                <div class="px-3 py-3 text-xs text-zinc-400 font-bold uppercase tracking-widest text-right">Weekly</div>
-              </div>
-              <div id="cal-grid"></div>
-            </div>
-            <div id="cal-detail" class="hidden mt-4 pt-4 border-t border-white/10"></div>
-          </div>
-
-          <!-- ── Grade + exit breakdown ── -->
-          <div class="grid md:grid-cols-2 gap-3">
-            <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
-              <h2 class="text-sm font-black uppercase tracking-wider text-white mb-1">Performance by Grade</h2>
-              <p class="text-[11px] text-zinc-600 mb-4">The grade sets position size. A+ and A take full size; B and C take reduced size.</p>
-              <div id="grade-table" class="space-y-2"></div>
-            </div>
-            <div class="bg-zinc-950 border border-white/10 rounded-2xl p-5">
-              <h2 class="text-sm font-black uppercase tracking-wider text-white mb-1">How Trades Closed</h2>
-              <p class="text-[11px] text-zinc-600 mb-4">Every exit is taken by the system &mdash; target, stop, or end of session. Nothing else.</p>
-              <div id="exit-table" class="space-y-2"></div>
-            </div>
-          </div>
-
-          <!-- ── Trade log ── -->
+          <!-- ── Recent trades ── -->
           <div class="bg-zinc-950 border border-white/10 rounded-2xl overflow-hidden">
-            <div class="p-5 pb-3 flex items-center justify-between flex-wrap gap-3">
-              <div>
-                <h2 class="text-sm font-black uppercase tracking-wider text-white">Trade Log</h2>
-                <p class="text-[11px] text-zinc-600 mt-0.5">Most recent first. Every signal, unfiltered. <span class="text-zinc-500">Max open profit</span> = the best the trade got to before it closed.</p>
-              </div>
-              <div class="flex gap-1.5" id="log-filters">
-                <button onclick="setLogFilter('all')" data-f="all" class="log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-green-500/10 border-green-500/40 text-green-400">All</button>
-                <button onclick="setLogFilter('win')" data-f="win" class="log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-zinc-900 border-white/10 text-zinc-400">Wins</button>
-                <button onclick="setLogFilter('loss')" data-f="loss" class="log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition bg-zinc-900 border-white/10 text-zinc-400">Losses</button>
-              </div>
+            <div class="p-5 pb-3 flex items-baseline justify-between flex-wrap gap-2 border-b border-white/10">
+              <h2 class="text-sm font-black uppercase tracking-wider text-white">Recent Trades</h2>
+              <span id="log-note" class="text-[11px] text-zinc-500"></span>
             </div>
-            <div class="overflow-x-auto">
-              <table class="w-full text-xs">
-                <thead>
-                  <tr class="text-[10px] uppercase tracking-wider text-zinc-600 border-y border-white/10">
-                    <th class="text-left font-bold px-5 py-2.5">Date</th>
-                    <th class="text-left font-bold px-3 py-2.5">Side</th>
-                    <th class="text-left font-bold px-3 py-2.5">Grade</th>
-                    <th class="text-right font-bold px-3 py-2.5">Qty</th>
-                    <th class="text-right font-bold px-3 py-2.5">Entry</th>
-                    <th class="text-right font-bold px-3 py-2.5">Exit</th>
-                    <th class="text-left font-bold px-3 py-2.5">Closed By</th>
-                    <th class="text-right font-bold px-3 py-2.5">Max Open Profit</th>
-                    <th class="text-left font-bold px-3 py-2.5">Context</th>
-                    <th class="text-right font-bold px-5 py-2.5">Net P&amp;L</th>
-                  </tr>
-                </thead>
-                <tbody id="log-body"></tbody>
-              </table>
-            </div>
+            <div id="log-wrap"></div>
           </div>
 
           <!-- ── CTA ── -->
@@ -360,30 +275,30 @@
             </div>
           </div>
 
+
           <!-- ── Disclosure ── -->
           <div class="border border-yellow-500/20 bg-yellow-500/5 rounded-2xl p-5 text-[11px] text-yellow-300/70 leading-relaxed">
             <div class="font-black uppercase tracking-wider text-yellow-400/90 mb-2 text-[10px]">// Important — Please Read</div>
             <p class="mb-2">
-              This page shows the signal output of FSD-X ORB Pro on MNQ &mdash; every setup it generated
+              Each variant tab shows the signal output of one configuration of FSD-X ORB Pro on MNQ &mdash; every setup it generated
               over the period shown, wins and losses, with no trades removed. Results are shown <span class="font-bold">as signaled</span>,
               at the position size the strategy itself assigns using the <span id="d-risk" class="font-bold">$400</span>
-              risk-per-trade profile (which produces 1&ndash;3 MNQ contracts depending on grade and stop distance), net of an assumed
-              <span id="m-comm" class="font-bold">$2.50</span> round-turn commission per contract.
+              risk-per-trade profile, net of an assumed <span id="m-comm" class="font-bold">$1.04</span> round-turn commission per contract.
+              Variants run at the same time and carry different risk. Their numbers are never combined.
             </p>
             <p class="mb-2">
               These are <span class="font-bold">not the results of any individual trading account</span>, and they do not represent the returns
-              of any member or of FSD-X Trading. Actual results will differ based on the risk profile selected, execution, slippage, fees, and
-              whether a trader takes every signal. A different risk setting produces different contract counts, and
-              therefore different dollar results, from the same signals. The sample shown here is small and is not a statistically reliable basis for
+              of any member or of FSD-X Trading. Actual results will differ based on the variant and risk profile selected, execution, slippage,
+              fees, and whether a trader takes every signal. The sample shown is small and is not a statistically reliable basis for
               projecting future performance.
             </p>
             <p class="mb-2">
-              The record is continuous across version updates. Trades from December 16, 2025 to April 30, 2026 were signaled by
-              ORB Pro v5, an indicator version; they come from that version's own trade list and were checked against the trades called
-              in the live room at the time. Later trades come from the strategy versions marked on the timeline. Each trade is shown
-              unmanaged &mdash; held to its target, stop or the session close, with no breakevens, partial exits or discretionary exits
-              &mdash; which is how the system signals it, not how any individual trader manages it. Event labels (CPI, NFP, FOMC, holidays)
-              are applied from the economic calendar to every day they fall on, win or loss; they are context, not an adjustment.
+              Each trade is shown unmanaged &mdash; closed only by the exits listed for its variant, with no breakevens, partial exits or
+              discretionary exits &mdash; which is how the system signals it, not how any individual trader manages it. When a variant is
+              updated, its record keeps running and the version in use is shown at the top of its tab. Variant 1 includes trades from
+              December 16, 2025 to April 30, 2026 signaled by ORB Pro v5, an indicator version, marked v5; they come from that version's own
+              trade list and were checked against the trades called in the live room at the time. The list shows the most recent trades;
+              the stats above it cover every trade in the variant's record.
             </p>
             <p class="mb-2">
               The seven-year backtest on our <a href="results.html" class="underline hover:text-yellow-200">research data</a> page is
@@ -395,6 +310,7 @@
             </p>
           </div>
 
+
           <div class="text-center text-[10px] text-zinc-700 pb-4">
             Generated from the system's own trade record &middot; last updated <span id="m-gen">&mdash;</span>
           </div>
@@ -404,30 +320,34 @@
     </div>
   </main>
 
+
+  <script src="track-record-variants.js?v=20261014a"></script>
   <script>
 
     // ── Output escaping (security) ──
-    // Trade notes, tags, and imported CSV fields are member/import-supplied.
-    // _e() escapes text for innerHTML; _url() only lets http(s) links through
-    // so an imported "javascript:" chart link can't run code.
+    // Imported CSV fields are escaped before they reach innerHTML.
     function _e(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-    function _url(u) { const s = String(u == null ? '' : u).trim(); return /^https?:\/\//i.test(s) ? _e(s) : '#'; }
-    let DATA = null, TRADES = [], calRef = null, logFilter = 'all';
 
-    const money = n => (n < 0 ? '-' : '+') + '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:0, maximumFractionDigits:0});
-    const money2 = n => (n < 0 ? '-' : '') + '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
-    // Abbreviated money for calendar cells (e.g. +$986, -$1.4K), matching the journal
-    const moneyShort = n => { const p = n||0, abs = Math.abs(p), sign = p >= 0 ? '+' : '-';
-      return abs >= 1000 ? sign + '$' + (abs/1000).toFixed(abs >= 10000 ? 0 : 1) + 'K' : sign + '$' + abs.toFixed(0); };
-    const pdate = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
-    const fmtDate = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    // ── Variants: one record per variant, from track-record-variants.js ──
+    const REG      = window.TR_VARIANTS || { variants: [] };
+    const VARIANTS = (REG.variants || []).filter(v => v && v.files && v.files['400']);
+    const RECENT   = REG.recent || 50;
+    const CACHE    = {};
+    const qs       = new URLSearchParams(location.search);
+    let CUR = VARIANTS.some(v => v.id === qs.get('variant')) ? qs.get('variant') : (VARIANTS[0] && VARIANTS[0].id);
+    let RP  = qs.get('risk') === '250' ? '250' : '400';
+
+    const money  = n => (n < 0 ? '-' : '+') + '$' + Math.abs(n).toLocaleString('en-US', {maximumFractionDigits:0});
+    const money2 = n => (n < 0 ? '-' : '+') + '$' + Math.abs(n).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    const pdate  = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+    const fmtDate  = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
     const fmtShort = s => pdate(s).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+    const t12 = hm => { if (!hm) return ''; let [h,m] = hm.split(':').map(Number); const ap = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12; return h + ':' + String(m).padStart(2,'0') + ' ' + ap; };
+    const curVar = () => VARIANTS.find(v => v.id === CUR);
 
-    // ── Version cuts, exit types, event context ──
-    // One continuous record. A version cut is a marker, never a reset.
-    const VERS = () => ((DATA && DATA.meta && DATA.meta.versions) || []).slice().sort((a,b) => a.start.localeCompare(b.start));
-    function verOf(date) { let v = null; VERS().forEach(x => { if (date >= x.start) v = x; }); return v; }
-    const EXIT_LABEL = { TP1:'Target', TP2:'TP2 / Trail', STOP:'Stop', EOD:'End of day', EOD_EARLY:'Early close' };
+    // Closed-by comes from the importer (exit_type). Older V1 rows fall back
+    // to the outcome, since the stop is bracketed to the TP1 order label.
+    const EXIT_LABEL = { TP1:'Target', TP2:'TP2', TRAIL:'Trailed stop', STOP:'Stop', EOD:'End of day', EOD_EARLY:'Early close' };
     function exitType(t) {
       if (t.exit_type) return t.exit_type;
       const r = t.exit_reason || '';
@@ -435,90 +355,23 @@
       if (t.gross > 0) return /TP2/.test(r) ? 'TP2' : 'TP1';
       return 'STOP';
     }
-    const exitChip = t => { const k = exitType(t); return `<span class="ex-chip ex-${k}">${EXIT_LABEL[k] || _e(k)}</span>`; };
-    const eventsOn = d => ((DATA && DATA.meta && DATA.meta.events) || {})[d] || [];
-    const evChips = d => eventsOn(d).map(x => `<span class="ev-chip">${_e(x)}</span>`).join(' ');
-    function mfeText(t) {
-      if (t.mfe == null) return '<span class="text-zinc-700">&mdash;</span>';
+    function exitChip(t) {
       const k = exitType(t);
-      const cls = k === 'STOP' && t.mfe > 0 ? 'text-yellow-400' : 'text-zinc-400';
-      return `<span class="${cls}">+$${Math.round(t.mfe).toLocaleString()}</span>`;
+      const pts = k === 'TRAIL' ? ' &middot; +' + Math.abs(t.exit - t.entry).toFixed(1) + ' pts' : '';
+      return `<span class="ex-chip ex-${_e(k)}">${EXIT_LABEL[k] || _e(k)}${pts}</span>`;
     }
+    // Version in use on a given date, from the variant's own update list.
+    function versionOn(v, date) { let out = null; (v.versions || []).forEach(x => { if (date >= x.start) out = x; }); return out; }
 
-    // ── Risk profiles: one JSON per profile, published from admin ──
-    // $400 stays the default and keeps its original filename, so every
-    // existing link and the homepage widget keep working unchanged.
-    const RP_FILES = { '400': 'track-record.json', '250': 'track-record-250.json' };
-    const RP_CACHE = {};
-    let RP_CUR = '400';
-
-    function rpLoad(p) {
-      if (RP_CACHE[p]) return Promise.resolve(RP_CACHE[p]);
-      return fetch(RP_FILES[p] + '?v=' + Date.now())
+    function load(v, rp) {
+      const key = v.id + ':' + rp;
+      if (CACHE[key]) return Promise.resolve(CACHE[key]);
+      const file = v.files[rp];
+      if (!file) return Promise.resolve(CACHE[key] = { meta: {}, trades: [], missing: true });
+      return fetch(file + '?v=' + Date.now())
         .then(r => r.ok ? r.json() : Promise.reject())
-        .then(d => (RP_CACHE[p] = d));
-    }
-
-    function rpPaint() {
-      document.querySelectorAll('.rp-btn').forEach(b => {
-        const on = b.dataset.rp === RP_CUR;
-        b.className = 'rp-btn px-4 py-2 rounded-lg text-xs font-bold border transition ' +
-          (on ? 'border-green-500/40 bg-green-500/10 text-green-400'
-              : 'border-white/10 bg-zinc-900 text-zinc-300 hover:border-white/20');
-      });
-    }
-
-    function rpShow(p) {
-      return rpLoad(p).then(d => {
-        RP_CUR = p; DATA = d; TRADES = d.trades || [];
-        rpPaint(); render();
-        try { const u = new URL(location.href); p === '400' ? u.searchParams.delete('risk') : u.searchParams.set('risk', p); history.replaceState(null, '', u); } catch (e) {}
-      });
-    }
-
-    const rpWanted = (new URLSearchParams(location.search).get('risk') || '400');
-    rpShow(RP_FILES[rpWanted] ? rpWanted : '400')
-      .catch(() => rpShow('400'))
-      .catch(() => {
-        document.getElementById('loading-screen').innerHTML =
-          '<div class="text-zinc-600 text-sm">Track record data unavailable.</div>';
-      });
-
-    // Only offer the toggle when the $250 file is actually published.
-    rpLoad('250').then(() => {
-      const t = document.getElementById('risk-toggle');
-      t.classList.remove('hidden'); t.classList.add('flex');
-      document.getElementById('p-risk-note').classList.remove('hidden');
-      rpPaint();
-    }).catch(() => {});
-    document.querySelectorAll('.rp-btn').forEach(b =>
-      b.addEventListener('click', () => { if (b.dataset.rp !== RP_CUR) rpShow(b.dataset.rp); }));
-
-    function render() {
-      const m = DATA.meta || {};
-      document.getElementById('m-inception').textContent = fmtDate(m.inception);
-      const vs = VERS(); const cur = vs[vs.length - 1];
-      document.getElementById('m-current').textContent  = cur ? cur.label + ' · since ' + fmtShort(cur.start) : '—';
-      document.getElementById('m-inst').textContent     = m.instrument || 'MNQ';
-      document.getElementById('m-risk').textContent     = m.risk_profile ? '$' + Number(m.risk_profile).toLocaleString() + ' profile' : '—';
-      if (m.risk_profile) {
-        const rp = Number(m.risk_profile);
-        document.querySelectorAll('.rp-amt').forEach(e => e.textContent = '$' + rp.toLocaleString());
-      }
-      document.getElementById('d-risk').textContent     = m.risk_profile ? '$' + Number(m.risk_profile).toLocaleString() : '—';
-      document.getElementById('p-risk').textContent     = m.risk_profile ? '$' + Number(m.risk_profile).toLocaleString() + ' risk profile' : 'risk profile shown';
-      document.getElementById('m-through').textContent  = fmtDate(m.last_trade_date);
-      document.getElementById('m-comm').textContent     = '$' + Number(m.commission_rt).toFixed(2);
-      document.getElementById('m-gen').textContent      = fmtDate(m.generated);
-
-      document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('page-content').classList.remove('hidden');
-
-      renderStats(); renderVersions(); renderGrades(); renderExits(); renderLog();
-      calRef = pdate(TRADES[TRADES.length - 1].date); calRef.setDate(1); renderCal();
-
-      // Draw the chart only once the container has a real width to measure.
-      requestAnimationFrame(() => drawEquityCurve());
+        .then(d => (CACHE[key] = d))
+        .catch(() => (CACHE[key] = { meta: {}, trades: [], missing: true }));
     }
 
     function stats(list) {
@@ -527,530 +380,116 @@
       return {
         n: list.length, wins: w.length, losses: l.length,
         winRate: list.length ? 100 * w.length / list.length : 0,
-        pf: gl ? gp / gl : 0,
-        net: list.reduce((a,t) => a + t.pnl, 0),
-        avgW: w.length ? gp / w.length : 0,
-        avgL: l.length ? -gl / l.length : 0,
+        pf: gl ? gp / gl : 0, net: gp - gl,
+        avgW: w.length ? gp / w.length : 0, avgL: l.length ? -gl / l.length : 0,
         best: list.length ? Math.max(...list.map(t => t.pnl)) : 0,
         worst: list.length ? Math.min(...list.map(t => t.pnl)) : 0,
         days: new Set(list.map(t => t.date)).size
       };
     }
 
-    function renderVersions() {
-      const vs = VERS(), el = document.getElementById('ver-strip');
-      if (!vs.length) { el.parentElement.classList.add('hidden'); return; }
-      el.innerHTML = vs.map((v, i) => {
-        const end = vs[i+1] ? vs[i+1].start : null;
-        const list = TRADES.filter(t => t.date >= v.start && (!end || t.date < end));
-        const s = stats(list);
-        const last = list.length ? list[list.length-1].date : null;
-        const range = fmtShort(v.start) + (end ? ' – ' + fmtShort(last || v.start) : ' – now');
-        return `<div class="ver-seg flex-1 p-4 ${i === vs.length-1 ? 'bg-green-500/[0.03]' : ''}" style="flex:${Math.max(list.length, 25)} 1 0;min-width:0">
-          <div class="flex items-center gap-2 mb-1"><span class="ver-chip">${_e(v.label)}</span>
-            <span class="text-[11px] text-zinc-500">${range}</span>
-            ${i === vs.length-1 ? '<span class="text-[9px] font-black text-green-400 uppercase tracking-wider">current</span>' : ''}</div>
-          <div class="text-[11px] text-zinc-500 leading-snug mb-2">${_e(v.note || '')}</div>
-          <div class="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px]">
-            <span class="text-zinc-400">${s.n} trades</span>
-            <span class="text-zinc-400">${s.n ? s.winRate.toFixed(0) + '% win' : ''}</span>
-            <span class="text-zinc-400">${s.n ? 'PF ' + s.pf.toFixed(2) : ''}</span>
-            <span class="font-black ${s.net >= 0 ? 'text-emerald-400' : 'text-red-400'}">${s.n ? money(s.net) : '—'}</span>
-          </div></div>`;
-      }).join('');
+    function show() {
+      const v = curVar();
+      if (!v) {
+        document.getElementById('loading-screen').innerHTML = '<div class="text-zinc-600 text-sm">Track record data unavailable.</div>';
+        return;
+      }
+      load(v, RP).then(d => {
+        render(v, d);
+        try {
+          const u = new URL(location.href);
+          v.id === VARIANTS[0].id ? u.searchParams.delete('variant') : u.searchParams.set('variant', v.id);
+          RP === '400' ? u.searchParams.delete('risk') : u.searchParams.set('risk', RP);
+          history.replaceState(null, '', u);
+        } catch (e) {}
+      });
     }
 
-    function card(label, value, cls) {
-      return `<div class="bg-zinc-950 border border-white/10 rounded-2xl px-4 py-3.5">
-        <div class="text-[10px] uppercase tracking-wider text-zinc-600 font-bold mb-1">${label}</div>
-        <div class="text-xl font-black ${cls || 'text-white'}">${value}</div>
-      </div>`;
-    }
+    function render(v, d) {
+      const m = d.meta || {}, TR = (d.trades || []).slice().sort((a,b) => (a.date + (a.entry_time||'')).localeCompare(b.date + (b.entry_time||'')));
+      const s = stats(TR), rp = Number(RP), dash = '<span class="text-zinc-600">&mdash;</span>';
+      const ver = (v.versions || [])[(v.versions || []).length - 1];
 
-    function renderStats() {
-      const s = stats(TRADES);
-      const netCls = s.net >= 0 ? 'text-emerald-400' : 'text-red-400';
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('page-content').classList.remove('hidden');
+
+      // Tabs + risk buttons
+      document.getElementById('v-tabs').innerHTML = VARIANTS.map(x =>
+        `<button type="button" role="tab" class="trv-tab" data-v="${_e(x.id)}" aria-selected="${x.id === CUR}">${_e(x.label)}<small>${_e(x.tag || '')}</small></button>`).join('');
+      document.querySelectorAll('.trv-tab').forEach(b => b.onclick = () => { if (b.dataset.v !== CUR) { CUR = b.dataset.v; show(); } });
+      document.querySelectorAll('.rp-btn').forEach(b => {
+        b.setAttribute('aria-pressed', b.dataset.rp === RP);
+        b.disabled = !v.files[b.dataset.rp];
+      });
+
+      // Header bits that follow the risk profile
+      document.querySelectorAll('.rp-amt').forEach(e => e.textContent = '$' + rp.toLocaleString());
+      document.getElementById('d-risk').textContent = '$' + rp.toLocaleString();
+      if (m.commission_rt != null) document.getElementById('m-comm').textContent = '$' + Number(m.commission_rt).toFixed(2);
+      document.getElementById('m-gen').textContent = m.generated ? fmtDate(m.generated) : '—';
+
+      // Now running
+      document.getElementById('v-running').innerHTML =
+        `<span class="now">Now running ${_e(v.label)}${ver ? ' &middot; ' + _e(ver.label) : ''}</span>
+         <span class="desc">${_e(v.desc || '')}</span>
+         <span class="meta"><span>Tracking since<b>${fmtDate(v.since)}</b></span>
+           <span>Data through<b>${m.last_trade_date ? fmtDate(m.last_trade_date) : '—'}</b></span>
+           <span>Instrument<b>${_e(m.instrument || 'MNQ')}</b></span></span>`;
+
+      // Exit rules for this variant
+      document.getElementById('v-rules').innerHTML =
+        `<div class="top"><b>How ${_e(v.label)} trades close</b><span>Only these exits. No breakevens, partials or manual exits. How you manage a trade is your call, and your results will differ.</span></div>
+         <div class="trv-exl">${(v.exits || []).map(e => `<span class="trv-ex"><span class="ex-chip ex-${_e(e[0])}">${_e(e[1])}</span>${_e(e[2])}</span>`).join('')}</div>`;
+
+      // Stat cards — all-time for this variant at this risk profile
+      const c = (k, val, cls) => `<div class="trv-card"><div class="k">${k}</div><div class="v ${cls}">${s.n ? val : dash}</div></div>`;
       document.getElementById('stat-cards').innerHTML =
-        card('Net P&L', money(s.net), netCls) +
-        card('Win Rate', s.winRate.toFixed(1) + '%', 'text-white') +
-        card('Profit Factor', s.pf.toFixed(2), s.pf >= 1 ? 'text-emerald-400' : 'text-red-400') +
-        card('Trades', s.n, 'text-white') +
-        card('Wins / Losses', `<span class="text-emerald-400">${s.wins}</span> <span class="text-zinc-700">/</span> <span class="text-red-400">${s.losses}</span>`) +
-        card('Avg Win', money(s.avgW), 'text-emerald-400') +
-        card('Avg Loss', money(s.avgL), 'text-red-400') +
-        card('Trading Days', s.days, 'text-white');
-      const st = document.getElementById('st-range');
-      if (st && TRADES.length) st.textContent = fmtDate(TRADES[0].date) + ' \u2013 ' + fmtDate(TRADES[TRADES.length - 1].date) + ' \u00b7 every trade';
-      renderNow();
-    }
+        c('Total P&amp;L', money(s.net), s.net >= 0 ? 'text-emerald-400' : 'text-red-400') +
+        c('Win rate', s.winRate.toFixed(1) + '%', 'text-white') +
+        c('Total trades', s.n, 'text-white') +
+        c('Wins / Losses', `<span class="text-emerald-400">${s.wins}</span> <span class="text-zinc-600">/</span> <span class="text-red-400">${s.losses}</span>`, '') +
+        c('Profit factor', s.pf.toFixed(2), 'text-white') +
+        c('Avg win', money(s.avgW), 'text-emerald-400') +
+        c('Avg loss', money(s.avgL), 'text-red-400') +
+        c('Best trade', money(s.best), 'text-emerald-400') +
+        c('Worst trade', money(s.worst), 'text-red-400') +
+        c('Trading days', s.days, 'text-white');
+      document.getElementById('st-range').textContent = s.n
+        ? `All-time for ${v.label} at the $${rp.toLocaleString()} profile, ${fmtDate(TR[0].date)} to ${fmtDate(TR[TR.length-1].date)}. Every trade counted, net of commissions.`
+        : '';
 
-    // ── Current drawdown vs history ──
-    function renderNow() {
-      const box = document.getElementById('now-cards'); if (!box || !TRADES.length) return;
-      const risk = Number((DATA.meta || {}).risk_profile) || 400;
-      let eq = 0, pk = 0, pkDate = TRADES[0].date, sincePk = 0, worst = 0, worstPk = '', worstTr = '', curPk = TRADES[0].date;
-      TRADES.forEach(t => {
-        eq += t.pnl;
-        if (eq >= pk) { pk = eq; pkDate = t.date; sincePk = 0; }
-        else sincePk++;
-        if (eq - pk < worst) { worst = eq - pk; worstPk = pkDate; worstTr = t.date; }
-      });
-      const cur = eq - pk;
-      const R = v => (Math.abs(v) / risk).toFixed(1) + 'R';
-      const bt = document.getElementById('bt-dd-' + risk);
-      const btTxt = bt ? bt.textContent.trim() : '';
-      const btVal = btTxt ? -Number(btTxt.replace(/[^0-9.]/g, '')) : null;
-      box.innerHTML =
-        card('From the high', cur < 0 ? money(cur) + ' <span class="text-xs text-zinc-500 font-bold">' + R(cur) + '</span>' : 'At a high', cur < 0 ? 'text-red-400' : 'text-emerald-400') +
-        card('Trades since the high', cur < 0 ? sincePk + ' <span class="text-xs text-zinc-500 font-bold">high ' + fmtShort(pkDate) + '</span>' : '0', 'text-white') +
-        card('Deepest live drawdown', money(worst) + ' <span class="text-xs text-zinc-500 font-bold">' + R(worst) + '</span>', 'text-red-400') +
-        card('Deepest in the backtest', btVal != null ? money(btVal) + ' <span class="text-xs text-zinc-500 font-bold">' + R(btVal) + '</span>' : '\u2014', 'text-zinc-300');
-      const end = (document.getElementById('bt-end') || {}).textContent || '';
-      let note = 'R = one full loss at the $' + risk + ' setting. Deepest live drawdown: ' + fmtShort(worstPk) + ' high to ' + fmtShort(worstTr) + ' low. '
-        + 'Backtest figure: Variant 1, 7 years of closed trades through ' + end.trim() + ', gross of costs. This record is net of commissions.';
-      if (btVal != null && worst < btVal) note += ' The live drawdown is deeper than any in the backtest so far.';
-      document.getElementById('now-note').textContent = note;
-    }
-
-    // ── Cumulative P&L chart (same treatment as the member journal) ──
-    function drawEquityCurve() {
-      const wrap = document.getElementById('equity-chart-wrap');
-      if (!wrap || !TRADES.length) return;
-
-      const sorted = TRADES.slice().sort((a, b) =>
-        ((a.date || '') + (a.entry_time || '')) < ((b.date || '') + (b.entry_time || '')) ? -1 : 1);
-
-      const points = [{ equity: 0, date: null, pnl: 0, result: null, grade: '', time: '', dir: '', qty: 0 }];
-      sorted.forEach(t => {
-        const pnl = parseFloat(t.pnl) || 0;
-        points.push({
-          equity: points[points.length - 1].equity + pnl,
-          date: t.date, pnl,
-          result: pnl > 0 ? 'WIN' : 'LOSS',
-          grade: t.grade || '', time: t.entry_time || '',
-          dir: t.dir || '', qty: t.contracts || 1,
-          ex: exitType(t), ver: (verOf(t.date) || {}).label || ''
-        });
-      });
-
-      const finalPnl = points[points.length - 1].equity;
-      const isPos = finalPnl >= 0;
-      const uid = 'eq' + Date.now();
-
-      const finalEl = document.getElementById('chart-final-pnl');
-      if (finalEl) {
-        finalEl.textContent = (finalPnl >= 0 ? '+' : '-') + '$' + Math.abs(finalPnl).toFixed(2);
-        finalEl.className = 'text-2xl font-black mt-1 ' + (isPos ? 'text-emerald-400' : 'text-red-400');
+      // Recent trades — newest first, capped at RECENT
+      const wrap = document.getElementById('log-wrap'), note = document.getElementById('log-note');
+      if (!TR.length) {
+        note.textContent = '';
+        wrap.innerHTML = d.missing && !v.files[RP]
+          ? `<div class="trv-empty"><b>${_e(v.label)} isn't published at the $${rp.toLocaleString()} profile.</b><br>Switch risk profile above.</div>`
+          : `<div class="trv-empty"><b>${_e(v.label)} is tracked from ${fmtDate(v.since)}.</b><br>Trades appear here after the first update is posted.</div>`;
+        return;
       }
-
-      const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      const legendEl = document.getElementById('chart-legend');
-      if (legendEl) {
-        const dates = points.filter(p => p.date).map(p => p.date).sort();
-        if (dates.length >= 2) {
-          const fmt = d => { const q = d.split('-'); return MON[+q[1]-1] + ' ' + q[2] + ', ' + q[0]; };
-          legendEl.innerHTML = '<span>' + fmt(dates[0]) + ' — ' + fmt(dates[dates.length-1]) + '</span>';
-        }
-      }
-
-      const W = wrap.clientWidth;
-      if (!W) { requestAnimationFrame(() => drawEquityCurve()); return; }
-      const H = 340;
-      const PAD_L = 66, PAD_R = 34, PAD_T = 20, PAD_B = 40, CW = W - PAD_L - PAD_R, CH = H - PAD_T - PAD_B;
-      const equities = points.map(p => p.equity);
-      const rawMin = Math.min(...equities), rawMax = Math.max(...equities), rng = rawMax - rawMin || 1;
-      const dataMin = rawMin - rng * 0.08, dataMax = rawMax + rng * 0.08, dataRange = dataMax - dataMin;
-      const toX = i => PAD_L + (i / (points.length - 1 || 1)) * CW;
-      const toY = v => PAD_T + CH - ((v - dataMin) / dataRange) * CH;
-
-      function catmullRomPath(pts) {
-        if (pts.length < 2) return '';
-        const tension = 0.18;
-        let d = 'M ' + pts[0].x.toFixed(2) + ' ' + pts[0].y.toFixed(2);
-        for (let i = 0; i < pts.length - 1; i++) {
-          const p0 = pts[Math.max(0, i-1)], p1 = pts[i], p2 = pts[i+1], p3 = pts[Math.min(pts.length-1, i+2)];
-          const cp1x = p1.x + (p2.x - p0.x) * tension, cp1y = p1.y + (p2.y - p0.y) * tension;
-          const cp2x = p2.x - (p3.x - p1.x) * tension, cp2y = p2.y - (p3.y - p1.y) * tension;
-          d += ' C ' + cp1x.toFixed(2) + ' ' + cp1y.toFixed(2) + ', ' + cp2x.toFixed(2) + ' ' + cp2y.toFixed(2) + ', ' + p2.x.toFixed(2) + ' ' + p2.y.toFixed(2);
-        }
-        return d;
-      }
-
-      // Green above water, red once underwater below the running peak
-      let peak = 0;
-      const segments = [];
-      let curColor = points[0].equity >= 0 ? 'green' : 'red';
-      let curPts = [{ x: toX(0), y: toY(points[0].equity) }];
-      for (let i = 1; i < points.length; i++) {
-        const eq = points[i].equity, prevEq = points[i-1].equity;
-        if (eq > peak) peak = eq;
-        const newColor = (eq < peak && eq < 0) ? 'red' : 'green';
-        if (newColor !== curColor) {
-          const denom = Math.abs(prevEq) + Math.abs(eq);
-          const t = denom > 0 ? Math.abs(prevEq) / denom : 0.5;
-          const crossX = toX(i-1) + t * (toX(i) - toX(i-1));
-          const crossY = toY(0);
-          curPts.push({ x: crossX, y: crossY });
-          segments.push({ pts: curPts.slice(), color: curColor });
-          curPts = [{ x: crossX, y: crossY }];
-          curColor = newColor;
-        }
-        curPts.push({ x: toX(i), y: toY(eq) });
-      }
-      if (curPts.length > 1) segments.push({ pts: curPts, color: curColor });
-
-      function niceStep(range, n) {
-        const r = range / n, mag = Math.pow(10, Math.floor(Math.log10(r)));
-        return [1,2,2.5,5,10].map(m => m * mag).find(c => c >= r) || mag * 10;
-      }
-      const step = niceStep(dataRange, 6), yTicks = [];
-      for (let v = Math.ceil(dataMin/step)*step; v <= dataMax + step*0.01; v += step) yTicks.push(parseFloat(v.toFixed(8)));
-
-      const allDates = [...new Set(points.filter(p => p.date).map(p => p.date))].sort();
-      const maxXLabels = Math.min(6, allDates.length);
-      const xDates = allDates.length <= maxXLabels
-        ? allDates
-        : Array.from({length: maxXLabels}, (_, i) => allDates[Math.round(i/(maxXLabels-1)*(allDates.length-1))]);
-
-      const fmtY = v => { const a = Math.abs(v), sg = v < 0 ? '-' : '';
-        return a >= 1000 ? sg + '$' + (a/1000).toFixed(a >= 10000 ? 0 : 1) + 'K' : sg + '$' + a.toFixed(0); };
-      const fmtX = d => { if (!d) return ''; const q = d.split('-'); return MON[+q[1]-1] + ' ' + parseInt(q[2]); };
-      const FONT = "ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif";
-
-      const gridLines = yTicks.map(v => {
-        const y = toY(v);
-        if (y < PAD_T - 2 || y > PAD_T + CH + 2) return '';
-        const isZero = Math.abs(v) < step * 0.01;
-        return '<line x1="' + PAD_L + '" y1="' + y.toFixed(1) + '" x2="' + (PAD_L+CW).toFixed(1) + '" y2="' + y.toFixed(1) +
-          '" stroke="' + (isZero ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.04)') + '" stroke-width="1"/>' +
-          '<text x="' + (PAD_L-10).toFixed(1) + '" y="' + y.toFixed(1) + '" dy="0.35em" text-anchor="end" fill="' +
-          (isZero ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.7)') + '" font-size="11" font-family="' + FONT + '">' + fmtY(v) + '</text>';
-      }).join('');
-
-      const xLabels = xDates.map(d => {
-        const idx = points.findIndex(p => p.date === d);
-        if (idx < 0) return '';
-        return '<text x="' + toX(idx).toFixed(1) + '" y="' + (PAD_T+CH+22).toFixed(1) +
-          '" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-size="10" font-family="' + FONT + '">' + fmtX(d) + '</text>';
-      }).join('');
-
-      const hoverRects = points.slice(1).map((p, i) => {
-        const x = toX(i+1), prevX = toX(i), sliceW = Math.max(8, x - prevX);
-        const col = p.result === 'WIN' ? '#22c55e' : '#ef4444';
-        const sign = p.pnl >= 0 ? '+' : '-';
-        const line2 = p.dir + (p.grade ? ' [' + p.grade + ']' : '') + ' · ' + p.qty + 'c' + (p.ex ? ' · ' + (EXIT_LABEL[p.ex] || p.ex) : '') + (p.ver ? ' · ' + p.ver : '');
-        const tip = [p.date || '', line2, sign + '$' + Math.abs(p.pnl).toFixed(2) + ' → $' + p.equity.toFixed(2)].join('·||·');
-        return '<rect x="' + (prevX + (x-prevX)*0.1).toFixed(1) + '" y="' + PAD_T + '" width="' + sliceW.toFixed(1) +
-          '" height="' + CH + '" fill="transparent" onmouseenter="showChartTooltip(event,\'' + tip + '\',\'' + col + '\',' +
-          x.toFixed(1) + ',' + toY(p.equity).toFixed(1) + ')" onmouseleave="hideChartTooltip()" style="cursor:crosshair"/>';
-      }).join('');
-
-      // Version cut markers: dashed line at the first trade of each later version.
-      const verMarks = VERS().slice(1).map(v => {
-        const i = points.findIndex(p => p.date && p.date >= v.start);
-        if (i < 1) return '';
-        const x = ((toX(i - 1) + toX(i)) / 2).toFixed(1);
-        return '<line x1="' + x + '" y1="' + PAD_T + '" x2="' + x + '" y2="' + (PAD_T + CH) + '" stroke="rgba(134,239,172,0.45)" stroke-width="1" stroke-dasharray="3,4"/>' +
-          '<rect x="' + (+x + 4) + '" y="' + (PAD_T + 2) + '" width="' + (v.label.length * 7 + 46) + '" height="16" rx="4" fill="rgba(9,9,11,0.9)" stroke="rgba(34,197,94,0.3)"/>' +
-          '<text x="' + (+x + 9) + '" y="' + (PAD_T + 13.5) + '" fill="#86efac" font-size="10" font-weight="800" font-family="ui-monospace,monospace">' + _e(v.label) + ' · ' + _e(fmtShort(v.start)) + '</text>';
-      }).join('');
-
-      const lastLineCol = isPos ? '#22c55e' : '#ef4444';
-      const crosshairDot = '<circle id="' + uid + '-dot" cx="0" cy="0" r="5" fill="' + lastLineCol + '" stroke="#09090b" stroke-width="2" style="display:none" pointer-events="none"/>';
-      const crosshairLine = '<line id="' + uid + '-vline" x1="0" y1="' + PAD_T + '" x2="0" y2="' + (PAD_T+CH) + '" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,3" style="display:none" pointer-events="none"/>';
-
-      const segmentSVG = segments.map((seg, si) => {
-        const col = seg.color === 'green' ? '#22c55e' : '#ef4444';
-        const gid = uid + '-fill-' + si;
-        const pathD = catmullRomPath(seg.pts);
-        const fillBase = Math.max(Math.min(toY(0), PAD_T + CH), PAD_T);
-        const fillD = pathD + ' L ' + seg.pts[seg.pts.length-1].x.toFixed(2) + ' ' + fillBase.toFixed(2) +
-                      ' L ' + seg.pts[0].x.toFixed(2) + ' ' + fillBase.toFixed(2) + ' Z';
-        return '<defs><linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' +
-          '<stop offset="0%" stop-color="' + col + '" stop-opacity="0.35"/>' +
-          '<stop offset="40%" stop-color="' + col + '" stop-opacity="0.15"/>' +
-          '<stop offset="100%" stop-color="' + col + '" stop-opacity="0"/></linearGradient></defs>' +
-          '<path d="' + fillD + '" fill="url(#' + gid + ')"/>' +
-          '<path d="' + pathD + '" fill="none" stroke="' + col + '" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.12"/>' +
-          '<path d="' + pathD + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" opacity="0.95"/>';
-      }).join('');
-
-      wrap.innerHTML =
-        '<svg id="' + uid + '-svg" width="100%" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg" style="display:block;overflow:visible">' +
-          '<defs><clipPath id="' + uid + '-clip"><rect x="' + PAD_L + '" y="' + (PAD_T-2) + '" width="' + (CW+1) + '" height="' + (CH+4) + '"/></clipPath></defs>' +
-          gridLines + xLabels + verMarks +
-          '<g clip-path="url(#' + uid + '-clip)">' + segmentSVG + crosshairLine + crosshairDot + hoverRects + '</g>' +
-        '</svg>' +
-        '<div id="eq-tooltip" style="display:none;position:absolute;pointer-events:none;z-index:50;background:rgba(9,9,11,0.95);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:10px 14px;font-size:11px;white-space:nowrap;font-family:ui-monospace,monospace;color:#e4e4e7;box-shadow:0 8px 40px rgba(0,0,0,0.8);min-width:160px"></div>';
-
-      wrap._uid = uid;
+      const list = TR.slice().reverse().slice(0, RECENT);
+      const curVer = ver && ver.label;
+      note.textContent = TR.length > RECENT
+        ? `Most recent ${RECENT} of ${TR.length} trades. Stats above cover all ${TR.length}.`
+        : `All ${TR.length} trades, most recent first.`;
+      wrap.innerHTML = `<div class="overflow-x-auto"><table class="trv-table">
+        <thead><tr><th>Date / Entry</th><th>Side</th><th>Grade</th><th class="r">Qty</th><th class="r">Entry</th><th class="r">Exit</th><th>Closed by</th><th class="r">Net P&amp;L</th></tr></thead>
+        <tbody>${list.map(t => { const tv = versionOn(v, t.date);
+          return `<tr class="${t.pnl > 0 ? 'w' : 'l'}">
+            <td class="text-zinc-400 whitespace-nowrap">${fmtShort(t.date)} <span class="text-zinc-600 text-[10px]">'${t.date.slice(2,4)}</span>, ${t12(t.entry_time)}${tv && tv.label !== curVer ? ` <span class="ver-chip">${_e(tv.label)}</span>` : ''}</td>
+            <td class="text-zinc-300">${t.dir === 'LONG' ? 'Long' : 'Short'}</td>
+            <td class="font-black text-white">${_e(t.grade || '—')}</td>
+            <td class="r text-zinc-400">${_e(t.contracts)}</td>
+            <td class="r text-zinc-400">${Number(t.entry).toFixed(2)}</td>
+            <td class="r text-zinc-400">${Number(t.exit).toFixed(2)}</td>
+            <td class="whitespace-nowrap">${exitChip(t)}</td>
+            <td class="r font-black ${t.pnl > 0 ? 'text-emerald-400' : 'text-red-400'}">${money2(t.pnl)}</td></tr>`; }).join('')}</tbody></table></div>`;
     }
 
-    function showChartTooltip(e, rawLabel, color, dotX, dotY) {
-      const tt = document.getElementById('eq-tooltip');
-      const wrap = document.getElementById('equity-chart-wrap');
-      if (!tt || !wrap) return;
-      const parts = rawLabel.split('·||·');
-      tt.innerHTML =
-        '<div style="color:rgba(255,255,255,0.4);font-size:10px;margin-bottom:5px;letter-spacing:0.05em">' + (parts[0] || '') + '</div>' +
-        '<div style="color:#e4e4e7;margin-bottom:4px">' + (parts[1] || '') + '</div>' +
-        '<div style="color:' + color + ';font-weight:800;font-size:14px">' + (parts[2] || '') + '</div>';
-      tt.style.borderColor = color + '40';
-      tt.style.display = 'block';
-
-      const rect = wrap.getBoundingClientRect();
-      const er = e.target.getBoundingClientRect();
-      const tipW = tt.offsetWidth || 170;
-      let left = er.left - rect.left + er.width/2 - tipW/2;
-      if (left + tipW > rect.width - 8) left = rect.width - tipW - 8;
-      if (left < 0) left = 4;
-      let top = (er.top - rect.top) - 80;
-      if (top < 0) top = 8;
-      tt.style.left = left + 'px';
-      tt.style.top = top + 'px';
-
-      const uid = wrap._uid;
-      if (uid) {
-        const dot = document.getElementById(uid + '-dot');
-        const vline = document.getElementById(uid + '-vline');
-        if (dot) { dot.setAttribute('cx', dotX); dot.setAttribute('cy', dotY); dot.style.display = ''; }
-        if (vline) { vline.setAttribute('x1', dotX); vline.setAttribute('x2', dotX); vline.style.display = ''; }
-      }
-    }
-
-    function hideChartTooltip() {
-      const tt = document.getElementById('eq-tooltip');
-      if (tt) tt.style.display = 'none';
-      const wrap = document.getElementById('equity-chart-wrap');
-      if (!wrap || !wrap._uid) return;
-      const dot = document.getElementById(wrap._uid + '-dot');
-      const vline = document.getElementById(wrap._uid + '-vline');
-      if (dot) dot.style.display = 'none';
-      if (vline) vline.style.display = 'none';
-    }
-
-    let _eqResize;
-    window.addEventListener('resize', () => {
-      clearTimeout(_eqResize);
-      _eqResize = setTimeout(() => { if (TRADES.length) drawEquityCurve(); }, 180);
-    });
-
-    function dayMap() {
-      const m = {};
-      TRADES.forEach(t => { (m[t.date] = m[t.date] || []).push(t); });
-      return m;
-    }
-
-    function calMove(d) { calRef.setMonth(calRef.getMonth() + d); renderCal(); }
-
-    function renderCal() {
-      const dm = dayMap();
-      const y = calRef.getFullYear(), mo = calRef.getMonth();
-      document.getElementById('cal-label').textContent =
-        calRef.toLocaleDateString('en-US', {month:'long', year:'numeric'});
-
-      // ── Header stats (journal-style) ──
-      const prefix = `${y}-${String(mo+1).padStart(2,'0')}`;
-      const inMonth = TRADES.filter(t => t.date.startsWith(prefix));
-      const ms = stats(inMonth);
-
-      // Monthly P&L
-      const mEl = document.getElementById('cal-monthly');
-      mEl.textContent = inMonth.length ? money(ms.net) : '—';
-      mEl.className = 'font-black ' + (!inMonth.length ? 'text-zinc-400' : ms.net >= 0 ? 'text-emerald-400' : 'text-red-400');
-
-      // Net P&L — all-time running total across the whole record
-      const allNet = TRADES.reduce((a,t) => a + t.pnl, 0);
-      const netEl = document.getElementById('cal-net');
-      netEl.textContent = TRADES.length ? money(allNet) : '—';
-      netEl.className = 'font-black ' + (!TRADES.length ? 'text-zinc-400' : allNet >= 0 ? 'text-emerald-400' : 'text-red-400');
-
-      // Win rate / days / trades — for the month in view
-      const wrEl = document.getElementById('cal-wr');
-      wrEl.textContent = inMonth.length ? ms.winRate.toFixed(1) + '%' : '—';
-      wrEl.className = 'font-black ' + (inMonth.length && ms.winRate >= 50 ? 'text-emerald-400' : 'text-red-400');
-      document.getElementById('cal-days').textContent = inMonth.length ? ms.days + ' day' + (ms.days !== 1 ? 's' : '') + ' traded' : '—';
-      document.getElementById('cal-trades').textContent = inMonth.length ? ms.n + ' trade' + (ms.n !== 1 ? 's' : '') : '—';
-
-      // Green / red days
-      const dayNets = {};
-      inMonth.forEach(t => { dayNets[t.date] = (dayNets[t.date] || 0) + t.pnl; });
-      const greenDays = Object.values(dayNets).filter(v => v >= 0).length;
-      const grdEl = document.getElementById('cal-grd');
-      grdEl.innerHTML = inMonth.length
-        ? `<span class="text-emerald-400">${greenDays}</span><span class="text-zinc-700"> / </span><span class="text-red-400">${ms.days - greenDays}</span>`
-        : '—';
-
-      const daysInMonth = new Date(y, mo + 1, 0).getDate();
-      const todayStr = new Date().toISOString().slice(0,10);
-      // Weekday-only (Mon–Fri) + weekly totals, matching the journal calendar
-      const weekdays = [];
-      for (let d = 1; d <= daysInMonth; d++) {
-        const dow = new Date(y, mo, d).getDay();
-        if (dow !== 0 && dow !== 6) weekdays.push(d);
-      }
-      const firstDow = new Date(y, mo, weekdays[0]).getDay() - 1; // Mon=0
-      const cells = [];
-      for (let i = 0; i < firstDow; i++) cells.push(null);
-      weekdays.forEach(d => cells.push(d));
-      while (cells.length % 5 !== 0) cells.push(null);
-
-      const grid = document.getElementById('cal-grid');
-      grid.innerHTML = '';
-      for (let r = 0; r < cells.length / 5; r++) {
-        const row = document.createElement('div');
-        row.className = 'grid grid-cols-6 border-b border-white/[0.06] last:border-0';
-        let rowNet = 0, rowHas = false;
-        for (let c = 0; c < 5; c++) {
-          const d = cells[r * 5 + c];
-          const cell = document.createElement('div');
-          cell.className = 'cal-day border-r border-white/[0.06] p-4 flex flex-col';
-          if (d) {
-            const key = `${y}-${String(mo+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const list = dm[key];
-            const isToday = key === todayStr;
-            if (isToday) cell.style.outline = '1px solid rgba(34,197,94,0.3)';
-            if (list) { rowNet += list.reduce((a,t) => a + t.pnl, 0); rowHas = true; }
-
-            // Date number — top-right, plain day number
-            const dateDiv = document.createElement('div');
-            dateDiv.className = (isToday ? 'text-xs font-black text-green-400' : 'text-xs font-bold text-zinc-600') + ' text-right';
-            dateDiv.textContent = d;
-            cell.appendChild(dateDiv);
-            const cut = VERS().slice(1).find(v => v.start === key);
-            const evs = eventsOn(key);
-            if (evs.length || cut) {
-              const tg = document.createElement('div');
-              tg.className = 'cal-tags';
-              tg.innerHTML = (cut ? `<span class="ver-chip">${_e(cut.label)} live</span>` : '') + evChips(key);
-              cell.appendChild(tg);
-            }
-
-            if (list) {
-              const net = list.reduce((a,t) => a + t.pnl, 0);
-              cell.classList.add(net >= 0 ? 'cal-day-win' : 'cal-day-loss', 'cal-clickable');
-              const body = document.createElement('div');
-              body.className = 'mt-auto';
-              const pnlDiv = document.createElement('div');
-              pnlDiv.className = 'text-sm font-black ' + (net >= 0 ? 'text-emerald-400' : 'text-red-400');
-              pnlDiv.textContent = money(net);
-              body.appendChild(pnlDiv);
-              const countDiv = document.createElement('div');
-              countDiv.className = 'text-[11px] text-zinc-500 mt-1';
-              countDiv.textContent = `${list.length} trade${list.length !== 1 ? 's' : ''}`;
-              body.appendChild(countDiv);
-              cell.appendChild(body);
-              cell.onclick = () => showDay(key);
-            }
-          }
-          row.appendChild(cell);
-        }
-        // Weekly total col
-        const wc = document.createElement('div');
-        wc.className = 'cal-day p-4 flex flex-col items-end justify-end bg-zinc-950/30';
-        const wkLabel = document.createElement('div');
-        wkLabel.className = 'text-[10px] uppercase tracking-wider text-zinc-600 font-bold mb-1';
-        wkLabel.textContent = 'WK';
-        wc.appendChild(wkLabel);
-        const wcInner = document.createElement('div');
-        wcInner.className = 'text-sm font-black ' + (rowHas ? (rowNet >= 0 ? 'text-emerald-400' : 'text-red-400') : 'text-zinc-700');
-        wcInner.textContent = rowHas ? money(rowNet) : '—';
-        wc.appendChild(wcInner);
-        row.appendChild(wc);
-        grid.appendChild(row);
-      }
-      document.getElementById('cal-detail').classList.add('hidden');
-    }
-
-    function showDay(key) {
-      const list = dayMap()[key] || [];
-      const net = list.reduce((a,t) => a + t.pnl, 0);
-      const el = document.getElementById('cal-detail');
-      el.innerHTML = `
-        <div class="flex items-baseline justify-between mb-3">
-          <div class="text-sm font-black text-white">${fmtDate(key)} <span class="ml-2 align-middle">${evChips(key)}</span> <span class="ver-chip ml-1 align-middle">${_e((verOf(key)||{}).label||'')}</span></div>
-          <div class="text-sm font-black ${net>=0?'text-emerald-400':'text-red-400'}">${money(net)}</div>
-        </div>
-        <div class="space-y-1.5">` +
-        list.map(t => `
-          <div class="flex items-center gap-3 bg-black/40 border border-white/5 rounded-lg px-3 py-2 text-xs">
-            <span class="font-bold ${t.dir==='LONG'?'text-emerald-400':'text-red-400'} w-12">${t.dir}</span>
-            <span class="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 font-bold text-[10px]">${_e(t.grade||'—')}</span>
-            <span class="text-zinc-600 text-[11px]">${_e(t.contracts)}c</span>
-            <span class="text-zinc-500 text-[11px] hidden sm:inline">${t.entry_time} → ${t.exit_time}</span>
-            <span class="flex-1">${exitChip(t)} <span class="text-zinc-600 text-[11px] ml-1">max open ${t.mfe == null ? '—' : '+$' + Math.round(t.mfe)}</span></span>
-            <span class="font-black ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${money(t.pnl)}</span>
-          </div>`).join('') + '</div>';
-      el.classList.remove('hidden');
-    }
-
-    function bar(label, sub, pct, cls) {
-      return `<div>
-        <div class="flex justify-between text-[11px] mb-1">
-          <span class="text-zinc-300 font-bold">${label}</span>
-          <span class="text-zinc-500">${sub}</span>
-        </div>
-        <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
-          <div class="h-full ${cls} rounded-full" style="width:${Math.max(2, pct).toFixed(1)}%"></div>
-        </div>
-      </div>`;
-    }
-
-    function renderGrades() {
-      const order = ['A+','A','B+','B','C+','C'];
-      const g = {};
-      TRADES.forEach(t => { const k = t.grade || '—'; (g[k] = g[k] || []).push(t); });
-      const keys = order.filter(k => g[k]).concat(Object.keys(g).filter(k => !order.includes(k)));
-      document.getElementById('grade-table').innerHTML = keys.map(k => {
-        const s = stats(g[k]);
-        return bar(`Grade ${k}`,
-          `${s.wins}/${s.n} &middot; ${s.winRate.toFixed(0)}% &middot; <span class="${s.net>=0?'text-emerald-400':'text-red-400'}">${money(s.net)}</span>`,
-          s.winRate, s.winRate >= 50 ? 'bg-emerald-500' : 'bg-red-500');
-      }).join('') || '<div class="text-zinc-600 text-xs">No data.</div>';
-    }
-
-    function renderExits() {
-      const e = {};
-      TRADES.forEach(t => { const k = EXIT_LABEL[exitType(t)] || '—'; (e[k] = e[k] || []).push(t); });
-      const keys = Object.keys(e).sort((a,b) => e[b].length - e[a].length);
-      const total = TRADES.length;
-      document.getElementById('exit-table').innerHTML = keys.map(k => {
-        const s = stats(e[k]);
-        return bar(k,
-          `${s.n} trade${s.n>1?'s':''} &middot; <span class="${s.net>=0?'text-emerald-400':'text-red-400'}">${money(s.net)}</span>`,
-          100 * s.n / total, s.net >= 0 ? 'bg-emerald-500' : 'bg-red-500');
-      }).join('');
-    }
-
-    function setLogFilter(f) {
-      logFilter = f;
-      document.querySelectorAll('.log-f').forEach(b => {
-        const on = b.dataset.f === f;
-        b.className = 'log-f px-2.5 py-1 rounded-lg text-[11px] font-bold border transition ' +
-          (on ? 'bg-green-500/10 border-green-500/40 text-green-400' : 'bg-zinc-900 border-white/10 text-zinc-400');
-      });
-      renderLog();
-    }
-
-    function renderLog() {
-      let list = TRADES.slice().reverse();
-      if (logFilter === 'win')  list = list.filter(t => t.pnl > 0);
-      if (logFilter === 'loss') list = list.filter(t => t.pnl <= 0);
-      document.getElementById('log-body').innerHTML = list.map(t => `
-        <tr class="tr-row border-b border-white/5">
-          <td class="px-5 py-2.5 text-zinc-300 whitespace-nowrap">${fmtShort(t.date)} <span class="text-zinc-600 text-[10px]">'${t.date.slice(2,4)}</span></td>
-          <td class="px-3 py-2.5"><span class="font-bold ${t.dir==='LONG'?'text-emerald-400':'text-red-400'}">${t.dir}</span></td>
-          <td class="px-3 py-2.5"><span class="px-1.5 py-0.5 rounded bg-white/5 text-zinc-300 font-bold text-[10px]">${_e(t.grade||'—')}</span></td>
-          <td class="px-3 py-2.5 text-right text-zinc-400">${_e(t.contracts)}</td>
-          <td class="px-3 py-2.5 text-right text-zinc-400 tabular-nums">${t.entry.toLocaleString()}</td>
-          <td class="px-3 py-2.5 text-right text-zinc-400 tabular-nums">${t.exit.toLocaleString()}</td>
-          <td class="px-3 py-2.5 whitespace-nowrap">${exitChip(t)}</td>
-          <td class="px-3 py-2.5 text-right tabular-nums">${mfeText(t)}</td>
-          <td class="px-3 py-2.5"><div class="flex flex-wrap gap-1">${(() => { const v = verOf(t.date); return v && VERS().indexOf(v) > 0 && TRADES.find(x => x.date >= v.start) === t ? `<span class="ver-chip">${_e(v.label)} live</span>` : ''; })()}${evChips(t.date)}</div></td>
-          <td class="px-5 py-2.5 text-right font-black tabular-nums ${t.pnl>=0?'text-emerald-400':'text-red-400'}">${money2(t.pnl)}</td>
-        </tr>`).join('') ||
-        '<tr><td colspan="10" class="px-5 py-8 text-center text-zinc-600 text-xs">No trades match that filter.</td></tr>';
-    }
+    document.querySelectorAll('.rp-btn').forEach(b => b.addEventListener('click', () => {
+      if (!b.disabled && b.dataset.rp !== RP) { RP = b.dataset.rp; show(); }
+    }));
+    show();
 
     function toggleMobileMenu() {
       document.getElementById('sidebar-panel').classList.toggle('-translate-x-full');

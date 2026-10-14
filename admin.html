@@ -1334,19 +1334,22 @@
         <div class="flex items-center justify-between mb-1 flex-wrap gap-3">
           <div>
             <h2 class="text-sm font-black text-white">📈 Public Track Record</h2>
-            <p class="text-xs text-zinc-600 mt-0.5">Import the FSD-X ORB Pro export, merge new trades, mark version updates, publish <span id="tr-file-label" class="text-zinc-400 font-mono">track-record.json</span></p>
+            <p class="text-xs text-zinc-600 mt-0.5">Pick a variant and risk profile, import its TradingView export, merge new trades, publish <span id="tr-file-label" class="text-zinc-400 font-mono">track-record.json</span></p>
           </div>
           <a href="track-record.html" target="_blank" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">View Page ↗</a>
         </div>
 
-        <!-- Which record -->
+        <!-- Which record: variant + risk profile (variants live in track-record-variants.js) -->
         <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-3">// Which Record</div>
+          <div class="text-[10px] text-zinc-600 mb-1.5">Variant</div>
+          <div id="tr-var-btns" class="flex flex-wrap items-center gap-2 mb-3"></div>
+          <div class="text-[10px] text-zinc-600 mb-1.5">Risk profile</div>
           <div class="flex flex-wrap items-center gap-2">
-            <button type="button" onclick="trSetProfile('400')" data-trp="400" class="trp-btn px-4 py-2 rounded-xl text-xs font-bold border transition">$400 &middot; track-record.json</button>
-            <button type="button" onclick="trSetProfile('250')" data-trp="250" class="trp-btn px-4 py-2 rounded-xl text-xs font-bold border transition">$250 &middot; track-record-250.json</button>
+            <button type="button" onclick="trSetProfile('400')" data-trp="400" class="trp-btn px-4 py-2 rounded-xl text-xs font-bold border transition">$400</button>
+            <button type="button" onclick="trSetProfile('250')" data-trp="250" class="trp-btn px-4 py-2 rounded-xl text-xs font-bold border transition">$250</button>
           </div>
-          <p class="text-[10px] text-zinc-600 mt-2">Each profile is its own file. Pick one, then import the TradingView export that was run on that same risk setting.</p>
+          <p id="tr-var-note" class="text-[10px] text-zinc-600 mt-2">Each variant and profile is its own file. Pick both, then import the TradingView export of that variant run on that same risk setting.</p>
         </div>
 
         <!-- Current state -->
@@ -1364,7 +1367,7 @@
               <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Inception (locked start)</label>
               <input type="date" id="tr-inception" value="2026-05-01"
                 class="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:border-green-500/50 outline-none"/>
-              <p class="text-[10px] text-zinc-600 mt-1">First day of the continuous record. Trades before it are never imported.</p>
+              <p class="text-[10px] text-zinc-600 mt-1">First day this variant is tracked. Trades before it are never imported.</p>
             </div>
             <div>
               <label class="block text-[11px] font-bold text-zinc-400 mb-1.5">Public release date</label>
@@ -1387,23 +1390,13 @@
           </div>
         </div>
 
-        <!-- Version timeline + context tags -->
+        <!-- Versions + exits: edited in track-record-variants.js, not here -->
         <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
-          <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-1">// Version Timeline</div>
-          <p class="text-[10px] text-zinc-600 mb-3">One continuous record. A cut only marks the day a new version took over &mdash; nothing resets.
-            Shared by both risk files: edit once, then publish $400 and $250.</p>
-          <div id="tr-vers" class="space-y-2 mb-3"></div>
-          <div class="grid md:grid-cols-[110px_150px_1fr_auto] gap-2 items-center">
-            <input id="trv-label" placeholder="MK3" class="bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none"/>
-            <input id="trv-date" type="date" class="bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none"/>
-            <input id="trv-note" placeholder="One line: what changed" class="bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none"/>
-            <button type="button" onclick="trVerAdd()" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-200 font-bold text-xs rounded-xl">+ Add cut</button>
-          </div>
-          <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mt-5 mb-1">// Context Tags</div>
-          <p class="text-[10px] text-zinc-600 mb-2">One per line: <span class="font-mono text-zinc-400">2026-10-14 CPI</span>. Tag every calendar event, win or loss &mdash; never only the red days.</p>
-          <textarea id="tr-events" rows="5" class="w-full bg-black border border-white/10 rounded-xl px-3 py-2 text-[11px] font-mono text-zinc-300 outline-none"></textarea>
-          <button type="button" onclick="trMetaSave()" class="mt-2 px-4 py-2 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl">Apply timeline + tags</button>
-          <span id="tr-meta-msg" class="text-[11px] text-zinc-500 ml-2"></span>
+          <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-1">// Variant Setup</div>
+          <div id="tr-var-info" class="text-[11px] text-zinc-500 leading-relaxed"></div>
+          <p class="text-[10px] text-zinc-600 mt-2">Names, start dates, "Now running" versions and exit rules live in
+            <span class="font-mono text-zinc-400">track-record-variants.js</span>. To mark an update, add a line to that variant's
+            <span class="font-mono text-zinc-400">versions</span> list and push. To add a variant, copy an entry. Trades are never reset.</p>
         </div>
 
         <!-- Upload -->
@@ -7722,21 +7715,50 @@
   </div>
 
   <!-- ══════════ TRACK RECORD IMPORTER ══════════ -->
+  <script src="track-record-variants.js?v=20261014a"></script>
   <script>
     let TR_PUBLISHED = null;   // currently live track-record.json
     let TR_PARSED    = [];     // trades parsed from the uploaded CSV
     let TR_RESULT    = null;   // merged output awaiting download
-    const TR_FILES   = { '400': 'track-record.json', '250': 'track-record-250.json' };
+    const TR_REG     = (window.TR_VARIANTS && window.TR_VARIANTS.variants) || [{ id:'v1', label:'Variant 1', since:'2025-12-16', files:{ '400':'track-record.json', '250':'track-record-250.json' }, versions:[], exits:[], runner:false }];
+    let TR_VAR       = TR_REG[0].id;
+    const trVar      = () => TR_REG.find(v => v.id === TR_VAR) || TR_REG[0];
+    const trFile     = p => trVar().files[p || TR_PROFILE];
+    const trKey      = p => TR_VAR + ':' + (p || TR_PROFILE);
     const TR_CACHE   = {};     // published data per profile
     let TR_PROFILE   = '400';
     let TR_BACKFILLED = 0;
 
     const trMoney = n => (n < 0 ? '-' : '+') + '$' + Math.abs(n).toLocaleString('en-US', {maximumFractionDigits:0});
 
+    function trPaintVariant() {
+      const v = trVar();
+      document.getElementById('tr-var-btns').innerHTML = TR_REG.map(x => {
+        const on = x.id === TR_VAR;
+        return `<button type="button" onclick="trSetVariant('${esc(x.id)}')" class="px-4 py-2 rounded-xl text-xs font-bold border transition ${on
+          ? 'border-green-500/40 bg-green-500/10 text-green-400' : 'border-white/10 bg-zinc-900 text-zinc-400 hover:text-zinc-200'}">${esc(x.label)}${x.tag ? ' &middot; ' + esc(x.tag) : ''}</button>`;
+      }).join('');
+      const ver = (v.versions || [])[(v.versions || []).length - 1];
+      document.getElementById('tr-var-info').innerHTML =
+        `<span class="text-white font-bold">${esc(v.label)}</span> &middot; tracked since ${esc(v.since)} &middot; now running <span class="text-white font-bold">${esc(ver ? ver.label : '—')}</span>` +
+        ` &middot; exits: ${(v.exits || []).map(e => esc(e[1])).join(', ') || '—'}` +
+        (v.runner ? '<br><span class="text-zinc-600">Runner variant: winning exits are split automatically. Closed at the trade\'s best price = TP2. Closed in profit below its best = Trailed stop.</span>' : '');
+    }
+
+    function trSetVariant(id) {
+      if (!TR_REG.some(v => v.id === id) || id === TR_VAR) return;
+      TR_VAR = id;
+      if (!trFile('400')) TR_PROFILE = '400';
+      trSetProfile(TR_PROFILE, true);
+    }
+
     function trPaintProfile() {
-      const file = TR_FILES[TR_PROFILE];
+      trPaintVariant();
+      const file = trFile();
       document.querySelectorAll('.trp-btn').forEach(b => {
         const on = b.dataset.trp === TR_PROFILE;
+        b.disabled = !trFile(b.dataset.trp);
+        b.textContent = '$' + b.dataset.trp + (trFile(b.dataset.trp) ? ' \u00b7 ' + trFile(b.dataset.trp) : ' \u00b7 not set up');
         b.className = 'trp-btn px-4 py-2 rounded-xl text-xs font-bold border transition ' +
           (on ? 'border-green-500/40 bg-green-500/10 text-green-400' : 'border-white/10 bg-zinc-900 text-zinc-400 hover:text-zinc-200');
       });
@@ -7745,27 +7767,28 @@
       document.getElementById('tr-dl-name').textContent = file;
     }
 
-    function trSetProfile(p) {
-      if (!TR_FILES[p]) return;
+    function trSetProfile(p, force) {
+      if (!trFile(p)) return;
       TR_PROFILE = p; TR_PARSED = []; TR_RESULT = null;
       document.getElementById('tr-preview').classList.add('hidden');
       document.getElementById('tr-publish').classList.add('hidden');
       document.getElementById('tr-parse-msg').classList.add('hidden');
       trPaintProfile();
-      if (TR_CACHE[p]) { TR_PUBLISHED = TR_CACHE[p]; trRenderCurrent(); return; }
+      document.getElementById('tr-inception').value = trVar().since;
+      if (TR_CACHE[trKey(p)]) { TR_PUBLISHED = TR_CACHE[trKey(p)]; trRenderCurrent(); return; }
       TR_PUBLISHED = null;
       document.getElementById('tr-current').innerHTML = '<span class="text-zinc-500">Loading…</span>';
       trFetch(p);
     }
 
     function trFetch(p) {
-      const file = TR_FILES[p];
+      const file = trFile(p), key = trKey(p);
       fetch(file + '?v=' + Date.now())
         .then(r => r.ok ? r.json() : Promise.reject())
-        .then(d => { if (p !== TR_PROFILE) return; TR_CACHE[p] = TR_PUBLISHED = d; trRenderCurrent(); })
+        .then(d => { if (key !== trKey()) return; TR_CACHE[key] = TR_PUBLISHED = d; trRenderCurrent(); })
         .catch(() => {
-          if (p !== TR_PROFILE) return;
-          TR_CACHE[p] = TR_PUBLISHED = { meta: {}, trades: [] };
+          if (key !== trKey()) return;
+          TR_CACHE[key] = TR_PUBLISHED = { meta: {}, trades: [] };
           document.getElementById('tr-current').innerHTML =
             '<span class="text-zinc-500">No <span class="font-mono">' + file + '</span> published yet. Your first import will create it.</span>';
         });
@@ -7774,6 +7797,7 @@
     function trInit() {
       if (TR_PUBLISHED) return;
       trPaintProfile();
+      document.getElementById('tr-inception').value = trVar().since;
       trFetch(TR_PROFILE);
     }
 
@@ -7801,8 +7825,13 @@
       if (m.public_release) document.getElementById('tr-release').value = m.public_release;
       if (m.commission_rt != null) document.getElementById('tr-comm').value = m.commission_rt;
       trPaintMeta();
+      if (m.variant && m.variant !== TR_VAR) {
+        document.getElementById('tr-current').innerHTML = '<span class="text-red-400 font-bold">' + trFile() +
+          ' says it is ' + esc(String(m.variant)) + ', not ' + esc(TR_VAR) + '. Check which file was pushed before importing.</span>';
+        return;
+      }
       if (m.risk_profile != null && String(m.risk_profile) !== TR_PROFILE) {
-        document.getElementById('tr-current').innerHTML = '<span class="text-red-400 font-bold">' + TR_FILES[TR_PROFILE] +
+        document.getElementById('tr-current').innerHTML = '<span class="text-red-400 font-bold">' + trFile() +
           ' says it is the $' + esc(String(m.risk_profile)) + ' profile, not $' + TR_PROFILE + '. Check which file was pushed before importing.</span>';
         return;
       }
@@ -7820,6 +7849,8 @@
     }
 
     function trPaintMeta() {
+      // Version timeline UI moved to track-record-variants.js; nothing to paint if it's gone.
+      if (!document.getElementById('tr-vers')) return;
       const m = (TR_PUBLISHED && TR_PUBLISHED.meta) || {};
       const vs = (m.versions || []).slice().sort((a, b) => a.start.localeCompare(b.start));
       document.getElementById('tr-vers').innerHTML = vs.length ? vs.map((v, i) => `
@@ -7898,10 +7929,16 @@
 
     // Closed-by comes from the outcome, not the order label: the stop is
     // bracketed to the TP1 order, so a stopped trade exports as "L-TP1".
-    const TR_EXIT_LABEL = { TP1:'Target', TP2:'Target 2', STOP:'Stop', EOD:'End of day', EOD_EARLY:'Early close' };
-    function trExitType(label, gross) {
+    const TR_EXIT_LABEL = { TP1:'Target', TP2:'TP2', TRAIL:'Trailed stop', STOP:'Stop', EOD:'End of day', EOD_EARLY:'Early close' };
+    // Runner variants: every non-EOD exit exports as "L-TP2"/"S-TP2", so the
+    // label can't say how it closed. A TP2 fill closes at the trade's best
+    // price (profit = max open profit); a trailed stop closes in profit below it.
+    function trExitType(label, gross, mfe, runner) {
       if (/EOD/i.test(label || '')) return /Early|Half/i.test(label) ? 'EOD_EARLY' : 'EOD';
-      if (gross > 0) return /TP2/.test(label || '') ? 'TP2' : 'TP1';
+      if (gross > 0) {
+        if (runner) return (mfe != null && Math.abs(mfe - gross) < 0.01) ? 'TP2' : 'TRAIL';
+        return /TP2/.test(label || '') ? 'TP2' : 'TP1';
+      }
       return 'STOP';
     }
     const trNum = (r, ...keys) => { for (const k of keys) if (r[k] != null && r[k] !== '') return parseFloat(r[k]); return null; };
@@ -7924,6 +7961,7 @@
         const qty = parseInt(p.entry['Size (qty)']) || 1;
         const gross = parseFloat(p.entry['Net PnL USD'] || p.entry['Net PnL'] || 0) || 0;
         const c = qty * comm;
+        const mfe = trNum(p.entry, 'Favorable excursion USD');
         out.push({
           id: date + '-' + n,
           date,
@@ -7935,11 +7973,11 @@
           entry: parseFloat(p.entry['Price USD']) || 0,
           exit: parseFloat(p.exit['Price USD']) || 0,
           exit_reason: p.exit['Signal'] || '',
-          exit_type: trExitType(p.exit['Signal'], gross),
+          exit_type: trExitType(p.exit['Signal'], gross, mfe, !!trVar().runner),
           gross: +gross.toFixed(2),
           commission: +c.toFixed(2),
           pnl: +(gross - c).toFixed(2),
-          mfe: trNum(p.entry, 'Favorable excursion USD'),
+          mfe,
           mae: trNum(p.entry, 'Adverse excursion USD')
         });
       });
@@ -8055,7 +8093,7 @@
         let filled = 0;
         const pub = (TR_PUBLISHED.trades || []).map(t => {
           const m = fromExport.get(key(t)); const o = Object.assign({}, t);
-          if (!o.exit_type) o.exit_type = trExitType(o.exit_reason, o.gross);
+          if (!o.exit_type) o.exit_type = trExitType(o.exit_reason, o.gross, o.mfe, !!trVar().runner);
           if (m && o.mfe == null && m.mfe != null) { o.mfe = m.mfe; o.mae = m.mae; filled++; }
           return o;
         });
@@ -8069,6 +8107,7 @@
       TR_RESULT = {
         meta: {
           product: 'FSD-X ORB Pro',
+          variant: TR_VAR,
           execution: 'unmanaged',
           versions: pm.versions || [],
           events: pm.events || {},
@@ -8108,10 +8147,10 @@
       const blob = new Blob([JSON.stringify(TR_RESULT, null, 1)], {type: 'application/json'});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = TR_FILES[TR_PROFILE];
+      a.download = trFile();
       a.click();
       URL.revokeObjectURL(a.href);
-      TR_PUBLISHED = TR_CACHE[TR_PROFILE] = TR_RESULT;
+      TR_PUBLISHED = TR_CACHE[trKey()] = TR_RESULT;
       trRenderCurrent();
     }
   </script>
