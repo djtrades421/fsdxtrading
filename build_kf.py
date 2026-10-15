@@ -110,15 +110,15 @@ def curve_png(path, E, eng):
     for t in E:
         c += r_of(t); xs.append(t['xt']); ys.append(c)
     fig, ax = plt.subplots(figsize=(12.1, 3.74), dpi=100)
-    bg = '#0A1626'; fig.patch.set_facecolor(bg); ax.set_facecolor(bg)
-    ax.plot(xs, ys, color='#F26B21', lw=1.6); ax.fill_between(xs, ys, 0, color='#F26B21', alpha=.10, lw=0)
+    bg = '#080D14'; fig.patch.set_facecolor(bg); ax.set_facecolor(bg)
+    ax.plot(xs, ys, color='#FF6B1F', lw=1.6); ax.fill_between(xs, ys, 0, color='#FF6B1F', alpha=.08, lw=0)
     for sp in ax.spines.values(): sp.set_visible(False)
-    ax.grid(axis='y', color='#1E3150', lw=.8); ax.tick_params(colors='#8098B7', labelsize=11, length=0)
+    ax.grid(axis='y', color='#18212C', lw=.8); ax.tick_params(colors='#61707F', labelsize=11, length=0)
     ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f'{v:+.0f}R' if v else '0R'))
     ax.xaxis.set_major_locator(md.YearLocator()); ax.xaxis.set_major_formatter(md.DateFormatter('%Y'))
     ax.set_title(f"Knightfall engine — cumulative R  ·  {eng['n']:,} trades  ·  NinjaTrader, after costs  ·  hypothetical",
-                 color='#C6D3E4', fontsize=13, loc='left', pad=12)
-    fig.tight_layout(); fig.savefig(path, facecolor=bg); plt.close(fig)
+                 color='#A2AEBF', fontsize=13, loc='left', pad=12)
+    fig.tight_layout(); fig.savefig(path, transparent=True); plt.close(fig)  # transparent: inherits the card behind it
     print('wrote', os.path.basename(path))
 
 
