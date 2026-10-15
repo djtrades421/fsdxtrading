@@ -139,7 +139,7 @@
           <span class="rl-chip ${s.cls}"><span class="st-dot"></span>${s.label}</span></div>
         <h3>${_e(r.title)}</h3>
         <p>${_e(r.body)}</p>
-        <div class="when">No release date yet</div>
+        <div class="when">${r.eta ? 'Releases ' + ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(r.eta + 'T12:00:00').getDay()] + ', ' + MONL[+r.eta.slice(5,7)-1] + ' ' + (+r.eta.slice(8,10)) : 'No release date yet'}</div>
       </article>`;
     }).join('');
 

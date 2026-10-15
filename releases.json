@@ -1,11 +1,12 @@
 {
- "_how": "Add an item and push. status: shipped | approved | review | testing | waiting | planned. Shipped items need date (YYYY-MM-DD or YYYY-MM) and type (new | update | fix | site). Unreleased items never get a date.",
+ "_how": "Add an item and push. status: shipped | approved | review | testing | waiting | planned. Shipped items need date (YYYY-MM-DD or YYYY-MM) and type (new | update | fix | site). Unreleased items never get a date. An unreleased item can carry an announced date as eta (YYYY-MM-DD); it shows as 'Releases <date>'.",
  "releases": [
   {
    "status": "approved",
    "product": "NinjaTrader 8",
    "title": "ORB Pro Knightfall for NinjaTrader 8 (v1.3.0)",
-   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader; final prep for release. Ships as v1.3.0: Variant 1 Stock, Variant 2 Runner, Variant 3 Fixed Stop (experimental) and Custom; Flag Sizing, which halves size when 2+ warning flags show; a daily loss limit; a Status row that shows when the system is in a cold or hot run; and the No-Hedge ORB Cap locked on in every preset. Auto Trade on or alert-only, no webhooks or bridge service."
+   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader. Releases Friday, October 23, 2026, as a download for members. Ships as v1.3.0: Variant 1 Stock, Variant 2 Runner, Variant 3 Fixed Stop (experimental) and Custom; Flag Sizing, which halves size when 2+ warning flags show; a daily loss limit; a Status row that shows when the system is in a cold or hot run; and the No-Hedge ORB Cap locked on in every preset. Auto Trade on or alert-only, no webhooks or bridge service.",
+   "eta": "2026-10-23"
   },
   {
    "status": "waiting",
