@@ -1,0 +1,31 @@
+{
+  "_how": "Knightfall results from NinjaTrader. One Strategy Analyzer Trades-grid export per variant (v1.3.0+, entry names tagged grade-flags-stop, commission on, slippage 1, flags off, DLL 0). Every setup and every calculator row is rebuilt from that one file. Run from the site root: python3 build_kf.py --config results-nt.json. It verifies the rebuild against the NT check exports first and stops if any trade differs.",
+  "updated": "Oct 15, 2026",
+  "version": "Knightfall v1.3.0",
+  "variants": {
+    "v2": { "label": "V2 Runner", "base": "knightfall-nt-v2-base.csv" },
+    "v1": { "label": "V1 Stock", "base": "knightfall-nt-v1-base.csv" }
+  },
+  "engine": "v2",
+  "setups": [
+    { "id": "steady",   "name": "Steady",      "tag": "Recommended · $250", "recommended": true,  "variant": "v2", "risk": 250, "flags": false, "dll": 500 },
+    { "id": "standard", "name": "Standard",    "tag": "Recommended · $400", "recommended": true,  "variant": "v2", "risk": 400, "flags": true,  "dll": 625 },
+    { "id": "baseline", "name": "Engine only", "tag": "Baseline · $400",    "recommended": false, "variant": "v2", "risk": 400, "flags": false, "dll": 0 },
+    { "id": "v1",       "name": "V1 Stock",    "tag": "The original · $400","recommended": false, "variant": "v1", "risk": 400, "flags": false, "dll": 0 }
+  ],
+  "calculator": {
+    "variant": "v2",
+    "risks": [250, 400, 500, 650, 750, 1000, 1250, 1500, 2000],
+    "flags_from": 400,
+    "dll_mult": 1.5,
+    "dll_round": 25,
+    "use_setup": { "250": "steady", "400": "standard" }
+  },
+  "now": { "show": true, "window": 40 },
+  "monte_carlo": { "runs": 3000, "seed": 7 },
+  "checks": [
+    { "file": "nt-checks/v2-250-flagsoff-dll500.csv", "variant": "v2", "risk": 250, "flags": false, "dll": 500 },
+    { "file": "nt-checks/v2-400-flagson-dll625.csv",  "variant": "v2", "risk": 400, "flags": true,  "dll": 625 },
+    { "file": "nt-checks/v1-400-flagsoff-dll625.csv", "variant": "v1", "risk": 400, "flags": false, "dll": 625 }
+  ]
+}

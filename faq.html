@@ -144,7 +144,31 @@
       "name": "What markets and timeframes does it work on?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The system is optimized specifically for NQ and MNQ futures on the 5-minute timeframe. It can be used on other futures (ES, MES) but the default settings and backtest data are calibrated for NQ/MNQ."
+        "text": "The system is optimized specifically for NQ and MNQ futures on the 5-minute timeframe. It can be used on other futures (ES, MES) but the settings and backtest data are built for NQ/MNQ."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where do the backtest numbers come from?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "From the NinjaTrader 8 version of Knightfall, run on MNQ 5-minute data from June 2019, with NinjaTrader commission and 1-tick slippage included. Every trade is downloadable on the results page. They're hypothetical backtest results, not live trading, and they're published separately from the live track record."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What settings should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "We run V2 Runner with a daily loss limit of about 1.5–2× risk per trade, and Flag Sizing on from $400 risk up. Our two setups are $250 risk with a $500 limit, and $400 risk with Flag Sizing on and a $625 limit. Risk per trade is your call: the results page shows the drawdown to plan for at each size."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does a different risk setting change the win rate?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Every risk setting takes the same trades, so win rate and profit factor stay about the same. What changes is position size, which scales the dollar swings and the drawdown. A daily loss limit can skip a few later trades on a losing day, and Flag Sizing halves size on some trades, but neither picks different trades."
       }
     },
     {
@@ -473,7 +497,37 @@
                 <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
               </button>
               <div class="faq-answer">
-                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The system is optimized specifically for NQ and MNQ futures on the 5-minute timeframe. It can be used on other futures (ES, MES) but the default settings and backtest data are calibrated for NQ/MNQ.</p>
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The system is optimized specifically for NQ and MNQ futures on the 5-minute timeframe. It can be used on other futures (ES, MES) but the settings and backtest data are built for NQ/MNQ.</p>
+              </div>
+            </div>
+
+            <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+              <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                <span class="text-sm font-bold text-white leading-snug">Where do the backtest numbers come from?</span>
+                <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+              </button>
+              <div class="faq-answer">
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">From the NinjaTrader 8 version of Knightfall, run on MNQ 5-minute data from June 2019, with NinjaTrader commission and 1-tick slippage included. Every trade is downloadable on the <a href="results.html" class="text-green-400 hover:underline">results page</a>. They&#x27;re hypothetical backtest results, not live trading, and they&#x27;re published separately from the live track record.</p>
+              </div>
+            </div>
+
+            <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+              <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                <span class="text-sm font-bold text-white leading-snug">What settings should I use?</span>
+                <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+              </button>
+              <div class="faq-answer">
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">We run V2 Runner with a daily loss limit of about 1.5–2× risk per trade, and Flag Sizing on from $400 risk up. Our two setups are $250 risk with a $500 limit, and $400 risk with Flag Sizing on and a $625 limit. Risk per trade is your call: the <a href="results.html" class="text-green-400 hover:underline">results page</a> shows the drawdown to plan for at each size.</p>
+              </div>
+            </div>
+
+            <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+              <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                <span class="text-sm font-bold text-white leading-snug">Does a different risk setting change the win rate?</span>
+                <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+              </button>
+              <div class="faq-answer">
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">No. Every risk setting takes the same trades, so win rate and profit factor stay about the same. What changes is position size, which scales the dollar swings and the drawdown. A daily loss limit can skip a few later trades on a losing day, and Flag Sizing halves size on some trades, but neither picks different trades.</p>
               </div>
             </div>
 

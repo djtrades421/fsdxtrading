@@ -87,6 +87,14 @@
   Cache-Control: public, max-age=0, must-revalidate
 /results-data.js
   Cache-Control: public, max-age=0, must-revalidate
+/kf-data.js
+  Cache-Control: public, max-age=0, must-revalidate
+/build_kf.py
+  X-Robots-Tag: noindex, nofollow
+/results-nt.json
+  X-Robots-Tag: noindex, nofollow
+/nt-checks/*
+  X-Robots-Tag: noindex, nofollow
 /build_results.py
   X-Robots-Tag: noindex, nofollow
 /results-config.json

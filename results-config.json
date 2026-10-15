@@ -1,34 +1,94 @@
 {
-  "_how": "Lives in the site root next to the CSVs. One TradingView 'List of trades' CSV per variant x risk (knightfall-v1-400.csv etc.). Set the paths, set 'end' to the last trade date to publish, then run from the site root: python3 build_results.py --config results-config.json --out results-data.js. A null path keeps that profile's published numbers unchanged.",
-  "end": "2026-09-30",
+  "_how": "Feeds results-data.js, which the member Playbook's eval simulator reads. Sources are NinjaTrader v1.3.0 Trades-grid exports, rebuilt to each risk with Flag Sizing off and no DLL (engine only) — see rebuild_trades in build_results.py. The public results page is built by build_kf.py from results-nt.json. Run from the site root: python3 build_results.py --config results-config.json --out results-data.js",
+  "end": "2026-10-14",
   "updated": "October 2026",
   "variants": {
     "v1": {
       "label": "Variant 1 — Stock",
       "short": "V1",
-      "note": "Variant 1 settings: the original Knightfall exits. Takes profit at TP1.",
+      "note": "Variant 1: the original Knightfall exits. Takes profit at TP1. Engine only: Flag Sizing off, no daily loss limit.",
       "exports": {
-        "250": "knightfall-v1-250.csv",
-        "400": "knightfall-v1-400.csv",
-        "500": null,
-        "650": null,
-        "850": null,
-        "1000": null
+        "250": {
+          "base": "knightfall-nt-v1-base.csv",
+          "risk": 250,
+          "flags": false,
+          "dll": 0
+        },
+        "400": {
+          "base": "knightfall-nt-v1-base.csv",
+          "risk": 400,
+          "flags": false,
+          "dll": 0
+        },
+        "500": {
+          "base": "knightfall-nt-v1-base.csv",
+          "risk": 500,
+          "flags": false,
+          "dll": 0
+        },
+        "650": {
+          "base": "knightfall-nt-v1-base.csv",
+          "risk": 650,
+          "flags": false,
+          "dll": 0
+        },
+        "850": {
+          "base": "knightfall-nt-v1-base.csv",
+          "risk": 850,
+          "flags": false,
+          "dll": 0
+        },
+        "1000": {
+          "base": "knightfall-nt-v1-base.csv",
+          "risk": 1000,
+          "flags": false,
+          "dll": 0
+        }
       }
     },
     "v2": {
       "label": "Variant 2 — Runner",
       "short": "V2",
-      "note": "Variant 2 settings: full size held for TP2, trailing stop starts at TP1, stop capped at the far ORB edge.",
+      "note": "Variant 2: full size held for TP2, trailing stop from TP1, stop capped at the far ORB edge. Engine only: Flag Sizing off, no daily loss limit.",
       "exports": {
-        "250": "knightfall-v2-250.csv",
-        "400": "knightfall-v2-400.csv"
+        "250": {
+          "base": "knightfall-nt-v2-base.csv",
+          "risk": 250,
+          "flags": false,
+          "dll": 0
+        },
+        "400": {
+          "base": "knightfall-nt-v2-base.csv",
+          "risk": 400,
+          "flags": false,
+          "dll": 0
+        },
+        "500": {
+          "base": "knightfall-nt-v2-base.csv",
+          "risk": 500,
+          "flags": false,
+          "dll": 0
+        },
+        "650": {
+          "base": "knightfall-nt-v2-base.csv",
+          "risk": 650,
+          "flags": false,
+          "dll": 0
+        },
+        "850": {
+          "base": "knightfall-nt-v2-base.csv",
+          "risk": 850,
+          "flags": false,
+          "dll": 0
+        },
+        "1000": {
+          "base": "knightfall-nt-v2-base.csv",
+          "risk": 1000,
+          "flags": false,
+          "dll": 0
+        }
       }
     }
   },
-  "pages": [
-    "results.html",
-    "autotrader.html",
-    "track-record.html"
-  ]
+  "pages": []
 }

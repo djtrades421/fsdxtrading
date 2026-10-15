@@ -144,8 +144,8 @@
               <a href="#s1">1. Install</a>
               <a href="#s2">2. Chart settings</a>
               <a href="#s3">3. Add the strategy</a>
-              <a href="#s4">4. Key settings</a>
-              <a href="#s5">5. Trail Mode</a>
+              <a href="#s4">4. Variant and settings</a>
+              <a href="#s5">5. Trail Mode (Custom)</a>
               <a href="#s6">6. Dashboard and chart</a>
               <a href="#s7">7. Before going live</a>
               <a href="#s8">8. Updating</a>
@@ -210,35 +210,41 @@
               </div>
 
               <div class="nt-card" id="s4">
-                <h3 class="text-base font-black text-white mb-2">4. Key settings</h3>
-                <p class="nt-p mb-3">The defaults are the standard setup. Change only what you need.</p>
+                <h3 class="text-base font-black text-white mb-2">4. Pick a variant and your settings</h3>
+                <p class="nt-p mb-3"><b>Variant</b> is the first setting. It picks how the strategy exits and locks the rest of the strategy settings to tested values. Risk, sizing, the daily loss limit, Auto Trade and every display setting always stay yours.</p>
                 <div class="nt-scroll">
                   <table class="nt-table">
-                    <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+                    <tr><th>Variant</th><th>What it does</th></tr>
+                    <tr><td>Variant 2 &mdash; Runner</td><td><b class="text-white">What we run.</b> Full size to TP2 with a trailing stop that starts at TP1 (60 pt distance, TP2 min R:R 2, TP offsets 25). Flag Sizing on by default.</td></tr>
+                    <tr><td>Variant 1 &mdash; Stock</td><td>The original Knightfall. Takes profit at TP1. Selected by default when you first add the strategy.</td></tr>
+                    <tr><td>Variant 3 &mdash; Fixed Stop</td><td><b class="text-white">Experimental.</b> Every stop is the Fixed SL (default 30 pts) and the exit settings stay editable. It tested worse than V2 on the New York session; it's here for other sessions and markets.</td></tr>
+                    <tr><td>Custom</td><td>Every setting is editable. For your own testing.</td></tr>
+                  </table>
+                </div>
+                <p class="nt-p mt-3">The <b>No-Hedge ORB Cap</b> is locked on in V1, V2 and V3: a stop never sits past the far edge of the opening range. That means accounts running different variants can never be long and short at the same time. Only Custom can turn it off.</p>
+                <div class="nt-scroll mt-3">
+                  <table class="nt-table">
+                    <tr><th>Your settings</th><th>Default</th><th>What it does</th></tr>
                     <tr><td>Auto Trade</td><td>On</td><td>On = places live orders. Off = signals only: a popup and sound with direction, grade, contracts, entry, stop and TP1. You place the trade yourself.</td></tr>
-                    <tr><td>Risk Per Trade ($)</td><td>400</td><td>Dollar risk used to size each trade</td></tr>
-                    <tr><td>$ Per Point</td><td>2</td><td><b class="text-white">2 for MNQ</b>, <b class="text-white">20 for NQ</b></td></tr>
-                    <tr><td>Minimum Grade</td><td>C</td><td>Lowest grade that can trade</td></tr>
-                    <tr><td>Partials Mode</td><td>None</td><td>None = full exit at TP1. Other options split the position or target TP2</td></tr>
-                    <tr><td>Max Trades Per Session</td><td>3</td><td>Entries allowed per day</td></tr>
-                    <tr><td>Entry Cutoff Time</td><td>1245</td><td>No new entries after 12:45 PM CT</td></tr>
-                    <tr><td>Flatten By</td><td>1530</td><td>Closes any open trade at 3:30 PM CT. Half-days close at 11:50 AM CT</td></tr>
-                    <tr><td>Daily Loss Limit ($)</td><td>0 (off)</td><td>Stops new entries once realized losses reach this amount</td></tr>
+                    <tr><td>Risk Per Trade ($)</td><td>400</td><td>Dollar risk used to size each trade. Contract value is read from the instrument: MNQ or NQ, nothing to set.</td></tr>
+                    <tr><td>Flag Sizing</td><td>Variant Default</td><td>Halves size when 2 or more warning flags show on a breakout, never below 1 contract. Never skips a trade. <b class="text-white">Variant Default</b> = on in V2, off in V1, V3 and Custom. Or set Off / Half At 2 Flags yourself.</td></tr>
+                    <tr><td>Daily Loss Limit ($)</td><td>0 (off)</td><td>Stops new entries for the rest of the day once closed losses reach this amount. Never closes an open trade. We use about 1.5&ndash;2&times; risk.</td></tr>
                     <tr><td>Static Sizing</td><td>Off</td><td>On = every valid trade gets full size regardless of grade</td></tr>
                     <tr><td>+1 Contract After a Loss</td><td>Off</td><td>Adds one contract to the next trade after a loss</td></tr>
                   </table>
                 </div>
-                <p class="nt-p mt-3">Display settings only change what's drawn. They never affect trades.</p>
+                <p class="nt-p mt-3"><b>Our two setups:</b> V2 Runner at $250 risk, Flag Sizing off, Daily Loss Limit $500. V2 Runner at $400 risk, Flag Sizing on, Daily Loss Limit $625. <a href="results.html#risk-profiles" class="text-green-400 font-bold">See them tested, or size for your account &rarr;</a></p>
+                <p class="nt-p mt-2">Locked by the variant (V1/V2): ORB 8:30&ndash;8:45 CT, Minimum Grade C, Max Trades Per Session 3, Entry Cutoff 12:45 PM CT, Flatten By 3:30 PM CT (11:50 AM on half-days). Display settings only change what's drawn. They never affect trades.</p>
               </div>
 
               <div class="nt-card" id="s5">
-                <h3 class="text-base font-black text-white mb-2">5. Trail Mode (optional)</h3>
-                <p class="nt-p mb-3">Moves your stop once a trade is working. <b>Off by default.</b> Backtest any change before you use it live.</p>
+                <h3 class="text-base font-black text-white mb-2">5. Trail Mode (Custom and V3)</h3>
+                <p class="nt-p mb-3">V2 sets its own trail. In V1 the trail is off. These settings only apply in <b>Custom</b> and <b>V3</b>. Backtest any change before you use it live.</p>
                 <div class="nt-scroll">
                   <table class="nt-table">
                     <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
                     <tr><td>Trail Mode</td><td>Off</td><td><b class="text-white">Off</b>: stop stays put. <b class="text-white">BreakevenOnly</b>: moves the stop to entry once the trigger is hit. <b class="text-white">TrailOnly</b>: trails the stop behind price. <b class="text-white">BreakevenThenTrail</b>: breakeven first, then trails.</td></tr>
-                    <tr><td>Trigger Units</td><td>Points</td><td>Points, or % of the distance to TP1</td></tr>
+                    <tr><td>Trigger Units</td><td>Points</td><td>Points, % of the distance to TP1, or % of the distance to TP2</td></tr>
                     <tr><td>Breakeven Trigger</td><td>40</td><td>How far in profit before the stop moves to entry</td></tr>
                     <tr><td>Breakeven Offset</td><td>0</td><td>Points past entry to place the breakeven stop</td></tr>
                     <tr><td>Trail Trigger</td><td>50</td><td>How far in profit before trailing starts</td></tr>
@@ -254,10 +260,13 @@
                 <div class="nt-scroll mt-3">
                   <table class="nt-table">
                     <tr><th>Row</th><th>What it shows</th></tr>
+                    <tr><td>Config strip</td><td>Variant · risk · $/pt · <b class="text-white">FS</b> when Flag Sizing is on · account · AUTO or MANUAL</td></tr>
+                    <tr><td>Status</td><td>Win rate of the last 40 trades against the normal 52&ndash;72% band: <b class="text-white">Normal</b>, <b class="text-white">Cold run</b> or <b class="text-white">Hot run</b>. Information only. It never changes size or stops trading.</td></tr>
                     <tr><td>ORB range</td><td>Size of today's opening range (8:30–8:45 CT), in points</td></tr>
                     <tr><td>5D avg</td><td>Average ORB of the last 5 sessions. Green = ideal band, yellow = outside it, red = extreme</td></tr>
                     <tr><td>Trend row</td><td>The 4-hour trend. <b class="text-white">[shift?]</b> means the current 4-hour bar is leaning toward a different state</td></tr>
                     <tr><td>Breakout header</td><td>Direction, grade, score and contracts at your risk setting</td></tr>
+                    <tr><td>Flag rows</td><td>Which warning flags are showing (<b class="text-white">STOP</b>: a prior day/week level inside the stop · <b class="text-white">O/N</b>: overnight move against the 4H trend · <b class="text-white">TIME</b>: entry 15&ndash;60 min after the ORB), the count out of 3, and the size result, e.g. <span class="nt-code">Flags 2/3 · HALF 2→1c</span></td></tr>
                     <tr><td>TP1 / TP2 / stop</td><td>Levels, what set them and distance in points</td></tr>
                     <tr><td>TAKE TRADE / NO TRADE</td><td>Whether the setup passes every rule, with the reason underneath</td></tr>
                   </table>
@@ -551,8 +560,12 @@
      'Changing settings restarts it. Open Strategies and tick Enabled again.'],
     ['Strategy turned off on its own',
      'Check the Log tab in the Control Center for the error. Send us a screenshot of it in Discord.'],
+    ['I changed a setting and nothing changed',
+     'In Variants 1, 2 and 3 the strategy settings are locked to tested values. The grid still shows what you typed, but it isn\'t used. Switch Variant to Custom to change them. Risk, Flag Sizing, Daily Loss Limit, Auto Trade and display settings always apply.'],
+    ['Status says Cold run',
+     'The last 40 trades won less often than the normal 52–72% range. It\'s information only: it never changes size or pauses trading. Cold runs happen in the backtest too. Check the results page before changing anything.'],
     ['Can I run it on more than one account?',
-     'Yes. Enable it on each account, or run it on one account and use a trade copier. Don\'t place manual trades on an account it\'s trading.'],
+     'Yes. Enable it on each account, or run it on one account and use a trade copier. Different variants on different accounts are fine: the No-Hedge ORB Cap means they can never be long and short at the same time. Don\'t place manual trades on an account it\'s trading.'],
     ['Do I need a paid NinjaTrader license?',
      'No. A free NinjaTrader account can run it in simulation and with supported brokers. Your NinjaTrader platform license is separate from your FSD-X strategy license.']
   ];

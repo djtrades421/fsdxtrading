@@ -4,8 +4,8 @@
   {
    "status": "approved",
    "product": "NinjaTrader 8",
-   "title": "ORB Pro Knightfall MK2 for NinjaTrader 8",
-   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader; final prep for release. Ships as v1.2 with both variants (Stock and Runner), the trailing stop and the No-Hedge ORB Cap, matching TradingView. Auto Trade on or alert-only, no webhooks or bridge service."
+   "title": "ORB Pro Knightfall for NinjaTrader 8 (v1.3.0)",
+   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader; final prep for release. Ships as v1.3.0: Variant 1 Stock, Variant 2 Runner, Variant 3 Fixed Stop (experimental) and Custom; Flag Sizing, which halves size when 2+ warning flags show; a daily loss limit; a Status row that shows when the system is in a cold or hot run; and the No-Hedge ORB Cap locked on in every preset. Auto Trade on or alert-only, no webhooks or bridge service."
   },
   {
    "status": "waiting",
@@ -21,11 +21,19 @@
   },
   {
    "status": "shipped",
+   "date": "2026-10-15",
+   "type": "site",
+   "product": "Site",
+   "title": "Backtest results rebuilt on NinjaTrader data",
+   "body": "The results page now uses the NinjaTrader 8 backtest with commission and 1-tick slippage, shown in R so it reads the same at any risk. It shows the engine, the two setups we run, a sizing tool for your account and where the system stands now. Every trade is a download that loads straight into the Trade Importer. <a href=\"results.html\">See the results</a>."
+  },
+  {
+   "status": "shipped",
    "date": "2026-10-09",
    "type": "new",
    "product": "ORB Pro Knightfall",
    "title": "Knightfall now has two variants",
-   "body": "Pick a Variant at the top of the settings. <b>Variant 1 — Stock</b> is the original Knightfall, locked to the stock settings. <b>Variant 2 — Runner</b> holds full size for TP2, trails the stop once TP1 is reached, and caps the stop at the far ORB edge. <b>Custom</b> unlocks every setting. Risk per trade stays yours on every variant. After updating, open the settings and choose Defaults → Reset settings. <a href=\"results.html?variant=2\">Compare both variants</a>."
+   "body": "Pick a Variant at the top of the settings. <b>Variant 1 — Stock</b> is the original Knightfall, locked to the stock settings. <b>Variant 2 — Runner</b> holds full size for TP2, trails the stop once TP1 is reached, and caps the stop at the far ORB edge. <b>Custom</b> unlocks every setting. Risk per trade stays yours on every variant. After updating, open the settings and choose Defaults → Reset settings. <a href=\"results.html#setups\">Compare both variants</a>."
   },
   {
    "status": "shipped",

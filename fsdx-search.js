@@ -44,7 +44,7 @@
 
     // proof
     {t:'Backtest Results',  u:'results.html',      g:'Results', kw:'results backtest data stats grades knightfall'},
-    {t:'Backtest (7-year)', u:'results.html',      g:'Results', kw:'seven year history annual ledger'},
+    {t:'Backtest results', u:'results.html',      g:'Results', kw:'backtest seven year win rate profit factor drawdown setups sizing risk ninjatrader'},
     {t:'Risk Profile Planner', u:'results.html#risk-profiles', g:'Results', kw:'account size eval pass rate 50k 100k 150k 250k'},
     {t:'Live Track Record', u:'track-record.html', g:'Results', kw:'live forward walked trades posted verified mk1'},
 

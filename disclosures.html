@@ -218,6 +218,24 @@
           </ul>
         </div>
 
+        <div class="bg-zinc-900/40 border border-white/10 rounded-2xl p-6 md:p-8" id="backtest-method">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class="text-green-400 text-[10px] md:text-xs">Section 13.1</span>
+            <span class="text-[9px] bg-green-500/10 border border-green-500/30 text-green-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider">Hypothetical Performance</span>
+          </div>
+          <h2 class="text-base md:text-lg font-bold mb-3">How Backtest Figures Are Produced</h2>
+          <p class="text-zinc-400 text-xs md:text-sm leading-relaxed mb-3">Hypothetical or simulated performance results have certain limitations. Unlike an actual performance record, simulated results do not represent actual trading. Since the trades have not been executed, the results may have under- or over-compensated for the impact, if any, of certain market factors, such as lack of liquidity. Simulated trading programs in general are also designed with the benefit of hindsight. No representation is being made that any account will or is likely to achieve profits or losses similar to those shown.</p>
+          <ul class="list-disc list-inside text-zinc-400 text-xs md:text-sm space-y-1 pl-1">
+            <li>Knightfall backtest figures on this site come from the NinjaTrader 8 Strategy Analyzer on MNQ 5-minute data, with NinjaTrader commission and 1 tick of slippage per fill. Your broker's commissions and your actual fills will differ</li>
+            <li>Each published setup and each risk level in the sizing tool is rebuilt from one NinjaTrader trade export using the strategy's own sizing rules, and checked trade for trade against separate NinjaTrader runs</li>
+            <li>"R" figures divide each trade's result by that trade's own stop distance, so they do not depend on position size</li>
+            <li>"Plan for" drawdown figures come from reshuffling the backtest trades in random order. They are a simulation, not a limit or a forecast. Live drawdowns can exceed backtested and simulated ones</li>
+            <li>Reference and recommended setups describe how FSD-X configures the strategy. They are not personal advice and are not suitable for every account</li>
+            <li>Backtest results are published separately from the live track record and are never combined with it</li>
+            <li>Figures are restated when the strategy is updated. Past versions' figures may differ</li>
+          </ul>
+        </div>
+
         <div class="bg-zinc-900/40 border border-white/10 rounded-2xl p-6 md:p-8">
           <div class="flex flex-wrap items-center gap-2 mb-2">
             <span class="text-green-400 text-[10px] md:text-xs">Section 14</span>

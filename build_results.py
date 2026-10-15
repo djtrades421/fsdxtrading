@@ -12,6 +12,11 @@ The config lists one export per variant x risk profile. See README in this folde
 import csv, json, math, sys, argparse, statistics
 from datetime import datetime, date, timedelta
 from collections import defaultdict, OrderedDict
+import re
+
+_re_num = re.compile(r'[^0-9.]')
+_re_flags = re.compile(r'-F([0-3])\b')
+_re_kftag = re.compile(r'^[LS][12]-(A\+|A|B\+|B|C\+|C)-F([0-3])-S([0-9.]+)$')
 
 MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
@@ -29,6 +34,8 @@ def fmt_d(d):
 # ───────────────────────── load ─────────────────────────
 def load_trades(path, end=None):
     rows = list(csv.DictReader(open(path, encoding='utf-8-sig')))
+    if rows and 'Market pos.' in rows[0]:  # NinjaTrader 8 Strategy Analyzer "Trades" grid
+        return load_nt_trades(rows, end)
     by = defaultdict(dict)
     for r in rows:
         k = 'exit' if r['Type'].startswith('Exit') else 'entry'
@@ -59,6 +66,153 @@ def load_trades(path, end=None):
     if end:
         out = [t for t in out if t['d'] <= end]
     return out
+
+
+_NT_TIME_FMTS = ('%m/%d/%Y %I:%M:%S %p', '%m/%d/%Y %H:%M:%S', '%m/%d/%Y %I:%M %p', '%m/%d/%Y %H:%M',
+                 '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M', '%d/%m/%Y %H:%M:%S')
+
+
+def _nt_money(s):
+    """'$1,234.50' / '($97.00)' / '-$97.00' / '97' -> float."""
+    s = (s or '').strip()
+    if not s:
+        return 0.0
+    neg = s.startswith('(') and s.endswith(')') or s.startswith('-')
+    v = float(_re_num.sub('', s) or 0)
+    return -v if neg else v
+
+
+def _nt_time(s):
+    s = s.strip()
+    for f in _NT_TIME_FMTS:
+        try:
+            return datetime.strptime(s, f)
+        except ValueError:
+            pass
+    sys.exit(f'NT export: unrecognized date/time "{s}" — add its format to _NT_TIME_FMTS')
+
+
+def load_nt_trades(rows, end=None):
+    """NinjaTrader 8 Strategy Analyzer -> Trades grid -> right-click Export (CSV).
+
+    One row per trade. Columns used: Trade number, Market pos., Qty, Entry time,
+    Exit time, Entry name, Exit name, Profit, Commission, MAE, MFE (Cum. net
+    profit if present). Grade comes from the entry name the same way as the
+    TradingView signal (e.g. 'ORB Long B (2c)'). A flag count tag like 'L1-F2'
+    or '-F2' in the entry name is kept as t['flags'].
+
+    'Profit' net vs gross: NT can show either depending on the grid's
+    commission setting. If 'Cum. net profit' is present we check which one
+    the running total matches; otherwise Profit is taken as gross and the
+    Commission column is subtracted.
+    """
+    have_cum = 'Cum. net profit' in rows[0]
+    prof = [_nt_money(r['Profit']) for r in rows]
+    comm = [_nt_money(r.get('Commission', '')) for r in rows]
+    profit_is_net = False
+    if have_cum and len(rows) > 1:
+        cum = [_nt_money(r['Cum. net profit']) for r in rows]
+        steps = [cum[i] - cum[i - 1] for i in range(1, min(len(rows), 200))]
+        net_hits = sum(abs(s - prof[i + 1]) < 0.01 for i, s in enumerate(steps))
+        profit_is_net = net_hits >= 0.9 * len(steps)
+    out = []
+    for i, r in enumerate(rows):
+        name = r.get('Entry name', '') or ''
+        grade = None
+        for g in GRADES:
+            if f' {g} ' in name + ' ' or name.endswith(' ' + g):
+                grade = g
+                break
+        tg = _re_kftag.match(name.strip())   # v1.3.0+ entry names: "L1-A+-F2-S45.25"
+        if tg:
+            grade = tg.group(1)
+        fm = _re_flags.search(name)
+        pnl = prof[i] if profit_is_net else prof[i] - abs(comm[i])
+        t = dict(
+            n=int(_nt_money(r['Trade number'])),
+            dir='Long' if r['Market pos.'].strip().lower().startswith('long') else 'Short',
+            et=_nt_time(r['Entry time']),
+            xt=_nt_time(r['Exit time']),
+            grade=grade,
+            flags=int(fm.group(1)) if fm else None,
+            stop=float(tg.group(3)) if tg else None,   # stop distance in points -> R = points / stop
+            qty=float(_nt_money(r['Qty'])),
+            pnl=round(pnl, 2),
+            mae=-abs(_nt_money(r.get('MAE', ''))),   # NT reports MAE/MFE as positive amounts
+            mfe=abs(_nt_money(r.get('MFE', ''))),
+            exit_sig=r.get('Exit name', '') or '',
+            ep=_nt_money(r.get('Entry price', '')), xp=_nt_money(r.get('Exit price', '')),
+            raw=r,
+        )
+        t['d'] = t['xt'].date()
+        out.append(t)
+    print(f"   NT export: {len(out)} trades · Profit column read as {'net' if profit_is_net else 'gross − commission'} · stop tag on {sum(1 for t in out if t['stop'])}"
+          f" · grade found on {sum(1 for t in out if t['grade'])} · flags tag on {sum(1 for t in out if t['flags'] is not None)}")
+    if end:
+        out = [t for t in out if t['d'] <= end]
+    return out
+
+
+# ───────────────────────── NT rebuild: any risk / Flag Sizing / DLL from one export ─────────────────────────
+# Mirrors KnightfallORB v1.3.0 exactly: SizeForGrade -> ApplyFlagSizing (Math.Round AwayFromZero), and the daily
+# loss limit (no NEW entries once the session's closed P&L <= -DLL; open trades are never closed by it).
+# P&L per contract (commission + slippage included) is the same at any size, so P&L = per-contract x new size.
+# Verified Oct 15, 2026 against 5 NT runs, trade for trade (V2 $250/DLL500, $400 flags/DLL625, $650 and $1,000
+# flags/DLL1.5R; V1 $400/DLL625). Needs v1.3.0 entry-name tags (grade, flags, stop). Below ~$250 risk some
+# trades size to 0; a skipped trade can free the strategy to take one the base run never saw, so don't go lower.
+CONTRACT_VALUE = 2.0  # MNQ $/pt
+
+
+def _rhaz(x):
+    return int(math.floor(x + 0.5))
+
+
+def nt_size(grade, stop, risk, flags, flag_sizing):
+    rpc = stop * CONTRACT_VALUE
+    if rpc <= 0:
+        return 0
+    mx = _rhaz(risk / rpc)
+    if grade in ('A+', 'A', 'B+'):
+        q = mx
+    elif grade == 'B':
+        q = max(1, _rhaz(mx * 0.75))
+    elif grade in ('C+', 'C'):
+        q = max(1, _rhaz(mx * 0.5))
+    else:
+        q = 0
+    if flag_sizing and flags is not None and flags >= 2 and q > 1:
+        q = max(1, _rhaz(q * 0.5))
+    return q
+
+
+def rebuild_trades(base, risk, flag_sizing=False, dll=0):
+    if any(t.get('stop') is None for t in base):
+        sys.exit('rebuild needs v1.3.0 tagged entry names (grade-flags-stop) on every trade')
+    out, day, day_pnl = [], None, 0.0
+    for t in sorted(base, key=lambda t: t['et']):
+        d = t['et'].date()
+        if d != day:
+            day, day_pnl = d, 0.0
+        if dll > 0 and day_pnl <= -dll:
+            continue
+        q = nt_size(t['grade'], t['stop'], risk, t['flags'], flag_sizing)
+        if q <= 0:
+            continue
+        k = q / t['qty']
+        n = dict(t, qty=q, pnl=round(t['pnl'] * k, 2), mae=t['mae'] * k, mfe=t['mfe'] * k)
+        out.append(n)
+        day_pnl += n['pnl']
+    return out
+
+
+def load_source(src, base_dir, end=None):
+    """A config source is a CSV path, or {"base": path, "risk": 400, "flags": false, "dll": 0} to rebuild."""
+    import os
+    if isinstance(src, dict):
+        base = load_trades(os.path.join(base_dir, src['base']))
+        T = rebuild_trades(base, float(src['risk']), bool(src.get('flags')), float(src.get('dll') or 0))
+        return [t for t in T if not end or t['d'] <= end]
+    return load_trades(os.path.join(base_dir, src), end=end)
 
 
 # ───────────────────────── core stats (D) ─────────────────────────
@@ -454,7 +608,7 @@ def main():
         for r in vd['risks']:
             src = vc['exports'][r]
             if src:
-                T = load_trades(__import__('os').path.join(base_dir, src), end=end)
+                T = load_source(src, base_dir, end=end)
                 prof = build_profile(T)
                 print(f"{vk} ${r}: {prof['D']['7yr']['trades']} trades · net ${prof['D']['7yr']['net']:,} · "
                       f"PF {prof['D']['7yr']['pf']} · DD ${-prof['D']['7yr']['maxdd']:,} · {prof['D']['7yr']['first']} – {prof['D']['7yr']['last']}")

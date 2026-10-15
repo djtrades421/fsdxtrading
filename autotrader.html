@@ -374,38 +374,39 @@
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Same Engine, Same Trades</div>
           <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">It doesn't approximate Knightfall MK2. It <span class="text-green-400">is</span> Knightfall MK2.</h2>
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
-            The auto-trader was validated against the original strategy across the full backtest — matched line-for-line on all <!--gen:v1.400.trades-->1,121<!--/gen--> trades: same entries, same grade-based sizing, same exits, same result. The only thing removed is the on-chart dashboard. Both Knightfall variants are built in: the Auto-Trader's Variant 2 preset was matched trade for trade against Knightfall Variant 2 the same way. The figures below are Variant 1 at the $400 setting.
-            <span class="text-zinc-600">Hypothetical results — past performance is not indicative of future results. Figures are gross of costs — they exclude commissions, fees, and slippage, which vary by broker and reduce net performance.</span>
+            The auto-trader was validated against the original strategy across the full TradingView backtest and matched it line for line: same entries, same grade-based sizing, same exits, same result. The only thing removed is the on-chart dashboard. Both Knightfall variants are built in, and the Variant 2 preset was matched trade for trade the same way.
+            The engine's numbers below are in R (each trade's result divided by its own stop), so they hold at any risk setting.
+            <span class="text-zinc-600">Hypothetical backtest results, not actual trading. Past performance is not indicative of future results.</span>
           </p>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-8" id="at-engine">
             <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Hypothetical Net (MNQ)</div>
-              <div class="text-3xl font-black text-emerald-400"><!--gen:v1.400.net-->$100,368<!--/gen--></div>
-              <div class="text-xs font-semibold text-zinc-500 mt-2 block">Variant 1 · dynamic risk by grade · $400 setting</div>
-            </div>
-            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Simulated Win Rate</div>
-              <div class="text-3xl font-black text-white"><!--gen:v1.400.win-->62.36%<!--/gen--></div>
-              <div class="text-[10px] text-zinc-600 mt-2"><!--gen:v1.400.wins-->699<!--/gen--> of <!--gen:v1.400.trades-->1,121<!--/gen--> trades profitable</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Win Rate</div>
+              <div class="text-3xl font-black text-emerald-400" data-kf="win">61.3%</div>
+              <div class="text-[10px] text-zinc-600 mt-2" data-kf="wins">708 of 1,155 trades</div>
             </div>
             <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
               <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Profit Factor</div>
-              <div class="text-3xl font-black text-white"><!--gen:v1.400.pf-->1.68<!--/gen--></div>
-              <div class="text-[10px] text-zinc-600 mt-2">Positive math expectancy</div>
+              <div class="text-3xl font-black text-white" data-kf="pf">1.63</div>
+              <div class="text-[10px] text-zinc-600 mt-2">In R, after commission and slippage</div>
             </div>
             <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
-              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Max Drawdown</div>
-              <div class="text-3xl font-black text-zinc-400"><!--gen:v1.400.maxdd-->-$2,320<!--/gen--></div>
-              <div class="text-[10px] text-zinc-600 mt-2">Closed-trade, peak-to-trough</div>
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Average Trade</div>
+              <div class="text-3xl font-black text-white" data-kf="avg">+0.22R</div>
+              <div class="text-[10px] text-zinc-600 mt-2">Per trade, at any risk setting</div>
+            </div>
+            <div class="border border-white/5 bg-zinc-950/50 rounded-2xl p-6">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-1">Trades Tested</div>
+              <div class="text-3xl font-black text-white" data-kf="n">1,155</div>
+              <div class="text-[10px] text-zinc-600 mt-2" data-kf="range">Jun 2019 → Oct 2026</div>
             </div>
           </div>
 
           <div class="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-[11px] text-zinc-600">
-            <span>Variant 1 · <!--gen:v1.400.trades-->1,121<!--/gen--> trades</span><span class="text-zinc-800">•</span>
-            <span>June 2019 → September 2026 (7 yrs)</span><span class="text-zinc-800">•</span>
+            <span>Knightfall engine · V2 Runner</span><span class="text-zinc-800">•</span>
+            <span>NinjaTrader 8 backtest · commission + 1-tick slippage</span><span class="text-zinc-800">•</span>
             <span>MNQ · 5-minute</span><span class="text-zinc-800">•</span>
-            <a href="results.html" class="text-green-400/80 hover:text-green-400 transition">View full backtest research ↗</a>
+            <a href="results.html" class="text-green-400/80 hover:text-green-400 transition">Recommended setups and sizing ↗</a>
           </div>
         </div>
       </section>
@@ -630,5 +631,15 @@
   <script src="checkout-gate.js?v=20260924a"></script>
   <script src="nav-loader.js?v=20260924a"></script>
   <script src="tv-notice.js"></script>
+  <script src="kf-data.js"></script>
+  <script>
+    (function () {
+      var K = window.FSDX_KF; if (!K) return; var E = K.engine;
+      var set = function (k, v) { var el = document.querySelector('#at-engine [data-kf="' + k + '"]'); if (el) el.textContent = v; };
+      set('win', E.win + '%'); set('wins', E.wins.toLocaleString('en-US') + ' of ' + E.n.toLocaleString('en-US') + ' trades');
+      set('pf', E.pf.toFixed(2)); set('avg', (E.avgR >= 0 ? '+' : '−') + Math.abs(E.avgR).toFixed(2) + 'R');
+      set('n', E.n.toLocaleString('en-US')); set('range', K.first.slice(0, 3) + ' ' + K.first.slice(-4) + ' → ' + K.last.slice(0, 3) + ' ' + K.last.slice(-4));
+    })();
+  </script>
 </body>
 </html>

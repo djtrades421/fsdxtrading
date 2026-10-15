@@ -1,3 +1,44 @@
+# Results data (NinjaTrader)
+
+Knightfall backtest figures come from NinjaTrader 8. One export per variant drives everything.
+
+## Refresh the data
+
+1. In NinjaTrader, run the Strategy Analyzer on MNQ 5-minute with **KnightfallORB v1.3.0 or later**
+   (entry names must carry the grade-flags-stop tag, e.g. `L1-A+-F2-S45.25`).
+   Settings: the variant, any risk (V2 at $400 is the reference), **Flag Sizing Off, Daily Loss Limit 0**,
+   NinjaTrader commission on, slippage 1.
+2. Trades tab → right-click → Export. Save as `knightfall-nt-v2-base.csv` (and `knightfall-nt-v1-base.csv` for V1)
+   in the site root.
+3. Optional but recommended: export one or two check runs (e.g. V2 $400 Flag Sizing On, DLL $625) into
+   `nt-checks/` and list them under `checks` in `results-nt.json`.
+4. From the site root:
+
+       python3 build_kf.py --config results-nt.json
+       python3 build_results.py --config results-config.json --out results-data.js
+
+   `build_kf.py` first rebuilds every check run from the base export and compares it with NinjaTrader trade for
+   trade. If anything differs it stops and writes nothing. Then it writes `kf-data.js` (results page and the
+   Auto-Trader stat cards), one NinjaTrader-format CSV per setup (`knightfall-<id>.csv`, loads straight into the
+   Trade Importer), `equity-curve-r.png` (homepage), and the SEO / no-JS blocks in `results.html`.
+   `build_results.py` writes `results-data.js` for the member Playbook's eval simulator.
+5. Update `updated` in `results-nt.json`, then push.
+
+Setups, calculator risk levels and the recommended rule live in `results-nt.json`. A new variant = a new base
+export plus an entry under `variants` and `setups`.
+
+## How the rebuild works
+
+`rebuild_trades` in `build_results.py` mirrors the strategy: contracts = round(risk ÷ (stop × $2)), then the grade
+cut (B 75%, C+/C 50%), then Flag Sizing (half at 2+ flags, never below 1), then the daily loss limit (no new
+entries once the day's closed P&L ≤ −DLL). P&L per contract, commission and slippage included, is the same at any
+size. Verified Oct 15, 2026 against five NinjaTrader runs. Don't go below about $250 risk: trades that size to 0
+can free the strategy to take a trade the base run never saw.
+
+# Legacy: TradingView generator notes
+
+The sections below describe the original TradingView pipeline. `build_results.py` now also reads NinjaTrader exports (see above).
+
 # Results data generator
 
 Turns TradingView "List of trades" exports into `results-data.js`, which feeds
