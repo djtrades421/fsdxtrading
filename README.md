@@ -22,7 +22,7 @@ Knightfall backtest figures come from NinjaTrader 8. One export per variant driv
    Auto-Trader stat cards), one NinjaTrader-format CSV per setup (`knightfall-<id>.csv`, loads straight into the
    Trade Importer), `equity-curve-r.png` (homepage), and the SEO / no-JS blocks in `results.html`.
    `build_results.py` writes `results-data.js` for the member Playbook's eval simulator.
-5. Update `updated` in `results-nt.json`, then push.
+5. Update `updated` in `results-nt.json`. If `equity-curve-r.png` changed, bump its `?v=` in index.html (PNGs are cached for a day). Then push.
 
 Setups, calculator risk levels and the recommended rule live in `results-nt.json`. A new variant = a new base
 export plus an entry under `variants` and `setups`.
