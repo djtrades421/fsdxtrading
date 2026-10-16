@@ -22,6 +22,9 @@
        behind them. ID selectors outrank the theme's class rule, so this wins
        without touching the global look. Blur the backdrop and deepen the tint —
        keeps the glass feel, restores legibility. */
+    #updates-list .upd-new-tag { display:none; }
+    #updates-list .upd-unread { background:rgba(52,211,153,.05); box-shadow:inset 3px 0 0 #34D399; }
+    #updates-list .upd-unread .upd-new-tag { display:inline; }
     #updates-panel, #access-details {
       backdrop-filter: blur(18px) saturate(130%);
       -webkit-backdrop-filter: blur(18px) saturate(130%);
@@ -356,13 +359,38 @@
     window.addEventListener('resize', repositionOpenHeaderPanels);
     window.addEventListener('orientationchange', repositionOpenHeaderPanels);
 
+    // ── Updates: per-member read tracking ──
+    // Read state lives in this browser (localStorage), keyed by update id. Opening the
+    // panel marks everything read; unread items keep their highlight until it closes.
+    // First run after this shipped: anything older than 14 days counts as already read,
+    // so existing members aren't shown the whole back catalogue as new.
+    const UPD_SEEN = 'fsdx_updates_seen';
+    let updLoaded = [];
+    function updSeen() {
+      try { const v = JSON.parse(localStorage.getItem(UPD_SEEN) || 'null'); return Array.isArray(v) ? v : null; } catch (e) { return null; }
+    }
+    function updSaveSeen(ids) { try { localStorage.setItem(UPD_SEEN, JSON.stringify(ids)); } catch (e) {} }
+    function updPaintCount(unread) {
+      const pillLabel = document.getElementById('updates-pill-label');
+      const newDot = document.getElementById('updates-new-dot');
+      const newBadge = document.getElementById('updates-new-badge');
+      if (pillLabel) pillLabel.textContent = unread ? unread + ' new' : 'Updates';
+      newDot?.classList.toggle('hidden', !unread);
+      if (newBadge) { newBadge.textContent = unread ? unread + ' new' : ''; newBadge.classList.toggle('hidden', !unread); }
+    }
+    function updMarkAllRead() {
+      updSaveSeen(updLoaded.map(u => String(u.id || u.createdAt)));
+      updPaintCount(0);
+    }
+
     function toggleUpdatesPill() {
       const panel = document.getElementById('updates-panel');
       const chevron = document.getElementById('updates-pill-chevron');
       const isOpen = panel.style.display !== 'none' && panel.style.display !== '';
       panel.style.display = isOpen ? 'none' : 'block';
       chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
-      if (!isOpen) positionHeaderPanel(panel, document.getElementById('updates-pill'));
+      if (!isOpen) { positionHeaderPanel(panel, document.getElementById('updates-pill')); updMarkAllRead(); }
+      else document.querySelectorAll('#updates-list .upd-unread').forEach(el => el.classList.remove('upd-unread'));
     }
 
     async function loadUpdates(token) {
@@ -370,23 +398,23 @@
         const res = await fetch(`${API}/api/updates`, { headers: { 'Authorization': `Bearer ${token}` } });
         const data = await res.json();
         const updates = data.updates || [];
-        const pillLabel = document.getElementById('updates-pill-label');
-        const newDot = document.getElementById('updates-new-dot');
+        updLoaded = updates;
         const list = document.getElementById('updates-list');
-        const newBadge = document.getElementById('updates-new-badge');
-        if (!updates.length) {
-          if (pillLabel) pillLabel.textContent = 'Updates';
-          return;
+        if (!updates.length) { updPaintCount(0); return; }
+        const idOf = u => String(u.id || u.createdAt);
+        let seen = updSeen();
+        if (seen === null) {   // first run: back catalogue counts as read
+          const cutoff = Date.now() - 14 * 24 * 60 * 60 * 1000;
+          seen = updates.filter(u => u.createdAt && new Date(u.createdAt).getTime() < cutoff).map(idOf);
+          updSaveSeen(seen);
+        } else {               // drop ids of deleted updates so the list stays small
+          const live = new Set(updates.map(idOf));
+          const kept = seen.filter(id => live.has(id));
+          if (kept.length !== seen.length) { seen = kept; updSaveSeen(seen); }
         }
-        const latest = updates[0];
-        const countStr = updates.length + ' update' + (updates.length !== 1 ? 's' : '');
-        if (pillLabel) pillLabel.textContent = countStr;
-        // Show "New" dot + badge if latest is within 3 days
-        const latestMs = latest.createdAt ? new Date(latest.createdAt).getTime() : 0;
-        if (Date.now() - latestMs < 3 * 24 * 60 * 60 * 1000) {
-          newDot?.classList.remove('hidden');
-          newBadge?.classList.remove('hidden');
-        }
+        const seenSet = new Set(seen);
+        const unread = updates.filter(u => !seenSet.has(idOf(u))).length;
+        updPaintCount(unread);
         const typeConfig = {
           feature:     { label: 'New Feature',  cls: 'bg-green-500/10 text-green-400 border-green-500/20' },
           update:      { label: 'Update',        cls: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
@@ -395,11 +423,13 @@
         };
         list.innerHTML = updates.map(u => {
           const tc = typeConfig[u.type] || typeConfig.update;
+          const isNew = !seenSet.has(idOf(u));
           const dateStr = u.createdAt ? new Date(u.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
-          return `<div class="px-5 py-4">
+          return `<div class="px-5 py-4${isNew ? ' upd-unread' : ''}">
             <div class="flex items-center gap-2 mb-1.5 flex-wrap">
               <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${tc.cls}">${tc.label}</span>
               <span class="text-[10px] text-zinc-600">${dateStr}</span>
+              <span class="upd-new-tag text-[9px] font-black uppercase tracking-wider text-green-400">● New</span>
             </div>
             <div class="text-sm font-bold text-white mb-1">${u.title}</div>
             ${u.body ? `<p class="text-xs text-zinc-400 leading-relaxed">${u.body}</p>` : ''}
