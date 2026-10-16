@@ -263,6 +263,14 @@
   <script>
     const videoData = [
       {
+        id: "05",
+        title: "Knightfall on NinjaTrader 8: Full Demo (Variant 2 Runner)",
+        runtime: "",
+        tier: "Free",
+        description: "Knightfall running natively on NinjaTrader 8 on a live MNQ chart: the opening range, the breakout grade, the entry, stop and targets, and the Variant 2 trailing stop after TP1. Releases Friday, Oct 23.",
+        youtubeId: "4SX6qg-jAhg"
+      },
+      {
         id: "02",
         title: "The Simple MNQ ORB Strategy Anyone Can Follow (Tradingview Stratergy)",
         runtime: "2:13",
@@ -311,7 +319,7 @@
                   <path d="M27 34V14l17.5 10L27 34z" fill="#fff"/>
                 </svg>
               </div>
-              <span class="absolute bottom-2 right-2 z-20 px-1.5 py-0.5 rounded bg-black/80 text-white text-[11px] font-medium tabular-nums">${video.runtime}</span>
+              ${video.runtime && video.runtime !== "0:00" ? `<span class="absolute bottom-2 right-2 z-20 px-1.5 py-0.5 rounded bg-black/80 text-white text-[11px] font-medium tabular-nums">${video.runtime}</span>` : ''}
             </div>
             <div class="p-5 flex flex-col flex-1 justify-between">
               <div>

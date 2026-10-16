@@ -87,7 +87,7 @@
 
             <div class="mt-9 flex flex-col sm:flex-row items-stretch gap-4 max-w-lg">
               <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center flex-1 shadow-lg shadow-green-500/10 whitespace-nowrap">Get Launch Updates in Discord</a>
-              <a href="#follow" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl text-center font-medium whitespace-nowrap">Follow Along</a>
+              <a href="#demo" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl text-center font-medium whitespace-nowrap">Watch the Demo</a>
             </div>
             <p class="mt-4 text-sm text-zinc-500">Knightfall on TradingView is live today. <a href="memberships.html" class="text-green-400 hover:underline font-semibold">See the membership &rarr;</a></p>
           </div>
@@ -110,6 +110,43 @@
 
         </div>
       </section>
+
+      <!-- ===================== DEMO VIDEO =====================
+           Same click-to-play player as knowledge.html: thumbnail first, the YouTube
+           iframe only loads when someone presses play. -->
+      <section id="demo" class="pt-16 pb-6 lg:pt-20 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// See It Run</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Watch it trade on NinjaTrader.</h2>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">Variant 2 Runner on a live MNQ chart: the opening range, the breakout grade, the entry, stop and targets, and the trailing stop taking over after TP1.</p>
+          <div class="mt-8 border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+            <div id="nt-demo-player" class="aspect-video bg-black flex items-center justify-center relative group cursor-pointer" role="button" tabindex="0" aria-label="Play the Knightfall NinjaTrader 8 demo" onclick="ntPlayDemo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ntPlayDemo();}">
+              <img src="https://img.youtube.com/vi/4SX6qg-jAhg/maxresdefault.jpg" alt="Knightfall running on NinjaTrader 8 — demo video" data-step="0"
+                   onload="if(this.naturalWidth&&this.naturalWidth<=120)ntThumbNext(this)" onerror="ntThumbNext(this)"
+                   class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
+              <div class="absolute inset-0 flex items-center justify-center z-20">
+                <svg viewBox="0 0 68 48" class="w-[58px] h-[41px] drop-shadow-lg" aria-hidden="true">
+                  <path class="transition-all duration-200 group-hover:fill-[#ff0000]" fill="#212121" fill-opacity="0.8" d="M66.52 7.74a8 8 0 0 0-5.63-5.67C56.1.99 34 1 34 1s-22.1-.01-26.89 1.06a8 8 0 0 0-5.63 5.67C.42 12.52.42 24 .42 24s0 11.48 1.06 16.26a8 8 0 0 0 5.63 5.67C11.9 47 34 47 34 47s22.1.01 26.89-1.07a8 8 0 0 0 5.63-5.67C67.58 35.48 67.58 24 67.58 24s0-11.48-1.06-16.26z"/>
+                  <path d="M27 34V14l17.5 10L27 34z" fill="#fff"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          <p class="mt-3 text-[11px] text-zinc-600">Demo footage for illustration. Futures trading involves substantial risk of loss. <a href="knowledge.html" class="text-green-400/80 hover:text-green-400">More videos in the Knowledge Base &rarr;</a></p>
+        </div>
+      </section>
+      <script>
+        function ntThumbNext(img) {
+          var r = ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault'], i = (+img.dataset.step || 0) + 1;
+          if (i < r.length) { img.dataset.step = i; img.src = 'https://img.youtube.com/vi/4SX6qg-jAhg/' + r[i] + '.jpg'; }
+        }
+        function ntPlayDemo() {
+          var el = document.getElementById('nt-demo-player'); if (!el || el.dataset.playing) return;
+          el.dataset.playing = '1';
+          el.innerHTML = '<iframe class="absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/4SX6qg-jAhg?autoplay=1&rel=0" title="Knightfall on NinjaTrader 8 demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+          el.removeAttribute('onclick'); el.removeAttribute('role'); el.removeAttribute('tabindex'); el.classList.remove('cursor-pointer');
+        }
+      </script>
 
       <!-- ===================== WHAT CHANGES ===================== -->
       <section class="pt-16 pb-6 lg:pt-20 px-6 md:px-12">
