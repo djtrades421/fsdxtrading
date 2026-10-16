@@ -1334,7 +1334,7 @@
         <div class="flex items-center justify-between mb-1 flex-wrap gap-3">
           <div>
             <h2 class="text-sm font-black text-white">📈 Public Track Record</h2>
-            <p class="text-xs text-zinc-600 mt-0.5">Pick a variant and risk profile, import its TradingView export, merge new trades, publish <span id="tr-file-label" class="text-zinc-400 font-mono">track-record.json</span></p>
+            <p class="text-xs text-zinc-600 mt-0.5">Pick a variant and risk profile, import its TradingView or NinjaTrader 8 export, merge new trades, publish <span id="tr-file-label" class="text-zinc-400 font-mono">track-record.json</span></p>
           </div>
           <a href="track-record.html" target="_blank" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">View Page ↗</a>
         </div>
@@ -1404,8 +1404,8 @@
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-4">// Import Strategy Export</div>
           <label for="tr-file" class="block border-2 border-dashed border-white/10 hover:border-green-500/40 rounded-2xl px-6 py-10 text-center cursor-pointer transition">
             <div class="text-3xl mb-2">📄</div>
-            <div class="text-xs font-bold text-white mb-1">Drop the TradingView "List of Trades" CSV here</div>
-            <div class="text-[11px] text-zinc-600">FSD-X ORB Pro export &middot; entry + exit rows paired by trade number</div>
+            <div class="text-xs font-bold text-white mb-1">Drop the TradingView "List of Trades" or NinjaTrader 8 Trades CSV here</div>
+            <div class="text-[11px] text-zinc-600">Format is detected automatically &middot; NT8: Trades tab &rarr; right-click &rarr; Export</div>
           </label>
           <input type="file" id="tr-file" accept=".csv" class="hidden" onchange="trHandleFile(event)"/>
           <div id="tr-parse-msg" class="hidden mt-4 text-xs"></div>
@@ -7985,6 +7985,82 @@
       return out;
     }
 
+    // ── NinjaTrader 8 "Trades" grid export (Strategy Analyzer / Trade Performance) ──
+    // One row per trade. Money is "$1,234.50" / "($206.90)". "Profit" is NET of
+    // NT's own commission template, so the NT commission is added back and the
+    // site rate (Commission field) is applied instead — same as TradingView rows.
+    let TR_SOURCE = 'TradingView';
+    function trIsNT(head) {
+      return ['Market pos.', 'Entry time', 'Exit time', 'Entry name', 'Exit name', 'Profit'].every(h => head.includes(h));
+    }
+    function trNTMoney(v) {
+      if (v == null) return null;
+      let s = String(v).trim(); if (!s) return null;
+      const neg = /^\(.*\)$/.test(s) || s.startsWith('-');
+      s = s.replace(/[()$,\s-]/g, '');
+      const n = parseFloat(s);
+      return isNaN(n) ? null : (neg ? -n : n);
+    }
+    // "10/13/2026 8:55:00 AM" (US locale) or "2026-10-13 08:55:00" -> { date, time }
+    function trNTTime(v) {
+      const s = String(v || '').trim();
+      let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})[ T](\d{1,2}):(\d{2})/);
+      if (m) return { date: `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`, time: `${m[4].padStart(2,'0')}:${m[5]}` };
+      m = s.match(/^(\d{1,2})[\/.](\d{1,2})[\/.](\d{4})\s+(\d{1,2}):(\d{2})(?::\d{2})?\s*(AM|PM)?/i);
+      if (!m) return { date: '', time: '' };
+      let mo = +m[1], d = +m[2];
+      if (mo > 12) { const t = mo; mo = d; d = t; }   // day-first locale
+      let h = +m[4];
+      if (m[6]) { const pm = /pm/i.test(m[6]); if (pm && h < 12) h += 12; if (!pm && h === 12) h = 0; }
+      return { date: `${m[3]}-${String(mo).padStart(2,'0')}-${String(d).padStart(2,'0')}`, time: `${String(h).padStart(2,'0')}:${m[5]}` };
+    }
+    // NT names exits directly: "Profit target", "Stop loss", "Trail", "EOD-L1", "EOD-Early-S1".
+    function trNTExitType(name, gross, runner) {
+      const n = name || '';
+      if (/EOD/i.test(n)) return /Early|Half/i.test(n) ? 'EOD_EARLY' : 'EOD';
+      if (/profit\s*target/i.test(n)) return runner ? 'TP2' : 'TP1';
+      if (gross > 0) return runner ? 'TRAIL' : 'TP1';
+      return 'STOP';
+    }
+    function trConvertNT(rows, inception, comm) {
+      const runner = !!trVar().runner;
+      const out = [];
+      rows.forEach(r => {
+        const n = r['Trade number'];
+        const en = trNTTime(r['Entry time']), ex = trNTTime(r['Exit time']);
+        if (!en.date || en.date < inception) return;
+        const qty = Math.abs(parseInt(r['Qty'])) || 1;
+        const net = trNTMoney(r['Profit']) || 0;
+        const ntComm = trNTMoney(r['Commission']) || 0;
+        const gross = net + ntComm;
+        const c = qty * comm;
+        const mfe = trNTMoney(r['MFE']);
+        const mae = trNTMoney(r['MAE']);
+        const g = (r['Entry name'] || '').match(/^[LS]\d*-(A\+|A|B\+|B|C\+|C)-/);
+        out.push({
+          id: en.date + '-nt' + (n || out.length + 1),
+          date: en.date,
+          entry_time: en.time,
+          exit_time: ex.time,
+          dir: /short/i.test(r['Market pos.'] || '') ? 'SHORT' : 'LONG',
+          grade: g ? g[1] : '',
+          contracts: qty,
+          entry: parseFloat(r['Entry price']) || 0,
+          exit: parseFloat(r['Exit price']) || 0,
+          exit_reason: r['Exit name'] || '',
+          exit_type: trNTExitType(r['Exit name'], gross, runner),
+          gross: +gross.toFixed(2),
+          commission: +c.toFixed(2),
+          pnl: +(gross - c).toFixed(2),
+          mfe: mfe == null ? null : Math.abs(mfe),
+          mae: mae == null ? null : -Math.abs(mae),   // stored negative, as TradingView rows are
+          source: 'nt8'
+        });
+      });
+      out.sort((a, b) => (a.date + a.entry_time).localeCompare(b.date + b.entry_time));
+      return out;
+    }
+
     function trHandleFile(ev) {
       const file = ev.target.files[0];
       if (!file) return;
@@ -7994,15 +8070,36 @@
         try {
           const rows = trParseCSV(e.target.result);
           const head = Object.keys(rows[0] || {});
-          if (!head.includes('Trade number') || !head.some(h => /Net PnL/.test(h))) {
+          const isNT = trIsNT(head);
+          const isTV = head.includes('Trade number') && head.some(h => /Net PnL/.test(h));
+          if (!isNT && !isTV) {
             msg.className = 'mt-4 text-xs text-red-400';
-            msg.textContent = 'Not a TradingView List of Trades export — missing "Trade number" / "Net PnL USD" columns.';
+            msg.textContent = 'Not a TradingView "List of Trades" or NinjaTrader 8 Trades export — columns not recognised. Nothing was changed.';
             msg.classList.remove('hidden');
             return;
           }
           const inception = document.getElementById('tr-inception').value;
           const comm = parseFloat(document.getElementById('tr-comm').value) || 0;
-          TR_PARSED = trConvert(rows, inception, comm);
+          TR_PARSED = isNT ? trConvertNT(rows, inception, comm) : trConvert(rows, inception, comm);
+          TR_SOURCE = isNT ? 'NinjaTrader 8' : 'TradingView';
+          // NinjaTrader runs the newer build, so its history doesn't line up with
+          // what was published. Only take NT trades AFTER the last published day —
+          // never slot NT trades into older gaps in the record.
+          let ntOlder = 0;
+          if (isNT) {
+            const pubLast = (TR_PUBLISHED && TR_PUBLISHED.trades || []).reduce((m, t) => t.date > m ? t.date : m, '');
+            if (pubLast) {
+              const keep = TR_PARSED.filter(t => t.date > pubLast);
+              ntOlder = TR_PARSED.length - keep.length;
+              TR_PARSED = keep;
+              if (!TR_PARSED.length) {
+                msg.className = 'mt-4 text-xs text-yellow-400';
+                msg.textContent = 'NinjaTrader export parsed, but nothing is newer than the last published day (' + pubLast + '). Nothing to add.';
+                msg.classList.remove('hidden');
+                return;
+              }
+            }
+          }
           if (!TR_PARSED.length) {
             msg.className = 'mt-4 text-xs text-yellow-400';
             msg.textContent = 'Parsed fine, but no trades on or after ' + inception + '.';
@@ -8016,7 +8113,8 @@
           const ratio = worst / risk;
           const off = worst > 0 && (ratio < 0.8 || ratio > 1.4);
           msg.className = 'mt-4 text-xs ' + (off ? 'text-yellow-400' : 'text-green-400');
-          msg.textContent = '✓ ' + file.name + ' — ' + TR_PARSED.length + ' trades on/after ' + inception + '.' +
+          msg.textContent = '✓ ' + file.name + ' (' + TR_SOURCE + ') — ' + TR_PARSED.length + ' trades on/after ' + inception + '.' +
+            (ntOlder ? ' ' + ntOlder + ' older NinjaTrader trade' + (ntOlder !== 1 ? 's' : '') + ' ignored (on or before the last published day).' : '') +
             (off ? ' ⚠ Largest loss is $' + worst.toFixed(0) + ', which does not look like the $' + risk +
                    ' profile. Make sure this export was run on $' + risk + ' before merging.' : '');
           msg.classList.remove('hidden');
