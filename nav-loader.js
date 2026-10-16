@@ -229,6 +229,71 @@ function fsdxReleasesBadge() {
   }).catch(function () {});
 }
 
+// ── Site-wide sale notice ────────────────────────────────────────────────
+// Whatever sale is live in admin → Sales (/api/sale) shows on every public page:
+// a "SALE" tag on the Membership nav link, plus a slim bar at the top of the page.
+// The bar is skipped on index/memberships (they have their own sale block), on
+// member-only pages, and for logged-in members (a coupon only matters at checkout).
+// Dismiss hides it for the rest of the session, per code. Nothing shows if no sale.
+function fsdxSaleNotice() {
+  var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  var memberPages = ['admin.html','admin-login.html','dashboard.html','journal.html','accounts.html','backtest.html','playbook.html',
+    'tracker.html','alerts.html','profile.html','ninjatrader-members.html','converter.html','welcome.html','reset.html','login.html'];
+  if (memberPages.indexOf(page) !== -1) return;
+  var loggedIn = false; try { loggedIn = !!localStorage.getItem('fsdx_token'); } catch (e) {}
+  var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+
+  function paint(sale) {
+    if (!sale || !sale.code) return;
+    if (sale.expires && new Date(sale.expires).getTime() < Date.now()) return;
+    // 1) Nav tag
+    var link = document.querySelector('#nav-content a[href="memberships.html"]');
+    if (link && !link.querySelector('.fx-sale-tag')) {
+      var price = link.querySelector('span.shrink-0');
+      var tag = document.createElement('span');
+      tag.className = 'fx-sale-tag';
+      tag.textContent = 'SALE';
+      tag.title = sale.label + ' · ' + sale.discount + ' with code ' + sale.code;
+      tag.style.cssText = 'font-size:9px;font-weight:900;letter-spacing:.08em;color:#fff;background:#E5484D;border-radius:4px;padding:1px 5px;flex-shrink:0';
+      if (price) price.replaceWith(tag); else link.appendChild(tag);
+    }
+    // 2) Top bar
+    if (loggedIn || page === 'index.html' || page === 'memberships.html' || page === '') return;
+    var key = 'fsdx_salebar_x_' + sale.code;
+    try { if (sessionStorage.getItem(key)) return; } catch (e) {}
+    var host = document.querySelector('main') || document.body;
+    if (!host || document.getElementById('fx-salebar')) return;
+    var bar = document.createElement('div');
+    bar.id = 'fx-salebar';
+    bar.setAttribute('role', 'region');
+    bar.setAttribute('aria-label', 'Current sale');
+    bar.style.cssText = 'position:relative;z-index:20;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;' +
+      'padding:9px 44px 9px 16px;background:linear-gradient(90deg,rgba(229,72,77,.16),rgba(255,107,31,.12));border-bottom:1px solid rgba(229,72,77,.35);' +
+      'font:600 12.5px/1.4 Inter,ui-sans-serif,system-ui,sans-serif;color:#E6EDF7;text-align:center';
+    bar.innerHTML =
+      '<span style="color:#FF8A8D;font-weight:900;letter-spacing:.06em;text-transform:uppercase;font-size:11px">⚡ ' + esc(sale.label) + '</span>' +
+      '<span><b style="color:#fff">' + esc(sale.discount) + '</b> with code ' +
+      '<button type="button" data-fx-copy style="font:inherit;font-weight:900;color:#fff;background:rgba(8,13,20,.7);border:1px dashed rgba(255,138,141,.6);border-radius:6px;padding:1px 8px;cursor:pointer;letter-spacing:.06em" title="Copy code">' + esc(sale.code) + '</button></span>' +
+      '<a href="memberships.html" style="color:#FFA057;font-weight:800;text-decoration:none">See membership →</a>' +
+      '<button type="button" data-fx-x aria-label="Dismiss sale notice" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;background:none;color:#7D8B9E;font-size:18px;cursor:pointer">×</button>';
+    host.insertBefore(bar, host.firstChild);
+    bar.querySelector('[data-fx-x]').onclick = function () { try { sessionStorage.setItem(key, '1'); } catch (e) {} bar.remove(); };
+    var cp = bar.querySelector('[data-fx-copy]');
+    cp.onclick = function () {
+      try { navigator.clipboard.writeText(sale.code); var t = cp.textContent; cp.textContent = 'Copied ✓'; setTimeout(function () { cp.textContent = t; }, 1400); } catch (e) {}
+    };
+  }
+
+  var cached = null;
+  try { cached = JSON.parse(sessionStorage.getItem('fsdx_sale') || 'null'); } catch (e) {}
+  if (cached && cached.t && Date.now() - cached.t < 10 * 60 * 1000) { paint(cached.sale); return; }
+  fetch('https://nexus-validator.dfuentes4211.workers.dev/api/sale').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    var sale = (d && d.sale) || null;
+    try { sessionStorage.setItem('fsdx_sale', JSON.stringify({ t: Date.now(), sale: sale })); } catch (e) {}
+    paint(sale);
+  }).catch(function () {});
+}
+
 function applyNavGroupState(id, defaultOpen) {
   var g = document.getElementById(id);
   if (!g) return;
@@ -535,6 +600,9 @@ function prepareNavLabels(root) {
       // "New" pill on Releases: shows when something shipped in the last 14 days.
       // Reads releases.json once per session; any failure just leaves it hidden.
       try { fsdxReleasesBadge(); } catch (e) {}
+
+      // Sale notice: nav tag + top bar on public pages (admin → Sales drives it).
+      try { fsdxSaleNotice(); } catch (e) {}
 
       // Red count of urgent account warnings on the Accounts link
       try { window.fsdxRenderFleetBadge && window.fsdxRenderFleetBadge(); } catch (e) {}
