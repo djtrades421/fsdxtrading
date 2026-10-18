@@ -165,7 +165,7 @@
                   <li><b>Import</b>: Tools → Import → NinjaScript Add-On. Restart NinjaTrader. <a href="#s1" class="text-green-400 font-bold">Step 1</a></li>
                   <li><b>Merge policy</b>: Tools → Settings → Market data → Merge non back adjusted. <a href="#s2" class="text-green-400 font-bold">Step 2A</a></li>
                   <li><b>Chart</b>: MNQ or NQ, 5 Minute, Last, 365 days, CME US Index Futures ETH. <a href="#s2" class="text-green-400 font-bold">Step 2B</a></li>
-                  <li><b>Add KnightfallORB.</b> Set Variant, Risk Profile, Daily Loss Limit and the correct Account (<span class="nt-code">Sim101</span> first). Then tick Enabled. <a href="#s3" class="text-green-400 font-bold">Step 3</a></li>
+                  <li><b>Add KnightfallORB.</b> Set Variant, Risk Profile, Daily Loss Limit, Auto Trade (on = auto, off = you trade manually) and the correct Account (<span class="nt-code">Sim101</span> first). Then tick Enabled. <a href="#s3" class="text-green-400 font-bold">Step 3</a></li>
                   <li><b>Save</b> the Data Series preset as default and save your workspace. <a href="#s2" class="text-green-400 font-bold">Step 2C</a></li>
                   <li><b>Check the dashboard</b>: v1.4.1 in the header, no red warning rows. <a href="#s6" class="text-green-400 font-bold">Step 6</a></li>
                   <li><b>Watch it on Sim</b> for a few sessions before any live or prop account. <a href="#s7" class="text-green-400 font-bold">Step 7</a></li>
@@ -246,12 +246,13 @@
                   <li>Right-click the chart → <b>Strategies…</b> (<span class="nt-code">Ctrl+S</span>).
                     <div class="nt-shot" data-shot="nt-chart-menu-strategies"><img src="nt-chart-menu-strategies.webp" alt="Chart right-click menu with Strategies highlighted" loading="lazy" width="316" height="646" style="max-width:min(100%,260px)"></div></li>
                   <li>Under Available, double-click <b>KnightfallORB</b>. It moves to Configured and its settings open on the right, starting with <b>0. Variant</b> and <b>1. Risk Management</b>.
-                    <div class="nt-shot" data-shot="nt-strategies-window"><img src="nt-strategies-window.webp" alt="Strategies window: KnightfallORB configured, Variant 2 Runner, Risk Profile 400, Daily Loss Limit 625, Flag Sizing Auto" loading="lazy" width="789" height="594"></div></li>
-                  <li><b>Before you enable, check these four:</b>
+                    <div class="nt-shot" data-shot="nt-strategies-window"><img src="nt-strategies-window.webp" alt="Strategies window: KnightfallORB configured, Variant 2 Runner, Risk Profile 400, Daily Loss Limit 625, Flag Sizing Auto" loading="lazy" width="787" height="594"></div></li>
+                  <li><b>Before you enable, check these five:</b>
                     <ul class="mt-2 space-y-1" style="list-style:disc;padding-left:18px">
                       <li><b>Variant</b>: Variant 2 Runner unless you have a reason to change it.</li>
                       <li><b>Risk Profile ($)</b>: your dollar risk on a full-size trade.</li>
                       <li><b>Daily Loss Limit ($)</b>: your own number. 0 means off.</li>
+                      <li><b>Auto Trade</b>: <b>on</b> = it places and manages the trades for you. <b>Off</b> = signals only (popup and sound with direction, grade, contracts, entry, stop and TP1), and you place the trade yourself.</li>
                       <li><b>Account</b>: the exact account it will trade. Use <span class="nt-code">Sim101</span> first. On a fleet, double-check you picked the right one.</li>
                     </ul></li>
                   <li>Leave <b>Start behavior</b> on <b>Wait until flat</b>. If you enable it mid-session, it waits instead of jumping into a trade already running.</li>
@@ -288,7 +289,7 @@
                     <tr><td>+1 Contract After a Loss</td><td>Off</td><td>Adds one contract to the next trade after a loss</td></tr>
                   </table>
                 </div>
-                <div class="nt-shot" data-shot="nt-settings-top"><img src="nt-settings-top.webp" alt="Strategy settings: 0. Variant set to Variant 2 Runner, 1. Risk Management with Risk Profile, Daily Loss Limit, Flag Sizing and Auto Trade" loading="lazy" width="454" height="415" style="max-width:min(100%,420px)"></div>
+                <div class="nt-shot" data-shot="nt-settings-top"><img src="nt-settings-top.webp" alt="Strategy settings: 0. Variant set to Variant 2 Runner, 1. Risk Management with Risk Profile, Daily Loss Limit, Flag Sizing and Auto Trade" loading="lazy" width="454" height="412" style="max-width:min(100%,420px)"></div>
                 <p class="nt-p mt-3"><b>Our two setups:</b> V2 Runner at $250 Risk Profile (Flag Sizing off by Auto), Daily Loss Limit $500. V2 Runner at $400 Risk Profile (Flag Sizing on by Auto), Daily Loss Limit $625. <a href="results.html#risk-profiles" class="text-green-400 font-bold">See them tested, or size for your account &rarr;</a></p>
                 <p class="nt-p mt-2">Locked by the variant (V1/V2): ORB 8:30&ndash;8:45 CT, Minimum Grade C, Max Trades Per Session 3, Entry Cutoff 12:45 PM CT, Flatten By 3:30 PM CT (11:50 AM on half-days). Display settings only change what's drawn. They never affect trades.</p>
               </div>
