@@ -48,7 +48,8 @@
                padding:1px 6px; border-radius:5px; }
     .nt-shot { margin-top:10px; border:1px dashed rgba(255,255,255,.14); border-radius:12px; padding:18px; text-align:center;
                font-size:11px; color:#52525b; background:rgba(255,255,255,.015); }
-    .nt-shot img { max-width:100%; border-radius:8px; display:block; margin:0 auto; }
+    .nt-shot img { max-width:100%; height:auto; border-radius:8px; display:block; margin:0 auto; }
+    .nt-shot:has(img) { padding:10px; border-style:solid; border-color:rgba(255,255,255,.10); }
     .nt-table { width:100%; border-collapse:collapse; font-size:12px; }
     .nt-table th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.12em; color:#71717a; font-weight:900;
                    padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.10); }
@@ -140,6 +141,7 @@
 
           <div class="grid md:grid-cols-4 gap-6 mt-6">
             <nav class="nt-toc hidden md:block">
+              <a href="#quickstart">Start to finish</a>
               <a href="#need">What you need</a>
               <a href="#s1">1. Install</a>
               <a href="#s2">2. Chart settings</a>
@@ -153,6 +155,22 @@
             </nav>
 
             <div class="md:col-span-3 space-y-5" style="min-width:0">
+
+              <div class="nt-card" id="quickstart" style="border-color:rgba(255,107,31,.35)">
+                <h3 class="text-base font-black text-white mb-1">Start to finish</h3>
+                <p class="nt-p mb-4">The short version. Each line links to the full step.</p>
+                <ol class="nt-steps">
+                  <li><b>License active</b> on your NinjaTrader login email (card at the top shows Active).</li>
+                  <li><b>Download</b> the zip above. Don't unzip it. <a href="#s1" class="text-green-400 font-bold">Step 1</a></li>
+                  <li><b>Import</b>: Tools → Import → NinjaScript Add-On. Restart NinjaTrader. <a href="#s1" class="text-green-400 font-bold">Step 1</a></li>
+                  <li><b>Merge policy</b>: Tools → Settings → Market data → Merge non back adjusted. <a href="#s2" class="text-green-400 font-bold">Step 2A</a></li>
+                  <li><b>Chart</b>: MNQ or NQ, 5 Minute, Last, 365 days, CME US Index Futures ETH. <a href="#s2" class="text-green-400 font-bold">Step 2B</a></li>
+                  <li><b>Add KnightfallORB.</b> Set Variant, Risk Profile, Daily Loss Limit and the correct Account (<span class="nt-code">Sim101</span> first). Then tick Enabled. <a href="#s3" class="text-green-400 font-bold">Step 3</a></li>
+                  <li><b>Save</b> the Data Series preset as default and save your workspace. <a href="#s2" class="text-green-400 font-bold">Step 2C</a></li>
+                  <li><b>Check the dashboard</b>: v1.4.1 in the header, no red warning rows. <a href="#s6" class="text-green-400 font-bold">Step 6</a></li>
+                  <li><b>Watch it on Sim</b> for a few sessions before any live or prop account. <a href="#s7" class="text-green-400 font-bold">Step 7</a></li>
+                </ol>
+              </div>
 
               <div class="nt-card" id="need">
                 <h3 class="text-base font-black text-white mb-3">What you need</h3>
@@ -172,7 +190,7 @@
                 <ol class="nt-steps">
                   <li>Download the <span class="nt-code">.zip</span> above. <b>Don't unzip it.</b></li>
                   <li>In the NinjaTrader Control Center, go to <b>Tools → Import → NinjaScript Add-On</b>.
-                    <div class="nt-shot" data-shot="nt-import-menu">Screenshot: Tools → Import menu</div></li>
+                    <div class="nt-shot" data-shot="nt-import-menu"><img src="nt-import-menu.webp" alt="Control Center Tools menu, Import, NinjaScript Add-On highlighted" loading="lazy" width="430" height="372" style="max-width:min(100%,380px)"></div></li>
                   <li>Select the <span class="nt-code">.zip</span> and click <b>Open</b>. Confirm the import message.</li>
                   <li><b>Restart NinjaTrader.</b> Your license is checked when you log in.</li>
                 </ol>
@@ -180,30 +198,66 @@
 
               <div class="nt-card" id="s2">
                 <h3 class="text-base font-black text-white mb-2">2. Chart settings</h3>
-                <p class="nt-p mb-3">Use these exact settings. Grades, stops and targets depend on them.</p>
+                <p class="nt-p mb-3"><b>Don't skip this step.</b> Grades, stops and targets depend on these exact settings. Wrong data = wrong trades.</p>
                 <div class="nt-scroll">
                   <table class="nt-table">
                     <tr><th>Setting</th><th>Value</th><th>Where</th></tr>
+                    <tr><td>Merge policy</td><td><b class="text-white">Merge non back adjusted</b></td><td>Tools → Settings → Market data</td></tr>
                     <tr><td>Instrument</td><td>MNQ or NQ, current front month</td><td>Chart → Data Series</td></tr>
+                    <tr><td>Price based on</td><td><b class="text-white">Last</b></td><td>Data Series</td></tr>
                     <tr><td>Bar type</td><td>Minute, value <b class="text-white">5</b></td><td>Data Series</td></tr>
-                    <tr><td>Trading hours</td><td><b class="text-white">CME US Index Futures ETH</b></td><td>Data Series</td></tr>
+                    <tr><td>Load data based on</td><td><b class="text-white">Days</b></td><td>Data Series</td></tr>
                     <tr><td>Days to load</td><td><b class="text-white">365</b></td><td>Data Series</td></tr>
-                    <tr><td>Merge policy</td><td><b class="text-white">Merge non back adjusted</b></td><td>Tools → Options → Market Data</td></tr>
+                    <tr><td>Trading hours</td><td><b class="text-white">CME US Index Futures ETH</b></td><td>Data Series</td></tr>
                   </table>
                 </div>
-                <div class="nt-shot" data-shot="nt-data-series">Screenshot: Data Series window</div>
+
+                <h4 class="text-sm font-black text-white mt-6 mb-3">A. Set the merge policy (once per install)</h4>
+                <ol class="nt-steps">
+                  <li>In the Control Center, open <b>Tools → Settings</b> (called Options in some builds), then <b>Market data</b>.
+                    <div class="nt-shot" data-shot="nt-tools-settings"><img src="nt-tools-settings.webp" alt="Control Center Tools menu with Settings highlighted" loading="lazy" width="252" height="370" style="max-width:min(100%,230px)"></div></li>
+                  <li>Under Historical, set <b>Global merge policy</b> to <b>Merge non back adjusted</b>. Leave <b>Get data from server</b> ticked.
+                    <div class="nt-shot" data-shot="nt-merge-policy"><img src="nt-merge-policy.webp" alt="NinjaTrader Settings, Market data: Global merge policy set to Merge non back adjusted, Get data from server ticked" loading="lazy" width="696" height="489"></div></li>
+                  <li>Click <b>OK</b>. If a chart is already open, right-click it → <b>Reload All Historical Data</b> (<span class="nt-code">Ctrl+Shift+R</span>).</li>
+                </ol>
+
+                <h4 class="text-sm font-black text-white mt-4 mb-3">B. Set up the chart</h4>
+                <ol class="nt-steps">
+                  <li>Open a chart: <b>New → Chart</b> in the Control Center, and pick MNQ or NQ, current front month.</li>
+                  <li>Right-click the chart → <b>Data Series…</b> (<span class="nt-code">Ctrl+F</span>).
+                    <div class="nt-shot" data-shot="nt-chart-menu"><img src="nt-chart-menu.webp" alt="Chart right-click menu with Data Series highlighted" loading="lazy" width="324" height="652" style="max-width:min(100%,260px)"></div></li>
+                  <li>Set every value from the table above: <b>Last</b>, <b>Minute</b>, <b>5</b>, <b>Days</b>, <b>365</b>, <b>CME US Index Futures ETH</b>. Leave End date on today.
+                    <div class="nt-shot" data-shot="nt-data-series"><img src="nt-data-series.webp" alt="Data Series window: MNQ 5 Minute, Price based on Last, Load data based on Days, Days to load 365, Trading hours CME US Index Futures ETH" loading="lazy" width="624" height="617"></div></li>
+                  <li>Click <b>OK</b>. Give it a moment to load a full year of 5-minute bars.</li>
+                </ol>
+
+                <h4 class="text-sm font-black text-white mt-4 mb-3">C. Save it so it always loads right</h4>
+                <ol class="nt-steps">
+                  <li><b>Save the Data Series as your default.</b> In the Data Series window, click <b>preset</b> at the bottom right → <b>Save as default</b>. New 5-minute charts now open with 365 days and ETH.</li>
+                  <li><b>Save the workspace.</b> After the strategy is added (step 3), go to <b>Control Center → Workspaces → Save Workspace</b>. NinjaTrader reopens this chart with these settings next time.</li>
+                  <li>Each new session, glance at the dashboard. If it shows a red <b>WARMING UP</b> or ETH warning, the chart isn't on these settings.</li>
+                </ol>
                 <p class="nt-p mt-3"><b>Why 365 days:</b> the strategy reads a 4-hour trend, a 5-day ORB average and a 14-day volatility average. A short chart gives wrong grades and targets. The dashboard shows <b>WARMING UP</b> in red until enough history loads.</p>
               </div>
 
               <div class="nt-card" id="s3">
                 <h3 class="text-base font-black text-white mb-3">3. Add the strategy</h3>
                 <ol class="nt-steps">
-                  <li>Right-click the chart → <b>Strategies</b>.</li>
-                  <li>Under Available, double-click <b>KnightfallORB</b>.</li>
-                  <li>Pick your <b>Account</b>. Use <span class="nt-code">Sim101</span> first.</li>
+                  <li>Right-click the chart → <b>Strategies…</b> (<span class="nt-code">Ctrl+S</span>).
+                    <div class="nt-shot" data-shot="nt-chart-menu-strategies"><img src="nt-chart-menu-strategies.webp" alt="Chart right-click menu with Strategies highlighted" loading="lazy" width="316" height="646" style="max-width:min(100%,260px)"></div></li>
+                  <li>Under Available, double-click <b>KnightfallORB</b>. It moves to Configured and its settings open on the right, starting with <b>0. Variant</b> and <b>1. Risk Management</b>.
+                    <div class="nt-shot" data-shot="nt-strategies-window"><img src="nt-strategies-window.webp" alt="Strategies window: KnightfallORB configured, Variant 2 Runner, Risk Profile 400, Daily Loss Limit 625, Flag Sizing Auto" loading="lazy" width="789" height="594"></div></li>
+                  <li><b>Before you enable, check these four:</b>
+                    <ul class="mt-2 space-y-1" style="list-style:disc;padding-left:18px">
+                      <li><b>Variant</b>: Variant 2 Runner unless you have a reason to change it.</li>
+                      <li><b>Risk Profile ($)</b>: your dollar risk on a full-size trade.</li>
+                      <li><b>Daily Loss Limit ($)</b>: your own number. 0 means off.</li>
+                      <li><b>Account</b>: the exact account it will trade. Use <span class="nt-code">Sim101</span> first. On a fleet, double-check you picked the right one.</li>
+                    </ul></li>
                   <li>Leave <b>Start behavior</b> on <b>Wait until flat</b>. If you enable it mid-session, it waits instead of jumping into a trade already running.</li>
-                  <li>Tick <b>Enabled</b>, then click <b>OK</b>.
-                    <div class="nt-shot" data-shot="nt-strategies-window">Screenshot: Strategies window with KnightfallORB enabled</div></li>
+                  <li>Scroll to the bottom of the settings. Tick <b>Enabled</b>, then click <b>OK</b>. Leave the rest of the NinjaTrader defaults (Calculate, Order handling) as they are.
+                    <div class="nt-shot" data-shot="nt-strategy-enabled"><img src="nt-strategy-enabled.webp" alt="Bottom of the strategy settings: Start behavior Wait until flat, Enabled ticked" loading="lazy" width="454" height="542" style="max-width:min(100%,400px)"></div></li>
+                  <li><b>Save your workspace</b>: Control Center → Workspaces → Save Workspace. The chart, its data settings and the strategy reload together next time.</li>
                 </ol>
                 <p class="nt-p">Changing settings restarts the strategy. If the chart markings disappear, open Strategies and check <b>Enabled</b> is still ticked.</p>
                 <p class="nt-p mt-2"><b>One strategy per account.</b> Don't place manual trades on an account it's trading. For several accounts, enable it on each one or use a trade copier.</p>
@@ -211,12 +265,12 @@
 
               <div class="nt-card" id="s4">
                 <h3 class="text-base font-black text-white mb-2">4. Pick a variant and your settings</h3>
-                <p class="nt-p mb-3"><b>Variant</b> is the first setting. It picks how the strategy exits and locks the rest of the strategy settings to tested values. Risk, sizing, the daily loss limit, Auto Trade and every display setting always stay yours.</p>
+                <p class="nt-p mb-3">Settings are grouped in order: <b>0. Variant</b> first, then <b>1. Risk Management</b>. Variant picks how the strategy exits and locks the rest of the strategy settings to tested values. Risk, sizing, the daily loss limit, the side lock, Auto Trade and every display setting always stay yours.</p>
                 <div class="nt-scroll">
                   <table class="nt-table">
                     <tr><th>Variant</th><th>What it does</th></tr>
-                    <tr><td>Variant 2 &mdash; Runner</td><td><b class="text-white">What we run.</b> Full size to TP2 with a trailing stop that starts at TP1 (60 pt distance, TP2 min R:R 2, TP offsets 25). Flag Sizing on by default.</td></tr>
-                    <tr><td>Variant 1 &mdash; Stock</td><td>The original Knightfall. Takes profit at TP1. Selected by default when you first add the strategy.</td></tr>
+                    <tr><td>Variant 2 &mdash; Runner</td><td><b class="text-white">What we run.</b> Full size to TP2 with a trailing stop that starts at TP1 (60 pt distance, TP2 min R:R 2, TP offsets 25). Flag Sizing Auto (on at $400+). Selected by default when you first add the strategy.</td></tr>
+                    <tr><td>Variant 1 &mdash; Stock</td><td>The original Knightfall. Takes profit at TP1.</td></tr>
                     <tr><td>Variant 3 &mdash; Fixed Stop</td><td><b class="text-white">Experimental.</b> Every stop is the Fixed SL (default 30 pts) and the exit settings stay editable. It tested worse than V2 on the New York session; it's here for other sessions and markets.</td></tr>
                     <tr><td>Custom</td><td>Every setting is editable. For your own testing.</td></tr>
                   </table>
@@ -226,14 +280,16 @@
                   <table class="nt-table">
                     <tr><th>Your settings</th><th>Default</th><th>What it does</th></tr>
                     <tr><td>Auto Trade</td><td>On</td><td>On = places live orders. Off = signals only: a popup and sound with direction, grade, contracts, entry, stop and TP1. You place the trade yourself.</td></tr>
-                    <tr><td>Risk Per Trade ($)</td><td>400</td><td>Dollar risk used to size each trade. Contract value is read from the instrument: MNQ or NQ, nothing to set.</td></tr>
-                    <tr><td>Flag Sizing</td><td>Variant Default</td><td>Halves size when 2 or more warning flags show on a breakout, never below 1 contract. Never skips a trade. <b class="text-white">Variant Default</b> = on in V2, off in V1, V3 and Custom. Or set Off / Half At 2 Flags yourself.</td></tr>
-                    <tr><td>Daily Loss Limit ($)</td><td>0 (off)</td><td>Stops new entries for the rest of the day once closed losses reach this amount. Never closes an open trade. We use about 1.5&ndash;2&times; risk.</td></tr>
+                    <tr><td>Risk Profile ($, full-size trade)</td><td>250</td><td>Dollar risk on a full-size trade. Used to size each trade. Contract value is read from the instrument: MNQ or NQ, nothing to set.</td></tr>
+                    <tr><td>Daily Loss Limit ($)</td><td>0 (off)</td><td>Set your own. Stops new entries for the rest of the day once closed losses reach this amount. Never closes an open trade. We use about 1.5&ndash;2&times; risk.</td></tr>
+                    <tr><td>Flag Sizing</td><td>Auto</td><td>Halves size when 2 or more warning flags show on a breakout, never below 1 contract. Never skips a trade. <b class="text-white">Auto</b> = on in V1 and V2 when Risk Profile is $400 or more, off below $400, always off in V3 and Custom. <b class="text-white">Off</b> and <b class="text-white">Half At 2 Flags</b> force it either way.</td></tr>
+                    <tr><td>Lock Side If First Breakout Fails Gate</td><td>On (every variant)</td><td>If the first breakout of the day on a side fails the evidence gate, that side is done for the session. The dashboard shows the reason. Variants never lock this one, so you can turn it off in any variant.</td></tr>
                     <tr><td>Static Sizing</td><td>Off</td><td>On = every valid trade gets full size regardless of grade</td></tr>
                     <tr><td>+1 Contract After a Loss</td><td>Off</td><td>Adds one contract to the next trade after a loss</td></tr>
                   </table>
                 </div>
-                <p class="nt-p mt-3"><b>Our two setups:</b> V2 Runner at $250 risk, Flag Sizing off, Daily Loss Limit $500. V2 Runner at $400 risk, Flag Sizing on, Daily Loss Limit $625. <a href="results.html#risk-profiles" class="text-green-400 font-bold">See them tested, or size for your account &rarr;</a></p>
+                <div class="nt-shot" data-shot="nt-settings-top"><img src="nt-settings-top.webp" alt="Strategy settings: 0. Variant set to Variant 2 Runner, 1. Risk Management with Risk Profile, Daily Loss Limit, Flag Sizing and Auto Trade" loading="lazy" width="454" height="415" style="max-width:min(100%,420px)"></div>
+                <p class="nt-p mt-3"><b>Our two setups:</b> V2 Runner at $250 Risk Profile (Flag Sizing off by Auto), Daily Loss Limit $500. V2 Runner at $400 Risk Profile (Flag Sizing on by Auto), Daily Loss Limit $625. <a href="results.html#risk-profiles" class="text-green-400 font-bold">See them tested, or size for your account &rarr;</a></p>
                 <p class="nt-p mt-2">Locked by the variant (V1/V2): ORB 8:30&ndash;8:45 CT, Minimum Grade C, Max Trades Per Session 3, Entry Cutoff 12:45 PM CT, Flatten By 3:30 PM CT (11:50 AM on half-days). Display settings only change what's drawn. They never affect trades.</p>
               </div>
 
@@ -256,19 +312,24 @@
               <div class="nt-card" id="s6">
                 <h3 class="text-base font-black text-white mb-2">6. Dashboard and chart</h3>
                 <p class="nt-p mb-3">The dashboard sits top right. <b>Red rows at the top are warnings.</b> Fix them before trading.</p>
-                <div class="nt-shot" data-shot="nt-dashboard">Screenshot: dashboard with a breakout block</div>
+                <div class="nt-shot" data-shot="nt-dashboard"><img src="nt-dashboard.webp" alt="Chart with the Knightfall v1.4.1 dashboard: Variant 2 Runner, a bear breakout graded A with entry, stop, TP1, TP2 and the TAKE TRADE verdict" loading="lazy" width="868" height="896"></div>
+                <div class="nt-shot" data-shot="nt-dashboard-panel"><img src="nt-dashboard-panel.webp" alt="Close-up of the dashboard panel, row by row" loading="lazy" width="298" height="458" style="max-width:min(100%,420px);width:100%"></div>
                 <div class="nt-scroll mt-3">
                   <table class="nt-table">
                     <tr><th>Row</th><th>What it shows</th></tr>
-                    <tr><td>Config strip</td><td>Variant · risk · $/pt · <b class="text-white">FS</b> when Flag Sizing is on · account · AUTO or MANUAL</td></tr>
+                    <tr><td>Header</td><td>Strategy name and version (v1.4.1). Match it to the version on this page.</td></tr>
+                    <tr><td>Config strip</td><td>Variant · Risk Profile · $/pt · <b class="text-white">FS</b> when Flag Sizing is on · <b class="text-white">GL off</b> when the side lock is turned off</td></tr>
+                    <tr><td>Account row</td><td>The account it's trading (check it's the right one) · <b class="text-white">DLL</b> closed loss today / your limit, e.g. <span class="nt-code">DLL $0/$625</span> · AUTO or MANUAL · trades today out of 3. The DLL turns <b class="text-white">yellow</b> with <b class="text-white">low</b> or <b class="text-white">high</b> when the limit is under 1.5&times; or over 2.5&times; your Risk Profile. A sizing hint, not an error.</td></tr>
                     <tr><td>Status</td><td>Win rate of the last 40 trades against the normal 52&ndash;72% band: <b class="text-white">Normal</b>, <b class="text-white">Cold run</b> or <b class="text-white">Hot run</b>. Information only. It never changes size or stops trading.</td></tr>
                     <tr><td>ORB range</td><td>Size of today's opening range (8:30–8:45 CT), in points</td></tr>
                     <tr><td>5D avg</td><td>Average ORB of the last 5 sessions. Green = ideal band, yellow = outside it, red = extreme</td></tr>
                     <tr><td>Trend row</td><td>The 4-hour trend. <b class="text-white">[shift?]</b> means the current 4-hour bar is leaning toward a different state</td></tr>
                     <tr><td>Breakout header</td><td>Direction, grade, score and contracts at your risk setting</td></tr>
                     <tr><td>Flag rows</td><td>Which warning flags are showing (<b class="text-white">STOP</b>: a prior day/week level inside the stop · <b class="text-white">O/N</b>: overnight move against the 4H trend · <b class="text-white">TIME</b>: entry 15&ndash;60 min after the ORB), the count out of 3, and the size result, e.g. <span class="nt-code">Flags 2/3 · HALF 2→1c</span></td></tr>
-                    <tr><td>TP1 / TP2 / stop</td><td>Levels, what set them and distance in points</td></tr>
+                    <tr><td>TP1 / TP2 / stop</td><td>Levels, what set them and distance in points. The dollar rows show the stop loss and each target's R and dollar amount at your size.</td></tr>
+                    <tr><td>Exit row</td><td>How the variant exits, e.g. <span class="nt-code">Exit: full → TP2</span> and <span class="nt-code">Stop: trail 100%/60</span> in V2</td></tr>
                     <tr><td>TAKE TRADE / NO TRADE</td><td>Whether the setup passes every rule, with the reason underneath</td></tr>
+                    <tr><td>Side lock</td><td>Shows when a side is locked for the day and why: <b class="text-white">grade</b>, <b class="text-white">counter-trend</b>, <b class="text-white">ranging</b> or <b class="text-white">below-gate</b></td></tr>
                   </table>
                 </div>
                 <p class="nt-p mt-3"><b>Live preview:</b> while the breakout candle is still forming, the grade, levels and verdict update live, and the candle is colored by its current grade. The grade is final when the candle closes. That's when the strategy enters. If price falls back inside the range first, the preview clears.</p>
@@ -305,7 +366,9 @@
                 <ol class="nt-steps">
                   <li>When a new version is out, you'll see <b>Update available</b> at the top of this page.</li>
                   <li>Download it, then <b>Tools → Import → NinjaScript Add-On</b> and pick the new zip. Say yes to replace.</li>
-                  <li>Restart NinjaTrader. Your license and your saved settings carry over.</li>
+                  <li>Restart NinjaTrader. Your license carries over.</li>
+                  <li><b>Remove the strategy from the chart and add it again</b> so the new defaults load. Check <b>Variant</b> and <b>Risk Profile</b> before you enable it.</li>
+                  <li>Save the workspace again (<b>Workspaces → Save Workspace</b>).</li>
                 </ol>
               </div>
 
@@ -466,7 +529,9 @@
         + '<div class="mt-4"><div class="nt-kv"><span>File</span><span>' + esc(cur.filename) + '</span></div>'
         + '<div class="nt-kv"><span>Size</span><span>' + fmtSize(cur.size) + '</span></div>'
         + '<div class="nt-kv"><span>Last downloaded</span><span>' + (L && L.lastDownloadAt ? fmtDate(L.lastDownloadAt) : '—') + '</span></div></div>'
-        + '<div class="mt-4"><a href="#install" class="text-[11px] text-green-400 font-bold">Install steps &darr;</a></div>';
+        + '<div class="nt-banner mt-4"><div class="flex-1"><div class="text-[12px] font-black text-white">Next: set it up start to finish</div>'
+        + '<div class="text-[11.5px] text-zinc-400 mt-1">Import, chart settings (merge policy, 365 days, ETH), add the strategy, save your workspace. About 10 minutes.</div>'
+        + '<a href="#quickstart" class="nt-btn ghost mt-3" style="padding:8px 14px;font-size:10.5px">Open the setup guide &darr;</a></div></div>';
     } else if (d.eligible && L && L.status === 'active' && !d.live && !d.early) {
       html = '<p class="nt-p">Your license is ready. Downloads open at launch. We\'ll announce it in Discord and email you.</p>';
     } else if (d.eligible && L && L.status === 'active' && !cur) {
@@ -534,7 +599,7 @@
         document.body.appendChild(a); a.click(); a.remove();
         setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
         btn.disabled = false; btn.innerHTML = label;
-        if (msgEl) { msgEl.textContent = 'Downloaded. Next: Tools → Import → NinjaScript Add-On.'; msgEl.className = 'nt-msg ok'; }
+        if (msgEl) { msgEl.innerHTML = 'Downloaded. Next: Tools → Import → NinjaScript Add-On. <a href="#quickstart" class="font-bold underline">Follow the setup guide &darr;</a>'; msgEl.className = 'nt-msg ok'; }
         setTimeout(load, 1200);
       })
       .catch(function (e) {
@@ -547,13 +612,19 @@
     ['Nothing draws and there\'s no dashboard',
      'Your license email has to match the email you\'re logged into NinjaTrader with. Check the "Licensed to" email above. Restart NinjaTrader after your license goes active. Then open Strategies and confirm Enabled is ticked.'],
     ['NinjaTrader says I\'m not licensed',
-     'Either your license isn\'t active yet (see the card at the top), or you\'re logged into NinjaTrader with a different email. Log out and back into NinjaTrader with the licensed email, or update your email above and we\'ll move the license.'],
+     'Import works without a license. The strategy won\'t run until your license is active. Either your license isn\'t active yet (see the card at the top), or you\'re logged into NinjaTrader with a different email. Log out and back into NinjaTrader with the licensed email, or update your email above and we\'ll move the license. Still stuck? Send us a screenshot of the error.'],
+    ['A side won\'t trade after the first breakout',
+     'That\'s the side lock. If the first breakout of the day on a side fails the evidence gate, that side is done for the session. The dashboard shows the reason (grade, counter-trend, ranging or below-gate). It\'s on by default. You can turn off <b>Lock Side If First Breakout Fails Gate</b> in any variant (step 4).'],
+    ['My Daily Loss Limit shows yellow',
+     'It\'s a sizing hint, not an error. Yellow "low" means the limit is under 1.5× your Risk Profile. Yellow "high" means it\'s over 2.5×. The strategy runs either way.'],
+    ['Chart loses its settings when I reopen NinjaTrader',
+     'Save the Data Series as default (preset → Save as default) and save your workspace (Workspaces → Save Workspace). See step 2C.'],
     ['Red WARMING UP row',
      'Set Days to load to 365 in Data Series and reload the chart.'],
     ['Red 5-minute bars or ETH warning',
      'The chart settings don\'t match. Fix Data Series to match step 2: 5-minute bars, CME US Index Futures ETH.'],
     ['Grades or targets differ from TradingView',
-     'Usually Days to load below 365, trading hours not set to ETH, or a back-adjusted merge policy. Fix those three and reload.'],
+     'Usually Days to load below 365, trading hours not set to ETH, or the merge policy not on Merge non back adjusted. Fix those three, then right-click the chart → Reload All Historical Data.'],
     ['Import failed or says the file is invalid',
      'Don\'t unzip the file. Import the .zip itself through Tools → Import → NinjaScript Add-On. If it still fails, delete the download and get a fresh copy here.'],
     ['Strategy turned off after changing settings',
