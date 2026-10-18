@@ -4,8 +4,8 @@
   {
    "status": "approved",
    "product": "NinjaTrader 8",
-   "title": "ORB Pro Knightfall for NinjaTrader 8 (v1.3.0)",
-   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader. Releases Friday, October 23, 2026, as a download for members. Ships as v1.3.0: Variant 1 Stock, Variant 2 Runner, Variant 3 Fixed Stop (experimental) and Custom; Flag Sizing, which halves size when 2+ warning flags show; a daily loss limit; a Status row that shows when the system is in a cold or hot run; and the No-Hedge ORB Cap locked on in every preset. Auto Trade on or alert-only, no webhooks or bridge service.",
+   "title": "ORB Pro Knightfall for NinjaTrader 8 (v1.4.1)",
+   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader. Releases Friday, October 23, 2026, as a download for members. Ships as v1.4.1: Variant 1 Stock, Variant 2 Runner (default), Variant 3 Fixed Stop (experimental) and Custom; Risk Profile and Daily Loss Limit at the top of the settings; the new first-breakout side lock; Flag Sizing on Auto; a Status row that shows when the system is in a cold or hot run; and the No-Hedge ORB Cap on in every variant. Auto Trade on or alert-only, no webhooks or bridge service. <a href=\"ninjatrader-members.html\">Confirm your NinjaTrader email</a> so your license is ready on launch day.",
    "eta": "2026-10-23"
   },
   {
@@ -19,6 +19,38 @@
    "product": "NinjaTrader 8",
    "title": "Raven, Volume Engine and Stack V1 on NinjaTrader 8",
    "body": "Native NinjaTrader 8 versions of Raven, Volume Engine and Stack V1, coming after Knightfall's NinjaTrader release."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-18",
+   "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall v1.4.1: every breakout graded on its own",
+   "body": "A breakout no longer carries the grade from an earlier trade. Each one is graded fresh. New setting, on by default in every variant: <b>Lock Side If First Breakout Fails Gate</b>. If the first breakout on a side fails the evidence gate, that side is done for the session. The dashboard shows the reason. Results match the previous version almost trade for trade."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-18",
+   "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "Risk settings moved to the top, new defaults",
+   "body": "<b>Risk Profile ($, full-size trade)</b> and <b>Daily Loss Limit</b> now sit right under Variant. Defaults: Variant 2, $250 Risk Profile, Daily Loss Limit 0 (set your own). <b>Flag Sizing</b> has a new <b>Auto</b> mode: half size on 2+ flags in Variant 1 and 2 when risk is $400 or more, off below that. The No-Hedge ORB Cap is now on in Variant 1, 2 and 3. The settings order changed, so remove the script and add it again, or choose Defaults → Reset settings."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-18",
+   "type": "update",
+   "product": "Auto-Trader",
+   "title": "Auto-Trader v1.4.1",
+   "body": "Same changes as Knightfall v1.4.1: fresh grade on every breakout, the first-breakout side lock, Risk Profile and Daily Loss Limit at the top, Flag Sizing Auto and the No-Hedge ORB Cap. Variant 3 Fixed Stop added. Initial capital now defaults high enough that every signal fills in the Strategy Tester. After re-adding the script, re-create your alerts. <a href=\"autotrader.html\">ORB Auto-Trader</a>."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-18",
+   "type": "update",
+   "product": "Raven",
+   "title": "Raven: No-Hedge ORB Cap on by default",
+   "body": "The No-Hedge ORB Cap is now on by default, matching Knightfall. You can still turn it off in the settings."
   },
   {
    "status": "shipped",
