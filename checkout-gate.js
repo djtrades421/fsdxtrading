@@ -33,14 +33,15 @@
   // Both carry the session's real source (set by nav-loader.js) instead of a
   // hardcoded 'direct'.
   function ping(paths) {
-    var src = "direct";
-    try { src = sessionStorage.getItem("fsdx_src") || "direct"; } catch (e) {}
+    var src = "direct", ctx = {};
+    try { src = sessionStorage.getItem("fsdx_src") || "direct"; ctx = JSON.parse(sessionStorage.getItem("fsdx_ctx") || "{}") || {}; } catch (e) {}
     // One request for all paths: the Worker does read-modify-write on one daily
     // KV key, so two pings fired at once race and one gets dropped.
     fetch("https://nexus-validator.dfuentes4211.workers.dev/api/track", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ source: src, path: paths[0], paths: paths.slice(1), visit: false }),
+      body: JSON.stringify({ v: ctx.sid ? 2 : 1, source: ctx.src || src, path: paths[0], paths: paths.slice(1), visit: false,
+        sid: ctx.sid, camp: ctx.camp, land: ctx.land, ref: ctx.ref, ret: ctx.ret }),
       keepalive: true
     }).catch(function () {});
   }

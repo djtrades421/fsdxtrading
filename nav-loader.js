@@ -46,7 +46,7 @@ window.toggleMobileMenu = function () {
       'index', 'suite', 'autotrader', 'results', 'track-record', 'memberships',
       'nightwing', 'raven', 'compare', 'free-indicators', 'platform', 'partners', 'giveaways',
       'knowledge', 'faq', 'contact', 'schedule', 'disclosures', 'affiliates',
-      'setup', 'welcome', '404', 'tradingview-update', 'releases'
+      'setup', 'welcome', '404', 'tradingview-update', 'releases', 'ninjatrader'
     ];
 
     var rawPath = location.pathname || '/';
@@ -62,31 +62,69 @@ window.toggleMobileMenu = function () {
 
     // Is this the first tracked page of the whole session? → count it as a visit.
     var firstOfSession = !sessionStorage.getItem('fsdx_v');
-    // Every ping carries the source that STARTED the session. Before this,
-    // only the landing page carried it and every later page (memberships,
-    // checkout) was sent as 'direct', so the by-source funnel credited all
-    // mid-funnel activity to Direct and showed 0 for YouTube/Google/social.
-    var src = sessionStorage.getItem('fsdx_src') || 'direct';
-    if (firstOfSession) {
+    // Session context. Set once on the landing page and sent with EVERY ping
+    // (checkout-gate.js reads it too), so the Worker can credit memberships and
+    // checkout clicks back to the source, campaign and landing page that started
+    // the session. Before Oct 2026 only the source was carried.
+    var ctx = null;
+    try { ctx = JSON.parse(sessionStorage.getItem('fsdx_ctx') || 'null'); } catch (e) {}
+    if (firstOfSession || !ctx) {
       sessionStorage.setItem('fsdx_v', '1');
       var params = new URLSearchParams(location.search);
-      src = (params.get('utm_source') || '').toLowerCase().trim().slice(0, 40);
+      var ref = document.referrer || '';
+      var refHost = '';
+      try { refHost = ref ? new URL(ref).hostname.replace(/^www\./, '') : ''; } catch (e) {}
+      if (refHost === location.hostname.replace(/^www\./, '')) refHost = '';
+      var ALIAS = { fb: 'facebook', meta: 'facebook', ig: 'instagram', yt: 'youtube', twitter: 'x', tt: 'tiktok', dc: 'discord' };
+      var src = (params.get('utm_source') || '').toLowerCase().trim().replace(/[^a-z0-9._-]/g, '').slice(0, 30);
+      src = ALIAS[src] || src;
       if (!src) {
-        var ref = document.referrer || '';
-        if (/youtube\.com|youtu\.be/.test(ref)) src = 'youtube';
-        else if (/google\./.test(ref)) src = 'google';
-        else if (/bing\.|duckduckgo|yahoo/.test(ref)) src = 'search';
-        else if (/instagram|facebook|fb\.|tiktok|twitter|t\.co|x\.com/.test(ref)) src = 'social';
-        else if (ref && ref.indexOf(location.host) === -1) src = 'referral';
+        var r = refHost;
+        if (/youtube\.com|youtu\.be/.test(r)) src = 'youtube';
+        else if (/(^|\.)google\./.test(r)) src = 'google';
+        else if (/bing\.|duckduckgo|yahoo|brave\.com|ecosia/.test(r)) src = 'search';
+        else if (/instagram/.test(r)) src = 'instagram';
+        else if (/facebook|(^|\.)fb\.(com|me)/.test(r)) src = 'facebook';
+        else if (/^t\.co$|twitter|(^|\.)x\.com/.test(r)) src = 'x';
+        else if (/tiktok/.test(r)) src = 'tiktok';
+        else if (/reddit/.test(r)) src = 'reddit';
+        else if (/discord/.test(r)) src = 'discord';
+        else if (/whop\.com/.test(r)) src = 'whop';
+        else if (/tradingview/.test(r)) src = 'tradingview';
+        else if (/chatgpt|openai|perplexity|claude\.ai|gemini/.test(r)) src = 'ai';
+        else if (params.get('fbclid')) src = 'facebook';
+        else if (params.get('gclid') || params.get('gbraid') || params.get('wbraid')) src = 'google';
+        else if (r) src = 'referral';
         else src = 'direct';
       }
-      sessionStorage.setItem('fsdx_src', src || 'direct');
+      // Paid traffic gets its own channel: "facebook-ads", "google-ads" …
+      // Tag Meta ads with utm_medium=paid (or cpc). Google click IDs are always paid.
+      var med = (params.get('utm_medium') || '').toLowerCase();
+      var paid = /^(cpc|ppc|paid|paid_?social|paidsocial|ads?|cpm|display|cpv)$/.test(med)
+        || !!(params.get('gclid') || params.get('gbraid') || params.get('wbraid'));
+      if (paid && !/-ads$/.test(src)) src = src + '-ads';
+      var seen = false;
+      try { seen = !!localStorage.getItem('fsdx_seen'); localStorage.setItem('fsdx_seen', '1'); } catch (e) {}
+      ctx = {
+        src: src || 'direct',
+        camp: (params.get('utm_campaign') || '').toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 60),
+        land: pgKey,
+        ref: refHost.toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 60),
+        ret: seen,
+        sid: Math.random().toString(36).slice(2, 10)
+      };
+      sessionStorage.setItem('fsdx_ctx', JSON.stringify(ctx));
+      sessionStorage.setItem('fsdx_src', ctx.src);   // older readers
     }
+    // A second page in the same session = engaged (not a bounce). Sent once.
+    var eng = false;
+    if (!firstOfSession && !sessionStorage.getItem('fsdx_eng')) { sessionStorage.setItem('fsdx_eng', '1'); eng = true; }
 
     fetch('https://nexus-validator.dfuentes4211.workers.dev/api/track', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ source: src, path: rawPath, visit: firstOfSession }),
+      body: JSON.stringify({ v: 2, source: ctx.src, path: rawPath, visit: firstOfSession, eng: eng,
+        sid: ctx.sid, camp: ctx.camp, land: ctx.land, ref: ctx.ref, ret: ctx.ret }),
       keepalive: true
     }).catch(function(){});
   } catch (e) { /* analytics never breaks the page */ }
