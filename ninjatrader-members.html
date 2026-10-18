@@ -147,6 +147,7 @@
               <a href="#s2">2. Chart settings</a>
               <a href="#s3">3. Add the strategy</a>
               <a href="#s4">4. Variant and settings</a>
+              <a href="#recommended" style="padding-left:12px">Recommended settings</a>
               <a href="#s5">5. Trail Mode (Custom)</a>
               <a href="#s6">6. Dashboard and chart</a>
               <a href="#s7">7. Before going live</a>
@@ -249,9 +250,9 @@
                     <div class="nt-shot" data-shot="nt-strategies-window"><img src="nt-strategies-window.webp" alt="Strategies window: KnightfallORB configured, Variant 2 Runner, Risk Profile 400, Daily Loss Limit 625, Flag Sizing Auto" loading="lazy" width="787" height="594"></div></li>
                   <li><b>Before you enable, check these five:</b>
                     <ul class="mt-2 space-y-1" style="list-style:disc;padding-left:18px">
-                      <li><b>Variant</b>: Variant 2 Runner unless you have a reason to change it.</li>
-                      <li><b>Risk Profile ($)</b>: your dollar risk on a full-size trade.</li>
-                      <li><b>Daily Loss Limit ($)</b>: your own number. 0 means off.</li>
+                      <li><b>Variant</b>: loads as Variant 2 Runner. Keep it unless you have a reason to change it.</li>
+                      <li><b>Risk Profile ($)</b>: loads at $250. Change it to fit your account (<a href="#recommended" class="text-green-400 font-bold">recommended settings</a>).</li>
+                      <li><b>Daily Loss Limit ($)</b>: loads at 0 (off). Set it: $500 at $250 risk, $625 at $400, about 1.5–2× risk otherwise.</li>
                       <li><b>Auto Trade</b>: <b>on</b> = it places and manages the trades for you. <b>Off</b> = signals only (popup and sound with direction, grade, contracts, entry, stop and TP1), and you place the trade yourself.</li>
                       <li><b>Account</b>: the exact account it will trade. Use <span class="nt-code">Sim101</span> first. On a fleet, double-check you picked the right one.</li>
                     </ul></li>
@@ -267,6 +268,34 @@
               <div class="nt-card" id="s4">
                 <h3 class="text-base font-black text-white mb-2">4. Pick a variant and your settings</h3>
                 <p class="nt-p mb-3">Settings are grouped in order: <b>0. Variant</b> first, then <b>1. Risk Management</b>. Variant picks how the strategy exits and locks the rest of the strategy settings to tested values. Risk, sizing, the daily loss limit, the side lock, Auto Trade and every display setting always stay yours.</p>
+
+                <div id="recommended" class="grid md:grid-cols-2 gap-4 mb-5" style="scroll-margin-top:72px">
+                  <div class="rounded-xl border border-white/10 p-4" style="background:rgba(255,255,255,.02)">
+                    <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-2">What loads by default</div>
+                    <p class="nt-p mb-2">When you first add KnightfallORB, you get:</p>
+                    <div class="nt-kv"><span>Variant</span><span>Variant 2 Runner</span></div>
+                    <div class="nt-kv"><span>Risk Profile</span><span>$250</span></div>
+                    <div class="nt-kv"><span>Daily Loss Limit</span><span style="color:#F5A524">0 (off): set it</span></div>
+                    <div class="nt-kv"><span>Flag Sizing</span><span>Auto (off at $250)</span></div>
+                    <div class="nt-kv"><span>Side lock</span><span>On</span></div>
+                    <div class="nt-kv"><span>Auto Trade</span><span>On</span></div>
+                    <p class="nt-p mt-3 text-[12px]">The defaults are ready to run except the Daily Loss Limit. Set that before you enable.</p>
+                  </div>
+                  <div class="rounded-xl border p-4" style="border-color:rgba(255,107,31,.35);background:rgba(255,107,31,.05)">
+                    <div class="text-[10px] uppercase tracking-widest font-bold mb-2" style="color:#FF6B1F">Recommended settings</div>
+                    <p class="nt-p mb-2">What we run on V2 Runner. Change the risk to fit your account size.</p>
+                    <div class="nt-scroll">
+                      <table class="nt-table">
+                        <tr><th>Risk Profile</th><th>Daily Loss Limit</th><th>Flag Sizing</th></tr>
+                        <tr><td>$250</td><td>$500</td><td>Auto (off)</td></tr>
+                        <tr><td>$400</td><td>$625</td><td>Auto (on)</td></tr>
+                        <tr><td>Other sizes</td><td>About 1.5&ndash;2&times; your risk</td><td>Auto (on from $400)</td></tr>
+                      </table>
+                    </div>
+                    <p class="nt-p mt-3 text-[12px]">Side lock on. Same rule if you run V1. Pick the risk where the backtest drawdown fits your account. <a href="results.html#risk-profiles" class="text-green-400 font-bold">Size it on the results page &rarr;</a></p>
+                  </div>
+                </div>
+
                 <div class="nt-scroll">
                   <table class="nt-table">
                     <tr><th>Variant</th><th>What it does</th></tr>
@@ -290,8 +319,7 @@
                   </table>
                 </div>
                 <div class="nt-shot" data-shot="nt-settings-top"><img src="nt-settings-top.webp" alt="Strategy settings: 0. Variant set to Variant 2 Runner, 1. Risk Management with Risk Profile, Daily Loss Limit, Flag Sizing and Auto Trade" loading="lazy" width="454" height="412" style="max-width:min(100%,420px)"></div>
-                <p class="nt-p mt-3"><b>Our two setups:</b> V2 Runner at $250 Risk Profile (Flag Sizing off by Auto), Daily Loss Limit $500. V2 Runner at $400 Risk Profile (Flag Sizing on by Auto), Daily Loss Limit $625. <a href="results.html#risk-profiles" class="text-green-400 font-bold">See them tested, or size for your account &rarr;</a></p>
-                <p class="nt-p mt-2">Locked by the variant (V1/V2): ORB 8:30&ndash;8:45 CT, Minimum Grade C, Max Trades Per Session 3, Entry Cutoff 12:45 PM CT, Flatten By 3:30 PM CT (11:50 AM on half-days). Display settings only change what's drawn. They never affect trades.</p>
+                <p class="nt-p mt-3">Locked by the variant (V1/V2): ORB 8:30&ndash;8:45 CT, Minimum Grade C, Max Trades Per Session 3, Entry Cutoff 12:45 PM CT, Flatten By 3:30 PM CT (11:50 AM on half-days). Display settings only change what's drawn. They never affect trades.</p>
               </div>
 
               <div class="nt-card" id="s5">
