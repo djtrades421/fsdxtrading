@@ -63,6 +63,27 @@
     .nt-banner { border:1px solid rgba(255,107,31,.35); background:rgba(255,107,31,.07); border-radius:14px; padding:14px 16px;
                  display:flex; gap:12px; align-items:flex-start; }
     @media (max-width:640px){ .nt-card{padding:18px} .nt-row{flex-direction:column} }
+    /* Tabs */
+    .nt-tabs { position:sticky; top:0; z-index:40; background:rgba(0,0,0,.92); backdrop-filter:blur(8px);
+               border-bottom:1px solid rgba(255,255,255,.10); padding:0 24px; }
+    @media (max-width:767px){ .nt-tabs{ top:61px; padding:0 12px; } }
+    .nt-tabrow { display:flex; gap:2px; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+    .nt-tabrow::-webkit-scrollbar { display:none; }
+    .nt-tabrow button { min-height:48px; padding:0 16px; border:0; background:transparent; color:#71717a; font-size:13px; font-weight:800;
+                        white-space:nowrap; cursor:pointer; border-bottom:2px solid transparent; transition:color .15s; }
+    .nt-tabrow button:hover { color:#e4e4e7; }
+    .nt-tabrow button[aria-selected="true"] { color:#fff; border-bottom-color:#FF6B1F; }
+    .nt-panel[hidden] { display:none; }
+    .nt-panel .nt-card { scroll-margin-top:72px; }
+    @media (max-width:767px){ .nt-panel .nt-card { scroll-margin-top:130px; } }
+    /* Setup stages */
+    .nt-stages { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px; }
+    .nt-stages a { display:flex; flex-direction:column; gap:4px; height:100%; box-sizing:border-box; padding:16px; border-radius:14px;
+                   border:1px solid rgba(255,255,255,.10); background:rgba(9,9,11,1); transition:border-color .15s; }
+    .nt-stages a:hover { border-color:rgba(255,107,31,.5); }
+    .nt-stages .n { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:#FF6B1F; }
+    .nt-stages b { font-size:15px; font-weight:900; color:#fff; }
+    .nt-stages a > span:last-child { font-size:12.5px; color:#a1a1aa; line-height:1.55; }
   </style>
 </head>
 
@@ -122,56 +143,28 @@
         </div>
       </section>
 
-      <!-- ══════════════ WHAT'S NEW ══════════════ -->
-      <section id="whats-new" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
-        <div class="max-w-5xl mx-auto">
-          <h2 class="text-sm font-black text-white uppercase tracking-wider">What's new</h2>
-          <p class="text-xs text-zinc-600 mt-1">Release notes for the current version.</p>
-          <div class="nt-card mt-6" id="nt-whatsnew">
-            <p class="nt-p">No release published yet.</p>
-          </div>
+      <!-- ══════════════ TABS ══════════════ -->
+      <nav class="nt-tabs" aria-label="NinjaTrader hub sections">
+        <div class="max-w-5xl mx-auto nt-tabrow" role="tablist">
+          <button type="button" role="tab" data-tab="setup">Setup guide</button>
+          <button type="button" role="tab" data-tab="settings">Recommended settings</button>
+          <button type="button" role="tab" data-tab="dashboard">Dashboard</button>
+          <button type="button" role="tab" data-tab="help">Troubleshooting</button>
+          <button type="button" role="tab" data-tab="updates">Updates</button>
         </div>
-      </section>
+      </nav>
 
-      <!-- ══════════════ INSTALL GUIDE ══════════════ -->
-      <section id="install" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
+      <section id="setup" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="setup">
         <div class="max-w-5xl mx-auto">
-          <h2 class="text-sm font-black text-white uppercase tracking-wider">Install and set up</h2>
-          <p class="text-xs text-zinc-600 mt-1">About 10 minutes. Do it once. Updates are a re-import.</p>
-
-          <div class="grid md:grid-cols-4 gap-6 mt-6">
-            <nav class="nt-toc hidden md:block">
-              <a href="#quickstart">Start to finish</a>
-              <a href="#need">What you need</a>
-              <a href="#s1">1. Install</a>
-              <a href="#s2">2. Chart settings</a>
-              <a href="#s3">3. Add the strategy</a>
-              <a href="#s4">4. Variant and settings</a>
-              <a href="#recommended" style="padding-left:12px">Recommended settings</a>
-              <a href="#s5">5. Trail Mode (Custom)</a>
-              <a href="#s6">6. Dashboard and chart</a>
-              <a href="#s7">7. Before going live</a>
-              <a href="#s8">8. Updating</a>
-              <a href="#trouble">Troubleshooting</a>
-            </nav>
-
-            <div class="md:col-span-3 space-y-5" style="min-width:0">
-
-              <div class="nt-card" id="quickstart" style="border-color:rgba(255,107,31,.35)">
-                <h3 class="text-base font-black text-white mb-1">Start to finish</h3>
-                <p class="nt-p mb-4">The short version. Each line links to the full step.</p>
-                <ol class="nt-steps">
-                  <li><b>License active</b> on your NinjaTrader login email (card at the top shows Active).</li>
-                  <li><b>Download</b> the zip above. Don't unzip it. <a href="#s1" class="text-green-400 font-bold">Step 1</a></li>
-                  <li><b>Import</b>: Tools → Import → NinjaScript Add-On. Restart NinjaTrader. <a href="#s1" class="text-green-400 font-bold">Step 1</a></li>
-                  <li><b>Merge policy</b>: Tools → Settings → Market data → Merge non back adjusted. <a href="#s2" class="text-green-400 font-bold">Step 2A</a></li>
-                  <li><b>Chart</b>: MNQ or NQ, 5 Minute, Last, 365 days, CME US Index Futures ETH. <a href="#s2" class="text-green-400 font-bold">Step 2B</a></li>
-                  <li><b>Add KnightfallORB.</b> Set Variant, Risk Profile, Daily Loss Limit, Auto Trade (on = auto, off = you trade manually) and the correct Account (<span class="nt-code">Sim101</span> first). Then tick Enabled. <a href="#s3" class="text-green-400 font-bold">Step 3</a></li>
-                  <li><b>Save</b> the Data Series preset as default and save your workspace. <a href="#s2" class="text-green-400 font-bold">Step 2C</a></li>
-                  <li><b>Check the dashboard</b>: v1.4.1 in the header, no red warning rows. <a href="#s6" class="text-green-400 font-bold">Step 6</a></li>
-                  <li><b>Watch it on Sim</b> for a few sessions before any live or prop account. <a href="#s7" class="text-green-400 font-bold">Step 7</a></li>
-                </ol>
-              </div>
+          <h2 class="text-lg md:text-xl font-black text-white">Set it up, start to finish</h2>
+          <p class="text-xs text-zinc-500 mt-1">About 10 minutes. Four stages. Do it once.</p>
+          <div class="space-y-5 mt-6">
+              <ol id="stages" class="nt-stages">
+                <li><a href="#s1"><span class="n">01</span><b>Install</b><span>Download the zip. Tools &rarr; Import &rarr; NinjaScript Add-On. Restart.</span></a></li>
+                <li><a href="#s2"><span class="n">02</span><b>Chart settings</b><span>Merge non back adjusted. 5 min, Last, 365 days, ETH. Save as default.</span></a></li>
+                <li><a href="#s3"><span class="n">03</span><b>Add the strategy</b><span>Check Variant, Risk, DLL, Auto Trade, Account. Enable. Save workspace.</span></a></li>
+                <li><a href="#s7"><span class="n">04</span><b>Check and go live</b><span>Dashboard clean. Watch it on Sim first. Then live.</span></a></li>
+              </ol>
 
               <div class="nt-card" id="need">
                 <h3 class="text-base font-black text-white mb-3">What you need</h3>
@@ -265,11 +258,31 @@
                 <p class="nt-p mt-2"><b>One strategy per account.</b> Don't place manual trades on an account it's trading. For several accounts, enable it on each one or use a trade copier.</p>
               </div>
 
-              <div class="nt-card" id="s4">
-                <h3 class="text-base font-black text-white mb-2">4. Pick a variant and your settings</h3>
-                <p class="nt-p mb-3">Settings are grouped in order: <b>0. Variant</b> first, then <b>1. Risk Management</b>. Variant picks how the strategy exits and locks the rest of the strategy settings to tested values. Risk, sizing, the daily loss limit, the side lock, Auto Trade and every display setting always stay yours.</p>
+              <div class="nt-card" id="s7">
+                <h3 class="text-base font-black text-white mb-3">4. Check and go live</h3>
+                <ul class="nt-steps">
+                  <li><b>Check the dashboard:</b> v1.4.1 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
+                  <li><b>Run it on Sim101 first</b> for at least a few sessions. Check entries, stops, targets and the 3:30 PM flatten.</li>
+                  <li><b>Keep NinjaTrader running and connected</b> during the session. It only manages trades while it's running. A VPS is recommended.</li>
+                  <li><b>Built-in safety:</b> flattens at 3:30 PM CT (and before half-day closes), NinjaTrader's session-close exit runs as a backup, and if an order is rejected it cancels, flattens, turns itself off and alerts you.</li>
+                  <li><b>Rollover:</b> a red <b>ROLLOVER</b> warning shows about 8 days before expiry. Switch the chart to the next contract month and re-enable.</li>
+                  <li><b>You're responsible for your account.</b> Watch it, especially the first weeks. Check your prop firm's rules on automation before running it there.</li>
+                </ul>
+              </div>
+          </div>
+        </div>
+      </section>
 
-                <div id="recommended" class="grid md:grid-cols-2 gap-4 mb-5" style="scroll-margin-top:72px">
+      <section id="settings" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="settings">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-lg md:text-xl font-black text-white">Recommended settings</h2>
+          <p class="text-xs text-zinc-500 mt-1">Defaults, what we run, and every setting explained.</p>
+          <div class="space-y-5 mt-6">
+              <div class="nt-card" id="recommended">
+                <h3 class="text-base font-black text-white mb-2">Defaults and what we run</h3>
+                <p class="nt-p mb-4">What loads by default, what we run, and how to size it for your account. You set these in the Strategies window (<a href="#s3" class="text-green-400 font-bold">Setup step 3</a>).</p>
+
+                <div class="grid md:grid-cols-2 gap-4">
                   <div class="rounded-xl border border-white/10 p-4" style="background:rgba(255,255,255,.02)">
                     <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold mb-2">What loads by default</div>
                     <p class="nt-p mb-2">When you first add KnightfallORB, you get:</p>
@@ -295,6 +308,12 @@
                     <p class="nt-p mt-3 text-[12px]">Side lock on. Same rule if you run V1. Pick the risk where the backtest drawdown fits your account. <a href="results.html#risk-profiles" class="text-green-400 font-bold">Size it on the results page &rarr;</a></p>
                   </div>
                 </div>
+              </div>
+
+              <div class="nt-card" id="s4">
+                <h3 class="text-base font-black text-white mb-2">Variants and every setting</h3>
+                <p class="nt-p mb-3">Settings are grouped in order: <b>0. Variant</b> first, then <b>1. Risk Management</b>. Variant picks how the strategy exits and locks the rest of the strategy settings to tested values. Risk, sizing, the daily loss limit, the side lock, Auto Trade and every display setting always stay yours.</p>
+
 
                 <div class="nt-scroll">
                   <table class="nt-table">
@@ -323,7 +342,7 @@
               </div>
 
               <div class="nt-card" id="s5">
-                <h3 class="text-base font-black text-white mb-2">5. Trail Mode (Custom and V3)</h3>
+                <h3 class="text-base font-black text-white mb-2">Trail Mode (Custom and V3)</h3>
                 <p class="nt-p mb-3">V2 sets its own trail. In V1 the trail is off. These settings only apply in <b>Custom</b> and <b>V3</b>. Backtest any change before you use it live.</p>
                 <div class="nt-scroll">
                   <table class="nt-table">
@@ -337,9 +356,17 @@
                   </table>
                 </div>
               </div>
+          </div>
+        </div>
+      </section>
 
+      <section id="dashboard" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="dashboard">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-lg md:text-xl font-black text-white">Reading the dashboard</h2>
+          <p class="text-xs text-zinc-500 mt-1">What each row and chart marking means.</p>
+          <div class="space-y-5 mt-6">
               <div class="nt-card" id="s6">
-                <h3 class="text-base font-black text-white mb-2">6. Dashboard and chart</h3>
+                <h3 class="text-base font-black text-white mb-2">Dashboard and chart</h3>
                 <p class="nt-p mb-3">The dashboard sits top right. <b>Red rows at the top are warnings.</b> Fix them before trading.</p>
                 <div class="nt-shot" data-shot="nt-dashboard"><img src="nt-dashboard.webp" alt="Chart with the Knightfall v1.4.1 dashboard: Variant 2 Runner, a bear breakout graded A with entry, stop, TP1, TP2 and the TAKE TRADE verdict" loading="lazy" width="868" height="896"></div>
                 <div class="nt-shot" data-shot="nt-dashboard-panel"><img src="nt-dashboard-panel.webp" alt="Close-up of the dashboard panel, row by row" loading="lazy" width="298" height="458" style="max-width:min(100%,420px);width:100%"></div>
@@ -378,20 +405,45 @@
                 </div>
                 <p class="nt-p mt-3">One setup is drawn at a time. Setup lines clear at the 5 PM CT session roll.</p>
               </div>
+          </div>
+        </div>
+      </section>
 
-              <div class="nt-card" id="s7">
-                <h3 class="text-base font-black text-white mb-3">7. Before trading a live account</h3>
-                <ul class="nt-steps">
-                  <li><b>Run it on Sim101 first</b> for at least a few sessions. Check entries, stops, targets and the 3:30 PM flatten.</li>
-                  <li><b>Keep NinjaTrader running and connected</b> during the session. It only manages trades while it's running. A VPS is recommended.</li>
-                  <li><b>Built-in safety:</b> flattens at 3:30 PM CT (and before half-day closes), NinjaTrader's session-close exit runs as a backup, and if an order is rejected it cancels, flattens, turns itself off and alerts you.</li>
-                  <li><b>Rollover:</b> a red <b>ROLLOVER</b> warning shows about 8 days before expiry. Switch the chart to the next contract month and re-enable.</li>
-                  <li><b>You're responsible for your account.</b> Watch it, especially the first weeks. Check your prop firm's rules on automation before running it there.</li>
-                </ul>
+      <section id="help" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="help">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-lg md:text-xl font-black text-white">Troubleshooting</h2>
+          <p class="text-xs text-zinc-500 mt-1">Fixes for the common setup problems.</p>
+          <div class="space-y-5 mt-6">
+              <div class="nt-card" id="trouble">
+                <h3 class="text-base font-black text-white mb-1">Common questions</h3>
+                <p class="nt-p mb-2">Tap a question.</p>
+                <div id="faq-list" class="divide-y divide-white/5"></div>
+              </div>
+
+              <div class="nt-card" id="contact">
+                <h3 class="text-base font-black text-white mb-1">Still stuck?</h3>
+                <p class="nt-p mb-4">Send a screenshot of the problem and your NinjaTrader email.</p>
+                <div class="flex flex-wrap gap-3">
+                  <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="nt-btn">DM us on Discord &rarr;</a>
+                  <a href="mailto:fsdxteam@gmail.com?subject=NinjaTrader%20help" class="nt-btn ghost">Email fsdxteam@gmail.com</a>
+                </div>
+              </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="updates" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="updates">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-lg md:text-xl font-black text-white">Updates</h2>
+          <p class="text-xs text-zinc-500 mt-1">Release notes, how to update, and older versions.</p>
+          <div class="space-y-5 mt-6">
+              <div class="nt-card" id="whats-new">
+                <h3 class="text-base font-black text-white mb-3">What's new</h3>
+                <div id="nt-whatsnew"><p class="nt-p">No release published yet.</p></div>
               </div>
 
               <div class="nt-card" id="s8">
-                <h3 class="text-base font-black text-white mb-3">8. Updating</h3>
+                <h3 class="text-base font-black text-white mb-3">How to update</h3>
                 <ol class="nt-steps">
                   <li>When a new version is out, you'll see <b>Update available</b> at the top of this page.</li>
                   <li>Download it, then <b>Tools → Import → NinjaScript Add-On</b> and pick the new zip. Say yes to replace.</li>
@@ -401,40 +453,15 @@
                 </ol>
               </div>
 
-            </div>
+              <div class="nt-card" id="versions">
+                <h3 class="text-base font-black text-white mb-1">Previous versions</h3>
+                <p class="nt-p mb-3">Only use an older version if support asks you to.</p>
+                <div id="nt-versions" class="text-xs text-zinc-600">None yet.</div>
+              </div>
           </div>
         </div>
       </section>
 
-      <!-- ══════════════ TROUBLESHOOTING ══════════════ -->
-      <section id="trouble" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
-        <div class="max-w-5xl mx-auto">
-          <h2 class="text-sm font-black text-white uppercase tracking-wider">Troubleshooting</h2>
-          <p class="text-xs text-zinc-600 mt-1">Tap a question.</p>
-          <div id="faq-list" class="mt-4 divide-y divide-white/5 border-y border-white/5"></div>
-        </div>
-      </section>
-
-      <!-- ══════════════ PREVIOUS VERSIONS ══════════════ -->
-      <section id="versions" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10 bg-zinc-950/40">
-        <div class="max-w-5xl mx-auto">
-          <h2 class="text-sm font-black text-white uppercase tracking-wider">Previous versions</h2>
-          <p class="text-xs text-zinc-600 mt-1">Only use an older version if support asks you to.</p>
-          <div id="nt-versions" class="mt-4 text-xs text-zinc-600">None yet.</div>
-        </div>
-      </section>
-
-      <!-- ══════════════ HELP ══════════════ -->
-      <section id="help" class="py-12 md:py-14 px-6 md:px-12 border-b border-white/10">
-        <div class="max-w-5xl mx-auto">
-          <h2 class="text-sm font-black text-white uppercase tracking-wider">Need help?</h2>
-          <p class="text-xs text-zinc-600 mt-1">Send a screenshot of the problem and your NinjaTrader email.</p>
-          <div class="mt-5 flex flex-wrap gap-3">
-            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="nt-btn">DM us on Discord &rarr;</a>
-            <a href="mailto:fsdxteam@gmail.com?subject=NinjaTrader%20help" class="nt-btn ghost">Email fsdxteam@gmail.com</a>
-          </div>
-        </div>
-      </section>
 
       <footer class="py-8 px-6 md:px-12">
         <div class="max-w-5xl mx-auto">
@@ -560,13 +587,13 @@
         + '<div class="nt-kv"><span>Last downloaded</span><span>' + (L && L.lastDownloadAt ? fmtDate(L.lastDownloadAt) : '—') + '</span></div></div>'
         + '<div class="nt-banner mt-4"><div class="flex-1"><div class="text-[12px] font-black text-white">Next: set it up start to finish</div>'
         + '<div class="text-[11.5px] text-zinc-400 mt-1">Import, chart settings (merge policy, 365 days, ETH), add the strategy, save your workspace. About 10 minutes.</div>'
-        + '<a href="#quickstart" class="nt-btn ghost mt-3" style="padding:8px 14px;font-size:10.5px">Open the setup guide &darr;</a></div></div>';
+        + '<a href="#setup" class="nt-btn ghost mt-3" style="padding:8px 14px;font-size:10.5px">Open the setup guide &darr;</a></div></div>';
     } else if (d.eligible && L && L.status === 'active' && !d.live && !d.early) {
       html = '<p class="nt-p">Your license is ready. Downloads open at launch. We\'ll announce it in Discord and email you.</p>';
     } else if (d.eligible && L && L.status === 'active' && !cur) {
       html = '<p class="nt-p">No release has been published yet. Check back soon.</p>';
     } else if (d.eligible && L && L.status === 'pending') {
-      html = '<p class="nt-p">The download unlocks as soon as your license is active. Read the install steps below while you wait.</p>';
+      html = '<p class="nt-p">The download unlocks as soon as your license is active. Read the Setup guide below while you wait.</p>';
     } else if (d.eligible) {
       html = '<p class="nt-p">Confirm your NinjaTrader email first. The download unlocks once your license is active.</p>';
     } else {
@@ -628,7 +655,7 @@
         document.body.appendChild(a); a.click(); a.remove();
         setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
         btn.disabled = false; btn.innerHTML = label;
-        if (msgEl) { msgEl.innerHTML = 'Downloaded. Next: Tools → Import → NinjaScript Add-On. <a href="#quickstart" class="font-bold underline">Follow the setup guide &darr;</a>'; msgEl.className = 'nt-msg ok'; }
+        if (msgEl) { msgEl.innerHTML = 'Downloaded. Next: Tools → Import → NinjaScript Add-On. <a href="#setup" class="font-bold underline">Follow the setup guide &darr;</a>'; msgEl.className = 'nt-msg ok'; }
         setTimeout(load, 1200);
       })
       .catch(function (e) {
@@ -643,7 +670,7 @@
     ['NinjaTrader says I\'m not licensed',
      'Import works without a license. The strategy won\'t run until your license is active. Either your license isn\'t active yet (see the card at the top), or you\'re logged into NinjaTrader with a different email. Log out and back into NinjaTrader with the licensed email, or update your email above and we\'ll move the license. Still stuck? Send us a screenshot of the error.'],
     ['A side won\'t trade after the first breakout',
-     'That\'s the side lock. If the first breakout of the day on a side fails the evidence gate, that side is done for the session. The dashboard shows the reason (grade, counter-trend, ranging or below-gate). It\'s on by default. You can turn off <b>Lock Side If First Breakout Fails Gate</b> in any variant (step 4).'],
+     'That\'s the side lock. If the first breakout of the day on a side fails the evidence gate, that side is done for the session. The dashboard shows the reason (grade, counter-trend, ranging or below-gate). It\'s on by default. You can turn off <b>Lock Side If First Breakout Fails Gate</b> in any variant (Recommended settings tab).'],
     ['My Daily Loss Limit shows yellow',
      'It\'s a sizing hint, not an error. Yellow "low" means the limit is under 1.5× your Risk Profile. Yellow "high" means it\'s over 2.5×. The strategy runs either way.'],
     ['Chart loses its settings when I reopen NinjaTrader',
@@ -699,6 +726,61 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () { buildFaq(); load(); });
+})();
+
+/* ── Tabs: Setup · Recommended settings · Dashboard · Troubleshooting · Updates ──
+   Any #anchor on the page opens the tab that holds it, then scrolls to it. */
+(function () {
+  'use strict';
+  var TABS = ['setup', 'settings', 'dashboard', 'help', 'updates'];
+  function panels() { return document.querySelectorAll('.nt-panel'); }
+  function show(tab) {
+    Array.prototype.forEach.call(panels(), function (p) { p.hidden = p.getAttribute('data-panel') !== tab; });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-tab]'), function (b) {
+      var on = b.getAttribute('data-tab') === tab;
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      if (on) { var row = b.parentNode; var l = b.offsetLeft - row.offsetLeft, r = l + b.offsetWidth;
+        if (l < row.scrollLeft || r > row.scrollLeft + row.clientWidth) row.scrollLeft = Math.max(0, l - 16); }
+    });
+  }
+  function go(id, smooth) {
+    var el = id && document.getElementById(id);
+    var panel = el && (el.classList.contains('nt-panel') ? el : el.closest('.nt-panel'));
+    if (!panel) return false;
+    show(panel.getAttribute('data-panel'));
+    var target = el === panel ? document.querySelector('.nt-tabs') : el;
+    var bar = document.querySelector('.nt-tabs');
+    // Tab itself: bring the tab bar to the top. Inner anchor: scroll to it (scroll-margin clears the bar).
+    if (el === panel) {
+      var y = panel.getBoundingClientRect().top + window.pageYOffset - (bar ? bar.offsetHeight : 0) - (window.innerWidth < 768 ? 61 : 0);
+      window.scrollTo({ top: Math.max(0, y), behavior: smooth ? 'smooth' : 'auto' });
+    } else {
+      target.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+    }
+    return true;
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-tab]');
+    if (b) { e.preventDefault(); var t = b.getAttribute('data-tab'); history.replaceState(null, '', '#' + t); go(t, true); return; }
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (a) {
+      var id = a.getAttribute('href').slice(1);
+      if (go(id, true)) { e.preventDefault(); history.replaceState(null, '', '#' + id); }
+    }
+  });
+  window.addEventListener('hashchange', function () { go(location.hash.slice(1), true); });
+  function init() {
+    var id = location.hash.slice(1);
+    if (!go(id, false)) show(TABS[0]);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  // Content renders after the license loads; re-apply the hash once it's visible.
+  var c = document.getElementById('nt-content');
+  if (c && window.MutationObserver) {
+    new MutationObserver(function (m, o) {
+      if (!c.classList.contains('hidden')) { o.disconnect(); if (location.hash) setTimeout(function () { go(location.hash.slice(1), false); }, 50); }
+    }).observe(c, { attributes: true, attributeFilter: ['class'] });
+  }
 })();
 </script>
 
