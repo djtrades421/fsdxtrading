@@ -1,6 +1,7 @@
 {
  "meta": {
   "product": "FSD-X ORB Pro",
+  "variant": "v1",
   "execution": "unmanaged",
   "versions": [
    {
@@ -178,8 +179,8 @@
   "risk_profile": 400,
   "session": "New York open (8:30 AM CT)",
   "commission_rt": 1.04,
-  "generated": "2026-10-09",
-  "last_trade_date": "2026-10-08"
+  "generated": "2026-10-18",
+  "last_trade_date": "2026-10-16"
  },
  "trades": [
   {
@@ -2377,6 +2378,78 @@
    "pnl": -214.04,
    "mfe": 178.5,
    "mae": -213
+  },
+  {
+   "id": "2026-10-13-20",
+   "date": "2026-10-13",
+   "entry_time": "08:45",
+   "exit_time": "10:20",
+   "dir": "LONG",
+   "grade": "B+",
+   "contracts": 2,
+   "entry": 30792.25,
+   "exit": 30690,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -409,
+   "commission": 2.08,
+   "pnl": -411.08,
+   "mfe": 91,
+   "mae": -409
+  },
+  {
+   "id": "2026-10-13-21",
+   "date": "2026-10-13",
+   "entry_time": "11:30",
+   "exit_time": "12:50",
+   "dir": "LONG",
+   "grade": "B",
+   "contracts": 2,
+   "entry": 30796,
+   "exit": 30693.75,
+   "exit_reason": "L-TP1",
+   "exit_type": "STOP",
+   "gross": -409,
+   "commission": 2.08,
+   "pnl": -411.08,
+   "mfe": 23,
+   "mae": -409
+  },
+  {
+   "id": "2026-10-15-22",
+   "date": "2026-10-15",
+   "entry_time": "08:50",
+   "exit_time": "09:00",
+   "dir": "SHORT",
+   "grade": "A+",
+   "contracts": 2,
+   "entry": 29640,
+   "exit": 29745.75,
+   "exit_reason": "S-TP1",
+   "exit_type": "STOP",
+   "gross": -423,
+   "commission": 2.08,
+   "pnl": -425.08,
+   "mfe": 71,
+   "mae": -423
+  },
+  {
+   "id": "2026-10-16-23",
+   "date": "2026-10-16",
+   "entry_time": "08:55",
+   "exit_time": "10:05",
+   "dir": "SHORT",
+   "grade": "A",
+   "contracts": 2,
+   "entry": 29837.5,
+   "exit": 29715,
+   "exit_reason": "S-TP1",
+   "exit_type": "TP1",
+   "gross": 490,
+   "commission": 2.08,
+   "pnl": 487.92,
+   "mfe": 490,
+   "mae": -438
   }
  ]
 }
