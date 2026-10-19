@@ -4,8 +4,8 @@
   {
    "status": "approved",
    "product": "NinjaTrader 8",
-   "title": "ORB Pro Knightfall for NinjaTrader 8 (v1.4.1)",
-   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader. Releases Friday, October 23, 2026, as a download for members. Ships as v1.4.1: Variant 1 Stock, Variant 2 Runner (default), Variant 3 Fixed Stop (experimental) and Custom; Risk Profile and Daily Loss Limit at the top of the settings; the new first-breakout side lock; Flag Sizing on Auto; a Status row that shows when the system is in a cold or hot run; and the No-Hedge ORB Cap on in every variant. Auto Trade on or alert-only, no webhooks or bridge service. <a href=\"ninjatrader-members.html\">Confirm your NinjaTrader email</a> so your license is ready on launch day.",
+   "title": "ORB Pro Knightfall for NinjaTrader 8 (v1.4.2)",
+   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader. Releases Friday, October 23, 2026, as a download for members. Ships as v1.4.2: Variant 1 Stock, Variant 2 Runner (default), Variant 3 Fixed Stop (experimental) and Custom; Risk Profile and Daily Loss Limit at the top of the settings; the new first-breakout side lock; Flag Sizing on Auto; a Status row that shows when the system is in a cold or hot run; the No-Hedge ORB Cap on in every variant; and settings a variant locks are hidden, so you only see what you can change. Auto Trade on or alert-only, no webhooks or bridge service. <a href=\"ninjatrader-members.html\">Confirm your NinjaTrader email</a> so your license is ready on launch day.",
    "eta": "2026-10-23"
   },
   {
@@ -19,6 +19,22 @@
    "product": "NinjaTrader 8",
    "title": "Raven, Volume Engine and Stack V1 on NinjaTrader 8",
    "body": "Native NinjaTrader 8 versions of Raven, Volume Engine and Stack V1, coming after Knightfall's NinjaTrader release."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-19",
+   "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall v1.4.2: variants show what they lock",
+   "body": "The Variant menu now names what each one is locked to: <b>V1 Stock</b>, <b>V2 Runner</b> and <b>V3 Fixed Stop</b> all run the New York open (8:30 CT, 15-minute ORB). Locked settings are tagged <b>· Custom only</b> or <b>· Custom / V3</b>. Change one in a locked variant and the dashboard shows a yellow warning, because it has no effect. Switch to Custom to use your own values. No change to trades. The variant names changed, so re-select your variant after updating."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-19",
+   "type": "update",
+   "product": "Auto-Trader",
+   "title": "Auto-Trader v1.4.2",
+   "body": "Same variant labels and lock tags as Knightfall v1.4.2. The status panel says locked or exits live, and warns if a locked setting was changed. No change to trades. After updating, re-select your variant and re-create your alert. <a href=\"autotrader.html\">ORB Auto-Trader</a>."
   },
   {
    "status": "shipped",
