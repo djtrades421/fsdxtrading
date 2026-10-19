@@ -313,7 +313,7 @@
               <div class="nt-card" id="s4">
                 <h3 class="text-base font-black text-white mb-2">Variants and every setting</h3>
                 <p class="nt-p mb-3">Settings are grouped in order: <b>0. Variant</b> first, then <b>1. Risk Management</b>. Variant picks how the strategy exits and locks the rest of the strategy settings to tested values. Every variant runs the New York open: 8:30 CT, 15-minute ORB. Risk, sizing, the daily loss limit, the side lock, Auto Trade and every display setting always stay yours.</p>
-                <p class="nt-p mb-3">Since v1.4.2, settings a variant locks are <b>hidden</b>. The <b>Locked To</b> line under Variant says what is locked. V3 shows only its exit settings and Fixed SL. Custom shows everything.</p>
+                <p class="nt-p mb-3">Since v1.4.2, settings a variant locks are tagged <b>· Custom only</b> or <b>· Custom / V3</b> in their name. In V1, V2 and V3 they have no effect. The <b>Locked To</b> line under Variant says what is locked.</p>
 
 
                 <div class="nt-scroll">
@@ -695,7 +695,7 @@
     ['Strategy turned off on its own',
      'Check the Log tab in the Control Center for the error. Send us a screenshot of it in Discord.'],
     ['I changed a setting and nothing changed',
-     'In Variants 1, 2 and 3 the strategy settings are locked to tested values, and since v1.4.2 they are hidden from the settings window. Switch Variant to Custom to see and change them. Risk, Flag Sizing, Daily Loss Limit, Auto Trade and display settings always apply. On v1.4.1 the locked settings still show but are not used. Update to v1.4.2.'],
+     'In Variants 1, 2 and 3 the strategy settings are locked to tested values. Since v1.4.2 they are tagged · Custom only or · Custom / V3 in their name. Switch Variant to Custom to change them. Risk, Flag Sizing, Daily Loss Limit, Auto Trade and display settings always apply.'],
     ['Status says Cold run',
      'The last 40 trades won less often than the normal 52–72% range. It\'s information only: it never changes size or pauses trading. Cold runs happen in the backtest too. Check the results page before changing anything.'],
     ['Can I run it on more than one account?',
