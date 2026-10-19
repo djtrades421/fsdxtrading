@@ -42,7 +42,8 @@ window.TR_VARIANTS = {
       since: '2026-10-09',
       files: { '400': 'track-record-v2.json', '250': 'track-record-v2-250.json' },
       versions: [
-        { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.' }
+        { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.' },
+        { label: 'v1.4.4', start: '2026-10-19', note: 'NinjaTrader 8 build. V2 settings retuned: slower trend read, max 2 trades, 1:00 PM cutoff.' }
       ],
       runner: true,
       exits: [

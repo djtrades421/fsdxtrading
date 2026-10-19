@@ -539,8 +539,8 @@ const COURSE = [
       <ul>
         <li><strong>Minimum opening range &mdash; 45 points.</strong> Tighter than that and the morning is
         skipped. A range that small doesn't produce a breakout worth trading.</li>
-        <li><strong>Maximum close outside the range &mdash; 50 points.</strong> If the breakout candle closes
-        more than 50 points past the level, it's gone too far. You'd be entering after the move instead of on
+        <li><strong>Maximum close outside the range &mdash; 50 points</strong> (60 in V2 Runner on NinjaTrader). If the breakout candle closes
+        more than that past the level, it's gone too far. You'd be entering after the move instead of on
         it.</li>
         <li><strong>Minimum close outside the range.</strong> Off by default. Set it if you want the candle to
         clear the level by a certain amount before it counts.</li>
@@ -549,7 +549,7 @@ const COURSE = [
         <li><strong>Opens inside the range.</strong> A candle already outside doesn't qualify.</li>
         <li><strong>One breakout per direction,</strong> until price closes back inside.</li>
         <li><strong>Minimum grade &mdash; C.</strong> D and F never qualify.</li>
-        <li><strong>Maximum trades per session &mdash; 3.</strong></li>
+        <li><strong>Maximum trades per session &mdash; 3</strong> (2 in V2 Runner on NinjaTrader).</li>
       </ul>
 
 
@@ -1127,7 +1127,7 @@ const COURSE = [
       trades in ten.</p>
       <p><strong>Several losses in one day takes far longer to undo</strong> &mdash; and they're rarely all
       the system's. The first was the setup. The second and third were you.</p>
-      <p>The system caps you at three trades a session for a reason. Your own daily stop should sit at or
+      <p>The system caps you at three trades a session (two in V2 Runner on NinjaTrader) for a reason. Your own daily stop should sit at or
       below that.</p>
 
       <h4>Get good at losing</h4>
@@ -1453,7 +1453,7 @@ const COURSE = [
 
       <h4>The clock</h4>
       <ul>
-        <li><strong>12:45 CT</strong> &mdash; no new entries after this, whatever prints.</li>
+        <li><strong>12:45 CT</strong> (1:00 PM in V2 Runner on NinjaTrader) &mdash; no new entries after this, whatever prints.</li>
         <li><strong>15:30 CT</strong> &mdash; everything flattens. Around 11:50 on half-days; the script knows
         the calendar.</li>
       </ul>

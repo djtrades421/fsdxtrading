@@ -319,10 +319,10 @@
                 <div class="nt-scroll">
                   <table class="nt-table">
                     <tr><th>Variant</th><th>What it does</th></tr>
-                    <tr><td>V2 Runner</td><td><b class="text-white">What we run.</b> Full size to TP2 with a trailing stop that starts at TP1 (60 pt distance, TP2 min R:R 2, TP offsets 25). Flag Sizing Auto (on at $400+). Selected by default when you first add the strategy.</td></tr>
+                    <tr><td>V2 Runner</td><td><b class="text-white">What we run.</b> Full size to TP2 with a trailing stop that starts at TP1 (60 pt distance, TP2 min R:R 2, TP1 offset 20, TP2 offset 25). Retuned in v1.4.4: slower 4H trend read (EMA 32 / 200), max 2 trades a session, entries until 1:00 PM CT. Flag Sizing Auto (on at $400+). Selected by default when you first add the strategy.</td></tr>
                     <tr><td>V1 Stock</td><td>The original Knightfall. Takes profit at TP1.</td></tr>
                     <tr><td>V3 Fixed Stop</td><td><b class="text-white">Experimental.</b> Every stop is the Fixed SL (default 30 pts) and the exit settings stay editable. It tested worse than V2 on the New York session; it's here for other sessions and markets.</td></tr>
-                    <tr><td>Custom</td><td>Every setting is editable. Starts at the V1 values. For your own testing.</td></tr>
+                    <tr><td>Custom</td><td>Every setting is editable. Starts at the V1 values. For your own testing. To run the pre-v1.4.4 V2, use Custom with the old values from the <a href="variant-settings.html#nt" class="text-green-400 font-bold">variant settings page</a>.</td></tr>
                   </table>
                 </div>
                 <p class="nt-p mt-3">The <b>No-Hedge ORB Cap</b> is locked on in V1, V2 and V3: a stop never sits past the far edge of the opening range. That means accounts running different variants can never be long and short at the same time. Only Custom can turn it off.</p>
@@ -382,7 +382,7 @@
                     <tr><th>Row</th><th>What it shows</th></tr>
                     <tr><td>Header</td><td>Strategy name and version (v1.4.4). Match it to the version on this page.</td></tr>
                     <tr><td>Config strip</td><td>Variant (with <b class="text-white">locked</b>, or <b class="text-white">exits live</b> in V3) · Risk Profile · $/pt · <b class="text-white">FS</b> when Flag Sizing is on · <b class="text-white">GL off</b> when the side lock is turned off</td></tr>
-                    <tr><td>Account row</td><td>The account it's trading (check it's the right one) · <b class="text-white">DLL</b> closed loss today / your limit, e.g. <span class="nt-code">DLL $0/$700</span> · AUTO or MANUAL · trades today out of 3. The DLL turns <b class="text-white">yellow</b> with <b class="text-white">low</b> or <b class="text-white">high</b> when the limit is under 1.5&times; or over 2.5&times; your Risk Profile. A sizing hint, not an error.</td></tr>
+                    <tr><td>Account row</td><td>The account it's trading (check it's the right one) · <b class="text-white">DLL</b> closed loss today / your limit, e.g. <span class="nt-code">DLL $0/$700</span> · AUTO or MANUAL · trades today out of the session max (2 in V2, 3 in V1 and V3). The DLL turns <b class="text-white">yellow</b> with <b class="text-white">low</b> or <b class="text-white">high</b> when the limit is under 1.5&times; or over 2.5&times; your Risk Profile. A sizing hint, not an error.</td></tr>
                     <tr><td>Status</td><td>Win rate of the last 40 trades against the normal 52&ndash;72% band: <b class="text-white">Normal</b>, <b class="text-white">Cold run</b> or <b class="text-white">Hot run</b>. Information only. It never changes size or stops trading.</td></tr>
                     <tr><td>ORB range</td><td>Size of today's opening range (8:30–8:45 CT), in points</td></tr>
                     <tr><td>5D avg</td><td>Average ORB of the last 5 sessions. Green = ideal band, yellow = outside it, red = extreme</td></tr>
