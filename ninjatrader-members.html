@@ -55,9 +55,6 @@
                    padding:8px 10px; border-bottom:1px solid rgba(255,255,255,.10); }
     .nt-table td { padding:9px 10px; border-bottom:1px solid rgba(255,255,255,.06); color:#a1a1aa; vertical-align:top; line-height:1.5; }
     .nt-table td:first-child { color:#fff; font-weight:700; white-space:nowrap; }
-    .nt-vals td:not(:first-child) { white-space:nowrap; color:#e4e4e7; }
-    .nt-vals td.v2 { color:#FF6B1F; font-weight:700; }
-    .nt-vals tr.grp td { color:#71717a; font-size:10px; text-transform:uppercase; letter-spacing:.12em; font-weight:900; padding-top:16px; }
     .nt-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
     .nt-toc a { display:block; font-size:12px; color:#a1a1aa; padding:5px 0; }
     .nt-toc a:hover { color:#FF6B1F; }
@@ -342,67 +339,13 @@
                   </table>
                 </div>
                 <div class="nt-shot" data-shot="nt-settings-top"><img src="nt-settings-top.webp" alt="Strategy settings: 0. Variant set to Variant 2 Runner, 1. Risk Management with Risk Profile, Daily Loss Limit, Flag Sizing and Auto Trade" loading="lazy" width="454" height="412" style="max-width:min(100%,420px)"></div>
-                <p class="nt-p mt-3">Locked by every variant: ORB 8:30&ndash;8:45 CT, Minimum Grade C, Max Trades Per Session 3, Entry Cutoff 12:45 PM CT, Flatten By 3:30 PM CT (11:50 AM on half-days). Display settings only change what's drawn. They never affect trades. <a href="#variant-values" class="text-green-400 font-bold">Every locked value &rarr;</a></p>
+                <p class="nt-p mt-3">Locked by every variant: ORB 8:30&ndash;8:45 CT, Minimum Grade C, Max Trades Per Session 3, Entry Cutoff 12:45 PM CT, Flatten By 3:30 PM CT (11:50 AM on half-days). Display settings only change what's drawn. They never affect trades. <a href="variant-settings.html#nt" class="text-green-400 font-bold">Every locked value &rarr;</a></p>
               </div>
 
               <div class="nt-card" id="variant-values">
                 <h3 class="text-base font-black text-white mb-2">Every locked value, by variant</h3>
-                <p class="nt-p mb-3">Want to test your own version? Set Variant to <b>Custom</b>, enter the column you're starting from, then change one thing at a time. Names match the settings window. <b class="text-white">Yours</b> = editable in that variant (starts at the V1 value).</p>
-                <div class="nt-scroll">
-                  <table class="nt-table nt-vals">
-                    <tr><th>Setting</th><th>V1 Stock</th><th>V2 Runner</th><th>V3 Fixed Stop</th></tr>
-                    <tr class="grp"><td colspan="4">2. ORB Settings</td></tr>
-                    <tr><td>ORB Duration (minutes)</td><td>15</td><td>15</td><td>15</td></tr>
-                    <tr><td>ORB Start Time (HHMM, Chicago CT)</td><td>830</td><td>830</td><td>830</td></tr>
-                    <tr class="grp"><td colspan="4">3. EOD / Session Close</td></tr>
-                    <tr><td>Flatten By (HHMM CT)</td><td>1530</td><td>1530</td><td>1530</td></tr>
-                    <tr><td>Half-Day Early-Close Calendar</td><td>On</td><td>On</td><td>On</td></tr>
-                    <tr><td>Early-Close Flatten (HHMM CT)</td><td>1150</td><td>1150</td><td>1150</td></tr>
-                    <tr class="grp"><td colspan="4">4. Trade Grading</td></tr>
-                    <tr><td>HTF Trend Minutes</td><td>240</td><td>240</td><td>240</td></tr>
-                    <tr><td>Fast EMA Length</td><td>21</td><td>21</td><td>21</td></tr>
-                    <tr><td>Slow EMA Length</td><td>140</td><td>140</td><td>140</td></tr>
-                    <tr><td>ORB Avg Lookback Days</td><td>5</td><td>5</td><td>5</td></tr>
-                    <tr><td>ORB Tolerance %</td><td>10</td><td>10</td><td>10</td></tr>
-                    <tr><td>Extreme ORB Multiplier</td><td>1.75</td><td>1.75</td><td>1.75</td></tr>
-                    <tr><td>Low Volume Mode</td><td>Off</td><td>Off</td><td>Off</td></tr>
-                    <tr><td>Minimum ORB to Trade (points)</td><td>45</td><td>45</td><td>45</td></tr>
-                    <tr><td>Max Close Outside ORB Filter</td><td>On</td><td>On</td><td>On</td></tr>
-                    <tr><td>Max Close Outside ORB (points)</td><td>50</td><td>50</td><td>50</td></tr>
-                    <tr><td>Min Close Outside ORB (points)</td><td>0</td><td>0</td><td>0</td></tr>
-                    <tr><td>Max Trades Per Session</td><td>3</td><td>3</td><td>3</td></tr>
-                    <tr><td>Entry Cutoff Time (HHMM CT)</td><td>1245</td><td>1245</td><td>1245</td></tr>
-                    <tr class="grp"><td colspan="4">5. Smart TP</td></tr>
-                    <tr><td>Max TP Distance (points)</td><td>200</td><td>200</td><td>200</td></tr>
-                    <tr><td>TP1 Min R:R</td><td>1.0</td><td>1.0</td><td>Yours</td></tr>
-                    <tr><td>TP2 Min R:R</td><td>1.5</td><td class="v2">2.0</td><td>Yours</td></tr>
-                    <tr><td>TP1 Offset (ticks)</td><td>20</td><td class="v2">25</td><td>Yours</td></tr>
-                    <tr><td>TP2 Offset (ticks)</td><td>20</td><td class="v2">25</td><td>Yours</td></tr>
-                    <tr><td>FVG Min Size (points)</td><td>5</td><td>5</td><td>5</td></tr>
-                    <tr><td>Swing High/Low Lookback</td><td>40</td><td>40</td><td>40</td></tr>
-                    <tr><td>Use HTF S/R</td><td>On</td><td>On</td><td>On</td></tr>
-                    <tr><td>HTF Swing Lookback</td><td>40</td><td>40</td><td>40</td></tr>
-                    <tr><td>TP Hit Detection Band (points)</td><td>10</td><td>10</td><td>Yours</td></tr>
-                    <tr class="grp"><td colspan="4">6. Stop Loss</td></tr>
-                    <tr><td>Minimum SL (points)</td><td>75</td><td>75</td><td>Ignored</td></tr>
-                    <tr><td>Maximum SL (points)</td><td>175</td><td>175</td><td>Ignored</td></tr>
-                    <tr><td>Fixed SL (points)</td><td>Off</td><td>Off</td><td class="v2">Yours (0 = 30)</td></tr>
-                    <tr><td>No-Hedge ORB Cap</td><td>On</td><td>On</td><td>On</td></tr>
-                    <tr class="grp"><td colspan="4">7. Strategy</td></tr>
-                    <tr><td>Minimum Grade</td><td>C</td><td>C</td><td>C</td></tr>
-                    <tr><td>Partials Mode</td><td>None</td><td class="v2">FullSizeToTP2</td><td>Yours</td></tr>
-                    <tr><td>Warmup Sessions Before Trading</td><td>30</td><td>30</td><td>30</td></tr>
-                    <tr><td>Day-Start Side Lockout</td><td>On</td><td>On</td><td>On</td></tr>
-                    <tr><td>Lock side if day opened at or below</td><td>D</td><td>D</td><td>D</td></tr>
-                    <tr><td>Trail Mode</td><td>Off</td><td class="v2">TrailOnly</td><td>Yours</td></tr>
-                    <tr><td>Trigger Units</td><td>Points</td><td class="v2">PercentOfTP1</td><td>Yours</td></tr>
-                    <tr><td>Breakeven Trigger</td><td>40</td><td>40</td><td>Yours</td></tr>
-                    <tr><td>Breakeven Offset</td><td>0</td><td>0</td><td>Yours</td></tr>
-                    <tr><td>Trail Trigger</td><td>50</td><td class="v2">100</td><td>Yours</td></tr>
-                    <tr><td>Trail Distance (points)</td><td>30</td><td class="v2">60</td><td>Yours</td></tr>
-                  </table>
-                </div>
-                <p class="nt-p mt-3"><span style="color:#FF6B1F;font-weight:700">Orange</span> = where V2 differs from V1. Every variant also leaves these yours: Risk Profile, Daily Loss Limit, Static Sizing, +1 After a Loss, Flag Sizing, Lock Side If First Breakout Fails Gate, Auto Trade and all display settings. Backtest any Custom change before you run it live.</p>
+                <p class="nt-p">Want to test your own version? Set Variant to <b>Custom</b> and start from a tested column. Every value V1, V2 and V3 lock, with the same names as the settings window, is on one page for NinjaTrader and TradingView.</p>
+                <p class="nt-p mt-3"><a href="variant-settings.html#nt" class="text-green-400 font-bold">See every variant value &rarr;</a></p>
               </div>
 
               <div class="nt-card" id="s5">
