@@ -5,9 +5,9 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Knightfall Backtest Results — FSD-X ORB</title>
-  <!--gen-block:kf-meta--><meta name="description" content="Knightfall backtest on MNQ, Jun 18, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,155 trades, 61.3% win rate, profit factor 1.63 in R. Hypothetical results." />
-  <meta property="og:description" content="Knightfall backtest on MNQ, Jun 18, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,155 trades, 61.3% win rate, profit factor 1.63 in R. Hypothetical results." />
-  <meta name="twitter:description" content="Knightfall backtest on MNQ, Jun 18, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,155 trades, 61.3% win rate, profit factor 1.63 in R. Hypothetical results." /><!--/gen-block-->
+  <!--gen-block:kf-meta--><meta name="description" content="Knightfall backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." />
+  <meta property="og:description" content="Knightfall backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." />
+  <meta name="twitter:description" content="Knightfall backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." /><!--/gen-block-->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Knightfall Backtest Results — FSD-X ORB" />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
@@ -61,6 +61,11 @@
     .kf-now h2 { margin-top:12px; max-width:800px; font-size:clamp(20px,2.6vw,25px); line-height:1.3; }
     .kf-now-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin-top:20px; font-size:15px; line-height:1.6; color:var(--sub); }
     .kf-now-grid b { display:block; font-size:27px; font-weight:800; color:var(--ink); }
+    .kf-how { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:22px; }
+    .kf-how .kf-card { padding:20px 22px; } .kf-how h3 { margin:0 0 8px; }
+    .kf-how .kf-tagline { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--acc); margin-bottom:6px; }
+    .kf-ddbox { margin-top:14px; padding:20px 22px; border-color:rgba(255,107,31,.35); }
+    @media (max-width:900px) { .kf-how { grid-template-columns:1fr; } }
     .kf-tablebox { overflow-x:auto; margin-top:22px; }
     .kf-table { width:100%; border-collapse:collapse; font-size:15px; min-width:760px; }
     .kf-table th { text-align:left; font-size:10px; font-weight:700; color:var(--lab); text-transform:uppercase; letter-spacing:.12em; padding:14px 18px; }
@@ -112,11 +117,11 @@
  "@type": "Dataset",
  "@id": "https://www.fsdxtrading.com/results.html#backtest",
  "name": "Knightfall (FSD-X ORB PRO) hypothetical backtest — MNQ",
- "description": "Knightfall backtest on MNQ, Jun 18, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,155 trades, 61.3% win rate, profit factor 1.63 in R. Hypothetical results. Simulated results, not actual trading. Past performance is not indicative of future results.",
+ "description": "Knightfall backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results. Simulated results, not actual trading. Past performance is not indicative of future results.",
  "creator": {
   "@id": "https://www.fsdxtrading.com/#organization"
  },
- "temporalCoverage": "2019-06-18/2026-10-13",
+ "temporalCoverage": "2019-06-26/2026-10-13",
  "distribution": [
   {
    "@type": "DataDownload",
@@ -153,23 +158,23 @@
   {
    "@type": "PropertyValue",
    "name": "Trades",
-   "value": 1155
+   "value": 1167
   },
   {
    "@type": "PropertyValue",
    "name": "Win rate (simulated)",
-   "value": 61.3,
+   "value": 60.3,
    "unitText": "percent"
   },
   {
    "@type": "PropertyValue",
    "name": "Profit factor in R (simulated)",
-   "value": 1.63
+   "value": 1.58
   },
   {
    "@type": "PropertyValue",
    "name": "Average result per trade (simulated)",
-   "value": 0.22,
+   "value": 0.21,
    "unitText": "R"
   }
  ]
@@ -208,7 +213,7 @@
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
     <div class="w-full flex-1">
       <div class="kf">
-      <!--gen-block:kf-noscript--><noscript><section class="kf-noscript"><h2>Knightfall backtest — summary</h2><p>Hypothetical backtest, MNQ, Jun 18, 2019 to Oct 13, 2026, NinjaTrader with commission and 1-tick slippage. Engine (V2 Runner): 1,155 trades, 61.3% win rate, profit factor 1.63 in R, average +0.22R per trade. Not actual trading. Past performance is not indicative of future results.</p><table><thead><tr><th>Setup</th><th>Settings</th><th>Win</th><th>PF</th><th>Net</th><th>Max drawdown</th></tr></thead><tbody><tr><td>Steady (Recommended · $250)</td><td>V2 Runner, $250 risk, Flag Sizing off, DLL $500</td><td>61.3%</td><td>1.65</td><td>267R</td><td>−$2,256</td></tr><tr><td>Standard (Recommended · $400)</td><td>V2 Runner, $400 risk, Flag Sizing on, DLL $625</td><td>61.3%</td><td>1.69</td><td>226R</td><td>−$2,653</td></tr><tr><td>Engine only (Baseline · $400)</td><td>V2 Runner, $400 risk, Flag Sizing off, no DLL</td><td>61.3%</td><td>1.65</td><td>248R</td><td>−$3,597</td></tr><tr><td>V1 Stock (The original · $400)</td><td>V1 Stock, $400 risk, Flag Sizing off, no DLL</td><td>61.8%</td><td>1.6</td><td>229R</td><td>−$3,614</td></tr></tbody></table></section></noscript><!--/gen-block-->
+      <!--gen-block:kf-noscript--><noscript><section class="kf-noscript"><h2>Knightfall backtest — summary</h2><p>Hypothetical backtest, MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and 1-tick slippage. Engine (V2 Runner): 1,167 trades, 60.3% win rate, profit factor 1.58 in R, average +0.21R per trade. Not actual trading. Past performance is not indicative of future results.</p><table><thead><tr><th>Setup</th><th>Settings</th><th>Win</th><th>PF</th><th>Net</th><th>Max drawdown</th></tr></thead><tbody><tr><td>Steady (Recommended · $250)</td><td>V2 Runner, $250 risk, Flag Sizing off, DLL $500</td><td>60.3%</td><td>1.61</td><td>259R</td><td>−$1,912</td></tr><tr><td>Standard (Recommended · $400)</td><td>V2 Runner, $400 risk, Flag Sizing on, DLL $700</td><td>60.3%</td><td>1.64</td><td>217R</td><td>−$2,268</td></tr><tr><td>Engine only (Baseline · $400)</td><td>V2 Runner, $400 risk, Flag Sizing off, no DLL</td><td>60.3%</td><td>1.6</td><td>237R</td><td>−$2,963</td></tr><tr><td>V1 Stock (The original · $400 · v1.3.0 test)</td><td>V1 Stock, $400 risk, Flag Sizing off, no DLL</td><td>61.8%</td><td>1.6</td><td>229R</td><td>−$3,614</td></tr></tbody></table></section></noscript><!--/gen-block-->
 
       <!-- ═══ HEADER ═══ -->
       <section class="kf-sec" style="padding-top:72px">
@@ -304,6 +309,48 @@
             <div><span class="n">Risk per trade</span><span class="d">Sets position size. Same trades at every setting. More risk means bigger swings, not a better edge.</span><span class="o">Size so the "plan for" figure fits your account.</span></div>
             <div><span class="n">Flag Sizing</span><span class="d">Halves size when 2 or more warning flags show on a breakout, never below 1 contract. Never skips a trade.</span><span class="o">On from $400 risk: about 20% less drawdown, about 10% less net. Little effect at $250, where most trades are already 1 contract.</span></div>
             <div><span class="n">Daily loss limit</span><span class="d">Stops new entries for the day once closed losses reach your number. Never closes an open trade.</span><span class="o">About 1.5–2× your risk. A safety rail for a bad day, not an edge.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ HOW THESE RESULTS WERE MADE ═══ -->
+      <section class="kf-sec" id="method" style="scroll-margin-top:72px">
+        <div class="kf-wrap">
+          <h2>How these results were made</h2>
+          <p class="kf-lead">Three kinds of evidence, kept separate. The backtest shows the locked settings over the full history. The walk-forward test shows how the settings process holds up on data it never saw. The live record is real-time and tracked on its own page.</p>
+          <div class="kf-how">
+            <div class="kf-card">
+              <div class="kf-tagline">1 · Backtested</div>
+              <h3>Locked V2 settings, full history</h3>
+              <p class="kf-small" style="margin:0">MNQ 5-minute, May 6, 2019 – Oct 18, 2026 (first trade after the 30-session warmup: <span id="kf-m-first">—</span>). Commission and 1-tick slippage included. Every setting is listed on <a class="kf-link" href="variant-settings.html">Variant settings</a>. Hypothetical results.</p>
+            </div>
+            <div class="kf-card">
+              <div class="kf-tagline">2 · Walk-forward tested</div>
+              <h3>Out-of-sample check</h3>
+              <p class="kf-small" style="margin:0">Settings chosen using only the prior 2 years of data, then tested on the following 6 months it never saw, rolled forward from 2021 to 2026. Commission and slippage included. Hypothetical results.</p>
+            </div>
+            <div class="kf-card">
+              <div class="kf-tagline">3 · Live tracked</div>
+              <h3>Real-time record, kept apart</h3>
+              <p class="kf-small" style="margin:0">Trades are tagged by version, so you can see which build took each one. V2 v1.4.4 settings start with the NinjaTrader 8 release. <a class="kf-link" href="track-record.html">Live track record →</a></p>
+            </div>
+          </div>
+          <div class="kf-card kf-tablebox">
+            <table class="kf-table">
+              <thead><tr><th>V2 Runner · $400 · Flag Sizing on · May 2021 – Oct 2026</th><th>Previous V2 settings</th><th>Current V2 settings (v1.4.4)</th><th>Walk-forward (unseen data)</th></tr></thead>
+              <tbody>
+                <tr><td class="nm">Net</td><td>$76,830</td><td>$73,705</td><td>$59,695</td></tr>
+                <tr><td class="nm">Profit factor</td><td>1.69</td><td>1.64</td><td>1.71</td></tr>
+                <tr><td class="nm">Backtest max drawdown</td><td>−$3,524</td><td>−$2,268</td><td>−$1,530</td></tr>
+                <tr><td class="nm">Trades</td><td>963</td><td>966</td><td>720</td></tr>
+                <tr><td class="nm">Avg per trade</td><td>$79.80</td><td>$76.30</td><td>$82.90</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="kf-small" style="margin-top:12px">All hypothetical. The walk-forward run has fewer trades mainly because each 6-month window restarts the 30-session warmup, which also flatters its drawdown a little. The windows kept picking a slower trend read (Fast EMA 25–40) and short swing lookbacks from mid-2024 on, which is where the current V2 settings come from. The trade-off versus the previous V2 settings: about 4% less net for about 36% less backtest drawdown at $400.</p>
+          <div class="kf-card kf-ddbox">
+            <h3 style="margin:0 0 6px">Backtest drawdown is not a ceiling</h3>
+            <p class="kf-small" style="margin:0">The largest backtest drawdown is one path through history. A future drawdown can be deeper. Plan your account for about <b id="kf-m-planr">—</b>: about <b id="kf-m-p250">—</b> at $250 risk, <b id="kf-m-p400">—</b> at $400. Hypothetical backtest figures.</p>
           </div>
         </div>
       </section>
@@ -416,6 +463,8 @@
     $('kf-tpd').textContent = K.tpd + ' avg';
     $('kf-range').textContent = K.first + ' – ' + K.last;
     $('kf-ver').textContent = K.version; $('kf-upd').textContent = K.updated;
+    $('kf-m-first').textContent = K.first; $('kf-m-planr').textContent = K.plan_R + 'R';
+    $('kf-m-p250').textContent = usd(-250 * K.plan_R).replace('−',''); $('kf-m-p400').textContent = usd(-400 * K.plan_R).replace('−','');
 
     $('kf-tiles').innerHTML = [
       ['Win rate', E.win + '%', 'var(--pos)', E.wins.toLocaleString('en-US') + ' of ' + E.n.toLocaleString('en-US') + ' trades'],
@@ -461,7 +510,7 @@
       $('kf-now-grid').innerHTML =
         '<div><b>' + N.pct + '%</b>of ' + N.runs.toLocaleString('en-US') + ' random reshuffles of the same ' + E.n.toLocaleString('en-US') + ' trades contain a ' + N.window + '-trade stretch at least this bad.</div>' +
         '<div><b>' + f2(h[0].pf) + ' · ' + f2(h[1].pf) + '</b>Profit factor in ' + h[0].label + ' and in ' + h[1].label + '. The edge held in both halves of the data.</div>' +
-        '<div><b>Both halves</b>A change ships only if it holds in both halves. No rules were fitted to recent weeks.</div>';
+        '<div><b>Walk-forward</b>Settings were also tested on 6-month windows they never saw, 2021 to 2026. <a class="kf-link" href="#method">How →</a></div>';
     }
 
     // Setups

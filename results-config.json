@@ -1,5 +1,5 @@
 {
-  "_how": "Feeds results-data.js, which the member Playbook's eval simulator reads. Sources are NinjaTrader v1.3.0 Trades-grid exports, rebuilt to each risk with Flag Sizing off and no DLL (engine only) — see rebuild_trades in build_results.py. The public results page is built by build_kf.py from results-nt.json. Run from the site root: python3 build_results.py --config results-config.json --out results-data.js",
+  "_how": "Feeds results-data.js, which the member Playbook's eval simulator reads. Sources are NinjaTrader Trades-grid exports (V2 v1.4.4, V1 v1.3.0), rebuilt to each risk with Flag Sizing off and no DLL (engine only) — see rebuild_trades in build_results.py. The public results page is built by build_kf.py from results-nt.json. Run from the site root: python3 build_results.py --config results-config.json --out results-data.js",
   "end": "2026-10-14",
   "updated": "October 2026",
   "variants": {

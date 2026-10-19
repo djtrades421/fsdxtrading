@@ -840,7 +840,7 @@ document.getElementById('goal-save').onclick = () => {
 <script>
 (function(){
   // Eval data from results-data.js (build_results.py): Knightfall V2 Runner, engine only (Flag Sizing off,
-  // no daily loss limit), rebuilt per risk from the NinjaTrader v1.3.0 export with commission + 1-tick slippage.
+  // no daily loss limit), rebuilt per risk from the NinjaTrader export (V2 v1.4.4, V1 v1.3.0) with commission + 1-tick slippage.
   const RP_V = (window.FSDX_RESULTS && window.FSDX_RESULTS.variants.v2) || { RPD: {}, RPY: {}, D: {} };
   const RP_DATA = RP_V.RPD || {};
   const RP_DEEP = {}; ['50k', '100k', '150k'].forEach(function (a) {

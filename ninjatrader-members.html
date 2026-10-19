@@ -245,7 +245,7 @@
                     <ul class="mt-2 space-y-1" style="list-style:disc;padding-left:18px">
                       <li><b>Variant</b>: loads as Variant 2 Runner. Keep it unless you have a reason to change it.</li>
                       <li><b>Risk Profile ($)</b>: loads at $250. Change it to fit your account (<a href="#recommended" class="text-green-400 font-bold">recommended settings</a>).</li>
-                      <li><b>Daily Loss Limit ($)</b>: loads at 0 (off). Set it: $500 at $250 risk, $625 at $400, about 1.5–2× risk otherwise.</li>
+                      <li><b>Daily Loss Limit ($)</b>: loads at 0 (off). Set it: $500 at $250 risk, $700 at $400, about 1.5–2× risk otherwise.</li>
                       <li><b>Auto Trade</b>: <b>on</b> = it places and manages the trades for you. <b>Off</b> = signals only (popup and sound with direction, grade, contracts, entry, stop and TP1), and you place the trade yourself.</li>
                       <li><b>Account</b>: the exact account it will trade. Use <span class="nt-code">Sim101</span> first. On a fleet, double-check you picked the right one.</li>
                     </ul></li>
@@ -261,7 +261,7 @@
               <div class="nt-card" id="s7">
                 <h3 class="text-base font-black text-white mb-3">4. Check and go live</h3>
                 <ul class="nt-steps">
-                  <li><b>Check the dashboard:</b> v1.4.3 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
+                  <li><b>Check the dashboard:</b> v1.4.4 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
                   <li><b>Run it on Sim101 first</b> for at least a few sessions. Check entries, stops, targets and the 3:30 PM flatten.</li>
                   <li><b>Keep NinjaTrader running and connected</b> during the session. It only manages trades while it's running. A VPS is recommended.</li>
                   <li><b>Built-in safety:</b> flattens at 3:30 PM CT (and before half-day closes), NinjaTrader's session-close exit runs as a backup, and if an order is rejected it cancels, flattens, turns itself off and alerts you.</li>
@@ -301,7 +301,7 @@
                       <table class="nt-table">
                         <tr><th>Risk Profile</th><th>Daily Loss Limit</th><th>Flag Sizing</th></tr>
                         <tr><td>$250</td><td>$500</td><td>Auto (off)</td></tr>
-                        <tr><td>$400</td><td>$625</td><td>Auto (on)</td></tr>
+                        <tr><td>$400</td><td>$700</td><td>Auto (on)</td></tr>
                         <tr><td>Other sizes</td><td>About 1.5&ndash;2&times; your risk</td><td>Auto (on from $400)</td></tr>
                       </table>
                     </div>
@@ -339,7 +339,7 @@
                   </table>
                 </div>
                 <div class="nt-shot" data-shot="nt-settings-top"><img src="nt-settings-top.webp" alt="Strategy settings: 0. Variant set to Variant 2 Runner, 1. Risk Management with Risk Profile, Daily Loss Limit, Flag Sizing and Auto Trade" loading="lazy" width="454" height="412" style="max-width:min(100%,420px)"></div>
-                <p class="nt-p mt-3">Locked by every variant: ORB 8:30&ndash;8:45 CT, Minimum Grade C, Max Trades Per Session 3, Entry Cutoff 12:45 PM CT, Flatten By 3:30 PM CT (11:50 AM on half-days). Display settings only change what's drawn. They never affect trades. <a href="variant-settings.html#nt" class="text-green-400 font-bold">Every locked value &rarr;</a></p>
+                <p class="nt-p mt-3">Locked by every variant: ORB 8:30&ndash;8:45 CT, Minimum Grade C, Flatten By 3:30 PM CT (11:50 AM on half-days). V2 Runner (retuned in v1.4.4): max 2 trades per session, entry cutoff 1:00 PM CT. V1 and V3: max 3 trades, cutoff 12:45 PM CT. Display settings only change what's drawn. They never affect trades. <a href="variant-settings.html#nt" class="text-green-400 font-bold">Every locked value &rarr;</a></p>
               </div>
 
               <div class="nt-card" id="variant-values">
@@ -380,9 +380,9 @@
                 <div class="nt-scroll mt-3">
                   <table class="nt-table">
                     <tr><th>Row</th><th>What it shows</th></tr>
-                    <tr><td>Header</td><td>Strategy name and version (v1.4.3). Match it to the version on this page.</td></tr>
+                    <tr><td>Header</td><td>Strategy name and version (v1.4.4). Match it to the version on this page.</td></tr>
                     <tr><td>Config strip</td><td>Variant (with <b class="text-white">locked</b>, or <b class="text-white">exits live</b> in V3) · Risk Profile · $/pt · <b class="text-white">FS</b> when Flag Sizing is on · <b class="text-white">GL off</b> when the side lock is turned off</td></tr>
-                    <tr><td>Account row</td><td>The account it's trading (check it's the right one) · <b class="text-white">DLL</b> closed loss today / your limit, e.g. <span class="nt-code">DLL $0/$625</span> · AUTO or MANUAL · trades today out of 3. The DLL turns <b class="text-white">yellow</b> with <b class="text-white">low</b> or <b class="text-white">high</b> when the limit is under 1.5&times; or over 2.5&times; your Risk Profile. A sizing hint, not an error.</td></tr>
+                    <tr><td>Account row</td><td>The account it's trading (check it's the right one) · <b class="text-white">DLL</b> closed loss today / your limit, e.g. <span class="nt-code">DLL $0/$700</span> · AUTO or MANUAL · trades today out of 3. The DLL turns <b class="text-white">yellow</b> with <b class="text-white">low</b> or <b class="text-white">high</b> when the limit is under 1.5&times; or over 2.5&times; your Risk Profile. A sizing hint, not an error.</td></tr>
                     <tr><td>Status</td><td>Win rate of the last 40 trades against the normal 52&ndash;72% band: <b class="text-white">Normal</b>, <b class="text-white">Cold run</b> or <b class="text-white">Hot run</b>. Information only. It never changes size or stops trading.</td></tr>
                     <tr><td>ORB range</td><td>Size of today's opening range (8:30–8:45 CT), in points</td></tr>
                     <tr><td>5D avg</td><td>Average ORB of the last 5 sessions. Green = ideal band, yellow = outside it, red = extreme</td></tr>
