@@ -261,7 +261,7 @@
               <div class="nt-card" id="s7">
                 <h3 class="text-base font-black text-white mb-3">4. Check and go live</h3>
                 <ul class="nt-steps">
-                  <li><b>Check the dashboard:</b> v1.4.2 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
+                  <li><b>Check the dashboard:</b> v1.4.3 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
                   <li><b>Run it on Sim101 first</b> for at least a few sessions. Check entries, stops, targets and the 3:30 PM flatten.</li>
                   <li><b>Keep NinjaTrader running and connected</b> during the session. It only manages trades while it's running. A VPS is recommended.</li>
                   <li><b>Built-in safety:</b> flattens at 3:30 PM CT (and before half-day closes), NinjaTrader's session-close exit runs as a backup, and if an order is rejected it cancels, flattens, turns itself off and alerts you.</li>
@@ -313,7 +313,7 @@
               <div class="nt-card" id="s4">
                 <h3 class="text-base font-black text-white mb-2">Variants and every setting</h3>
                 <p class="nt-p mb-3">Settings are grouped in order: <b>0. Variant</b> first, then <b>1. Risk Management</b>. Variant picks how the strategy exits and locks the rest of the strategy settings to tested values. Every variant runs the New York open: 8:30 CT, 15-minute ORB. Risk, sizing, the daily loss limit, the side lock, Auto Trade and every display setting always stay yours.</p>
-                <p class="nt-p mb-3">Since v1.4.2, settings a variant locks are tagged <b>· Custom only</b> or <b>· Custom / V3</b> in their name. In V1, V2 and V3 they have no effect. The <b>Locked To</b> line under Variant says what is locked.</p>
+                <p class="nt-p mb-3">Since v1.4.3, settings a variant locks are tagged <b>· Custom only</b> or <b>· Custom / V3</b> in their name. In V1, V2 and V3 they have no effect. The <b>Locked To</b> line under Variant says what is locked.</p>
 
 
                 <div class="nt-scroll">
@@ -380,7 +380,7 @@
                 <div class="nt-scroll mt-3">
                   <table class="nt-table">
                     <tr><th>Row</th><th>What it shows</th></tr>
-                    <tr><td>Header</td><td>Strategy name and version (v1.4.2). Match it to the version on this page.</td></tr>
+                    <tr><td>Header</td><td>Strategy name and version (v1.4.3). Match it to the version on this page.</td></tr>
                     <tr><td>Config strip</td><td>Variant (with <b class="text-white">locked</b>, or <b class="text-white">exits live</b> in V3) · Risk Profile · $/pt · <b class="text-white">FS</b> when Flag Sizing is on · <b class="text-white">GL off</b> when the side lock is turned off</td></tr>
                     <tr><td>Account row</td><td>The account it's trading (check it's the right one) · <b class="text-white">DLL</b> closed loss today / your limit, e.g. <span class="nt-code">DLL $0/$625</span> · AUTO or MANUAL · trades today out of 3. The DLL turns <b class="text-white">yellow</b> with <b class="text-white">low</b> or <b class="text-white">high</b> when the limit is under 1.5&times; or over 2.5&times; your Risk Profile. A sizing hint, not an error.</td></tr>
                     <tr><td>Status</td><td>Win rate of the last 40 trades against the normal 52&ndash;72% band: <b class="text-white">Normal</b>, <b class="text-white">Cold run</b> or <b class="text-white">Hot run</b>. Information only. It never changes size or stops trading.</td></tr>
@@ -695,7 +695,7 @@
     ['Strategy turned off on its own',
      'Check the Log tab in the Control Center for the error. Send us a screenshot of it in Discord.'],
     ['I changed a setting and nothing changed',
-     'In Variants 1, 2 and 3 the strategy settings are locked to tested values. Since v1.4.2 they are tagged · Custom only or · Custom / V3 in their name. Switch Variant to Custom to change them. Risk, Flag Sizing, Daily Loss Limit, Auto Trade and display settings always apply.'],
+     'In Variants 1, 2 and 3 the strategy settings are locked to tested values. Since v1.4.3 they are tagged · Custom only or · Custom / V3 in their name. Switch Variant to Custom to change them. Risk, Flag Sizing, Daily Loss Limit, Auto Trade and display settings always apply.'],
     ['Status says Cold run',
      'The last 40 trades won less often than the normal 52–72% range. It\'s information only: it never changes size or pauses trading. Cold runs happen in the backtest too. Check the results page before changing anything.'],
     ['Can I run it on more than one account?',
