@@ -337,8 +337,8 @@
       <section class="kf-sec" id="method" style="scroll-margin-top:72px">
         <div class="kf-wrap">
           <h2>How these results were made</h2>
-          <p class="kf-small" id="kf-m-v1note" hidden style="margin-top:6px;color:var(--warn)">You&rsquo;re viewing V1. The walk-forward test below is V2 only for now. V1 gets the same test after its re-optimization.</p>
-          <p class="kf-lead">Three kinds of evidence, kept separate. The backtest shows the locked settings over the full history. The walk-forward test shows how the settings process holds up on data it never saw. The live record is real-time and tracked on its own page.</p>
+          <p class="kf-small" id="kf-m-v1note" hidden style="margin-top:6px;color:var(--warn)">You&rsquo;re viewing V1. The walk-forward test was run on V2. V1 gets the same process with its re-optimization.</p>
+          <p class="kf-lead">Three steps, kept separate. We backtest the settings over the full history, walk-forward test how they were chosen, then track them live on their own page.</p>
           <div class="kf-how">
             <div class="kf-card">
               <div class="kf-tagline">1 · Backtested</div>
@@ -347,8 +347,8 @@
             </div>
             <div class="kf-card">
               <div class="kf-tagline">2 · Walk-forward tested</div>
-              <h3>Out-of-sample check</h3>
-              <p class="kf-small" style="margin:0">Settings chosen using only the prior 2 years of data, then tested on the following 6 months it never saw, rolled forward from 2021 to 2026. Commission and slippage included. Hypothetical results.</p>
+              <h3>How the settings were chosen</h3>
+              <p class="kf-small" style="margin:0">Before release, settings were picked using only the prior 2 years of data, then checked on the next 6 months that data never saw. Repeated window by window from 2021 to 2026. The settings shown on this page came out of that process.</p>
             </div>
             <div class="kf-card">
               <div class="kf-tagline">3 · Live tracked</div>
@@ -356,19 +356,6 @@
               <p class="kf-small" style="margin:0">Trades are tagged by version, so you can see which build took each one. V2 has been live since Oct 9, 2026. Its settings were retuned Oct 19. <a class="kf-link" href="track-record.html?variant=v2">V2 live track record →</a></p>
             </div>
           </div>
-          <div class="kf-card kf-tablebox">
-            <table class="kf-table">
-              <thead><tr><th>V2 Runner · $400 · Flag Sizing on · May 2021 – Oct 2026</th><th>Previous V2 settings</th><th>Current V2 settings</th><th>Walk-forward (unseen data)</th></tr></thead>
-              <tbody>
-                <tr><td class="nm">Net</td><td>$76,830</td><td>$73,705</td><td>$59,695</td></tr>
-                <tr><td class="nm">Profit factor</td><td>1.69</td><td>1.64</td><td>1.71</td></tr>
-                <tr><td class="nm">Backtest max drawdown</td><td>−$3,524</td><td>−$2,268</td><td>−$1,530</td></tr>
-                <tr><td class="nm">Trades</td><td>963</td><td>966</td><td>720</td></tr>
-                <tr><td class="nm">Avg per trade</td><td>$79.80</td><td>$76.30</td><td>$82.90</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p class="kf-small" style="margin-top:12px">All hypothetical. The walk-forward run has fewer trades mainly because each 6-month window restarts the 30-session warmup, which also flatters its drawdown a little. The windows kept picking a slower trend read (Fast EMA 25–40) and short swing lookbacks from mid-2024 on, which is where the current V2 settings come from. The trade-off versus the previous V2 settings: about 4% less net for about 36% less backtest drawdown at $400.</p>
           <div class="kf-card kf-ddbox">
             <h3 style="margin:0 0 6px">Backtest drawdown is not a ceiling</h3>
             <p class="kf-small" style="margin:0">The largest backtest drawdown is one path through history. A future drawdown can be deeper. Plan your account for about <b id="kf-m-planr">—</b>: about <b id="kf-m-p250">—</b> at $250 risk, <b id="kf-m-p400">—</b> at $400. Hypothetical backtest figures.</p>
@@ -468,12 +455,12 @@
     }
   </script>
   <script src="nav-loader.js?v=20261018a"></script>
-  <script src="kf-data.js"></script>
+  <script src="kf-data.js?v=20261019b"></script>
   <script>
   // Knightfall results — everything below reads window.FSDX_KF (build_kf.py, from NinjaTrader exports).
   (function () {
     var ALL = window.FSDX_KF, K; if (!ALL) return;
-    if (!ALL.variants) { ALL.variants = { v2: ALL }; ALL.order = ['v2']; ALL.default = 'v2'; }
+    if (!ALL.variants) { ALL.variants = { v2: Object.assign({ label: ALL.engine_variant || 'V2 Runner', tag: 'What we run', desc: '', version: 'MK2' }, ALL) }; ALL.order = ['v2']; ALL.default = 'v2'; }
     function $(id) { return document.getElementById(id); }
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function usd(v) { return (v < 0 ? '−$' : '$') + Math.round(Math.abs(v)).toLocaleString('en-US'); }
