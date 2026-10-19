@@ -1,7 +1,7 @@
 {
   "_how": "Knightfall results from NinjaTrader. One Strategy Analyzer Trades-grid export per variant (v1.3.0+, entry names tagged grade-flags-stop, commission on, slippage 1, any Flag Sizing setting; DLL must not have skipped a trade). Every setup and every calculator row is rebuilt from that one file. Run from the site root: python3 build_kf.py --config results-nt.json. It verifies the rebuild against the NT check exports first and stops if any trade differs.",
   "updated": "Oct 19, 2026",
-  "version": "Knightfall v1.4.4 (V2) · v1.3.0 (V1)",
+  "version": "Knightfall v1.4.4",
   "variants": {
     "v2": {
       "label": "V2 Runner",
@@ -47,7 +47,7 @@
     {
       "id": "v1",
       "name": "V1 Stock",
-      "tag": "The original · $400 · v1.3.0 test",
+      "tag": "The original · $400",
       "recommended": false,
       "variant": "v1",
       "risk": 400,
