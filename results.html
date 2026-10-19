@@ -5,9 +5,9 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Knightfall Backtest Results — FSD-X ORB</title>
-  <!--gen-block:kf-meta--><meta name="description" content="Knightfall backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." />
-  <meta property="og:description" content="Knightfall backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." />
-  <meta name="twitter:description" content="Knightfall backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." /><!--/gen-block-->
+  <!--gen-block:kf-meta--><meta name="description" content="Knightfall V2 Runner backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." />
+  <meta property="og:description" content="Knightfall V2 Runner backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." />
+  <meta name="twitter:description" content="Knightfall V2 Runner backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results." /><!--/gen-block-->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Knightfall Backtest Results — FSD-X ORB" />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
@@ -61,6 +61,14 @@
     .kf-now h2 { margin-top:12px; max-width:800px; font-size:clamp(20px,2.6vw,25px); line-height:1.3; }
     .kf-now-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; margin-top:20px; font-size:15px; line-height:1.6; color:var(--sub); }
     .kf-now-grid b { display:block; font-size:27px; font-weight:800; color:var(--ink); }
+    .kf-vtabs { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+    .kf-vtab { display:flex; flex-direction:column; gap:2px; text-align:left; padding:12px 18px; border-radius:12px; border:1px solid var(--line); background:var(--card); color:var(--sub); cursor:pointer; min-width:190px; font:inherit; }
+    .kf-vtab b { font-size:15px; font-weight:800; color:var(--ink); }
+    .kf-vtab span { font-size:11.5px; }
+    .kf-vtab[aria-selected="true"] { border-color:rgba(255,107,31,.6); background:rgba(255,107,31,.08); }
+    .kf-vtab[aria-selected="true"] span { color:var(--acc); font-weight:700; }
+    .kf-vname { color:var(--acc); }
+    @media (max-width:520px) { .kf-vtab { min-width:0; flex:1 1 0; } }
     .kf-how { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin-top:22px; }
     .kf-how .kf-card { padding:20px 22px; } .kf-how h3 { margin:0 0 8px; }
     .kf-how .kf-tagline { font-size:10px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--acc); margin-bottom:6px; }
@@ -117,7 +125,7 @@
  "@type": "Dataset",
  "@id": "https://www.fsdxtrading.com/results.html#backtest",
  "name": "Knightfall (FSD-X ORB PRO) hypothetical backtest — MNQ",
- "description": "Knightfall backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results. Simulated results, not actual trading. Past performance is not indicative of future results.",
+ "description": "Knightfall V2 Runner backtest on MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and slippage: 1,167 trades, 60.3% win rate, profit factor 1.58 in R. Hypothetical results. Simulated results, not actual trading. Past performance is not indicative of future results.",
  "creator": {
   "@id": "https://www.fsdxtrading.com/#organization"
  },
@@ -141,12 +149,22 @@
   {
    "@type": "DataDownload",
    "encodingFormat": "text/csv",
-   "contentUrl": "https://www.fsdxtrading.com/knightfall-v1.csv"
+   "contentUrl": "https://www.fsdxtrading.com/knightfall-nt-v2-base.csv"
   },
   {
    "@type": "DataDownload",
    "encodingFormat": "text/csv",
-   "contentUrl": "https://www.fsdxtrading.com/knightfall-nt-v2-base.csv"
+   "contentUrl": "https://www.fsdxtrading.com/knightfall-v1-steady.csv"
+  },
+  {
+   "@type": "DataDownload",
+   "encodingFormat": "text/csv",
+   "contentUrl": "https://www.fsdxtrading.com/knightfall-v1-standard.csv"
+  },
+  {
+   "@type": "DataDownload",
+   "encodingFormat": "text/csv",
+   "contentUrl": "https://www.fsdxtrading.com/knightfall-v1.csv"
   },
   {
    "@type": "DataDownload",
@@ -213,7 +231,7 @@
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
     <div class="w-full flex-1">
       <div class="kf">
-      <!--gen-block:kf-noscript--><noscript><section class="kf-noscript"><h2>Knightfall backtest — summary</h2><p>Hypothetical backtest, MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and 1-tick slippage. Engine (V2 Runner): 1,167 trades, 60.3% win rate, profit factor 1.58 in R, average +0.21R per trade. Not actual trading. Past performance is not indicative of future results.</p><table><thead><tr><th>Setup</th><th>Settings</th><th>Win</th><th>PF</th><th>Net</th><th>Max drawdown</th></tr></thead><tbody><tr><td>Steady (Recommended · $250)</td><td>V2 Runner, $250 risk, Flag Sizing off, DLL $500</td><td>60.3%</td><td>1.61</td><td>259R</td><td>−$1,912</td></tr><tr><td>Standard (Recommended · $400)</td><td>V2 Runner, $400 risk, Flag Sizing on, DLL $700</td><td>60.3%</td><td>1.64</td><td>217R</td><td>−$2,268</td></tr><tr><td>Engine only (Baseline · $400)</td><td>V2 Runner, $400 risk, Flag Sizing off, no DLL</td><td>60.3%</td><td>1.6</td><td>237R</td><td>−$2,963</td></tr><tr><td>V1 Stock (The original · $400)</td><td>V1 Stock, $400 risk, Flag Sizing off, no DLL</td><td>61.8%</td><td>1.6</td><td>229R</td><td>−$3,614</td></tr></tbody></table></section></noscript><!--/gen-block-->
+      <!--gen-block:kf-noscript--><noscript><section class="kf-noscript"><h2>Knightfall backtest — summary</h2><p>Hypothetical backtest, MNQ, Jun 26, 2019 to Oct 13, 2026, NinjaTrader with commission and 1-tick slippage. Engine (V2 Runner): 1,167 trades, 60.3% win rate, profit factor 1.58 in R, average +0.21R per trade. Not actual trading. Past performance is not indicative of future results.</p><table><thead><tr><th>Setup</th><th>Settings</th><th>Win</th><th>PF</th><th>Net</th><th>Max drawdown</th></tr></thead><tbody><tr><td>Steady (Recommended · $250)</td><td>V2 Runner, $250 risk, Flag Sizing off, DLL $500</td><td>60.3%</td><td>1.61</td><td>259R</td><td>−$1,912</td></tr><tr><td>Standard (Recommended · $400)</td><td>V2 Runner, $400 risk, Flag Sizing on, DLL $700</td><td>60.3%</td><td>1.64</td><td>217R</td><td>−$2,268</td></tr><tr><td>Engine only (Baseline · $400)</td><td>V2 Runner, $400 risk, Flag Sizing off, no DLL</td><td>60.3%</td><td>1.6</td><td>237R</td><td>−$2,963</td></tr><tr><td>Steady (If you run V1 · $250)</td><td>V1 Stock, $250 risk, Flag Sizing off, DLL $500</td><td>61.7%</td><td>1.58</td><td>241R</td><td>−$2,219</td></tr><tr><td>Standard (If you run V1 · $400)</td><td>V1 Stock, $400 risk, Flag Sizing on, DLL $700</td><td>61.7%</td><td>1.63</td><td>206R</td><td>−$2,987</td></tr><tr><td>Engine only (Baseline · $400)</td><td>V1 Stock, $400 risk, Flag Sizing off, no DLL</td><td>61.8%</td><td>1.6</td><td>229R</td><td>−$3,614</td></tr></tbody></table></section></noscript><!--/gen-block-->
 
       <!-- ═══ HEADER ═══ -->
       <section class="kf-sec" style="padding-top:72px">
@@ -221,6 +239,8 @@
           <div class="kf-eyebrow">Knightfall · Backtest research</div>
           <h1>How it trades. What we run.<br>The rest is yours.</h1>
           <p class="kf-lead">Knightfall is one engine with settings you control. See how the engine performs, the setups we run, then size it to your account.</p>
+          <div class="kf-vtabs" role="tablist" aria-label="Variant" id="kf-vtabs"></div>
+          <p class="kf-small" style="margin-top:10px" id="kf-vdesc"></p>
           <div class="kf-facts">
             <div><span>Market</span><span>NQ / MNQ futures</span></div>
             <div><span>Setup</span><span>Opening range breakout</span></div>
@@ -237,7 +257,7 @@
       <!-- ═══ 01 ENGINE ═══ -->
       <section class="kf-sec" id="engine">
         <div class="kf-wrap">
-          <h2><span class="kf-num">01</span>The engine</h2>
+          <h2><span class="kf-num">01</span>The engine · <span class="kf-vname" data-vname></span></h2>
           <p class="kf-lead">Every trade is measured in R: its result divided by that trade's own stop. That keeps these numbers the same at any risk setting. Risk and Flag Sizing change position size, not which trades fire or how they end.</p>
           <div class="kf-tiles" id="kf-tiles"></div>
           <div class="kf-two">
@@ -265,10 +285,10 @@
       <section class="kf-sec" id="kf-now-sec" hidden>
         <div class="kf-wrap">
           <div class="kf-now">
-            <div class="kf-eyebrow">Where it stands now</div>
+            <div class="kf-eyebrow">Where it stands now · <span data-vname></span> backtest</div>
             <h2 id="kf-now-h"></h2>
             <div class="kf-now-grid" id="kf-now-grid"></div>
-            <p class="kf-small" style="margin:18px 0 0">A run like this is part of trading an edge. It isn't a forecast in either direction. <a class="kf-link" href="track-record.html">See the live track record →</a></p>
+            <p class="kf-small" style="margin:18px 0 0">These are backtest trades, not live ones. A run like this is part of trading an edge. It isn't a forecast in either direction. <span id="kf-now-live"></span></p>
           </div>
         </div>
       </section>
@@ -276,8 +296,8 @@
       <!-- ═══ 02 WHAT WE RUN ═══ -->
       <section class="kf-sec" id="setups">
         <div class="kf-wrap">
-          <h2><span class="kf-num">02</span>What we run</h2>
-          <p class="kf-lead">Two recommended setups, plus the engine with everything off and the original V1 for comparison. Net is in R so setups at different risk compare fairly.</p>
+          <h2><span class="kf-num">02</span><span id="kf-setups-h">What we run</span></h2>
+          <p class="kf-lead" id="kf-setups-lead"></p>
           <div class="kf-card kf-tablebox">
             <table class="kf-table">
               <thead><tr><th>Setup</th><th>Settings</th><th>Win</th><th>Profit factor</th><th>Net</th><th>Max drawdown</th></tr></thead>
@@ -291,7 +311,7 @@
       <!-- ═══ 03 SIZE IT ═══ -->
       <section class="kf-sec" id="risk-profiles" style="scroll-margin-top:72px">
         <div class="kf-wrap">
-          <h2><span class="kf-num">03</span>Size it to your account</h2>
+          <h2><span class="kf-num">03</span>Size it to your account · <span class="kf-vname" data-vname></span></h2>
           <p class="kf-lead" id="kf-rule"></p>
           <div class="kf-card kf-calc">
             <div class="kf-chips" role="group" aria-label="Risk per trade" id="kf-chips"></div>
@@ -317,11 +337,12 @@
       <section class="kf-sec" id="method" style="scroll-margin-top:72px">
         <div class="kf-wrap">
           <h2>How these results were made</h2>
+          <p class="kf-small" id="kf-m-v1note" hidden style="margin-top:6px;color:var(--warn)">You&rsquo;re viewing V1. The walk-forward test below is V2 only for now. V1 gets the same test after its re-optimization.</p>
           <p class="kf-lead">Three kinds of evidence, kept separate. The backtest shows the locked settings over the full history. The walk-forward test shows how the settings process holds up on data it never saw. The live record is real-time and tracked on its own page.</p>
           <div class="kf-how">
             <div class="kf-card">
               <div class="kf-tagline">1 · Backtested</div>
-              <h3>Locked V2 settings, full history</h3>
+              <h3>Locked <span data-vname></span> settings, full history</h3>
               <p class="kf-small" style="margin:0">MNQ 5-minute, May 6, 2019 – Oct 18, 2026 (first trade after the 30-session warmup: <span id="kf-m-first">—</span>). Commission and 1-tick slippage included. Every setting is listed on <a class="kf-link" href="variant-settings.html">Variant settings</a>. Hypothetical results.</p>
             </div>
             <div class="kf-card">
@@ -332,12 +353,12 @@
             <div class="kf-card">
               <div class="kf-tagline">3 · Live tracked</div>
               <h3>Real-time record, kept apart</h3>
-              <p class="kf-small" style="margin:0">Trades are tagged by version, so you can see which build took each one. V2 has run the v1.4.4 settings live since Oct 19, 2026. <a class="kf-link" href="track-record.html">Live track record →</a></p>
+              <p class="kf-small" style="margin:0">Trades are tagged by version, so you can see which build took each one. V2 has been live since Oct 9, 2026. Its settings were retuned Oct 19. <a class="kf-link" href="track-record.html?variant=v2">V2 live track record →</a></p>
             </div>
           </div>
           <div class="kf-card kf-tablebox">
             <table class="kf-table">
-              <thead><tr><th>V2 Runner · $400 · Flag Sizing on · May 2021 – Oct 2026</th><th>Previous V2 settings</th><th>Current V2 settings (v1.4.4)</th><th>Walk-forward (unseen data)</th></tr></thead>
+              <thead><tr><th>V2 Runner · $400 · Flag Sizing on · May 2021 – Oct 2026</th><th>Previous V2 settings</th><th>Current V2 settings</th><th>Walk-forward (unseen data)</th></tr></thead>
               <tbody>
                 <tr><td class="nm">Net</td><td>$76,830</td><td>$73,705</td><td>$59,695</td></tr>
                 <tr><td class="nm">Profit factor</td><td>1.69</td><td>1.64</td><td>1.71</td></tr>
@@ -358,7 +379,7 @@
       <!-- ═══ DATA ═══ -->
       <section class="kf-sec" id="data">
         <div class="kf-wrap">
-          <h2>Check the numbers yourself</h2>
+          <h2>Check the numbers yourself · <span class="kf-vname" data-vname></span></h2>
           <p class="kf-lead">Every trade, every setup, in NinjaTrader's Trades format, so a file loads straight into the <a class="kf-link" href="converter.html">Trade Importer</a>. Each entry name carries the grade, flag count and stop in points: <code style="color:var(--ink)">L1-A+-F2-S45.25</code> is a long, grade A+, 2 flags, 45.25-point stop.</p>
           <div class="kf-dl" id="kf-dl"></div>
           <p class="kf-small" style="margin-top:16px">Every setup and calculator row above is rebuilt from the raw export using the strategy's own sizing rules, and checked trade for trade against separate NinjaTrader runs. Commission and slippage vary by broker. <a class="kf-link" href="disclosures.html#backtest-method">How these figures are produced →</a></p>
@@ -451,102 +472,133 @@
   <script>
   // Knightfall results — everything below reads window.FSDX_KF (build_kf.py, from NinjaTrader exports).
   (function () {
-    var K = window.FSDX_KF; if (!K) return;
+    var ALL = window.FSDX_KF, K; if (!ALL) return;
+    if (!ALL.variants) { ALL.variants = { v2: ALL }; ALL.order = ['v2']; ALL.default = 'v2'; }
     function $(id) { return document.getElementById(id); }
     function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
     function usd(v) { return (v < 0 ? '−$' : '$') + Math.round(Math.abs(v)).toLocaleString('en-US'); }
     function f2(v) { return Number(v).toFixed(2); }
     function sgnR(v) { return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(v % 1 ? (Math.abs(v) < 1 ? 2 : 1) : 0) + 'R'; }
-    var E = K.engine, sd = K.sides;
-
-    $('kf-n').textContent = E.n.toLocaleString('en-US');
-    $('kf-tpd').textContent = K.tpd + ' avg';
-    $('kf-range').textContent = K.first + ' – ' + K.last;
-    $('kf-ver').textContent = K.version; $('kf-upd').textContent = K.updated;
-    $('kf-m-first').textContent = K.first; $('kf-m-planr').textContent = K.plan_R + 'R';
-    $('kf-m-p250').textContent = usd(-250 * K.plan_R).replace('−',''); $('kf-m-p400').textContent = usd(-400 * K.plan_R).replace('−','');
-
-    $('kf-tiles').innerHTML = [
-      ['Win rate', E.win + '%', 'var(--pos)', E.wins.toLocaleString('en-US') + ' of ' + E.n.toLocaleString('en-US') + ' trades'],
-      ['Profit factor', f2(E.pf), 'var(--pos)', 'In R, after commission and slippage'],
-      ['Average trade', sgnR(E.avgR), 'var(--ink)', 'About ' + (E.avgPts > 0 ? '+' : '') + Math.round(E.avgPts) + ' pts per contract'],
-      ['Long · Short', f2(sd.Long.pf) + ' · ' + f2(sd.Short.pf), 'var(--ink)', 'Profit factor by side']
-    ].map(function (t) {
-      return '<div class="kf-card kf-tile"><span class="k">' + t[0] + '</span><span class="v" style="color:' + t[2] + '">' + t[1] + '</span><span class="s">' + t[3] + '</span></div>';
-    }).join('');
-
-    // Years: skip partial years with too few trades to mean anything; say so.
-    var yrs = K.years.filter(function (y) { return y.n >= 30; });
-    var skipped = K.years.filter(function (y) { return y.n < 30; });
-    var curYr = String(K.years[K.years.length - 1].yr);
-    $('kf-bars').setAttribute('aria-label', 'Profit factor by year: ' + yrs.map(function (y) { return y.yr + ' ' + f2(y.pf); }).join(', '));
-    $('kf-bars').innerHTML = yrs.map(function (y) {
-      var h = Math.max(4, Math.min(100, (y.pf - 1) / 1.0 * 100));
-      return '<div class="kf-bar' + (String(y.yr) === curYr ? ' cur' : '') + '"><b>' + f2(y.pf) + '</b><i style="height:' + h + '%"></i></div>';
-    }).join('');
-    $('kf-barlab').innerHTML = yrs.map(function (y) { return '<span>' + y.yr + '</span>'; }).join('');
-    $('kf-yearnote').textContent = curYr + ' runs through ' + K.last + '.' +
-      (skipped.length ? ' ' + skipped.map(function (y) { return y.yr + ' (' + y.n + ' trades)'; }).join(', ') + ' left out: too few trades.' : '') +
-      ' Bars start at 1.0, where wins and losses break even. That\'s history, not a guarantee.';
-
-    $('kf-grades').innerHTML = K.grades.map(function (g) {
-      return '<div><span class="t big">' + g.g + '</span><span class="p">' + f2(g.pf) + '</span><span class="m">' + Math.round(g.win) + '% win · ' + g.n + ' trades</span></div>';
-    }).join('');
-    $('kf-flags').innerHTML = K.flags.map(function (f) {
-      return '<div><span class="t">' + f.f + (f.f === 1 ? ' flag' : ' flags') + '</span><span class="p' + (f.pf < 1.2 ? ' w' : '') + '">' + f2(f.pf) + '</span><span class="m">' + Math.round(f.win) + '% win · ' + f.n + ' trades</span></div>';
-    }).join('');
-
-    // Where it stands now — wording follows the data, so it can't go stale.
-    var N = K.now;
-    if (N.show) {
-      $('kf-now-sec').hidden = false;
-      var rank = N.worse_before === 0 ? 'the weakest ' + N.window + '-trade stretch in the backtest'
-        : N.worse_before / N.stretches < 0.05 ? 'one of the weakest ' + N.window + '-trade stretches in the backtest'
-        : null;
-      $('kf-now-h').textContent = rank
-        ? 'The last ' + N.window + ' trades (since ' + N.since + ') are ' + rank + ': ' + sgnR(N.R) + ', ' + N.win + '% winners.'
-        : 'The last ' + N.window + ' trades (since ' + N.since + '): ' + sgnR(N.R) + ', ' + N.win + '% winners.';
-      var h = K.halves;
-      $('kf-now-grid').innerHTML =
-        '<div><b>' + N.pct + '%</b>of ' + N.runs.toLocaleString('en-US') + ' random reshuffles of the same ' + E.n.toLocaleString('en-US') + ' trades contain a ' + N.window + '-trade stretch at least this bad.</div>' +
-        '<div><b>' + f2(h[0].pf) + ' · ' + f2(h[1].pf) + '</b>Profit factor in ' + h[0].label + ' and in ' + h[1].label + '. The edge held in both halves of the data.</div>' +
-        '<div><b>Walk-forward</b>Settings were also tested on 6-month windows they never saw, 2021 to 2026. <a class="kf-link" href="#method">How →</a></div>';
-    }
-
-    // Setups
-    $('kf-setups').innerHTML = K.setups.map(function (s) {
-      var set = s.variant + ' · ' + (s.flags ? 'Flag Sizing on' : 'Flag Sizing off') + ' · ' + (s.dll ? 'DLL ' + usd(s.dll) : 'no DLL');
-      return '<tr' + (s.recommended ? ' class="rec"' : '') + '><td><div class="nm">' + esc(s.name) + '</div><div class="tg">' + esc(s.tag) + '</div></td>' +
-        '<td class="st">' + set + '</td><td>' + s.win + '%</td><td class="kf-pos">' + f2(s.pf) + '</td><td style="font-weight:700">' + sgnR(s.netR) + '</td>' +
-        '<td class="kf-neg">' + usd(s.dd) + ' <span class="kf-dim">· ' + Math.abs(s.ddR).toFixed(1) + 'R</span></td></tr>';
-    }).join('');
-
-    // Calculator
-    var C = K.calc, rows = C.rows, pick = 400;
-    $('kf-rule').textContent = 'The recommended rule works at any size: ' + C.variant + ', a daily loss limit of about ' + C.dll_mult + '–2× your risk, and Flag Sizing on from ' + usd(C.flags_from) + ' risk up. Pick your risk per trade.';
-    function draw() {
-      var r = rows.filter(function (x) { return x.risk === pick; })[0] || rows[0];
-      Array.prototype.forEach.call($('kf-chips').children, function (b) { b.setAttribute('aria-pressed', String(+b.dataset.r === r.risk)); });
-      $('kf-ctags').innerHTML = [C.variant, r.flags ? 'Flag Sizing on' : 'Flag Sizing off', 'Daily loss limit ' + usd(r.dll), 'No-Hedge cap on']
-        .map(function (t) { return '<span>' + t + '</span>'; }).join('');
-      $('kf-c-dd').textContent = usd(r.dd);
-      $('kf-c-plan').textContent = usd(-r.risk * K.plan_R);
-      $('kf-c-pf').innerHTML = f2(r.pf) + ' <span class="kf-dim" style="font-size:16px">· ' + r.win + '%</span>';
-      $('kf-c-netk').textContent = 'Net, ' + K.first.slice(0, 3) + ' ' + K.first.slice(-4) + ' – ' + K.last.slice(0, 3) + ' ' + K.last.slice(-4);
-      $('kf-c-net').textContent = usd(r.net);
-      $('kf-c-note').textContent = 'Same risk with everything off: max drawdown ' + usd(r.off.dd) + ', net ' + usd(r.off.net) + ', profit factor ' + f2(r.off.pf) + '. "Plan for" is about ' + K.plan_R + 'R: the typical worst drawdown across ' + N.runs.toLocaleString('en-US') + ' reshuffles of the trades. The backtest max is the worst so far, not the worst possible. Hypothetical results.';
-    }
-    $('kf-chips').innerHTML = rows.map(function (r) {
-      return '<button type="button" class="kf-chip" data-r="' + r.risk + '" aria-pressed="false">' + usd(r.risk) + '</button>';
-    }).join('');
+    $('kf-ver').textContent = ALL.version; $('kf-upd').textContent = ALL.updated;
+    var VK = (ALL.order || [ALL.default]).filter(function (k) { return ALL.variants && ALL.variants[k]; });
+    var C, rows, pick = 400, draw, vk;
     $('kf-chips').addEventListener('click', function (e) {
       var b = e.target.closest('button[data-r]'); if (!b) return; pick = +b.dataset.r; draw();
     });
-    draw();
-
-    $('kf-dl').innerHTML = K.downloads.map(function (d) {
-      return '<a href="' + esc(d.file) + '" download>' + esc(d.label) + ' (CSV)</a>';
+    $('kf-vtabs').innerHTML = VK.map(function (k) {
+      var v = ALL.variants[k];
+      return '<button type="button" role="tab" class="kf-vtab" data-v="' + k + '" aria-selected="false"><b>' + esc(v.label) + '</b><span>' + esc(v.tag) + '</span></button>';
     }).join('');
+    $('kf-vtabs').addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-v]'); if (!b || b.dataset.v === vk) return;
+      render(b.dataset.v);
+      try { history.replaceState(null, '', '?variant=' + b.dataset.v + location.hash); } catch (x) {}
+    });
+
+    function render(k) {
+      vk = k; K = ALL.variants[k];
+      var E = K.engine, sd = K.sides;
+      Array.prototype.forEach.call($('kf-vtabs').children, function (b) { b.setAttribute('aria-selected', String(b.dataset.v === k)); });
+      Array.prototype.forEach.call(document.querySelectorAll('[data-vname]'), function (el) { el.textContent = K.label; });
+      $('kf-vdesc').innerHTML = 'Showing <b style="color:var(--ink)">' + esc(K.label) + '</b> (' + esc(K.version) + '). ' + esc(K.desc) + (k === ALL.default ? ' This is what we run.' : ' Every figure below is this variant only.');
+      $('kf-setups-h').textContent = k === ALL.default ? 'What we run' : 'Setups on ' + K.label;
+      $('kf-setups-lead').textContent = k === ALL.default
+        ? 'The two setups we run, plus the engine with everything off. Net is in R so setups at different risk compare fairly.'
+        : 'The same sizing rule we use on V2, applied to ' + K.label + ', plus the engine with everything off. Net is in R so setups at different risk compare fairly.';
+      $('kf-m-v1note').hidden = k === 'v2';
+
+      $('kf-n').textContent = E.n.toLocaleString('en-US');
+      $('kf-tpd').textContent = K.tpd + ' avg';
+      $('kf-range').textContent = K.first + ' – ' + K.last;
+      $('kf-m-first').textContent = K.first; $('kf-m-planr').textContent = K.plan_R + 'R';
+      $('kf-m-p250').textContent = usd(-250 * K.plan_R).replace('−',''); $('kf-m-p400').textContent = usd(-400 * K.plan_R).replace('−','');
+
+      $('kf-tiles').innerHTML = [
+        ['Win rate', E.win + '%', 'var(--pos)', E.wins.toLocaleString('en-US') + ' of ' + E.n.toLocaleString('en-US') + ' trades'],
+        ['Profit factor', f2(E.pf), 'var(--pos)', 'In R, after commission and slippage'],
+        ['Average trade', sgnR(E.avgR), 'var(--ink)', 'About ' + (E.avgPts > 0 ? '+' : '') + Math.round(E.avgPts) + ' pts per contract'],
+        ['Long · Short', f2(sd.Long.pf) + ' · ' + f2(sd.Short.pf), 'var(--ink)', 'Profit factor by side']
+      ].map(function (t) {
+        return '<div class="kf-card kf-tile"><span class="k">' + t[0] + '</span><span class="v" style="color:' + t[2] + '">' + t[1] + '</span><span class="s">' + t[3] + '</span></div>';
+      }).join('');
+
+      // Years: skip partial years with too few trades to mean anything; say so.
+      var yrs = K.years.filter(function (y) { return y.n >= 30; });
+      var skipped = K.years.filter(function (y) { return y.n < 30; });
+      var curYr = String(K.years[K.years.length - 1].yr);
+      $('kf-bars').setAttribute('aria-label', 'Profit factor by year: ' + yrs.map(function (y) { return y.yr + ' ' + f2(y.pf); }).join(', '));
+      $('kf-bars').innerHTML = yrs.map(function (y) {
+        var h = Math.max(4, Math.min(100, (y.pf - 1) / 1.0 * 100));
+        return '<div class="kf-bar' + (String(y.yr) === curYr ? ' cur' : '') + '"><b>' + f2(y.pf) + '</b><i style="height:' + h + '%"></i></div>';
+      }).join('');
+      $('kf-barlab').innerHTML = yrs.map(function (y) { return '<span>' + y.yr + '</span>'; }).join('');
+      $('kf-yearnote').textContent = curYr + ' runs through ' + K.last + '.' +
+        (skipped.length ? ' ' + skipped.map(function (y) { return y.yr + ' (' + y.n + ' trades)'; }).join(', ') + ' left out: too few trades.' : '') +
+        ' Bars start at 1.0, where wins and losses break even. That\'s history, not a guarantee.';
+
+      $('kf-grades').innerHTML = K.grades.map(function (g) {
+        return '<div><span class="t big">' + g.g + '</span><span class="p">' + f2(g.pf) + '</span><span class="m">' + Math.round(g.win) + '% win · ' + g.n + ' trades</span></div>';
+      }).join('');
+      $('kf-flags').innerHTML = K.flags.map(function (f) {
+        return '<div><span class="t">' + f.f + (f.f === 1 ? ' flag' : ' flags') + '</span><span class="p' + (f.pf < 1.2 ? ' w' : '') + '">' + f2(f.pf) + '</span><span class="m">' + Math.round(f.win) + '% win · ' + f.n + ' trades</span></div>';
+      }).join('');
+
+      // Where it stands now — wording follows the data, so it can't go stale.
+      var N = K.now;
+      $('kf-now-sec').hidden = !N.show;
+      if (N.show) {
+        var rank = N.worse_before === 0 ? 'the weakest ' + N.window + '-trade stretch in the backtest'
+          : N.worse_before / N.stretches < 0.05 ? 'one of the weakest ' + N.window + '-trade stretches in the backtest'
+          : null;
+        $('kf-now-h').textContent = rank
+          ? 'The last ' + N.window + ' ' + K.label + ' backtest trades (since ' + N.since + ') are ' + rank + ': ' + sgnR(N.R) + ', ' + N.win + '% winners.'
+          : 'The last ' + N.window + ' ' + K.label + ' backtest trades (since ' + N.since + '): ' + sgnR(N.R) + ', ' + N.win + '% winners.';
+        var h = K.halves;
+        $('kf-now-grid').innerHTML =
+          '<div><b>' + N.pct + '%</b>of ' + N.runs.toLocaleString('en-US') + ' random reshuffles of the same ' + E.n.toLocaleString('en-US') + ' trades contain a ' + N.window + '-trade stretch at least this bad.</div>' +
+          '<div><b>' + f2(h[0].pf) + ' · ' + f2(h[1].pf) + '</b>Profit factor in ' + h[0].label + ' and in ' + h[1].label + '. The edge held in both halves of the data.</div>' +
+          (vk === 'v2'
+            ? '<div><b>Walk-forward</b>Settings were also tested on 6-month windows they never saw, 2021 to 2026. <a class="kf-link" href="#method">How →</a></div>'
+            : '<div><b>Live record</b>V1 has the longest live history: tracked since Dec 2025. <a class="kf-link" href="track-record.html?variant=v1">See it →</a></div>');
+        $('kf-now-live').innerHTML = vk === 'v2'
+          ? 'V2 has been live since Oct 9, 2026, so its live record is still short. <a class="kf-link" href="track-record.html?variant=v2">V2 live track record →</a>'
+          : '<a class="kf-link" href="track-record.html?variant=v1">V1 live track record →</a>';
+      }
+
+      // Setups
+      $('kf-setups').innerHTML = K.setups.map(function (s) {
+        var set = s.variant + ' · ' + (s.flags ? 'Flag Sizing on' : 'Flag Sizing off') + ' · ' + (s.dll ? 'DLL ' + usd(s.dll) : 'no DLL');
+        return '<tr' + (s.recommended ? ' class="rec"' : '') + '><td><div class="nm">' + esc(s.name) + '</div><div class="tg">' + esc(s.tag) + '</div></td>' +
+          '<td class="st">' + set + '</td><td>' + s.win + '%</td><td class="kf-pos">' + f2(s.pf) + '</td><td style="font-weight:700">' + sgnR(s.netR) + '</td>' +
+          '<td class="kf-neg">' + usd(s.dd) + ' <span class="kf-dim">· ' + Math.abs(s.ddR).toFixed(1) + 'R</span></td></tr>';
+      }).join('');
+
+      // Calculator
+      C = K.calc; rows = C.rows;
+      $('kf-rule').textContent = 'The recommended rule works at any size: ' + C.variant + ', a daily loss limit of about ' + C.dll_mult + '–2× your risk, and Flag Sizing on from ' + usd(C.flags_from) + ' risk up. Pick your risk per trade.';
+      draw = function () {
+        var r = rows.filter(function (x) { return x.risk === pick; })[0] || rows[0];
+        Array.prototype.forEach.call($('kf-chips').children, function (b) { b.setAttribute('aria-pressed', String(+b.dataset.r === r.risk)); });
+        $('kf-ctags').innerHTML = [C.variant, r.flags ? 'Flag Sizing on' : 'Flag Sizing off', 'Daily loss limit ' + usd(r.dll), 'No-Hedge cap on']
+          .map(function (t) { return '<span>' + t + '</span>'; }).join('');
+        $('kf-c-dd').textContent = usd(r.dd);
+        $('kf-c-plan').textContent = usd(-r.risk * K.plan_R);
+        $('kf-c-pf').innerHTML = f2(r.pf) + ' <span class="kf-dim" style="font-size:16px">· ' + r.win + '%</span>';
+        $('kf-c-netk').textContent = 'Net, ' + K.first.slice(0, 3) + ' ' + K.first.slice(-4) + ' – ' + K.last.slice(0, 3) + ' ' + K.last.slice(-4);
+        $('kf-c-net').textContent = usd(r.net);
+        $('kf-c-note').textContent = 'Same risk with everything off: max drawdown ' + usd(r.off.dd) + ', net ' + usd(r.off.net) + ', profit factor ' + f2(r.off.pf) + '. "Plan for" is about ' + K.plan_R + 'R: the typical worst drawdown across ' + N.runs.toLocaleString('en-US') + ' reshuffles of the trades. The backtest max is the worst so far, not the worst possible. Hypothetical results.';
+      };
+      $('kf-chips').innerHTML = rows.map(function (r) {
+        return '<button type="button" class="kf-chip" data-r="' + r.risk + '" aria-pressed="false">' + usd(r.risk) + '</button>';
+      }).join('');
+      draw();
+
+      $('kf-dl').innerHTML = K.downloads.map(function (d) {
+        return '<a href="' + esc(d.file) + '" download>' + esc(d.label) + ' (CSV)</a>';
+      }).join('');
+    }
+    var q = (new URLSearchParams(location.search)).get('variant');
+    render(VK.indexOf(q) >= 0 ? q : ALL.default);
   })();
   </script>
 </body>

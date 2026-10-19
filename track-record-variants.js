@@ -20,7 +20,7 @@ window.TR_VARIANTS = {
       id: 'v1',
       label: 'Variant 1',
       tag: 'Stock',
-      desc: 'Stock settings. One target, fixed stop.',
+      desc: 'Stock settings. One target, fixed stop. The longest live history. The results page backtest is V2.',
       since: '2025-12-16',
       files: { '400': 'track-record.json', '250': 'track-record-250.json' },
       versions: [
@@ -38,12 +38,11 @@ window.TR_VARIANTS = {
       id: 'v2',
       label: 'Variant 2',
       tag: 'Runner',
-      desc: 'Holds past TP1 for TP2, trailing the stop once TP1 is reached.',
+      desc: 'Holds past TP1 for TP2, trailing the stop once TP1 is reached. What we run, and the variant the results page backtests.',
       since: '2026-10-09',
       files: { '400': 'track-record-v2.json', '250': 'track-record-v2-250.json' },
       versions: [
-        { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.' },
-        { label: 'v1.4.4', start: '2026-10-19', note: 'NinjaTrader 8 build. V2 settings retuned: slower trend read, max 2 trades, 1:00 PM cutoff.' }
+        { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.' }
       ],
       runner: true,
       exits: [

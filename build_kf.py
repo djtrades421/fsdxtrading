@@ -3,7 +3,8 @@
 
   python3 build_kf.py --config results-nt.json
 
-1. Loads one NT Trades-grid export per variant (v1.3.0 tagged entry names).
+1. Loads one NT Trades-grid export per variant (v1.3.0+ tagged entry names). Each variant gets its own
+   block in kf-data.js (variants.<id>); the top level mirrors the default variant.
 2. Verifies the rebuild against every NT check export, trade for trade. Stops on any difference.
 3. Writes kf-data.js (window.FSDX_KF) for results.html, one trade-list CSV per setup, and
    patches the SEO / no-JS blocks in results.html between <!--gen-block:kf-...--> markers.
@@ -132,20 +133,16 @@ def patch(path, blocks):
     open(path, 'w', encoding='utf-8').write(s)
 
 
-def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--config', default='results-nt.json')
-    ap.add_argument('--page', default='results.html'); a = ap.parse_args()
-    root = os.path.dirname(os.path.abspath(a.config)); cfg = json.load(open(a.config))
-    bases = {k: b.load_trades(os.path.join(root, v['base'])) for k, v in cfg['variants'].items()}
-    check(cfg, bases, root)
-
-    E = sorted(bases[cfg['engine']], key=lambda t: t['et'])
+def variant_block(cfg, vk, base, root):
+    """Everything the results page shows for one variant: engine stats in R, setups, calculator, downloads."""
+    import datetime as _dt
+    vcfg = cfg['variants'][vk]
+    E = sorted(base, key=lambda t: t['et'])
     eng = rgroup(E)
     eng['wins'] = sum(r_of(t) > 0 for t in E)
-    data = OrderedDict(updated=cfg['updated'], version=cfg.get('version', ''),
-                       first=E[0]['et'].strftime('%b %-d, %Y'), last=E[-1]['et'].strftime('%b %-d, %Y'),
-                       engine_variant=cfg['variants'][cfg['engine']]['label'])
-    import datetime as _dt
+    data = OrderedDict(id=vk, label=vcfg['label'], tag=vcfg.get('tag', ''), desc=vcfg.get('desc', ''),
+                       version=vcfg.get('version', ''),
+                       first=E[0]['et'].strftime('%b %-d, %Y'), last=E[-1]['et'].strftime('%b %-d, %Y'))
     d0, d1 = E[0]['et'].date(), E[-1]['et'].date()
     wd = sum(1 for i in range((d1 - d0).days + 1) if (d0 + _dt.timedelta(i)).weekday() < 5)
     data['tpd'] = round(len(E) / wd, 2)
@@ -171,33 +168,58 @@ def main():
     data['plan_R'] = round(abs(med_dd))
 
     setups = []
-    for s in cfg['setups']:
-        T = b.rebuild_trades(bases[s['variant']], s['risk'], s['flags'], s['dll'])
+    for s in [x for x in cfg['setups'] if x['variant'] == vk]:
+        T = b.rebuild_trades(base, s['risk'], s['flags'], s['dll'])
         sm = summary(T, s['risk'])
         fn = f"knightfall-{s['id']}.csv"
         write_trades_csv(os.path.join(root, fn), T, s['risk'])
         setups.append(OrderedDict(id=s['id'], name=s['name'], tag=s['tag'], recommended=s['recommended'],
-                                  variant=cfg['variants'][s['variant']]['label'], risk=s['risk'], flags=s['flags'],
+                                  variant=vcfg['label'], risk=s['risk'], flags=s['flags'],
                                   dll=s['dll'], csv=fn, **sm))
-        print(f"{s['name']:12} {sm['trades']} trades · {usd(sm['net'])} ({sm['netR']}R) · PF {sm['pf']} · "
+        print(f"{vk} {s['name']:12} {sm['trades']} trades · {usd(sm['net'])} ({sm['netR']}R) · PF {sm['pf']} · "
               f"win {sm['win']}% · DD {usd(sm['dd'])} ({sm['ddR']}R)")
     data['setups'] = setups
 
     c = cfg['calculator']; byid = {s['id']: s for s in cfg['setups']}
+    use = c['use_setup'].get(vk, {})
     rows = []
     for risk in c['risks']:
-        u = byid.get(c['use_setup'].get(str(risk)))
+        u = byid.get(use.get(str(risk)))
         fl = u['flags'] if u else risk >= c['flags_from']
         dll = u['dll'] if u else int(round(risk * c['dll_mult'] / c['dll_round']) * c['dll_round'])
-        rec = summary(b.rebuild_trades(bases[c['variant']], risk, fl, dll))
-        off = summary(b.rebuild_trades(bases[c['variant']], risk, False, 0))
+        rec = summary(b.rebuild_trades(base, risk, fl, dll))
+        off = summary(b.rebuild_trades(base, risk, False, 0))
         rows.append(OrderedDict(risk=risk, flags=fl, dll=dll, trades=rec['trades'], win=rec['win'], pf=rec['pf'],
                                 net=round(rec['net']), dd=round(rec['dd']),
                                 off=dict(net=round(off['net']), dd=round(off['dd']), pf=off['pf'])))
-    data['calc'] = dict(variant=cfg['variants'][c['variant']]['label'], flags_from=c['flags_from'],
-                        dll_mult=c['dll_mult'], rows=rows)
+    data['calc'] = dict(variant=vcfg['label'], flags_from=c['flags_from'], dll_mult=c['dll_mult'], rows=rows)
     data['downloads'] = [dict(file=s['csv'], label=f"{s['name']} · {s['tag']}") for s in setups] + \
-                        [dict(file=v['base'], label=f"{v['label']} · raw NinjaTrader export") for v in cfg['variants'].values()]
+                        [dict(file=vcfg['base'], label=f"{vcfg['label']} · raw NinjaTrader export")]
+    return data, E, eng
+
+
+def main():
+    ap = argparse.ArgumentParser(); ap.add_argument('--config', default='results-nt.json')
+    ap.add_argument('--page', default='results.html'); a = ap.parse_args()
+    root = os.path.dirname(os.path.abspath(a.config)); cfg = json.load(open(a.config))
+    bases = {k: b.load_trades(os.path.join(root, v['base'])) for k, v in cfg['variants'].items()}
+    check(cfg, bases, root)
+
+    order = cfg.get('order') or list(cfg['variants'])
+    blocks = OrderedDict()
+    for vk in order:
+        blocks[vk], Ev, engv = variant_block(cfg, vk, bases[vk], root)
+        if vk == cfg['engine']:
+            E, eng = Ev, engv
+    dflt = blocks[cfg['engine']]
+    # Top level = the default variant, so pages that read FSDX_KF.engine etc. (autotrader, index) keep working.
+    data = OrderedDict(updated=cfg['updated'], version=cfg.get('version', ''), engine_variant=dflt['label'])
+    for k, v in dflt.items():
+        if k not in ('id', 'label', 'tag', 'desc', 'version'):
+            data[k] = v
+    data['default'] = cfg['engine']; data['order'] = order; data['variants'] = blocks
+    setups = [s for vk in order for s in blocks[vk]['setups']]
+    data['downloads'] = [d for vk in order for d in blocks[vk]['downloads']]
 
     curve_png(os.path.join(root, 'equity-curve-r.png'), E, eng)
 
@@ -207,7 +229,7 @@ def main():
     print('wrote kf-data.js')
 
     st = {s['id']: s for s in setups}
-    desc = (f"Knightfall backtest on MNQ, {data['first']} to {data['last']}, NinjaTrader with commission and slippage: "
+    desc = (f"Knightfall {data['engine_variant']} backtest on MNQ, {data['first']} to {data['last']}, NinjaTrader with commission and slippage: "
             f"{eng['n']:,} trades, {eng['win']}% win rate, profit factor {eng['pf']} in R. Hypothetical results.")
     meta = (f'<meta name="description" content="{desc}" />\n  <meta property="og:description" content="{desc}" />\n'
             f'  <meta name="twitter:description" content="{desc}" />')

@@ -1,14 +1,20 @@
 {
-  "_how": "Knightfall results from NinjaTrader. One Strategy Analyzer Trades-grid export per variant (v1.3.0+, entry names tagged grade-flags-stop, commission on, slippage 1, any Flag Sizing setting; DLL must not have skipped a trade). Every setup and every calculator row is rebuilt from that one file. Run from the site root: python3 build_kf.py --config results-nt.json. It verifies the rebuild against the NT check exports first and stops if any trade differs.",
+  "_how": "Knightfall results from NinjaTrader. One Strategy Analyzer Trades-grid export per variant (v1.3.0+ tagged entry names, commission on, slippage 1, any Flag Sizing setting; DLL must not have skipped a trade). Each variant gets its own tab on results.html: engine stats, setups, calculator and downloads, all rebuilt from that variant's one file. Run from the site root: python3 build_kf.py --config results-nt.json. It verifies the rebuild against the NT check exports first and stops if any trade differs.",
   "updated": "Oct 19, 2026",
-  "version": "Knightfall v1.4.4",
+  "version": "Knightfall MK2 · NinjaTrader build 1.4.4",
   "variants": {
     "v2": {
       "label": "V2 Runner",
+      "tag": "What we run",
+      "desc": "Full size to TP2, trailing stop after TP1. Settings retuned Oct 19, 2026.",
+      "version": "MK2",
       "base": "knightfall-nt-v2-base.csv"
     },
     "v1": {
       "label": "V1 Stock",
+      "tag": "The original",
+      "desc": "One target (TP1), fixed stop. The original Knightfall.",
+      "version": "MK2",
       "base": "knightfall-nt-v1-base.csv"
     }
   },
@@ -45,9 +51,29 @@
       "dll": 0
     },
     {
+      "id": "v1-steady",
+      "name": "Steady",
+      "tag": "If you run V1 · $250",
+      "recommended": false,
+      "variant": "v1",
+      "risk": 250,
+      "flags": false,
+      "dll": 500
+    },
+    {
+      "id": "v1-standard",
+      "name": "Standard",
+      "tag": "If you run V1 · $400",
+      "recommended": false,
+      "variant": "v1",
+      "risk": 400,
+      "flags": true,
+      "dll": 700
+    },
+    {
       "id": "v1",
-      "name": "V1 Stock",
-      "tag": "The original · $400",
+      "name": "Engine only",
+      "tag": "Baseline · $400",
       "recommended": false,
       "variant": "v1",
       "risk": 400,
@@ -56,7 +82,6 @@
     }
   ],
   "calculator": {
-    "variant": "v2",
     "risks": [
       250,
       400,
@@ -72,8 +97,14 @@
     "dll_mult": 1.5,
     "dll_round": 25,
     "use_setup": {
-      "250": "steady",
-      "400": "standard"
+      "v2": {
+        "250": "steady",
+        "400": "standard"
+      },
+      "v1": {
+        "250": "v1-steady",
+        "400": "v1-standard"
+      }
     }
   },
   "now": {
@@ -106,5 +137,9 @@
       "flags": false,
       "dll": 625
     }
+  ],
+  "order": [
+    "v2",
+    "v1"
   ]
 }
