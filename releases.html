@@ -138,7 +138,7 @@
         <div class="flex items-center justify-between gap-2" style="flex-wrap:wrap"><span class="prod" style="white-space:nowrap">${_e(r.product)}</span>
           <span class="rl-chip ${s.cls}"><span class="st-dot"></span>${s.label}</span></div>
         <h3>${_e(r.title)}</h3>
-        <p>${_e(r.body)}</p>
+        <p class="tl-body">${r.body}</p>
         <div class="when">${r.eta ? 'Releases ' + ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date(r.eta + 'T12:00:00').getDay()] + ', ' + MONL[+r.eta.slice(5,7)-1] + ' ' + (+r.eta.slice(8,10)) : 'No release date yet'}</div>
       </article>`;
     }).join('');

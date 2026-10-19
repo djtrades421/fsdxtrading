@@ -5,7 +5,7 @@
    "status": "approved",
    "product": "NinjaTrader 8",
    "title": "ORB Pro Knightfall for NinjaTrader 8 (v1.4.4)",
-   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader. Releases Friday, October 23, 2026, as a download for members. Ships as v1.4.4: Variant 1 Stock, Variant 2 Runner (default, retuned in v1.4.4), Variant 3 Fixed Stop (experimental) and Custom; Risk Profile and Daily Loss Limit at the top of the settings; the new first-breakout side lock; Flag Sizing on Auto; a Status row that shows when the system is in a cold or hot run; the No-Hedge ORB Cap on in every variant; and locked settings are tagged in their name, so you can see what each variant locks. In Custom, HTF Trend Minutes can be set to 60, 120, 180 or 240, and the Strategy Analyzer Optimizer can test all four. Auto Trade on or alert-only, no webhooks or bridge service. <a href=\"ninjatrader-members.html\">Confirm your NinjaTrader email</a> so your license is ready on launch day.",
+   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader. Releases Friday, October 23, 2026, as a download for members. Ships as v1.4.4: Variant 1 Stock, Variant 2 Runner (default, with the new Oct 19 settings), Variant 3 Fixed Stop (experimental) and Custom; Risk Profile and Daily Loss Limit at the top of the settings; the new first-breakout side lock; Flag Sizing on Auto; a Status row that shows when the system is in a cold or hot run; the No-Hedge ORB Cap on in every variant; and locked settings are tagged in their name, so you can see what each variant locks. In Custom, HTF Trend Minutes can be set to 60, 120, 180 or 240, and the Strategy Analyzer Optimizer can test all four. Auto Trade on or alert-only, no webhooks or bridge service. <a href=\"ninjatrader-members.html\">Confirm your NinjaTrader email</a> so your license is ready on launch day.",
    "eta": "2026-10-23"
   },
   {
@@ -25,16 +25,24 @@
    "date": "2026-10-19",
    "type": "update",
    "product": "ORB Pro Knightfall",
-   "title": "Knightfall for NinjaTrader 8 v1.4.4: V2 Runner retuned",
-   "body": "First V2-specific tuning. Same exits, different trade selection: Fast / Slow EMA 32 / 200 (was 21 / 140), Max Close Outside ORB 60 (was 50), Max Trades Per Session 2 (was 3), Entry Cutoff 1:00 PM CT (was 12:45), TP1 Offset 20 ticks (was 25), FVG Min Size 15 (was 5), Swing and HTF Swing Lookback 10 (was 40). The slower trend read takes fewer counter-trend shorts when the bigger trend is up. To keep the old behavior, set Variant to Custom and enter the old values. V1, V3 and Custom are unchanged. <a href=\"variant-settings.html\">Every locked value</a>."
+   "title": "Variant 2 Runner retuned",
+   "body": "First V2-specific tuning, on TradingView and NinjaTrader 8. Same exits, different trade selection: Fast / Slow EMA 32 / 200 (was 21 / 140), Max Close Outside ORB 60 (was 50), Max Trades Per Session 2 (was 3), Entry Cutoff 1:00 PM CT (was 12:45), TP1 Offset 20 (was 25), FVG Min Size 15 (was 5), Swing and HTF Swing Lookback 10 (was 40). The slower trend read takes fewer counter-trend shorts when the bigger trend is up. V1, V3 and Custom are unchanged. To keep the old V2, set Variant to Custom and enter the old values. After updating, re-select Variant 2. <a href=\"variant-settings.html\">Every locked value</a>."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-19",
+   "type": "update",
+   "product": "Auto-Trader",
+   "title": "Auto-Trader: Variant 2 Runner retuned",
+   "body": "Same new Variant 2 settings as Knightfall. V1 unchanged. After updating, re-select Variant 2 and re-create your alert. <a href=\"autotrader.html\">ORB Auto-Trader</a>."
   },
   {
    "status": "shipped",
    "date": "2026-10-19",
    "type": "site",
    "product": "Site",
-   "title": "Backtest results: V2 v1.4.4 and a walk-forward test",
-   "body": "Results page rebuilt on the v1.4.4 V2 Runner settings, with new trade downloads. New \"How these results were made\" section: backtested, walk-forward tested on data the settings never saw, and live tracked, kept separate. <a href=\"results.html#method\">See it</a>."
+   "title": "Backtest results: a tab for each variant",
+   "body": "The results page now has a tab for V2 Runner and V1 Stock, each with its own stats, setups, sizing tool and downloads. V2 is rebuilt on the new settings. A new section shows how results are made: backtested, walk-forward tested, and live tracked separately. <a href=\"results.html\">See the results</a>."
   },
   {
    "status": "shipped",
