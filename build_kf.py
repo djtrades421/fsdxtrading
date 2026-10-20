@@ -38,6 +38,15 @@ def summary(T, risk=None):
     return s
 
 
+def curve_r(E):
+    """Engine equity curve for the results page: cumulative R, one [date, R] point per trading day.
+    Sizing-independent, so it is the same at any risk setting."""
+    out, eq = OrderedDict(), 0.0
+    for t in sorted(E, key=lambda t: t['xt']):
+        eq += r_of(t); out[t['xt'].strftime('%Y-%m-%d')] = round(eq, 1)
+    return [[d, v] for d, v in out.items()]
+
+
 def rgroup(T):
     R = [r_of(t) for t in T]
     w = [x for x in R if x > 0]; l = [x for x in R if x <= 0]
@@ -166,6 +175,7 @@ def variant_block(cfg, vk, base, root):
                        worse_before=sum(x < last_sum for x in roll[:-1]), stretches=len(roll),
                        pct=pct, runs=cfg['monte_carlo']['runs'])
     data['plan_R'] = round(abs(med_dd))
+    data['curveR'] = curve_r(E)
 
     setups = []
     for s in [x for x in cfg['setups'] if x['variant'] == vk]:
@@ -217,6 +227,7 @@ def main():
     for k, v in dflt.items():
         if k not in ('id', 'label', 'tag', 'desc', 'version'):
             data[k] = v
+    data.pop('curveR', None)          # the R curve lives only under variants (results page); no duplicate copy
     data['default'] = cfg['engine']; data['order'] = order; data['variants'] = blocks
     setups = [s for vk in order for s in blocks[vk]['setups']]
     data['downloads'] = [d for vk in order for d in blocks[vk]['downloads']]

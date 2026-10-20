@@ -30,6 +30,15 @@
     .kf h1 { margin:14px 0 0; font-size:clamp(34px,5vw,52px); line-height:1.06; font-weight:900; letter-spacing:-.02em; }
     .kf h2 { margin:0; font-size:clamp(22px,3vw,28px); font-weight:800; line-height:1.2; }
     .kf-num { font-size:14px; font-weight:800; color:var(--acc); margin-right:14px; }
+    /* Equity curve (01) — engine, cumulative R */
+    .kf-eq { padding:22px; margin-top:14px; }
+    .kf-eq-top { display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; }
+    .kf-eq-top h3 { margin:0; font-size:15px; font-weight:800; }
+    .kf-eq-net { font-size:22px; font-weight:800; color:var(--pos); }
+    .kf-eq-box { position:relative; margin-top:14px; }
+    .kf-eq-box svg { display:block; width:100%; height:auto; overflow:visible; }
+    .kf-eq-tip { position:absolute; pointer-events:none; transform:translate(-50%,-115%); background:#0B1017; border:1px solid var(--line); border-radius:8px; padding:6px 9px; font-size:12px; white-space:nowrap; display:none; }
+    .kf-eq-tip b { display:block; font-size:13px; }
     .kf-lead { margin:14px 0 0; font-size:16px; line-height:1.65; color:var(--sub); max-width:740px; }
     .kf-small { font-size:12.5px; line-height:1.6; color:var(--mute); }
     .kf-card { background:var(--card); border:1px solid var(--line); border-radius:14px; }
@@ -260,6 +269,16 @@
           <h2><span class="kf-num">01</span>The engine · <span class="kf-vname" data-vname></span></h2>
           <p class="kf-lead">Every trade is measured in R: its result divided by that trade's own stop. That keeps these numbers the same at any risk setting. Risk and Flag Sizing change position size, not which trades fire or how they end.</p>
           <div class="kf-tiles" id="kf-tiles"></div>
+          <!-- Engine equity curve in R (kf-data.js variants.<v>.curveR, built by build_kf.py).
+               Sizing-independent: the same at any risk setting. -->
+          <div class="kf-card kf-eq" id="kf-eq" hidden>
+            <div class="kf-eq-top">
+              <h3 id="kf-eq-h">Equity curve, in R</h3>
+              <div><span class="kf-small" style="margin-right:8px">Total</span><span class="kf-eq-net" id="kf-eq-net"></span></div>
+            </div>
+            <div class="kf-eq-box"><svg id="kf-eq-svg" role="img"></svg><div class="kf-eq-tip" id="kf-eq-tip"></div></div>
+            <p class="kf-small" style="margin:12px 0 0" id="kf-eq-note"></p>
+          </div>
           <div class="kf-two">
             <div class="kf-card kf-panel">
               <h3>Profit factor, every year</h3>
@@ -455,7 +474,7 @@
     }
   </script>
   <script src="nav-loader.js?v=20261018a"></script>
-  <script src="kf-data.js?v=20261019b"></script>
+  <script src="kf-data.js?v=20261020b"></script>
   <script>
   // Knightfall results — everything below reads window.FSDX_KF (build_kf.py, from NinjaTrader exports).
   (function () {
@@ -551,6 +570,60 @@
           ? 'V2 has been live since Oct 9, 2026, so its live record is still short. <a class="kf-link" href="track-record.html?variant=v2">V2 live track record →</a>'
           : '<a class="kf-link" href="track-record.html?variant=v1">V1 live track record →</a>';
       }
+
+      // Equity curve — the engine in cumulative R (every trade's result ÷ its own stop, added up).
+      // Sizing-independent, so it's the same at any risk. Drawn at the box's real width; redrawn on resize.
+      window.__kfEq = function () {
+        var box = $('kf-eq'), P = K.curveR;
+        if (!P || !P.length) { box.hidden = true; return; }
+        box.hidden = false;
+        function nd(d) { return new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
+        function rl(v) { return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(Math.abs(v) < 10 && v % 1 ? 1 : 0) + 'R'; }
+        var W = Math.max(300, Math.round($('kf-eq-svg').parentNode.clientWidth || 1000)), H = W < 600 ? 230 : 300, padL = 48, padR = 8, padT = 10, padB = 28;
+        var t0 = Date.parse(P[0][0]), t1 = Date.parse(P[P.length - 1][0]);
+        var lo = Math.min(0, Math.min.apply(null, P.map(function (p) { return p[1]; })));
+        var hi = Math.max.apply(null, P.map(function (p) { return p[1]; }));
+        var step = [10, 25, 50, 100].filter(function (v) { return (hi - lo) / v <= 6; })[0] || 100;
+        hi = Math.ceil(hi / step) * step; lo = lo < 0 ? Math.floor(lo / (step / 5)) * (step / 5) : 0;
+        function X(d) { return padL + (Date.parse(d) - t0) / (t1 - t0) * (W - padL - padR); }
+        function Y(v) { return padT + (hi - v) / (hi - lo) * (H - padT - padB); }
+        var g = '';
+        for (var v = Math.ceil(lo / step) * step; v <= hi; v += step) g += '<line x1="' + padL + '" x2="' + (W - padR) + '" y1="' + Y(v) + '" y2="' + Y(v) + '" stroke="rgba(126,170,224,.12)"/>' +
+          '<text x="' + (padL - 8) + '" y="' + (Y(v) + 4) + '" text-anchor="end" font-size="12" fill="#66727F">' + (v ? rl(v) : '0R') + '</text>';
+        var y0 = new Date(t0).getFullYear(), y1 = new Date(t1).getFullYear();
+        for (var y = y0 + 1; y <= y1; y++) { if (W < 600 && (y - y0) % 2) continue; var xx = X(y + '-01-01'); g += '<line x1="' + xx + '" x2="' + xx + '" y1="' + padT + '" y2="' + (H - padB) + '" stroke="rgba(126,170,224,.07)"/><text x="' + xx + '" y="' + (H - 8) + '" text-anchor="middle" font-size="12" fill="#66727F">' + y + '</text>'; }
+        var line = P.map(function (p, i) { return (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1); }).join('');
+        var area = line + 'L' + X(P[P.length - 1][0]).toFixed(1) + ',' + Y(lo) + 'L' + X(P[0][0]).toFixed(1) + ',' + Y(lo) + 'Z';
+        // Deepest drawdown, peak to trough (daily closes, in R)
+        var pk = 0, pkI = 0, dd = 0, a = 0, b = 0;
+        P.forEach(function (p, i) { if (p[1] > pk) { pk = p[1]; pkI = i; } if (p[1] - pk < dd) { dd = p[1] - pk; a = pkI; b = i; } });
+        var band = '<rect x="' + X(P[a][0]) + '" y="' + padT + '" width="' + Math.max(2, X(P[b][0]) - X(P[a][0])) + '" height="' + (H - padT - padB) + '" fill="rgba(248,113,113,.12)"/>';
+        var svg = $('kf-eq-svg');
+        svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('height', H);
+        svg.innerHTML = '<defs><linearGradient id="kfEqG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF6B1F" stop-opacity=".28"/><stop offset="1" stop-color="#FF6B1F" stop-opacity="0"/></linearGradient></defs>' +
+          g + band + '<path d="' + area + '" fill="url(#kfEqG)"/><path d="' + line + '" fill="none" stroke="#FF6B1F" stroke-width="2"/>' +
+          '<line id="kf-eq-cur" x1="0" x2="0" y1="' + padT + '" y2="' + (H - padB) + '" stroke="rgba(233,237,243,.35)" visibility="hidden"/>';
+        var end = P[P.length - 1][1];
+        svg.setAttribute('aria-label', 'Cumulative R, ' + K.label + ', ' + nd(P[0][0]) + ' to ' + nd(P[P.length - 1][0]) + ', ending ' + rl(end) + '. Hypothetical backtest.');
+        $('kf-eq-h').textContent = 'Equity curve, in R · ' + K.label;
+        $('kf-eq-net').textContent = rl(end);
+        $('kf-eq-note').innerHTML = 'Every trade&rsquo;s result divided by its own stop, added up. 1R is one full stop. It&rsquo;s the same at any risk setting. ' +
+          'Hypothetical backtest, after commission and 1-tick slippage. Shaded: the deepest drawdown, <span class="kf-neg">' + rl(dd) + '</span> (' + nd(P[a][0]) + ' to ' + nd(P[b][0]) + '). ' +
+          'Not actual trading. Past performance is not indicative of future results.';
+        var tip = $('kf-eq-tip'), cur = null;
+        svg.onmousemove = function (e) {
+          var r = svg.getBoundingClientRect(), fx = (e.clientX - r.left) / r.width * W;
+          var tt = t0 + (fx - padL) / (W - padL - padR) * (t1 - t0), i = 0;
+          while (i < P.length - 1 && Date.parse(P[i + 1][0]) <= tt) i++;
+          var p = P[i]; cur = cur || document.getElementById('kf-eq-cur');
+          cur.setAttribute('x1', X(p[0])); cur.setAttribute('x2', X(p[0])); cur.setAttribute('visibility', 'visible');
+          tip.style.display = 'block'; tip.style.left = (X(p[0]) / W * r.width) + 'px'; tip.style.top = (Y(p[1]) / H * r.height) + 'px';
+          tip.innerHTML = '<b>' + rl(p[1]) + '</b>' + nd(p[0]);
+        };
+        svg.onmouseleave = function () { tip.style.display = 'none'; if (cur) cur.setAttribute('visibility', 'hidden'); };
+      };
+      window.__kfEq();
+      if (!window.__kfEqR) { window.__kfEqR = 1; var rt; window.addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(function () { window.__kfEq && window.__kfEq(); }, 150); }); }
 
       // Setups
       $('kf-setups').innerHTML = K.setups.map(function (s) {
