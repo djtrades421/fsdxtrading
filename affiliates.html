@@ -5,14 +5,14 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prop Firm Discounts — FSD-X Trading Partners</title>
-  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Vest Markets, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
-  <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
-  <meta name="twitter:description" content="Compare prop firm discounts side by side — Apex, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta name="twitter:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
@@ -361,7 +361,7 @@
 
     /* ══════════════════════════════════════════════════════════════════════
        PARTNERS — edit here, the tables, filters and compare cards build themselves.
-       Last full check: October 8, 2026. Re-verify every field when you update.
+       Last full check: October 8, 2026. Vest added October 20, 2026. Re-verify every field when you update.
        k.*  = filter keys:  fee one|monthly · clock none|limit · dd [EOD,Intraday]
               act no|yes|mixed · auto yes|own|limited|no · mind none|some
        plat = platforms the firm supports (used by the Platform filter)
@@ -385,6 +385,25 @@
         pts:['Wide range of evaluation sizes','One-step evaluation to funded','Up to 20 funded accounts','Choose EOD or intraday drawdown'],
         rules:['No eval consistency rule','No MAE rule','Built-in scaling','50% consistency (funded)'],
         note:'Rules shown are for accounts bought on or after March 1, 2026. Older legacy accounts keep their original rules and monthly billing until closed.' },
+
+      { n:'Vest Markets', ty:'Perpetuals prop firm', pct:0, pctLabel:'Code', code:'BWFSDXTRADING',
+        url:'https://next.vestmarkets.com/r/bwfsdxtrading',
+        dd:'Static', fee:'One-time', clock:'None',
+        act:'None',
+        dll:'Evals: 3% (custom 1-Step: 3%, 4% or none). Instant: none. Resets 8 PM ET',
+        cons:'None stated in eval or funded',
+        mind:'None to pass',
+        plat:[], platTxt:'Vest\'s own web platform only. No NinjaTrader, Tradovate or TradingView execution',
+        auto:'No bots or API trading. Copying trades across your own accounts in the same direction is allowed. Hedging across accounts is not. Copiers are unsupported and used at your own risk',
+        maxf:'Up to 10 live funded accounts', split:'80% (custom 1-Step: up to 90%. Instant: 95%)',
+        hold:'News, overnight and weekend holds allowed. NQ/ES lock over the weekend and can\'t be closed until reopen',
+        k:{fee:'one', clock:'none', dd:['Static'], act:'no', auto:'no', mind:'none'},
+        fit:'You want a low-cost eval with no deadline, no activation fee and no consistency rule, and you\'re fine trading NQ and ES as perpetuals on Vest\'s platform.',
+        watch:'These are perpetual contracts on Vest\'s own platform, not CME futures, so your NinjaTrader or TradingView setup won\'t execute here. Drawdown is a static floor checked on equity. Payouts are in USDC and go out through a crypto exchange, not a bank wire.',
+        why:'A perpetuals prop firm covering NQ, ES, stocks, crypto, forex and commodities. Offers 1-Step, 2-Step and Instant funding, with profit claims on demand.',
+        pts:['1-Step, 2-Step and Instant accounts','Static drawdown, no trailing','No deadline, no activation fee','Claim profits on demand'],
+        rules:['No consistency rule','No minimum days','Overnight holds OK','Same-direction copying OK'],
+        note:'Use the link. Code BWFSDXTRADING is for Vest only, not the other firms on this page. Payouts are in USDC.' },
 
       { n:'Bulenox', ty:'Futures prop firm', pct:83, std:45, stdCode:'DJFSDX21', code:'DJFSDX',
         url:'https://tinyurl.com/bulenox21',
@@ -736,7 +755,7 @@
       }
       // automation
       var wOwn = PQ.auto.indexOf('own') >= 0, wThird = PQ.auto.indexOf('third') >= 0;
-      if ((wOwn || wThird) && k.auto === 'no') x('Bans automation on futures accounts');
+      if ((wOwn || wThird) && k.auto === 'no') x('Bans automated trading');
       else {
         if (wOwn) {
           if (k.auto === 'limited') no('Own bot: restricted. Fully automated not allowed on funded', 25);
