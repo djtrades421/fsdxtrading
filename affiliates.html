@@ -5,14 +5,14 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prop Firm Discounts — FSD-X Trading Partners</title>
-  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Vest Markets, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
-  <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
-  <meta name="twitter:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta name="twitter:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
@@ -108,7 +108,7 @@
           <!-- STAT STRIP -->
           <div class="mt-8 flex flex-wrap gap-6">
             <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">9 Partners</div>
+              <div class="text-lg font-black text-white">11 Partners</div>
               <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Vetted & Active</div>
             </div>
             <div class="border-l-2 border-green-500 pl-4">
@@ -361,7 +361,7 @@
 
     /* ══════════════════════════════════════════════════════════════════════
        PARTNERS — edit here, the tables, filters and compare cards build themselves.
-       Last full check: October 8, 2026. Vest added October 20, 2026. Re-verify every field when you update.
+       Last full check: October 8, 2026. Vest added October 20, 2026. My Funded Perps added October 21, 2026. Re-verify every field when you update.
        k.*  = filter keys:  fee one|monthly · clock none|limit · dd [EOD,Intraday]
               act no|yes|mixed · auto yes|own|limited|no · mind none|some
        plat = platforms the firm supports (used by the Platform filter)
@@ -404,6 +404,25 @@
         pts:['1-Step, 2-Step and Instant accounts','Static drawdown, no trailing','No deadline, no activation fee','Claim profits on demand'],
         rules:['No consistency rule','No minimum days','Overnight holds OK','Same-direction copying OK'],
         note:'Use the link. Code BWFSDXTRADING is for Vest only, not the other firms on this page. Payouts are in USDC.' },
+
+      { n:'My Funded Perps', ty:'Perpetuals prop firm', pct:25, code:'DJFSDX',
+        url:'https://myfundedperpetuals.com/@DJFSDX',
+        dd:'Static', fee:'One-time', clock:'None',
+        act:'None stated',
+        dll:'Select, Prime, Signature: 3%. Elite: 3% or none (pick at checkout). Resets midnight ET',
+        cons:'None stated in eval or funded',
+        mind:'None to pass',
+        plat:[], platTxt:'MFP\'s own web terminal, plus its official API. No NinjaTrader, Tradovate or TradingView execution',
+        auto:'Your own bot through MFP\'s official API is allowed, under the same rules. Built-in copier works across your own accounts only. Outside copiers, signal services and cross-account hedging are banned',
+        maxf:'Up to $300K total funded ($100K per model)', split:'80% standard. 90% with the paid add-on at checkout',
+        hold:'News OK in evals. Funded: no new trades around high-impact news. Crypto holds 24/7. Indices, FX and some commodities auto-close before the weekend',
+        k:{fee:'one', clock:'none', dd:['Static'], act:'no', auto:'own', mind:'none'},
+        fit:'You want a low-cost 1-Step eval with static drawdown, no deadline and no consistency rule, and you\'re fine trading index, stock and crypto perps on a web terminal.',
+        watch:'These are perpetual contracts on MFP\'s own terminal, not CME futures. Nasdaq trades as NAS100, not NQ, so your NinjaTrader or TradingView setup won\'t execute here. Funded accounts must be flat to request a payout and can\'t trade around major news. No resets, so a failed account is bought again. Inactivity fails an account (30 days eval, 7 days funded).',
+        why:'A perpetuals prop firm from the team behind My Funded Futures. Covers indices, stocks, crypto, FX and commodities, with four 1-Step models: Select, Prime, Signature and Elite.',
+        pts:['Four 1-Step models','Static drawdown, no trailing','No deadline, no minimum days','Payouts through Rise'],
+        rules:['No consistency rule','No minimum days','Copier for your own accounts','API bots allowed'],
+        note:'Use the link and code DJFSDX at checkout. Targets and drawdown differ by model (Select, Prime, Signature, Elite), so check the one you pick.' },
 
       { n:'Bulenox', ty:'Futures prop firm', pct:83, std:45, stdCode:'DJFSDX21', code:'DJFSDX',
         url:'https://tinyurl.com/bulenox21',
