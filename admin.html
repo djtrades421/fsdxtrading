@@ -1360,10 +1360,18 @@
             <button onclick="trBuild('replace')" class="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-400 font-bold text-xs uppercase tracking-wider rounded-xl transition">
               Replace Everything
             </button>
+            <span class="flex items-center gap-2">
+              <input type="date" id="tr-replace-from" title="First day to overwrite"
+                class="bg-black border border-white/10 rounded-xl px-3 py-2 text-xs text-zinc-300">
+              <button onclick="trBuild('from')" class="px-5 py-2.5 bg-zinc-900 hover:bg-zinc-800 border border-yellow-500/30 text-yellow-400 font-bold text-xs uppercase tracking-wider rounded-xl transition">
+                Replace From Date
+              </button>
+            </span>
             <button onclick="document.getElementById('tr-preview').classList.add('hidden')" class="px-5 py-2.5 text-zinc-600 hover:text-zinc-400 text-xs font-bold transition">Cancel</button>
           </div>
           <p class="text-[10px] text-zinc-600 mt-3">
             <span class="text-zinc-400 font-bold">Merge</span> keeps every published trade exactly as it is and only appends dates you don't have yet — use this every time.
+            <span class="text-zinc-400 font-bold">Replace From Date</span> keeps everything before the date and swaps in this export from that date on — use it to correct recent days.
             <span class="text-zinc-400 font-bold">Replace</span> rebuilds the whole file from this export, overwriting published history with the current strategy version. Only use it if you know you want that.
           </p>
         </div>
@@ -7332,6 +7340,7 @@
   <script>
     let TR_PUBLISHED = null;   // currently live track-record.json
     let TR_PARSED    = [];     // trades parsed from the uploaded CSV
+    let TR_PARSED_ALL = [];    // every trade in the export (NT included), for Replace From Date
     let TR_RESULT    = null;   // merged output awaiting download
     const TR_REG     = (window.TR_VARIANTS && window.TR_VARIANTS.variants) || [{ id:'v1', label:'Variant 1', since:'2025-12-16', files:{ '400':'track-record.json', '250':'track-record-250.json' }, versions:[], exits:[], runner:false }];
     let TR_VAR       = TR_REG[0].id;
@@ -7382,7 +7391,7 @@
 
     function trSetProfile(p, force) {
       if (!trFile(p)) return;
-      TR_PROFILE = p; TR_PARSED = []; TR_RESULT = null;
+      TR_PROFILE = p; TR_PARSED = []; TR_PARSED_ALL = []; TR_RESULT = null;
       document.getElementById('tr-preview').classList.add('hidden');
       document.getElementById('tr-publish').classList.add('hidden');
       document.getElementById('tr-parse-msg').classList.add('hidden');
@@ -7695,6 +7704,7 @@
           const comm = parseFloat(document.getElementById('tr-comm').value) || 0;
           TR_PARSED = isNT ? trConvertNT(rows, inception, comm) : trConvert(rows, inception, comm);
           TR_SOURCE = isNT ? 'NinjaTrader 8' : 'TradingView';
+          TR_PARSED_ALL = TR_PARSED.slice();
           // NinjaTrader runs the newer build, so its history doesn't line up with
           // what was published. Only take NT trades AFTER the last published day —
           // never slot NT trades into older gaps in the record.
@@ -7705,15 +7715,16 @@
               const keep = TR_PARSED.filter(t => t.date > pubLast);
               ntOlder = TR_PARSED.length - keep.length;
               TR_PARSED = keep;
-              if (!TR_PARSED.length) {
+              if (!TR_PARSED.length && TR_PARSED_ALL.length) {
                 msg.className = 'mt-4 text-xs text-yellow-400';
-                msg.textContent = 'NinjaTrader export parsed, but nothing is newer than the last published day (' + pubLast + '). Nothing to add.';
+                msg.textContent = 'NinjaTrader export parsed. Nothing is newer than the last published day (' + pubLast + '), so Merge adds nothing. To correct published days, pick a date and use Replace From Date.';
                 msg.classList.remove('hidden');
+                trPreview();
                 return;
               }
             }
           }
-          if (!TR_PARSED.length) {
+          if (!TR_PARSED_ALL.length) {
             msg.className = 'mt-4 text-xs text-yellow-400';
             msg.textContent = 'Parsed fine, but no trades on or after ' + inception + '.';
             msg.classList.remove('hidden');
@@ -7722,7 +7733,7 @@
           // Size check: the biggest loss should sit near the selected risk.
           // Catches a $250 export imported into the $400 record, and the reverse.
           const risk = parseFloat(TR_PROFILE);
-          const worst = Math.max(0, ...TR_PARSED.map(t => -t.gross));
+          const worst = Math.max(0, ...TR_PARSED_ALL.map(t => -t.gross));
           const ratio = worst / risk;
           const off = worst > 0 && (ratio < 0.8 || ratio > 1.4);
           msg.className = 'mt-4 text-xs ' + (off ? 'text-yellow-400' : 'text-green-400');
@@ -7745,7 +7756,7 @@
     function trPreview() {
       const pubDates = new Set((TR_PUBLISHED.trades || []).map(t => t.date));
       const fresh = TR_PARSED.filter(t => !pubDates.has(t.date));
-      const dupes = TR_PARSED.filter(t => pubDates.has(t.date));
+      const dupes = TR_PARSED_ALL.filter(t => pubDates.has(t.date));
       const s = trStats(fresh);
 
       document.getElementById('tr-preview-stats').innerHTML =
@@ -7758,7 +7769,8 @@
       if (dupes.length) {
         const d = [...new Set(dupes.map(t => t.date))];
         box.innerHTML = `<span class="font-bold text-yellow-400">${d.length} date${d.length!==1?'s':''} in this export are already published</span>
-          (${d[0]} → ${d[d.length-1]}) — ${dupes.length} trade${dupes.length!==1?'s':''}.<br><br>
+          (${d[0]} → ${d[d.length-1]}) — ${dupes.length} trade${dupes.length!==1?'s':''}.
+          To correct them, set the date below and use <span class="text-yellow-400 font-bold">Replace From Date</span>.<br><br>
           <span class="text-zinc-400">Merge leaves those days untouched. That matters: this export regenerates old trades using the
           <span class="text-white font-bold">current</span> strategy version, so replacing would rewrite history that was already
           published under an earlier version.</span>`;
@@ -7767,7 +7779,7 @@
         box.classList.add('hidden');
       }
 
-      document.getElementById('tr-preview-body').innerHTML = TR_PARSED.slice().reverse().map(t => {
+      document.getElementById('tr-preview-body').innerHTML = TR_PARSED_ALL.slice().reverse().map(t => {
         const isNew = !pubDates.has(t.date);
         return `<tr class="border-b border-white/5">
           <td class="px-3 py-1.5 text-zinc-300">${t.date}</td>
@@ -7793,7 +7805,23 @@
 
       if (mode === 'replace') {
         if (!confirm('Replace ALL published trades with this export?\n\nThis rewrites already-published days using the current strategy version. Only do this if you mean to.')) return;
-        trades = TR_PARSED.slice();
+        trades = TR_PARSED_ALL.slice();
+      } else if (mode === 'from') {
+        // Keep every published trade before the date; the export owns that date onward.
+        const from = document.getElementById('tr-replace-from').value;
+        if (!from) { alert('Pick the date to replace from.'); return; }
+        const pub = TR_PUBLISHED.trades || [];
+        const fresh = TR_PARSED_ALL.filter(t => t.date >= from);
+        if (!fresh.length) { alert('This export has no trades on or after ' + from + '. Nothing changed.'); return; }
+        const kept = pub.filter(t => t.date < from);
+        const pubLast = pub.reduce((m, t) => t.date > m ? t.date : m, '');
+        const expLast = fresh.reduce((m, t) => t.date > m ? t.date : m, '');
+        const shortWarn = expLast < pubLast
+          ? '\n\n⚠ This export ends ' + expLast + ' but the record runs to ' + pubLast + '. Published trades after ' + expLast + ' will be dropped.' : '';
+        if (!confirm('Replace ' + (pub.length - kept.length) + ' published trade(s) from ' + from + ' onward with ' +
+                     fresh.length + ' from this export?\n\nEverything before ' + from + ' stays exactly as published.' + shortWarn)) return;
+        TR_BACKFILLED = 0;
+        trades = kept.concat(fresh);
       } else {
         const pubDates = new Set((TR_PUBLISHED.trades || []).map(t => t.date));
         // Backfill only: a published trade that matches this export on date,
@@ -7846,6 +7874,8 @@
         </div>
         <span class="text-zinc-500">${mode === 'replace'
           ? 'Full rebuild from this export.'
+          : mode === 'from'
+          ? 'Replaced from ' + esc(document.getElementById('tr-replace-from').value) + ' onward. Earlier trades unchanged.'
           : (added > 0 ? added + ' trade' + (added !== 1 ? 's' : '') + ' added.' : 'No new trades.') +
             (TR_BACKFILLED ? ' Max open profit filled in on ' + TR_BACKFILLED + ' published trade' + (TR_BACKFILLED !== 1 ? 's' : '') + ' (P&L unchanged).' : '')}
         Covers ${TR_RESULT.meta.inception} → ${TR_RESULT.meta.last_trade_date}.</span>`;
