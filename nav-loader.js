@@ -283,7 +283,8 @@ function fsdxSaleNotice() {
 
   function paint(sale) {
     if (!sale || !sale.code) return;
-    if (sale.expires && new Date(sale.expires).getTime() < Date.now()) return;
+    var exp = sale.expiresAt || sale.expires;
+    if (exp && new Date(exp).getTime() < Date.now()) return;
     // 1) Nav tag
     var link = document.querySelector('#nav-content a[href="memberships.html"]');
     if (link && !link.querySelector('.fx-sale-tag')) {
