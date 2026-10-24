@@ -30,7 +30,7 @@ window.TR_VARIANTS = {
         { label: 'v5',  start: '2025-12-16', note: 'Indicator version.' },
         { label: 'MK2', start: '2026-05-01', note: 'Rebuilt as a strategy.', build: 'v1.4.4' }
       ],
-      history: 'Knightfall has been updated over time. Each trade was recorded on the version running that day, so older trades may not match a backtest of the current version.',
+      history: 'Knightfall is updated over time. Each trade is recorded on the version running that day, so older trades may not match a backtest of the current version.',
       runner: false,
       exits: [
         ['TP1',  'Target',     'Price reaches TP1.'],
@@ -48,7 +48,7 @@ window.TR_VARIANTS = {
       versions: [
         { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.', build: 'v1.4.4' }
       ],
-      history: 'One version so far. Future updates will be tracked the same way: each trade on the version running that day.',
+      history: 'Knightfall is updated over time. Each trade is recorded on the version running that day, so older trades may not match a backtest of the current version.',
       runner: true,
       exits: [
         ['STOP',  'Stop',         'Stopped before TP1.'],
