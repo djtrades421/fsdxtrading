@@ -110,6 +110,7 @@
     .trv-running .desc{color:#fff;font-size:14px}
     .trv-running .meta{margin-left:auto;display:flex;gap:16px;font-size:11px;color:#7D8B9E;flex-wrap:wrap}
     .trv-running .meta b{color:#fff;font-weight:700;margin-left:4px}
+    .trv-running .hist{flex-basis:100%;font-size:11px;color:#7D8B9E;line-height:1.5}
     @media(max-width:640px){.trv-running .meta{margin-left:0}}
     .trv-rules{border:1px solid var(--fx-line,rgba(255,255,255,.1));background:rgba(8,13,20,.6);border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;gap:10px}
     .trv-rules .top{display:flex;gap:6px 16px;align-items:baseline;flex-wrap:wrap}
@@ -321,7 +322,7 @@
   </main>
 
 
-  <script src="track-record-variants.js?v=20261014a"></script>
+  <script src="track-record-variants.js?v=20261023a"></script>
   <script>
 
     // ── Output escaping (security) ──
@@ -430,11 +431,12 @@
 
       // Now running
       document.getElementById('v-running').innerHTML =
-        `<span class="now">Now running ${_e(v.label)}${ver ? ' &middot; ' + _e(ver.label) : ''}</span>
+        `<span class="now">Now running ${_e(v.label)}${ver ? ' &middot; ' + _e(ver.label) : ''}${ver && ver.build ? ' ' + _e(ver.build) : ''}</span>
          <span class="desc">${_e(v.desc || '')}</span>
          <span class="meta"><span>Tracking since<b>${fmtDate(v.since)}</b></span>
            <span>Data through<b>${m.last_trade_date ? fmtDate(m.last_trade_date) : '—'}</b></span>
-           <span>Instrument<b>${_e(m.instrument || 'MNQ')}</b></span></span>`;
+           <span>Instrument<b>${_e(m.instrument || 'MNQ')}</b></span></span>
+         ${v.history ? `<span class="hist">${_e(v.history)}</span>` : ''}`;
 
       // Exit rules for this variant
       document.getElementById('v-rules').innerHTML =

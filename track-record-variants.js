@@ -6,6 +6,9 @@
    Add a variant:   copy an entry, give it a new id + files, set "since".
    Update a variant: add a line to its "versions" list. The last entry is what
                      the page shows as "Now running". The trade list keeps going.
+   build:           optional, on a version line. Shown after the version label
+                    ("MK2 v1.4.4"). Bump it on the latest version when a build ships.
+   history:         optional, per variant. One line under the "Now running" banner.
    recent:          how many of the most recent trades the page lists.
                     Stats are always all-time for the variant.
 
@@ -25,8 +28,9 @@ window.TR_VARIANTS = {
       files: { '400': 'track-record.json', '250': 'track-record-250.json' },
       versions: [
         { label: 'v5',  start: '2025-12-16', note: 'Indicator version.' },
-        { label: 'MK2', start: '2026-05-01', note: 'Rebuilt as a strategy.' }
+        { label: 'MK2', start: '2026-05-01', note: 'Rebuilt as a strategy.', build: 'v1.4.4' }
       ],
+      history: 'Knightfall has been updated over time. Each trade was recorded on the version running that day, so older trades may not match a backtest of the current version.',
       runner: false,
       exits: [
         ['TP1',  'Target',     'Price reaches TP1.'],
@@ -42,8 +46,9 @@ window.TR_VARIANTS = {
       since: '2026-10-09',
       files: { '400': 'track-record-v2.json', '250': 'track-record-v2-250.json' },
       versions: [
-        { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.' }
+        { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.', build: 'v1.4.4' }
       ],
+      history: 'One version so far. Future updates will be tracked the same way: each trade on the version running that day.',
       runner: true,
       exits: [
         ['STOP',  'Stop',         'Stopped before TP1.'],
