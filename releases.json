@@ -2,13 +2,6 @@
  "_how": "Add an item and push. status: shipped | approved | review | testing | waiting | planned. Shipped items need date (YYYY-MM-DD or YYYY-MM) and type (new | update | fix | site). Unreleased items never get a date. An unreleased item can carry an announced date as eta (YYYY-MM-DD); it shows as 'Releases <date>'.",
  "releases": [
   {
-   "status": "approved",
-   "product": "NinjaTrader 8",
-   "title": "ORB Pro Knightfall for NinjaTrader 8 (v1.4.4)",
-   "body": "Native NinjaTrader 8 version of the strategy. Approved by NinjaTrader. Releases Friday, October 23, 2026, as a download for members. Ships as v1.4.4: Variant 1 Stock, Variant 2 Runner (default, with the new Oct 19 settings), Variant 3 Fixed Stop (experimental) and Custom; Risk Profile and Daily Loss Limit at the top of the settings; the new first-breakout side lock; Flag Sizing on Auto; a Status row that shows when the system is in a cold or hot run; the No-Hedge ORB Cap on in every variant; and locked settings are tagged in their name, so you can see what each variant locks. In Custom, HTF Trend Minutes can be set to 60, 120, 180 or 240, and the Strategy Analyzer Optimizer can test all four. Auto Trade on or alert-only, no webhooks or bridge service. <a href=\"ninjatrader-members.html\">Confirm your NinjaTrader email</a> so your license is ready on launch day.",
-   "eta": "2026-10-23"
-  },
-  {
    "status": "waiting",
    "product": "TradingView",
    "title": "TradingView Marketplace move",
@@ -19,6 +12,22 @@
    "product": "NinjaTrader 8",
    "title": "Raven, Volume Engine and Stack V1 on NinjaTrader 8",
    "body": "Native NinjaTrader 8 versions of Raven, Volume Engine and Stack V1, coming after Knightfall's NinjaTrader release."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-10-23",
+   "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall v1.4.5: Compact dashboard",
+   "body": "On TradingView and NinjaTrader 8. New <b>Layout</b> setting: <b>Compact</b> shows less data so the chart has more room: trend and ORB vs average, TAKE or NO TRADE with grade and contracts, entry, stop, TP1 and TP2. The reason only shows on a NO TRADE or a locked side. New <b>Background Transparency %</b> lets the chart show through. <b>Light Mode</b> fixed: the dashboard now switches to light backgrounds (it only turned the text dark before). TradingView adds a <b>tiny</b> text size. Display only: no change to trades. Your settings carry over. TradingView updates on its own. On NinjaTrader, download v1.4.5 and import it to get the new layout."
+  },
+  {
+   "status": "shipped",
+   "product": "NinjaTrader 8",
+   "title": "ORB Pro Knightfall is live on NinjaTrader 8",
+   "body": "Native NinjaTrader 8 version of the strategy, approved by NinjaTrader. Download it from the <a href=\"ninjatrader-members.html\">NinjaTrader members page</a>. Variant 1 Stock, Variant 2 Runner (default), Variant 3 Fixed Stop (experimental) and Custom; Risk Profile and Daily Loss Limit at the top of the settings; the first-breakout side lock; Flag Sizing on Auto; a Status row that shows cold and hot runs; the No-Hedge ORB Cap in every variant; and locked settings tagged in their name. Auto Trade on or alert-only, no webhooks or bridge service.",
+   "date": "2026-10-23",
+   "type": "new"
   },
   {
    "status": "shipped",
