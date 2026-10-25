@@ -392,7 +392,7 @@
           <button onclick="switchTab('sales')" id="tab-sales"
             class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185z"/></svg>
-            Sales
+            Promotions
           </button>
           <button onclick="switchTab('money')" id="tab-money"
             class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
@@ -501,8 +501,156 @@
 
       <!-- SALES TAB -->
       <div id="panel-sales" class="tab-panel">
-        <div class="grid gap-6 max-w-2xl">
+        <div class="grid gap-6 max-w-4xl">
 
+          <!-- ===== PROMOTIONS HUB =====
+               Everything temporary on the site lives here: sales, lifetime spots,
+               partner promos, updates and announcements. The list is the site
+               ticker, top to bottom: order, feature, switch off. Sales and lifetime
+               keep their own forms below because they also drive checkout pages. -->
+          <div class="border border-orange-500/30 bg-orange-500/[0.03] rounded-2xl p-4 sm:p-6">
+            <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
+              <div>
+                <h2 class="text-base font-black text-white">Promotions</h2>
+                <p class="text-zinc-500 text-xs mt-1 max-w-xl">One place for everything temporary: sales, lifetime spots, partner promos, updates. This list <span class="text-zinc-300 font-semibold">is the ticker</span> at the top of every page, in this order. Everyone sees it, logged in or not.</p>
+              </div>
+              <div class="flex gap-2 flex-wrap">
+                <button onclick="promoNew('sale')" class="px-3 py-2 bg-red-500/15 border border-red-500/40 text-red-300 hover:bg-red-500/25 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Sale</button>
+                <button onclick="promoNew('partner')" class="px-3 py-2 bg-blue-500/10 border border-blue-500/35 text-blue-300 hover:bg-blue-500/20 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Partner</button>
+                <button onclick="promoNew('update')" class="px-3 py-2 bg-green-500/10 border border-green-500/35 text-green-300 hover:bg-green-500/20 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Update</button>
+                <button onclick="promoNew('announcement')" class="px-3 py-2 bg-zinc-800 border border-white/15 text-zinc-200 hover:bg-zinc-700 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Announcement</button>
+              </div>
+            </div>
+            <div id="promo-msg" class="hidden rounded-xl px-4 py-3 text-xs my-3"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-4">
+              <div class="bg-black/40 border border-white/10 rounded-xl px-4 py-3">
+                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-2">Rotate every</div>
+                <div id="promo-speed" class="flex gap-1.5 flex-wrap"></div>
+              </div>
+              <label class="bg-black/40 border border-white/10 rounded-xl px-4 py-3 flex items-start gap-3 cursor-pointer select-none">
+                <input type="checkbox" id="promo-autorel" class="accent-green-500 w-4 h-4 mt-0.5" onchange="promoSave({autoRelease:this.checked})">
+                <span><span class="block text-sm text-zinc-200 font-semibold">Auto-add newest release</span><span class="block text-[11px] text-zinc-600 mt-0.5">Shows as UPDATE for 7 days after it ships.</span></span>
+              </label>
+              <label class="bg-black/40 border border-white/10 rounded-xl px-4 py-3 flex items-start gap-3 cursor-pointer select-none">
+                <input type="checkbox" id="promo-inline" class="accent-green-500 w-4 h-4 mt-0.5" onchange="promoSave({inlineSales:this.checked})">
+                <span><span class="block text-sm text-zinc-200 font-semibold">Sale line on product pages</span><span class="block text-[11px] text-zinc-600 mt-0.5">Extra line under the buttons on Knightfall NT8, Raven, Nightwing. Off = ticker only.</span></span>
+              </label>
+            </div>
+
+            <div id="promo-list" class="border border-white/10 rounded-xl overflow-hidden"><div class="px-4 py-6 text-center text-zinc-600 text-xs">Loading…</div></div>
+            <p class="text-zinc-600 text-[11px] mt-2">SALE rows come from the sale form below, LIFETIME from Lifetime Spots, UPDATE (auto) from releases.json. Partner items show an "Affiliate link" label automatically. ★ = shown first.</p>
+
+            <!-- Item form: partner / update / announcement -->
+            <div id="promo-form" class="hidden mt-4 border border-white/10 bg-black/40 rounded-xl p-4">
+              <div class="flex items-center justify-between mb-3"><div id="promo-form-title" class="text-sm font-black text-white">New item</div>
+                <button onclick="promoCancel()" class="text-zinc-500 hover:text-white text-xs font-bold">Cancel</button></div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-type">Type</label>
+                  <select id="pf-type" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"><option value="partner">Partner (affiliate)</option><option value="update">Update</option><option value="announcement">Announcement</option></select></div>
+                <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-code">Code (optional)</label><input id="pf-code" type="text" placeholder="e.g. DJFSDX" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 uppercase"></div>
+                <div class="sm:col-span-2"><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-text">What it says</label><input id="pf-text" type="text" maxlength="200" placeholder="e.g. Apex evals discount — use our code at checkout" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
+                <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-link">Link (page like affiliates.html, or https://…)</label><input id="pf-link" type="text" placeholder="affiliates.html" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
+                <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-linktext">Link text</label><input id="pf-linktext" type="text" placeholder="See details" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
+                <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-start">Starts (optional)</label><input id="pf-start" type="datetime-local" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
+                <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-end">Ends (optional)</label><input id="pf-end" type="datetime-local" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
+              </div>
+              <div class="flex gap-3 pt-3"><button onclick="promoSaveItem()" id="pf-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Add to ticker</button></div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div id="sale-form-card" class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
+            <h2 id="sale-form-title" class="text-base font-black text-white mb-1">Start a Sale</h2>
+            <p class="text-zinc-500 text-xs mb-5">Pick which products the sale covers. Each product's page, the homepage (membership only) and the sidebar link show it. Create the matching coupon in Whop first and restrict it to the same products &mdash; this only controls what the site shows. Leave Expires blank for an indefinite sale.</p>
+            <div id="sale-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Sale Label</label>
+                <input type="text" id="sale-label-input" placeholder="e.g. Flash Sale — Limited Time"
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Promo Code</label>
+                  <input type="text" id="sale-code-input" placeholder="e.g. MAY17"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 uppercase">
+                </div>
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Discount Label</label>
+                  <input type="text" id="sale-discount-input" placeholder="e.g. 17% OFF"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Products</label>
+                <div class="flex flex-wrap gap-x-5 gap-y-2" id="sale-products-input">
+                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="membership" class="accent-green-500 w-4 h-4" checked> Membership</label>
+                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="ntsolo" class="accent-green-500 w-4 h-4"> Knightfall NT8</label>
+                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="raven" class="accent-green-500 w-4 h-4"> Raven</label>
+                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="nightwing" class="accent-green-500 w-4 h-4"> Nightwing</label>
+                </div>
+              </div>
+              <label class="flex items-start gap-2.5 cursor-pointer select-none">
+                <input type="checkbox" id="sale-featured-input" class="accent-yellow-500 w-4 h-4 mt-0.5">
+                <span class="text-sm text-zinc-300">Show first in the ticker <span class="block text-zinc-600 text-[11px] mt-0.5">Same as ★ in the Promotions list. Only one item can be first.</span></span>
+              </label>
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Applies To (optional)</label>
+                <input type="text" id="sale-applies-input" placeholder="e.g. Annual and Lifetime plans only."
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Expiry Date &amp; Time (optional)</label>
+                <input type="datetime-local" id="sale-expires-input"
+                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
+                <p class="text-zinc-600 text-[11px] mt-1">If set, the banner will disappear automatically when this time passes.</p>
+              </div>
+              <div class="flex gap-3 pt-1">
+                <button onclick="postSale()" id="sale-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Launch Sale</button>
+                <button onclick="cancelEditSale()" id="sale-cancel-btn" class="hidden px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Cancel</button>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ===== Lifetime Spots (TradingView transition) ===== -->
+          <div id="lifetime-card" class="border border-green-500/30 bg-green-500/[0.04] rounded-2xl p-4 sm:p-6">
+            <div class="flex items-start justify-between gap-3 mb-1">
+              <h2 class="text-base font-black text-white">Lifetime Spots</h2>
+              <span id="lt-state-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0">&mdash;</span>
+            </div>
+            <p class="text-zinc-500 text-xs mb-5">Controls the <span class="text-zinc-300 font-semibold">$399 lifetime</span> counter on the homepage and Memberships page. The countdown ends on its own at <span class="text-zinc-300 font-semibold">Oct 31, 11:59 PM CT</span> (set in lifetime.js). Whop's plan stock is the hard stop on sales &mdash; this only controls what the site shows, so lower <span class="text-zinc-300 font-semibold">Remaining</span> by one each time a spot sells. At 0 the offer shows as closed.</p>
+
+            <div id="lt-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
+
+            <div class="space-y-4">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Total Spots</label>
+                  <input type="number" min="1" id="lt-total-input" placeholder="20"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+                <div>
+                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Remaining</label>
+                  <input type="number" min="0" id="lt-remaining-input" placeholder="20"
+                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+              </div>
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="checkbox" id="lt-active-input" class="accent-green-500 w-4 h-4">
+                <span class="text-sm text-zinc-300">Show the lifetime offer on the site</span>
+              </label>
+              <p class="text-zinc-600 text-[11px] -mt-1">Off = the lifetime blocks don't render anywhere. Turn it off once the offer is over.</p>
+              <div class="flex gap-3 pt-1">
+                <button onclick="saveLifetimeSpots()" id="lt-save-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Spots</button>
+                <button onclick="loadLifetimeSpots()" id="lt-reload-btn" class="px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Reload</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold pt-2">// Counters</div>
           <!-- ===== Auto-Trader Early-Access Spots ===== -->
           <div class="border border-green-500/30 bg-green-500/[0.04] rounded-2xl p-4 sm:p-6">
             <div class="flex items-start justify-between gap-3 mb-1">
@@ -538,41 +686,6 @@
             </div>
           </div>
 
-          <!-- ===== Lifetime Spots (TradingView transition) ===== -->
-          <div class="border border-green-500/30 bg-green-500/[0.04] rounded-2xl p-4 sm:p-6">
-            <div class="flex items-start justify-between gap-3 mb-1">
-              <h2 class="text-base font-black text-white">Lifetime Spots</h2>
-              <span id="lt-state-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 shrink-0">&mdash;</span>
-            </div>
-            <p class="text-zinc-500 text-xs mb-5">Controls the <span class="text-zinc-300 font-semibold">$399 lifetime</span> counter on the homepage and Memberships page. The countdown ends on its own at <span class="text-zinc-300 font-semibold">Oct 31, 11:59 PM CT</span> (set in lifetime.js). Whop's plan stock is the hard stop on sales &mdash; this only controls what the site shows, so lower <span class="text-zinc-300 font-semibold">Remaining</span> by one each time a spot sells. At 0 the offer shows as closed.</p>
-
-            <div id="lt-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
-
-            <div class="space-y-4">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Total Spots</label>
-                  <input type="number" min="1" id="lt-total-input" placeholder="20"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                </div>
-                <div>
-                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Remaining</label>
-                  <input type="number" min="0" id="lt-remaining-input" placeholder="20"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                </div>
-              </div>
-              <label class="flex items-center gap-2.5 cursor-pointer select-none">
-                <input type="checkbox" id="lt-active-input" class="accent-green-500 w-4 h-4">
-                <span class="text-sm text-zinc-300">Show the lifetime offer on the site</span>
-              </label>
-              <p class="text-zinc-600 text-[11px] -mt-1">Off = the lifetime blocks don't render anywhere. Turn it off once the offer is over.</p>
-              <div class="flex gap-3 pt-1">
-                <button onclick="saveLifetimeSpots()" id="lt-save-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Spots</button>
-                <button onclick="loadLifetimeSpots()" id="lt-reload-btn" class="px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Reload</button>
-              </div>
-            </div>
-          </div>
-
           <!-- ===== Pro Membership Cap ===== -->
           <div class="border border-green-500/30 bg-green-500/[0.04] rounded-2xl p-4 sm:p-6">
             <div class="flex items-start justify-between gap-3 mb-1">
@@ -604,71 +717,6 @@
               <div class="flex gap-3 pt-1">
                 <button onclick="saveMemberCap()" id="mc-save-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Save Cap</button>
                 <button onclick="loadMemberCap()" id="mc-reload-btn" class="px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Reload</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Live sales — one card per sale. Several can run at once, each on its own products. -->
-          <div id="sales-list" class="grid gap-3"></div>
-
-          <!-- No sale state -->
-          <div id="no-sale-display" class="border border-dashed border-white/10 rounded-2xl px-6 py-8 text-center">
-            <div class="text-2xl mb-2">🏷️</div>
-            <div class="text-zinc-400 font-bold text-sm mb-1">No Active Sale</div>
-            <div class="text-zinc-600 text-xs">Set up a sale below. It shows on the pages and sidebar links of the products you tick.</div>
-          </div>
-
-          <!-- Form -->
-          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
-            <h2 id="sale-form-title" class="text-base font-black text-white mb-1">Start a Sale</h2>
-            <p class="text-zinc-500 text-xs mb-5">Pick which products the sale covers. Each product's page, the homepage (membership only) and the sidebar link show it. Create the matching coupon in Whop first and restrict it to the same products &mdash; this only controls what the site shows. Leave Expires blank for an indefinite sale.</p>
-            <div id="sale-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
-
-            <div class="space-y-4">
-              <div>
-                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Sale Label</label>
-                <input type="text" id="sale-label-input" placeholder="e.g. Flash Sale — Limited Time"
-                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Promo Code</label>
-                  <input type="text" id="sale-code-input" placeholder="e.g. MAY17"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 uppercase">
-                </div>
-                <div>
-                  <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Discount Label</label>
-                  <input type="text" id="sale-discount-input" placeholder="e.g. 17% OFF"
-                    class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-                </div>
-              </div>
-              <div>
-                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Products</label>
-                <div class="flex flex-wrap gap-x-5 gap-y-2" id="sale-products-input">
-                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="membership" class="accent-green-500 w-4 h-4" checked> Membership</label>
-                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="ntsolo" class="accent-green-500 w-4 h-4"> Knightfall NT8</label>
-                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="raven" class="accent-green-500 w-4 h-4"> Raven</label>
-                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="nightwing" class="accent-green-500 w-4 h-4"> Nightwing</label>
-                </div>
-              </div>
-              <label class="flex items-start gap-2.5 cursor-pointer select-none">
-                <input type="checkbox" id="sale-featured-input" class="accent-yellow-500 w-4 h-4 mt-0.5">
-                <span class="text-sm text-zinc-300">Feature on banner <span class="block text-zinc-600 text-[11px] mt-0.5">The one sale shown in the top bar on every other page and on the homepage. Featuring this un-features any other sale. Product pages always show their own sale.</span></span>
-              </label>
-              <div>
-                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Applies To (optional)</label>
-                <input type="text" id="sale-applies-input" placeholder="e.g. Annual and Lifetime plans only."
-                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
-              </div>
-              <div>
-                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Expiry Date &amp; Time (optional)</label>
-                <input type="datetime-local" id="sale-expires-input"
-                  class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition">
-                <p class="text-zinc-600 text-[11px] mt-1">If set, the banner will disappear automatically when this time passes.</p>
-              </div>
-              <div class="flex gap-3 pt-1">
-                <button onclick="postSale()" id="sale-btn" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Launch Sale</button>
-                <button onclick="cancelEditSale()" id="sale-cancel-btn" class="hidden px-6 py-3 bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs uppercase tracking-wider rounded-xl transition">Cancel</button>
               </div>
             </div>
           </div>
@@ -2587,7 +2635,7 @@
         const data = await res.json();
         if (data.success) {
           showAdminMsg('lt-msg', active ? `Saved — ${remaining} of ${total} lifetime spots showing.` : 'Saved — lifetime offer is hidden.', 'success');
-          loadLifetimeSpots();
+          loadLifetimeSpots(); promoLoad();
         } else {
           showAdminMsg('lt-msg', data.error || 'Failed to save.', 'error');
         }
@@ -2667,30 +2715,132 @@
         const res = await fetch(`${API}/api/sale`);
         const data = await res.json();
         _sales = Array.isArray(data.sales) ? data.sales : (data.sale ? [{ ...data.sale, products: data.sale.products || ['membership'] }] : []);
-        const list = document.getElementById('sales-list');
-        const noSale = document.getElementById('no-sale-display');
-        list.innerHTML = _sales.map(s => `
-          <div class="border border-red-500/40 bg-red-950/20 rounded-2xl p-4 sm:p-5">
-            <div class="flex items-start justify-between gap-3 mb-3">
-              <div>
-                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1">🔴 Live Sale · ${(s.products || ['membership']).map(p => saleEsc(SALE_PRODUCT_NAMES[p] || p)).join(' · ')}${s.featured ? ' <span class="ml-1 text-yellow-400">★ Featured on banner</span>' : ''}</div>
-                <div class="text-white font-black text-sm">${saleEsc(s.label)}</div>
-              </div>
-              <div class="flex gap-2 shrink-0">
-                <button onclick="featureSale('${saleEsc(s.id)}', ${s.featured ? 'false' : 'true'})" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-yellow-500/20 ${s.featured ? 'text-yellow-400' : 'text-zinc-300'} hover:text-yellow-300 text-[11px] font-bold transition">${s.featured ? '★ Unfeature' : '☆ Feature'}</button>
-                <button onclick="editSale('${saleEsc(s.id)}')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-[11px] font-bold transition">Edit</button>
-                <button onclick="clearSale('${saleEsc(s.id)}')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-300 hover:text-red-400 text-[11px] font-bold transition">End</button>
-              </div>
-            </div>
-            <div class="grid grid-cols-3 gap-3 text-xs">
-              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5"><div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Code</div><div class="text-white font-black tracking-wider">${saleEsc(s.code)}</div></div>
-              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5"><div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Discount</div><div class="text-red-400 font-black">${saleEsc(s.discount)}</div></div>
-              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5"><div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Expires</div><div class="text-zinc-300 font-medium">${s.expiresAt ? saleEsc(new Date(s.expiresAt).toLocaleString()) : 'No expiry'}</div></div>
-            </div>
-            ${s.applies ? `<div class="text-zinc-500 text-[11px] mt-3">Applies to: ${saleEsc(s.applies)}</div>` : ''}
-          </div>`).join('');
-        noSale.classList.toggle('hidden', _sales.length > 0);
       } catch(e) {}
+      promoLoad();
+    }
+
+    // ── Promotions hub (= the site ticker) ──
+    let _promo = { config: null, items: [] }, _promoEdit = null;
+    const PROMO_TAG = { sale: 'color:#fff;background:#E5484D', lifetime: 'color:#0B1119;background:#FF8A4C', release: 'color:#05230F;background:#4ade80',
+      update: 'color:#05230F;background:#4ade80', partner: 'color:#06152B;background:#7FB2FF', announcement: 'color:#0B1119;background:#E6EDF7' };
+    async function promoLoad() {
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/ticker`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const d = await res.json();
+        if (d.config) { _promo = d; promoRender(); }
+        else document.getElementById('promo-list').innerHTML = '<div class="px-4 py-6 text-center text-red-400 text-xs">' + saleEsc(d.error || 'Could not load. Deploy the worker update.') + '</div>';
+      } catch (e) {
+        document.getElementById('promo-list').innerHTML = '<div class="px-4 py-6 text-center text-red-400 text-xs">Could not load the ticker. Deploy the worker update.</div>';
+      }
+    }
+    function promoRender() {
+      const c = _promo.config, items = _promo.items;
+      document.getElementById('promo-speed').innerHTML = [3, 5, 7, 10].map(n =>
+        `<button onclick="promoSave({speed:${n}})" class="px-3 py-1.5 rounded-lg text-xs font-bold border transition ${c.speed === n ? 'border-orange-500/60 bg-orange-500/15 text-orange-300' : 'border-white/10 bg-zinc-900 text-zinc-400 hover:text-white'}">${n}s</button>`).join('');
+      document.getElementById('promo-autorel').checked = !!c.autoRelease;
+      document.getElementById('promo-inline').checked = !!c.inlineSales;
+      const list = document.getElementById('promo-list');
+      if (!items.length) { list.innerHTML = '<div class="px-4 py-6 text-center text-zinc-600 text-xs">Nothing on the ticker. Add a sale, a partner promo or an update.</div>'; return; }
+      list.innerHTML = items.map((x, i) => {
+        const fmt = d => d ? new Date(d).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+        const runs = x.scheduled ? 'Starts ' + fmt(x.startsAt) : x.endsAt ? 'Until ' + fmt(x.endsAt) : 'No end date';
+        const editable = x.kind !== 'release';
+        return `<div class="flex items-center gap-3 px-3 sm:px-4 py-3 border-t border-white/5 first:border-t-0 ${x.on ? '' : 'opacity-45'}">
+          <div class="flex flex-col gap-1 shrink-0">
+            <button onclick="promoMove(${i},-1)" aria-label="Move up" class="w-7 h-6 rounded-md bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white text-xs" ${i === 0 ? 'disabled' : ''}>↑</button>
+            <button onclick="promoMove(${i},1)" aria-label="Move down" class="w-7 h-6 rounded-md bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white text-xs" ${i === items.length - 1 ? 'disabled' : ''}>↓</button>
+          </div>
+          <span class="text-[10px] font-black tracking-wider rounded-md px-2 py-1 shrink-0" style="${PROMO_TAG[x.kind] || PROMO_TAG.announcement}">${saleEsc(x.tag)}</span>
+          <div class="min-w-0 flex-1">
+            <div class="text-sm text-white font-semibold truncate">${saleEsc(x.text)}</div>
+            <div class="text-[11px] text-zinc-500 truncate">${saleEsc(x.source)}${x.code ? ' · code ' + saleEsc(x.code) : ''} · ${saleEsc(runs)}</div>
+          </div>
+          <button onclick="promoFeature('${saleEsc(x.id)}')" title="Show first" class="shrink-0 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition ${x.featured ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-300' : 'border-white/10 bg-zinc-900 text-zinc-500 hover:text-yellow-300'}">${x.featured ? '★ First' : '☆'}</button>
+          ${editable ? `<button onclick="promoEdit('${saleEsc(x.id)}')" class="shrink-0 px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-zinc-800 text-zinc-300 hover:text-white">Edit</button>` : ''}
+          ${x.kind === 'sale' || x.source === 'Manual' ? `<button onclick="promoRemove('${saleEsc(x.id)}')" class="shrink-0 px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-zinc-800 text-zinc-300 hover:text-red-400">${x.kind === 'sale' ? 'End' : 'Delete'}</button>` : ''}
+          <label class="shrink-0 flex items-center gap-1.5 text-[11px] text-zinc-400 cursor-pointer select-none" title="Show on the ticker">
+            <input type="checkbox" class="accent-green-500 w-4 h-4" ${x.on ? 'checked' : ''} ${x.scheduled ? 'disabled' : ''} onchange="promoToggle('${saleEsc(x.id)}', this.checked)"> On
+          </label>
+        </div>`;
+      }).join('');
+    }
+    async function promoSave(patch, okMsg) {
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/ticker`, { method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(patch) });
+        const d = await res.json();
+        if (d.success) { _promo = { config: d.config, items: d.items }; promoRender(); if (okMsg) showAdminMsg('promo-msg', okMsg, 'success'); }
+        else showAdminMsg('promo-msg', d.error || 'Could not save.', 'error');
+      } catch (e) { showAdminMsg('promo-msg', 'Network error.', 'error'); }
+    }
+    function promoMove(i, d) {
+      const ids = _promo.items.map(x => x.id); const j = i + d;
+      if (j < 0 || j >= ids.length) return;
+      [ids[i], ids[j]] = [ids[j], ids[i]];
+      promoSave({ order: ids });
+    }
+    function promoToggle(id, on) {
+      const off = new Set(_promo.config.off || []);
+      on ? off.delete(id) : off.add(id);
+      promoSave({ off: [...off] });
+    }
+    function promoFeature(id) {
+      promoSave({ featured: _promo.config.featured === id || (!_promo.config.featured && (_promo.items.find(x => x.id === id) || {}).featured) ? null : id });
+    }
+    function promoManual() { return (_promo.config.items || []).map(m => ({ ...m })); }
+    function promoNew(type) {
+      if (type === 'sale') { cancelEditSale(); document.getElementById('sale-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('sale-label-input').focus(); return; }
+      _promoEdit = null;
+      document.getElementById('pf-type').value = type;
+      ['pf-code', 'pf-text', 'pf-link', 'pf-linktext', 'pf-start', 'pf-end'].forEach(id => document.getElementById(id).value = '');
+      if (type === 'partner') document.getElementById('pf-link').value = 'affiliates.html';
+      if (type === 'update') document.getElementById('pf-link').value = 'releases.html';
+      document.getElementById('promo-form-title').textContent = 'New ' + (type === 'partner' ? 'partner promo' : type);
+      document.getElementById('pf-btn').textContent = 'Add to ticker';
+      document.getElementById('promo-form').classList.remove('hidden');
+      document.getElementById('pf-text').focus();
+    }
+    function promoCancel() { _promoEdit = null; document.getElementById('promo-form').classList.add('hidden'); }
+    function promoLocal(d) { if (!d) return ''; const x = new Date(d); return new Date(x - x.getTimezoneOffset() * 60000).toISOString().slice(0, 16); }
+    function promoEdit(id) {
+      const x = _promo.items.find(i => i.id === id); if (!x) return;
+      if (x.kind === 'sale') { editSale(id.replace(/^sale:/, '')); document.getElementById('sale-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+      if (x.kind === 'lifetime') { document.getElementById('lifetime-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+      const m = (_promo.config.items || []).find(i => i.id === id); if (!m) return;
+      _promoEdit = id;
+      document.getElementById('pf-type').value = m.type;
+      document.getElementById('pf-code').value = m.code || '';
+      document.getElementById('pf-text').value = m.text || '';
+      document.getElementById('pf-link').value = m.link || '';
+      document.getElementById('pf-linktext').value = m.linkText || '';
+      document.getElementById('pf-start').value = promoLocal(m.startsAt);
+      document.getElementById('pf-end').value = promoLocal(m.endsAt);
+      document.getElementById('promo-form-title').textContent = 'Edit item';
+      document.getElementById('pf-btn').textContent = 'Save item';
+      document.getElementById('promo-form').classList.remove('hidden');
+    }
+    function promoSaveItem() {
+      const text = document.getElementById('pf-text').value.trim();
+      if (!text) { showAdminMsg('promo-msg', 'Write what it says.', 'error'); return; }
+      const link = document.getElementById('pf-link').value.trim();
+      if (link && !/^(https:\/\/|[a-z0-9-]+\.html)/i.test(link)) { showAdminMsg('promo-msg', 'Link must be a page like affiliates.html or start with https://', 'error'); return; }
+      const st = document.getElementById('pf-start').value, en = document.getElementById('pf-end').value;
+      const item = { id: _promoEdit || undefined, type: document.getElementById('pf-type').value, text,
+        code: document.getElementById('pf-code').value.trim(), link, linkText: document.getElementById('pf-linktext').value.trim(),
+        startsAt: st ? new Date(st).toISOString() : null, endsAt: en ? new Date(en).toISOString() : null };
+      const items = promoManual();
+      const i = items.findIndex(m => m.id === _promoEdit);
+      if (i > -1) items[i] = item; else items.push(item);
+      promoSave({ items }, _promoEdit ? 'Item saved.' : 'Added to the ticker.');
+      promoCancel();
+    }
+    function promoRemove(id) {
+      const x = _promo.items.find(i => i.id === id); if (!x) return;
+      if (x.kind === 'sale') { clearSale(id.replace(/^sale:/, '')); return; }
+      if (!confirm('Delete "' + x.text + '" from the ticker?')) return;
+      promoSave({ items: promoManual().filter(m => m.id !== id) }, 'Deleted.');
     }
 
     function saleProductsChecked() {

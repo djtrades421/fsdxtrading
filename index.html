@@ -426,24 +426,9 @@
                 <span class="text-[13px] text-zinc-300 leading-snug"><span class="text-[10px] font-black uppercase tracking-widest text-green-400 block mb-0.5">New &middot; Standalone</span>Just want Knightfall on NinjaTrader 8? Get it on its own &mdash; <b class="text-white">$59.99/mo</b>, 30-day free trial.</span>
                 <span class="text-green-400 font-extrabold text-sm whitespace-nowrap">See it &rarr;</span>
               </a>
-              <p class="lt-trial-note" data-lt-root data-lt-hide-closed hidden>The 30-day free trial is for monthly and quarterly plans. <b>Lifetime is a one-time payment with no trial.</b></p>
+
               <div class="flex flex-wrap gap-4">
-                <!-- LIFETIME OFFER (TradingView transition) — see lifetime.js -->
-              <a href="memberships.html#lifetime" class="lt-mini" data-lt-root data-lt-hide-closed hidden>
-                <div class="lt-mini-row">
-                  <span class="lt-mini-k">Lifetime access · <b>$399 one time</b></span>
-                  <span class="lt-mono" data-lt="num">&mdash;</span>
-                </div>
-                <div class="lt-chips">
-                  <span class="lt-chip lt-chip-warn">No free trial</span>
-                  <span class="lt-chip">One-time payment</span>
-                </div>
-                <div class="lt-bar"><i data-lt="fill"></i></div>
-                <div class="lt-mini-row">
-                  <span class="lt-mini-sub">Before TradingView's Nov 1 change. Ends in <span class="lt-mono" data-lt="left">&mdash;</span> or when spots run out.</span>
-                  <span class="lt-mini-go">See the offer &rarr;</span>
-                </div>
-              </a>
+                <!-- Lifetime and sales now live in the site ticker (admin → Sales). -->
                 <!-- PRO MEMBERSHIP CAP -->
               <div id="cap-widget" class="hidden flex-1 min-w-[260px] rounded-2xl border border-white/[0.13] bg-white/[0.025] px-4 py-3.5">
                 <div class="flex items-baseline justify-between gap-4 mb-2.5">
@@ -455,22 +440,7 @@
                 </div>
                 <p id="cap-sub" class="mt-2.5 text-[11.5px] text-zinc-500 leading-relaxed">Membership is capped so support and the live room stay workable. One person runs this.</p>
               </div>
-                <!-- DYNAMIC SALE BANNER -->
-              <div id="sale-banner-index" class="hidden flex-1 min-w-[260px] relative overflow-hidden bg-gradient-to-r from-red-950/60 via-red-900/30 to-red-950/60 border border-red-500/50 rounded-2xl p-4 shadow-xl shadow-red-950/30">
-                <div class="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_8px,rgba(255,255,255,0.015)_8px,rgba(255,255,255,0.015)_16px)]"></div>
-                <div class="relative flex items-start gap-3">
-                  <span class="text-xl leading-none mt-0.5 animate-bounce">🔥</span>
-                  <div class="text-xs leading-relaxed flex-1">
-                    <div class="flex items-center justify-between gap-2 mb-1">
-                      <div id="sale-label-index" class="font-black text-red-400 uppercase tracking-widest text-[11px]">⚡ Flash Sale</div>
-                      <div id="sale-discount-index" class="bg-red-500 text-white font-black text-[11px] px-2 py-0.5 rounded-lg tracking-wide animate-pulse">—</div>
-                    </div>
-                    <div class="text-zinc-200">
-                      Use code <span id="sale-code-index" class="text-white font-black bg-zinc-900 border border-red-500/40 px-2 py-0.5 rounded-lg mx-0.5 tracking-wider">—</span> at checkout — <span id="sale-applies-index">applies to the Annual plan.</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
               </div>
               <script>
                 (async function() {
@@ -507,30 +477,7 @@
                 })();
               </script>
 
-              <script>
-                (async function() {
-                  try {
-                    const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/sale');
-                    const data = await res.json();
-                    // The featured sale (admin → Sales) wins; otherwise the membership sale.
-                    const s0 = data.featured || data.sale;
-                    if (s0) {
-                      const s = s0;
-                      const prods = s.products || ['membership'];
-                      const PAGE = { ntsolo: ['ninjatrader.html#pricing', 'Knightfall NT8'], raven: ['raven.html#plans', 'Raven'], nightwing: ['nightwing.html#plans', 'Nightwing'] };
-                      document.getElementById('sale-label-index').textContent = '⚡ ' + s.label;
-                      document.getElementById('sale-discount-index').textContent = s.discount;
-                      document.getElementById('sale-code-index').textContent = s.code;
-                      const ap = document.getElementById('sale-applies-index');
-                      if (!prods.includes('membership') && PAGE[prods[0]]) {
-                        const t = PAGE[prods[0]];
-                        ap.innerHTML = 'on ' + t[1] + (s.applies ? '. ' + String(s.applies).replace(/[&<>"]/g, '') : '.') + ' <a href="' + t[0] + '" class="text-white font-bold underline">See ' + t[1] + ' &rarr;</a>';
-                      } else if (s.applies) ap.textContent = s.applies;
-                      document.getElementById('sale-banner-index').classList.remove('hidden');
-                    }
-                  } catch(e) {}
-                })();
-              </script>
+              
 
               <p class="text-[11px] text-zinc-500 flex items-center gap-1.5 pl-1">
                 <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>

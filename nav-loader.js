@@ -273,50 +273,25 @@ function fsdxReleasesBadge() {
 // The bar is skipped on index/memberships (they have their own sale block), on
 // member-only pages, and for logged-in members (a coupon only matters at checkout).
 // Dismiss hides it for the rest of the session, per code. Nothing shows if no sale.
+// ── Site ticker ──────────────────────────────────────────────────────────
+// One rotating bar at the top of every page (admin → Ticker): live sales,
+// lifetime spots, the newest release note and hand-added partner / update
+// items. Everyone sees the same thing, logged in or not, so a member can
+// screenshot it and pass it on. Dots let a visitor jump back to any item.
+// Also from the same feed: the SALE tag on each product's sidebar link, and —
+// only when admin turns "inline sale line" on — the [data-sale-for] lines.
 function fsdxSaleNotice() {
   var page = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
-  var memberPages = ['admin.html','admin-login.html','dashboard.html','journal.html','accounts.html','backtest.html','playbook.html',
-    'tracker.html','alerts.html','profile.html','ninjatrader-members.html','converter.html','welcome.html','reset.html','login.html'];
-  if (memberPages.indexOf(page) !== -1) return;
-  var loggedIn = false; try { loggedIn = !!localStorage.getItem('fsdx_token'); } catch (e) {}
+  var SKIP = ['admin.html', 'admin-login.html', 'login.html', 'reset.html', 'welcome.html', 'ad4.html'];
+  if (SKIP.indexOf(page) !== -1) return;
+  var API = 'https://nexus-validator.dfuentes4211.workers.dev/api/ticker';
   var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-
-  // Several sales can run at once, each on its own products.
   var PRODUCT_PAGE = { membership: 'memberships.html', ntsolo: 'ninjatrader.html', raven: 'raven.html', nightwing: 'nightwing.html' };
-  var PRODUCT_NAME = { membership: 'membership', ntsolo: 'Knightfall NT8', raven: 'Raven', nightwing: 'Nightwing' };
-  var PAGE_PRODUCT = { 'memberships.html': 'membership', 'index.html': 'membership', '': 'membership',
-    'ninjatrader.html': 'ntsolo', 'raven.html': 'raven', 'nightwing.html': 'nightwing' };
-  // Pages that render their own sale block, so the top bar would double up.
-  var OWN_BLOCK = ['index.html', 'memberships.html', 'ninjatrader.html', 'raven.html', 'nightwing.html', ''];
-
-  function live(s) {
-    if (!s || !s.code) return false;
-    var exp = s.expiresAt || s.expires;
-    return !(exp && new Date(exp).getTime() < Date.now());
-  }
+  var PRODUCT_NAME = { membership: 'the membership', ntsolo: 'Knightfall NT8', raven: 'Raven', nightwing: 'Nightwing' };
   function prods(s) { return (s.products && s.products.length) ? s.products : ['membership']; }
+  function live(s) { var e = s && (s.expiresAt || s.endsAt); return !(e && new Date(e).getTime() < Date.now()); }
 
-  // Inline sale lines: any element with data-sale-for="<product>" on any page
-  // gets that product's sale written into it and unhidden. Same look everywhere.
-  function fillSlots(sales) {
-    document.querySelectorAll('[data-sale-for]').forEach(function (el) {
-      var p = el.getAttribute('data-sale-for');
-      var s = sales.filter(function (x) { return prods(x).indexOf(p) !== -1; })[0];
-      if (!s) return;
-      var exp = s.expiresAt || s.expires, ends = '';
-      if (exp) { try { ends = ' Ends ' + new Date(exp).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Chicago' }) + '.'; } catch (e) {} }
-      el.innerHTML = '<b style="color:#FF8A8D;text-transform:uppercase;letter-spacing:.06em;font-size:11px">⚡ ' + esc(s.label) + '</b> &middot; <b style="color:#fff">' + esc(s.discount) + '</b> on ' + esc(PRODUCT_NAME[p] === 'membership' ? 'the membership' : PRODUCT_NAME[p])
-        + ' with code <span style="font-family:ui-monospace,monospace;font-weight:800;color:#4ade80">' + esc(s.code) + '</span> at checkout.'
-        + (s.applies ? ' ' + esc(s.applies) : '') + esc(ends);
-      el.hidden = false;
-    });
-  }
-
-  function paint(sales) {
-    sales = (sales || []).filter(live);
-    if (!sales.length) return;
-    fillSlots(sales);
-    // 1) Sidebar tag on every product link that has a sale.
+  function sidebarTags(sales) {
     Object.keys(PRODUCT_PAGE).forEach(function (p) {
       var sale = sales.filter(function (s) { return prods(s).indexOf(p) !== -1; })[0];
       if (!sale) return;
@@ -331,50 +306,136 @@ function fsdxSaleNotice() {
         if (price) price.replaceWith(tag); else link.appendChild(tag);
       });
     });
-    // 2) Top bar: this page's product sale if it has one, else the membership sale.
-    if (loggedIn || OWN_BLOCK.indexOf(page) !== -1) return;
-    var here = PAGE_PRODUCT[page];
-    // Order: this page's own product sale → the sale featured in admin →
-    // the membership sale → the newest sale.
-    var pick = (here && sales.filter(function (s) { return prods(s).indexOf(here) !== -1; })[0])
-      || sales.filter(function (s) { return s.featured; })[0]
-      || sales.filter(function (s) { return prods(s).indexOf('membership') !== -1; })[0] || sales[0];
-    var target = here && prods(pick).indexOf(here) !== -1 ? here : prods(pick)[0];
-    var sale = pick;
-    var key = 'fsdx_salebar_x_' + sale.code;
+  }
+  function fillSlots(sales) {
+    document.querySelectorAll('[data-sale-for]').forEach(function (el) {
+      var p = el.getAttribute('data-sale-for');
+      var s = sales.filter(function (x) { return prods(x).indexOf(p) !== -1; })[0];
+      if (!s) return;
+      var exp = s.expiresAt, ends = '';
+      if (exp) { try { ends = ' Ends ' + new Date(exp).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Chicago' }) + '.'; } catch (e) {} }
+      el.innerHTML = '<b style="color:#FF8A8D;text-transform:uppercase;letter-spacing:.06em;font-size:11px">⚡ ' + esc(s.label) + '</b> &middot; <b style="color:#fff">' + esc(s.discount) + '</b> on ' + esc(PRODUCT_NAME[p])
+        + ' with code <span style="font-family:ui-monospace,monospace;font-weight:800;color:#4ade80">' + esc(s.code) + '</span> at checkout.'
+        + (s.applies ? ' ' + esc(s.applies) : '') + esc(ends);
+      el.hidden = false;
+    });
+  }
+
+  var CSS = ''
+    + '#fx-ticker{position:relative;z-index:20;display:flex;align-items:center;gap:12px;min-height:46px;padding:6px 8px 6px 16px;box-sizing:border-box;'
+    + 'background:#0C121B;border-bottom:1px solid rgba(255,255,255,.08);font:600 13px/1.35 Inter,ui-sans-serif,system-ui,sans-serif;color:#E6EDF7}'
+    + '#fx-ticker .fxt-body{flex:1;min-width:0;display:flex;align-items:center;gap:10px;animation:fxtIn .35s ease}'
+    + '@keyframes fxtIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}'
+    + '#fx-ticker .fxt-tag{font-size:10px;font-weight:900;letter-spacing:.12em;border-radius:6px;padding:3px 7px;flex-shrink:0;white-space:nowrap}'
+    + '#fx-ticker .t-sale{color:#fff;background:#E5484D}#fx-ticker .t-lifetime{color:#0B1119;background:#FF8A4C}'
+    + '#fx-ticker .t-update,#fx-ticker .t-release{color:#05230F;background:#4ade80}#fx-ticker .t-partner{color:#06152B;background:#7FB2FF}'
+    + '#fx-ticker .t-announcement{color:#0B1119;background:#E6EDF7}'
+    + '#fx-ticker .fxt-text{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
+    + '#fx-ticker .fxt-aff{font-size:10px;color:#7D8B9E;font-weight:700;white-space:nowrap;flex-shrink:0}'
+    + '#fx-ticker .fxt-code{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:#fff;background:rgba(8,13,20,.8);border:1.5px dashed rgba(255,138,141,.7);border-radius:6px;padding:2px 8px;cursor:pointer;flex-shrink:0}'
+    + '#fx-ticker .fxt-go{color:#FFA057;font-weight:800;text-decoration:none;white-space:nowrap;flex-shrink:0}#fx-ticker .fxt-go:hover{color:#FFC08A}'
+    + '#fx-ticker .fxt-dots{display:flex;gap:5px;flex-shrink:0;align-items:center}'
+    + '#fx-ticker .fxt-dot{width:8px;height:8px;border-radius:999px;border:0;padding:0;cursor:pointer;background:rgba(255,255,255,.22);transition:width .2s}'
+    + '#fx-ticker .fxt-dot.on{width:20px;background:#FF6B1F}'
+    + '#fx-ticker .fxt-dotwrap{display:inline-flex;align-items:center;justify-content:center;width:22px;height:30px;border:0;background:none;padding:0;cursor:pointer}'
+    + '#fx-ticker .fxt-x{width:32px;height:32px;border:0;background:none;color:#7D8B9E;font-size:18px;cursor:pointer;flex-shrink:0}'
+    + '#fx-ticker .fxt-bar{position:absolute;left:0;bottom:-1px;height:2px;background:#FF6B1F;width:0}'
+    + '@media (max-width:720px){#fx-ticker{flex-wrap:wrap;gap:6px 10px;padding:8px 6px 8px 12px}'
+    + '#fx-ticker .fxt-body{flex-basis:100%;flex-wrap:wrap;row-gap:6px}#fx-ticker .fxt-text{white-space:normal}'
+    + '#fx-ticker .fxt-dots{margin-left:auto}}'
+    + '@media (prefers-reduced-motion:reduce){#fx-ticker .fxt-body{animation:none}}';
+
+  function render(data) {
+    var sales = ((data && data.sales) || []).filter(live);
+    sidebarTags(sales);
+    var settings = (data && data.settings) || {};
+    if (settings.inlineSales) fillSlots(sales);
+    var items = ((data && data.items) || []).filter(live);
+    if (!items.length) return Promise.resolve();
+    // The release slot is filled from releases.json: newest shipped note, last 7 days.
+    var ri = -1; items.forEach(function (x, i) { if (x.kind === 'release') ri = i; });
+    var relP = ri === -1 ? Promise.resolve(null) : fetch('releases.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    return relP.then(function (rel) {
+      if (ri !== -1) {
+        var newest = rel && (rel.releases || []).filter(function (r) { return r.status === 'shipped' && r.date && r.date.length === 10; })
+          .sort(function (a, b) { return b.date < a.date ? -1 : 1; })[0];
+        if (newest && Date.now() - new Date(newest.date + 'T12:00:00').getTime() < 7 * 864e5) items[ri].text = newest.title;
+        else items.splice(ri, 1);
+      }
+      if (!items.length) return;
+      mount(items, Math.max(3, Number(settings.speed) || 5));
+    });
+  }
+
+  function mount(items, secs) {
+    var sig = items.map(function (x) { return x.id + '|' + x.text; }).join('~');
+    var hash = 0; for (var i = 0; i < sig.length; i++) { hash = (hash * 31 + sig.charCodeAt(i)) | 0; }
+    var key = 'fsdx_ticker_x_' + hash;
     try { if (sessionStorage.getItem(key)) return; } catch (e) {}
     var host = document.querySelector('main') || document.body;
-    if (!host || document.getElementById('fx-salebar')) return;
-    var bar = document.createElement('div');
-    bar.id = 'fx-salebar';
-    bar.setAttribute('role', 'region');
-    bar.setAttribute('aria-label', 'Current sale');
-    bar.style.cssText = 'position:relative;z-index:20;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;' +
-      'padding:9px 44px 9px 16px;background:linear-gradient(90deg,rgba(229,72,77,.16),rgba(255,107,31,.12));border-bottom:1px solid rgba(229,72,77,.35);' +
-      'font:600 12.5px/1.4 Inter,ui-sans-serif,system-ui,sans-serif;color:#E6EDF7;text-align:center';
-    var see = here === target ? '' :
-      '<a href="' + PRODUCT_PAGE[target] + '" style="color:#FFA057;font-weight:800;text-decoration:none">See ' + esc(PRODUCT_NAME[target]) + ' →</a>';
-    bar.innerHTML =
-      '<span style="color:#FF8A8D;font-weight:900;letter-spacing:.06em;text-transform:uppercase;font-size:11px">⚡ ' + esc(sale.label) + '</span>' +
-      '<span><b style="color:#fff">' + esc(sale.discount) + '</b> with code ' +
-      '<button type="button" data-fx-copy style="font:inherit;font-weight:900;color:#fff;background:rgba(8,13,20,.7);border:1px dashed rgba(255,138,141,.6);border-radius:6px;padding:1px 8px;cursor:pointer;letter-spacing:.06em" title="Copy code">' + esc(sale.code) + '</button></span>' +
-      (sale.applies ? '<span style="color:#A2AEBF">' + esc(sale.applies) + '</span>' : '') + see +
-      '<button type="button" data-fx-x aria-label="Dismiss sale notice" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;background:none;color:#7D8B9E;font-size:18px;cursor:pointer">×</button>';
-    host.insertBefore(bar, host.firstChild);
-    bar.querySelector('[data-fx-x]').onclick = function () { try { sessionStorage.setItem(key, '1'); } catch (e) {} bar.remove(); };
-    var cp = bar.querySelector('[data-fx-copy]');
-    cp.onclick = function () {
-      try { navigator.clipboard.writeText(sale.code); var t = cp.textContent; cp.textContent = 'Copied ✓'; setTimeout(function () { cp.textContent = t; }, 1400); } catch (e) {}
-    };
+    if (!host || document.getElementById('fx-ticker')) return;
+    if (!document.getElementById('fx-ticker-css')) {
+      var st = document.createElement('style'); st.id = 'fx-ticker-css'; st.textContent = CSS; document.head.appendChild(st);
+    }
+    var el = document.createElement('div');
+    el.id = 'fx-ticker';
+    el.setAttribute('role', 'region');
+    el.setAttribute('aria-label', 'News and offers');
+    el.setAttribute('aria-roledescription', 'carousel');
+    host.insertBefore(el, host.firstChild);
+    var idx = 0, t = 0, paused = false;
+    var reduce = false; try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
+
+    function draw() {
+      var x = items[idx];
+      var go = x.link ? '<a class="fxt-go" href="' + esc(x.link) + '"' + (/^https:/.test(x.link) ? ' target="_blank" rel="noopener sponsored"' : '') + '>' + esc(x.linkText || 'See more') + ' &rarr;</a>' : '';
+      var dots = items.length > 1 ? items.map(function (_, i) {
+        return '<button type="button" class="fxt-dotwrap" data-fxt-i="' + i + '" aria-label="Show item ' + (i + 1) + ' of ' + items.length + '"' + (i === idx ? ' aria-current="true"' : '') + '><span class="fxt-dot' + (i === idx ? ' on' : '') + '"></span></button>';
+      }).join('') : '';
+      el.innerHTML = '<div class="fxt-body" aria-live="' + (paused ? 'polite' : 'off') + '">'
+        + '<span class="fxt-tag t-' + esc(x.kind) + '">' + (x.kind === 'sale' ? '⚡ ' : '') + esc(x.tag) + '</span>'
+        + '<span class="fxt-text">' + esc(x.text) + '</span>'
+        + (x.affiliate ? '<span class="fxt-aff">Affiliate link</span>' : '')
+        + (x.code ? '<button type="button" class="fxt-code" data-fxt-copy title="Copy code">' + esc(x.code) + '</button>' : '')
+        + go + '</div>'
+        + '<div class="fxt-dots">' + dots + '</div>'
+        + '<button type="button" class="fxt-x" data-fxt-x aria-label="Hide for this visit">×</button>'
+        + '<div class="fxt-bar"></div>';
+    }
+    function step(n) { idx = (n + items.length) % items.length; t = 0; draw(); }
+    draw();
+    el.addEventListener('mouseenter', function () { paused = true; });
+    el.addEventListener('mouseleave', function () { paused = false; });
+    el.addEventListener('focusin', function () { paused = true; });
+    el.addEventListener('focusout', function () { paused = false; });
+    el.addEventListener('click', function (e) {
+      var d = e.target.closest('[data-fxt-i]'); if (d) { step(+d.getAttribute('data-fxt-i')); return; }
+      if (e.target.closest('[data-fxt-x]')) { try { sessionStorage.setItem(key, '1'); } catch (x) {} clearInterval(timer); el.remove(); return; }
+      var cp = e.target.closest('[data-fxt-copy]');
+      if (cp) { try { navigator.clipboard.writeText(items[idx].code); var o = cp.textContent; cp.textContent = 'Copied ✓'; setTimeout(function () { if (cp.isConnected) cp.textContent = o; }, 1400); } catch (x) {} }
+    });
+    // Swipe on phones.
+    var sx = null;
+    el.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; paused = true; }, { passive: true });
+    el.addEventListener('touchend', function (e) {
+      if (sx != null) { var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) step(idx + (dx < 0 ? 1 : -1)); }
+      sx = null; paused = false;
+    });
+    if (items.length < 2 || reduce) return;
+    var timer = setInterval(function () {
+      if (paused || document.hidden) return;
+      t += 0.1;
+      var bar = el.querySelector('.fxt-bar'); if (bar) bar.style.width = Math.min(100, (t / secs) * 100) + '%';
+      if (t >= secs) step(idx + 1);
+    }, 100);
   }
 
   var cached = null;
-  try { cached = JSON.parse(sessionStorage.getItem('fsdx_sales') || 'null'); } catch (e) {}
-  if (cached && cached.t && Date.now() - cached.t < 10 * 60 * 1000) { paint(cached.sales); return; }
-  fetch('https://nexus-validator.dfuentes4211.workers.dev/api/sale').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-    var sales = (d && Array.isArray(d.sales)) ? d.sales : ((d && d.sale) ? [d.sale] : []);
-    try { sessionStorage.setItem('fsdx_sales', JSON.stringify({ t: Date.now(), sales: sales })); } catch (e) {}
-    paint(sales);
+  try { cached = JSON.parse(sessionStorage.getItem('fsdx_ticker') || 'null'); } catch (e) {}
+  if (cached && cached.t && Date.now() - cached.t < 5 * 60 * 1000) { render(cached.d); return; }
+  fetch(API).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    try { sessionStorage.setItem('fsdx_ticker', JSON.stringify({ t: Date.now(), d: d })); } catch (e) {}
+    render(d);
   }).catch(function () {});
 }
 
