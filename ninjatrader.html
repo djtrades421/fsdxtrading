@@ -133,10 +133,10 @@
         <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// See It Run</div>
           <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Watch it trade on NinjaTrader.</h2>
-          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">Variant 2 Runner on a live MNQ chart: the opening range, the breakout grade, the entry, stop and targets, and the trailing stop taking over after TP1.</p>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">One full trade with Variant 2 Runner on MNQ: the opening range, the breakout grade, the entry, the stop and targets placed as working orders, the stop trailing after TP1, and the exit at TP2.</p>
           <div class="mt-8 border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
             <div id="nt-demo-player" class="aspect-video bg-black flex items-center justify-center relative group cursor-pointer" role="button" tabindex="0" aria-label="Play the Knightfall NinjaTrader 8 demo" onclick="ntPlayDemo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ntPlayDemo();}">
-              <img src="https://img.youtube.com/vi/4SX6qg-jAhg/maxresdefault.jpg" alt="Knightfall running on NinjaTrader 8 — demo video" data-step="0"
+              <img src="https://img.youtube.com/vi/mVMjYlCy8UI/maxresdefault.jpg" alt="Knightfall running on NinjaTrader 8 — demo video" data-step="0"
                    onload="if(this.naturalWidth&&this.naturalWidth<=120)ntThumbNext(this)" onerror="ntThumbNext(this)"
                    class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
               <div class="absolute inset-0 flex items-center justify-center z-20">
@@ -147,18 +147,47 @@
               </div>
             </div>
           </div>
-          <p class="mt-3 text-[11px] text-zinc-600">Demo footage for illustration. Futures trading involves substantial risk of loss. <a href="knowledge.html" class="text-green-400/80 hover:text-green-400">More videos in the Knowledge Base &rarr;</a></p>
+          <p class="mt-3 text-[11px] text-zinc-600">Demo footage for illustration. One trade, chosen to show every stage of the order flow; it is not typical of every session and not a performance result. Futures trading involves substantial risk of loss. <a href="knowledge.html" class="text-green-400/80 hover:text-green-400">More videos in the Knowledge Base &rarr;</a></p>
+
+          <!-- Same trade, three frames, in order. Account ID blurred in the images. -->
+          <div class="mt-12">
+            <div class="text-zinc-500 uppercase tracking-[0.25em] text-[10px] font-bold mb-4">// The same trade, frame by frame</div>
+            <div class="grid md:grid-cols-3 gap-5">
+              <figure class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+                <a href="nt8-trade-1-entry.png" target="_blank" rel="noopener" class="block bg-black">
+                  <picture><source srcset="nt8-trade-1-entry.webp" type="image/webp">
+                  <img src="nt8-trade-1-entry.png" alt="NinjaTrader 8 MNQ 5-minute chart: Knightfall grades a bear breakout B, the short is filled and the stop and TP2 sit on the chart as working orders" class="w-full h-auto block" width="1423" height="833" loading="lazy" decoding="async"></picture>
+                </a>
+                <figcaption class="p-4"><div class="text-white font-bold text-sm"><span class="text-green-400">01</span> &middot; Entry</div><p class="text-zinc-500 text-xs mt-1 leading-relaxed">Bear breakout graded B. The short fills and the stop and TP2 go on the chart as working orders.</p></figcaption>
+              </figure>
+              <figure class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+                <a href="nt8-trade-2-trail.png" target="_blank" rel="noopener" class="block bg-black">
+                  <picture><source srcset="nt8-trade-2-trail.webp" type="image/webp">
+                  <img src="nt8-trade-2-trail.png" alt="Price moves through TP1 and the strategy moves the stop down to trail the position" class="w-full h-auto block" width="1420" height="837" loading="lazy" decoding="async"></picture>
+                </a>
+                <figcaption class="p-4"><div class="text-white font-bold text-sm"><span class="text-green-400">02</span> &middot; Past TP1, stop trails</div><p class="text-zinc-500 text-xs mt-1 leading-relaxed">Once TP1 is reached, the runner's stop starts trailing. The working order moves on the chart by itself.</p></figcaption>
+              </figure>
+              <figure class="border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
+                <a href="nt8-trade-3-runner.png" target="_blank" rel="noopener" class="block bg-black">
+                  <picture><source srcset="nt8-trade-3-runner.webp" type="image/webp">
+                  <img src="nt8-trade-3-runner.png" alt="The trailing stop keeps following price as the runner heads toward TP2" class="w-full h-auto block" width="1422" height="835" loading="lazy" decoding="async"></picture>
+                </a>
+                <figcaption class="p-4"><div class="text-white font-bold text-sm"><span class="text-green-400">03</span> &middot; Runner toward TP2</div><p class="text-zinc-500 text-xs mt-1 leading-relaxed">The stop keeps following price while the runner heads for TP2. No manual order changes.</p></figcaption>
+              </figure>
+            </div>
+            <p class="mt-3 text-[11px] text-zinc-600">Screenshots of one trade, shown to illustrate how orders are placed and managed. Dollar figures on screen are one open position at that moment, not a performance result, and not indicative of future results.</p>
+          </div>
         </div>
       </section>
       <script>
         function ntThumbNext(img) {
           var r = ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault'], i = (+img.dataset.step || 0) + 1;
-          if (i < r.length) { img.dataset.step = i; img.src = 'https://img.youtube.com/vi/4SX6qg-jAhg/' + r[i] + '.jpg'; }
+          if (i < r.length) { img.dataset.step = i; img.src = 'https://img.youtube.com/vi/mVMjYlCy8UI/' + r[i] + '.jpg'; }
         }
         function ntPlayDemo() {
           var el = document.getElementById('nt-demo-player'); if (!el || el.dataset.playing) return;
           el.dataset.playing = '1';
-          el.innerHTML = '<iframe class="absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/4SX6qg-jAhg?autoplay=1&rel=0" title="Knightfall on NinjaTrader 8 demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+          el.innerHTML = '<iframe class="absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/mVMjYlCy8UI?autoplay=1&rel=0" title="Knightfall on NinjaTrader 8 demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
           el.removeAttribute('onclick'); el.removeAttribute('role'); el.removeAttribute('tabindex'); el.classList.remove('cursor-pointer');
         }
       </script>
