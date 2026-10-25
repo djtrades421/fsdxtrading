@@ -87,13 +87,13 @@
 
             <!-- Two ways in: Knightfall on its own, or inside the full membership.
                  Standalone checkout uses data-gate="ntsolo" (checkout-gate.js).
-                 REPLACE PLAN_NTSOLO_MONTHLY with the Whop monthly plan id before deploying. -->
+                 Monthly plan below; 3/6/12-month plans are in the #pricing section. -->
             <div class="mt-9 grid sm:grid-cols-2 gap-4 max-w-xl">
               <div class="border border-green-500/30 bg-green-500/[0.05] rounded-2xl p-5 flex flex-col">
                 <div class="text-[10px] uppercase tracking-widest text-green-400 font-black">Standalone</div>
                 <div class="mt-1 text-white font-black text-lg">Knightfall NT8 <span class="text-zinc-400 text-sm font-bold">$59.99/mo</span></div>
-                <p class="mt-2 text-zinc-400 text-[13px] leading-relaxed flex-1">Knightfall on NinjaTrader 8, the member platform and Nexus 2.0.</p>
-                <a href="https://whop.com/checkout/PLAN_NTSOLO_MONTHLY" data-gate="ntsolo" target="_blank" rel="noopener noreferrer" class="mt-4 bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-5 py-3 rounded-xl text-center text-sm">Start 30-Day Free Trial</a>
+                <p class="mt-2 text-zinc-400 text-[13px] leading-relaxed flex-1">Knightfall on NinjaTrader 8, the member platform and Nexus 2.0. <a href="#pricing" class="text-green-400 hover:underline font-semibold">3, 6 and 12-month plans &darr;</a></p>
+                <a href="https://whop.com/checkout/plan_yWy0DLEQ1ojVl" data-gate="ntsolo" target="_blank" rel="noopener noreferrer" class="mt-4 bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-5 py-3 rounded-xl text-center text-sm">Start 30-Day Free Trial</a>
               </div>
               <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-5 flex flex-col">
                 <div class="text-[10px] uppercase tracking-widest text-zinc-500 font-black">Full membership</div>
@@ -123,6 +123,103 @@
             </figcaption>
           </figure>
 
+        </div>
+      </section>
+
+
+      <!-- ===================== PRICING (Knightfall NT8 standalone) =====================
+           Prices must match Whop. Save badges are measured against 12x the $59.99
+           monthly and rounded DOWN (11.1%, 16.7%, 23.6% actual) — keep them rounded
+           down if prices move. Only Monthly carries the 30-day trial. -->
+      <section id="pricing" class="pt-16 pb-6 lg:pt-20 px-6 md:px-12">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Knightfall NT8 &middot; Standalone</div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Pick your term.</h2>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">Every plan includes Knightfall for NinjaTrader 8, the member platform, Nexus 2.0 and the free Discord. Your license is tied to the email you log into NinjaTrader with.</p>
+          <div class="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <div class="border-2 border-green-500/30 bg-zinc-950 rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="text-green-400 text-[10px] font-bold uppercase tracking-widest">Monthly</div>
+                  
+                </div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-3xl font-black text-white">$59.99</span>
+                  <span class="text-zinc-500 text-xs">/ mo</span>
+                </div>
+                <div class="mt-3 text-[11px] font-bold text-green-400">30-day free trial</div>
+                <p class="mt-3 text-[12px] text-zinc-500 leading-relaxed">Then $59.99 per month. Cancel before the trial ends and you&rsquo;re not charged.</p>
+              </div>
+              <a href="https://whop.com/checkout/plan_yWy0DLEQ1ojVl" data-gate="ntsolo" target="_blank" rel="noopener noreferrer"
+                 class="mt-6 block w-full text-center py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-xl transition text-sm">Start free trial</a>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/40 hover:border-white/20 transition rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">3 Months</div>
+                  <div class="text-[9px] font-black uppercase tracking-widest text-green-400 bg-green-500/10 border border-green-500/20 px-1.5 py-0.5 rounded">Save 11%</div>
+                </div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-3xl font-black text-white">$159.99</span>
+                  <span class="text-zinc-500 text-xs">/ 3 mo</span>
+                </div>
+                <div class="mt-1 text-[11px] text-zinc-500">$53.33 / month</div>
+                <p class="mt-3 text-[12px] text-zinc-500 leading-relaxed">Billed every 3 months. No free trial on this plan &mdash; billing starts immediately.</p>
+              </div>
+              <a href="https://whop.com/checkout/plan_fyamq7z84wxLA" data-gate="ntsolo" target="_blank" rel="noopener noreferrer"
+                 class="mt-6 block w-full text-center py-3 bg-transparent hover:bg-green-500/10 border border-green-500/40 text-green-400 font-extrabold rounded-xl transition text-sm">Get 3 months</a>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/40 hover:border-white/20 transition rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">6 Months</div>
+                  <div class="text-[9px] font-black uppercase tracking-widest text-green-400 bg-green-500/10 border border-green-500/20 px-1.5 py-0.5 rounded">Save 16%</div>
+                </div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-3xl font-black text-white">$299.99</span>
+                  <span class="text-zinc-500 text-xs">/ 6 mo</span>
+                </div>
+                <div class="mt-1 text-[11px] text-zinc-500">$50.00 / month</div>
+                <p class="mt-3 text-[12px] text-zinc-500 leading-relaxed">Billed every 6 months. No free trial on this plan &mdash; billing starts immediately.</p>
+              </div>
+              <a href="https://whop.com/checkout/plan_29dECGYe7m7Vh" data-gate="ntsolo" target="_blank" rel="noopener noreferrer"
+                 class="mt-6 block w-full text-center py-3 bg-transparent hover:bg-green-500/10 border border-green-500/40 text-green-400 font-extrabold rounded-xl transition text-sm">Get 6 months</a>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/40 hover:border-white/20 transition rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <div class="text-zinc-400 text-[10px] font-bold uppercase tracking-widest">Annual</div>
+                  <div class="text-[9px] font-black uppercase tracking-widest text-green-400 bg-green-500/10 border border-green-500/20 px-1.5 py-0.5 rounded">Save 23%</div>
+                </div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-3xl font-black text-white">$549.99</span>
+                  <span class="text-zinc-500 text-xs">/ yr</span>
+                </div>
+                <div class="mt-1 text-[11px] text-zinc-500">$45.83 / month</div>
+                <p class="mt-3 text-[12px] text-zinc-500 leading-relaxed">Billed once a year. No free trial on this plan &mdash; billing starts immediately.</p>
+              </div>
+              <a href="https://whop.com/checkout/plan_sSZ8gthkRASz4" data-gate="ntsolo" target="_blank" rel="noopener noreferrer"
+                 class="mt-6 block w-full text-center py-3 bg-transparent hover:bg-green-500/10 border border-green-500/40 text-green-400 font-extrabold rounded-xl transition text-sm">Get annual</a>
+            </div>
+          </div>
+          <div class="mt-4 grid sm:grid-cols-3 gap-4">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-white font-bold text-sm mb-1">Trial on Monthly</div>
+              <p class="text-[12.5px] text-zinc-500 leading-relaxed">The monthly plan includes 30 days free. Longer terms bill immediately.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-white font-bold text-sm mb-1">Want everything?</div>
+              <p class="text-[12.5px] text-zinc-500 leading-relaxed">The <a href="memberships.html" class="text-green-400 hover:underline font-semibold">full membership</a> adds the live trade room, VIP Discord, SCOUT alerts and the TradingView tools. Your journal and backtests come with you.</p>
+            </div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
+              <div class="text-white font-bold text-sm mb-1">Already a member?</div>
+              <p class="text-[12.5px] text-zinc-500 leading-relaxed">Knightfall NT8 is included in the full membership &mdash; don&rsquo;t buy this. Get it from the <a href="ninjatrader-members.html" class="text-green-400 hover:underline font-semibold">NinjaTrader hub</a>.</p>
+            </div>
+          </div>
         </div>
       </section>
 
