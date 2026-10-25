@@ -501,14 +501,14 @@
 
       <!-- SALES TAB -->
       <div id="panel-sales" class="tab-panel">
-        <div class="grid gap-6 max-w-4xl">
+        <div class="grid gap-6 max-w-4xl w-full" style="grid-template-columns:minmax(0,1fr)">
 
           <!-- ===== PROMOTIONS HUB =====
                Everything temporary on the site lives here: sales, lifetime spots,
                partner promos, updates and announcements. The list is the site
                ticker, top to bottom: order, feature, switch off. Sales and lifetime
                keep their own forms below because they also drive checkout pages. -->
-          <div class="border border-orange-500/30 bg-orange-500/[0.03] rounded-2xl p-4 sm:p-6">
+          <div class="border border-orange-500/30 bg-orange-500/[0.03] rounded-2xl p-4 sm:p-6" style="min-width:0;overflow:hidden">
             <div class="flex items-start justify-between gap-3 flex-wrap mb-1">
               <div>
                 <h2 class="text-base font-black text-white">Promotions</h2>
@@ -523,7 +523,7 @@
             </div>
             <div id="promo-msg" class="hidden rounded-xl px-4 py-3 text-xs my-3"></div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-4">
+            <div class="grid gap-3 my-4" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
               <div class="bg-black/40 border border-white/10 rounded-xl px-4 py-3">
                 <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-2">Rotate every</div>
                 <div id="promo-speed" class="flex gap-1.5 flex-wrap"></div>
@@ -2746,15 +2746,15 @@
         const fmt = d => d ? new Date(d).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
         const runs = x.scheduled ? 'Starts ' + fmt(x.startsAt) : x.endsAt ? 'Until ' + fmt(x.endsAt) : 'No end date';
         const editable = x.kind !== 'release';
-        return `<div class="flex items-center gap-3 px-3 sm:px-4 py-3 border-t border-white/5 first:border-t-0 ${x.on ? '' : 'opacity-45'}">
+        return `<div class="flex items-center gap-3 px-3 sm:px-4 py-3 border-t border-white/5 first:border-t-0" style="flex-wrap:wrap;${x.on ? '' : 'opacity:.45'}">
           <div class="flex flex-col gap-1 shrink-0">
             <button onclick="promoMove(${i},-1)" aria-label="Move up" class="w-7 h-6 rounded-md bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white text-xs" ${i === 0 ? 'disabled' : ''}>↑</button>
             <button onclick="promoMove(${i},1)" aria-label="Move down" class="w-7 h-6 rounded-md bg-zinc-900 border border-white/10 text-zinc-400 hover:text-white text-xs" ${i === items.length - 1 ? 'disabled' : ''}>↓</button>
           </div>
           <span class="text-[10px] font-black tracking-wider rounded-md px-2 py-1 shrink-0" style="${PROMO_TAG[x.kind] || PROMO_TAG.announcement}">${saleEsc(x.tag)}</span>
-          <div class="min-w-0 flex-1">
-            <div class="text-sm text-white font-semibold truncate">${saleEsc(x.text)}</div>
-            <div class="text-[11px] text-zinc-500 truncate">${saleEsc(x.source)}${x.code ? ' · code ' + saleEsc(x.code) : ''} · ${saleEsc(runs)}</div>
+          <div style="flex:1 1 260px;min-width:0">
+            <div class="text-sm text-white font-semibold" style="overflow-wrap:anywhere;line-height:1.35">${saleEsc(x.text)}</div>
+            <div class="text-[11px] text-zinc-500" style="overflow-wrap:anywhere">${saleEsc(x.source)}${x.code ? ' · code ' + saleEsc(x.code) : ''} · ${saleEsc(runs)}</div>
           </div>
           <button onclick="promoFeature('${saleEsc(x.id)}')" title="Show first" class="shrink-0 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border transition ${x.featured ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-300' : 'border-white/10 bg-zinc-900 text-zinc-500 hover:text-yellow-300'}">${x.featured ? '★ First' : '☆'}</button>
           ${editable ? `<button onclick="promoEdit('${saleEsc(x.id)}')" class="shrink-0 px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-zinc-800 text-zinc-300 hover:text-white">Edit</button>` : ''}

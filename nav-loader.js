@@ -421,7 +421,9 @@ function fsdxSaleNotice() {
       if (sx != null) { var dx = e.changedTouches[0].clientX - sx; if (Math.abs(dx) > 40) step(idx + (dx < 0 ? 1 : -1)); }
       sx = null; paused = false;
     });
-    if (items.length < 2 || reduce) return;
+    // Rotates even with "reduce motion" on (Windows turns that on when
+    // animations are off) — only the slide-in animation is dropped.
+    if (items.length < 2) return;
     var timer = setInterval(function () {
       if (paused || document.hidden) return;
       t += 0.1;
