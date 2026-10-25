@@ -287,7 +287,7 @@ function fsdxSaleNotice() {
   var PAGE_PRODUCT = { 'memberships.html': 'membership', 'index.html': 'membership', '': 'membership',
     'ninjatrader.html': 'ntsolo', 'raven.html': 'raven', 'nightwing.html': 'nightwing' };
   // Pages that render their own sale block, so the top bar would double up.
-  var OWN_BLOCK = ['index.html', 'memberships.html', 'ninjatrader.html', ''];
+  var OWN_BLOCK = ['index.html', 'memberships.html', 'ninjatrader.html', 'raven.html', 'nightwing.html', ''];
 
   function live(s) {
     if (!s || !s.code) return false;
@@ -296,9 +296,26 @@ function fsdxSaleNotice() {
   }
   function prods(s) { return (s.products && s.products.length) ? s.products : ['membership']; }
 
+  // Inline sale lines: any element with data-sale-for="<product>" on any page
+  // gets that product's sale written into it and unhidden. Same look everywhere.
+  function fillSlots(sales) {
+    document.querySelectorAll('[data-sale-for]').forEach(function (el) {
+      var p = el.getAttribute('data-sale-for');
+      var s = sales.filter(function (x) { return prods(x).indexOf(p) !== -1; })[0];
+      if (!s) return;
+      var exp = s.expiresAt || s.expires, ends = '';
+      if (exp) { try { ends = ' Ends ' + new Date(exp).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Chicago' }) + '.'; } catch (e) {} }
+      el.innerHTML = '<b style="color:#FF8A8D;text-transform:uppercase;letter-spacing:.06em;font-size:11px">⚡ ' + esc(s.label) + '</b> &middot; <b style="color:#fff">' + esc(s.discount) + '</b> on ' + esc(PRODUCT_NAME[p] === 'membership' ? 'the membership' : PRODUCT_NAME[p])
+        + ' with code <span style="font-family:ui-monospace,monospace;font-weight:800;color:#4ade80">' + esc(s.code) + '</span> at checkout.'
+        + (s.applies ? ' ' + esc(s.applies) : '') + esc(ends);
+      el.hidden = false;
+    });
+  }
+
   function paint(sales) {
     sales = (sales || []).filter(live);
     if (!sales.length) return;
+    fillSlots(sales);
     // 1) Sidebar tag on every product link that has a sale.
     Object.keys(PRODUCT_PAGE).forEach(function (p) {
       var sale = sales.filter(function (s) { return prods(s).indexOf(p) !== -1; })[0];
