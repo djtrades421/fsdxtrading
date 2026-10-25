@@ -281,23 +281,46 @@ function fsdxSaleNotice() {
   var loggedIn = false; try { loggedIn = !!localStorage.getItem('fsdx_token'); } catch (e) {}
   var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
 
-  function paint(sale) {
-    if (!sale || !sale.code) return;
-    var exp = sale.expiresAt || sale.expires;
-    if (exp && new Date(exp).getTime() < Date.now()) return;
-    // 1) Nav tag
-    var link = document.querySelector('#nav-content a[href="memberships.html"]');
-    if (link && !link.querySelector('.fx-sale-tag')) {
-      var price = link.querySelector('span.shrink-0');
-      var tag = document.createElement('span');
-      tag.className = 'fx-sale-tag';
-      tag.textContent = 'SALE';
-      tag.title = sale.label + ' · ' + sale.discount + ' with code ' + sale.code;
-      tag.style.cssText = 'font-size:9px;font-weight:900;letter-spacing:.08em;color:#fff;background:#E5484D;border-radius:4px;padding:1px 5px;flex-shrink:0';
-      if (price) price.replaceWith(tag); else link.appendChild(tag);
-    }
-    // 2) Top bar
-    if (loggedIn || page === 'index.html' || page === 'memberships.html' || page === '') return;
+  // Several sales can run at once, each on its own products.
+  var PRODUCT_PAGE = { membership: 'memberships.html', ntsolo: 'ninjatrader.html', raven: 'raven.html', nightwing: 'nightwing.html' };
+  var PRODUCT_NAME = { membership: 'membership', ntsolo: 'Knightfall NT8', raven: 'Raven', nightwing: 'Nightwing' };
+  var PAGE_PRODUCT = { 'memberships.html': 'membership', 'index.html': 'membership', '': 'membership',
+    'ninjatrader.html': 'ntsolo', 'raven.html': 'raven', 'nightwing.html': 'nightwing' };
+  // Pages that render their own sale block, so the top bar would double up.
+  var OWN_BLOCK = ['index.html', 'memberships.html', 'ninjatrader.html', ''];
+
+  function live(s) {
+    if (!s || !s.code) return false;
+    var exp = s.expiresAt || s.expires;
+    return !(exp && new Date(exp).getTime() < Date.now());
+  }
+  function prods(s) { return (s.products && s.products.length) ? s.products : ['membership']; }
+
+  function paint(sales) {
+    sales = (sales || []).filter(live);
+    if (!sales.length) return;
+    // 1) Sidebar tag on every product link that has a sale.
+    Object.keys(PRODUCT_PAGE).forEach(function (p) {
+      var sale = sales.filter(function (s) { return prods(s).indexOf(p) !== -1; })[0];
+      if (!sale) return;
+      document.querySelectorAll('#nav-content a[href="' + PRODUCT_PAGE[p] + '"]').forEach(function (link) {
+        if (link.querySelector('.fx-sale-tag')) return;
+        var price = link.querySelector('span.shrink-0');
+        var tag = document.createElement('span');
+        tag.className = 'fx-sale-tag';
+        tag.textContent = 'SALE';
+        tag.title = sale.label + ' · ' + sale.discount + ' with code ' + sale.code;
+        tag.style.cssText = 'font-size:9px;font-weight:900;letter-spacing:.08em;color:#fff;background:#E5484D;border-radius:4px;padding:1px 5px;flex-shrink:0';
+        if (price) price.replaceWith(tag); else link.appendChild(tag);
+      });
+    });
+    // 2) Top bar: this page's product sale if it has one, else the membership sale.
+    if (loggedIn || OWN_BLOCK.indexOf(page) !== -1) return;
+    var here = PAGE_PRODUCT[page];
+    var pick = (here && sales.filter(function (s) { return prods(s).indexOf(here) !== -1; })[0])
+      || sales.filter(function (s) { return prods(s).indexOf('membership') !== -1; })[0] || sales[0];
+    var target = here && prods(pick).indexOf(here) !== -1 ? here : prods(pick)[0];
+    var sale = pick;
     var key = 'fsdx_salebar_x_' + sale.code;
     try { if (sessionStorage.getItem(key)) return; } catch (e) {}
     var host = document.querySelector('main') || document.body;
@@ -309,11 +332,13 @@ function fsdxSaleNotice() {
     bar.style.cssText = 'position:relative;z-index:20;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 12px;' +
       'padding:9px 44px 9px 16px;background:linear-gradient(90deg,rgba(229,72,77,.16),rgba(255,107,31,.12));border-bottom:1px solid rgba(229,72,77,.35);' +
       'font:600 12.5px/1.4 Inter,ui-sans-serif,system-ui,sans-serif;color:#E6EDF7;text-align:center';
+    var see = here === target ? '' :
+      '<a href="' + PRODUCT_PAGE[target] + '" style="color:#FFA057;font-weight:800;text-decoration:none">See ' + esc(PRODUCT_NAME[target]) + ' →</a>';
     bar.innerHTML =
       '<span style="color:#FF8A8D;font-weight:900;letter-spacing:.06em;text-transform:uppercase;font-size:11px">⚡ ' + esc(sale.label) + '</span>' +
       '<span><b style="color:#fff">' + esc(sale.discount) + '</b> with code ' +
       '<button type="button" data-fx-copy style="font:inherit;font-weight:900;color:#fff;background:rgba(8,13,20,.7);border:1px dashed rgba(255,138,141,.6);border-radius:6px;padding:1px 8px;cursor:pointer;letter-spacing:.06em" title="Copy code">' + esc(sale.code) + '</button></span>' +
-      '<a href="memberships.html" style="color:#FFA057;font-weight:800;text-decoration:none">See membership →</a>' +
+      (sale.applies ? '<span style="color:#A2AEBF">' + esc(sale.applies) + '</span>' : '') + see +
       '<button type="button" data-fx-x aria-label="Dismiss sale notice" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;background:none;color:#7D8B9E;font-size:18px;cursor:pointer">×</button>';
     host.insertBefore(bar, host.firstChild);
     bar.querySelector('[data-fx-x]').onclick = function () { try { sessionStorage.setItem(key, '1'); } catch (e) {} bar.remove(); };
@@ -324,12 +349,12 @@ function fsdxSaleNotice() {
   }
 
   var cached = null;
-  try { cached = JSON.parse(sessionStorage.getItem('fsdx_sale') || 'null'); } catch (e) {}
-  if (cached && cached.t && Date.now() - cached.t < 10 * 60 * 1000) { paint(cached.sale); return; }
+  try { cached = JSON.parse(sessionStorage.getItem('fsdx_sales') || 'null'); } catch (e) {}
+  if (cached && cached.t && Date.now() - cached.t < 10 * 60 * 1000) { paint(cached.sales); return; }
   fetch('https://nexus-validator.dfuentes4211.workers.dev/api/sale').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
-    var sale = (d && d.sale) || null;
-    try { sessionStorage.setItem('fsdx_sale', JSON.stringify({ t: Date.now(), sale: sale })); } catch (e) {}
-    paint(sale);
+    var sales = (d && Array.isArray(d.sales)) ? d.sales : ((d && d.sale) ? [d.sale] : []);
+    try { sessionStorage.setItem('fsdx_sales', JSON.stringify({ t: Date.now(), sales: sales })); } catch (e) {}
+    paint(sales);
   }).catch(function () {});
 }
 
@@ -596,7 +621,7 @@ function prepareNavLabels(root) {
   // blank the nav just as thoroughly, so check the status and the body, and
   // give a flaky network one retry before giving up.
   function loadNavHtml(attempt) {
-    return fetch('nav.html?v=20261019a')
+    return fetch('nav.html?v=20261025c')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
@@ -778,7 +803,7 @@ function prepareNavLabels(root) {
           ['dashboard.html', 'Dashboard'], ['journal.html', 'Journal'],
           ['accounts.html', 'Accounts'], ['playbook.html', 'Playbook'],
           ['backtest.html', 'Backtest'], ['alerts.html', 'Scout Alerts'],
-          ['converter.html', 'Trade Importer'], ['ninjatrader-members.html', 'NinjaTrader 8'],
+          ['converter.html', 'Trade Importer'], ['ninjatrader-members.html', 'NinjaTrader Hub'],
           ['variant-settings.html', 'Variant Settings'],
           ['refer.html', 'Refer & Earn'],
           ['profile.html', 'Profile']
@@ -803,7 +828,7 @@ function prepareNavLabels(root) {
           ['index.html', 'Home'], ['compare.html', 'Compare Plans'],
           ['suite.html', "What's in the Membership"],
           ['platform.html', 'The Platform'],
-          ['autotrader.html', 'ORB Auto-Trader'], ['ninjatrader.html', 'NinjaTrader 8'],
+          ['autotrader.html', 'ORB Auto-Trader'], ['ninjatrader.html', 'Knightfall NT8'],
           ['releases.html', 'Releases'],
           ['results.html', 'Backtest Results'],
           ['nightwing.html', 'Nightwing'], ['raven.html', 'Raven'],
@@ -849,3 +874,60 @@ function navLogout() {
   localStorage.removeItem('fsdx_fleet_pop_seen');
   window.location.href = 'index.html';
 }
+
+// ── Plan-aware buy buttons ───────────────────────────────────────────────
+// A logged-in member should never be one click from buying something they
+// already have (and starting a second trial on a different product). Every
+// checkout link is classified by its data-gate / plan id:
+//   member already HAS it → button becomes "Included in your plan → <where>"
+//   member is buying UP   → membership buttons read "Upgrade to the membership"
+// Unknown or missing plan → nothing changes (fail open, same as every gate).
+function fsdxPlanCtas() {
+  var plan = '', token = '';
+  try { plan = localStorage.getItem('fsdx_plan') || ''; token = localStorage.getItem('fsdx_token') || ''; } catch (e) { return; }
+  if (!token || !plan) return;
+
+  var MEMBERSHIP_PLANS = ['plan_l0KkbipfcgnAp', 'plan_RYMEBnqYNmFEZ', 'plan_1CAj5BxdzpT1W', 'plan_SNuUJU8GaJk5N'];
+  function family(a) {
+    var g = a.getAttribute('data-gate') || '';
+    var href = a.getAttribute('href') || '';
+    if (g === 'ntsolo') return 'ntsolo';
+    if (g === 'raven') return 'raven';
+    if (g === 'nightwing') return 'nightwing';
+    if (g === 'autotrader' || g === 'membership' || g === 'lifetime') return 'membership';
+    for (var i = 0; i < MEMBERSHIP_PLANS.length; i++) if (href.indexOf(MEMBERSHIP_PLANS[i]) !== -1) return 'membership';
+    return '';
+  }
+  // What each plan already includes, and where to send them instead.
+  var VIP = plan === 'pro' || plan === 'plus';
+  var HAS = {
+    membership: VIP,
+    ntsolo: VIP || plan === 'ntsolo',
+    raven: VIP || plan === 'raven',
+    nightwing: VIP || plan === 'site' || plan === 'raven' || plan === 'ntsolo',
+  };
+  var GO = {
+    membership: ['dashboard.html', 'Dashboard'],
+    ntsolo: ['ninjatrader-members.html', 'NinjaTrader Hub'],
+    raven: ['setup.html#step-4', 'Claim on Whop'],
+    nightwing: ['dashboard.html', 'Dashboard'],
+  };
+
+  document.querySelectorAll('a[href*="whop.com/checkout/"]').forEach(function (a) {
+    if (a.getAttribute('data-plan-cta')) return;
+    var fam = family(a); if (!fam) return;
+    a.setAttribute('data-plan-cta', '1');
+    if (HAS[fam]) {
+      a.setAttribute('href', GO[fam][0]);
+      a.removeAttribute('target'); a.removeAttribute('data-gate');
+      a.textContent = 'Included · ' + GO[fam][1] + ' →';
+      a.title = 'You already have this on your current plan.';
+    } else if (fam === 'membership' && a.getAttribute('data-gate') !== 'lifetime') {
+      a.textContent = 'Upgrade to the membership';
+    }
+  });
+}
+(function () {
+  function run() { try { fsdxPlanCtas(); } catch (e) {} }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+})();

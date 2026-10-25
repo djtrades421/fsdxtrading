@@ -7,7 +7,7 @@
   <title>FSD-X — Admin Panel</title>
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
-  <script src="nav-loader.js?v=20261025a"></script>
+  <script src="nav-loader.js?v=20261025c"></script>
   <style>
     body { background-color: #000; overflow-x: hidden; }
     .tab-panel { display: none !important; }
@@ -608,50 +608,20 @@
             </div>
           </div>
 
-          <!-- Live Sale Display -->
-          <div id="current-sale-display" class="hidden border rounded-2xl p-4 sm:p-5">
-            <div class="flex items-start justify-between gap-3 mb-4">
-              <div>
-                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1">🔴 Live Sale</div>
-                <div id="current-sale-label" class="text-white font-black text-sm"></div>
-              </div>
-              <div class="flex gap-2 shrink-0">
-                <button onclick="editSale()" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white transition" title="Edit">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
-                </button>
-                <button onclick="clearSale()" class="p-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-400 hover:text-red-400 transition" title="End Sale">
-                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-                </button>
-              </div>
-            </div>
-            <div class="grid grid-cols-3 gap-3 text-xs">
-              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5">
-                <div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Code</div>
-                <div id="current-sale-code" class="text-white font-black tracking-wider"></div>
-              </div>
-              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5">
-                <div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Discount</div>
-                <div id="current-sale-discount" class="text-red-400 font-black"></div>
-              </div>
-              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5">
-                <div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Expires</div>
-                <div id="current-sale-expires" class="text-zinc-300 font-medium"></div>
-              </div>
-            </div>
-            <div id="current-sale-applies" class="text-zinc-500 text-[11px] mt-3"></div>
-          </div>
+          <!-- Live sales — one card per sale. Several can run at once, each on its own products. -->
+          <div id="sales-list" class="grid gap-3"></div>
 
           <!-- No sale state -->
           <div id="no-sale-display" class="border border-dashed border-white/10 rounded-2xl px-6 py-8 text-center">
             <div class="text-2xl mb-2">🏷️</div>
             <div class="text-zinc-400 font-bold text-sm mb-1">No Active Sale</div>
-            <div class="text-zinc-600 text-xs">Set up a sale below and it will appear on the index and memberships pages automatically.</div>
+            <div class="text-zinc-600 text-xs">Set up a sale below. It shows on the pages and sidebar links of the products you tick.</div>
           </div>
 
           <!-- Form -->
           <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-4 sm:p-6">
             <h2 id="sale-form-title" class="text-base font-black text-white mb-1">Start a Sale</h2>
-            <p class="text-zinc-500 text-xs mb-5">The banner will appear on the homepage and memberships page. Leave Expires blank for an indefinite sale.</p>
+            <p class="text-zinc-500 text-xs mb-5">Pick which products the sale covers. Each product's page, the homepage (membership only) and the sidebar link show it. Create the matching coupon in Whop first and restrict it to the same products &mdash; this only controls what the site shows. Leave Expires blank for an indefinite sale.</p>
             <div id="sale-msg" class="hidden rounded-xl px-4 py-3 text-xs mb-4"></div>
 
             <div class="space-y-4">
@@ -670,6 +640,15 @@
                   <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Discount Label</label>
                   <input type="text" id="sale-discount-input" placeholder="e.g. 17% OFF"
                     class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700">
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Products</label>
+                <div class="flex flex-wrap gap-x-5 gap-y-2" id="sale-products-input">
+                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="membership" class="accent-green-500 w-4 h-4" checked> Membership</label>
+                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="ntsolo" class="accent-green-500 w-4 h-4"> Knightfall NT8</label>
+                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="raven" class="accent-green-500 w-4 h-4"> Raven</label>
+                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="nightwing" class="accent-green-500 w-4 h-4"> Nightwing</label>
                 </div>
               </div>
               <div>
@@ -2675,39 +2654,59 @@
     }
 
 
+    const SALE_PRODUCT_NAMES = { membership: 'Membership', ntsolo: 'Knightfall NT8', raven: 'Raven', nightwing: 'Nightwing' };
+    let _sales = [], _editSaleId = null;
+    function saleEsc(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
+
     async function loadCurrentSale() {
-      const token = localStorage.getItem('fsdx_token') || '';
       try {
         const res = await fetch(`${API}/api/sale`);
         const data = await res.json();
-        const display = document.getElementById('current-sale-display');
+        _sales = Array.isArray(data.sales) ? data.sales : (data.sale ? [{ ...data.sale, products: data.sale.products || ['membership'] }] : []);
+        const list = document.getElementById('sales-list');
         const noSale = document.getElementById('no-sale-display');
-        if (data.sale) {
-          const s = data.sale;
-          document.getElementById('current-sale-label').textContent = s.label;
-          document.getElementById('current-sale-code').textContent = s.code;
-          document.getElementById('current-sale-discount').textContent = s.discount;
-          document.getElementById('current-sale-expires').textContent = s.expiresAt ? new Date(s.expiresAt).toLocaleString() : 'No expiry';
-          document.getElementById('current-sale-applies').textContent = s.applies ? 'Applies to: ' + s.applies : '';
-          display.className = 'border border-red-500/40 bg-red-950/20 rounded-2xl p-4 sm:p-5';
-          display.classList.remove('hidden');
-          noSale.classList.add('hidden');
-        } else {
-          display.classList.add('hidden');
-          noSale.classList.remove('hidden');
-        }
+        list.innerHTML = _sales.map(s => `
+          <div class="border border-red-500/40 bg-red-950/20 rounded-2xl p-4 sm:p-5">
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div>
+                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1">🔴 Live Sale · ${(s.products || ['membership']).map(p => saleEsc(SALE_PRODUCT_NAMES[p] || p)).join(' · ')}</div>
+                <div class="text-white font-black text-sm">${saleEsc(s.label)}</div>
+              </div>
+              <div class="flex gap-2 shrink-0">
+                <button onclick="editSale('${saleEsc(s.id)}')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-[11px] font-bold transition">Edit</button>
+                <button onclick="clearSale('${saleEsc(s.id)}')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-300 hover:text-red-400 text-[11px] font-bold transition">End</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-3 gap-3 text-xs">
+              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5"><div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Code</div><div class="text-white font-black tracking-wider">${saleEsc(s.code)}</div></div>
+              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5"><div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Discount</div><div class="text-red-400 font-black">${saleEsc(s.discount)}</div></div>
+              <div class="bg-black rounded-xl px-3 py-2.5 border border-white/5"><div class="text-zinc-500 uppercase tracking-wider text-[10px] mb-1">Expires</div><div class="text-zinc-300 font-medium">${s.expiresAt ? saleEsc(new Date(s.expiresAt).toLocaleString()) : 'No expiry'}</div></div>
+            </div>
+            ${s.applies ? `<div class="text-zinc-500 text-[11px] mt-3">Applies to: ${saleEsc(s.applies)}</div>` : ''}
+          </div>`).join('');
+        noSale.classList.toggle('hidden', _sales.length > 0);
       } catch(e) {}
     }
 
-    function editSale() {
-      const label = document.getElementById('current-sale-label').textContent;
-      const code = document.getElementById('current-sale-code').textContent;
-      const discount = document.getElementById('current-sale-discount').textContent;
-      const applies = document.getElementById('current-sale-applies').textContent.replace('Applies to: ', '');
-      document.getElementById('sale-label-input').value = label;
-      document.getElementById('sale-code-input').value = code;
-      document.getElementById('sale-discount-input').value = discount;
-      document.getElementById('sale-applies-input').value = applies;
+    function saleProductsChecked() {
+      return Array.from(document.querySelectorAll('#sale-products-input input:checked')).map(i => i.value);
+    }
+    function setSaleProducts(list) {
+      document.querySelectorAll('#sale-products-input input').forEach(i => { i.checked = list.includes(i.value); });
+    }
+
+    function editSale(id) {
+      const s = _sales.find(x => x.id === id); if (!s) return;
+      _editSaleId = id;
+      document.getElementById('sale-label-input').value = s.label || '';
+      document.getElementById('sale-code-input').value = s.code || '';
+      document.getElementById('sale-discount-input').value = s.discount || '';
+      document.getElementById('sale-applies-input').value = s.applies || '';
+      if (s.expiresAt) {
+        const d = new Date(s.expiresAt); const off = d.getTimezoneOffset() * 60000;
+        document.getElementById('sale-expires-input').value = new Date(d - off).toISOString().slice(0, 16);
+      } else document.getElementById('sale-expires-input').value = '';
+      setSaleProducts(s.products || ['membership']);
       document.getElementById('sale-form-title').textContent = 'Edit Sale';
       document.getElementById('sale-btn').textContent = 'Update Sale';
       document.getElementById('sale-cancel-btn').classList.remove('hidden');
@@ -2715,29 +2714,32 @@
     }
 
     function cancelEditSale() {
+      _editSaleId = null;
       document.getElementById('sale-label-input').value = '';
       document.getElementById('sale-code-input').value = '';
       document.getElementById('sale-discount-input').value = '';
       document.getElementById('sale-applies-input').value = '';
       document.getElementById('sale-expires-input').value = '';
+      setSaleProducts(['membership']);
       document.getElementById('sale-form-title').textContent = 'Start a Sale';
       document.getElementById('sale-btn').textContent = 'Launch Sale';
       document.getElementById('sale-cancel-btn').classList.add('hidden');
     }
 
-    async function clearSale() {
-      if (!confirm('End the current sale? The banner will disappear from the site immediately.')) return;
+    async function clearSale(id) {
+      const s = _sales.find(x => x.id === id);
+      if (!confirm(`End "${s ? s.label : 'this sale'}"? It disappears from the site immediately.`)) return;
       const token = localStorage.getItem('fsdx_token') || '';
       try {
-        const res = await fetch(`${API}/api/admin/sale`, {
+        const res = await fetch(`${API}/api/admin/sale?id=${encodeURIComponent(id)}`, {
           method: 'DELETE',
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
         if (data.success) {
-          showAdminMsg('sale-msg', 'Sale ended. Banner removed from site.', 'success');
+          showAdminMsg('sale-msg', 'Sale ended. Removed from the site.', 'success');
           loadCurrentSale();
-          cancelEditSale();
+          if (_editSaleId === id) cancelEditSale();
         }
       } catch(e) {
         showAdminMsg('sale-msg', 'Error ending sale.', 'error');
@@ -2750,12 +2752,15 @@
       const discount = document.getElementById('sale-discount-input').value.trim();
       const applies = document.getElementById('sale-applies-input').value.trim();
       const expiresAt = document.getElementById('sale-expires-input').value;
+      const products = saleProductsChecked();
 
       if (!label) { showAdminMsg('sale-msg', 'Sale label is required.', 'error'); return; }
       if (!code) { showAdminMsg('sale-msg', 'Promo code is required.', 'error'); return; }
       if (!discount) { showAdminMsg('sale-msg', 'Discount label is required.', 'error'); return; }
+      if (!products.length) { showAdminMsg('sale-msg', 'Tick at least one product.', 'error'); return; }
 
       const btn = document.getElementById('sale-btn');
+      const editing = !!_editSaleId;
       btn.disabled = true; btn.textContent = 'Saving...';
 
       const token = localStorage.getItem('fsdx_token') || '';
@@ -2763,11 +2768,12 @@
         const res = await fetch(`${API}/api/admin/sale`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ label, code, discount, applies, expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null })
+          body: JSON.stringify({ id: _editSaleId || undefined, label, code, discount, applies, products,
+            expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null })
         });
         const data = await res.json();
         if (data.success) {
-          showAdminMsg('sale-msg', 'Sale is live! Banner is now showing on the site.', 'success');
+          showAdminMsg('sale-msg', editing ? 'Sale updated.' : 'Sale is live on: ' + products.map(p => SALE_PRODUCT_NAMES[p]).join(', ') + '.', 'success');
           cancelEditSale();
           loadCurrentSale();
         } else {
@@ -2776,7 +2782,7 @@
       } catch(e) {
         showAdminMsg('sale-msg', 'Network error.', 'error');
       }
-      btn.disabled = false; btn.textContent = 'Launch Sale';
+      btn.disabled = false; btn.textContent = _editSaleId ? 'Update Sale' : 'Launch Sale';
     }
 
     async function init() {
