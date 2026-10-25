@@ -8,8 +8,8 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
-  <script src="nav-loader.js?v=20261018a"></script>
-  <script src="fsdx-account.js?v=20260913b"></script>
+  <script src="nav-loader.js?v=20261025a"></script>
+  <script src="fsdx-account.js?v=20261025a"></script>
   <style>
     body { background-color: #000; }
     /* NT hub — scoped styles. Colours come from the theme's CSS vars where set. */
@@ -549,8 +549,8 @@
     if (!d.eligible) {
       if (d.reason === 'plan') {
         setPill('none', 'Not included');
-        body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') doesn\'t include the NinjaTrader version. It comes with the full FSD-X membership.</p>'
-          + '<div class="mt-4"><a href="memberships.html" class="nt-btn">See the membership &rarr;</a></div>';
+        body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') doesn\'t include the NinjaTrader version. It comes with the full FSD-X membership, or on its own as Knightfall NT8.</p>'
+          + '<div class="mt-4"><a href="ninjatrader.html" class="nt-btn">See your options &rarr;</a></div>';
       } else {
         setPill('removed', 'Access ended');
         body = '<p class="nt-p">Your membership isn\'t active, so the NinjaTrader license is paused.</p>'

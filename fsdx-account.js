@@ -194,7 +194,7 @@
    *  (Nightwing or Raven). An unknown or missing plan is never locked out —
    *  a mapping gap must not cost a VIP member their tools. */
   function lacksFeature(plan, feature) {
-    if (plan !== 'site' && plan !== 'raven') return false;
+    if (plan !== 'site' && plan !== 'raven' && plan !== 'ntsolo') return false;
     return feature === 'scout';
   }
 
@@ -211,6 +211,15 @@
     var host = document.getElementById(o.into || 'loading-screen');
     if (!host) return;
 
+    /* Name the tier the member actually holds. This said "Nightwing" for
+       every tools tier, which was wrong for Raven and NT8 standalone. */
+    var tierName = 'Nightwing';
+    try {
+      var pl = localStorage.getItem('fsdx_plan');
+      if (pl === 'raven') tierName = 'Raven';
+      else if (pl === 'ntsolo') tierName = 'Knightfall NT8';
+    } catch (e) {}
+
     var perks = (o.perks || []).map(function (p) {
       return '<li>' + String(p).replace(/</g, '&lt;') + '</li>';
     }).join('');
@@ -223,11 +232,11 @@
       +     '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>'
       +   '<h2>' + String(o.title || 'This tool').replace(/</g, '&lt;') + ' is part of VIP</h2>'
 
-      +   '<p>Your Nightwing subscription covers the web platform and Nexus. '
+      +   '<p>Your ' + tierName + ' subscription covers the web platform and Nexus. '
       +     'This page is included with a VIP membership.</p>'
       +   (perks ? '<ul>' + perks + '</ul>' : '')
       +   '<button class="whop" id="fsdx-upgrade-btn">See VIP membership</button>'
-      +   '<div class="hint">Keep your Nightwing subscription as it is — the journal, backtester, '
+      +   '<div class="hint">Keep your ' + tierName + ' subscription as it is — the journal, backtester, '
       +     'playbook, trade importer and Nexus all stay exactly where they are.</div>'
       + '</div>';
 

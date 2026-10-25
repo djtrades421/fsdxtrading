@@ -82,15 +82,29 @@
               No webhooks. No alert setup. No third-party bridge between your chart and your account.
             </p>
             <p class="mt-3 text-zinc-500 text-sm leading-relaxed">
-              Approved by NinjaTrader. <span class="text-white font-semibold">Live now</span> as a download for members, from the NinjaTrader hub on the site.
+              Approved by NinjaTrader. <span class="text-white font-semibold">Live now</span> on its own or as part of the full membership. Download from the NinjaTrader hub on the site.
             </p>
 
-            <div class="mt-9 flex flex-col sm:flex-row items-stretch gap-4 max-w-lg">
-              <a href="https://whop.com/checkout/plan_l0KkbipfcgnAp" target="_blank" rel="noopener noreferrer" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center flex-1 shadow-lg shadow-green-500/10 whitespace-nowrap">Start 30-Day Free Trial</a>
-              <a href="#demo" class="border border-white/20 hover:bg-white/10 transition px-6 py-4 rounded-2xl text-center font-medium whitespace-nowrap">Watch the Demo</a>
+            <!-- Two ways in: Knightfall on its own, or inside the full membership.
+                 Standalone checkout uses data-gate="ntsolo" (checkout-gate.js).
+                 REPLACE PLAN_NTSOLO_MONTHLY with the Whop monthly plan id before deploying. -->
+            <div class="mt-9 grid sm:grid-cols-2 gap-4 max-w-xl">
+              <div class="border border-green-500/30 bg-green-500/[0.05] rounded-2xl p-5 flex flex-col">
+                <div class="text-[10px] uppercase tracking-widest text-green-400 font-black">Standalone</div>
+                <div class="mt-1 text-white font-black text-lg">Knightfall NT8 <span class="text-zinc-400 text-sm font-bold">$59.99/mo</span></div>
+                <p class="mt-2 text-zinc-400 text-[13px] leading-relaxed flex-1">Knightfall on NinjaTrader 8, the member platform and Nexus 2.0.</p>
+                <a href="https://whop.com/checkout/PLAN_NTSOLO_MONTHLY" data-gate="ntsolo" target="_blank" rel="noopener noreferrer" class="mt-4 bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-5 py-3 rounded-xl text-center text-sm">Start 30-Day Free Trial</a>
+              </div>
+              <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-5 flex flex-col">
+                <div class="text-[10px] uppercase tracking-widest text-zinc-500 font-black">Full membership</div>
+                <div class="mt-1 text-white font-black text-lg">Everything</div>
+                <p class="mt-2 text-zinc-400 text-[13px] leading-relaxed flex-1">Knightfall NT8 plus the live trade room, VIP Discord, SCOUT alerts and the TradingView tools.</p>
+                <a href="https://whop.com/checkout/plan_l0KkbipfcgnAp" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="mt-4 border border-green-500/40 hover:bg-green-500/10 text-green-400 transition font-extrabold px-5 py-3 rounded-xl text-center text-sm">Start 30-Day Free Trial</a>
+              </div>
             </div>
+            <p class="mt-4 text-sm"><a href="#demo" class="text-green-400 hover:underline font-semibold">Watch the demo &rarr;</a> &middot; <a href="compare.html" class="text-green-400 hover:underline font-semibold">Compare every plan &rarr;</a></p>
             <p id="nt-sale-line" class="mt-4 text-sm text-zinc-300" hidden></p>
-            <p class="mt-3 text-sm text-zinc-500">Already a member? <a href="ninjatrader-members.html" class="text-green-400 hover:underline font-semibold">Go to the NinjaTrader hub &rarr;</a> &middot; <a href="memberships.html" class="text-green-400 hover:underline font-semibold">See the membership &rarr;</a></p>
+            <p class="mt-3 text-sm text-zinc-500">Already a member? <a href="ninjatrader-members.html" class="text-green-400 hover:underline font-semibold">Go to the NinjaTrader hub &rarr;</a></p>
           </div>
 
           <figure class="min-w-0 w-full max-w-md mx-auto">
@@ -274,8 +288,12 @@
               <p class="mt-3 text-zinc-400 text-sm leading-relaxed">Yes. It launched Friday, October 23, 2026. Members download it from the NinjaTrader hub on the site.</p>
             </details>
             <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
-              <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">Will it be part of the membership?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
-              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">Yes. It's included with a paid FSD-X membership. Members download it from the NinjaTrader hub on the site.</p>
+              <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">Can I buy it on its own?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
+              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">Yes. Knightfall NT8 is $59.99/mo with a 30-day free trial, and includes the member platform and Nexus 2.0. It's also included in the full FSD-X membership, which adds the live trade room, VIP Discord, SCOUT alerts and the TradingView tools. <a href="compare.html" class="text-green-400 hover:underline">Compare plans</a>.</p>
+            </details>
+            <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
+              <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">Which email does my license use?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
+              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">The email you log into NinjaTrader with. You enter it at checkout. If it's different from your Whop email, that's fine &mdash; just make sure it matches your NinjaTrader login. You can change it later from the NinjaTrader hub.</p>
             </details>
             <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
               <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">Do I need TradingView or a bridge service for it?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
@@ -287,7 +305,7 @@
             </details>
             <details class="group border border-white/10 bg-zinc-950/60 rounded-2xl p-5">
               <summary class="cursor-pointer flex justify-between items-center gap-4 font-bold text-white text-sm">Is the TradingView version still available?<span class="text-green-400 faq-x transition text-lg leading-none">+</span></summary>
-              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">Yes. Knightfall and the <a href="autotrader.html" class="text-green-400 hover:underline">Auto-Trader</a> are on TradingView too, in the same membership.</p>
+              <p class="mt-3 text-zinc-400 text-sm leading-relaxed">Yes. Knightfall and the <a href="autotrader.html" class="text-green-400 hover:underline">Auto-Trader</a> are on TradingView too, in the full membership. The standalone is NinjaTrader 8 only.</p>
             </details>
           </div>
         </div>
@@ -384,7 +402,7 @@
         if (exp && new Date(exp).getTime() < Date.now()) return;
         var ends = '';
         if (exp) { try { ends = ' Ends ' + new Date(exp).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/Chicago' }) + '.'; } catch (e) {} }
-        el.innerHTML = 'Launch pricing: <b class="text-white">' + esc(s.discount) + '</b> with code <span class="font-mono font-bold text-green-400">' + esc(s.code) + '</span> at checkout.' + esc(ends);
+        el.innerHTML = 'Membership launch pricing: <b class="text-white">' + esc(s.discount) + '</b> with code <span class="font-mono font-bold text-green-400">' + esc(s.code) + '</span> at checkout.' + esc(ends);
         el.hidden = false;
       }
       var c = null; try { c = JSON.parse(sessionStorage.getItem('fsdx_sale') || 'null'); } catch (e) {}
@@ -392,7 +410,7 @@
       fetch('https://nexus-validator.dfuentes4211.workers.dev/api/sale').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) { paint(d && d.sale); }).catch(function () {});
     })();
   </script>
-  <script src="checkout-gate.js?v=20261018a"></script>
-  <script src="nav-loader.js?v=20261018a"></script>
+  <script src="checkout-gate.js?v=20261025a"></script>
+  <script src="nav-loader.js?v=20261025a"></script>
 </body>
 </html>

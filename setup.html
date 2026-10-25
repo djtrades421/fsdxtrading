@@ -406,9 +406,10 @@
     'use strict';
     var plan = null;
     try { plan = localStorage.getItem('fsdx_plan'); } catch (e) { return; }
-    if (plan !== 'site' && plan !== 'raven') return;
+    if (plan !== 'site' && plan !== 'raven' && plan !== 'ntsolo') return;
 
     var IS_RAVEN = plan === 'raven';
+    var IS_NT = plan === 'ntsolo';
 
     /* Raven and Nightwing are NOT the same walkthrough, and this is the one
        place the difference bites. Nightwing has nothing on TradingView, so
@@ -417,7 +418,14 @@
        struck out. Greying out step 4 for a Raven member would tell them there
        is nothing to claim, and they would never go and get the indicator they
        just paid for. */
-    var NOT_YOURS = IS_RAVEN ? {
+    /* NT8 standalone: nothing on TradingView and no VIP Discord, same three
+       steps struck as Nightwing — but the reasons point to the NinjaTrader
+       hub, which is where their product actually lives. */
+    var NOT_YOURS = IS_NT ? {
+      'step-4': 'Knightfall NT8 has no TradingView scripts to claim. Your download and license are on the NinjaTrader hub.',
+      'step-5': 'The live room, VIP channels and Scout alerts are part of the full membership. The free Discord channels are open to you already — no claiming needed.',
+      'step-6': 'Knightfall runs on NinjaTrader 8, not a TradingView chart. The NinjaTrader hub walks you through adding it.'
+    } : IS_RAVEN ? {
       'step-5': 'The live room, VIP channels and Scout alerts are part of the full membership. The free Discord channels are open to you already — no claiming needed.'
     } : {
       'step-4': 'Nightwing does not include the indicator suite, so there is nothing to claim here.',
@@ -425,7 +433,7 @@
       'step-6': 'No indicators to add. Your tools are the platform and Nexus.'
     };
 
-    var TIER_NAME = IS_RAVEN ? 'Raven' : 'Nightwing';
+    var TIER_NAME = IS_NT ? 'Knightfall NT8' : IS_RAVEN ? 'Raven' : 'Nightwing';
 
     function mark() {
       Object.keys(NOT_YOURS).forEach(function (id) {
@@ -472,7 +480,14 @@
         note.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:.2em;'
           + 'text-transform:uppercase;color:#22c55e;margin-bottom:7px">You’re on ' + TIER_NAME + '</div>'
           + '<p style="font-size:13px;color:#a2aebf;line-height:1.6;margin:0">'
-          + (IS_RAVEN
+          + (IS_NT
+              ? 'Three steps below are for the full membership and are marked as such. '
+                + 'Yours are <strong style="color:#fff">Create Your Site Account</strong>, '
+                + '<a href="#step-7" style="color:#22c55e;font-weight:700;text-decoration:none">Activate Nexus 2.0</a> '
+                + 'and <strong style="color:#fff">Secure Your Account</strong>. Then head to the '
+                + '<a href="ninjatrader-members.html" style="color:#22c55e;font-weight:700;text-decoration:none">NinjaTrader hub</a> '
+                + 'to confirm your NinjaTrader email, download Knightfall and set it up.'
+              : IS_RAVEN
               ? 'One step below is for the full membership and is marked as such. Everything else is yours — '
                 + 'including <strong style="color:#fff">claiming ORB Raven</strong> on Whop against your '
                 + 'TradingView username and adding it to a chart from '
@@ -496,7 +511,7 @@
   })();
   </script>
 
-  <script src="nav-loader.js?v=20261018a"></script>
+  <script src="nav-loader.js?v=20261025a"></script>
   <script src="tv-notice.js"></script>
 </body>
 </html>

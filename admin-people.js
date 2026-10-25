@@ -72,11 +72,15 @@
   function family(p) {
     p = low(p);
     if (/raven/.test(p)) return 'raven';
+    // Knightfall NT8 standalone. Before the pro test: its name has "knightfall" in it.
+    if (/ninja/.test(p) && /standalone/.test(p)) return 'ntsolo';
     if (/nightwing/.test(p)) return 'nightwing';
     if (/nexus/.test(p)) return 'nexus';
     if (/pro|plus|vip|lifetime|knightfall|orb/.test(p)) return 'pro';
     return 'other';
   }
+  /** Families whose membership includes a NinjaTrader 8 license. */
+  function hasNt(fam) { return fam === 'pro' || fam === 'ntsolo'; }
 
   function build() {
     var map = {}, order = [];
@@ -116,7 +120,7 @@
       });
       var ntTask = p.nt && (p.nt.status === 'remove' || (p.nt.status === 'pending' && p.nt.ntEmail));
       p.needs = p.status === 'past_due' || p.failedOpen || !!ntTask || p.flags.length > 0;
-      p.ntState = !p.nt ? (p.fam === 'pro' && p.live ? 'none' : '')
+      p.ntState = !p.nt ? (hasNt(p.fam) && p.live ? 'none' : '')
         : p.nt.status === 'active' ? 'active'
         : p.nt.status === 'remove' ? 'remove'
         : p.nt.status === 'pending' ? (p.nt.ntEmail ? 'add' : 'waiting')
@@ -194,6 +198,7 @@
     ['current', 'Current', function (p) { return p.live; }],
     ['needs', 'Needs action', function (p) { return p.needs; }],
     ['pro', 'Pro / NinjaTrader', function (p) { return p.live && p.fam === 'pro'; }],
+    ['ntsolo', 'Knightfall NT8', function (p) { return p.live && p.fam === 'ntsolo'; }],
     ['raven', 'Raven', function (p) { return p.live && p.fam === 'raven'; }],
     ['nightwing', 'Nightwing', function (p) { return p.live && p.fam === 'nightwing'; }],
     ['nexus', 'Nexus', function (p) { return p.live && p.fam === 'nexus'; }],
@@ -325,7 +330,7 @@
     function copy(v) { return v ? '<span class="pp-copy" data-pcopy="' + esc(v) + '">' + esc(v) + '</span>' : ''; }
 
     var ntBlock = '';
-    if (p.nt || p.fam === 'pro') {
+    if (p.nt || hasNt(p.fam)) {
       var n = p.nt || {};
       var ntLabel = { active: 'License active', add: 'License to add', remove: 'License to remove', waiting: 'Waiting for NT email',
         declined: 'Not using NinjaTrader', removed: 'License removed', none: 'Not in the NT list yet' }[p.ntState] || '—';
@@ -348,7 +353,7 @@
       +   '<div class="text-[12px] text-zinc-400">' + copy(p.email) + '</div></div>'
       +   '<button class="ntx-btn" data-pclose="1">&times;</button></div>'
       + '<div class="flex gap-2 flex-wrap mt-3"><span class="mn-pill ' + st.c + '">' + st.l + '</span>'
-      +   (p.fam === 'pro' && p.live ? '<span class="mn-pill p-nt">Includes NT</span>' : '')
+      +   (hasNt(p.fam) && p.live ? '<span class="mn-pill p-nt">Includes NT</span>' : '')
       +   (p.failedOpen ? '<span class="mn-pill p-red">Failed payment</span>' : '') + '</div>'
       + '<div class="pp-kv">'
       +   kv('Plan', esc(p.product)) + kv(p.next ? p.next.k : 'Next', p.next && p.next.d ? fmtD(p.next.d, true) + (p.next.k === 'Renews' ? esc(rt) : '') : '')

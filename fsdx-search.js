@@ -40,6 +40,7 @@
     {t:'Knightfall for NinjaTrader 8 (Live)', u:'ninjatrader.html', g:'Products', kw:'ninjatrader nt8 ninja native automated hands free manual release october 23 launch'},
     {t:'Releases',              u:'releases.html',             g:'Products', kw:'releases updates changelog new what changed roadmap coming next in the works version'},
     {t:'Raven',                 u:'raven.html',                g:'Products', kw:'orb raven levels indicator breakout no grading stop target position size'},
+    {t:'Knightfall NT8 ($59.99)', u:'ninjatrader.html',        g:'Products', kw:'knightfall ninjatrader nt8 standalone on its own just knightfall automation native 59.99'},
     {t:'Compare Plans',         u:'compare.html',              g:'Products', kw:'compare comparison plans tiers pricing difference which one nightwing raven membership free'},
 
     // proof

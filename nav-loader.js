@@ -206,7 +206,7 @@ window.toggleMobileMenu = function () {
   if (document.getElementById('fsdx-search-js')) return;
   var sc = document.createElement('script');
   sc.id = 'fsdx-search-js';
-  sc.src = 'fsdx-search.js?v=20261004a';
+  sc.src = 'fsdx-search.js?v=20261025a';
   sc.defer = true;
   (document.head || document.documentElement).appendChild(sc);
 })();
@@ -734,6 +734,7 @@ function prepareNavLabels(root) {
                        : plan === 'plus'  ? 'VIP Plus'
                        : plan === 'site'  ? 'Nightwing'
                        : plan === 'raven' ? 'Raven'
+                       : plan === 'ntsolo' ? 'Knightfall NT8'
                        : 'VIP';
         let tierText;
         if (tier === 'trial') tierText = planName + ' · Trial';
@@ -752,6 +753,13 @@ function prepareNavLabels(root) {
            nothing. */
         if (plan === 'site' || plan === 'raven') {
           document.querySelectorAll('#nav-content a[href="alerts.html"], #nav-content a[href="ninjatrader-members.html"], #nav-content a[href="variant-settings.html"]')
+            .forEach(el => el.classList.add('hidden'));
+        }
+        /* Knightfall NT8 standalone: same platform as Nightwing, plus the
+           NinjaTrader hub and variant settings. Scout is the one thing
+           hidden. Cosmetic only — /api/scout/feed is the real gate. */
+        if (plan === 'ntsolo') {
+          document.querySelectorAll('#nav-content a[href="alerts.html"]')
             .forEach(el => el.classList.add('hidden'));
         }
       }
@@ -780,6 +788,9 @@ function prepareNavLabels(root) {
           var fbPlan = localStorage.getItem('fsdx_plan');
           if (fbPlan === 'site' || fbPlan === 'raven') {
             vip = vip.filter(function (l) { return l[0] !== 'alerts.html' && l[0] !== 'ninjatrader-members.html' && l[0] !== 'variant-settings.html'; });
+          }
+          if (fbPlan === 'ntsolo') {
+            vip = vip.filter(function (l) { return l[0] !== 'alerts.html'; });
           }
         } catch (e) {}
         /* Labels here must match nav.html. They drifted once already: nav.html

@@ -138,6 +138,29 @@
     proceed: "Continue to Checkout"
   };
 
+  /* ---- Knightfall NT8 standalone ----
+     Knightfall on NinjaTrader 8 plus the platform and Nexus. Unlike Nightwing
+     and Raven this product CAN place orders (Auto Trade), so it carries the
+     automation language — rewritten for NinjaTrader, where there is no
+     webhook or bridge and the strategy itself submits the order. */
+  var NTSOLO = {
+    eyebrow: "Before You Continue",
+    title: "Knightfall for NinjaTrader 8 — Terms of Service",
+    points: [
+      "Knightfall for NinjaTrader 8 is the <strong>ORB PRO (Knightfall) strategy for NinjaTrader 8</strong>, plus the Nexus 2.0 extension and the member platform. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
+      "It <strong>does not include</strong> the TradingView scripts, the TradingView Auto-Trader, Stack V1, the Volume Engine, SCOUT live alerts, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
+      "With <strong>Auto Trade on, the strategy places and manages orders</strong> in the NinjaTrader account you select. <strong>You</strong> choose that account, the risk setting and the daily loss limit, and you are responsible for monitoring it. Run it on a sim account first.",
+      "<strong>You</strong> are responsible for confirming that automated trading is allowed by your broker and prop firm. Rules vary and change.",
+      "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed. Software, data feeds, connections and platforms can fail.",
+      "Any backtest, figures or historical results shown on this site are <strong>hypothetical</strong> and are not a representation that any account will achieve similar results.",
+      "Your license is tied to the <strong>email you log into NinjaTrader with</strong>, entered at checkout. Access is limited to <strong>one person</strong>; sharing, reselling, or redistributing it ends access without refund.",
+      "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
+      "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
+    ],
+    agree: "I accept the Knightfall for NinjaTrader 8 Terms and take full responsibility for all activity, losses, and outcomes on my own account, including any orders the strategy places. FSD-X is not liable for any result.",
+    proceed: "Continue to Checkout"
+  };
+
   /* ---- Lifetime — one-time, capped, TradingView transition (Oct 2026) ----
      Same product as the membership, so the Auto-Trader language stays. What
      changes is the money: one payment, no trial, no refund, and a plain
@@ -164,7 +187,7 @@
   // different, and each needs its own terms for the same reason.
   var TERMS = {
     membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED,
-    nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME
+    nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME, ntsolo: NTSOLO
   };
 
   var pendingUrl = null;
