@@ -62,6 +62,7 @@
     nt_task:         { l: 'NinjaTrader task',    i: 'N', c: 'nt',   g: 'nt' },
     nt_download:     { l: 'Downloaded',          i: '⬇', c: 'nt',   g: 'nt' },
     task_overdue:    { l: 'Task overdue',        i: '⏰', c: 'fail', g: 'nt' },
+    repeat_trial:    { l: 'Repeat trial',        i: '⚑', c: 'fail', g: 'members' },
   };
 
   var CSS = ''
@@ -150,13 +151,15 @@
     var fails = evs.filter(function (e) { return (e.type === 'payment_failed' || e.type === 'past_due') && inWeek(e); }).length;
     var joins = evs.filter(function (e) { return (e.type === 'member_joined' || e.type === 'trial_started') && isToday(e); }).length;
     var cancels = evs.filter(function (e) { return e.type === 'cancel_scheduled' && inWeek(e); }).length;
+    var repeats = evs.filter(function (e) { return e.type === 'repeat_trial' && inWeek(e); }).length;
     function card(n, l, cls) { return '<div class="ntx-stat ' + (cls || '') + '"><div class="n">' + n + '</div><div class="l">' + l + '</div></div>'; }
     $('td-stats').innerHTML =
         card(tasks.length, late ? 'To do · ' + late + ' overdue' : 'To do', late ? 'red' : (tasks.length ? 'amber' : ''))
       + card(fails, 'Failed / past due · 7d', fails ? 'red' : '')
       + card('$' + money.toFixed(0), 'Collected today', 'green')
       + card(joins, 'New today')
-      + card(cancels, 'Cancels scheduled · 7d', cancels ? 'amber' : '');
+      + card(cancels, 'Cancels scheduled · 7d', cancels ? 'amber' : '')
+      + card(repeats, 'Repeat trials · 7d', repeats ? 'red' : '');
   }
 
   function renderTasks() {

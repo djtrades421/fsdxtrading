@@ -14,6 +14,7 @@
   var API = 'https://nexus-validator.dfuentes4211.workers.dev';
   var CHIP = 'current', QUERY = '', SORT = 'status', OPEN = null, SHOW = 60;
   var SRV = [];   // server events, newest first
+  var RT = [];    // repeat-trial flags from the worker (/api/admin/repeat-trials)
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -103,6 +104,19 @@
     G('flagsData').forEach(function (f) {
       if (f.dismissed) return;
       var p = map[low(f.email)]; if (p) p.flags.push(f);
+    });
+    // Server-side repeat-trial flags. get() so a brand-new trial shows up even
+    // before the roster has been synced.
+    RT.forEach(function (f) {
+      if (f.dismissed) return;
+      var p = get(f.email, f.id); if (!p) return;
+      p.flags.push({
+        rtId: f.id, severity: f.severity,
+        type: f.severity === 'red' ? 'Repeat trial' : 'Trial while a member',
+        reason: (f.product ? f.product + ' trial · ' : '') + 'before: '
+          + (f.priors || []).map(function (x) { return (x.product || 'membership') + ' (' + (x.status || '?') + (x.email && x.email !== low(f.email) ? ', ' + x.email : '') + ')'; }).join(', '),
+        priors: f.priors || [], at: f.at
+      });
     });
 
     return order.map(function (k) {
@@ -203,6 +217,7 @@
     ['nightwing', 'Nightwing', function (p) { return p.live && p.fam === 'nightwing'; }],
     ['nexus', 'Nexus', function (p) { return p.live && p.fam === 'nexus'; }],
     ['trial', 'Trials', function (p) { return p.status === 'trialing'; }],
+    ['repeat', 'Repeat trials', function (p) { return p.flags.some(function (f) { return f.rtId; }); }],
     ['cancel', 'Cancelling', function (p) { return p.status === 'canceling' || p.status === 'trial_cancelled'; }],
     ['pastdue', 'Past due', function (p) { return p.status === 'past_due' || p.failedOpen; }],
     ['lifetime', 'Lifetime', function (p) { return p.status === 'lifetime'; }],
@@ -341,6 +356,18 @@
         + kv('Added', n.activatedAt ? fmtD(n.activatedAt, true) : '') + kv('Downloads', n.downloads && n.downloads.length ? String(n.downloads.length) : '') + '</div></div>';
     }
     var flags = p.flags.length ? '<div class="pp-sec">Flags</div>' + p.flags.map(function (f) {
+      if (f.rtId) {
+        return '<div class="ntx-card" style="padding:10px 12px;margin-bottom:6px">'
+          + '<div class="flex items-center justify-between gap-2"><div class="text-[12px] font-bold ' + (f.severity === 'red' ? 'text-red-400' : 'text-yellow-400') + '">'
+          + (f.severity === 'red' ? '🔴 ' : '🟡 ') + esc(f.type) + (f.at ? ' <span class="pp-sub">· ' + fmtD(f.at) + '</span>' : '') + '</div>'
+          + '<button class="ntx-btn" data-prtdismiss="' + esc(f.rtId) + '" title="Hide this flag">Dismiss</button></div>'
+          + (f.priors || []).map(function (x) {
+              return '<div class="text-[11.5px] text-zinc-400 mt-1">• ' + esc(x.product || 'Membership') + ' · ' + esc(x.status || '?')
+                + (x.trial ? ' · started as trial' : '') + (x.created ? ' · ' + fmtD(x.created, true) : '')
+                + (x.email ? ' · ' + esc(x.email) : '') + ' <span class="pp-sub">(' + esc(x.via || '') + ')</span></div>';
+            }).join('')
+          + '</div>';
+      }
       return '<div class="text-[12px] text-red-400 py-1">' + (f.severity === 'red' ? '🔴 ' : '🟡 ') + esc(f.type) + ' <span class="pp-sub">' + esc(f.reason || '') + '</span></div>';
     }).join('') : '';
     var notes = (r.notes || r.cancelReason) ? '<div class="pp-sec">Notes</div><div class="text-[12px] text-zinc-300">'
@@ -377,6 +404,19 @@
     return fetch(API + '/api/admin/events?limit=300', { headers: { 'Authorization': 'Bearer ' + tok() } })
       .then(function (r) { return r.ok ? r.json() : null; }).then(function (d) { if (d && d.events) SRV = d.events; }).catch(function () {});
   }
+  function loadRepeatTrials() {
+    if (!tok()) return Promise.resolve();
+    return fetch(API + '/api/admin/repeat-trials', { headers: { 'Authorization': 'Bearer ' + tok() } })
+      .then(function (r) { return r.ok ? r.json() : null; }).then(function (d) { if (d && d.flags) RT = d.flags; }).catch(function () {});
+  }
+  function dismissRepeat(id) {
+    return fetch(API + '/api/admin/repeat-trials/dismiss', {
+      method: 'POST', headers: { 'Authorization': 'Bearer ' + tok(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: id })
+    }).then(function (r) { if (!r.ok) throw new Error('Dismiss failed'); return loadRepeatTrials(); })
+      .then(function () { renderAll(); toast('Flag dismissed'); })
+      .catch(function (e) { toast(e.message, true); });
+  }
   function renderAll() {
     PEOPLE = build();
     renderStats(); renderChips(); renderTable(); renderSide();
@@ -385,7 +425,7 @@
     skeleton(); if (!$('panel-people')) return;
     renderAll();
     var nt = window.ntLoad ? window.ntLoad().catch(function () {}) : Promise.resolve();
-    Promise.all([loadServerEvents(), nt]).then(renderAll);
+    Promise.all([loadServerEvents(), loadRepeatTrials(), nt]).then(renderAll);
   };
   window.peopleSync = function () {
     if (typeof syncFromWhop !== 'function') return;
@@ -400,6 +440,7 @@
     var so = t.closest('[data-psort]'); if (so) { SORT = so.getAttribute('data-psort'); renderTable(); return; }
     if (t.closest('[data-pmore]')) { SHOW += 100; renderTable(); return; }
     if (t.closest('[data-pclose]') || t.id === 'pp-side') { OPEN = null; renderTable(); renderSide(); return; }
+    var rd = t.closest('[data-prtdismiss]'); if (rd) { dismissRepeat(rd.getAttribute('data-prtdismiss')); return; }
     var cp = t.closest('[data-pcopy]');
     if (cp) { var v = cp.getAttribute('data-pcopy'); (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(function () { toast('Copied ' + v); }).catch(function () { window.prompt('Copy:', v); }); return; }
     var ed = t.closest('[data-pedit]'); if (ed) { try { openEditMemberModal(ed.getAttribute('data-pedit')); } catch (x) { toast('Edit opens in Roster', true); } return; }
