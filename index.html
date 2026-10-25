@@ -512,12 +512,20 @@
                   try {
                     const res = await fetch('https://nexus-validator.dfuentes4211.workers.dev/api/sale');
                     const data = await res.json();
-                    if (data.sale) {
-                      const s = data.sale;
+                    // The featured sale (admin → Sales) wins; otherwise the membership sale.
+                    const s0 = data.featured || data.sale;
+                    if (s0) {
+                      const s = s0;
+                      const prods = s.products || ['membership'];
+                      const PAGE = { ntsolo: ['ninjatrader.html#pricing', 'Knightfall NT8'], raven: ['raven.html#plans', 'Raven'], nightwing: ['nightwing.html#plans', 'Nightwing'] };
                       document.getElementById('sale-label-index').textContent = '⚡ ' + s.label;
                       document.getElementById('sale-discount-index').textContent = s.discount;
                       document.getElementById('sale-code-index').textContent = s.code;
-                      if (s.applies) document.getElementById('sale-applies-index').textContent = s.applies;
+                      const ap = document.getElementById('sale-applies-index');
+                      if (!prods.includes('membership') && PAGE[prods[0]]) {
+                        const t = PAGE[prods[0]];
+                        ap.innerHTML = 'on ' + t[1] + (s.applies ? '. ' + String(s.applies).replace(/[&<>"]/g, '') : '.') + ' <a href="' + t[0] + '" class="text-white font-bold underline">See ' + t[1] + ' &rarr;</a>';
+                      } else if (s.applies) ap.textContent = s.applies;
                       document.getElementById('sale-banner-index').classList.remove('hidden');
                     }
                   } catch(e) {}

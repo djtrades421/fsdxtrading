@@ -334,7 +334,10 @@ function fsdxSaleNotice() {
     // 2) Top bar: this page's product sale if it has one, else the membership sale.
     if (loggedIn || OWN_BLOCK.indexOf(page) !== -1) return;
     var here = PAGE_PRODUCT[page];
+    // Order: this page's own product sale → the sale featured in admin →
+    // the membership sale → the newest sale.
     var pick = (here && sales.filter(function (s) { return prods(s).indexOf(here) !== -1; })[0])
+      || sales.filter(function (s) { return s.featured; })[0]
       || sales.filter(function (s) { return prods(s).indexOf('membership') !== -1; })[0] || sales[0];
     var target = here && prods(pick).indexOf(here) !== -1 ? here : prods(pick)[0];
     var sale = pick;

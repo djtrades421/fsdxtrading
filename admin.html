@@ -651,6 +651,10 @@
                   <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="nightwing" class="accent-green-500 w-4 h-4"> Nightwing</label>
                 </div>
               </div>
+              <label class="flex items-start gap-2.5 cursor-pointer select-none">
+                <input type="checkbox" id="sale-featured-input" class="accent-yellow-500 w-4 h-4 mt-0.5">
+                <span class="text-sm text-zinc-300">Feature on banner <span class="block text-zinc-600 text-[11px] mt-0.5">The one sale shown in the top bar on every other page and on the homepage. Featuring this un-features any other sale. Product pages always show their own sale.</span></span>
+              </label>
               <div>
                 <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Applies To (optional)</label>
                 <input type="text" id="sale-applies-input" placeholder="e.g. Annual and Lifetime plans only."
@@ -2669,10 +2673,11 @@
           <div class="border border-red-500/40 bg-red-950/20 rounded-2xl p-4 sm:p-5">
             <div class="flex items-start justify-between gap-3 mb-3">
               <div>
-                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1">🔴 Live Sale · ${(s.products || ['membership']).map(p => saleEsc(SALE_PRODUCT_NAMES[p] || p)).join(' · ')}</div>
+                <div class="text-[10px] text-zinc-500 uppercase tracking-wider font-bold mb-1">🔴 Live Sale · ${(s.products || ['membership']).map(p => saleEsc(SALE_PRODUCT_NAMES[p] || p)).join(' · ')}${s.featured ? ' <span class="ml-1 text-yellow-400">★ Featured on banner</span>' : ''}</div>
                 <div class="text-white font-black text-sm">${saleEsc(s.label)}</div>
               </div>
               <div class="flex gap-2 shrink-0">
+                <button onclick="featureSale('${saleEsc(s.id)}', ${s.featured ? 'false' : 'true'})" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-yellow-500/20 ${s.featured ? 'text-yellow-400' : 'text-zinc-300'} hover:text-yellow-300 text-[11px] font-bold transition">${s.featured ? '★ Unfeature' : '☆ Feature'}</button>
                 <button onclick="editSale('${saleEsc(s.id)}')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-[11px] font-bold transition">Edit</button>
                 <button onclick="clearSale('${saleEsc(s.id)}')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-red-500/20 text-zinc-300 hover:text-red-400 text-[11px] font-bold transition">End</button>
               </div>
@@ -2707,6 +2712,7 @@
         document.getElementById('sale-expires-input').value = new Date(d - off).toISOString().slice(0, 16);
       } else document.getElementById('sale-expires-input').value = '';
       setSaleProducts(s.products || ['membership']);
+      document.getElementById('sale-featured-input').checked = !!s.featured;
       document.getElementById('sale-form-title').textContent = 'Edit Sale';
       document.getElementById('sale-btn').textContent = 'Update Sale';
       document.getElementById('sale-cancel-btn').classList.remove('hidden');
@@ -2721,9 +2727,26 @@
       document.getElementById('sale-applies-input').value = '';
       document.getElementById('sale-expires-input').value = '';
       setSaleProducts(['membership']);
+      document.getElementById('sale-featured-input').checked = false;
       document.getElementById('sale-form-title').textContent = 'Start a Sale';
       document.getElementById('sale-btn').textContent = 'Launch Sale';
       document.getElementById('sale-cancel-btn').classList.add('hidden');
+    }
+
+    async function featureSale(id, on) {
+      const s = _sales.find(x => x.id === id); if (!s) return;
+      const token = localStorage.getItem('fsdx_token') || '';
+      try {
+        const res = await fetch(`${API}/api/admin/sale`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ id: s.id, label: s.label, code: s.code, discount: s.discount, applies: s.applies || '',
+            products: s.products || ['membership'], expiresAt: s.expiresAt || null, featured: on })
+        });
+        const data = await res.json();
+        if (data.success) { showAdminMsg('sale-msg', on ? `"${s.label}" is now the featured banner.` : 'Banner back to automatic (membership sale, else newest).', 'success'); loadCurrentSale(); }
+        else showAdminMsg('sale-msg', data.error || 'Could not update.', 'error');
+      } catch (e) { showAdminMsg('sale-msg', 'Network error.', 'error'); }
     }
 
     async function clearSale(id) {
@@ -2769,6 +2792,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ id: _editSaleId || undefined, label, code, discount, applies, products,
+            featured: document.getElementById('sale-featured-input').checked,
             expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null })
         });
         const data = await res.json();
