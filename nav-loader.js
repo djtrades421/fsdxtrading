@@ -200,6 +200,272 @@ window.toggleMobileMenu = function () {
   } catch (e) {}
 })();
 
+// ── Site top bar (Oct 2026) ──────────────────────────────────────────────
+// The sidebar is now the member WORKSPACE only. Every site page (products,
+// platform, results, learn, prop firms) lives in this top bar instead, so the
+// sidebar stops growing every time a page is added.
+//
+//   Visitors  → no sidebar at all on desktop; the logo, Member Login and the
+//               trial button sit in this bar. Full-width sales pages.
+//   Members   → sidebar (workspace) + this bar.
+//   Phones    → the bar is hidden; the same menu is appended to the slide-out
+//               sidebar as #fxn-mob (built from FSDX_MENU below).
+//
+// ONE list drives the desktop dropdowns AND the phone menu. Add a page here.
+// [href, title, one-line description, price or tag]
+var FSDX_MENU = [
+  { id: 'products', label: 'Products', wide: true, foot: ['compare.html', 'Compare all plans →'], items: [
+    ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, Auto Trader, journal and the live room', '$129/mo'],
+    ['ninjatrader.html', 'Knightfall NT8', 'Knightfall on NinjaTrader 8, on its own', '$59.99/mo'],
+    ['raven.html', 'Raven', 'Standalone TradingView indicator', '$29.99/mo'],
+    ['nightwing.html', 'Nightwing', 'Standalone TradingView indicator', '$9.99/mo'],
+    ['free-indicators.html', 'Free Indicators', 'Free tools anyone can add to a chart', 'Free']
+  ]},
+  { id: 'platform', label: 'Platform', items: [
+    ['suite.html', "What's in the Membership", 'Every tool in the full package'],
+    ['platform.html', 'The Platform', 'Dashboard, journal, accounts and backtests'],
+    ['autotrader.html', 'ORB Auto-Trader', 'How the automation works'],
+    ['releases.html', 'Releases', "What shipped and what's next", 'rel']
+  ]},
+  { id: 'results', label: 'Results', items: [
+    ['results.html', 'Backtest Results', 'Explore the backtest data by preset'],
+    ['track-record.html', 'Live Track Record', 'Live trades by variant, with stats']
+  ]},
+  { id: 'learn', label: 'Learn', wide: true, items: [
+    ['setup.html', 'Getting Started', 'Set up in a few steps'],
+    ['schedule.html', 'Live Sessions', 'The live trade room schedule'],
+    ['knowledge.html', 'Knowledge Base', 'Guides and explainers'],
+    ['how-to.html', 'How-To', 'Step-by-step guides', 'mem'],
+    ['course.html', 'Course', 'The Knightfall course', 'mem'],
+    ['faq.html', 'FAQ', 'Common questions'],
+    ['contact.html', 'Contact & Help', 'Get in touch']
+  ]},
+  { id: 'prop', label: 'Prop Firms', items: [
+    ['affiliates.html', 'Prop Firm Discounts', 'Every partner code, compared'],
+    ['giveaways.html', 'Giveaways', 'Current giveaways and how to enter'],
+    ['partners.html', 'Partner Program', 'For creators with a trading audience']
+  ]}
+];
+var FSDX_DISCORD = 'https://discord.gg/RePdHESvSx';
+
+// Visitors get the full-width layout. Set here, in <head>, so the sidebar
+// never flashes in and then disappears.
+(function () {
+  try { if (!localStorage.getItem('fsdx_token')) document.documentElement.classList.add('fx-guest'); } catch (e) {}
+})();
+
+(function () {
+  if (document.getElementById('fxn-css')) return;
+  var css = document.createElement('style');
+  css.id = 'fxn-css';
+  css.textContent = [
+    /* visitors: no sidebar on desktop. Doubled class beats html.nav-collapsed main. */
+    '@media (min-width:768px){',
+    '  html.fx-guest.fx-guest #sidebar-panel{display:none !important}',
+    '  html.fx-guest.fx-guest main{padding-left:0 !important}',
+    '}',
+    '#fx-topnav{position:sticky;top:0;z-index:45;background:rgba(8,13,21,.92);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(120,160,210,.13);font-family:Inter,ui-sans-serif,system-ui,sans-serif}',
+    '@media (max-width:767px){#fx-topnav{display:none}}',
+    '.fxn-in{display:flex;align-items:center;gap:4px;min-height:62px;padding:0 24px}',
+    'html.fx-guest .fxn-in{padding:0 40px}',
+    '.fxn-logo{display:flex;flex-direction:column;margin-right:22px;text-decoration:none;line-height:1}',
+    '.fxn-logo b{font-size:25px;font-weight:900;letter-spacing:.06em;background:linear-gradient(100deg,#FFA061,#FF6B1F 55%,#FF8A2B);-webkit-background-clip:text;background-clip:text;color:transparent}',
+    '.fxn-logo small{font-size:9px;font-weight:700;letter-spacing:.32em;color:#7D8B9E;margin-top:4px}',
+    '.fxn-m{position:relative}',
+    '.fxn-b{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border-radius:10px;border:1px solid transparent;background:none;color:#CBD3DE;font:700 14.5px Inter,ui-sans-serif,system-ui,sans-serif;cursor:pointer;transition:color .15s,background .15s,border-color .15s;white-space:nowrap}',
+    '.fxn-b:hover{color:#fff;background:rgba(255,255,255,.04)}',
+    '.fxn-m.here .fxn-b{color:#FF9A5C}',
+    '.fxn-m.open .fxn-b{color:#FFC0A0;background:rgba(255,107,31,.12);border-color:rgba(255,107,31,.5)}',
+    '.fxn-b svg{width:12px;height:12px;transition:transform .15s}',
+    '.fxn-m.open .fxn-b svg{transform:rotate(180deg)}',
+    '.fxn-p{position:absolute;top:calc(100% + 8px);left:0;width:340px;padding:8px;box-sizing:border-box;border-radius:16px;border:1px solid rgba(120,160,210,.18);background:#0B111B;box-shadow:0 24px 60px -20px rgba(0,0,0,.9);display:none;z-index:50}',
+    '.fxn-p:before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px}',
+    '.fxn-m.open .fxn-p{display:block}',
+    '.fxn-p.wide{width:600px}',
+    '.fxn-g{display:grid;gap:2px}',
+    '.fxn-p.wide .fxn-g{grid-template-columns:repeat(2,minmax(0,1fr))}',
+    '.fxn-i{display:flex;flex-direction:column;gap:3px;padding:11px 13px;border-radius:11px;text-decoration:none;border:1px solid transparent}',
+    '.fxn-i:hover,.fxn-i:focus-visible{background:rgba(255,255,255,.045);border-color:rgba(120,160,210,.16);outline:none}',
+    '.fxn-i.cur{background:rgba(255,107,31,.08);border-color:rgba(255,107,31,.3)}',
+    '.fxn-t{display:flex;align-items:center;gap:7px;font-size:14px;font-weight:700;color:#fff}',
+    '.fxn-pr{margin-left:auto;font-size:12px;font-weight:700;color:#A2AEBF;white-space:nowrap}',
+    '.fxn-d{font-size:12.5px;line-height:1.45;color:#A2AEBF}',
+    '.fxn-tags{display:inline-flex;gap:5px;align-items:center}',
+    '.fxn-tag{font-size:9px;font-weight:900;letter-spacing:.08em;border-radius:4px;padding:1px 5px;text-transform:uppercase}',
+    '.fxn-mem{color:#A2AEBF;border:1px solid rgba(120,160,210,.3)}',
+    '.fxn-rel-new{color:#4ade80;background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3)}',
+    '.fxn-foot{display:block;margin-top:6px;padding:11px 13px 6px;border-top:1px solid rgba(120,160,210,.13);font-size:13px;font-weight:700;color:#4ade80;text-decoration:none}',
+    '.fxn-foot:hover{color:#86efac}',
+    '.fxn-sp{flex:1}',
+    '.fxn-search{width:40px;height:40px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid rgba(120,160,210,.16);background:none;color:#A2AEBF;cursor:pointer;margin-right:6px}',
+    '.fxn-search:hover{color:#fff;border-color:rgba(255,107,31,.45)}',
+    '.fxn-login{padding:9px 12px;font-size:14px;font-weight:700;color:#CBD3DE;text-decoration:none;white-space:nowrap}',
+    '.fxn-login:hover{color:#fff}',
+    '.fxn-dc{padding:9px 15px;border-radius:10px;border:1px solid rgba(74,222,128,.4);color:#4ade80;font-size:14px;font-weight:700;text-decoration:none;white-space:nowrap}',
+    '.fxn-dc:hover{background:rgba(74,222,128,.08)}',
+    '.fxn-cta{margin-left:8px;padding:10px 17px;border-radius:12px;background:linear-gradient(135deg,#FF9247 0%,#FF6B1F 52%,#EB550D 100%);color:#0A0A0A;font-size:14px;font-weight:800;text-decoration:none;white-space:nowrap;box-shadow:0 10px 26px -12px rgba(255,107,31,.6)}',
+    '.fxn-cta:hover{filter:brightness(1.08)}',
+    '@media (max-width:1279px){html:not(.fx-guest) .fxn-dc{display:none}}',
+    '@media (max-width:1100px){.fxn-in{padding:0 14px}.fxn-b{padding:9px 9px;font-size:13.5px}.fxn-login,.fxn-dc{display:none}.fxn-logo{margin-right:10px}}',
+    /* phone: same menu inside the slide-out sidebar */
+    '#fxn-mob{margin-top:18px}',
+    '@media (min-width:768px){#fxn-mob{display:none}}',
+    '.fxn-mh{display:flex;width:100%;justify-content:space-between;align-items:center;padding:13px 2px;border:0;border-top:1px solid rgba(255,255,255,.07);background:none;color:#E6EAF0;font:800 15px Inter,ui-sans-serif,system-ui,sans-serif;cursor:pointer;text-align:left}',
+    '.fxn-mh svg{width:13px;height:13px;transition:transform .15s}',
+    '.fxn-mg.open .fxn-mh{color:#FFC0A0}',
+    '.fxn-mg.open .fxn-mh svg{transform:rotate(180deg)}',
+    '.fxn-mb{display:none;padding:0 0 8px}',
+    '.fxn-mg.open .fxn-mb{display:block}',
+    '.fxn-ml{display:flex;align-items:center;gap:8px;padding:10px 6px;font-size:14.5px;font-weight:600;color:#CBD3DE;text-decoration:none;border-radius:8px}',
+    '.fxn-ml.cur{color:#FFC0A0;background:rgba(255,107,31,.10)}',
+    '.fxn-ml .fxn-pr{font-weight:600}',
+    '.fxn-mfoot{display:block;padding:10px 6px;font-size:13.5px;font-weight:700;color:#4ade80;text-decoration:none}',
+    '.fxn-mcta{display:block;margin-top:14px;padding:13px;border-radius:12px;text-align:center;background:linear-gradient(135deg,#FF9247 0%,#FF6B1F 52%,#EB550D 100%);color:#0A0A0A;font-size:15px;font-weight:800;text-decoration:none}',
+    '.fxn-mdc{display:block;margin-top:8px;padding:12px;border-radius:12px;text-align:center;border:1px solid rgba(74,222,128,.4);color:#4ade80;font-size:14.5px;font-weight:700;text-decoration:none}'
+  ].join('\n');
+  (document.head || document.documentElement).appendChild(css);
+})();
+
+function fsdxNavPage() {
+  var p = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  if (!p) p = 'index.html';
+  if (p.indexOf('.') === -1) p += '.html';
+  return p;
+}
+function fsdxNavEsc(x) {
+  return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+}
+function fsdxNavTag(t) {
+  if (t === 'mem') return '<span class="fxn-tag fxn-mem">Members</span>';
+  if (t === 'rel') return '<span class="fxn-tag fxn-rel-new" style="display:none">New</span>';
+  return '';
+}
+var FSDX_CHEV = '<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
+
+function fsdxMountTopNav() {
+  if (document.getElementById('fx-topnav')) return;
+  var main = document.querySelector('main');
+  if (!main || !document.getElementById('nav-content')) return;   // admin/login pages: no bar
+  var guest = document.documentElement.classList.contains('fx-guest');
+  var here = fsdxNavPage();
+
+  var menus = FSDX_MENU.map(function (m, mi) {
+    var isHere = m.items.some(function (it) { return it[0] === here; }) || (m.foot && m.foot[0] === here);
+    var items = m.items.map(function (it) {
+      var price = it[3] && it[3] !== 'mem' && it[3] !== 'rel' ? '<span class="fxn-pr">' + fsdxNavEsc(it[3]) + '</span>' : '';
+      return '<a role="menuitem" href="' + it[0] + '" class="fxn-i' + (it[0] === here ? ' cur' : '') + '">'
+        + '<span class="fxn-t">' + fsdxNavEsc(it[1]) + '<span class="fxn-tags">' + fsdxNavTag(it[3]) + '</span>' + price + '</span>'
+        + '<span class="fxn-d">' + fsdxNavEsc(it[2]) + '</span></a>';
+    }).join('');
+    var foot = m.foot ? '<a role="menuitem" href="' + m.foot[0] + '" class="fxn-foot">' + fsdxNavEsc(m.foot[1]) + '</a>' : '';
+    return '<div class="fxn-m' + (isHere ? ' here' : '') + '" data-m="' + m.id + '">'
+      + '<button type="button" class="fxn-b" aria-haspopup="true" aria-expanded="false" aria-controls="fxn-p-' + m.id + '">' + fsdxNavEsc(m.label) + FSDX_CHEV + '</button>'
+      + '<div class="fxn-p' + (m.wide ? ' wide' : '') + '" id="fxn-p-' + m.id + '" role="menu" aria-label="' + fsdxNavEsc(m.label) + '"><div class="fxn-g">' + items + '</div>' + foot + '</div>'
+      + '</div>';
+  }).join('');
+
+  var bar = document.createElement('div');
+  bar.id = 'fx-topnav';
+  bar.innerHTML = '<div class="fxn-in">'
+    + (guest ? '<a href="index.html" class="fxn-logo" aria-label="FSD-X Trading home"><b>FSD-X</b><small>TRADING</small></a>' : '')
+    + '<nav aria-label="Site" style="display:flex;align-items:center;gap:2px">' + menus + '</nav>'
+    + '<span class="fxn-sp"></span>'
+    + '<button type="button" class="fxn-search" aria-label="Search" title="Search (⌘K)" onclick="window.fsdxOpenSearch && fsdxOpenSearch()">'
+    +   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>'
+    + (guest ? '<a href="login.html" class="fxn-login">Member Login</a>' : '')
+    + '<a href="' + FSDX_DISCORD + '" target="_blank" rel="noopener noreferrer" class="fxn-dc">Join Discord</a>'
+    + (guest ? '<a href="memberships.html" class="fxn-cta">Start Free Trial</a>' : '')
+    + '</div>';
+  main.insertBefore(bar, main.firstChild);
+
+  // open / close: hover on mouse, click and keyboard everywhere
+  var closeT = null;
+  function shut(except) {
+    bar.querySelectorAll('.fxn-m.open').forEach(function (m) {
+      if (m === except) return;
+      m.classList.remove('open');
+      m.querySelector('.fxn-b').setAttribute('aria-expanded', 'false');
+    });
+  }
+  function open(m) {
+    clearTimeout(closeT);
+    shut(m);
+    m.classList.add('open');
+    m.querySelector('.fxn-b').setAttribute('aria-expanded', 'true');
+    // keep the panel on screen at narrower widths
+    var p = m.querySelector('.fxn-p');
+    p.style.left = '0px';
+    var r = p.getBoundingClientRect();
+    var over = r.right - (window.innerWidth - 12);
+    if (over > 0) p.style.left = (-over) + 'px';
+  }
+  bar.querySelectorAll('.fxn-m').forEach(function (m) {
+    var b = m.querySelector('.fxn-b');
+    b.addEventListener('click', function (e) {
+      e.stopPropagation();
+      // a hover just opened it: this click means "yes, this one", not "close"
+      if (m.classList.contains('open') && Date.now() - (m._hoverAt || 0) > 450) shut(); else open(m);
+    });
+    m.addEventListener('mouseenter', function () {
+      if (!window.matchMedia('(hover:hover)').matches) return;
+      if (!m.classList.contains('open')) m._hoverAt = Date.now();
+      open(m);
+    });
+    m.addEventListener('mouseleave', function () {
+      clearTimeout(closeT);
+      closeT = setTimeout(function () { m.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); }, 160);
+    });
+    m.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { shut(); b.focus(); }
+      if (e.key === 'ArrowDown' && document.activeElement === b) {
+        e.preventDefault(); open(m);
+        var first = m.querySelector('.fxn-i'); if (first) first.focus();
+      }
+    });
+    m.addEventListener('focusout', function (e) { if (!m.contains(e.relatedTarget)) { m.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); } });
+  });
+  document.addEventListener('click', function (e) { if (!bar.contains(e.target)) shut(); });
+}
+
+// Phone: the same menu, as fold-out groups at the bottom of the slide-out sidebar.
+function fsdxMountMobileMenu(mount) {
+  if (!mount || document.getElementById('fxn-mob')) return;
+  var guest = document.documentElement.classList.contains('fx-guest');
+  var here = fsdxNavPage();
+  var html = FSDX_MENU.map(function (m) {
+    var isHere = m.items.some(function (it) { return it[0] === here; }) || (m.foot && m.foot[0] === here);
+    var openIt = isHere || (guest && m.id === 'products' && !FSDX_MENU.some(function (x) { return x.items.some(function (it) { return it[0] === here; }); }));
+    var links = m.items.map(function (it) {
+      var price = it[3] && it[3] !== 'mem' && it[3] !== 'rel' ? '<span class="fxn-pr" style="margin-left:auto">' + fsdxNavEsc(it[3]) + '</span>' : '';
+      return '<a href="' + it[0] + '" class="fxn-ml' + (it[0] === here ? ' cur' : '') + '">' + fsdxNavEsc(it[1])
+        + '<span class="fxn-tags">' + fsdxNavTag(it[3]) + '</span>' + price + '</a>';
+    }).join('');
+    var foot = m.foot ? '<a href="' + m.foot[0] + '" class="fxn-mfoot">' + fsdxNavEsc(m.foot[1]) + '</a>' : '';
+    return '<div class="fxn-mg' + (openIt ? ' open' : '') + '">'
+      + '<button type="button" class="fxn-mh" aria-expanded="' + (openIt ? 'true' : 'false') + '">' + fsdxNavEsc(m.label) + FSDX_CHEV + '</button>'
+      + '<div class="fxn-mb">' + links + foot + '</div></div>';
+  }).join('');
+  var box = document.createElement('div');
+  box.id = 'fxn-mob';
+  box.innerHTML = html
+    + (guest ? '<a href="memberships.html" class="fxn-mcta">Start Free Trial</a>' : '')
+    + '<a href="' + FSDX_DISCORD + '" target="_blank" rel="noopener noreferrer" class="fxn-mdc">Join Discord</a>';
+  var nav = mount.querySelector('nav');
+  (nav || mount).appendChild(box);
+  box.querySelectorAll('.fxn-mh').forEach(function (h) {
+    h.addEventListener('click', function () {
+      var g = h.parentNode;
+      var on = g.classList.toggle('open');
+      h.setAttribute('aria-expanded', on ? 'true' : 'false');
+    });
+  });
+}
+
+(function () {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fsdxMountTopNav, { once: true });
+  else fsdxMountTopNav();
+})();
+
 // ── Command palette (⌘K) ──
 // Loaded from here so no page has to add a script tag of its own.
 (function () {
@@ -248,13 +514,14 @@ function toggleNavGroup(id) {
 }
 
 function fsdxReleasesBadge() {
-  var pill = document.getElementById('nav-rel-new');
-  if (!pill) return;
+  // the pill now lives in the top bar and the phone menu (was #nav-rel-new in the sidebar)
+  var pills = document.querySelectorAll('#nav-rel-new, .fxn-rel-new');
+  if (!pills.length) return;
   var show = function (newest) {
     if (!newest) return;
     var d = newest.length === 7 ? newest + '-01' : newest;
     var age = (Date.now() - new Date(d + 'T12:00:00').getTime()) / 86400000;
-    if (age >= 0 && age <= 14) pill.style.display = '';
+    if (age >= 0 && age <= 14) pills.forEach(function (pill) { pill.style.display = ''; });
   };
   var cached = null;
   try { cached = sessionStorage.getItem('fsdx_rel_newest'); } catch (e) {}
@@ -304,6 +571,17 @@ function fsdxSaleNotice() {
         tag.title = sale.label + ' · ' + sale.discount + ' with code ' + sale.code;
         tag.style.cssText = 'font-size:9px;font-weight:900;letter-spacing:.08em;color:#fff;background:#E5484D;border-radius:4px;padding:1px 5px;flex-shrink:0';
         if (price) price.replaceWith(tag); else link.appendChild(tag);
+      });
+      // top bar + phone menu: the tag sits next to the name, the price stays
+      document.querySelectorAll('#fx-topnav a[href="' + PRODUCT_PAGE[p] + '"], #fxn-mob a[href="' + PRODUCT_PAGE[p] + '"]').forEach(function (link) {
+        var slot = link.querySelector('.fxn-tags');
+        if (!slot || slot.querySelector('.fx-sale-tag')) return;
+        var tag = document.createElement('span');
+        tag.className = 'fx-sale-tag fxn-tag';
+        tag.textContent = 'SALE';
+        tag.title = sale.label + ' · ' + sale.discount + ' with code ' + sale.code;
+        tag.style.cssText = 'color:#fff;background:#E5484D';
+        slot.appendChild(tag);
       });
     });
   }
@@ -704,7 +982,7 @@ function prepareNavLabels(root) {
   // blank the nav just as thoroughly, so check the status and the body, and
   // give a flaky network one retry before giving up.
   function loadNavHtml(attempt) {
-    return fetch('nav.html?v=20261025c')
+    return fetch('nav.html?v=20261026a')
       .then(function (r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.text();
@@ -728,6 +1006,8 @@ function prepareNavLabels(root) {
       if (!mount) return;   // admin.html has its own sidebar — nothing to mount
       mount.innerHTML = html;
       prepareNavLabels(document.getElementById('nav-content'));
+      // phone menu: site pages, appended after the labels are wrapped
+      try { fsdxMountTopNav(); fsdxMountMobileMenu(mount); } catch (e) { console.warn('[nav] site menu:', e); }
       var cbtn = document.getElementById('nav-collapse-btn');
       if (cbtn) cbtn.title = document.documentElement.classList.contains('nav-collapsed')
         ? 'Expand menu' : 'Collapse menu';
