@@ -214,38 +214,78 @@ window.toggleMobileMenu = function () {
 // ONE list drives the desktop dropdowns AND the phone menu. Add a page here.
 // [href, title, one-line description, price or tag]
 var FSDX_MENU = [
-  { id: 'products', label: 'Products', wide: true, foot: ['compare.html', 'Compare all plans →'], items: [
-    ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, Auto Trader, journal and the live room', '$129/mo'],
-    ['ninjatrader.html', 'Knightfall NT8', 'Knightfall on NinjaTrader 8, on its own', '$59.99/mo'],
-    ['raven.html', 'Raven', 'Standalone TradingView indicator', '$29.99/mo'],
-    ['nightwing.html', 'Nightwing', 'Standalone TradingView indicator', '$9.99/mo'],
-    ['free-indicators.html', 'Free Indicators', 'Free tools anyone can add to a chart', 'Free']
+  { id: 'products', label: 'Products', w: 860, eyebrow: 'Or pick one tool', foot: ['compare.html', 'Compare all plans side by side →'],
+    feature: { kind: 'plan', kicker: 'Most complete', title: 'Full Membership', href: 'memberships.html', price: '$129', per: '/mo',
+      checks: ['Knightfall + 3 indicators', 'Auto Trader', 'Journal, accounts & backtests', 'Live room every weekday'],
+      cta: 'Start 30-Day Free Trial', ctaMember: 'See the membership →' },
+    items: [
+      ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, Auto Trader, journal and the live room', '$129/mo', 'layers', 'orange'],
+      ['ninjatrader.html', 'Knightfall NT8', 'Knightfall on NinjaTrader 8, on its own', '$59.99/mo', 'terminal', 'orange'],
+      ['raven.html', 'Raven', 'Standalone TradingView indicator', '$29.99/mo', 'trend', 'blue'],
+      ['nightwing.html', 'Nightwing', 'Standalone TradingView indicator', '$9.99/mo', 'moon', 'purple'],
+      ['free-indicators.html', 'Free Indicators', 'Free tools anyone can add to a chart', 'Free', 'star', 'green']
   ]},
-  { id: 'platform', label: 'Platform', items: [
-    ['suite.html', "What's in the Membership", 'Every tool in the full package'],
-    ['platform.html', 'The Platform', 'Dashboard, journal, accounts and backtests'],
-    ['autotrader.html', 'ORB Auto-Trader', 'How the automation works'],
-    ['releases.html', 'Releases', "What shipped and what's next", 'rel']
+  { id: 'platform', label: 'Platform', w: 680, eyebrow: 'Explore',
+    feature: { kind: 'link', kicker: 'Start here', title: "What's in the Membership", href: 'suite.html',
+      text: 'Every tool in the full package, and how they fit together each morning.', cta: 'See the full package →' },
+    items: [
+      ['suite.html', "What's in the Membership", 'Every tool in the full package', '', 'layers', 'orange'],
+      ['platform.html', 'The Platform', 'Dashboard, journal, accounts and backtests', '', 'monitor', 'blue'],
+      ['autotrader.html', 'ORB Auto-Trader', 'How the automation works', '', 'bolt', 'orange'],
+      ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green']
   ]},
-  { id: 'results', label: 'Results', items: [
-    ['results.html', 'Backtest Results', 'Explore the backtest data by preset'],
-    ['track-record.html', 'Live Track Record', 'Live trades by variant, with stats']
+  { id: 'results', label: 'Results', w: 680, eyebrow: 'The proof',
+    note: 'Backtests are hypothetical. Past performance doesn’t guarantee future results.',
+    feature: { kind: 'chart', kicker: 'See the data', title: "Don't take our word for it",
+      text: 'Explore the backtest yourself, then check it against live trades.' },
+    items: [
+      ['results.html', 'Backtest Results', 'Explore the data by preset and setting', '', 'bars', 'blue'],
+      ['track-record.html', 'Live Track Record', 'Live trades by variant, with stats', 'live', 'target', 'green']
   ]},
-  { id: 'learn', label: 'Learn', wide: true, items: [
-    ['setup.html', 'Getting Started', 'Set up in a few steps'],
-    ['schedule.html', 'Live Sessions', 'The live trade room schedule'],
-    ['knowledge.html', 'Knowledge Base', 'Guides and explainers'],
-    ['how-to.html', 'How-To', 'Step-by-step guides', 'mem'],
-    ['course.html', 'Course', 'The Knightfall course', 'mem'],
-    ['faq.html', 'FAQ', 'Common questions'],
-    ['contact.html', 'Contact & Help', 'Get in touch']
+  { id: 'learn', label: 'Learn', w: 820, cols: 2,
+    feature: { kind: 'link', kicker: 'New here?', title: 'Getting Started', href: 'setup.html',
+      text: 'Set up your charts and tools in a few steps.', cta: 'Start the setup →' },
+    items: [
+      ['setup.html', 'Getting Started', 'Set up in a few steps', '', 'rocket', 'orange'],
+      ['schedule.html', 'Live Sessions', 'Trade room schedule', '', 'radio', 'red'],
+      ['knowledge.html', 'Knowledge Base', 'Guides and explainers', '', 'book', 'blue'],
+      ['how-to.html', 'How-To', 'Step-by-step guides', 'mem', 'list', 'purple'],
+      ['course.html', 'Course', 'The Knightfall course', 'mem', 'cap', 'orange'],
+      ['faq.html', 'FAQ', 'Common questions', '', 'help', 'gray'],
+      ['contact.html', 'Contact & Help', 'Get in touch', '', 'mail', 'gray']
   ]},
-  { id: 'prop', label: 'Prop Firms', items: [
-    ['affiliates.html', 'Prop Firm Discounts', 'Every partner code, compared'],
-    ['giveaways.html', 'Giveaways', 'Current giveaways and how to enter'],
-    ['partners.html', 'Partner Program', 'For creators with a trading audience']
+  { id: 'prop', label: 'Prop Firms', w: 680, eyebrow: 'Prop firms', tone: 'green',
+    feature: { kind: 'code', kicker: 'One code, most firms', code: 'DJFSDX',
+      text: 'Use it at checkout with most of our partner firms.', disclose: 'Affiliate code. We earn a commission.' },
+    items: [
+      ['affiliates.html', 'Prop Firm Discounts', 'Every partner code, compared', '', 'tag', 'orange'],
+      ['giveaways.html', 'Giveaways', 'Current giveaways and how to enter', '', 'gift', 'purple'],
+      ['partners.html', 'Partner Program', 'For creators with a trading audience', '', 'users', 'blue']
   ]}
 ];
+// stroke icons for the menu tiles (24×24 viewBox)
+var FSDX_ICONS = {
+  layers: '<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',
+  terminal: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="m7 9 3 3-3 3M13 15h4"/>',
+  trend: '<path d="M3 17l5-6 4 4 8-9"/><path d="M14 6h6v6"/>',
+  moon: '<path d="M21 14.5A8.5 8.5 0 0 1 9.5 3a8.5 8.5 0 1 0 11.5 11.5z"/>',
+  star: '<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',
+  monitor: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',
+  bolt: '<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  bars: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  target: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>',
+  rocket: '<path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2"/><path d="M9 15l-3-3c1-4 4-8 12-9-1 8-5 11-9 12z"/><circle cx="14.5" cy="9.5" r="1.5"/>',
+  radio: '<circle cx="12" cy="12" r="3"/><path d="M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/>',
+  book: '<path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/>',
+  list: '<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>',
+  cap: '<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+  help: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+  tag: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M7.5 7.5h.01"/>',
+  gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v9H5v-9M12 8S10 3 7.5 4.5 9 8 12 8zm0 0s2-5 4.5-3.5S15 8 12 8z"/>',
+  users: '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/>'
+};
 var FSDX_DISCORD = 'https://discord.gg/RePdHESvSx';
 
 // Visitors get the full-width layout. Set here, in <head>, so the sidebar
@@ -307,6 +347,56 @@ var FSDX_DISCORD = 'https://discord.gg/RePdHESvSx';
     '.fxn-cta:hover{filter:brightness(1.08)}',
     '@media (max-width:1279px){html:not(.fx-guest) .fxn-dc{display:none}}',
     '@media (max-width:1100px){.fxn-in{padding:0 14px}.fxn-b{padding:9px 9px;font-size:13.5px}.fxn-login,.fxn-dc{display:none}.fxn-logo{margin-right:10px}}',
+    /* ── style A panels: featured column + icon rows ── */
+    '.fxn-p.fx2{display:none;padding:0;overflow:hidden;border-radius:20px;box-shadow:0 30px 80px -24px rgba(0,0,0,.95)}',
+    '.fxn-m.open .fxn-p.fx2{display:grid;grid-template-columns:260px minmax(0,1fr)}',
+    '.fxn-f{display:flex;flex-direction:column;gap:12px;padding:22px;background:linear-gradient(160deg,rgba(255,107,31,.16) 0%,rgba(255,107,31,.03) 55%,transparent 100%);border-right:1px solid rgba(120,160,210,.13)}',
+    '.fxn-f.green{background:linear-gradient(160deg,rgba(74,222,128,.13) 0%,rgba(74,222,128,.03) 55%,transparent 100%)}',
+    '.fxn-fk{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#FF9A5C}',
+    '.fxn-f.green .fxn-fk{color:#4ade80}',
+    '.fxn-ft{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:21px;font-weight:900;letter-spacing:-.02em;line-height:1.2;color:#fff;text-decoration:none}',
+    'a.fxn-ft:hover{color:#FFC0A0}',
+    '.fxn-fx{font-size:13px;line-height:1.55;color:#A2AEBF;margin:0}',
+    '.fxn-fc{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}',
+    '.fxn-fc li{display:flex;gap:9px;align-items:center;font-size:13.5px;color:#CBD3DE}',
+    '.fxn-fc svg{width:14px;height:14px;flex-shrink:0;color:#4ade80}',
+    '.fxn-fp{display:flex;align-items:baseline;gap:4px;margin-top:2px}',
+    '.fxn-fp b{font-size:30px;font-weight:900;color:#fff}.fxn-fp span{font-size:13px;color:#A2AEBF}',
+    '.fxn-fb{margin-top:auto;display:block;padding:12px;border-radius:12px;text-align:center;font-size:13.5px;font-weight:800;text-decoration:none;border:1px solid rgba(255,107,31,.5);color:#FFC0A0;background:none;cursor:pointer;font-family:inherit}',
+    '.fxn-fb:hover{background:rgba(255,107,31,.10);color:#fff}',
+    '.fxn-fb.solid{border:0;color:#0A0A0A;background:linear-gradient(135deg,#FF9247 0%,#FF6B1F 52%,#EB550D 100%)}',
+    '.fxn-fb.solid:hover{filter:brightness(1.08);color:#0A0A0A}',
+    '.fxn-fb.code{border:1px dashed rgba(74,222,128,.55);color:#4ade80}',
+    '.fxn-fb.code:hover{background:rgba(74,222,128,.08);color:#86efac}',
+    '.fxn-fcode{font-size:30px;font-weight:900;letter-spacing:.06em;color:#fff}',
+    '.fxn-fd{font-size:11px;color:#7D8B9E}',
+    '.fxn-fchart{width:100%;height:56px;margin-top:auto}',
+    '.fxn-r{display:flex;flex-direction:column;padding:12px;min-width:0}',
+    '.fxn-ey{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#7D8B9E;padding:8px 12px 6px}',
+    '.fxn-rl{display:grid;gap:2px}',
+    '.fxn-rl.c2{grid-template-columns:repeat(2,minmax(0,1fr))}',
+    '.fxn-row{display:flex;align-items:center;gap:14px;padding:11px 12px;border-radius:14px;text-decoration:none;border:1px solid transparent}',
+    '.fxn-rl.c2 .fxn-row{gap:12px;padding:10px}',
+    '.fxn-row:hover,.fxn-row:focus-visible{background:rgba(255,255,255,.045);border-color:rgba(120,160,210,.14);outline:none}',
+    '.fxn-row.cur{background:rgba(255,107,31,.08);border-color:rgba(255,107,31,.3)}',
+    '.fxn-ic{width:40px;height:40px;flex-shrink:0;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid}',
+    '.fxn-rl.c2 .fxn-ic{width:34px;height:34px;border-radius:10px}',
+    '.fxn-ic svg{width:18px;height:18px}',
+    '.fxn-ic.orange{background:rgba(255,107,31,.10);border-color:rgba(255,107,31,.28);color:#FF7A2E}',
+    '.fxn-ic.blue{background:rgba(96,165,250,.10);border-color:rgba(96,165,250,.28);color:#93C5FD}',
+    '.fxn-ic.purple{background:rgba(167,139,250,.10);border-color:rgba(167,139,250,.28);color:#C4B5FD}',
+    '.fxn-ic.green{background:rgba(74,222,128,.10);border-color:rgba(74,222,128,.28);color:#4ade80}',
+    '.fxn-ic.red{background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.3);color:#FCA5A5}',
+    '.fxn-ic.gray{background:rgba(255,255,255,.05);border-color:rgba(120,160,210,.2);color:#CBD3DE}',
+    '.fxn-rt{display:flex;flex-direction:column;gap:3px;flex-grow:1;min-width:0}',
+    '.fxn-rn{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:14.5px;font-weight:700;color:#fff}',
+    '.fxn-rl.c2 .fxn-rn{font-size:14px}',
+    '.fxn-rd{font-size:12.5px;line-height:1.4;color:#A2AEBF}',
+    '.fxn-chip{padding:5px 9px;border-radius:8px;background:rgba(255,255,255,.05);font-size:12.5px;font-weight:700;color:#E6EAF0;white-space:nowrap}',
+    '.fxn-chip.free{background:rgba(74,222,128,.10);color:#4ade80;font-weight:800}',
+    '.fxn-live{width:7px;height:7px;border-radius:50%;background:#4ade80}',
+    '.fxn-note{margin-top:auto;padding:12px;border-top:1px solid rgba(120,160,210,.13);font-size:11.5px;line-height:1.5;color:#7D8B9E}',
+    '.fxn-r .fxn-foot{margin-top:6px}',
     /* phone: same menu inside the slide-out sidebar */
     '#fxn-mob{margin-top:18px}',
     '@media (min-width:768px){#fxn-mob{display:none}}',
@@ -349,18 +439,64 @@ function fsdxMountTopNav() {
   var guest = document.documentElement.classList.contains('fx-guest');
   var here = fsdxNavPage();
 
-  var menus = FSDX_MENU.map(function (m, mi) {
+  var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg>';
+  function icon(name, color) {
+    return '<span class="fxn-ic ' + (color || 'gray') + '" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (FSDX_ICONS[name] || '') + '</svg></span>';
+  }
+  function featureHtml(m) {
+    var f = m.feature || {};
+    var h = '<div class="fxn-f' + (m.tone === 'green' ? ' green' : '') + '">';
+    if (f.kind === 'plan') {
+      h += '<span class="fxn-fk">' + fsdxNavEsc(f.kicker) + '</span>'
+        + '<a role="menuitem" href="' + f.href + '" class="fxn-ft">' + fsdxNavEsc(f.title) + '<span class="fxn-tags"></span></a>'
+        + '<ul class="fxn-fc">' + f.checks.map(function (c) { return '<li>' + CHECK + fsdxNavEsc(c) + '</li>'; }).join('') + '</ul>'
+        + '<div class="fxn-fp"><b>' + fsdxNavEsc(f.price) + '</b><span>' + fsdxNavEsc(f.per) + '</span></div>'
+        + (guest ? '<a role="menuitem" href="' + f.href + '" class="fxn-fb solid">' + fsdxNavEsc(f.cta) + '</a>'
+                 : '<a role="menuitem" href="' + f.href + '" class="fxn-fb">' + fsdxNavEsc(f.ctaMember) + '</a>');
+    } else if (f.kind === 'code') {
+      h += '<span class="fxn-fk">' + fsdxNavEsc(f.kicker) + '</span>'
+        + '<span class="fxn-fcode">' + fsdxNavEsc(f.code) + '</span>'
+        + '<p class="fxn-fx">' + fsdxNavEsc(f.text) + '</p>'
+        + '<button type="button" class="fxn-fb code" data-copy="' + fsdxNavEsc(f.code) + '">Copy code</button>'
+        + '<span class="fxn-fd">' + fsdxNavEsc(f.disclose) + '</span>';
+    } else {
+      h += '<span class="fxn-fk">' + fsdxNavEsc(f.kicker) + '</span>'
+        + (f.href ? '<a role="menuitem" href="' + f.href + '" class="fxn-ft">' + fsdxNavEsc(f.title) + '</a>'
+                  : '<span class="fxn-ft">' + fsdxNavEsc(f.title) + '</span>')
+        + '<p class="fxn-fx">' + fsdxNavEsc(f.text) + '</p>'
+        + (f.kind === 'chart'
+            ? '<svg class="fxn-fchart" viewBox="0 0 220 60" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="#FF6B1F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="0,52 25,46 50,48 75,36 100,40 125,28 150,31 175,18 200,22 220,10"/></svg>'
+            : '<a role="menuitem" href="' + f.href + '" class="fxn-fb">' + fsdxNavEsc(f.cta) + '</a>');
+    }
+    return h + '</div>';
+  }
+  function rowHtml(it) {
+    var t = it[3];
+    var chip = '';
+    if (t === 'Free') chip = '<span class="fxn-chip free">Free</span>';
+    else if (t && t.charAt(0) === '$') chip = '<span class="fxn-chip">' + fsdxNavEsc(t) + '</span>';
+    var extra = t === 'live' ? '<span class="fxn-live" aria-hidden="true"></span>' : fsdxNavTag(t);
+    return '<a role="menuitem" href="' + it[0] + '" class="fxn-row' + (it[0] === here ? ' cur' : '') + '">'
+      + icon(it[4], it[5])
+      + '<span class="fxn-rt"><span class="fxn-rn">' + fsdxNavEsc(it[1]) + '<span class="fxn-tags">' + extra + '</span></span>'
+      + '<span class="fxn-rd">' + fsdxNavEsc(it[2]) + '</span></span>' + chip + '</a>';
+  }
+
+  var menus = FSDX_MENU.map(function (m) {
     var isHere = m.items.some(function (it) { return it[0] === here; }) || (m.foot && m.foot[0] === here);
-    var items = m.items.map(function (it) {
-      var price = it[3] && it[3] !== 'mem' && it[3] !== 'rel' ? '<span class="fxn-pr">' + fsdxNavEsc(it[3]) + '</span>' : '';
-      return '<a role="menuitem" href="' + it[0] + '" class="fxn-i' + (it[0] === here ? ' cur' : '') + '">'
-        + '<span class="fxn-t">' + fsdxNavEsc(it[1]) + '<span class="fxn-tags">' + fsdxNavTag(it[3]) + '</span>' + price + '</span>'
-        + '<span class="fxn-d">' + fsdxNavEsc(it[2]) + '</span></a>';
-    }).join('');
-    var foot = m.foot ? '<a role="menuitem" href="' + m.foot[0] + '" class="fxn-foot">' + fsdxNavEsc(m.foot[1]) + '</a>' : '';
+    var fHref = m.feature && m.feature.href;
+    // the featured page already has its own panel on the left — don't list it twice
+    var rows = m.items.filter(function (it) { return it[0] !== fHref; }).map(rowHtml).join('');
+    var right = '<div class="fxn-r">'
+      + (m.eyebrow ? '<span class="fxn-ey">' + fsdxNavEsc(m.eyebrow) + '</span>' : '')
+      + '<div class="fxn-rl' + (m.cols === 2 ? ' c2' : '') + '">' + rows + '</div>'
+      + (m.foot ? '<a role="menuitem" href="' + m.foot[0] + '" class="fxn-foot">' + fsdxNavEsc(m.foot[1]) + '</a>' : '')
+      + (m.note ? '<span class="fxn-note">' + fsdxNavEsc(m.note) + '</span>' : '')
+      + '</div>';
     return '<div class="fxn-m' + (isHere ? ' here' : '') + '" data-m="' + m.id + '">'
       + '<button type="button" class="fxn-b" aria-haspopup="true" aria-expanded="false" aria-controls="fxn-p-' + m.id + '">' + fsdxNavEsc(m.label) + FSDX_CHEV + '</button>'
-      + '<div class="fxn-p' + (m.wide ? ' wide' : '') + '" id="fxn-p-' + m.id + '" role="menu" aria-label="' + fsdxNavEsc(m.label) + '"><div class="fxn-g">' + items + '</div>' + foot + '</div>'
+      + '<div class="fxn-p fx2" id="fxn-p-' + m.id + '" role="menu" aria-label="' + fsdxNavEsc(m.label) + '" style="width:' + (m.w || 680) + 'px">'
+      + featureHtml(m) + right + '</div>'
       + '</div>';
   }).join('');
 
@@ -419,12 +555,21 @@ function fsdxMountTopNav() {
       if (e.key === 'Escape') { shut(); b.focus(); }
       if (e.key === 'ArrowDown' && document.activeElement === b) {
         e.preventDefault(); open(m);
-        var first = m.querySelector('.fxn-i'); if (first) first.focus();
+        var first = m.querySelector('[role="menuitem"]'); if (first) first.focus();
       }
     });
     m.addEventListener('focusout', function (e) { if (!m.contains(e.relatedTarget)) { m.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); } });
   });
   document.addEventListener('click', function (e) { if (!bar.contains(e.target)) shut(); });
+  bar.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var code = btn.getAttribute('data-copy');
+      try { navigator.clipboard.writeText(code); } catch (x) {}
+      var o = btn.textContent; btn.textContent = 'Copied ✓';
+      setTimeout(function () { btn.textContent = o; }, 1400);
+    });
+  });
 }
 
 // Phone: the same menu, as fold-out groups at the bottom of the slide-out sidebar.
@@ -436,7 +581,7 @@ function fsdxMountMobileMenu(mount) {
     var isHere = m.items.some(function (it) { return it[0] === here; }) || (m.foot && m.foot[0] === here);
     var openIt = isHere || (guest && m.id === 'products' && !FSDX_MENU.some(function (x) { return x.items.some(function (it) { return it[0] === here; }); }));
     var links = m.items.map(function (it) {
-      var price = it[3] && it[3] !== 'mem' && it[3] !== 'rel' ? '<span class="fxn-pr" style="margin-left:auto">' + fsdxNavEsc(it[3]) + '</span>' : '';
+      var price = it[3] && (it[3] === 'Free' || it[3].charAt(0) === '$') ? '<span class="fxn-pr" style="margin-left:auto">' + fsdxNavEsc(it[3]) + '</span>' : '';
       return '<a href="' + it[0] + '" class="fxn-ml' + (it[0] === here ? ' cur' : '') + '">' + fsdxNavEsc(it[1])
         + '<span class="fxn-tags">' + fsdxNavTag(it[3]) + '</span>' + price + '</a>';
     }).join('');
