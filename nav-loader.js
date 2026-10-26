@@ -752,7 +752,7 @@ function fsdxSaleNotice() {
     + '#fx-ticker .fxt-tag{font-size:10px;font-weight:900;letter-spacing:.12em;border-radius:6px;padding:3px 7px;flex-shrink:0;white-space:nowrap}'
     + '#fx-ticker .t-sale{color:#fff;background:#E5484D}#fx-ticker .t-lifetime{color:#0B1119;background:#FF8A4C}'
     + '#fx-ticker .t-update,#fx-ticker .t-release{color:#05230F;background:#4ade80}#fx-ticker .t-partner{color:#06152B;background:#7FB2FF}'
-    + '#fx-ticker .t-announcement{color:#0B1119;background:#E6EDF7}'
+    + '#fx-ticker .t-announcement{color:#0B1119;background:#E6EDF7}#fx-ticker .t-giveaway{color:#1F1500;background:#FBBF24}'
     + '#fx-ticker .fxt-text{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
     + '#fx-ticker .fxt-aff{font-size:10px;color:#7D8B9E;font-weight:700;white-space:nowrap;flex-shrink:0}'
     + '#fx-ticker .fxt-code{font:800 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:#fff;background:rgba(8,13,20,.8);border:1.5px dashed rgba(255,138,141,.7);border-radius:6px;padding:2px 8px;cursor:pointer;flex-shrink:0}'
@@ -811,7 +811,7 @@ function fsdxSaleNotice() {
 
     function draw() {
       var x = items[idx];
-      var go = x.link ? '<a class="fxt-go" href="' + esc(x.link) + '"' + (/^https:/.test(x.link) ? ' target="_blank" rel="noopener sponsored"' : '') + '>' + esc(x.linkText || 'See more') + ' &rarr;</a>' : '';
+      var go = x.link ? '<a class="fxt-go" href="' + esc(x.link) + '"' + (/^https:/.test(x.link) ? ' target="_blank" rel="noopener' + (x.affiliate ? ' sponsored' : '') + '"' : '') + '>' + esc(x.linkText || 'See more') + ' &rarr;</a>' : '';
       var dots = items.length > 1 ? items.map(function (_, i) {
         return '<button type="button" class="fxt-dotwrap" data-fxt-i="' + i + '" aria-label="Show item ' + (i + 1) + ' of ' + items.length + '"' + (i === idx ? ' aria-current="true"' : '') + '><span class="fxt-dot' + (i === idx ? ' on' : '') + '"></span></button>';
       }).join('') : '';

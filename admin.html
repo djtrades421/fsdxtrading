@@ -518,6 +518,7 @@
                 <button onclick="promoNew('sale')" class="px-3 py-2 bg-red-500/15 border border-red-500/40 text-red-300 hover:bg-red-500/25 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Sale</button>
                 <button onclick="promoNew('partner')" class="px-3 py-2 bg-blue-500/10 border border-blue-500/35 text-blue-300 hover:bg-blue-500/20 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Partner</button>
                 <button onclick="promoNew('update')" class="px-3 py-2 bg-green-500/10 border border-green-500/35 text-green-300 hover:bg-green-500/20 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Update</button>
+                <button onclick="promoNew('giveaway')" class="px-3 py-2 bg-yellow-500/10 border border-yellow-500/35 text-yellow-300 hover:bg-yellow-500/20 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Giveaway</button>
                 <button onclick="promoNew('announcement')" class="px-3 py-2 bg-zinc-800 border border-white/15 text-zinc-200 hover:bg-zinc-700 font-bold text-[11px] uppercase tracking-wider rounded-lg transition">+ Announcement</button>
               </div>
             </div>
@@ -539,7 +540,7 @@
             </div>
 
             <div id="promo-list" class="border border-white/10 rounded-xl overflow-hidden"><div class="px-4 py-6 text-center text-zinc-600 text-xs">Loading…</div></div>
-            <p class="text-zinc-600 text-[11px] mt-2">SALE rows come from the sale form below, LIFETIME from Lifetime Spots, UPDATE (auto) from releases.json. Partner items show an "Affiliate link" label automatically. ★ = shown first.</p>
+            <p class="text-zinc-600 text-[11px] mt-2">SALE rows come from the sale form below, LIFETIME from Lifetime Spots, UPDATE (auto) from releases.json. Partner items show an "Affiliate link" label automatically. Giveaways: set an end date and it drops off the ticker by itself. ★ = shown first.</p>
 
             <!-- Item form: partner / update / announcement -->
             <div id="promo-form" class="hidden mt-4 border border-white/10 bg-black/40 rounded-xl p-4">
@@ -547,7 +548,7 @@
                 <button onclick="promoCancel()" class="text-zinc-500 hover:text-white text-xs font-bold">Cancel</button></div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-type">Type</label>
-                  <select id="pf-type" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"><option value="partner">Partner (affiliate)</option><option value="update">Update</option><option value="announcement">Announcement</option></select></div>
+                  <select id="pf-type" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"><option value="partner">Partner (affiliate)</option><option value="update">Update</option><option value="giveaway">Giveaway</option><option value="announcement">Announcement</option></select></div>
                 <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-code">Code (optional)</label><input id="pf-code" type="text" placeholder="e.g. DJFSDX" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700 uppercase"></div>
                 <div class="sm:col-span-2"><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-text">What it says</label><input id="pf-text" type="text" maxlength="200" placeholder="e.g. Apex evals discount — use our code at checkout" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
                 <div><label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5" for="pf-link">Link (page like affiliates.html, or https://…)</label><input id="pf-link" type="text" placeholder="affiliates.html" class="w-full bg-black border border-white/10 text-white text-sm px-4 py-3 rounded-xl focus:outline-none focus:border-green-500/50 transition placeholder-zinc-700"></div>
@@ -2722,7 +2723,7 @@
     // ── Promotions hub (= the site ticker) ──
     let _promo = { config: null, items: [] }, _promoEdit = null;
     const PROMO_TAG = { sale: 'color:#fff;background:#E5484D', lifetime: 'color:#0B1119;background:#FF8A4C', release: 'color:#05230F;background:#4ade80',
-      update: 'color:#05230F;background:#4ade80', partner: 'color:#06152B;background:#7FB2FF', announcement: 'color:#0B1119;background:#E6EDF7' };
+      update: 'color:#05230F;background:#4ade80', partner: 'color:#06152B;background:#7FB2FF', giveaway: 'color:#1F1500;background:#FBBF24', announcement: 'color:#0B1119;background:#E6EDF7' };
     async function promoLoad() {
       const token = localStorage.getItem('fsdx_token') || '';
       try {
@@ -2797,6 +2798,13 @@
       ['pf-code', 'pf-text', 'pf-link', 'pf-linktext', 'pf-start', 'pf-end'].forEach(id => document.getElementById(id).value = '');
       if (type === 'partner') document.getElementById('pf-link').value = 'affiliates.html';
       if (type === 'update') document.getElementById('pf-link').value = 'releases.html';
+      // giveaway: defaults to the site's giveaways page. Paste an https:// link to the
+      // Instagram / X post instead and set the link text to match ("Enter on Instagram").
+      if (type === 'giveaway') {
+        document.getElementById('pf-link').value = 'giveaways.html';
+        document.getElementById('pf-linktext').value = 'Enter now';
+        document.getElementById('pf-text').placeholder = 'e.g. Giveaway is live on Instagram — win a free eval';
+      } else document.getElementById('pf-text').placeholder = 'e.g. Apex evals discount — use our code at checkout';
       document.getElementById('promo-form-title').textContent = 'New ' + (type === 'partner' ? 'partner promo' : type);
       document.getElementById('pf-btn').textContent = 'Add to ticker';
       document.getElementById('promo-form').classList.remove('hidden');
