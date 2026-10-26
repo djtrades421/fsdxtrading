@@ -76,6 +76,46 @@
     [data-multi] .pf-chip[aria-pressed="true"]:before{content:"\2713  "}
     @media (max-width:640px){.pf-qrow{flex-direction:column;align-items:flex-start;gap:6px}.pf-qlabel{flex:none}.pf-qlabel span{display:inline;margin-left:6px}}
     .pf-tag{display:inline-block;font-size:9px;font-weight:900;letter-spacing:.08em;color:#fbbf24;background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);border-radius:4px;padding:1px 5px;margin-left:6px;vertical-align:middle}
+
+    /* ── hero + firm cards (Option A, Oct 2026) ── */
+    .af-hero{position:relative;overflow:hidden;border-bottom:1px solid rgba(120,160,210,.13)}
+    .af-hero:before{content:"";position:absolute;inset:0;pointer-events:none;
+      background-image:linear-gradient(rgba(120,160,210,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(120,160,210,.05) 1px,transparent 1px);
+      background-size:44px 44px;
+      -webkit-mask-image:radial-gradient(90% 80% at 50% 0%,#000 35%,transparent 100%);mask-image:radial-gradient(90% 80% at 50% 0%,#000 35%,transparent 100%)}
+    .af-hero:after{content:"";position:absolute;left:50%;top:-180px;width:720px;height:420px;transform:translateX(-50%);pointer-events:none;
+      background:radial-gradient(closest-side,rgba(255,107,31,.13),transparent)}
+    .af-hero > *{position:relative;z-index:1}
+    .af-code{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.08em;color:#4ade80;background:rgba(14,20,28,.8);border:1px dashed rgba(74,222,128,.45);border-radius:10px;padding:8px 12px;cursor:copy;transition:.15s;font-size:13px}
+    .af-code:hover{border-color:#4ade80}
+    .af-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;border-top:1px solid rgba(120,160,210,.10);border-bottom:1px solid rgba(120,160,210,.10);background:rgba(8,13,20,.6)}
+    .af-stats > div{padding:18px 0}
+    .af-stats b{display:block;font-size:20px;font-weight:900;color:#fff;letter-spacing:-.02em}
+    .af-stats span{font-size:11px;color:#7D8B9E;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+    @media (max-width:767px){.af-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.af-stats > div{padding:12px 0}}
+    .af-tabs{display:inline-flex;gap:4px;padding:4px;border:1px solid rgba(120,160,210,.13);border-radius:12px;background:rgba(8,13,20,.7)}
+    .af-tab{font-size:13px;font-weight:800;color:#A2AEBF;background:transparent;border:1px solid transparent;border-radius:9px;padding:8px 16px;cursor:pointer;transition:.15s}
+    .af-tab:hover{color:#fff}
+    .af-tab[aria-selected="true"]{color:#FFC0A0;background:rgba(255,107,31,.14);border-color:rgba(255,107,31,.55)}
+    .af-tab small{font-size:10px;font-weight:800;color:#61707F;margin-left:4px}
+    .af-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px}
+    .af-card{display:flex;flex-direction:column;gap:16px;padding:20px;border:1px solid rgba(120,160,210,.13);border-radius:16px;background:rgba(14,20,28,.72);transition:border-color .18s,transform .18s}
+    .af-card:hover{border-color:rgba(255,107,31,.55);transform:translateY(-2px)}
+    .af-mono{width:46px;height:46px;flex:0 0 auto;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#FF7A2E;background:rgba(255,107,31,.08);border:1px solid rgba(255,107,31,.25)}
+    .af-disc{font-size:28px;font-weight:900;line-height:1;color:#4ade80;letter-spacing:-.03em;text-align:right}
+    .af-disc.lbl{font-size:15px;letter-spacing:0}
+    .af-disc-sub{font-size:10px;font-weight:800;letter-spacing:.12em;color:#7D8B9E;text-align:right;margin-top:3px}
+    .af-specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+    .af-specs div{padding:9px 10px;border-radius:10px;background:rgba(8,13,20,.75)}
+    .af-specs span{display:block;font-size:9.5px;font-weight:800;letter-spacing:.1em;color:#61707F;text-transform:uppercase;margin-bottom:3px}
+    .af-specs b{font-size:12px;font-weight:700;color:#E6EAF0}
+    .af-fit{font-size:13px;line-height:1.55;color:#A2AEBF;margin:0}
+    .af-fit b{color:#fff}
+    .af-badge{font-size:9px;font-weight:900;letter-spacing:.1em;color:#4ade80;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:5px;padding:2px 6px;margin-left:6px;vertical-align:middle}
+    .af-actions{display:flex;gap:8px;margin-top:auto}
+    .af-actions .af-code{flex:1;justify-content:center}
+    .af-more{font-size:12px;font-weight:700;color:#A2AEBF;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+    .af-more:hover{color:#4ade80}
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/affiliates.html" />
   <meta property="og:url" content="https://www.fsdxtrading.com/affiliates.html" />
@@ -98,32 +138,61 @@
     <div class="w-full flex-1">
 
       <!-- PAGE HEADER -->
-      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Community Backed Partners</div>
-          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">Prop Firm Discounts</h1>
-          <p class="mt-4 text-zinc-400 text-xs md:text-sm max-w-2xl leading-relaxed">
-            Every partner code in one table — compare the firms side by side, then click through to activate your discount. Codes are exclusive to FSD-X members.
+      <section class="af-hero px-6 md:px-12">
+        <div class="max-w-3xl mx-auto text-center pt-14 pb-12 md:pt-20 md:pb-12 flex flex-col items-center">
+          <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold tracking-wide mb-6">
+            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+            <span><span id="af-count">11</span> partners &middot; Rules checked October 2026</span>
+          </span>
+          <h1 class="text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1]">
+            <span class="block">Prop firm discounts.</span>
+            <span class="block text-green-400">Picked for ORB traders.</span>
+          </h1>
+          <p class="mt-5 text-zinc-400 text-base md:text-lg max-w-xl leading-relaxed">
+            Every FSD-X partner code in one place. Compare drawdown, fees and automation rules, then click through to activate your discount. We list the downsides too.
           </p>
-          <!-- STAT STRIP -->
-          <div class="mt-8 flex flex-wrap gap-6">
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">11 Partners</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Vetted & Active</div>
-            </div>
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">Up to 90% Off</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Exclusive Discounts</div>
-            </div>
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">Code: DJFSDX</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Works Across Most Partners</div>
-            </div>
+          <div class="mt-8 flex flex-col sm:flex-row items-stretch gap-4 w-full sm:w-auto">
+            <button type="button" onclick="afFind()" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center shadow-lg shadow-green-500/10 whitespace-nowrap">Find my firm</button>
+            <button type="button" onclick="afJump('af-table')" class="border border-white/15 hover:bg-white/[0.06] transition px-6 py-4 rounded-2xl text-center font-bold text-white whitespace-nowrap">Compare all firms</button>
+          </div>
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-zinc-400">
+            Most partners take code
+            <button type="button" class="af-code" onclick="copyCode('DJFSDX', this)" title="Tap to copy">DJFSDX
+              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+            </button>
           </div>
         </div>
       </section>
 
-      <section class="py-12 md:py-16 px-6 md:px-12">
+      <!-- STAT STRIP -->
+      <section class="px-6 md:px-12">
+        <div class="max-w-5xl mx-auto af-stats" style="border-left:0;border-right:0;background:none">
+          <div><b id="af-count2">11</b><span>Vetted partners</span></div>
+          <div><b>Futures + perps</b><span>Both covered</span></div>
+          <div><b>Pros &amp; cons</b><span>On every firm</span></div>
+          <div><b>Oct 2026</b><span>Rules last checked</span></div>
+        </div>
+      </section>
+
+      <!-- ═══ PARTNER CARDS ═══ -->
+      <section class="pt-12 md:pt-16 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+          <div class="flex items-end justify-between gap-4 flex-wrap mb-6">
+            <div>
+              <h2 class="text-2xl md:text-3xl font-black text-white leading-tight">Partner firms</h2>
+              <p class="text-sm text-zinc-500 mt-1">Tap a code to copy. Confirm the rules on the firm's site before you buy.</p>
+            </div>
+            <div class="af-tabs" role="tablist" aria-label="Partner type">
+              <button type="button" class="af-tab" role="tab" data-af="futures" aria-selected="true">Futures<small id="af-n-futures"></small></button>
+              <button type="button" class="af-tab" role="tab" data-af="perps" aria-selected="false">Perps<small id="af-n-perps"></small></button>
+              <button type="button" class="af-tab" role="tab" data-af="tools" aria-selected="false">Tools<small id="af-n-tools"></small></button>
+            </div>
+          </div>
+          <div id="af-cards" class="af-grid" role="tabpanel"></div>
+        </div>
+      </section>
+
+      <section id="af-finder" class="py-12 md:py-16 px-6 md:px-12 scroll-mt-24">
         <div class="max-w-5xl mx-auto">
 
           <!-- ═══ FIND YOUR FIT ═══ -->
@@ -203,7 +272,7 @@
           </div>
 
           <!-- ═══ PROP FIRMS ═══ -->
-          <div class="flex items-end justify-between gap-4 flex-wrap mb-4">
+          <div id="af-table" class="flex items-end justify-between gap-4 flex-wrap mb-4 scroll-mt-24">
             <div>
               <h2 class="text-sm font-black text-white">Prop firms</h2>
               <p class="text-xs text-zinc-600 mt-0.5">Click any row for the full breakdown</p>
@@ -905,7 +974,90 @@
       setTimeout(function(){ row.classList.remove('ring-1','ring-green-500/40'); }, 2600);
     }
     window.addEventListener('hashchange', function(){ openFromHash(); });
-    document.addEventListener('DOMContentLoaded', function(){ renderPartners(); pfInit(); openFromHash(); });
+    /* ── PARTNER CARDS (built from FIRMS / TOOLS above — edit the data, not this) ── */
+    var AF_TAB = 'futures';
+    function afIsPerp(p) { return /perpetual/i.test(p.ty || ''); }
+    function afMono(n) {
+      var w = String(n).replace(/[®™]/g, '').split(/\s+/).filter(Boolean);
+      return (w.length > 1 ? w[0][0] + w[1][0] : w[0].slice(0, 2)).toUpperCase();
+    }
+    function afList(tab) {
+      if (tab === 'tools') return TOOLS;
+      return FIRMS.filter(function (p) { return tab === 'perps' ? afIsPerp(p) : !afIsPerp(p); });
+    }
+    function afCard(p) {
+      var disc = p.pct
+        ? '<div class="af-disc">' + p.pct + '%</div><div class="af-disc-sub">OFF</div>'
+        : p.pctLabel
+          ? '<div class="af-disc lbl">' + escA(p.pctLabel) + '</div><div class="af-disc-sub">' + (/varies/i.test(p.pctLabel) ? 'BY PLAN' : 'EXCLUSIVE') + '</div>'
+          : '<div class="af-disc lbl">Link</div><div class="af-disc-sub">NO CODE NEEDED</div>';
+      var specs = p.dd
+        ? '<div class="af-specs">'
+          + '<div><span>Drawdown</span><b>' + escA(p.dd) + '</b></div>'
+          + '<div><span>Eval fee</span><b>' + escA(p.fee || '—') + '</b></div>'
+          + '<div><span>Deadline</span><b>' + escA(p.clock || '—') + '</b></div></div>'
+        : '';
+      var fit = p.fit
+        ? '<p class="af-fit"><b>Best if:</b> ' + escA(p.fit) + '</p>'
+        : '<p class="af-fit">' + escA(p.why || '') + '</p>';
+      var code = p.code
+        ? '<button type="button" class="af-code" onclick="copyCode(\'' + p.code + '\', this)" title="Tap to copy">' + escA(p.code) + '</button>'
+        : '';
+      return '<article class="af-card">'
+        + '<div class="flex items-center gap-3">'
+        +   '<div class="af-mono" aria-hidden="true">' + escA(afMono(p.n)) + '</div>'
+        +   '<div class="flex-1 min-w-0"><div class="font-bold text-white leading-snug">' + escA(p.n)
+        +     (p.feat ? '<span class="af-badge">BIGGEST</span>' : '') + '</div>'
+        +     '<div class="text-xs text-zinc-500 mt-0.5">' + escA(p.ty) + '</div></div>'
+        +   '<div>' + disc + '</div>'
+        + '</div>'
+        + specs + fit
+        + '<div class="af-actions">' + code
+        +   '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold text-sm px-5 py-3 rounded-xl text-center whitespace-nowrap' + (code ? '' : ' flex-1') + '">'
+        +     (p.code ? 'Get discount' : 'Open ' + escA(p.n.replace('®', ''))) + ' &rarr;</a>'
+        + '</div>'
+        + '<button type="button" class="af-more" onclick="afOpen(\'' + slug(p.n) + '\')">Full breakdown, rules &amp; downsides &rarr;</button>'
+        + '</article>';
+    }
+    function renderCards() {
+      var box = document.getElementById('af-cards');
+      if (!box) return;
+      box.innerHTML = afList(AF_TAB).map(afCard).join('');
+      ['futures', 'perps', 'tools'].forEach(function (t) {
+        var el = document.getElementById('af-n-' + t);
+        if (el) el.textContent = afList(t).length;
+      });
+      var total = FIRMS.length + TOOLS.length;
+      ['af-count', 'af-count2'].forEach(function (id) { var el = document.getElementById(id); if (el) el.textContent = total; });
+    }
+    function afInit() {
+      document.querySelectorAll('.af-tab').forEach(function (t) {
+        t.addEventListener('click', function () {
+          AF_TAB = t.getAttribute('data-af');
+          document.querySelectorAll('.af-tab').forEach(function (o) { o.setAttribute('aria-selected', o === t ? 'true' : 'false'); });
+          renderCards();
+        });
+      });
+      renderCards();
+    }
+    function afJump(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      try { el.scrollIntoView({ block:'start', behavior:'smooth' }); } catch (e) { el.scrollIntoView(); }
+    }
+    function afFind() {
+      var t = document.querySelector('.pf-tab[data-tab="engine"]');
+      if (t && t.getAttribute('aria-expanded') !== 'true') t.click();
+      afJump('af-finder');
+    }
+    function afOpen(id) {
+      try { history.replaceState(null, '', '#' + id); } catch (e) {}
+      var row = document.getElementById(id);
+      if (row) { var d = row.nextElementSibling; if (d && d.classList.contains('detail')) d.classList.add('hidden'); }
+      openFromHash();
+    }
+
+    document.addEventListener('DOMContentLoaded', function(){ renderPartners(); pfInit(); afInit(); openFromHash(); });
 
     function copyCode(code, btn) {
       navigator.clipboard.writeText(code).then(() => {
