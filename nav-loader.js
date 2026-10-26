@@ -232,7 +232,8 @@ var FSDX_MENU = [
       ['suite.html', "What's in the Membership", 'Every tool in the full package', '', 'layers', 'orange'],
       ['platform.html', 'The Platform', 'Dashboard, journal, accounts and backtests', '', 'monitor', 'blue'],
       ['autotrader.html', 'ORB Auto-Trader', 'How the automation works', '', 'bolt', 'orange'],
-      ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green']
+      ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
+      ['tradingview-update.html', 'TradingView Nov 1 Change', 'What it means for your indicators', '', 'info', 'gray']
   ]},
   { id: 'results', label: 'Results', w: 680, eyebrow: 'The proof',
     note: 'Backtests are hypothetical. Past performance doesn’t guarantee future results.',
@@ -249,10 +250,9 @@ var FSDX_MENU = [
       ['setup.html', 'Getting Started', 'Set up in a few steps', '', 'rocket', 'orange'],
       ['schedule.html', 'Live Sessions', 'Trade room schedule', '', 'radio', 'red'],
       ['knowledge.html', 'Knowledge Base', 'Guides and explainers', '', 'book', 'blue'],
-      ['how-to.html', 'How-To', 'Step-by-step guides', 'mem', 'list', 'purple'],
-      ['course.html', 'Course', 'The Knightfall course', 'mem', 'cap', 'orange'],
-      ['faq.html', 'FAQ', 'Common questions', '', 'help', 'gray'],
-      ['contact.html', 'Contact & Help', 'Get in touch', '', 'mail', 'gray']
+      ['faq.html', 'FAQ', 'Common questions', '', 'help', 'purple'],
+      ['contact.html', 'Contact & Help', 'Get in touch', '', 'mail', 'gray'],
+      ['disclosures.html', 'Disclosures & Terms', 'Risk disclosure and terms of service', '', 'shield', 'gray']
   ]},
   { id: 'prop', label: 'Prop Firms', w: 680, eyebrow: 'Prop firms', tone: 'green',
     feature: { kind: 'code', kicker: 'One code, most firms', code: 'DJFSDX',
@@ -284,7 +284,10 @@ var FSDX_ICONS = {
   mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
   tag: '<path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><path d="M7.5 7.5h.01"/>',
   gift: '<rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v9H5v-9M12 8S10 3 7.5 4.5 9 8 12 8zm0 0s2-5 4.5-3.5S15 8 12 8z"/>',
-  users: '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/>'
+  users: '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+  shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="m9 12 2 2 4-4"/>',
+  home: '<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>'
 };
 var FSDX_DISCORD = 'https://discord.gg/RePdHESvSx';
 
@@ -312,6 +315,13 @@ var FSDX_DISCORD = 'https://discord.gg/RePdHESvSx';
     '.fxn-logo b{font-size:25px;font-weight:900;letter-spacing:.06em;background:linear-gradient(100deg,#FFA061,#FF6B1F 55%,#FF8A2B);-webkit-background-clip:text;background-clip:text;color:transparent}',
     '.fxn-logo small{font-size:9px;font-weight:700;letter-spacing:.32em;color:#7D8B9E;margin-top:4px}',
     '.fxn-m{position:relative}',
+    '.fxn-home{display:inline-flex;align-items:center;gap:7px;padding:9px 13px;border-radius:10px;color:#CBD3DE;font-size:14.5px;font-weight:700;text-decoration:none;white-space:nowrap}',
+    '.fxn-home svg{width:15px;height:15px}',
+    '.fxn-home:hover{color:#fff;background:rgba(255,255,255,.04)}',
+    '.fxn-home.here{color:#FF9A5C}',
+    '.fxn-mhome{display:flex;align-items:center;gap:9px;padding:13px 2px;border-top:1px solid rgba(255,255,255,.07);color:#E6EAF0;font-size:15px;font-weight:800;text-decoration:none}',
+    '.fxn-mhome.cur{color:#FFC0A0}',
+    '.fxn-mhome svg{width:15px;height:15px}',
     '.fxn-b{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border-radius:10px;border:1px solid transparent;background:none;color:#CBD3DE;font:700 14.5px Inter,ui-sans-serif,system-ui,sans-serif;cursor:pointer;transition:color .15s,background .15s,border-color .15s;white-space:nowrap}',
     '.fxn-b:hover{color:#fff;background:rgba(255,255,255,.04)}',
     '.fxn-m.here .fxn-b{color:#FF9A5C}',
@@ -503,7 +513,8 @@ function fsdxMountTopNav() {
   var bar = document.createElement('div');
   bar.id = 'fx-topnav';
   bar.innerHTML = '<div class="fxn-in">'
-    + (guest ? '<a href="index.html" class="fxn-logo" aria-label="FSD-X Trading home"><b>FSD-X</b><small>TRADING</small></a>' : '')
+    + (guest ? '<a href="index.html" class="fxn-logo" aria-label="FSD-X Trading home"><b>FSD-X</b><small>TRADING</small></a>'
+             : '<a href="index.html" class="fxn-home' + (here === 'index.html' ? ' here' : '') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">' + FSDX_ICONS.home + '</svg>Home</a>')
     + '<nav aria-label="Site" style="display:flex;align-items:center;gap:2px">' + menus + '</nav>'
     + '<span class="fxn-sp"></span>'
     + '<button type="button" class="fxn-search" aria-label="Search" title="Search (⌘K)" onclick="window.fsdxOpenSearch && fsdxOpenSearch()">'
@@ -592,7 +603,8 @@ function fsdxMountMobileMenu(mount) {
   }).join('');
   var box = document.createElement('div');
   box.id = 'fxn-mob';
-  box.innerHTML = html
+  box.innerHTML = '<a href="index.html" class="fxn-mhome' + (here === 'index.html' ? ' cur' : '') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">' + FSDX_ICONS.home + '</svg>Home</a>'
+    + html
     + (guest ? '<a href="memberships.html" class="fxn-mcta">Start Free Trial</a>' : '')
     + '<a href="' + FSDX_DISCORD + '" target="_blank" rel="noopener noreferrer" class="fxn-mdc">Join Discord</a>';
   var nav = mount.querySelector('nav');
