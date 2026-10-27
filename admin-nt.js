@@ -123,6 +123,35 @@
     + '.ntx-toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:#18181b;border:1px solid rgba(255,255,255,.15);color:#fff;font-size:12px;'
     +   'padding:10px 14px;border-radius:10px;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none}'
     + '.ntx-toast.show{opacity:1;transform:none} .ntx-toast.bad{border-color:rgba(226,83,75,.5);color:#E2534B}'
+    + '.ntx .ntx-reg{border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden}'
+    + '.ntx .ntx-reg-h,.ntx .ntx-reg-line{display:grid;grid-template-columns:2.1fr 2fr 1fr 1.7fr 1.6fr 1.2fr 28px;gap:12px;align-items:center}'
+    + '.ntx .ntx-reg-h{padding:10px 16px;background:rgba(255,255,255,.03);font-size:10px;color:#71717a;text-transform:uppercase;letter-spacing:.12em;font-weight:900}'
+    + '.ntx .ntx-reg-row{border-top:1px solid rgba(255,255,255,.06)}'
+    + '.ntx .ntx-reg-row.need{background:rgba(245,165,36,.035)} .ntx .ntx-reg-row.rm{background:rgba(226,83,75,.05)} .ntx .ntx-reg-row.ending{background:rgba(245,165,36,.02)}'
+    + '.ntx .ntx-reg-row.open{background:rgba(255,255,255,.025)}'
+    + '.ntx .ntx-reg-line{width:100%;padding:12px 16px;min-height:58px;background:none;border:0;color:inherit;text-align:left;cursor:pointer;font:inherit}'
+    + '.ntx .ntx-reg-line:hover{background:rgba(255,255,255,.02)}'
+    + '.ntx .ntx-reg-line span{min-width:0}'
+    + '.ntx .c-mem b{display:block;color:#fff;font-size:13.5px} .ntx .c-mem small,.ntx .c-ms small{display:block;color:#71717a;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+    + '.ntx .c-nt{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#d4d4d8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+    + '.ntx .c-plan{font-size:12.5px;color:#d4d4d8}'
+    + '.ntx .c-lic{display:flex;flex-direction:column;gap:5px} .ntx .c-lic .dots{display:flex;flex-wrap:wrap;gap:3px}'
+    + '.ntx .lt,.ntx .mt{font-size:12.5px;font-weight:800} .ntx .l-ok{color:#2FBF7E} .ntx .l-warn{color:#F5A524} .ntx .l-bad{color:#E2534B} .ntx .l-dim{color:#71717a}'
+    + '.ntx .c-st{display:flex;flex-wrap:wrap;gap:4px} .ntx .c-chev{color:#71717a;transition:transform .15s;display:flex;justify-content:center} .ntx .open .c-chev{transform:rotate(180deg)}'
+    + '.ntx .ntx-dot{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 4px;box-sizing:border-box;border-radius:5px;font:800 9.5px ui-monospace,SFMono-Regular,Menlo,monospace;border:1px solid #27272a;color:#52525b}'
+    + '.ntx .ntx-dot.wide{height:auto;padding:3px 7px;letter-spacing:.06em;text-transform:uppercase}'
+    + '.ntx .s-held{color:#FFB489;border-color:rgba(255,107,31,.5);background:rgba(255,107,31,.14)}'
+    + '.ntx .s-add{color:#F5A524;border-color:rgba(245,165,36,.55);background:rgba(245,165,36,.12)}'
+    + '.ntx .s-rm{color:#FCA5A5;border-color:rgba(226,83,75,.55);background:rgba(226,83,75,.12)}'
+    + '.ntx .ntx-reg-body{display:flex;flex-wrap:wrap;gap:16px;padding:4px 16px 18px}'
+    + '.ntx .ntx-reg-l{flex:3 1 520px;min-width:0} .ntx .ntx-reg-r{flex:1 1 280px;min-width:0}'
+    + '.ntx .ntx-pcs{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}'
+    + '.ntx .ntx-pc{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.025);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:#fff}'
+    + '.ntx .ntx-pc small{color:#a1a1aa;font-size:11.5px} .ntx .ntx-pc.s-add{background:rgba(245,165,36,.05)} .ntx .ntx-pc.s-rm{background:rgba(226,83,75,.06)}'
+    + '.ntx .ntx-pc.s-held,.ntx .ntx-pc.s-add,.ntx .ntx-pc.s-rm{color:#fff}'
+    + '.ntx .ntx-facts{border-radius:10px;background:rgba(255,255,255,.03);padding:8px 12px;font-size:12.5px}'
+    + '.ntx .ntx-sub{flex:1 1 100%;border-top:1px solid rgba(255,255,255,.06);padding-top:14px}'
+    + '@media(max-width:900px){.ntx .ntx-reg-h{display:none}.ntx .ntx-reg-line{grid-template-columns:1fr 1fr;row-gap:8px}.ntx .c-chev{position:absolute;right:16px}.ntx .ntx-reg-line{position:relative;padding-right:40px}}'
     + '.ntx .ntx-grid{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}'
     + '@media(min-width:1024px){.ntx .ntx-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}'
     + '.ntx .ntx-2col{display:grid;gap:16px;grid-template-columns:1fr} @media(min-width:1024px){.ntx .ntx-2col{grid-template-columns:1fr 1fr}}';
@@ -320,16 +349,23 @@
   /* ── Removal banner ─────────────────────────────────────────────────── */
   function renderAlert() {
     var list = D.records.filter(function (r) { return isTask(r) && isRemoval(r); });
+    var soon = D.records.filter(function (r) { return r.status !== 'removed' && r.status !== 'declined' && (r.held || []).length && membership(r).ending; });
     var el = $('ntx-alert');
-    if (!list.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+    var soonHtml = soon.length ? '<div class="ntx-alert" style="border-color:rgba(245,165,36,.45);background:rgba(245,165,36,.06);margin-top:' + (list.length ? '10px' : '0') + '"><div style="min-width:0">'
+      + '<div class="text-[13px] font-black" style="color:#F5A524">' + soon.length + ' licensed member' + (soon.length === 1 ? '' : 's') + ' ending soon</div>'
+      + '<div class="text-[12px] text-zinc-300 mt-1">' + soon.slice(0, 6).map(function (r) { var m = membership(r); return '<b class="text-white">' + esc(r.name || r.email) + '</b>: ' + esc(m.text); }).join(' · ')
+      + '. When it ends you get a removal task here. Nothing to do yet.</div></div>'
+      + '<button class="ntx-btn" data-filter="ending" onclick="document.getElementById(\'ntx-members\').scrollIntoView({behavior:\'smooth\'})">Show them</button></div>' : '';
+    if (!list.length && !soon.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
     el.style.display = '';
+    if (!list.length) { el.innerHTML = soonHtml; return; }
     el.innerHTML = '<div class="ntx-alert"><div style="min-width:0">'
       + '<div class="text-[14px] font-black" style="color:#FCA5A5">' + list.length + ' NinjaTrader removal' + (list.length === 1 ? '' : 's') + ' waiting</div>'
       + '<div class="text-[12px] text-zinc-300 mt-1">' + list.slice(0, 6).map(function (r) {
           var t = todo(r);
           return '<b class="text-white">' + esc(r.name || r.email) + '</b> (' + esc(planLabel(r)) + '): ' + esc(t.remove.concat(t.removeOld).map(pname).join(', '));
         }).join(' · ') + (list.length > 6 ? ' · and ' + (list.length - 6) + ' more' : '') + '</div></div>'
-      + '<button class="ntx-btn badfill" onclick="document.getElementById(\'ntx-queue-card\').scrollIntoView({behavior:\'smooth\'})">Review removals</button></div>';
+      + '<button class="ntx-btn badfill" onclick="document.getElementById(\'ntx-queue-card\').scrollIntoView({behavior:\'smooth\'})">Review removals</button></div>' + soonHtml;
   }
 
   /* ── Stats ──────────────────────────────────────────────────────────── */
@@ -349,79 +385,173 @@
       + card(dl, 'Downloads (all products)');
   }
 
-  /* ── Register ───────────────────────────────────────────────────────── */
+  /* ── Register (one line per member, click to expand) ────────────────── */
+  var EXP = {};          // email → true when the row is expanded
+
+  // Whop membership from the roster the admin already syncs (same data as People).
+  var MS_RANK = { past_due: 0, active: 1, yearly: 1, trialing: 2, canceling: 3, trial_cancelled: 3, lifetime: 4, legacy: 4, inactive: 7, cancelled: 8 };
+  function roster() { try { return (typeof rosterData !== 'undefined' && Array.isArray(rosterData)) ? rosterData : []; } catch (e) { return []; } }
+  function whopFor(email) {
+    var e = String(email || '').toLowerCase(), best = null;
+    roster().forEach(function (m) {
+      if (String(m.email || '').toLowerCase() !== e) return;
+      if (!best || (MS_RANK[m.status] == null ? 6 : MS_RANK[m.status]) < (MS_RANK[best.status] == null ? 6 : MS_RANK[best.status])) best = m;
+    });
+    return best;
+  }
+  function daysTo(d) {
+    if (!d) return null;
+    var t = new Date(String(d).length <= 10 ? d + 'T12:00:00' : d).getTime();
+    if (isNaN(t)) return null;
+    return Math.ceil((t - Date.now()) / 864e5);
+  }
+  function shortDate(d) {
+    if (!d) return '';
+    try { return new Date(String(d).length <= 10 ? d + 'T12:00:00' : d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Chicago' }); } catch (e) { return d; }
+  }
+  /** { text, sub, tone: 'ok'|'warn'|'bad'|'dim', ending: bool, facts: [[k,v]] } */
+  function membership(r) {
+    var m = whopFor(r.email);
+    if (isOwnerRec(r)) return { text: 'Owner', sub: 'Vendor account', tone: 'dim', ending: false, facts: [['Access', 'Owner · always on']] };
+    if (!m) return { text: '—', sub: r.source === 'manual' ? 'Added by hand' : 'Not in the Whop roster', tone: 'dim', ending: false, facts: [['Whop', 'No roster record for ' + r.email]] };
+    var st = m.status || 'inactive', plan = m.accessType || m.planName || '';
+    var facts = [['Plan', plan || '—'], ['Whop status', st.replace(/_/g, ' ')]];
+    if (m.joined) facts.push(['Member since', shortDate(m.joined)]);
+    var out;
+    if (st === 'cancelled' || st === 'inactive') {
+      var left = m.leftDate || m.churnedDate;
+      out = { text: left ? 'Ended ' + shortDate(left) : 'Ended', sub: m.cancelReason || 'Cancelled', tone: 'bad', ending: false };
+      if (left) facts.push(['Ended', shortDate(left)]);
+    } else if (st === 'lifetime' || st === 'legacy') {
+      out = { text: 'Lifetime', sub: 'No renewal', tone: 'ok', ending: false };
+    } else if (st === 'canceling' || st === 'trial_cancelled' || m.cancelAtPeriodEnd) {
+      var end = m.cancelingDate || m.renewal, n = daysTo(end);
+      out = { text: n == null ? 'Ending' : n <= 0 ? 'Ends today' : 'Ends in ' + n + ' day' + (n === 1 ? '' : 's'),
+              sub: (end ? shortDate(end) + ' · ' : '') + 'cancelled, still active', tone: n != null && n <= 2 ? 'bad' : 'warn', ending: n == null || n <= 7 };
+      if (end) facts.push(['Access ends', shortDate(end)]);
+    } else if (st === 'trialing') {
+      var n2 = daysTo(m.renewal);
+      out = { text: m.renewal ? 'Trial ends ' + shortDate(m.renewal) : 'Trial', sub: n2 != null ? (n2 <= 0 ? 'converts today' : 'converts in ' + n2 + ' day' + (n2 === 1 ? '' : 's')) : '', tone: n2 != null && n2 <= 7 ? 'warn' : 'ok', ending: n2 != null && n2 <= 7 };
+      if (m.renewal) facts.push(['Trial converts', shortDate(m.renewal)]);
+    } else if (st === 'past_due') {
+      out = { text: 'Past due', sub: 'Whop is retrying the charge', tone: 'bad', ending: true };
+    } else {
+      out = { text: m.renewal ? 'Renews ' + shortDate(m.renewal) : 'Active', sub: plan, tone: 'ok', ending: false };
+      if (m.renewal) facts.push(['Renews', shortDate(m.renewal)]);
+    }
+    out.facts = facts;
+    return out;
+  }
+
+  function needsYou(r) { return isTask(r) || isWaiting(r); }
+  function prodState(r, p) {
+    var t = todo(r), held = (r.held || []).indexOf(p.id) !== -1;
+    if (t.remove.indexOf(p.id) !== -1 || t.removeOld.indexOf(p.id) !== -1) return 'rm';
+    if (t.add.indexOf(p.id) !== -1) return 'add';
+    if (held) return 'held';
+    if ((r.entitled || []).indexOf(p.id) !== -1 && !p.live) return 'soon';
+    return 'none';
+  }
+  var PS_WORD = { held: 'Held', add: 'To add', rm: 'To remove', soon: 'Not released', none: 'Not in plan' };
+  // Short code for the product squares: first letter of the real name + its version digit (Knightfall MK2 → K2, FSD-X // Volume → V, Stack V1 → S1).
+  function initials(name) {
+    var n = String(name || '?').replace(/^\s*FSD-X\s*\/\/\s*/i, '').replace(/^\s*ORB\s+/i, '').trim();
+    var d = (n.match(/\d/) || [''])[0];
+    return (n.charAt(0) + d).toUpperCase();
+  }
+
   function renderFilters() {
-    var opts = [['all', 'All'], ['active', 'Active'], ['pending', 'To do'], ['remove', 'To remove'], ['waiting', 'Waiting'], ['removed', 'Removed'], ['declined', 'Not using']];
+    var recs = D.records;
+    var count = function (fn) { return recs.filter(fn).length; };
+    var opts = [
+      ['all', 'All', function () { return true; }],
+      ['need', 'Needs attention', needsYou],
+      ['ending', 'Ending soon', function (r) { return membership(r).ending; }],
+      ['active', 'Active', function (r) { return r.status === 'active'; }],
+      ['waiting', 'Waiting', isWaiting],
+      ['removed', 'Removed', function (r) { return r.status === 'removed'; }],
+      ['declined', 'Not using', function (r) { return r.status === 'declined'; }]
+    ];
+    renderFilters.opts = opts;
     $('ntx-filters').innerHTML = opts.map(function (o) {
-      return '<button class="ntx-chip' + (FILTER === o[0] ? ' on' : '') + '" data-filter="' + o[0] + '">' + o[1] + '</button>';
-    }).join('') + '<input id="ntx-q" class="ntx-in" placeholder="Search" style="width:150px" value="' + esc(QUERY) + '">';
+      return '<button class="ntx-chip' + (FILTER === o[0] ? ' on' : '') + '" data-filter="' + o[0] + '">' + o[1] + ' <span style="opacity:.6">' + count(o[2]) + '</span></button>';
+    }).join('') + '<input id="ntx-q" class="ntx-in" placeholder="Search" style="width:170px" value="' + esc(QUERY) + '">';
     var q = $('ntx-q');
     q.addEventListener('input', function () { QUERY = q.value.toLowerCase(); renderRegister(); });
   }
 
-  function cell(r, p) {
-    var t = todo(r), held = (r.held || []).indexOf(p.id) !== -1;
-    if (t.remove.indexOf(p.id) !== -1) return '<span class="ntx-tag t-removed">Remove</span>';
-    if (t.removeOld.indexOf(p.id) !== -1) return '<span class="ntx-tag t-move">Old email</span>' + (t.add.indexOf(p.id) !== -1 ? ' <span class="ntx-tag t-add">Add</span>' : '');
-    if (held) {
-      var v = (r.lastVersions || {})[p.id] || (p.id === 'knightfall' ? r.lastVersion : null);
-      var old = v && p.current && v !== p.current;
-      return '<span class="ntx-tag t-active">Has</span>' + (v ? ' <span class="text-[10px] ' + (old ? 'text-amber-400' : 'text-zinc-500') + '">v' + esc(v) + (old ? ' old' : '') + '</span>' : '');
-    }
-    if (t.add.indexOf(p.id) !== -1) return '<span class="ntx-tag t-add">To add</span>';
-    if ((r.entitled || []).indexOf(p.id) !== -1 && !p.live) return '<span class="ntx-tag t-dim">Not released</span>';
-    return '<span class="text-zinc-700">—</span>';
-  }
-
   function renderRegister() {
     var P = prods();
+    var opt = (renderFilters.opts || []).filter(function (o) { return o[0] === FILTER; })[0];
+    var fn = opt ? opt[2] : function () { return true; };
     var rows = D.records.filter(function (r) {
-      var f = FILTER;
-      if (f === 'pending' ? !isTask(r) : f === 'waiting' ? !isWaiting(r) : f === 'remove' ? !(isTask(r) && isRemoval(r)) : (f !== 'all' && r.status !== f)) return false;
+      if (!fn(r)) return false;
       if (QUERY && (r.email + ' ' + (r.ntEmail || '') + ' ' + (r.name || '')).toLowerCase().indexOf(QUERY) === -1) return false;
       return true;
     }).sort(function (a, b) {
-      var o = function (r) { return isTask(r) && isRemoval(r) ? 0 : ({ pending: 1, active: 2, removed: 3, declined: 4 }[r.status] || 1); };
-      return (o(a) - o(b)) || (a.name || a.email).localeCompare(b.name || b.email);
+      var w = function (r) { return isTask(r) && isRemoval(r) ? 0 : isTask(r) ? 1 : membership(r).ending ? 2 : isWaiting(r) ? 3 : ({ active: 4, removed: 6, declined: 7 }[r.status] || 5); };
+      return (w(a) - w(b)) || (a.name || a.email).localeCompare(b.name || b.email);
     });
     if (!rows.length) { $('ntx-register').innerHTML = '<div class="py-3 text-zinc-500">No members here.</div>'; return; }
-    var cols = P.length + 6;
-    $('ntx-register').innerHTML = '<table class="ntx-t"><tr><th>Member</th><th>NinjaTrader email</th><th>Plan</th>'
-      + P.map(function (p) { return '<th>' + esc(p.name) + '</th>'; }).join('')
-      + '<th>Status</th><th>Last download</th><th></th></tr>'
-      + rows.map(function (r) {
-        var rmRow = isTask(r) && isRemoval(r);
-        var tag = (r.status === 'remove' ? '<span class="ntx-tag t-removed">To remove</span>'
-            : isWaiting(r) ? '<span class="ntx-tag t-pending">Waiting</span>'
-            : r.status === 'declined' ? '<span class="ntx-tag t-dim">Not using</span>'
-            : r.status === 'pending' ? (isRemoval(r) ? '<span class="ntx-tag t-removed">To remove</span>' : '<span class="ntx-tag t-pending">To do</span>')
-            : '<span class="ntx-tag t-' + esc(r.status) + '">' + esc(r.status) + '</span>')
-          + (r.early ? ' <span class="ntx-tag t-early">Early</span>' : '')
-          + (isOwnerRec(r) ? ' <span class="ntx-tag t-early">Owner</span>' : '');
-        var acts = '';
-        var holds = (r.held || []).length > 0 || todo(r).removeOld.length > 0;
-        if (holds && !isOwnerRec(r)) acts += '<button class="ntx-btn ' + (rmRow ? 'badfill' : 'bad') + '" data-act="openremove" data-e="' + esc(r.email) + '">Remove all licenses</button>';
-        if (r.status === 'removed' || r.status === 'declined') acts += '<button class="ntx-btn" data-act="pending" data-e="' + esc(r.email) + '">Re-add</button>';
-        if (isWaiting(r)) acts += '<button class="ntx-btn" data-act="decline" data-e="' + esc(r.email) + '">Not using NT</button>';
-        acts += '<button class="ntx-btn" data-act="openedit" data-e="' + esc(r.email) + '">Edit</button>';
-        acts += '<button class="ntx-btn" data-act="early" data-e="' + esc(r.email) + '">' + (r.early ? 'Early off' : 'Early on') + '</button>';
-        if (!isOwnerRec(r)) acts += '<button class="ntx-btn bad" data-act="delete" data-e="' + esc(r.email) + '" title="Delete record">&times;</button>';
-        var last = r.downloads && r.downloads[0] ? fmt(r.downloads[0].at) + ' <span class="text-zinc-600">' + esc(pname(r.downloads[0].p || 'knightfall')) + '</span>' : '<span class="text-zinc-600">—</span>';
-        var main = '<tr class="' + (rmRow ? 'rmrow' : '') + '">'
-          + '<td><div class="text-white font-bold">' + esc(r.name || '—') + '</div><div class="text-[11px] text-zinc-500">' + esc(r.email) + '</div>'
-          +   (r.note ? '<div class="text-[10.5px] text-zinc-600">' + esc(r.note) + '</div>' : '') + '</td>'
-          + '<td>' + (r.ntEmail ? mail(r.ntEmail) : '<span class="text-red-400">missing</span>') + '</td>'
-          + '<td class="text-zinc-300">' + esc(planLabel(r)) + '</td>'
-          + P.map(function (p) { return '<td>' + cell(r, p) + '</td>'; }).join('')
-          + '<td>' + tag + '</td>'
-          + '<td>' + last + '</td>'
-          + '<td><div class="flex gap-1 justify-end flex-wrap">' + acts + '</div></td>'
-          + '</tr>';
-        var x = OPEN[r.email];
-        if (x === 'remove') main += '<tr class="xrow"><td colspan="' + cols + '">' + removeBox(r) + '</td></tr>';
-        if (x === 'edit') main += '<tr class="xrow"><td colspan="' + cols + '">' + editBox(r) + '</td></tr>';
-        return main;
-      }).join('') + '</table>';
+    $('ntx-register').innerHTML = '<div class="ntx-reg">'
+      + '<div class="ntx-reg-h"><span>Member</span><span>NinjaTrader email</span><span>Plan</span><span>Licenses</span><span>Membership</span><span>Status</span><span></span></div>'
+      + rows.map(function (r) { return regRow(r, P); }).join('') + '</div>';
+  }
+
+  function regRow(r, P) {
+    var open = !!EXP[r.email];
+    var states = P.map(function (p) { return prodState(r, p); });
+    var nAdd = states.filter(function (s) { return s === 'add'; }).length, nRm = states.filter(function (s) { return s === 'rm'; }).length, nHeld = states.filter(function (s) { return s === 'held'; }).length;
+    var licText = nRm ? nRm + ' to remove' : nAdd ? nAdd + ' to add' : isWaiting(r) ? 'Waiting on NT email' : nHeld ? 'All ' + nHeld + ' held' : 'None held';
+    var licCls = nRm ? 'bad' : (nAdd || isWaiting(r)) ? 'warn' : nHeld ? 'ok' : 'dim';
+    var dots = P.map(function (p, i) { return '<span class="ntx-dot s-' + states[i] + '" title="' + esc(p.name + ': ' + PS_WORD[states[i]]) + '">' + esc(initials(p.name)) + '</span>'; }).join('');
+    var ms = membership(r);
+    var tag = r.status === 'remove' ? '<span class="ntx-tag t-removed">To remove</span>'
+      : isWaiting(r) ? '<span class="ntx-tag t-pending">Waiting</span>'
+      : r.status === 'declined' ? '<span class="ntx-tag t-dim">Not using</span>'
+      : r.status === 'pending' ? (isRemoval(r) ? '<span class="ntx-tag t-removed">To remove</span>' : '<span class="ntx-tag t-pending">To do</span>')
+      : '<span class="ntx-tag t-' + esc(r.status) + '">' + esc(r.status) + '</span>';
+    var extra = (r.early && !isOwnerRec(r) ? ' <span class="ntx-tag t-early">Early</span>' : '') + (isOwnerRec(r) ? ' <span class="ntx-tag t-early">Owner</span>' : '');
+    var cls = 'ntx-reg-row' + (isTask(r) && isRemoval(r) ? ' rm' : needsYou(r) ? ' need' : ms.ending ? ' ending' : '') + (open ? ' open' : '');
+    var head = '<button type="button" class="ntx-reg-line" data-act="expand" data-e="' + esc(r.email) + '" aria-expanded="' + (open ? 'true' : 'false') + '">'
+      + '<span class="c-mem"><b>' + esc(r.name || r.email) + '</b><small>' + esc(r.email) + '</small></span>'
+      + '<span class="c-nt">' + (r.ntEmail ? esc(r.ntEmail) : '<span class="text-red-400">missing</span>') + '</span>'
+      + '<span class="c-plan">' + esc(planLabel(r)) + '</span>'
+      + '<span class="c-lic"><span class="lt l-' + licCls + '">' + esc(licText) + '</span><span class="dots">' + dots + '</span></span>'
+      + '<span class="c-ms"><span class="mt l-' + ms.tone + '">' + esc(ms.text) + '</span><small>' + esc(ms.sub || '') + '</small></span>'
+      + '<span class="c-st">' + tag + extra + '</span>'
+      + '<span class="c-chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>'
+      + '</button>';
+    if (!open) return '<div class="' + cls + '">' + head + '</div>';
+
+    var cards = P.map(function (p, i) {
+      var s = states[i];
+      var v = (r.lastVersions || {})[p.id] || (p.id === 'knightfall' ? r.lastVersion : null);
+      var sub = s === 'held' ? (v ? 'Downloaded v' + v + (p.current && v !== p.current ? ' · current is v' + p.current : '') : (p.current ? 'Not downloaded yet' : 'No release yet'))
+        : s === 'add' ? 'Add ' + (r.ntEmail || 'their email') + ' in the Vendor dashboard'
+        : s === 'rm' ? 'Remove it in the Vendor dashboard'
+        : s === 'soon' ? 'Gets an Add task when it goes live'
+        : 'Their plan doesn\'t include it';
+      return '<div class="ntx-pc s-' + s + '"><div class="flex items-center justify-between gap-2"><b>' + esc(p.name) + '</b><span class="ntx-dot wide s-' + s + '">' + PS_WORD[s] + '</span></div><small>' + esc(sub) + '</small></div>';
+    }).join('');
+    var task = isTask(r) && hasTodo(r) ? '<div class="mt-3">' + taskHtml(r) + '</div>' : '';
+    var waiting = isWaiting(r) ? '<div class="text-[12px] text-zinc-400 mt-3">No NinjaTrader email yet. <button class="ntx-btn" data-act="setmail" data-e="' + esc(r.email) + '">Set NT email</button> <button class="ntx-btn" data-act="decline" data-e="' + esc(r.email) + '">Not using NT</button></div>' : '';
+    var facts = (ms.facts || []).map(function (f) { return '<div class="flex justify-between gap-3 py-1"><span class="text-zinc-500">' + esc(f[0]) + '</span><span class="text-zinc-100 font-bold text-right">' + esc(f[1]) + '</span></div>'; }).join('');
+    var lastDl = r.downloads && r.downloads[0] ? '<div class="flex justify-between gap-3 py-1"><span class="text-zinc-500">Last download</span><span class="text-zinc-100 font-bold text-right">' + fmt(r.downloads[0].at) + ' · ' + esc(pname(r.downloads[0].p || 'knightfall')) + '</span></div>' : '';
+    var holds = (r.held || []).length > 0 || todo(r).removeOld.length > 0;
+    var acts = '<button class="ntx-btn" data-act="openedit" data-e="' + esc(r.email) + '">Edit</button>'
+      + (isOwnerRec(r) ? '' : '<button class="ntx-btn" data-act="early" data-e="' + esc(r.email) + '">' + (r.early ? 'Early off' : 'Early on') + '</button>')
+      + (r.status === 'removed' || r.status === 'declined' ? '<button class="ntx-btn" data-act="pending" data-e="' + esc(r.email) + '">Re-add</button>' : '')
+      + (holds && !isOwnerRec(r) ? '<button class="ntx-btn bad" data-act="openremove" data-e="' + esc(r.email) + '">Remove all licenses</button>' : '')
+      + (isOwnerRec(r) ? '' : '<button class="ntx-btn bad" data-act="delete" data-e="' + esc(r.email) + '" title="Delete record">&times;</button>');
+    var sub = OPEN[r.email] === 'remove' ? '<div class="ntx-sub">' + removeBox(r) + '</div>' : OPEN[r.email] === 'edit' ? '<div class="ntx-sub">' + editBox(r) + '</div>' : '';
+    var body = '<div class="ntx-reg-body">'
+      + '<div class="ntx-reg-l"><div class="ntx-h mb-2">Licenses on NinjaTrader</div><div class="ntx-pcs">' + cards + '</div>' + task + waiting + '</div>'
+      + '<div class="ntx-reg-r"><div class="ntx-h mb-2">Membership</div><div class="ntx-facts">' + facts + lastDl
+      + (r.note ? '<div class="flex justify-between gap-3 py-1"><span class="text-zinc-500">Note</span><span class="text-zinc-100 text-right">' + esc(r.note) + '</span></div>' : '') + '</div>'
+      + '<div class="flex flex-wrap gap-2 mt-3">' + acts + '</div></div>'
+      + sub + '</div>';
+    return '<div class="' + cls + '">' + head + body + '</div>';
   }
 
   // Remove all licenses: every product this member holds, ticked one by one.
@@ -689,7 +819,8 @@
 
     var em = el.getAttribute('data-e'), act = el.getAttribute('data-act'), r = find(em);
     if (!r) return;
-    if (act === 'openremove' || act === 'openedit') { OPEN[em] = act === 'openremove' ? 'remove' : 'edit'; renderRegister(); return; }
+    if (act === 'expand') { if (EXP[em]) { delete EXP[em]; delete OPEN[em]; } else EXP[em] = true; renderRegister(); return; }
+    if (act === 'openremove' || act === 'openedit') { EXP[em] = true; OPEN[em] = act === 'openremove' ? 'remove' : 'edit'; renderRegister(); return; }
     if (act === 'close') { delete OPEN[em]; renderRegister(); return; }
 
     el.disabled = true;
