@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X — NinjaTrader 8 Hub</title>
+  <title>FSD-X — NinjaTrader Hub</title>
   <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
@@ -84,6 +84,19 @@
     .nt-stages .n { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; color:#FF6B1F; }
     .nt-stages b { font-size:15px; font-weight:900; color:#fff; }
     .nt-stages a > span:last-child { font-size:12.5px; color:#a1a1aa; line-height:1.55; }
+    /* Tool cards */
+    .nt-tools { display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .nt-tool { border:1px solid rgba(255,255,255,.10); background:rgba(9,9,11,1); border-radius:16px; padding:18px; display:flex; flex-direction:column; gap:10px; }
+    .nt-tool.core { border-color:rgba(255,107,31,.35); padding:22px; }
+    .nt-tool.soon { border-style:dashed; background:rgba(9,9,11,.6); }
+    .nt-tool.locked { background:rgba(9,9,11,.5); }
+    .nt-tool .t-name { font-size:17px; font-weight:900; color:#fff; }
+    .nt-tool.core .t-name { font-size:21px; }
+    .nt-tool .t-blurb { font-size:13px; color:#a1a1aa; line-height:1.55; }
+    .nt-tool .t-meta { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:11.5px; color:#71717a; }
+    .nt-tool .t-note { font-size:12.5px; color:#d4d4d8; background:rgba(255,255,255,.04); border-radius:10px; padding:10px 12px; line-height:1.5; }
+    .nt-tool .t-acts { display:flex; gap:8px; flex-wrap:wrap; margin-top:auto; padding-top:4px; }
+    .nt-tool .nt-btn { padding:10px 16px; }
   </style>
 </head>
 
@@ -109,36 +122,41 @@
 
     <div id="nt-content" class="hidden flex-1 flex flex-col">
 
-      <!-- ══════════════ HERO + STATUS ══════════════ -->
+      <!-- ══════════════ HERO + LICENSE + TOOLS ══════════════ -->
       <section class="pt-12 pb-10 md:pt-16 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// NinjaTrader 8</div>
-          <h1 class="text-3xl md:text-5xl font-black tracking-tight">ORB Pro (Knightfall) for NinjaTrader</h1>
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// NinjaTrader Hub</div>
+          <h1 class="text-3xl md:text-5xl font-black tracking-tight">Your NinjaTrader 8 tools</h1>
           <p class="mt-4 text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
-            Your license, your download and everything you need to install it. Licenses are tied to the
-            email you log into NinjaTrader with.
+            Every NinjaTrader 8 tool your plan includes, in one place. Licenses are tied to the email you log into NinjaTrader with.
+          </p>
+          <p class="mt-2 text-zinc-500 text-[12.5px] max-w-2xl leading-relaxed">
+            On TradingView? Your scripts are added to your TradingView account automatically when you join. Nothing to download here.
           </p>
 
           <div id="nt-banner-slot" class="mt-6"></div>
 
-          <div class="grid md:grid-cols-2 gap-4 mt-6">
-            <!-- License card -->
-            <div class="nt-card" id="nt-license-card">
-              <div class="flex items-center justify-between gap-3 mb-3">
-                <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Your license</div>
-                <span id="nt-pill" class="nt-pill none"><span class="dot"></span><span id="nt-pill-text">—</span></span>
-              </div>
-              <div id="nt-license-body"></div>
+          <!-- License card -->
+          <div class="nt-card mt-6" id="nt-license-card">
+            <div class="flex items-center justify-between gap-3 mb-3">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Your NinjaTrader license email</div>
+              <span id="nt-pill" class="nt-pill none"><span class="dot"></span><span id="nt-pill-text">—</span></span>
             </div>
+            <div id="nt-license-body"></div>
+          </div>
 
-            <!-- Download card -->
-            <div class="nt-card" id="nt-download-card">
-              <div class="flex items-center justify-between gap-3 mb-3">
-                <div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Download</div>
-                <span id="nt-ver-tag" class="text-[11px] text-zinc-500"></span>
-              </div>
-              <div id="nt-download-body"></div>
+          <!-- Tools -->
+          <div class="mt-8">
+            <div class="flex items-baseline justify-between gap-3 flex-wrap mb-3">
+              <h2 class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Core</h2>
             </div>
+            <div id="nt-core"></div>
+            <div class="flex items-baseline justify-between gap-3 flex-wrap mt-6 mb-3">
+              <h2 class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Included indicators</h2>
+              <span id="nt-addon-hint" class="text-[11.5px] text-zinc-500"></span>
+            </div>
+            <div id="nt-addons" class="nt-tools"></div>
+            <p class="text-[11.5px] text-zinc-500 mt-4">Each tool is its own .zip. Don't unzip it. Control Center &rarr; Tools &rarr; Import &rarr; NinjaScript Add-On, then restart NinjaTrader.</p>
           </div>
         </div>
       </section>
@@ -146,9 +164,10 @@
       <!-- ══════════════ TABS ══════════════ -->
       <nav class="nt-tabs" aria-label="NinjaTrader hub sections">
         <div class="max-w-5xl mx-auto nt-tabrow" role="tablist">
-          <button type="button" role="tab" data-tab="setup">Setup guide</button>
-          <button type="button" role="tab" data-tab="settings">Recommended settings</button>
-          <button type="button" role="tab" data-tab="dashboard">Dashboard</button>
+          <button type="button" role="tab" data-tab="setup">Knightfall setup</button>
+          <button type="button" role="tab" data-tab="settings">Knightfall settings</button>
+          <button type="button" role="tab" data-tab="dashboard">Knightfall dashboard</button>
+          <button type="button" role="tab" data-tab="volume">Volume</button>
           <button type="button" role="tab" data-tab="help">Troubleshooting</button>
           <button type="button" role="tab" data-tab="updates">Updates</button>
         </div>
@@ -417,6 +436,62 @@
         </div>
       </section>
 
+      <section id="volume" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="volume">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-lg md:text-xl font-black text-white">FSD-X // Volume</h2>
+          <p class="text-xs text-zinc-500 mt-1">Install it, add it to the chart, read the colors.</p>
+          <div class="space-y-5 mt-6">
+              <div class="nt-card" id="vol-install">
+                <h3 class="text-base font-black text-white mb-3">1. Install and add it</h3>
+                <ol class="nt-steps">
+                  <li>Download the Volume <span class="nt-code">.zip</span> from your tools above. <b>Don't unzip it.</b></li>
+                  <li>Control Center &rarr; <b>Tools &rarr; Import &rarr; NinjaScript Add-On</b>. Pick the zip, confirm, then <b>restart NinjaTrader</b>.</li>
+                  <li>On your MNQ or NQ chart, right-click &rarr; <b>Indicators…</b> (<span class="nt-code">Ctrl+I</span>). Double-click <b>FSDXVolume</b>. It opens in its own panel under the price chart.</li>
+                  <li>Use the same chart settings as Knightfall: 5-minute bars, <b>CME US Index Futures ETH</b> trading hours. <a href="#s2" class="text-green-400 font-bold">Chart settings &rarr;</a></li>
+                  <li>Click <b>OK</b>, then save your workspace.</li>
+                </ol>
+                <p class="nt-p">Volume works on its own, or alongside Knightfall on the same chart.</p>
+              </div>
+
+              <div class="nt-card" id="vol-colors">
+                <h3 class="text-base font-black text-white mb-2">2. Reading the bars</h3>
+                <p class="nt-p mb-3">Every bar is volume. The color tells you what part of the session it's in, and whether it was a breakout bar. Brighter = at or above the average line. Faded = below it.</p>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>Color</th><th>Meaning</th></tr>
+                    <tr><td><span style="color:#00C800">Green</span></td><td>Bull breakout bar: opened inside the opening range, closed above it and above VWAP</td></tr>
+                    <tr><td><span style="color:#F23645">Red</span></td><td>Bear breakout bar: opened inside the opening range, closed below it and below VWAP</td></tr>
+                    <tr><td><span style="color:#FFEB3B">Yellow</span></td><td>The opening range window (8:30&ndash;8:45 CT by default)</td></tr>
+                    <tr><td><span style="color:#00E5B0">Teal</span></td><td>Regular session after the opening range</td></tr>
+                    <tr><td><span style="color:#9aa0ab">Gray</span></td><td>Pre-market and after hours (after 4 PM CT)</td></tr>
+                    <tr><td>White line</td><td>Average volume over the last 20 bars</td></tr>
+                  </table>
+                </div>
+                <p class="nt-p mt-3">Only the first breakout on each side is marked. A side re-arms after price closes back inside the range. Breakout marking runs for 6 hours after the opening range ends. The live bar can change color until it closes, same as TradingView. Closed bars never repaint.</p>
+              </div>
+
+              <div class="nt-card" id="vol-settings">
+                <h3 class="text-base font-black text-white mb-2">3. Settings</h3>
+                <p class="nt-p mb-3">The defaults match Knightfall on the New York open. If you change your opening range in Knightfall, change it here too.</p>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+                    <tr><td>ORB Start Time (HHMM CT)</td><td>830</td><td>Start of the opening range, Chicago time</td></tr>
+                    <tr><td>ORB Duration (Minutes)</td><td>15</td><td>Length of the opening range</td></tr>
+                    <tr><td>Volume Average Length</td><td>20</td><td>Bars used for the average line, and for bright vs faded</td></tr>
+                    <tr><td>Show Average Line</td><td>On</td><td>Draws the average volume line</td></tr>
+                    <tr><td>Show Session Zone Colors</td><td>On</td><td>Off = every non-breakout bar is teal</td></tr>
+                    <tr><td>Breakout Close Override</td><td>On</td><td>Only marks a breakout when the close lands inside the min/max distance below</td></tr>
+                    <tr><td>Min Close Outside ORB (pts)</td><td>0</td><td>How far past the range edge the bar must close. 0 = any close outside</td></tr>
+                    <tr><td>Max Close Outside ORB Filter</td><td>On</td><td>Skips extended candles that close too far outside the range</td></tr>
+                    <tr><td>Max Close Outside ORB (pts)</td><td>50</td><td>Furthest close past the range edge that still counts</td></tr>
+                  </table>
+                </div>
+              </div>
+          </div>
+        </div>
+      </section>
+
       <section id="help" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="help">
         <div class="max-w-5xl mx-auto">
           <h2 class="text-lg md:text-xl font-black text-white">Troubleshooting</h2>
@@ -443,7 +518,7 @@
       <section id="updates" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="updates">
         <div class="max-w-5xl mx-auto">
           <h2 class="text-lg md:text-xl font-black text-white">Updates</h2>
-          <p class="text-xs text-zinc-500 mt-1">Release notes, how to update, and older versions.</p>
+          <p class="text-xs text-zinc-500 mt-1">Release notes for every tool, how to update, and older versions.</p>
           <div class="space-y-5 mt-6">
               <div class="nt-card" id="whats-new">
                 <h3 class="text-base font-black text-white mb-3">What's new</h3>
@@ -453,10 +528,10 @@
               <div class="nt-card" id="s8">
                 <h3 class="text-base font-black text-white mb-3">How to update</h3>
                 <ol class="nt-steps">
-                  <li>When a new version is out, you'll see <b>Update available</b> at the top of this page.</li>
+                  <li>When a new version is out, you'll see <b>Update available</b> at the top of this page and on that tool's card.</li>
                   <li>Download it, then <b>Tools → Import → NinjaScript Add-On</b> and pick the new zip. Say yes to replace.</li>
                   <li>Restart NinjaTrader. Your license carries over.</li>
-                  <li><b>Remove the strategy from the chart and add it again</b> so the new defaults load. Check <b>Variant</b>, <b>Risk Profile</b> and <b>Daily Loss Limit</b> before you enable it.</li>
+                  <li><b>Knightfall:</b> remove the strategy from the chart and add it again so the new defaults load. Check <b>Variant</b>, <b>Risk Profile</b> and <b>Daily Loss Limit</b> before you enable it. <b>Indicators</b> like Volume pick up the update after the restart.</li>
                   <li>Save the workspace again (<b>Workspaces → Save Workspace</b>).</li>
                 </ol>
               </div>
@@ -544,127 +619,168 @@
     input.addEventListener('keydown', function (e) { if (e.key === 'Enter') go(); });
   }
 
+  function prod(d, id) { return (d.products || []).filter(function (p) { return p.id === id; })[0]; }
+  function lastVer(d, p) { var L = d.license; return p.lastVersion || (L && L.lastVersions && L.lastVersions[p.id]) || null; }
+  function hasUpdate(d, p) { var v = lastVer(d, p); return p.state === 'ready' && p.current && v && v !== p.current.version; }
+
   function renderLicense(d) {
     var L = d.license, body = '';
+    var pend = (d.products || []).filter(function (p) { return p.state === 'pending'; });
     if (!d.eligible) {
-      if (d.reason === 'plan') {
-        setPill('none', 'Not included');
-        body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') doesn\'t include the NinjaTrader version. It comes with the full FSD-X membership, or on its own as Knightfall NT8.</p>'
-          + '<div class="mt-4"><a href="ninjatrader.html" class="nt-btn">See your options &rarr;</a></div>';
-      } else {
+      if (d.reason === 'inactive') {
         setPill('removed', 'Access ended');
-        body = '<p class="nt-p">Your membership isn\'t active, so the NinjaTrader license is paused.</p>'
+        body = '<p class="nt-p">Your membership isn\'t active, so your NinjaTrader licenses are paused.</p>'
           + '<div class="mt-4"><a href="memberships.html" class="nt-btn">Rejoin &rarr;</a></div>';
+      } else if (d.reason === 'soon') {
+        setPill('none', 'Coming soon');
+        body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') includes a NinjaTrader 8 tool that isn\'t released yet. It shows up here when it ships, and you can confirm your NinjaTrader email then.</p>';
+      } else {
+        setPill('none', 'Not included');
+        body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') doesn\'t include the NinjaTrader 8 tools. Knightfall on NinjaTrader 8 comes with the full FSD-X membership, or on its own as Knightfall NT8.</p>'
+          + '<div class="mt-4"><a href="ninjatrader.html" class="nt-btn">See your options &rarr;</a></div>';
       }
-    } else if (!L) {
+    } else if (!L || !L.ntEmail || L.status === 'declined') {
       setPill('none', 'Not set up');
-      body = emailForm('', 'Confirm the email on your NinjaTrader account so we can add your license.', 'Save');
-    } else if (L.status === 'pending') {
-      setPill('pending', 'Being set up');
-      body = '<p class="nt-p">' + (L.emailChange ? 'We\'re moving your license to your new email.' : 'We\'re adding your license.')
-        + ' Usually within 24 hours. You\'ll get an email when it\'s active.</p>'
-        + '<div class="mt-3"><div class="nt-kv"><span>Licensed to</span><span>' + esc(L.ntEmail) + '</span></div>'
-        + '<div class="nt-kv"><span>Requested</span><span>' + fmtDate(L.requestedAt) + '</span></div></div>'
-        + '<details class="mt-3"><summary class="text-[11px] text-zinc-500 cursor-pointer">Wrong email? Change it</summary><div class="mt-3">'
-        + emailForm(L.ntEmail, 'Enter the right NinjaTrader email.', 'Update') + '</div></details>';
-    } else if (L.status === 'active') {
-      setPill('active', 'Active');
-      body = '<div class="nt-kv"><span>Licensed to</span><span>' + esc(L.ntEmail) + '</span></div>'
-        + '<div class="nt-kv"><span>Active since</span><span>' + fmtDate(L.activatedAt) + '</span></div>'
-        + '<div class="nt-kv"><span>Your version</span><span>' + (L.lastVersion ? 'v' + esc(L.lastVersion) : 'Not downloaded yet') + '</span></div>'
-        + '<details class="mt-3"><summary class="text-[11px] text-zinc-500 cursor-pointer">Changed your NinjaTrader email?</summary><div class="mt-3">'
-        + emailForm('', 'Enter your new NinjaTrader email. Your license moves over within 24 hours.', 'Update') + '</div></details>';
-    } else {
+      body = emailForm('', 'Confirm the email on your NinjaTrader account so we can add your licenses.', 'Save');
+    } else if (L.status === 'removed') {
       setPill('removed', 'Removed');
-      body = '<p class="nt-p">Your license was removed. If your membership is active again, confirm your NinjaTrader email and we\'ll add it back.</p>'
-        + '<div class="mt-3">' + emailForm(L.ntEmail, '', 'Request license') + '</div>';
+      body = '<p class="nt-p">Your licenses were removed. If your membership is active again, confirm your NinjaTrader email and we\'ll add them back.</p>'
+        + '<div class="mt-3">' + emailForm(L.ntEmail, '', 'Request licenses') + '</div>';
+    } else {
+      if (pend.length) setPill('pending', L.emailChange ? 'Moving' : 'Being set up');
+      else setPill('active', 'Active');
+      body = '<div class="nt-kv"><span>Licensed to</span><span>' + esc(L.ntEmail) + '</span></div>'
+        + (pend.length ? '<div class="nt-kv"><span>Being added</span><span>' + esc(pend.map(function (p) { return p.name; }).join(', ')) + ' · usually within 24 hours</span></div>' : '')
+        + (L.activatedAt ? '<div class="nt-kv"><span>Active since</span><span>' + fmtDate(L.activatedAt) + '</span></div>' : '')
+        + (L.emailChange ? '<p class="nt-p mt-3">We\'re moving your licenses to this email. You\'ll get an email when it\'s done.</p>' : '')
+        + '<details class="mt-3"><summary class="text-[11px] text-zinc-500 cursor-pointer">Changed your NinjaTrader email?</summary><div class="mt-3">'
+        + emailForm('', 'Enter your new NinjaTrader email. Every license moves over, usually within 24 hours.', 'Update') + '</div></details>';
     }
     $('nt-license-body').innerHTML = body;
     bindEmailForm();
   }
 
-  function renderDownload(d) {
-    var cur = d.current, L = d.license, html = '';
-    $('nt-ver-tag').textContent = cur ? 'v' + cur.version + ' · ' + fmtDate(cur.uploadedAt) : '';
-    if (d.canDownload && cur) {
-      html = '<p class="nt-p mb-4">The protected strategy file. Import it into NinjaTrader. Don\'t unzip it.</p>'
-        + '<button id="nt-dl-btn" class="nt-btn" data-v="' + esc(cur.version) + '">Download v' + esc(cur.version) + ' &darr;</button>'
-        + '<div id="nt-dl-msg" class="nt-msg"></div>'
-        + '<div class="mt-4"><div class="nt-kv"><span>File</span><span>' + esc(cur.filename) + '</span></div>'
-        + '<div class="nt-kv"><span>Size</span><span>' + fmtSize(cur.size) + '</span></div>'
-        + '<div class="nt-kv"><span>Last downloaded</span><span>' + (L && L.lastDownloadAt ? fmtDate(L.lastDownloadAt) : '—') + '</span></div></div>'
-        + '<div class="nt-banner mt-4"><div class="flex-1"><div class="text-[12px] font-black text-white">Next: set it up start to finish</div>'
-        + '<div class="text-[11.5px] text-zinc-400 mt-1">Import, chart settings (merge policy, 365 days, ETH), add the strategy, save your workspace. About 10 minutes.</div>'
-        + '<a href="#setup" class="nt-btn ghost mt-3" style="padding:8px 14px;font-size:10.5px">Open the setup guide &darr;</a></div></div>';
-    } else if (d.eligible && L && L.status === 'active' && !d.live && !d.early) {
-      html = '<p class="nt-p">Your license is ready. Downloads open at launch. We\'ll announce it in Discord and email you.</p>';
-    } else if (d.eligible && L && L.status === 'active' && !cur) {
-      html = '<p class="nt-p">No release has been published yet. Check back soon.</p>';
-    } else if (d.eligible && L && L.status === 'pending') {
-      html = '<p class="nt-p">The download unlocks as soon as your license is active. Read the Setup guide below while you wait.</p>';
-    } else if (d.eligible) {
-      html = '<p class="nt-p">Confirm your NinjaTrader email first. The download unlocks once your license is active.</p>';
+  var GUIDE = { knightfall: ['#setup', 'Setup guide'], volume: ['#volume', 'How to use it'] };
+
+  function toolCard(d, p, core) {
+    var cls = 'nt-tool' + (core ? ' core' : '') + (p.state === 'soon' ? ' soon' : '') + (p.state === 'locked' ? ' locked' : '');
+    var pill, meta = '', note = '', acts = '';
+    var g = GUIDE[p.id];
+    var guide = g ? '<a href="' + g[0] + '" class="nt-btn ghost">' + g[1] + '</a>' : '';
+    if (p.state === 'ready') {
+      if (hasUpdate(d, p)) pill = '<span class="nt-pill update"><span class="dot"></span>Update available</span>';
+      else pill = '<span class="nt-pill active"><span class="dot"></span>Licensed</span>';
+      if (p.current) {
+        meta = 'v' + esc(p.current.version) + ' · ' + fmtDate(p.current.uploadedAt) + ' · ' + fmtSize(p.current.size)
+          + (lastVer(d, p) ? ' · you have v' + esc(lastVer(d, p)) : ' · not downloaded yet');
+        acts = '<button class="nt-btn" data-dl="' + esc(p.id) + '" data-v="' + esc(p.current.version) + '">Download v' + esc(p.current.version) + ' &darr;</button>' + guide;
+      } else {
+        meta = 'No release yet';
+        note = 'Your license is active. The download shows here as soon as the first release is published.';
+        acts = guide;
+      }
+    } else if (p.state === 'pending') {
+      pill = '<span class="nt-pill pending"><span class="dot"></span>License being added</span>';
+      meta = p.current ? 'v' + esc(p.current.version) : '';
+      note = 'We add NinjaTrader licenses by hand. This one is queued for your NinjaTrader email. You\'ll get an email when it\'s active, usually within 24 hours.';
+      acts = guide;
+    } else if (p.state === 'needEmail') {
+      pill = '<span class="nt-pill pending"><span class="dot"></span>Email needed</span>';
+      note = 'Confirm your NinjaTrader email above. The download unlocks once your license is active.';
+      acts = guide;
+    } else if (p.state === 'soon') {
+      pill = '<span class="nt-pill none"><span class="dot"></span>Coming to NT8</span>';
+      meta = 'In the works · included when it ships';
+    } else if (p.state === 'inactive') {
+      pill = '<span class="nt-pill removed"><span class="dot"></span>Paused</span>';
+      note = 'Your membership isn\'t active.';
     } else {
-      html = '<p class="nt-p">Not available on your current plan.</p>';
+      pill = '<span class="nt-pill none"><span class="dot"></span>Not in your plan</span>';
+      meta = p.id === 'raven' ? 'Included with the Full Membership or Raven' : 'Included with the Full Membership';
+      acts = '<a href="memberships.html" class="nt-btn ghost">See the Full Membership</a>';
     }
-    $('nt-download-body').innerHTML = html;
-    var b = $('nt-dl-btn');
-    if (b) b.addEventListener('click', function () { download(b.getAttribute('data-v'), b, $('nt-dl-msg')); });
+    return '<div class="' + cls + '">'
+      + '<div class="flex items-start justify-between gap-3 flex-wrap"><span class="t-name">' + esc(p.name) + '</span>' + pill + '</div>'
+      + (p.blurb ? '<div class="t-blurb">' + esc(p.blurb) + '</div>' : '')
+      + (meta ? '<div class="t-meta">' + meta + '</div>' : '')
+      + (note ? '<div class="t-note">' + note + '</div>' : '')
+      + '<div id="nt-dl-msg-' + esc(p.id) + '" class="nt-msg"></div>'
+      + (acts ? '<div class="t-acts">' + acts + '</div>' : '')
+      + '</div>';
+  }
+
+  function renderTools(d) {
+    var list = d.products || [];
+    var core = list.filter(function (p) { return p.id === 'knightfall'; });
+    var rest = list.filter(function (p) { return p.id !== 'knightfall'; });
+    $('nt-core').innerHTML = core.map(function (p) { return toolCard(d, p, true); }).join('');
+    $('nt-addons').innerHTML = rest.map(function (p) { return toolCard(d, p, false); }).join('');
+    var full = rest.some(function (p) { return p.entitled; });
+    $('nt-addon-hint').textContent = full ? 'Included with your plan' : 'Part of the Full Membership';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-dl]'), function (b) {
+      b.addEventListener('click', function () { download(b.getAttribute('data-dl'), b.getAttribute('data-v'), b, $('nt-dl-msg-' + b.getAttribute('data-dl'))); });
+    });
   }
 
   function renderBanner(d) {
-    var slot = $('nt-banner-slot'), cur = d.current, L = d.license;
-    if (d.canDownload && cur && L && L.lastVersion && L.lastVersion !== cur.version) {
+    var slot = $('nt-banner-slot');
+    var ups = (d.products || []).filter(function (p) { return hasUpdate(d, p); });
+    if (ups.length) {
       slot.innerHTML = '<div class="nt-banner"><span class="nt-pill update"><span class="dot"></span>Update available</span>'
-        + '<div class="flex-1"><div class="text-sm font-black text-white">v' + esc(cur.version) + ' is out</div>'
-        + '<div class="text-[12px] text-zinc-400 mt-1">You\'re on v' + esc(L.lastVersion) + '. <a href="#whats-new" class="text-green-400 font-bold">See what changed</a>, then download and re-import.</div></div></div>';
-    } else if (d.eligible && !d.live && d.early) {
+        + '<div class="flex-1"><div class="text-sm font-black text-white">' + ups.map(function (p) { return esc(p.name) + ' v' + esc(p.current.version); }).join(' · ') + '</div>'
+        + '<div class="text-[12px] text-zinc-400 mt-1">' + ups.map(function (p) { return 'You\'re on ' + esc(p.name) + ' v' + esc(lastVer(d, p)); }).join('. ')
+        + '. <a href="#whats-new" class="text-green-400 font-bold">See what changed</a>, then download and re-import.</div></div></div>';
+    } else if (d.eligible && d.early && (d.products || []).some(function (p) { return p.entitled && !p.live; })) {
       slot.innerHTML = '<div class="nt-banner"><span class="nt-pill update"><span class="dot"></span>Early access</span>'
-        + '<div class="flex-1 text-[12px] text-zinc-400">Members can\'t download yet. You\'re seeing this because your account has early access.</div></div>';
-    } else if (d.eligible && !d.live) {
-      slot.innerHTML = '<div class="nt-banner"><span class="nt-pill pending"><span class="dot"></span>Final prep</span>'
-        + '<div class="flex-1 text-[12px] text-zinc-400">Downloads open shortly. Confirm your NinjaTrader email now so your license is ready.</div></div>';
+        + '<div class="flex-1 text-[12px] text-zinc-400">You can see tools that aren\'t released to members yet because your account has early access.</div></div>';
     } else { slot.innerHTML = ''; }
   }
 
   function renderNotes(d) {
-    var cur = d.current;
-    $('nt-whatsnew').innerHTML = cur
-      ? '<div class="flex items-center gap-3 mb-3"><span class="text-base font-black text-white">v' + esc(cur.version) + '</span><span class="text-[11px] text-zinc-500">' + fmtDate(cur.uploadedAt) + '</span></div>'
-        + '<div class="nt-notes">' + esc(cur.notes || 'No notes for this release.') + '</div>'
-      : '<p class="nt-p">No release published yet.</p>';
+    var mine = (d.products || []).filter(function (p) { return p.entitled && (p.live || d.early) && p.current; });
+    $('nt-whatsnew').innerHTML = mine.length ? mine.map(function (p) {
+      var cur = p.current;
+      return '<div class="mb-5"><div class="flex items-center gap-3 mb-2 flex-wrap"><span class="text-base font-black text-white">' + esc(p.name) + ' v' + esc(cur.version) + '</span><span class="text-[11px] text-zinc-500">' + fmtDate(cur.uploadedAt) + '</span></div>'
+        + '<div class="nt-notes">' + esc(cur.notes || 'No notes for this release.') + '</div></div>';
+    }).join('') : '<p class="nt-p">No release published yet.</p>';
 
-    var older = (d.releases || []).filter(function (r) { return !cur || r.version !== cur.version; });
-    if (!older.length) { $('nt-versions').innerHTML = '<span>None yet.</span>'; return; }
-    $('nt-versions').innerHTML = older.map(function (r) {
+    var rows = [];
+    mine.forEach(function (p) {
+      (p.releases || []).forEach(function (r) { if (r.version !== p.current.version) rows.push({ p: p, r: r }); });
+    });
+    if (!rows.length) { $('nt-versions').innerHTML = '<span>None yet.</span>'; return; }
+    $('nt-versions').innerHTML = rows.map(function (x) {
+      var r = x.r, p = x.p;
       return '<div class="faq py-4 cursor-pointer border-b border-white/5" onclick="this.classList.toggle(\'open\')">'
         + '<div class="flex items-center gap-3"><svg class="faq-chev w-3 h-3 shrink-0 text-green-500 transition-transform" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>'
-        + '<div class="flex-1 text-xs font-bold text-white">v' + esc(r.version) + ' <span class="text-zinc-600 font-normal">· ' + fmtDate(r.uploadedAt) + '</span></div>'
-        + (d.canDownload ? '<button class="nt-btn ghost" style="padding:7px 12px;font-size:10px" data-oldv="' + esc(r.version) + '" onclick="event.stopPropagation()">Download</button>' : '')
+        + '<div class="flex-1 text-xs font-bold text-white">' + esc(p.name) + ' v' + esc(r.version) + ' <span class="text-zinc-600 font-normal">· ' + fmtDate(r.uploadedAt) + '</span></div>'
+        + (p.state === 'ready' ? '<button class="nt-btn ghost" style="padding:7px 12px;font-size:10px" data-oldp="' + esc(p.id) + '" data-oldv="' + esc(r.version) + '" onclick="event.stopPropagation()">Download</button>' : '')
         + '</div><div class="faq-body nt-notes mt-2 pl-6">' + esc(r.notes || 'No notes.') + '</div></div>';
     }).join('');
     Array.prototype.forEach.call(document.querySelectorAll('[data-oldv]'), function (b) {
-      b.addEventListener('click', function () { download(b.getAttribute('data-oldv'), b, null); });
+      b.addEventListener('click', function () { download(b.getAttribute('data-oldp'), b.getAttribute('data-oldv'), b, null); });
     });
   }
 
-  function download(v, btn, msgEl) {
+  function download(pid, v, btn, msgEl) {
     var label = btn.innerHTML;
     btn.disabled = true; btn.textContent = 'Downloading…';
-    fetch(API + '/api/nt/download?v=' + encodeURIComponent(v), { headers: { 'Authorization': 'Bearer ' + token } })
+    fetch(API + '/api/nt/download?p=' + encodeURIComponent(pid) + '&v=' + encodeURIComponent(v), { headers: { 'Authorization': 'Bearer ' + token } })
       .then(function (r) {
         if (!r.ok) return r.json().then(function (d) { throw new Error((d && d.error) || 'Download failed'); });
-        return r.blob();
+        var cd = r.headers.get('Content-Disposition') || '', m = /filename="([^"]+)"/.exec(cd);
+        return r.blob().then(function (b) { return { blob: b, name: m ? m[1] : ('FSDX_' + pid + '_v' + v + '.zip') }; });
       })
-      .then(function (blob) {
+      .then(function (x) {
         var a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'FSDX_ORB_Pro_Knightfall_v' + v + '.zip';
+        a.href = URL.createObjectURL(x.blob);
+        a.download = x.name;
         document.body.appendChild(a); a.click(); a.remove();
         setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
         btn.disabled = false; btn.innerHTML = label;
-        if (msgEl) { msgEl.innerHTML = 'Downloaded. Next: Tools → Import → NinjaScript Add-On. <a href="#setup" class="font-bold underline">Follow the setup guide &darr;</a>'; msgEl.className = 'nt-msg ok'; }
-        setTimeout(load, 1200);
+        var g = GUIDE[pid];
+        if (msgEl) { msgEl.innerHTML = 'Downloaded. Next: Tools → Import → NinjaScript Add-On.' + (g ? ' <a href="' + g[0] + '" class="font-bold underline">' + g[1] + ' &darr;</a>' : ''); msgEl.className = 'nt-msg ok'; }
+        setTimeout(load, 1500);
       })
       .catch(function (e) {
         btn.disabled = false; btn.innerHTML = label;
@@ -674,7 +790,7 @@
 
   var FAQ = [
     ['Nothing draws and there\'s no dashboard',
-     'Your license email has to match the email you\'re logged into NinjaTrader with. Check the "Licensed to" email above. Restart NinjaTrader after your license goes active. Then open Strategies and confirm Enabled is ticked.'],
+     'Your license email has to match the email you\'re logged into NinjaTrader with. Check the "Licensed to" email above, and that the tool shows Licensed. Restart NinjaTrader after your license goes active. Then open Strategies and confirm Enabled is ticked.'],
     ['NinjaTrader says I\'m not licensed',
      'Import works without a license. The strategy won\'t run until your license is active. Either your license isn\'t active yet (see the card at the top), or you\'re logged into NinjaTrader with a different email. Log out and back into NinjaTrader with the licensed email, or update your email above and we\'ll move the license. Still stuck? Send us a screenshot of the error.'],
     ['A side won\'t trade after the first breakout',
@@ -715,7 +831,7 @@
 
   function render(d) {
     STATE = d;
-    renderLicense(d); renderDownload(d); renderBanner(d); renderNotes(d);
+    renderLicense(d); renderTools(d); renderBanner(d); renderNotes(d);
     $('loading-screen').classList.add('hidden');
     $('nt-content').classList.remove('hidden');
   }
@@ -736,11 +852,11 @@
   document.addEventListener('DOMContentLoaded', function () { buildFaq(); load(); });
 })();
 
-/* ── Tabs: Setup · Recommended settings · Dashboard · Troubleshooting · Updates ──
+/* ── Tabs: Knightfall setup · settings · dashboard · Volume · Troubleshooting · Updates ──
    Any #anchor on the page opens the tab that holds it, then scrolls to it. */
 (function () {
   'use strict';
-  var TABS = ['setup', 'settings', 'dashboard', 'help', 'updates'];
+  var TABS = ['setup', 'settings', 'dashboard', 'volume', 'help', 'updates'];
   function panels() { return document.querySelectorAll('.nt-panel'); }
   function show(tab) {
     Array.prototype.forEach.call(panels(), function (p) { p.hidden = p.getAttribute('data-panel') !== tab; });

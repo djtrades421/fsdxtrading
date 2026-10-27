@@ -128,6 +128,30 @@
   ]
 }
   </script>
+  <style>
+    .suite-plat-btn{min-height:44px;padding:0 18px;border-radius:9px;font-size:13.5px;font-weight:800;color:#a1a1aa;background:transparent;border:0;cursor:pointer}
+    .suite-plat-btn:hover{color:#fff}
+    .suite-plat-btn[aria-selected="true"]{color:#FFC0A0;background:rgba(255,107,31,.16)}
+    .suite-box{margin-top:14px;border:1px solid rgba(255,255,255,.10);border-radius:18px;overflow:hidden;background:rgba(9,9,11,.6)}
+    .suite-row{display:flex;flex-wrap:wrap;gap:18px;align-items:center;padding:18px 20px}
+    .suite-row+.suite-row{border-top:1px solid rgba(255,255,255,.07)}
+    .suite-row-l{flex:2 1 300px;min-width:0}
+    .suite-row-l p{margin:4px 0 0;font-size:13.5px;line-height:1.55;color:#a1a1aa}
+    .suite-row-name{font-size:16.5px;font-weight:900;color:#fff}
+    .suite-row-name:hover{color:#FF9A5C}
+    .suite-row-r{flex:3 1 420px;min-width:0;display:flex;flex-wrap:wrap;gap:12px}
+    .suite-cell{flex:1 1 200px;min-width:0;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.035)}
+    .suite-cell[hidden]{display:none}
+    .suite-cell p{margin:6px 0 0;font-size:12.5px;line-height:1.45;color:#d4d4d8}
+    .suite-cell-h{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:11.5px;font-weight:800;color:#8a94a3}
+    .suite-chip{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:999px;white-space:nowrap}
+    .suite-chip.inc{background:rgba(255,107,31,.14);color:#FFB489;border:1px solid rgba(255,107,31,.45)}
+    .suite-chip.new{background:#FF6B1F;color:#1A0A02}
+    .suite-chip.soon{color:#A2AEBF;border:1px dashed #485565}
+    .suite-chip.built{color:#CBD3DE;border:1px solid #2E3945}
+    .suite-row.dim{opacity:.7}
+    .suite-pchip{padding:2px 8px;border-radius:4px;border:1px solid rgba(255,255,255,.12);color:#cbd3de;font-size:10px;text-transform:uppercase;letter-spacing:.08em}
+  </style>
 </head>
 <body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
 
@@ -146,23 +170,14 @@
       <section class="pt-16 pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
         <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">// What's in the membership</div>
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">The tools that run the system</h1>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">Every tool. <span class="text-green-400">Your platform.</span></h1>
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
-            Here's every tool you get — what each one does and how it helps you trade the open. All of them come with the membership, and so does everything further down this page: the member platform on this site, the live trade room, Scout alerts, the monthly one-on-one and the training library. One price, twelve components, no tiers.
+            One membership covers the system, the indicators, the member platform and the live room. Run it on TradingView, NinjaTrader&reg; 8, or both. Pick a platform to see exactly what you get there.
           </p>
-          <div class="mt-8 flex flex-wrap gap-6">
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">12 Included</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Full Suite Access</div>
-            </div>
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">A+ To F Grading</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Only A+ Through C Are Taken</div>
-            </div>
-            <div class="border-l-2 border-green-500 pl-4">
-              <div class="text-lg font-black text-white">One Membership</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider">Everything Included</div>
-            </div>
+          <div role="tablist" aria-label="Platform" id="suite-plat" class="mt-7 inline-flex flex-wrap gap-1 p-1 rounded-xl border border-white/10 bg-zinc-950/70">
+            <button type="button" role="tab" data-plat="both" aria-selected="true" class="suite-plat-btn">Both platforms</button>
+            <button type="button" role="tab" data-plat="tv" aria-selected="false" class="suite-plat-btn">TradingView</button>
+            <button type="button" role="tab" data-plat="nt" aria-selected="false" class="suite-plat-btn">NinjaTrader 8</button>
           </div>
         </div>
       </section>
@@ -170,28 +185,9 @@
       <div data-tv-notice class="px-6 md:px-12 pt-6"></div>
 
 
-      <section class="px-6 md:px-12 pt-6">
-        <div class="max-w-5xl mx-auto">
-          <a href="autotrader.html" class="group flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-green-500/20 bg-green-500/[0.04] hover:border-green-500/40 hover:bg-green-500/[0.07] transition px-5 py-4">
-            <div class="flex items-start gap-3">
-              <span class="text-green-400 text-lg leading-none mt-0.5">⚡</span>
-              <div>
-                <div class="text-white font-bold text-sm">Want hands-off execution? The Auto Trader is <span class="text-green-400">included</span>.</div>
-                <div class="text-zinc-400 text-xs mt-0.5">Every tool on this page — plus the hands-off Auto Trader (TradingView) — is included in your membership. A native NinjaTrader® 8 version is approved by NinjaTrader and releases October 23, 2026.</div>
-              </div>
-            </div>
-            <span class="text-green-400 text-xs font-bold whitespace-nowrap group-hover:translate-x-0.5 transition">See the Auto Trader →</span>
-          </a>
-          <a href="ninjatrader.html" class="mt-3 group flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-white/10 bg-zinc-950/60 hover:border-green-500/30 transition px-5 py-4">
-            <div class="flex items-start gap-3">
-              <span class="w-1.5 h-1.5 rounded-full bg-green-400 mt-2 shrink-0"></span>
-              <div>
-                <div class="text-white font-bold text-sm">Live now: Knightfall on <span class="text-green-400">NinjaTrader 8</span>.</div>
-                <div class="text-zinc-400 text-xs mt-0.5">Native, hands-free or manual, no bridge service. Approved by NinjaTrader.</div>
-              </div>
-            </div>
-            <span class="text-green-400 text-xs font-bold whitespace-nowrap group-hover:translate-x-0.5 transition">See the NinjaTrader version →</span>
-          </a>
+      <section class="px-6 md:px-12 pt-10" id="by-platform">
+        <div class="max-w-5xl mx-auto space-y-10">
+<div class="suite-group"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Core</div><h2 class="text-xl sm:text-2xl font-black text-white tracking-tight mt-1">The graded system</h2><div class="suite-box"><div class="suite-row"><div class="suite-row-l"><a href="#tool-orbpro" class="suite-row-name">FSD-X ORB PRO (Knightfall MK2)</a><p>Grades every opening range breakout A+ to F and only takes A+ through C. Entry, stop and targets worked out on the chart.</p></div><div class="suite-row-r"><div class="suite-cell" data-cell="tv"><div class="suite-cell-h"><span>TradingView</span><span class="suite-chip inc">Included</span></div><p>Invite-only script, with the on-chart backtester.</p></div><div class="suite-cell" data-cell="nt"><div class="suite-cell-h"><span>NinjaTrader 8</span><span class="suite-chip inc">Included</span></div><p>Native strategy with automation built in. Run it hands-free or trade it yourself.</p></div></div></div><div class="suite-row"><div class="suite-row-l"><a href="autotrader.html" class="suite-row-name">Knightfall Auto Trader</a><p>Hands-off execution of Knightfall setups on TradingView.</p></div><div class="suite-row-r"><div class="suite-cell" data-cell="tv"><div class="suite-cell-h"><span>TradingView</span><span class="suite-chip inc">Included</span></div><p>A separate script that sends trades to your own bridge service and broker.</p></div><div class="suite-cell" data-cell="nt"><div class="suite-cell-h"><span>NinjaTrader 8</span><span class="suite-chip built">Built in</span></div><p>Not a separate tool. Automation is part of Knightfall on NinjaTrader 8.</p></div></div></div></div></div><div class="suite-group"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Included indicators</div><h2 class="text-xl sm:text-2xl font-black text-white tracking-tight mt-1">Add-ons that come with it</h2><div class="suite-box"><div class="suite-row"><div class="suite-row-l"><a href="#tool-volume" class="suite-row-name">FSD-X // Volume</a><p>Marks every ORB breakout bar in the volume pane and colors bars by session, so you can see whether volume is behind the move.</p></div><div class="suite-row-r"><div class="suite-cell" data-cell="tv"><div class="suite-cell-h"><span>TradingView</span><span class="suite-chip inc">Included</span></div><p>Invite-only script.</p></div><div class="suite-cell" data-cell="nt"><div class="suite-cell-h"><span>NinjaTrader 8</span><span class="suite-chip new">New</span></div><p>Out now. Download it from the NinjaTrader Hub.</p></div></div></div><div class="suite-row" data-ntsoon="1"><div class="suite-row-l"><a href="#tool-raven" class="suite-row-name">FSD-X // ORB Raven</a><p>Every breakout marked with entry, stop, both targets and your size. No grading. Also sold on its own.</p></div><div class="suite-row-r"><div class="suite-cell" data-cell="tv"><div class="suite-cell-h"><span>TradingView</span><span class="suite-chip inc">Included</span></div><p>Invite-only script.</p></div><div class="suite-cell" data-cell="nt"><div class="suite-cell-h"><span>NinjaTrader 8</span><span class="suite-chip soon">Coming</span></div><p>In the works. Added to the NinjaTrader Hub when it ships.</p></div></div></div><div class="suite-row" data-ntsoon="1"><div class="suite-row-l"><a href="#tool-stack" class="suite-row-name">FSD-X // Stack V1</a><p>Multi-timeframe trend confirmation across 7 timeframes.</p></div><div class="suite-row-r"><div class="suite-cell" data-cell="tv"><div class="suite-cell-h"><span>TradingView</span><span class="suite-chip inc">Included</span></div><p>Invite-only script.</p></div><div class="suite-cell" data-cell="nt"><div class="suite-cell-h"><span>NinjaTrader 8</span><span class="suite-chip soon">Coming</span></div><p>In the works. Added to the NinjaTrader Hub when it ships.</p></div></div></div></div></div><div class="suite-group"><div class="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Same for every member</div><h2 class="text-xl sm:text-2xl font-black text-white tracking-tight mt-1">Platform and community</h2><div class="suite-box"><div class="suite-row"><div class="suite-row-l"><a href="platform.html" class="suite-row-name">Member platform</a><p>Dashboard, trade journal, prop account tracking, backtest workspace and the broker importer.</p></div><div class="suite-row-r"><div class="suite-cell"><div class="suite-cell-h"><span>Same on both platforms</span><span class="suite-chip inc">Included</span></div><p>On this website. Works with either platform.</p></div></div></div><div class="suite-row"><div class="suite-row-l"><a href="#tool-nexus" class="suite-row-name">FSD-X Nexus 2.0</a><p>Chrome side panel: position sizing, economic calendar, chart analysis and trade logging.</p></div><div class="suite-row-r"><div class="suite-cell"><div class="suite-cell-h"><span>Same on both platforms</span><span class="suite-chip inc">Included</span></div><p>Chrome extension. The membership unlocks Premium; parts of it are free for anyone.</p></div></div></div><div class="suite-row"><div class="suite-row-l"><a href="alerts.html" class="suite-row-name">Scout alerts</a><p>Live setup alerts as the session runs.</p></div><div class="suite-row-r"><div class="suite-cell"><div class="suite-cell-h"><span>Same on both platforms</span><span class="suite-chip inc">Included</span></div><p>On the site and in Discord.</p></div></div></div><div class="suite-row"><div class="suite-row-l"><a href="schedule.html" class="suite-row-name">Live trade room</a><p>Knightfall traded live with the grades called in real time.</p></div><div class="suite-row-r"><div class="suite-cell"><div class="suite-cell-h"><span>Same on both platforms</span><span class="suite-chip inc">Included</span></div><p>In Discord. Same room whichever platform you use.</p></div></div></div><div class="suite-row"><div class="suite-row-l"><a href="https://discord.gg/RePdHESvSx" class="suite-row-name">VIP Discord</a><p>Members-only channels, including setup talk after the session.</p></div><div class="suite-row-r"><div class="suite-cell"><div class="suite-cell-h"><span>Same on both platforms</span><span class="suite-chip inc">Included</span></div><p>Discord.</p></div></div></div><div class="suite-row"><div class="suite-row-l"><a href="contact.html" class="suite-row-name">Monthly 1-on-1</a><p>A call each month to go over your setup and your trading.</p></div><div class="suite-row-r"><div class="suite-cell"><div class="suite-cell-h"><span>Same on both platforms</span><span class="suite-chip inc">Included</span></div><p>Video call.</p></div></div></div></div></div><p class="text-[11px] text-zinc-600">NinjaTrader&reg; is a registered trademark of NinjaTrader Group, LLC. TradingView is a trademark of TradingView, Inc. Educational software, not financial advice. Futures trading involves substantial risk of loss.</p>
         </div>
       </section>
 
@@ -225,7 +221,8 @@
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6 w-full">
               <div class="space-y-2">
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] uppercase tracking-wider">TradingView Flagship</span>
+                  <span class="px-2 py-0.5 rounded bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] uppercase tracking-wider">Flagship</span>
+                  <span class="suite-pchip">TradingView · NinjaTrader 8</span>
                   <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-wider font-extrabold flex items-center gap-1">
                     <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
                   </span>
@@ -322,7 +319,8 @@
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6 w-full">
               <div class="space-y-2">
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] uppercase tracking-wider">TradingView Trend Bias Matrix</span>
+                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] uppercase tracking-wider">Trend Bias Matrix</span>
+                  <span class="suite-pchip">TradingView · NT8 coming</span>
                   <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-wider font-extrabold flex items-center gap-1">
                     <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
                   </span>
@@ -388,7 +386,8 @@
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6 w-full">
               <div class="space-y-2">
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] uppercase tracking-wider">TradingView Companion</span>
+                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] uppercase tracking-wider">Breakout Volume Companion</span>
+                  <span class="suite-pchip">TradingView · NinjaTrader 8</span>
                   <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-wider font-extrabold flex items-center gap-1">
                     <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
                   </span>
@@ -474,7 +473,8 @@
             <div class="flex flex-col lg:flex-row justify-between items-start gap-6 border-b border-white/5 pb-6 mb-6 w-full">
               <div class="space-y-2">
                 <div class="flex flex-wrap gap-2">
-                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] uppercase tracking-wider">TradingView Levels Indicator</span>
+                  <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] uppercase tracking-wider">Levels Indicator</span>
+                  <span class="suite-pchip">TradingView · NT8 coming</span>
                   <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-wider font-extrabold flex items-center gap-1">
                     <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
                   </span>
@@ -548,6 +548,7 @@
               <div class="space-y-2">
                 <div class="flex flex-wrap gap-2">
                   <span class="px-2 py-0.5 rounded bg-zinc-900 border border-white/10 text-zinc-400 text-[10px] uppercase tracking-wider">Journal &amp; Strategy Optimizer</span>
+                  <span class="suite-pchip">Chrome extension · free + premium</span>
                   <span class="px-2 py-0.5 rounded bg-green-950/40 border border-green-500/30 text-green-400 text-[10px] uppercase tracking-wider font-extrabold flex items-center gap-1">
                     <span class="w-1 h-1 rounded-full bg-green-400"></span> Exclusive VIP Bundle Asset
                   </span>
@@ -1076,5 +1077,22 @@
   <script src="nav-loader.js?v=20261025c"></script>
   <script src="checkout-gate.js?v=20261025a"></script>
   <script src="tv-notice.js"></script>
+<script>
+/* Platform toggle on the "What's in the membership" overview */
+(function () {
+  function set(v) {
+    document.querySelectorAll('#suite-plat [data-plat]').forEach(function (b) { b.setAttribute('aria-selected', b.getAttribute('data-plat') === v ? 'true' : 'false'); });
+    document.querySelectorAll('#by-platform [data-cell]').forEach(function (c) { c.hidden = v !== 'both' && c.getAttribute('data-cell') !== v; });
+    document.querySelectorAll('#by-platform .suite-row').forEach(function (r) { r.classList.toggle('dim', v === 'nt' && r.hasAttribute('data-ntsoon')); });
+    try { localStorage.setItem('fsdx_suite_plat', v); } catch (e) {}
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('#suite-plat [data-plat]');
+    if (b) set(b.getAttribute('data-plat'));
+  });
+  function init() { var v = 'both'; try { v = localStorage.getItem('fsdx_suite_plat') || 'both'; } catch (e) {} if (['both', 'tv', 'nt'].indexOf(v) === -1) v = 'both'; set(v); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
 </body>
 </html>
