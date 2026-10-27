@@ -300,6 +300,7 @@
       +     '<span class="text-[11px] text-zinc-600">' + esc(r.email) + '</span></div></div>'
       +   '<div class="text-[11px] font-black ' + (h > 24 ? 'text-red-400' : 'text-zinc-500') + '">waiting ' + ago(r.requestedAt || r.createdAt) + '</div>'
       + '</div>'
+      + expiryLine(r)
       + steps
       + '<div class="flex items-center justify-between gap-2 flex-wrap mt-3">'
       +   '<span class="text-[11px] text-zinc-500">' + done + ' of ' + all.length + ' ticked' + (full ? '' : ' · finish every step to unlock') + '</span>'
@@ -420,23 +421,23 @@
     var out;
     if (st === 'cancelled' || st === 'inactive') {
       var left = m.leftDate || m.churnedDate;
-      out = { text: left ? 'Ended ' + shortDate(left) : 'Ended', sub: m.cancelReason || 'Cancelled', tone: 'bad', ending: false };
+      out = { text: left ? 'Ended ' + shortDate(left) : 'Ended', sub: m.cancelReason || 'Cancelled', tone: 'bad', ending: false, exp: ['Ended', left] };
       if (left) facts.push(['Ended', shortDate(left)]);
     } else if (st === 'lifetime' || st === 'legacy') {
-      out = { text: 'Lifetime', sub: 'No renewal', tone: 'ok', ending: false };
+      out = { text: 'Lifetime', sub: 'No renewal', tone: 'ok', ending: false, exp: ['Lifetime', null] };
     } else if (st === 'canceling' || st === 'trial_cancelled' || m.cancelAtPeriodEnd) {
       var end = m.cancelingDate || m.renewal, n = daysTo(end);
       out = { text: n == null ? 'Ending' : n <= 0 ? 'Ends today' : 'Ends in ' + n + ' day' + (n === 1 ? '' : 's'),
-              sub: (end ? shortDate(end) + ' · ' : '') + 'cancelled, still active', tone: n != null && n <= 2 ? 'bad' : 'warn', ending: n == null || n <= 7 };
+              sub: (end ? shortDate(end) + ' · ' : '') + 'cancelled, still active', tone: n != null && n <= 2 ? 'bad' : 'warn', ending: n == null || n <= 7, exp: ['Access ends', end] };
       if (end) facts.push(['Access ends', shortDate(end)]);
     } else if (st === 'trialing') {
       var n2 = daysTo(m.renewal);
-      out = { text: m.renewal ? 'Trial ends ' + shortDate(m.renewal) : 'Trial', sub: n2 != null ? (n2 <= 0 ? 'converts today' : 'converts in ' + n2 + ' day' + (n2 === 1 ? '' : 's')) : '', tone: n2 != null && n2 <= 7 ? 'warn' : 'ok', ending: n2 != null && n2 <= 7 };
+      out = { text: m.renewal ? 'Trial ends ' + shortDate(m.renewal) : 'Trial', sub: n2 != null ? (n2 <= 0 ? 'converts today' : 'converts in ' + n2 + ' day' + (n2 === 1 ? '' : 's')) : '', tone: n2 != null && n2 <= 7 ? 'warn' : 'ok', ending: n2 != null && n2 <= 7, exp: ['Trial converts', m.renewal] };
       if (m.renewal) facts.push(['Trial converts', shortDate(m.renewal)]);
     } else if (st === 'past_due') {
-      out = { text: 'Past due', sub: 'Whop is retrying the charge', tone: 'bad', ending: true };
+      out = { text: 'Past due', sub: 'Whop is retrying the charge', tone: 'bad', ending: true, exp: ['Past due · paid through', m.renewal] };
     } else {
-      out = { text: m.renewal ? 'Renews ' + shortDate(m.renewal) : 'Active', sub: plan, tone: 'ok', ending: false };
+      out = { text: m.renewal ? 'Renews ' + shortDate(m.renewal) : 'Active', sub: plan, tone: 'ok', ending: false, exp: ['Paid through · renews', m.renewal] };
       if (m.renewal) facts.push(['Renews', shortDate(m.renewal)]);
     }
     out.facts = facts;
@@ -444,6 +445,20 @@
   }
 
   function needsYou(r) { return isTask(r) || isWaiting(r); }
+  /** An NT user: has a NinjaTrader email on file and at least one license on it (or a move in progress). */
+  function isNtUser(r) { return !!r.ntEmail && r.status !== 'removed' && r.status !== 'declined' && ((r.held || []).length > 0 || todo(r).removeOld.length > 0); }
+  function fullDate(d) {
+    if (!d) return '';
+    try { return new Date(String(d).length <= 10 ? d + 'T12:00:00' : d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/Chicago' }); } catch (e) { return d; }
+  }
+  /** One line for task cards: when this membership ends, so you can set the license expiry to match. */
+  function expiryLine(r) {
+    var ms = membership(r), e = ms.exp;
+    var body = e ? (e[1] ? '<b class="text-white">' + esc(fullDate(e[1])) + '</b>' + (e[0] === 'Access ends' ? ' · set the license to expire this day' : e[0].indexOf('renews') !== -1 ? ' · keeps renewing: lifetime, or this date and extend it later' : e[0] === 'Trial converts' ? ' · trial, first charge this day' : '')
+                     : 'no end date')
+      : esc(ms.text === '—' ? 'No Whop membership found' : ms.text) + (ms.sub ? ' · ' + esc(ms.sub) : '');
+    return '<div class="text-[12px] mt-2"><span class="text-zinc-500">Membership:</span> <span class="l-' + ms.tone + ' font-bold">' + esc(ms.text) + '</span> <span class="text-zinc-400">· ' + body + '</span></div>';
+  }
   function prodState(r, p) {
     var t = todo(r), held = (r.held || []).indexOf(p.id) !== -1;
     if (t.remove.indexOf(p.id) !== -1 || t.removeOld.indexOf(p.id) !== -1) return 'rm';
@@ -465,9 +480,9 @@
     var count = function (fn) { return recs.filter(fn).length; };
     var opts = [
       ['all', 'All', function () { return true; }],
-      ['need', 'Needs attention', needsYou],
+      ['need', 'To do', isTask],
       ['ending', 'Ending soon', function (r) { return membership(r).ending; }],
-      ['active', 'Active', function (r) { return r.status === 'active'; }],
+      ['ntusers', 'NT users', isNtUser],
       ['waiting', 'Waiting', isWaiting],
       ['removed', 'Removed', function (r) { return r.status === 'removed'; }],
       ['declined', 'Not using', function (r) { return r.status === 'declined'; }]
