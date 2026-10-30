@@ -179,8 +179,8 @@
   "risk_profile": 400,
   "session": "New York open (8:30 AM CT)",
   "commission_rt": 1.04,
-  "generated": "2026-10-23",
-  "last_trade_date": "2026-10-23"
+  "generated": "2026-10-30",
+  "last_trade_date": "2026-10-30"
  },
  "trades": [
   {
@@ -2504,6 +2504,63 @@
    "pnl": 528.92,
    "mfe": 531,
    "mae": -214
+  },
+  {
+   "id": "2026-10-28-nt1158",
+   "date": "2026-10-28",
+   "entry_time": "09:15",
+   "exit_time": "13:40",
+   "dir": "SHORT",
+   "grade": "B",
+   "contracts": 1,
+   "entry": 29817.5,
+   "exit": 29952.75,
+   "exit_reason": "Stop loss",
+   "exit_type": "STOP",
+   "gross": -270.5,
+   "commission": 1.04,
+   "pnl": -271.54,
+   "mfe": 67,
+   "mae": -270.5,
+   "source": "nt8"
+  },
+  {
+   "id": "2026-10-30-nt1159",
+   "date": "2026-10-30",
+   "entry_time": "09:30",
+   "exit_time": "09:40",
+   "dir": "SHORT",
+   "grade": "A",
+   "contracts": 1,
+   "entry": 28625.5,
+   "exit": 28767.75,
+   "exit_reason": "Stop loss",
+   "exit_type": "STOP",
+   "gross": -284.5,
+   "commission": 1.04,
+   "pnl": -285.54,
+   "mfe": 21.5,
+   "mae": -284.5,
+   "source": "nt8"
+  },
+  {
+   "id": "2026-10-30-nt1160",
+   "date": "2026-10-30",
+   "entry_time": "10:45",
+   "exit_time": "11:50",
+   "dir": "SHORT",
+   "grade": "A",
+   "contracts": 1,
+   "entry": 28647.75,
+   "exit": 28515,
+   "exit_reason": "Profit target",
+   "exit_type": "TP1",
+   "gross": 265.5,
+   "commission": 1.04,
+   "pnl": 264.46,
+   "mfe": 265.5,
+   "mae": -50.5,
+   "source": "nt8"
   }
  ]
 }
