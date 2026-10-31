@@ -5,14 +5,14 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prop Firm Discounts — FSD-X Trading Partners</title>
-  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
-  <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
-  <meta name="twitter:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, with drawdown rules and codes in one table. Use code DJFSDX." />
+  <meta name="twitter:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
@@ -114,6 +114,12 @@
     .af-badge{font-size:9px;font-weight:900;letter-spacing:.1em;color:#4ade80;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);border-radius:5px;padding:2px 6px;margin-left:6px;vertical-align:middle}
     .af-actions{display:flex;gap:8px;margin-top:auto}
     .af-actions .af-code{flex:1;justify-content:center}
+    .af-np{font-size:9px;font-weight:900;letter-spacing:.1em;color:#A2AEBF;background:rgba(162,174,191,.08);border:1px solid rgba(162,174,191,.22);border-radius:5px;padding:2px 6px;vertical-align:middle;white-space:nowrap}
+    .af-disc-np{color:#A2AEBF}
+    .af-card-np .af-mono{color:#A2AEBF;background:rgba(162,174,191,.06);border-color:rgba(162,174,191,.22)}
+    .af-visit{flex:1;text-align:center;font-weight:800;font-size:14px;color:#E6EAF0;border:1px solid rgba(162,174,191,.3);border-radius:12px;padding:12px 20px;transition:.15s;white-space:nowrap}
+    .af-visit:hover{border-color:#E6EAF0;background:rgba(255,255,255,.04)}
+    .pf-btn-np{background:transparent;color:#E6EAF0;border:1px solid rgba(162,174,191,.35)}
     .af-more{font-size:12px;font-weight:700;color:#A2AEBF;background:none;border:0;padding:0;cursor:pointer;text-align:left}
     .af-more:hover{color:#4ade80}
     /* ── finder + tables: one step bigger to match the homepage body size ── */
@@ -164,14 +170,14 @@
         <div class="max-w-3xl mx-auto text-center pt-14 pb-12 md:pt-20 md:pb-12 flex flex-col items-center">
           <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold tracking-wide mb-6">
             <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-            <span><span id="af-count">11</span> partners &middot; Rules checked October 2026</span>
+            <span><span id="af-count">12</span> prop firms &middot; <span id="af-count3">11</span> partners &middot; Rules checked October 2026</span>
           </span>
           <h1 class="text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1]">
             <span class="block">Prop firm discounts.</span>
             <span class="block text-green-400">Picked for traders.</span>
           </h1>
           <p class="mt-5 text-zinc-400 text-base md:text-lg max-w-xl leading-relaxed">
-            Every FSD-X partner code in one place. Compare drawdown, fees and automation rules, then click through to activate your discount. We list the downsides too.
+            Every FSD-X partner code in one place, plus well-known firms we don't partner with, so you can compare them all. Drawdown, fees and automation rules side by side. We list the downsides too.
           </p>
           <div class="mt-8 flex flex-col sm:flex-row items-stretch gap-4 w-full sm:w-auto">
             <button type="button" onclick="afFind()" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center shadow-lg shadow-green-500/10 whitespace-nowrap">Find my firm</button>
@@ -189,7 +195,7 @@
       <!-- STAT STRIP -->
       <section class="px-6 md:px-12">
         <div class="max-w-5xl mx-auto af-stats" style="border-left:0;border-right:0;background:none">
-          <div><b id="af-count2">11</b><span>Vetted partners</span></div>
+          <div><b id="af-count2">12</b><span>Firms compared</span></div>
           <div><b>Futures + perps</b><span>Both covered</span></div>
           <div><b>Pros &amp; cons</b><span>On every firm</span></div>
           <div><b>Oct 2026</b><span>Rules last checked</span></div>
@@ -201,10 +207,10 @@
         <div class="max-w-5xl mx-auto">
           <div class="flex items-end justify-between gap-4 flex-wrap mb-6">
             <div>
-              <h2 class="text-2xl md:text-3xl font-black text-white leading-tight">Partner firms</h2>
-              <p class="text-sm text-zinc-500 mt-1">Tap a code to copy. Confirm the rules on the firm's site before you buy.</p>
+              <h2 class="text-2xl md:text-3xl font-black text-white leading-tight">Prop firms</h2>
+              <p class="text-sm text-zinc-500 mt-1">Partners have a code. Firms marked <b class="text-zinc-300">Not a partner</b> are here for comparison only. Confirm the rules on the firm's site before you buy.</p>
             </div>
-            <div class="af-tabs" role="tablist" aria-label="Partner type">
+            <div class="af-tabs" role="tablist" aria-label="Firm type">
               <button type="button" class="af-tab" role="tab" data-af="futures" aria-selected="true">Futures<small id="af-n-futures"></small></button>
               <button type="button" class="af-tab" role="tab" data-af="perps" aria-selected="false">Perps<small id="af-n-perps"></small></button>
               <button type="button" class="af-tab" role="tab" data-af="tools" aria-selected="false">Tools<small id="af-n-tools"></small></button>
@@ -229,7 +235,7 @@
                 <button class="pf-tab" type="button" data-tab="filters" aria-expanded="false">Filters<span id="pf-fcount" class="pf-badge" style="display:none"></span></button>
               </div>
             </div>
-            <p class="pf-warn-sm"><strong>Updated Oct 8, 2026.</strong> Prop firm rules change often and may differ by the time you read this.
+            <p class="pf-warn-sm"><strong>Partner rules checked Oct 8, 2026. Non-partner firms added Oct 31, 2026.</strong> Prop firm rules change often and may differ by the time you read this.
               We update as often as we can. Always confirm on the firm's own site before you buy. Not financial advice.</p>
 
             <!-- QUICK MATCH -->
@@ -323,7 +329,7 @@
             <div class="flex items-end justify-between gap-4 flex-wrap mb-3">
               <div>
                 <h2 class="text-sm font-black text-white">Side by side</h2>
-                <p class="text-xs text-zinc-600 mt-0.5">As of October 8, 2026. Verify on each firm's site before buying.</p>
+                <p class="text-xs text-zinc-600 mt-0.5">Partners as of October 8, 2026. Non-partners as of October 31, 2026. Verify on each firm's site before buying.</p>
               </div>
               <button class="pf-link" type="button" onclick="pfClear()">Clear comparison</button>
             </div>
@@ -452,7 +458,7 @@
 
     /* ══════════════════════════════════════════════════════════════════════
        PARTNERS — edit here, the tables, filters and compare cards build themselves.
-       Last full check: October 8, 2026. Vest added October 20, 2026. My Funded Perps added October 21, 2026. Re-verify every field when you update.
+       Last full check: October 8, 2026. Non-partner firms (partner:false) added October 31, 2026. Vest added October 20, 2026. My Funded Perps added October 21, 2026. Re-verify every field when you update.
        k.*  = filter keys:  fee one|monthly · clock none|limit · dd [EOD,Intraday]
               act no|yes|mixed · auto yes|own|limited|no · mind none|some
        plat = platforms the firm supports (used by the Platform filter)
@@ -588,7 +594,103 @@
                'Stellar / CFD challenges: discounted across 1-step, 2-step and Lite sizes',
                'Rapid Pro accounts: fixed-dollar discount instead of a percentage'],
         note:'Discounts vary by account type and size, and FundedNext rotates them. Use the link and apply code DJFSDX at checkout. The current offer for that account shows on the payment screen.' },
+
+      /* ── NON-PARTNER FIRMS ─────────────────────────────────────────────
+         partner:false = no FSD-X code, no affiliate link, nothing earned.
+         Listed for comparison only. Plain links to the firm's own site.
+         Added October 31, 2026. Re-verify every field when you update. */
+      { n:'Lucid Trading', ty:'Futures prop firm', partner:false, pct:0, code:'',
+        url:'https://lucidtrading.com/',
+        dd:'EOD or Intraday', fee:'One-time', clock:'None',
+        act:'None',
+        dll:'Flex: none. Pro and Direct: none on 25K, soft on 50K and up. Daily: optional, picked at checkout',
+        cons:'Flex: 50% in eval, none funded. Pro: 40% funded. Direct: 20% funded. Daily: 50% in eval, none funded',
+        mind:'None stated. Pro can pass in one day',
+        plat:['NinjaTrader','Tradovate','TradingView','Rithmic'], platTxt:'CQG: NinjaTrader, Tradovate, TradingView. Rithmic: Quantower, Sierra Chart, MotiveWave, Tradesea, R|Trader and others',
+        auto:'Allowed, including bots and trade copiers. HFT, microscalping and hedging across accounts are banned',
+        maxf:'Up to 5 funded and 10 evals at once', split:'90/10',
+        hold:'News OK on most plans. LucidDaily funded: flat 1 minute before and after red-folder news. Flat by 4:45 PM ET',
+        k:{fee:'one', clock:'none', dd:['EOD','Intraday'], act:'no', auto:'yes', mind:'none'},
+        fit:'You want one fee, no deadline and no activation fee, and you plan to automate or copy trades across your own accounts.',
+        watch:'Four account types with different consistency and daily loss rules, so read the one you buy. LucidDaily funded accounts use intraday trailing drawdown and fail on red-folder news. After five payouts, accounts move to a live review.',
+        why:'Futures prop firm with four paths: LucidFlex, LucidPro, LucidDirect (straight to funded) and LucidDaily (daily payouts). One-time fees across the board.',
+        pts:['One-time fee, no deadline, no activation fee','Bots and copiers allowed','Straight-to-funded option (LucidDirect)','Daily payout path (LucidDaily)'],
+        rules:['90/10 split','Up to 5 funded','Copiers allowed','Flat by 4:45 PM ET'] },
+
+      { n:'Take Profit Trader', ty:'Futures prop firm', partner:false, pct:0, code:'',
+        url:'https://takeprofittrader.com/',
+        dd:'EOD test, Intraday PRO', fee:'Monthly', clock:'None',
+        act:'Yes. One-time PRO fee after you pass',
+        dll:'None stated',
+        cons:'Test: best day under 50% of profit. PRO and PRO+: none',
+        mind:'3 trading days in the test',
+        plat:['NinjaTrader','Tradovate','TradingView','Rithmic'], platTxt:'CQG: TradingView, NinjaTrader, Tradovate. Rithmic: R|Trader, Quantower, Bookmap, ATAS and others',
+        auto:'Not allowed. All trades must be placed by hand. Copying across your own accounts is allowed with a copier on TPT\'s approved list',
+        maxf:'Up to 5 PRO accounts at once', split:'PRO: 80/20. PRO+: 90/10',
+        hold:'Flat by 4:55 PM ET, no overnight. PRO: no positions from 1 minute before to 1 minute after FOMC, NFP and CPI',
+        k:{fee:'monthly', clock:'none', dd:['Intraday'], act:'yes', auto:'no', mind:'some'},
+        fit:'You trade by hand and want early access to profits. PRO lets you withdraw from day one once you build the buffer.',
+        watch:'The test bills monthly until you pass. PRO switches to intraday trailing drawdown and charges a one-time activation fee. No bots or automated strategies of any kind.',
+        why:'Futures prop firm with a monthly test, then PRO (sim funded) and invite-only PRO+ (live). Known for early withdrawals and no consistency rule once funded.',
+        pts:['Withdraw from day one in PRO, once buffered','No consistency rule once funded','No deadline on the test','CQG and Rithmic platforms'],
+        rules:['Test: 50% consistency','3-day minimum','No bots','Approved copiers only'] },
+
+      { n:'Tradeify', ty:'Futures prop firm', partner:false, pct:0, code:'',
+        url:'https://tradeify.co/',
+        dd:'EOD', fee:'One-time', clock:'None stated',
+        act:'None',
+        dll:'Growth eval: soft daily limit. Select eval: none. Select Daily and Lightning funded: daily limit by size',
+        cons:'Growth: none in eval, 35% funded. Select: 40% in eval, none funded. Lightning: 20 to 30% funded, rising with each payout',
+        mind:'1 to 3 days, by plan (Growth 1, Select 3)',
+        plat:['NinjaTrader','Tradovate','TradingView','Rithmic'], platTxt:'Pick a broker at checkout. Tradovate (NinjaTrader and TradingView run through it), Rithmic (Quantower, Sierra Chart, Tradesea, R|Trader) or WealthCharts',
+        auto:'Your own strategy only, if you own it outright and it isn\'t high-frequency. Copying across your own accounts in the same direction is allowed. Third-party copiers are unsupported',
+        maxf:'Up to 5 funded at once', split:'90/10',
+        hold:'News allowed at your own risk. Flat by 4:45 PM ET, no overnight',
+        k:{fee:'one', clock:'none', dd:['EOD'], act:'no', auto:'own', mind:'some'},
+        fit:'You want one fee, EOD drawdown and no activation fee, plus the option to skip the eval and buy a funded account outright.',
+        watch:'Each account type has its own consistency rule, and Lightning\'s rises after each payout. You must trade at least once a week. On funded accounts, most trades and most profit must come from trades held over 10 seconds.',
+        why:'Futures prop firm with three paths: Growth and Select evaluations, and Lightning, which skips the evaluation. EOD drawdown on all of them.',
+        pts:['EOD drawdown on every account','No activation fee','Straight-to-funded option (Lightning)','Daily payout path on Select'],
+        rules:['90/10 split','Up to 5 funded','One trade per week minimum','No overnight'] },
+
+      { n:'My Funded Futures', ty:'Futures prop firm', partner:false, pct:0, code:'',
+        url:'https://myfundedfutures.com/',
+        dd:'EOD or Intraday', fee:'One-time', clock:'None stated',
+        act:'None',
+        dll:'Builder: soft daily pause. Rapid, Rapid EOD and Pro: none',
+        cons:'Builder: none in eval, 50% funded. Rapid and Pro: 50% in eval, none funded. Rapid EOD: 30% in eval',
+        mind:'1 to 4 days, by plan',
+        plat:['NinjaTrader','Tradovate','TradingView'], platTxt:'NinjaTrader, Tradovate, TradingView, Quantower, Volumetrica, ATAS and others. Rithmic not listed',
+        auto:'Your own automated strategy is allowed. HFT and anything that exploits sim fills are banned. Copying across your own accounts is OK. Copying other traders is not',
+        maxf:'Up to 5 sim-funded (3 if any is 100K or 150K)', split:'Builder and Pro: 80/20. Rapid: 90/10',
+        hold:'Flat by 4:10 PM ET, no overnight. Tier 1 news banned on Rapid and Pro funded accounts',
+        k:{fee:'one', clock:'none', dd:['EOD','Intraday'], act:'no', auto:'own', mind:'some'},
+        fit:'You want one fee and no activation fee, and you want to pick your payout pace: daily (Rapid), every 48 hours (Builder) or every 14 days (Pro).',
+        watch:'Plans change often, and each one has its own drawdown, consistency and news rules. Rapid funded accounts use intraday trailing drawdown. Some plans close an account after 7 days without a trade. Tier 1 news is off-limits on most funded accounts.',
+        why:'One of the largest futures prop firms, with several one-time-fee plans (Builder, Rapid, Rapid EOD, Pro) that trade off drawdown type, consistency and payout speed.',
+        pts:['One-time fee, no activation fee','Daily payouts on Rapid plans','Your own automation allowed','Copy across your own accounts'],
+        rules:['No HFT','No hedging','Flat by 4:10 PM ET','Tier 1 news restricted'] },
+
+      { n:'FTMO', ty:'Futures prop firm', partner:false, pct:0, code:'',
+        url:'https://ftmo.com/',
+        dd:'EOD', fee:'Monthly', clock:'None',
+        act:'None',
+        dll:'Pro: hard limit in every phase. One breach ends the account. Growth: none in eval, soft once funded',
+        cons:'Eval: 40% (Growth) or 50% (Pro). Funded: none',
+        mind:'None to pass',
+        plat:['NinjaTrader','Tradovate','TradingView'], platTxt:'Tradovate, NinjaTrader and TradingView. No Rithmic',
+        auto:'Your own algos are allowed. HFT, latency arbitrage and copying signals or other traders are banned. Copying across your own accounts is OK. A third-party EA can get a funded account denied',
+        maxf:'Up to 3 sim-funded. Unlimited evals', split:'90/10',
+        hold:'Flat by 4:10 PM ET, no overnight or weekend. News isn\'t banned, but trading only around news gets flagged',
+        k:{fee:'monthly', clock:'none', dd:['EOD'], act:'no', auto:'own', mind:'none'},
+        fit:'You want a well-known name with no deadline, no activation fee and no consistency rule once funded.',
+        watch:'Billed monthly until you pass, and failing an account doesn\'t stop the billing. Only 3 funded accounts at once. Pro\'s daily loss limit is hard, so one bad day ends a funded account. The futures program is new in 2026, so its payout track record is short. Not available in every US state.',
+        why:'The well-known CFD prop firm\'s futures program. Two plans, Growth and Pro, both with EOD drawdown and a 90/10 split from the first payout.',
+        pts:['No deadline, no minimum days','No activation fee','No consistency rule once funded','90/10 split from the first payout'],
+        rules:['Up to 3 funded','No overnight','Pro: hard daily limit','Monthly billing'] },
     ];
+    const isPartner = p => p.partner !== false;
+    const NP_NOTE = 'Not an FSD-X partner. No code, no affiliate link, and we earn nothing if you sign up. Listed so you can compare.';
 
     const TOOLS = [
       { n:'NinjaTrader®', ty:'Platform · the whole FSD-X suite runs here', pct:0, code:'',
@@ -659,7 +761,8 @@
         +   (p.auto ? '<div class="pf-note"><b style="color:#a1a1aa">Automation</b>' + escA(p.auto) + '</div>' : '')
         +   (p.platTxt ? '<div class="pf-note"><b style="color:#a1a1aa">Platforms</b>' + escA(p.platTxt) + '</div>' : '')
         +   (p.note ? '<div class="text-[11px] text-zinc-600 mt-3">' + escA(p.note) + '</div>' : '')
-        +   '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer"'
+        +   (!isPartner(p) ? '<div class="text-[11px] text-zinc-500 mt-3">' + escA(NP_NOTE) + '</div>' : '')
+        +   '<a href="' + p.url + '" target="_blank" rel="' + (isPartner(p) ? 'noopener noreferrer' : 'nofollow noopener noreferrer') + '"'
         +     ' class="sm:hidden mt-4 block w-full text-center py-2.5 bg-green-500 hover:bg-green-400'
         +     ' text-black text-xs font-black uppercase tracking-wider rounded-xl transition">Open ' + escA(p.n) + ' &rarr;</a>'
         + '</div></td></tr>';
@@ -675,9 +778,11 @@
           + '<td class="' + TD + ' pl-3">'
           +   '<div class="font-bold text-white flex items-center gap-2">' + escA(p.n)
           +     (p.feat ? '<span class="text-[9px] font-black tracking-wider text-green-400 bg-green-500/10 border border-green-500/20 rounded px-1.5 py-0.5">BIGGEST</span>' : '')
+          +     (!isPartner(p) ? '<span class="af-np">NOT A PARTNER</span>' : '')
           +   '</div><div class="text-[10.5px] text-zinc-600 mt-0.5">' + escA(p.ty) + '</div></td>'
           + '<td class="' + TD + ' text-right whitespace-nowrap">'
-          +   (p.pct ? '<span class="font-black tabular-nums text-green-400">' + p.pct + '% off</span>'
+          +   (!isPartner(p) ? '<span class="text-[10px] font-bold text-zinc-500 bg-zinc-900 border border-white/10 rounded px-2 py-1">No code</span>'
+                    : p.pct ? '<span class="font-black tabular-nums text-green-400">' + p.pct + '% off</span>'
                     : p.pctLabel
                       ? '<span class="text-[10px] font-black tracking-wide text-green-400 bg-green-500/10 border border-green-500/20 rounded px-2 py-1">' + escA(p.pctLabel) + '</span>'
                     : '<span class="text-[10px] font-bold text-zinc-500 bg-zinc-900 border border-white/10 rounded px-2 py-1">Standard</span>') + '</td>'
@@ -693,8 +798,8 @@
                     : '<span class="text-zinc-700">&mdash;</span>') + '</td>'
           + '<td class="' + TD + ' text-right whitespace-nowrap">' + codeCell(p.code) + '</td>'
           + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell">'
-          +   '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"'
-          +     ' class="text-xs font-bold text-green-400 hover:text-green-300 transition">Open &rarr;</a></td>'
+          +   '<a href="' + p.url + '" target="_blank" rel="' + (isPartner(p) ? 'noopener noreferrer' : 'nofollow noopener noreferrer') + '" onclick="event.stopPropagation()"'
+          +     ' class="text-xs font-bold ' + (isPartner(p) ? 'text-green-400 hover:text-green-300' : 'text-zinc-400 hover:text-white') + ' transition">' + (isPartner(p) ? 'Open' : 'Visit') + ' &rarr;</a></td>'
           + '</tr>' + detailRow(p, 8);
       }).join('');
 
@@ -803,10 +908,10 @@
       grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(220px, 1fr))';
       grid.innerHTML = PF_SEL.map(function (i) {
         var p = FIRMS[i], k = p.k || {};
-        var disc = p.pct ? p.pct + '% off' : (p.pctLabel || 'Standard');
+        var disc = !isPartner(p) ? 'None. Not a partner' : p.pct ? p.pct + '% off' : (p.pctLabel || 'Standard');
         return '<div class="pf-card">'
           + '<h3>' + escA(p.n) + '</h3><div class="text-[10.5px] text-zinc-600 mb-2">' + escA(p.ty) + '</div>'
-          + pfCell('Discount', escA(disc), 'pf-good')
+          + pfCell('Discount', escA(disc), isPartner(p) ? 'pf-good' : '')
           + pfCell('Code', escA(p.code || 'n/a'))
           + pfCell('Eval fee', escA(p.fee || 'n/a') + (p.verify ? '<span class="pf-tag">VERIFY</span>' : ''), k.fee === 'one' ? 'pf-good' : 'pf-bad')
           + pfCell('Deadline to pass', escA(p.clock || 'n/a'), k.clock === 'none' ? 'pf-good' : 'pf-bad')
@@ -822,8 +927,9 @@
           + pfCell('News / overnight', escA(p.hold || 'n/a'))
           + (p.fit ? '<div class="pf-note"><b class="pf-good">Good fit if</b>' + escA(p.fit) + '</div>' : '')
           + (p.watch ? '<div class="pf-note"><b class="pf-bad">Watch out for</b>' + escA(p.watch) + '</div>' : '')
+          + (!isPartner(p) ? '<div class="pf-note">' + escA(NP_NOTE) + '</div>' : '')
           + '<div style="flex:1"></div>'
-          + '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer" class="pf-btn" style="display:block;text-align:center;margin-top:14px;text-decoration:none">Open ' + escA(p.n) + ' &rarr;</a>'
+          + '<a href="' + p.url + '" target="_blank" rel="' + (isPartner(p) ? 'noopener noreferrer' : 'nofollow noopener noreferrer') + '" class="pf-btn' + (isPartner(p) ? '' : ' pf-btn-np') + '" style="display:block;text-align:center;margin-top:14px;text-decoration:none">' + (isPartner(p) ? 'Open ' : 'Visit ') + escA(p.n) + ' &rarr;</a>'
           + '</div>';
       }).join('');
       box.style.display = 'block';
@@ -906,7 +1012,7 @@
         return '<div class="pf-card">'
           + '<div class="pf-rank">' + (i === 0 ? 'Best match' : '#' + (i + 1)) + '</div>'
           + '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:4px">'
-          +   '<h3>' + escA(p.n) + '</h3><span class="pf-score">' + r.sc + '<span style="font-size:11px;color:#71717a">/100</span></span></div>'
+          +   '<h3>' + escA(p.n) + (isPartner(p) ? '' : ' <span class="af-np">NOT A PARTNER</span>') + '</h3><span class="pf-score">' + r.sc + '<span style="font-size:11px;color:#71717a">/100</span></span></div>'
           + '<ul class="pf-why">' + lis + '</ul>'
           + (p.watch ? '<div class="pf-note"><b class="pf-bad">Also watch for</b>' + escA(p.watch) + '</div>' : '')
           + '<div style="flex:1"></div>'
@@ -1008,7 +1114,10 @@
       return FIRMS.filter(function (p) { return tab === 'perps' ? afIsPerp(p) : !afIsPerp(p); });
     }
     function afCard(p) {
-      var disc = p.pct
+      var np = !isPartner(p);
+      var disc = np
+        ? '<div class="af-disc lbl af-disc-np">No code</div><div class="af-disc-sub">NOT A PARTNER</div>'
+        : p.pct
         ? '<div class="af-disc">' + p.pct + '%</div><div class="af-disc-sub">OFF</div>'
         : p.pctLabel
           ? '<div class="af-disc lbl">' + escA(p.pctLabel) + '</div><div class="af-disc-sub">' + (/varies/i.test(p.pctLabel) ? 'BY PLAN' : 'EXCLUSIVE') + '</div>'
@@ -1025,6 +1134,19 @@
       var code = p.code
         ? '<button type="button" class="af-code" onclick="copyCode(\'' + p.code + '\', this)" title="Tap to copy">' + escA(p.code) + '</button>'
         : '';
+      if (np) return '<article class="af-card af-card-np">'
+        + '<div class="flex items-center gap-3">'
+        +   '<div class="af-mono" aria-hidden="true">' + escA(afMono(p.n)) + '</div>'
+        +   '<div class="flex-1 min-w-0"><div class="font-bold text-white leading-snug">' + escA(p.n) + '</div>'
+        +     '<div class="text-xs text-zinc-500 mt-0.5">' + escA(p.ty) + '</div></div>'
+        +   '<div>' + disc + '</div>'
+        + '</div>'
+        + specs + fit
+        + '<div class="af-actions">'
+        +   '<a href="' + p.url + '" target="_blank" rel="nofollow noopener noreferrer" class="af-visit">Visit ' + escA(p.n) + ' &rarr;</a>'
+        + '</div>'
+        + '<button type="button" class="af-more" onclick="afOpen(\'' + slug(p.n) + '\')">Full breakdown, rules &amp; downsides &rarr;</button>'
+        + '</article>';
       return '<article class="af-card">'
         + '<div class="flex items-center gap-3">'
         +   '<div class="af-mono" aria-hidden="true">' + escA(afMono(p.n)) + '</div>'
@@ -1049,8 +1171,10 @@
         var el = document.getElementById('af-n-' + t);
         if (el) el.textContent = afList(t).length;
       });
-      var total = FIRMS.length + TOOLS.length;
-      ['af-count', 'af-count2'].forEach(function (id) { var el = document.getElementById(id); if (el) el.textContent = total; });
+      var partners = FIRMS.filter(isPartner).length + TOOLS.length;
+      var el1 = document.getElementById('af-count');  if (el1) el1.textContent = FIRMS.length;
+      var el2 = document.getElementById('af-count3'); if (el2) el2.textContent = partners;
+      var el3 = document.getElementById('af-count2'); if (el3) el3.textContent = FIRMS.length;
     }
     function afInit() {
       document.querySelectorAll('.af-tab').forEach(function (t) {
