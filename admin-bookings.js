@@ -172,7 +172,12 @@
       : '<span class="mn-pill p-mut">Not a member</span>';
     var theirs = b.tz && b.tz !== TZ ? '<div class="cl-sub" title="' + esc(b.tz) + '">' + esc(tm(b.start, b.tz)) + ' their time</div>' : '';
     var shown = /discord|whop|member|sign.?up|account|product|which|platform|notes|help|about|question|topic|goal|why/i;
-    var rest = (b.answers || []).filter(function (a) { return !shown.test(a.key) && !shown.test(a.label); });
+    // Hide answers already shown above, Cal's internal fields, and repeats of their email.
+    var rest = (b.answers || []).filter(function (a) {
+      if (shown.test(a.key) || shown.test(a.label) || /^display|^attendee|^rescheduled/i.test(a.key)) return false;
+      if (low(a.value) === low(b.email) || low(a.value) === low(b.whopEmail)) return false;
+      return true;
+    });
     var kv = function (l, v) { return v ? '<div><div class="k">' + l + '</div><div class="v">' + v + '</div></div>' : ''; };
     var wEmail = b.whopEmail && low(b.whopEmail) !== low(b.email) ? b.whopEmail : '';
     var noteOpen = NOTE_OPEN === b.uid;
@@ -187,7 +192,7 @@
       +     (m ? kv('Member', esc((m.product || '') + (m.daysIn != null ? ' · ' + m.daysIn + 'd in' : ''))) : '')
       +     rest.map(function (a) { return kv(esc(a.label), esc(a.value)); }).join('')
       +   '</div>'
-      +   (b.topic ? '<div class="cl-topic">' + esc(b.topic) + '</div>' : '')
+      +   (b.topic ? '<div class="cl-topic"><span class="cl-sub" style="display:block;margin-bottom:2px">Wants help with</span>' + esc(b.topic) + '</div>' : '')
       +   (b.cancelReason ? '<div class="cl-sub mt-2">Cancel reason: ' + esc(b.cancelReason) + '</div>' : '')
       +   (b.myNote && !noteOpen ? '<div class="cl-my">📝 ' + esc(b.myNote) + '</div>' : '')
       +   (noteOpen ? '<textarea id="cl-note-in" class="ntx-in" rows="2" style="width:100%;margin-top:8px" placeholder="Your notes on this call">' + esc(b.myNote || '') + '</textarea>' : '')
