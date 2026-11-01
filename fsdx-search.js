@@ -58,6 +58,8 @@
     {t:'Live Sessions',   u:'schedule.html',    g:'Site', kw:'schedule 8:30 morning room gameplan monday'},
     {t:'Knowledge Base',  u:'knowledge.html',   g:'Site', kw:'guides docs walkthrough videos help'},
     {t:'Prop Firm Discounts', u:'affiliates.html', g:'Site', kw:'apex vest vest markets perps my funded perps mfp myfundedperpetuals perpetuals bulenox tradeday e8 fundednext affiliate partners discount code djfsdx promo funding eval'},
+    {t:'Start Here — Talk to the Creator', u:'start-here.html', g:'Site', kw:'start here talk creator call book 1-on-1 one on one questions consultation onboarding help setup call cal'},
+    {t:'Book a Call (members)', u:'book-a-call.html', g:'Site', kw:'book call setup call strategy walkthrough 1-on-1 onboarding members schedule'},
     {t:'Contact & Help',  u:'contact.html',     g:'Site', kw:'support ticket email'},
     {t:'FAQ',             u:'faq.html',         g:'Site', kw:'questions answers'},
     {t:'Disclosures',     u:'disclosures.html', g:'Site', kw:'legal risk cftc privacy terms'},

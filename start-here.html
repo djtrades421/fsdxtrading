@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Start Here · Talk to the Creator</title>
+  <meta name="description" content="Questions about FSD-X, Knightfall, Raven or Nexus? Book a quick 1-on-1 call with the creator or message him on Discord. No membership needed." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="FSD-X — Talk to the Creator" />
+  <meta property="og:description" content="Book a quick 1-on-1 call with the creator of FSD-X, or message him on Discord. No membership needed." />
+  <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FSD-X — Talk to the Creator" />
+  <meta name="twitter:description" content="Book a quick 1-on-1 call with the creator of FSD-X, or message him on Discord. No membership needed." />
+  <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
+  <link rel="canonical" href="https://www.fsdxtrading.com/start-here.html" />
+  <meta property="og:url" content="https://www.fsdxtrading.com/start-here.html" />
+  <link rel="stylesheet" href="tailwind.css">
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <style>
+    body { background-color: #000; }
+  </style>
+  <script src="analytics.js"></script>
+</head>
+
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col justify-between p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
+    <div class="w-full flex-1">
+
+      <!-- HEADER -->
+      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Start here</div>
+          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">Talk to the creator.</h1>
+          <p class="mt-4 text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
+            Questions, setup, or just want to see if FSD-X fits you? I built every tool here: Knightfall, Raven, Nexus and the platform. Message me on Discord or book a quick call.
+          </p>
+        </div>
+      </section>
+
+      <!-- TWO WAYS TO REACH ME -->
+      <section class="py-12 md:py-16 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Quick call -->
+          <div class="border border-green-500/25 bg-zinc-950/50 rounded-2xl p-6 md:p-8 flex flex-col">
+            <div class="text-[10px] text-green-400 uppercase tracking-widest mb-2 font-bold">Open to anyone · No membership needed</div>
+            <h2 class="text-xl font-black text-white mb-2">Book a quick call</h2>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">15 minutes, 1-on-1 with me. Ask which product fits you, how onboarding works, how the tools run, or anything about the data.</p>
+            <ul class="space-y-2 text-xs text-zinc-400 mb-6">
+              <li class="flex gap-2"><span class="text-green-400 font-black">→</span>Calls happen on Discord voice</li>
+              <li class="flex gap-2"><span class="text-green-400 font-black">→</span>Times show in your own timezone</li>
+              <li class="flex gap-2"><span class="text-green-400 font-black">→</span>Pick a topic when you book so I come prepared</li>
+            </ul>
+            <a href="https://cal.com/fsdxtrading/questions" target="_blank" rel="noopener noreferrer"
+               class="mt-auto block w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-wider text-center rounded-xl transition">
+              Book a quick call &rarr;
+            </a>
+          </div>
+
+          <!-- Discord text -->
+          <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 md:p-8 flex flex-col">
+            <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-2 font-bold">Prefer text?</div>
+            <h2 class="text-xl font-black text-white mb-2">Message me on Discord</h2>
+            <p class="text-zinc-400 text-sm leading-relaxed mb-5">Join the free Discord and message me there. Good if a call time doesn't fit your timezone, or if you'd rather type. Translation apps are welcome. Write in your own language and I'll reply.</p>
+            <ul class="space-y-2 text-xs text-zinc-400 mb-6">
+              <li class="flex gap-2"><span class="text-green-400 font-black">→</span>The Discord is free to join</li>
+              <li class="flex gap-2"><span class="text-green-400 font-black">→</span>No call slot needed</li>
+            </ul>
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer"
+               class="mt-auto block w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-black text-sm uppercase tracking-wider text-center rounded-xl transition">
+              Join the Discord &rarr;
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- DEEPER HELP — trial first (swapped for members by the script below) -->
+      <section class="pb-12 md:pb-12 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto border border-white/10 bg-zinc-950/40 rounded-2xl p-6 md:p-8">
+
+          <div id="sh-guest">
+            <div class="text-[10px] text-green-400 uppercase tracking-widest mb-2 font-bold">Want hands-on help?</div>
+            <h2 class="text-xl md:text-2xl font-black text-white mb-2">Setup calls and strategy walkthroughs</h2>
+            <p class="text-zinc-400 text-sm leading-relaxed max-w-2xl mb-6">The longer 30-minute calls are for trialers and members. I'll set it up with you start to finish, on NinjaTrader or TradingView, automated or manual. Or I'll walk you through the data: the stats, drawdown expectations and how I trade it.</p>
+            <ol class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+              <li class="border border-white/10 bg-black/40 rounded-xl p-4">
+                <div class="w-7 h-7 rounded-lg bg-green-500 text-black font-black text-sm flex items-center justify-center mb-2">1</div>
+                <div class="text-white font-bold text-sm mb-1">Start your free trial</div>
+                <p class="text-zinc-500 text-xs leading-relaxed">Monthly plans include a 30-day free trial. Cancel before it ends and you're not charged.</p>
+              </li>
+              <li class="border border-white/10 bg-black/40 rounded-xl p-4">
+                <div class="w-7 h-7 rounded-lg bg-green-500 text-black font-black text-sm flex items-center justify-center mb-2">2</div>
+                <div class="text-white font-bold text-sm mb-1">Log in to the site</div>
+                <p class="text-zinc-500 text-xs leading-relaxed">You get access to every tool on your plan right away.</p>
+              </li>
+              <li class="border border-white/10 bg-black/40 rounded-xl p-4">
+                <div class="w-7 h-7 rounded-lg bg-green-500 text-black font-black text-sm flex items-center justify-center mb-2">3</div>
+                <div class="text-white font-bold text-sm mb-1">Book your call</div>
+                <p class="text-zinc-500 text-xs leading-relaxed">Open <span class="text-zinc-300">Book a Call</span> in your member menu and pick a time.</p>
+              </li>
+            </ol>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <a href="memberships.html" class="px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-sm rounded-xl transition text-center">Start your free trial &rarr;</a>
+              <a href="compare.html" class="px-6 py-3 border border-white/15 hover:bg-white/[0.06] text-white font-bold text-sm rounded-xl transition text-center">Not sure which plan? Compare them</a>
+            </div>
+          </div>
+
+          <div id="sh-member" class="hidden">
+            <div class="text-[10px] text-green-400 uppercase tracking-widest mb-2 font-bold">You're a member</div>
+            <h2 class="text-xl md:text-2xl font-black text-white mb-2">Book a setup call or strategy walkthrough</h2>
+            <p class="text-zinc-400 text-sm leading-relaxed max-w-2xl mb-6">30 minutes, 1-on-1. Setup on NinjaTrader or TradingView, or a walkthrough of the data and how I trade it.</p>
+            <a href="book-a-call.html" class="inline-block px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-sm rounded-xl transition">Book a call &rarr;</a>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- WHAT WE CAN COVER -->
+      <section class="pb-16 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-lg font-black text-white mb-4">What we can talk about</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+            <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-white font-bold">Knightfall on NinjaTrader 8</div><div class="text-zinc-500 text-xs mt-1">Install, settings, automated or manual</div></div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-white font-bold">ORB PRO on TradingView</div><div class="text-zinc-500 text-xs mt-1">Setup, alerts and the Auto-Trader</div></div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-white font-bold">ORB Raven</div><div class="text-zinc-500 text-xs mt-1">Levels, stops, targets and sizing</div></div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-white font-bold">Nexus 2.0 &amp; the platform</div><div class="text-zinc-500 text-xs mt-1">Journal, accounts, backtests</div></div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-white font-bold">The data</div><div class="text-zinc-500 text-xs mt-1">Backtest stats and drawdown expectations</div></div>
+            <div class="border border-white/10 bg-zinc-950/40 rounded-xl p-4"><div class="text-white font-bold">Which plan fits you</div><div class="text-zinc-500 text-xs mt-1">Membership, standalone or free tools</div></div>
+          </div>
+          <p class="text-[11px] text-zinc-600 mt-6 leading-relaxed max-w-3xl">Calls cover how FSD-X products work and how to set them up. They are educational, not financial advice, and no one can promise trading results. Futures trading involves substantial risk of loss.</p>
+        </div>
+      </section>
+
+    </div>
+
+    <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
+      <div class="max-w-5xl mx-auto space-y-6">
+        <div>
+          <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Risk Disclosure</span>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">Futures and forex trading contains substantial risk and is not for every investor. An investor could potentially lose all or more than the initial investment. Risk capital is money that can be lost without jeopardizing ones' financial security or life style. Only risk capital should be used for trading and only those with sufficient risk capital should consider trading. Past performance is not necessarily indicative of future results.</p>
+        </div>
+        <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
+          <a href="index.html" class="hover:text-green-400 transition">Home</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
+          <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
+          <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
+          <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
+          <a href="faq.html" class="hover:text-green-400 transition">FAQ</a>
+          <a href="contact.html" class="hover:text-green-400 transition">Contact</a>
+          <a href="disclosures.html" class="hover:text-green-400 transition">Disclosures</a>
+        </nav>
+        <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
+          <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
+          <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // Signed-in visitors skip the "start a trial" steps and go straight to booking.
+    // book-a-call.html does the real membership check.
+    (function () {
+      try {
+        if (localStorage.getItem('fsdx_token')) {
+          document.getElementById('sh-guest').classList.add('hidden');
+          document.getElementById('sh-member').classList.remove('hidden');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <script src="nav-loader.js?v=20261101a"></script>
+</body>
+</html>

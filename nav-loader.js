@@ -46,7 +46,8 @@ window.toggleMobileMenu = function () {
       'index', 'suite', 'autotrader', 'results', 'track-record', 'memberships',
       'nightwing', 'raven', 'compare', 'free-indicators', 'platform', 'partners', 'giveaways',
       'knowledge', 'faq', 'contact', 'schedule', 'disclosures', 'affiliates',
-      'setup', 'welcome', '404', 'tradingview-update', 'releases', 'ninjatrader'
+      'setup', 'welcome', '404', 'tradingview-update', 'releases', 'ninjatrader',
+      'start-here'
     ];
 
     var rawPath = location.pathname || '/';
@@ -287,8 +288,11 @@ var FSDX_ICONS = {
   users: '<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
   shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="m9 12 2 2 4-4"/>',
-  home: '<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>'
+  home: '<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>',
+  chat: '<path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/>'
 };
+// "Start Here" — a plain top-level link (no dropdown) to the talk-to-the-creator page.
+var FSDX_START = ['start-here.html', 'Start Here'];
 var FSDX_DISCORD = 'https://discord.gg/RePdHESvSx';
 
 // Visitors get the full-width layout. Set here, in <head>, so the sidebar
@@ -515,7 +519,9 @@ function fsdxMountTopNav() {
   bar.innerHTML = '<div class="fxn-in">'
     + (guest ? '<a href="index.html" class="fxn-logo" aria-label="FSD-X Trading home"><b>FSD-X</b><small>TRADING</small></a>'
              : '<a href="index.html" class="fxn-home' + (here === 'index.html' ? ' here' : '') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">' + FSDX_ICONS.home + '</svg>Home</a>')
-    + '<nav aria-label="Site" style="display:flex;align-items:center;gap:2px">' + menus + '</nav>'
+    + '<nav aria-label="Site" style="display:flex;align-items:center;gap:2px">' + menus
+    +   '<a href="' + FSDX_START[0] + '" class="fxn-home' + (here === FSDX_START[0] ? ' here' : '') + '">' + FSDX_START[1] + '</a>'
+    + '</nav>'
     + '<span class="fxn-sp"></span>'
     + '<button type="button" class="fxn-search" aria-label="Search" title="Search (⌘K)" onclick="window.fsdxOpenSearch && fsdxOpenSearch()">'
     +   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>'
@@ -604,6 +610,7 @@ function fsdxMountMobileMenu(mount) {
   var box = document.createElement('div');
   box.id = 'fxn-mob';
   box.innerHTML = '<a href="index.html" class="fxn-mhome' + (here === 'index.html' ? ' cur' : '') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">' + FSDX_ICONS.home + '</svg>Home</a>'
+    + '<a href="' + FSDX_START[0] + '" class="fxn-mhome' + (here === FSDX_START[0] ? ' cur' : '') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">' + FSDX_ICONS.chat + '</svg>' + FSDX_START[1] + '</a>'
     + html
     + (guest ? '<a href="memberships.html" class="fxn-mcta">Start Free Trial</a>' : '')
     + '<a href="' + FSDX_DISCORD + '" target="_blank" rel="noopener noreferrer" class="fxn-mdc">Join Discord</a>';

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-fx="a">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FSD-X — Book a Call</title>
+  <!-- Member page: setup calls and walkthroughs are for trialers and members. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="tailwind.css">
+  <script src="fsdx-theme.js?v=20260830"></script>
+  <script src="nav-loader.js?v=20261101a"></script>
+  <script src="fsdx-account.js?v=20261025a"></script>
+  <style>
+    body { background-color: #000; }
+  </style>
+</head>
+
+<body class="text-white bg-black min-h-screen flex flex-col md:flex-row overflow-x-hidden antialiased">
+
+  <header class="md:hidden w-full bg-zinc-950 border-b border-white/10 p-4 sticky top-0 z-50 flex items-center justify-between">
+    <div class="text-2xl font-black tracking-wider text-green-400">FSD-X</div>
+    <button onclick="toggleMobileMenu()" class="border border-white/10 bg-zinc-900 px-3 py-1.5 rounded text-xs tracking-wider hover:bg-zinc-800 transition">// MENU</button>
+  </header>
+
+  <aside id="sidebar-panel" class="w-64 fixed inset-y-0 left-0 bg-zinc-950 border-r border-white/10 flex flex-col p-6 z-50 overflow-y-auto transform -translate-x-full md:translate-x-0 transition-transform duration-300">
+    <div id="nav-content" class="flex flex-col justify-between h-full"></div>
+  </aside>
+
+  <main class="flex-1 md:pl-64 w-full flex flex-col min-h-screen">
+
+    <div id="loading-screen" class="flex-1 flex items-center justify-center">
+      <div class="w-8 h-8 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin"></div>
+    </div>
+
+    <div id="page-content" class="hidden w-full flex-1">
+
+      <section class="pt-12 pb-10 md:pt-16 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// 1-on-1 with the creator</div>
+          <h1 class="text-3xl md:text-4xl font-black tracking-tight">Book a call</h1>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
+            30 minutes, just you and me on Discord voice. Pick the call that fits, choose a time in your timezone, and tell me what you want to cover so I come prepared.
+          </p>
+        </div>
+      </section>
+
+      <section class="py-12 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto">
+
+          <!-- Booking rule, shown before the buttons -->
+          <div class="border border-amber-500/25 bg-amber-500/5 rounded-xl px-5 py-4 mb-8 text-sm text-zinc-300 leading-relaxed">
+            <span class="font-bold text-amber-400">Before you book:</span>
+            these calls are for trialers and members. Enter the same email you used on Whop. I check each booking against it, and bookings that don't match a membership are cancelled.
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="border border-green-500/25 bg-zinc-950/50 rounded-2xl p-6 md:p-8 flex flex-col">
+              <div class="text-[10px] text-green-400 uppercase tracking-widest mb-2 font-bold">30 min · Discord voice</div>
+              <h2 class="text-xl font-black text-white mb-2">Setup Call</h2>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">I'll set it up with you start to finish. Any FSD-X product: NinjaTrader, TradingView, Raven, Nexus.</p>
+              <ul class="space-y-2 text-xs text-zinc-400 mb-6">
+                <li class="flex gap-2"><span class="text-green-400 font-black">→</span>Install and settings</li>
+                <li class="flex gap-2"><span class="text-green-400 font-black">→</span>Automated or manual</li>
+                <li class="flex gap-2"><span class="text-green-400 font-black">→</span>Prop firm account setup</li>
+              </ul>
+              <a id="bk-setup" href="#" target="_blank" rel="noopener noreferrer"
+                 class="mt-auto block w-full py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-sm uppercase tracking-wider text-center rounded-xl transition">
+                Book a setup call &rarr;
+              </a>
+            </div>
+
+            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-6 md:p-8 flex flex-col">
+              <div class="text-[10px] text-zinc-500 uppercase tracking-widest mb-2 font-bold">30 min · Discord voice</div>
+              <h2 class="text-xl font-black text-white mb-2">Strategy Walkthrough</h2>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">Walk through the data with me and see how I actually use the system.</p>
+              <ul class="space-y-2 text-xs text-zinc-400 mb-6">
+                <li class="flex gap-2"><span class="text-green-400 font-black">→</span>Backtest stats and what they mean</li>
+                <li class="flex gap-2"><span class="text-green-400 font-black">→</span>Normal drawdowns and what to expect</li>
+                <li class="flex gap-2"><span class="text-green-400 font-black">→</span>How I trade it, plus tips</li>
+              </ul>
+              <a id="bk-walk" href="#" target="_blank" rel="noopener noreferrer"
+                 class="mt-auto block w-full py-3.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-black text-sm uppercase tracking-wider text-center rounded-xl transition">
+                Book a walkthrough &rarr;
+              </a>
+            </div>
+
+          </div>
+
+          <div class="mt-6 border border-white/10 bg-zinc-950/40 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <div class="text-white font-bold text-sm">Prefer text, or no time fits your timezone?</div>
+              <div class="text-zinc-500 text-xs mt-1">Message me on Discord instead. Translation apps are welcome.</div>
+            </div>
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="px-5 py-2.5 border border-white/15 hover:bg-white/[0.06] rounded-xl text-sm font-bold text-white text-center shrink-0">Open Discord &rarr;</a>
+          </div>
+
+          <p class="text-[11px] text-zinc-600 mt-8 leading-relaxed max-w-3xl">Need to cancel or reschedule? Use the link in your confirmation email. Calls are educational and cover how FSD-X products work. They are not financial advice, and no one can promise trading results. Futures trading involves substantial risk of loss.</p>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+<script>
+(function () {
+  'use strict';
+  var API = 'https://nexus-validator.dfuentes4211.workers.dev';
+  // Hidden Cal.com events. They're also unlisted on the public Cal.com profile.
+  var LINKS = {
+    setup: 'https://cal.com/fsdxtrading/setup',
+    walk:  'https://cal.com/fsdxtrading/walkthrough'
+  };
+
+  var token = null;
+  try { token = localStorage.getItem('fsdx_token'); } catch (e) {}
+  if (!token) { window.location.href = 'login.html?next=book-a-call.html'; return; }
+
+  function show() {
+    document.getElementById('bk-setup').href = LINKS.setup;
+    document.getElementById('bk-walk').href = LINKS.walk;
+    document.getElementById('loading-screen').classList.add('hidden');
+    document.getElementById('page-content').classList.remove('hidden');
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    fetch(API + '/api/auth/profile', { headers: { 'Authorization': 'Bearer ' + token } })
+      .then(function (r) {
+        if (r.status === 401) { window.location.href = 'login.html?next=book-a-call.html'; throw new Error('auth'); }
+        return r.json();
+      })
+      .then(function (data) {
+        var whopKey = data && data.user && data.user.whopKey;
+        if (fsdxIsPending(whopKey)) {
+          fsdxRequireKey({ title: 'Book a Call', perks: [
+            '30-minute setup call, start to finish',
+            'Strategy walkthrough of the data with the creator',
+            'Discord voice, booked in your own timezone'
+          ] });
+          return;
+        }
+        show();
+      })
+      .catch(function (e) {
+        if (e && e.message === 'auth') return;
+        document.getElementById('loading-screen').innerHTML = '<p class="text-zinc-500 text-sm text-center px-6">Couldn\'t check your membership. Refresh, or message us on Discord if it keeps happening.</p>';
+      });
+  });
+})();
+</script>
+</body>
+</html>
