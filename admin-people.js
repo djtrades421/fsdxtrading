@@ -282,7 +282,7 @@
         var next = p.next && p.next.d ? '<div class="text-zinc-300">' + fmtD(p.next.d) + '</div><div class="pp-sub">' + p.next.k + '</div>' : '<span class="text-zinc-700">—</span>';
         var site = p.site ? (p.lastLogin ? '<span class="text-zinc-300">' + ago(p.lastLogin) + '</span>' : '<span class="pp-sub">account</span>') : '<span class="pp-sub">no account</span>';
         return '<tr class="pp-r' + (p.needs ? ' needs' : '') + (OPEN === p.key ? ' sel' : '') + '" data-pk="' + esc(p.key) + '">'
-          + '<td><div class="text-white font-bold">' + esc(p.name) + (p.flags.length ? '<span class="pp-flag" title="Flagged"></span>' : '') + '</div><div class="pp-sub">' + esc(p.email || (p.r && p.r.discordName) || '') + '</div></td>'
+          + '<td><div class="text-white font-bold">' + esc(p.name) + (p.flags.length ? '<span class="pp-flag" title="Flagged"></span>' : '') + '</div><div class="pp-sub">' + esc(p.email || '') + (p.r && p.r.discordName ? ' <span style="color:#818cf8">· @' + esc(p.r.discordName) + '</span>' : '') + '</div></td>'
           + '<td><span class="mn-pill ' + st.c + '">' + st.l + '</span><div class="pp-sub mt-1">' + esc(p.product || '—') + '</div></td>'
           + '<td>' + next + '</td>'
           + '<td>' + ntCell(p) + '</td>'
@@ -386,7 +386,8 @@
       +   kv('Plan', esc(p.product)) + kv(p.next ? p.next.k : 'Next', p.next && p.next.d ? fmtD(p.next.d, true) + (p.next.k === 'Renews' ? esc(rt) : '') : '')
       +   kv('Member since', r.joined ? fmtD(r.joined, true) + (tenure != null ? ' <span class="pp-sub">· ' + tenure + 'd</span>' : '') : '')
       +   kv('Paid total', p.paid ? usd(p.paid) : '')
-      +   kv('Discord', esc(r.discordName || '')) + kv('TradingView', copy(r.tvUsername))
+      +   kv('Discord', r.discordName ? copy(r.discordName) + (/^\d{15,22}$/.test(r.discordId || '') ? ' <a class="pp-sub" style="color:#818cf8" target="_blank" rel="noopener" href="https://discord.com/users/' + esc(r.discordId) + '">Open DM ↗</a>' : '') : '')
+      +   kv('TradingView', copy(r.tvUsername))
       +   kv('Site account', p.site ? (s.createdAt ? 'Since ' + fmtD(s.createdAt, true) : 'Yes') : 'None')
       +   kv('Last on site', p.lastLogin ? ago(p.lastLogin) : '')
       + '</div>'

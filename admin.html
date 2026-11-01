@@ -3513,11 +3513,12 @@
               // ── Not carried by the memberships API. Whatever CSV history or
               // a manual edit put here is still the only source, so preserve it. ──
               name: isManual ? (existing.name || item.name) : (item.name || existing.name),
-              discordName: existing.discordName || '',
-              discordId: existing.discordId || '',
+              // Manual edits win; otherwise take what Whop now sends, then fall back.
+              discordName: (isManual && existing.discordName) || item.discordName || existing.discordName || '',
+              discordId: (isManual && existing.discordId) || item.discordId || existing.discordId || '',
               country: existing.country || '',
               spend: existing.spend || '',
-              tvUsername: existing.tvUsername || '',
+              tvUsername: (isManual && existing.tvUsername) || item.tvUsername || existing.tvUsername || '',
               cancelReason: existing.cancelReason || '',
               notes: existing.notes || '',
 
