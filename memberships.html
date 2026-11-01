@@ -570,10 +570,6 @@
                 <p class="text-green-400/90 text-xs mt-3 font-semibold leading-relaxed">The complete ecosystem <span class="text-white">— commit a full quarter</span> and give the system time to prove itself across changing market conditions.</p>
                 <p class="text-zinc-500 text-xs mt-5 leading-relaxed">No free trial on this plan — billing starts at checkout and access is instant. Save ≈ $38 versus paying month to month. Cancel anytime before renewal.</p>
                 <div class="mt-5 border-t border-white/5 pt-5 text-xs leading-relaxed text-zinc-500">Best for: Traders ready to commit a season without locking in a full year.</div>
-                <div class="bf-only mt-4 border border-red-500/40 bg-red-950/20 rounded-xl px-3 py-2 text-[11px] text-zinc-300" data-bf-ends="2026-12-01T05:59:59Z" hidden>
-                  <span class="text-red-400 font-black uppercase tracking-widest text-[10px] block mb-0.5">Black Friday Sale</span>
-                  <span class="text-white font-bold">$249 / quarter</span> with code <span class="text-white font-bold">BFQUARTER</span> at checkout. Locked in while you stay subscribed. Ends Nov 30, 11:59 PM CT. <a href="disclosures.html#blackfriday" class="underline text-zinc-400">Terms</a>
-                </div>
               </div>
               <div class="mt-8 space-y-2">
                 <a href="https://whop.com/checkout/plan_RYMEBnqYNmFEZ" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-xl transition text-sm">Get Quarterly</a>
@@ -599,10 +595,6 @@
                 </div>
                 <p class="text-zinc-400 text-xs mt-5 leading-relaxed">The complete ecosystem at the lowest recurring rate. Your price is locked in — it won't increase as the suite grows.</p>
                 <div class="mt-5 border-t border-white/5 pt-5 text-xs leading-relaxed text-zinc-500">Best for: Active traders who want consistent access at the best rate.</div>
-                <div class="bf-only mt-4 border border-red-500/40 bg-red-950/20 rounded-xl px-3 py-2 text-[11px] text-zinc-300" data-bf-ends="2026-12-01T05:59:59Z" hidden>
-                  <span class="text-red-400 font-black uppercase tracking-widest text-[10px] block mb-0.5">Black Friday Sale</span>
-                  <span class="text-white font-bold">$799 / year</span> with code <span class="text-white font-bold">BFANNUAL</span> at checkout. Locked in while you stay subscribed. Ends Nov 30, 11:59 PM CT. <a href="disclosures.html#blackfriday" class="underline text-zinc-400">Terms</a>
-                </div>
               </div>
               <div class="mt-8 space-y-2">
                 <a href="https://whop.com/checkout/plan_1CAj5BxdzpT1W" data-gate="autotrader" target="_blank" rel="noopener noreferrer" class="block w-full text-center py-3 bg-transparent hover:bg-green-500/10 border border-green-500/40 text-green-400 font-extrabold rounded-xl transition text-sm">Get Annual</a>
@@ -732,10 +724,5 @@
   <script src="nav-loader.js?v=20261025c"></script>
   <script src="checkout-gate.js?v=20261025a"></script>
   <script src="tv-notice.js"></script>
-<script>
-  // Black Friday card lines: show until the sale ends, then stay hidden. Nothing to remove by hand.
-  (function () { document.querySelectorAll('[data-bf-ends]').forEach(function (el) {
-    if (Date.now() < Date.parse(el.getAttribute('data-bf-ends'))) el.hidden = false; }); })();
-</script>
 </body>
 </html>
