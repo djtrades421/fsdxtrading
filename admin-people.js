@@ -15,6 +15,9 @@
   var CHIP = 'current', QUERY = '', SORT = 'status', OPEN = null, SHOW = 60;
   var SRV = [];   // server events, newest first
   var RT = [];    // repeat-trial flags from the worker (/api/admin/repeat-trials)
+  var ONB = {};   // onboarding emails sent / skipped (/api/admin/onboard), by email
+  var ONB_T = []; // onboarding templates from the worker
+  var ONB_WINDOW = 21; // days after joining that someone sits in the onboarding queue
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -144,6 +147,13 @@
         : p.status === 'trialing' ? { k: 'Converts', d: r.renewal }
         : r.renewal && p.live && p.status !== 'lifetime' ? { k: 'Renews', d: r.renewal } : null;
       p.lastLogin = s.lastLogin || '';
+      p.onb = ONB[p.email] || null;
+      var jd = dayOf(r.joined);
+      p.daysIn = jd ? Math.round((Date.now() - new Date(jd + 'T12:00:00')) / 864e5) : null;
+      // In the queue: live, joined recently, never sent or skipped.
+      p.toOnboard = p.live && !p.onb && !!p.email && p.daysIn != null && p.daysIn <= ONB_WINDOW;
+      // Back after a past membership → the walkthrough fits better than first-time setup.
+      p.returning = p.flags.some(function (f) { return f.rtId; });
       return p;
     });
   }
@@ -216,6 +226,7 @@
     ['raven', 'Raven', function (p) { return p.live && p.fam === 'raven'; }],
     ['nightwing', 'Nightwing', function (p) { return p.live && p.fam === 'nightwing'; }],
     ['nexus', 'Nexus', function (p) { return p.live && p.fam === 'nexus'; }],
+    ['onboard', 'To onboard', function (p) { return p.toOnboard; }],
     ['trial', 'Trials', function (p) { return p.status === 'trialing'; }],
     ['repeat', 'Repeat trials', function (p) { return p.flags.some(function (f) { return f.rtId; }); }],
     ['cancel', 'Cancelling', function (p) { return p.status === 'canceling' || p.status === 'trial_cancelled'; }],
@@ -255,6 +266,39 @@
     return tv + (m ? '<span class="mn-pill ' + m[0] + '">' + m[1] + '</span>' : '') || '<span class="text-zinc-700">—</span>';
   }
 
+  function onbPill(p) {
+    if (p.onb && p.onb.state === 'sent') return '<span class="mn-pill p-grn" title="Onboarding sent ' + esc(fmtD(p.onb.at, true)) + '">Onboarded</span>';
+    if (p.onb && p.onb.state === 'skipped') return '<span class="mn-pill p-mut" title="Marked already onboarded">Onboarded · skip</span>';
+    if (p.toOnboard) return '<span class="mn-pill p-amb">Onboard</span>';
+    return '';
+  }
+
+  function onbBlock(p) {
+    if (!p.email) return '';
+    var o = p.onb;
+    var def = p.returning ? 'back' : 'setup';
+    var opts = (ONB_T.length ? ONB_T : [{ id: 'setup', label: 'New member · Setup call (30m)' }, { id: 'back', label: 'Returning member · Walkthrough (30m)' }, { id: 'checkin', label: 'Quick check-in (15m)' }])
+      .map(function (t) { return '<option value="' + esc(t.id) + '"' + (t.id === def ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
+    var lbl = function (id) { var t = ONB_T.filter(function (x) { return x.id === id; })[0]; return t ? t.label : id; };
+    var status = !o ? '<div class="text-[12.5px] text-white font-bold">' + (p.toOnboard ? 'Not onboarded yet' : 'No onboarding sent') + '</div>'
+      : o.state === 'sent' ? '<div class="text-[12.5px] text-white font-bold">Sent · ' + esc(lbl(o.template)) + '</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>'
+      : '<div class="text-[12.5px] text-white font-bold">Marked already onboarded</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>';
+    var hist = o && o.history && o.history.length > 1 ? '<div class="pp-sub mt-2">' + o.history.slice(1, 6).map(function (h) {
+      return fmtD(h.at, true) + ' · ' + (h.action === 'sent' ? esc(lbl(h.template)) : 'skipped');
+    }).join('<br>') + '</div>' : '';
+    return '<div class="pp-sec">Onboarding</div><div class="ntx-card" style="padding:12px">'
+      + '<div class="flex items-start justify-between gap-2"><div>' + status + '</div>'
+      + (o ? '<button class="ntx-btn" data-ponb="clear" title="Put them back in the queue">Reset</button>' : '') + '</div>'
+      + hist
+      + '<select id="pp-onb-t" class="ntx-in" style="width:100%;margin-top:10px">' + opts + '</select>'
+      + '<textarea id="pp-onb-note" class="ntx-in" rows="2" placeholder="Optional personal line (added above your sign-off)" style="width:100%;margin-top:6px;resize:vertical"></textarea>'
+      + '<div class="flex gap-2 flex-wrap mt-2">'
+      +   '<button class="ntx-btn" data-ponb="preview">Preview</button>'
+      +   '<button class="ntx-btn" data-ponb="send" style="border-color:rgba(255,107,31,.6);color:#FF8A4C">' + (o && o.state === 'sent' ? 'Send again' : 'Send to ' + esc(p.email)) + '</button>'
+      +   (!o ? '<button class="ntx-btn" data-ponb="skip" title="Already talked to them — take them off the queue">Already onboarded</button>' : '')
+      + '</div></div>';
+  }
+
   function sorted(list) {
     var by = {
       status: function (a, b) { return (b.needs - a.needs) || ((STATUS[a.status] || { rank: 9 }).rank - (STATUS[b.status] || { rank: 9 }).rank) || a.name.localeCompare(b.name); },
@@ -282,7 +326,7 @@
         var next = p.next && p.next.d ? '<div class="text-zinc-300">' + fmtD(p.next.d) + '</div><div class="pp-sub">' + p.next.k + '</div>' : '<span class="text-zinc-700">—</span>';
         var site = p.site ? (p.lastLogin ? '<span class="text-zinc-300">' + ago(p.lastLogin) + '</span>' : '<span class="pp-sub">account</span>') : '<span class="pp-sub">no account</span>';
         return '<tr class="pp-r' + (p.needs ? ' needs' : '') + (OPEN === p.key ? ' sel' : '') + '" data-pk="' + esc(p.key) + '">'
-          + '<td><div class="text-white font-bold">' + esc(p.name) + (p.flags.length ? '<span class="pp-flag" title="Flagged"></span>' : '') + '</div><div class="pp-sub">' + esc(p.email || '') + (p.r && p.r.discordName ? ' <span style="color:#818cf8">· @' + esc(p.r.discordName) + '</span>' : '') + '</div></td>'
+          + '<td><div class="text-white font-bold">' + esc(p.name) + (p.flags.length ? '<span class="pp-flag" title="Flagged"></span>' : '') + ' ' + onbPill(p) + '</div><div class="pp-sub">' + esc(p.email || '') + (p.r && p.r.discordName ? ' <span style="color:#818cf8">· @' + esc(p.r.discordName) + '</span>' : '') + '</div></td>'
           + '<td><span class="mn-pill ' + st.c + '">' + st.l + '</span><div class="pp-sub mt-1">' + esc(p.product || '—') + '</div></td>'
           + '<td>' + next + '</td>'
           + '<td>' + ntCell(p) + '</td>'
@@ -391,7 +435,7 @@
       +   kv('Site account', p.site ? (s.createdAt ? 'Since ' + fmtD(s.createdAt, true) : 'Yes') : 'None')
       +   kv('Last on site', p.lastLogin ? ago(p.lastLogin) : '')
       + '</div>'
-      + ntBlock + flags + notes
+      + onbBlock(p) + ntBlock + flags + notes
       + '<div class="pp-sec">History</div>' + timeline(p)
       + '<div class="flex gap-2 flex-wrap mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,.06)">'
       +   (p.r && p.r.id ? '<button class="ntx-btn" data-pedit="' + esc(p.r.id) + '">Edit record</button>' : '')
@@ -418,6 +462,40 @@
       .then(function () { renderAll(); toast('Flag dismissed'); })
       .catch(function (e) { toast(e.message, true); });
   }
+  function loadOnboard() {
+    if (!tok()) return Promise.resolve();
+    return fetch(API + '/api/admin/onboard', { headers: { 'Authorization': 'Bearer ' + tok() } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) { ONB = d.records || {}; ONB_T = d.templates || []; } }).catch(function () {});
+  }
+  function onbAction(kind) {
+    var p = OPEN && PEOPLE.filter(function (x) { return x.key === OPEN; })[0]; if (!p || !p.email) return;
+    var tSel = $('pp-onb-t'), nEl = $('pp-onb-note');
+    var template = tSel ? tSel.value : 'setup', note = nEl ? nEl.value.trim() : '';
+    var post = function (path, body) {
+      return fetch(API + path, { method: 'POST', headers: { 'Authorization': 'Bearer ' + tok(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.success) throw new Error(d.error || 'Failed'); return d; }); });
+    };
+    if (kind === 'preview') {
+      var w = window.open('', '_blank');
+      return post('/api/admin/onboard', { email: p.email, name: p.name, template: template, note: note, preview: true })
+        .then(function (d) { if (w) { w.document.title = d.subject; w.document.body.style.margin = '0'; w.document.body.innerHTML = '<div style="font:13px Arial;padding:10px 28px;background:#111;color:#aaa">Subject: <b style="color:#fff">' + esc(d.subject) + '</b> · To: ' + esc(p.email) + '</div>' + d.html; } })
+        .catch(function (e) { if (w) w.close(); toast(e.message, true); });
+    }
+    if (kind === 'send') {
+      var tl = (ONB_T.filter(function (x) { return x.id === template; })[0] || {}).label || template;
+      if (!window.confirm('Send "' + tl + '" to ' + p.email + '?')) return;
+      toast('Sending…');
+      return post('/api/admin/onboard', { email: p.email, name: p.name, template: template, note: note })
+        .then(function (d) { ONB[p.email] = d.record; renderAll(); toast('Sent to ' + p.email); })
+        .catch(function (e) { toast(e.message, true); });
+    }
+    if (kind === 'skip' || kind === 'clear') {
+      return post('/api/admin/onboard/mark', { email: p.email, state: kind })
+        .then(function (d) { if (d.record) ONB[p.email] = d.record; else delete ONB[p.email]; renderAll(); toast(kind === 'skip' ? 'Marked onboarded' : 'Back in the queue'); })
+        .catch(function (e) { toast(e.message, true); });
+    }
+  }
   function renderAll() {
     PEOPLE = build();
     renderStats(); renderChips(); renderTable(); renderSide();
@@ -426,7 +504,7 @@
     skeleton(); if (!$('panel-people')) return;
     renderAll();
     var nt = window.ntLoad ? window.ntLoad().catch(function () {}) : Promise.resolve();
-    Promise.all([loadServerEvents(), loadRepeatTrials(), nt]).then(renderAll);
+    Promise.all([loadServerEvents(), loadRepeatTrials(), loadOnboard(), nt]).then(renderAll);
   };
   window.peopleSync = function () {
     if (typeof syncFromWhop !== 'function') return;
@@ -441,6 +519,7 @@
     var so = t.closest('[data-psort]'); if (so) { SORT = so.getAttribute('data-psort'); renderTable(); return; }
     if (t.closest('[data-pmore]')) { SHOW += 100; renderTable(); return; }
     if (t.closest('[data-pclose]') || t.id === 'pp-side') { OPEN = null; renderTable(); renderSide(); return; }
+    var ob = t.closest('[data-ponb]'); if (ob) { onbAction(ob.getAttribute('data-ponb')); return; }
     var rd = t.closest('[data-prtdismiss]'); if (rd) { dismissRepeat(rd.getAttribute('data-prtdismiss')); return; }
     var cp = t.closest('[data-pcopy]');
     if (cp) { var v = cp.getAttribute('data-pcopy'); (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(function () { toast('Copied ' + v); }).catch(function () { window.prompt('Copy:', v); }); return; }
