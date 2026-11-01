@@ -12,7 +12,7 @@
 (function () {
   'use strict';
   var API = 'https://nexus-validator.dfuentes4211.workers.dev';
-  var CHIP = 'current', QUERY = '', SORT = 'status', OPEN = null, SHOW = 60;
+  var CHIP = 'current', QUERY = '', SORT = 'status', REV = false, OPEN = null, SHOW = 60;
   var SRV = [];   // server events, newest first
   var RT = [];    // repeat-trial flags from the worker (/api/admin/repeat-trials)
   var ONB = {};   // onboarding emails sent / skipped (/api/admin/onboard), by email
@@ -267,6 +267,14 @@
     return tv + (m ? '<span class="mn-pill ' + m[0] + '">' + m[1] + '</span>' : '') || '<span class="text-zinc-700">—</span>';
   }
 
+  function joinedCell(p) {
+    var j = p.r && p.r.joined;
+    if (!j) return '<span class="text-zinc-700">—</span>';
+    var d = p.daysIn;
+    var age = d == null ? '' : d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 60 ? d + 'd ago' : Math.round(d / 30) + 'mo ago';
+    return '<div class="text-zinc-300">' + fmtD(j, dayOf(j).slice(0, 4) !== String(new Date().getFullYear())) + '</div><div class="pp-sub">' + age + '</div>';
+  }
+
   function onbPill(p) {
     if (p.onb && p.onb.state === 'sent') return '<span class="mn-pill p-grn" title="Onboarding sent ' + esc(fmtD(p.onb.at, true)) + '">Onboarded</span>';
     if (p.onb && p.onb.state === 'skipped') return '<span class="mn-pill p-mut" title="Marked already onboarded">Onboarded · skip</span>';
@@ -309,9 +317,11 @@
       next: function (a, b) { return (dayOf(a.next && a.next.d) || '9999') < (dayOf(b.next && b.next.d) || '9999') ? -1 : 1; },
       paid: function (a, b) { return b.paid - a.paid; },
       seen: function (a, b) { return (b.lastLogin || '') > (a.lastLogin || '') ? 1 : -1; },
-      joined: function (a, b) { return ((b.r && b.r.joined) || '') > ((a.r && a.r.joined) || '') ? 1 : -1; },
+      // Newest first; no join date sinks to the bottom.
+      joined: function (a, b) { return (dayOf(b.r && b.r.joined) || '0000') > (dayOf(a.r && a.r.joined) || '0000') ? 1 : -1; },
     }[SORT];
-    return list.slice().sort(by);
+    var out = list.slice().sort(by);
+    return REV ? out.reverse() : out;
   }
 
   function renderTable() {
@@ -321,9 +331,9 @@
       var r = p.r || {};
       return [p.name, p.email, r.discordName, r.tvUsername, r.whopUsername, p.nt && p.nt.ntEmail, p.product].join(' ').toLowerCase().indexOf(QUERY) !== -1;
     }));
-    var th = function (k, l) { return '<th data-psort="' + k + '" class="' + (SORT === k ? 'on' : '') + '">' + l + '</th>'; };
+    var th = function (k, l) { return '<th data-psort="' + k + '" class="' + (SORT === k ? 'on' : '') + '" title="Click again to reverse">' + l + (SORT === k && REV ? ' ↑' : '') + '</th>'; };
     if (!list.length) { $('pp-table').innerHTML = '<div class="text-[12px] text-zinc-500 p-4">' + (PEOPLE.length ? 'No one matches.' : 'No data yet. Press Sync Whop now.') + '</div>'; return; }
-    $('pp-table').innerHTML = '<table class="pp-t"><tr>' + th('status', 'Member') + '<th>Plan</th>' + th('next', 'Next') + '<th>Access</th>' + th('seen', 'Site') + th('paid', 'Paid') + '</tr>'
+    $('pp-table').innerHTML = '<table class="pp-t"><tr>' + th('status', 'Member') + '<th>Plan</th>' + th('joined', 'Joined') + th('next', 'Next') + '<th>Access</th>' + th('seen', 'Site') + th('paid', 'Paid') + '</tr>'
       + list.slice(0, SHOW).map(function (p) {
         var st = STATUS[p.status] || STATUS.inactive;
         var next = p.next && p.next.d ? '<div class="text-zinc-300">' + fmtD(p.next.d) + '</div><div class="pp-sub">' + p.next.k + '</div>' : '<span class="text-zinc-700">—</span>';
@@ -331,6 +341,7 @@
         return '<tr class="pp-r' + (p.needs ? ' needs' : '') + (OPEN === p.key ? ' sel' : '') + '" data-pk="' + esc(p.key) + '">'
           + '<td><div class="text-white font-bold">' + esc(p.name) + (p.flags.length ? '<span class="pp-flag" title="Flagged"></span>' : '') + ' ' + onbPill(p) + '</div><div class="pp-sub">' + esc(p.email || '') + (p.r && p.r.discordName ? ' <span style="color:#818cf8">· @' + esc(p.r.discordName) + '</span>' : '') + '</div></td>'
           + '<td><span class="mn-pill ' + st.c + '">' + st.l + '</span><div class="pp-sub mt-1">' + esc(p.product || '—') + '</div></td>'
+          + '<td>' + joinedCell(p) + '</td>'
           + '<td>' + next + '</td>'
           + '<td>' + ntCell(p) + '</td>'
           + '<td>' + site + '</td>'
@@ -519,7 +530,7 @@
     var p = $('panel-people'); if (!p || !p.contains(e.target)) return;
     var t = e.target;
     var ch = t.closest('[data-pchip]'); if (ch) { CHIP = ch.getAttribute('data-pchip'); SHOW = 60; renderChips(); renderTable(); return; }
-    var so = t.closest('[data-psort]'); if (so) { SORT = so.getAttribute('data-psort'); renderTable(); return; }
+    var so = t.closest('[data-psort]'); if (so) { var k = so.getAttribute('data-psort'); REV = (SORT === k) ? !REV : false; SORT = k; renderTable(); return; }
     if (t.closest('[data-pmore]')) { SHOW += 100; renderTable(); return; }
     if (t.closest('[data-pclose]') || t.id === 'pp-side') { OPEN = null; renderTable(); renderSide(); return; }
     var ob = t.closest('[data-ponb]'); if (ob) { onbAction(ob.getAttribute('data-ponb')); return; }
