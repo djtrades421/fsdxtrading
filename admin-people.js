@@ -151,6 +151,7 @@
       var jd = dayOf(r.joined);
       p.daysIn = jd ? Math.round((Date.now() - new Date(jd + 'T12:00:00')) / 864e5) : null;
       // In the queue: live, joined recently, never sent or skipped.
+      // Cancelled trials stay in: many cancel right away just to avoid the charge.
       p.toOnboard = p.live && !p.onb && !!p.email && p.daysIn != null && p.daysIn <= ONB_WINDOW;
       // Back after a past membership → the walkthrough fits better than first-time setup.
       p.returning = p.flags.some(function (f) { return f.rtId; });
@@ -269,6 +270,7 @@
   function onbPill(p) {
     if (p.onb && p.onb.state === 'sent') return '<span class="mn-pill p-grn" title="Onboarding sent ' + esc(fmtD(p.onb.at, true)) + '">Onboarded</span>';
     if (p.onb && p.onb.state === 'skipped') return '<span class="mn-pill p-mut" title="Marked already onboarded">Onboarded · skip</span>';
+    if (p.onb && p.onb.state === 'not_needed') return '<span class="mn-pill p-mut" title="Marked not needed">No onboard</span>';
     if (p.toOnboard) return '<span class="mn-pill p-amb">Onboard</span>';
     return '';
   }
@@ -282,9 +284,9 @@
     var lbl = function (id) { var t = ONB_T.filter(function (x) { return x.id === id; })[0]; return t ? t.label : id; };
     var status = !o ? '<div class="text-[12.5px] text-white font-bold">' + (p.toOnboard ? 'Not onboarded yet' : 'No onboarding sent') + '</div>'
       : o.state === 'sent' ? '<div class="text-[12.5px] text-white font-bold">Sent · ' + esc(lbl(o.template)) + '</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>'
-      : '<div class="text-[12.5px] text-white font-bold">Marked already onboarded</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>';
+      : '<div class="text-[12.5px] text-white font-bold">' + (o.state === 'not_needed' ? 'Marked not needed' : 'Marked already onboarded') + '</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>';
     var hist = o && o.history && o.history.length > 1 ? '<div class="pp-sub mt-2">' + o.history.slice(1, 6).map(function (h) {
-      return fmtD(h.at, true) + ' · ' + (h.action === 'sent' ? esc(lbl(h.template)) : 'skipped');
+      return fmtD(h.at, true) + ' · ' + (h.action === 'sent' ? esc(lbl(h.template)) : h.action === 'not_needed' ? 'not needed' : 'already onboarded');
     }).join('<br>') + '</div>' : '';
     return '<div class="pp-sec">Onboarding</div><div class="ntx-card" style="padding:12px">'
       + '<div class="flex items-start justify-between gap-2"><div>' + status + '</div>'
@@ -295,7 +297,8 @@
       + '<div class="flex gap-2 flex-wrap mt-2">'
       +   '<button class="ntx-btn" data-ponb="preview">Preview</button>'
       +   '<button class="ntx-btn" data-ponb="send" style="border-color:rgba(255,107,31,.6);color:#FF8A4C">' + (o && o.state === 'sent' ? 'Send again' : 'Send to ' + esc(p.email)) + '</button>'
-      +   (!o ? '<button class="ntx-btn" data-ponb="skip" title="Already talked to them — take them off the queue">Already onboarded</button>' : '')
+      +   (!o ? '<button class="ntx-btn" data-ponb="skip" title="Already talked to them — take them off the queue">Already onboarded</button>'
+            + '<button class="ntx-btn" data-ponb="none" title="Left / done — no onboarding needed">Not needed</button>' : '')
       + '</div></div>';
   }
 
@@ -490,9 +493,9 @@
         .then(function (d) { ONB[p.email] = d.record; renderAll(); toast('Sent to ' + p.email); })
         .catch(function (e) { toast(e.message, true); });
     }
-    if (kind === 'skip' || kind === 'clear') {
+    if (kind === 'skip' || kind === 'none' || kind === 'clear') {
       return post('/api/admin/onboard/mark', { email: p.email, state: kind })
-        .then(function (d) { if (d.record) ONB[p.email] = d.record; else delete ONB[p.email]; renderAll(); toast(kind === 'skip' ? 'Marked onboarded' : 'Back in the queue'); })
+        .then(function (d) { if (d.record) ONB[p.email] = d.record; else delete ONB[p.email]; renderAll(); toast(kind === 'skip' ? 'Marked onboarded' : kind === 'none' ? 'Marked not needed' : 'Back in the queue'); })
         .catch(function (e) { toast(e.message, true); });
     }
   }
