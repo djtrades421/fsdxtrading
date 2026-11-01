@@ -112,6 +112,13 @@
     var exp7 = upcoming.filter(function (u) { return u.kind !== 'ends' && u.day <= next7; });
     var exp7Net = exp7.reduce(function (s, u) { return s + u.amount; }, 0) * ratio();
 
+    // Rest of this month: renewals + trial conversions due today → month end, est. net.
+    var mEnd = (function () { var d = new Date(mStart + 'T12:00:00'); d.setMonth(d.getMonth() + 1); d.setDate(0); return ctDay(d); })();
+    var expM = [];
+    R.forEach(function (r) { var d = dayOf(r.renewal); if (due(r) && d >= today && d <= mEnd) expM.push({ r: r, trial: r.status === 'trialing', amount: priceOf(r) }); });
+    var expMNet = expM.reduce(function (s, u) { return s + u.amount; }, 0) * ratio();
+    var expMTrials = expM.filter(function (u) { return u.trial; }).length;
+
     var activePaying = R.filter(function (r) { return r.status === 'active' || r.status === 'canceling' || r.status === 'past_due'; }).length;
 
     // Daily net, last 30 days.
@@ -126,7 +133,7 @@
     var prods = Object.keys(byProd).map(function (k) { return { k: k, v: byProd[k] }; }).sort(function (a, b) { return b.v - a.v; });
 
     return { today: today, mNet: mNet, mGross: mGross, lmNet: lmNet, failed: failed, pastDue: pastDue,
-      cancelling: cancelling, refunds: refunds, atRisk: atRisk, upcoming: upcoming, exp7: exp7, exp7Net: exp7Net,
+      cancelling: cancelling, refunds: refunds, atRisk: atRisk, upcoming: upcoming, exp7: exp7, exp7Net: exp7Net, expM: expM, expMNet: expMNet, expMTrials: expMTrials,
       activePaying: activePaying, days: days, prods: prods };
   }
 
@@ -171,6 +178,9 @@
     + '#panel-money .mn-cell.past .dn{color:#52525b}'
     + '#panel-money .mn-cell .l{font-size:10.5px;font-weight:800;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'
     + '@media(max-width:640px){#panel-money .mn-cell{min-height:56px;padding:4px}#panel-money .mn-cell .l{font-size:9px}#panel-money .mn-cell .c{display:none}}'
+    + '#panel-money .mn-stats{grid-template-columns:repeat(2,minmax(0,1fr))}'
+    + '@media(min-width:760px){#panel-money .mn-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}'
+    + '@media(min-width:1280px){#panel-money .mn-stats{grid-template-columns:repeat(6,minmax(0,1fr))}#panel-money .mn-stats .ntx-stat .n{font-size:22px}}'
     + '#panel-money .mn-copy{cursor:pointer;border-bottom:1px dashed rgba(255,255,255,.2)}#panel-money .mn-copy:hover{color:#FF6B1F}';
 
   function skeleton() {
@@ -187,7 +197,7 @@
       +     '<button class="ntx-btn" onclick="switchTab(\'payments\')" title="The previous Payments tab">Classic view</button>'
       +   '</div>'
       + '</div>'
-      + '<div id="mn-stats" class="ntx-grid mb-5"></div>'
+      + '<div id="mn-stats" class="ntx-grid mn-stats mb-5"></div>'
       + '<div class="mn-2 mb-5">'
       +   '<div class="ntx-card"><div class="flex justify-between items-center"><div class="ntx-h">Needs attention</div><div class="text-[10px] text-zinc-600">last 30 days</div></div><div id="mn-attn" class="mt-2"></div></div>'
       +   '<div class="ntx-card"><div class="flex justify-between items-center"><div class="ntx-h">Coming up</div><div class="text-[10px] text-zinc-600">next 14 days</div></div><div id="mn-up" class="mt-2"></div></div>'
@@ -225,6 +235,10 @@
     $('mn-stats').innerHTML =
         card(usd(c.mNet), 'Net this month', 'green', delta)
       + card(usd(c.mGross), 'Gross this month')
+      + card('~' + usd(c.expMNet), 'Expected rest of month', 'amber',
+          '<div class="mn-delta text-zinc-500">' + c.expM.length + ' renewal' + (c.expM.length === 1 ? '' : 's')
+          + (c.expMTrials ? ' · ' + c.expMTrials + ' trial' + (c.expMTrials === 1 ? '' : 's') : '') + ' · est. net</div>'
+          + '<div class="mn-delta" style="color:#2FBF7E">≈ ' + usd(c.mNet + c.expMNet) + ' month total</div>')
       + card(usd(c.exp7Net), 'Expected next 7 days', '', '<div class="mn-delta text-zinc-500">' + c.exp7.length + ' renewal' + (c.exp7.length === 1 ? '' : 's') + ' · est. net</div>')
       + card(usd(c.atRisk), 'At risk', attn ? 'red' : '', '<div class="mn-delta text-zinc-500">' + attn + ' failed / past due</div>')
       + card(c.activePaying, 'Paying members', '', '<div class="mn-delta text-zinc-500">' + c.cancelling.length + ' cancelling</div>');
