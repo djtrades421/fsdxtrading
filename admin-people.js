@@ -278,9 +278,23 @@
   function onbPill(p) {
     if (p.onb && p.onb.state === 'sent') return '<span class="mn-pill p-grn" title="Onboarding sent ' + esc(fmtD(p.onb.at, true)) + '">Onboarded</span>';
     if (p.onb && p.onb.state === 'skipped') return '<span class="mn-pill p-mut" title="Marked already onboarded">Onboarded · skip</span>';
+    if (p.onb && p.onb.state === 'booked') return '<span class="mn-pill p-grn" title="Booked a call ' + esc(fmtD(p.onb.at, true)) + '">Booked call</span>';
     if (p.onb && p.onb.state === 'not_needed') return '<span class="mn-pill p-mut" title="Marked not needed">No onboard</span>';
     if (p.toOnboard) return '<span class="mn-pill p-amb">Onboard</span>';
     return '';
+  }
+
+  function callsBlock(p) {
+    if (!window.calFor || !p.email) return '';
+    var list = window.calFor(p.email);
+    if (!list.length) return '';
+    return '<div class="pp-sec">Calls</div>' + list.slice(0, 5).map(function (b) {
+      var past = Date.parse(b.end || b.start) < Date.now();
+      var st = b.status === 'cancelled' ? 'Cancelled' : b.status === 'rescheduled' ? 'Rescheduled' : b.outcome === 'done' ? 'Done' : b.outcome === 'noshow' ? 'No-show' : past ? 'Past' : 'Upcoming';
+      var when = new Date(b.start).toLocaleString('en-US', { timeZone: 'America/Chicago', weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+      return '<div class="text-[12px] py-1"><b class="text-white">' + esc(b.title || b.event || 'Call') + '</b> · ' + esc(when) + ' CT'
+        + ' <span class="pp-sub">· ' + st + '</span>' + (b.topic ? '<div class="pp-sub">“' + esc(b.topic.slice(0, 140)) + '”</div>' : '') + '</div>';
+    }).join('') + '<button class="ntx-btn mt-1" onclick="switchTab(\'calls\')">Open Calls</button>';
   }
 
   function onbBlock(p) {
@@ -292,9 +306,10 @@
     var lbl = function (id) { var t = ONB_T.filter(function (x) { return x.id === id; })[0]; return t ? t.label : id; };
     var status = !o ? '<div class="text-[12.5px] text-white font-bold">' + (p.toOnboard ? 'Not onboarded yet' : 'No onboarding sent') + '</div>'
       : o.state === 'sent' ? '<div class="text-[12.5px] text-white font-bold">Sent · ' + esc(lbl(o.template)) + '</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>'
+      : o.state === 'booked' ? '<div class="text-[12.5px] text-white font-bold">Booked a call · ' + esc(o.call || '') + '</div><div class="pp-sub">' + (o.callStart ? 'Call ' + fmtD(o.callStart, true) : fmtD(o.at, true)) + '</div>'
       : '<div class="text-[12.5px] text-white font-bold">' + (o.state === 'not_needed' ? 'Marked not needed' : 'Marked already onboarded') + '</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>';
     var hist = o && o.history && o.history.length > 1 ? '<div class="pp-sub mt-2">' + o.history.slice(1, 6).map(function (h) {
-      return fmtD(h.at, true) + ' · ' + (h.action === 'sent' ? esc(lbl(h.template)) : h.action === 'not_needed' ? 'not needed' : 'already onboarded');
+      return fmtD(h.at, true) + ' · ' + (h.action === 'sent' ? esc(lbl(h.template)) : h.action === 'booked' ? 'booked ' + esc(h.template || 'a call') : h.action === 'not_needed' ? 'not needed' : 'already onboarded');
     }).join('<br>') + '</div>' : '';
     return '<div class="pp-sec">Onboarding</div><div class="ntx-card" style="padding:12px">'
       + '<div class="flex items-start justify-between gap-2"><div>' + status + '</div>'
@@ -449,7 +464,7 @@
       +   kv('Site account', p.site ? (s.createdAt ? 'Since ' + fmtD(s.createdAt, true) : 'Yes') : 'None')
       +   kv('Last on site', p.lastLogin ? ago(p.lastLogin) : '')
       + '</div>'
-      + onbBlock(p) + ntBlock + flags + notes
+      + callsBlock(p) + onbBlock(p) + ntBlock + flags + notes
       + '<div class="pp-sec">History</div>' + timeline(p)
       + '<div class="flex gap-2 flex-wrap mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,.06)">'
       +   (p.r && p.r.id ? '<button class="ntx-btn" data-pedit="' + esc(p.r.id) + '">Edit record</button>' : '')
@@ -519,6 +534,23 @@
     renderAll();
     var nt = window.ntLoad ? window.ntLoad().catch(function () {}) : Promise.resolve();
     Promise.all([loadServerEvents(), loadRepeatTrials(), loadOnboard(), nt]).then(renderAll);
+  };
+  // Used by admin-bookings.js: match a Cal.com booking email to a person.
+  window.peopleLookup = function (email) {
+    var e = low(email); if (!e) return null;
+    if (!PEOPLE.length) PEOPLE = build();
+    var p = PEOPLE.filter(function (x) { return x.email === e; })[0];
+    if (!p) return null;
+    var st = STATUS[p.status] || STATUS.inactive;
+    return { email: p.email, key: p.key, name: p.name, live: p.live, label: st.l, cls: st.c, product: p.product, daysIn: p.daysIn };
+  };
+  window.peopleOpen = function (email) {
+    var hit = window.peopleLookup(email); if (!hit) return;
+    OPEN = hit.key; CHIP = 'all'; QUERY = '';
+    switchTab('people');
+  };
+  window.peopleRefresh = function () {
+    try { var p = $('panel-people'); if (p && p.classList.contains('active')) loadOnboard().then(renderAll); } catch (e) {}
   };
   window.peopleSync = function () {
     if (typeof syncFromWhop !== 'function') return;
