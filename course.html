@@ -614,8 +614,11 @@ const COURSE = [
         <li><strong>Volatility</strong> &mdash; how much this market is moving right now.</li>
       </ul>
       <p><strong>It takes the tighter of the two.</strong> Not an average, not a judgment call.</p>
-      <p><strong>Then the rails.</strong> Clamped between <strong>75 and 175 points</strong>. Nothing tighter,
-      nothing wider.</p>
+      <p><strong>Then the rails.</strong> Clamped between <strong>75 and 175 points</strong>. Nothing wider.</p>
+      <p><strong>One thing can make it tighter: the No-Hedge ORB Cap.</strong> The stop never sits past the
+      opposite side of the opening range. If it would, it moves to the range edge &mdash; even if that's under
+      75 points. It's on in every variant, so accounts running different variants can never end up long on one
+      and short on another.</p>
       <p><strong>The dashboard tells you which one set it</strong> &mdash; structure, volatility, or, if the
       answer hit a rail, floor or cap. Floor or cap means neither measurement won on merit and the clamp
       decided. A capped stop is the system telling you the morning was wider than it wants to trade.</p>
@@ -648,7 +651,7 @@ const COURSE = [
       <ul>
         <li><strong>TP1 needs at least 1R</strong> by default. Whatever your stop distance is, TP1 has to be
         at least that far out.</li>
-        <li><strong>TP2 needs at least 1.5R.</strong></li>
+        <li><strong>TP2 needs at least 1.5R</strong> (2R in V2 Runner).</li>
       </ul>
       <p><strong>How it picks.</strong> The system builds a pool of real levels ahead of price &mdash;
       previous day high and low, weekly high and low, swing levels, fair value gaps, 4-hour S/R. Each is
@@ -678,26 +681,26 @@ const COURSE = [
       </div>
       <p><strong>Nothing beyond 200 points is considered,</strong> however good it looks out there.</p>
       <div class="callout">
-        <p style="margin:0">Everything above is the stop at <em>entry</em>. Knightfall can now also move that
-        stop while the trade is running &mdash; to breakeven, or trailing behind price. It's off by default.
-        That's the next chapter.</p>
+        <p style="margin:0">Everything above is the stop at <em>entry</em>. Knightfall can also move that
+        stop while the trade is running &mdash; to breakeven, or trailing behind price. V2 Runner, the default
+        variant, trails. V1 Stock doesn't. That's the next chapter.</p>
       </div>
     `
   },
   {
     id: 'trailing-stop', section: 'system', title: 'Trailing stop and breakeven', mins: 9,
     body: `
-      <p>Knightfall has always set the stop once at entry and left it there for the life of the trade. That
-      is still what it does out of the box. <strong>It can now also manage that stop for you</strong> &mdash;
-      moving it to breakeven, or trailing it behind price, or both in sequence.</p>
-      <p>It's built into the same script. There's nothing extra to install, and nothing changes on your chart
-      until you turn it on.</p>
+      <p>Knightfall originally set the stop once at entry and left it there for the life of the trade.
+      <strong>It can also manage that stop for you</strong> &mdash; moving it to breakeven, or trailing it
+      behind price, or both in sequence.</p>
+      <p>It's built into the same script. There's nothing extra to install. <strong>Which mode you get
+      depends on your variant</strong> &mdash; the table at the end of this chapter has each one.</p>
 
       <h4>The four modes</h4>
       <p>A <strong>Trailing Stop</strong> group in the settings, with one dropdown:</p>
       <ul>
-        <li><strong>Off</strong> &mdash; the stop is set at entry and never moves. The default, and how
-        Knightfall has always worked.</li>
+        <li><strong>Off</strong> &mdash; the stop is set at entry and never moves. How Knightfall originally
+        worked, and what V1 Stock uses.</li>
         <li><strong>Breakeven Only</strong> &mdash; once the trade has run far enough, the stop moves to your
         entry.</li>
         <li><strong>Trail Only</strong> &mdash; once the trade has run far enough, the stop follows behind
@@ -833,15 +836,35 @@ const COURSE = [
         your trail distance, the more often price can move through your trail level inside a bar.</p>
       </div>
 
-      <div class="callout">
-        <p style="margin:0"><strong>It ships Off.</strong> Existing charts behave exactly as they did before
-        the update &mdash; the same trades, in the same places. Nothing changes until you choose to turn it
-        on.</p>
-      </div>
+      <h4>What each variant uses</h4>
+      <table>
+        <thead><tr><th>Variant</th><th>Trail</th><th>Exit</th></tr></thead>
+        <tbody>
+          <tr><td>V1 Stock</td><td>Off. Locked.</td><td>Stop and target set at entry.</td></tr>
+          <tr><td>V2 Runner (default)</td><td>Trail Only. Engages at 100% of TP1, rides 60 points behind the best price. Locked.</td><td>Full size to TP2.</td></tr>
+          <tr><td>V3 Fixed Stop &amp; Custom</td><td>Your settings.</td><td>Your settings.</td></tr>
+        </tbody>
+      </table>
+      <p>In V2 the trail only starts once the trade reaches TP1. Before that, the original stop holds. After
+      that, the stop follows 60 points behind the best price while the trade works toward TP2.</p>
+
+      <h4>On the Auto Trader</h4>
+      <p>The Auto Trader runs the same trailing stop with the same variant settings, and it's in the Auto
+      Trader's Strategy Tester results. <strong>The difference is how the exit reaches your broker.</strong></p>
+      <ul>
+        <li><strong>Bracket mode</strong> &mdash; the bracket sent at entry stays at the original stop and
+        target. The trail runs in TradingView. When it closes the trade, the Auto Trader sends an exit alert
+        and your execution service flattens.</li>
+        <li><strong>That alert goes out at the close of the 5-minute bar.</strong> A live trail exit can fill
+        at a different price than the chart shows.</li>
+        <li><strong>If TradingView or the alert drops,</strong> the original stop still protects the
+        trade.</li>
+      </ul>
+      <p>On NinjaTrader, the trail moves the actual stop order at your broker.</p>
     `
   },
   {
-    id: 'sizing', section: 'system', title: 'Sizing', mins: 3,
+    id: 'sizing', section: 'system', title: 'Sizing', mins: 6,
     body: `
       <h4>The system sizes for you</h4>
       <p>You set one number &mdash; risk per trade. Everything after that is automatic and live.</p>
@@ -868,6 +891,41 @@ const COURSE = [
       </ul>
       <p>Worth understanding before deciding the smaller profile is just "the same system, smaller." At the
       low end you're getting the filtering but very little of the sizing.</p>
+
+      <h4>Flag sizing</h4>
+      <p>The grade scores the breakout. <strong>Flags check the context around it.</strong> Three of them:</p>
+      <ul>
+        <li><strong>A level inside your stop.</strong> A previous day or week high or low sits between your
+        entry and your stop.</li>
+        <li><strong>Overnight against the trend.</strong> The overnight move went the opposite way to the
+        4-hour trend.</li>
+        <li><strong>A late entry.</strong> The breakout came 15 to 60 minutes after the opening range
+        closed.</li>
+      </ul>
+      <p><strong>Two or more flags and the trade is cut to half its grade size.</strong> Rounded, and never
+      below one contract.</p>
+      <div class="callout">
+        <p style="margin:0"><strong>Flags never remove a trade.</strong> They only change the size. The
+        system takes the same trades with flag sizing on or off.</p>
+      </div>
+      <p>It stacks on top of the grade. Grade sizing runs first, then flags halve what's left. If full size
+      is 4 contracts, a B gets 3. With two flags, that becomes 2.</p>
+
+      <h4>The setting</h4>
+      <ul>
+        <li><strong>Auto</strong> (default) &mdash; on in V1 and V2 when your risk is $400 or more. Off below
+        $400, and always off in V3 and Custom.</li>
+        <li><strong>Off</strong> &mdash; never.</li>
+        <li><strong>Half At 2 Flags</strong> &mdash; always on.</li>
+      </ul>
+      <p><strong>Why Auto switches off below $400.</strong> At $250 most trades are already one contract, and
+      one contract can't be halved. There's very little for it to do.</p>
+      <p>No variant locks it. You can change it in any of them. When it's on, the dashboard shows
+      <strong>FS</strong>.</p>
+      <div class="callout-warn">
+        <p style="margin:0"><strong>A smaller size isn't a warning to skip it.</strong> A flagged trade is
+        still a valid trade. The system is taking it at reduced size, not telling you to stay out.</p>
+      </div>
       <p><strong>Which number is yours</strong> is the drawdown protocol chapter.</p>
     `
   },
@@ -884,7 +942,7 @@ const COURSE = [
         <li><strong>"Weak: &hellip;"</strong> &mdash; valid, but inputs scored low. Names them worst-first:
         ORB size, Med vol, Low vol, Very low vol</li>
         <li><strong>"&#9888; ORB under 45 pts"</strong> &mdash; range too small</li>
-        <li><strong>"&#9888; Over 50 pts"</strong> &mdash; breakout closed too far outside the range</li>
+        <li><strong>"&#9888; Over 50 pts"</strong> (60 in V2 Runner) &mdash; breakout closed too far outside the range</li>
         <li><strong>"&#9888; Under X pts"</strong> &mdash; didn't clear the range by enough (only if you've
         set a minimum)</li>
         <li><strong>"Ranging &mdash; no trade"</strong> &mdash; higher timeframe has no direction</li>
@@ -1036,7 +1094,7 @@ const COURSE = [
       then pick. That's your decision, not the system's.</p>
 
       <h4>The same number means different things on different accounts</h4>
-      <p><strong>$400 is the default, not a recommendation.</strong> It's where the setting starts. Every
+      <p><strong>$250 is the default, not a recommendation.</strong> It's where the setting starts. Every
       profile is there and every one has its data.</p>
       <p>What a profile does depends on how much drawdown sits behind it. At $400 risk:</p>
       <table>
