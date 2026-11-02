@@ -234,7 +234,7 @@ var FSDX_MENU = [
       ['platform.html', 'The Platform', 'Dashboard, journal, accounts and backtests', '', 'monitor', 'blue'],
       ['autotrader.html', 'ORB Auto-Trader', 'How the automation works', '', 'bolt', 'orange'],
       ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
-      ['tradingview-update.html', 'TradingView Nov 1 Change', 'What it means for your indicators', '', 'info', 'gray']
+      ['tradingview-update.html', 'TradingView Update', 'Nothing changes Nov 1 — no action needed', '', 'info', 'gray']
   ]},
   { id: 'results', label: 'Results', w: 680, eyebrow: 'The proof',
     note: 'Backtests are hypothetical. Past performance doesn’t guarantee future results.',
