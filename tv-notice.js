@@ -12,9 +12,9 @@
  */
 (function () {
   var TEXT =
-    '<b style="color:#fde68a">TradingView users:</b> from <b style="color:#fff">November 1, 2026</b>, ' +
-    'TradingView requires paid private scripts to be bought through its own Marketplace, not through us or Whop. ' +
-    'NinjaTrader, the member platform, Nexus and the Discord aren’t affected.';
+    '<b style="color:#fde68a">TradingView update:</b> TradingView has paused its Nov 1 Marketplace change. ' +
+    '<b style="color:#fff">Nothing changes for you right now</b> — TradingView access works the same way through your membership. ' +
+    'We’ll update this once TradingView publishes its new terms.';
 
   function render(el) {
     if (el.dataset.tvNoticeDone) return;
@@ -27,7 +27,7 @@
         'background:rgba(251,191,36,.15);color:#fbbf24;font:800 12px Inter,system-ui,sans-serif">!</span>' +
         '<div style="flex:1 1 260px;min-width:0;font:500 13px/1.55 Inter,system-ui,sans-serif;color:#d4d4d8">' + TEXT + '</div>' +
         '<a href="tradingview-update.html" style="flex:none;align-self:center;font:700 12.5px Inter,system-ui,sans-serif;color:#fbbf24;' +
-        'text-decoration:none;border:1px solid rgba(251,191,36,.4);border-radius:10px;padding:8px 12px;white-space:nowrap">What changes &rarr;</a>' +
+        'text-decoration:none;border:1px solid rgba(251,191,36,.4);border-radius:10px;padding:8px 12px;white-space:nowrap">Details &rarr;</a>' +
       '</div>';
   }
   function run() { document.querySelectorAll('[data-tv-notice]').forEach(render); }
