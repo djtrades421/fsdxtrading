@@ -17,6 +17,8 @@
   var RT = [];    // repeat-trial flags from the worker (/api/admin/repeat-trials)
   var ONB = {};   // onboarding emails sent / skipped (/api/admin/onboard), by email
   var ONB_T = []; // onboarding templates from the worker
+  var ONB_F = []; // focus options from the worker (strategy / indicators / tools)
+  var BULK = { tpl: 'checkin', mode: 'general', focus: [], days: 7, off: {}, running: false, stop: false, done: 0, total: 0 };
   var ONB_WINDOW = 21; // days after joining that someone sits in the onboarding queue
 
   function $(id) { return document.getElementById(id); }
@@ -85,6 +87,28 @@
   }
   /** Families whose membership includes a NinjaTrader 8 license. */
   function hasNt(fam) { return fam === 'pro' || fam === 'ntsolo'; }
+  /** Onboarding focus guess from the plan name. Only used when Danny clicks "Match plan". */
+  function focusOf(p) {
+    var s = low(p.product), f = [];
+    if (/knightfall|\bpro\b|plus|orb|ninja|lifetime/.test(s)) f.push('strategy');
+    if (/raven|nightwing/.test(s)) f.push('indicators');
+    if (/nexus|site|vip/.test(s)) f.push('tools');
+    return f;
+  }
+  function focusOpts() {
+    return ONB_F.length ? ONB_F : [{ id: 'strategy', label: 'Knightfall (NinjaTrader / TradingView)' }, { id: 'indicators', label: 'TradingView indicators (Raven, Nightwing)' }, { id: 'tools', label: 'Nexus + member site' }];
+  }
+  function tplOpts(sel) {
+    return (ONB_T.length ? ONB_T : [{ id: 'setup', label: 'New member · Setup call (30m)' }, { id: 'back', label: 'Returning member · Walkthrough (30m)' }, { id: 'checkin', label: 'Quick check-in (15m)' }])
+      .map(function (t) { return '<option value="' + esc(t.id) + '"' + (t.id === sel ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
+  }
+  function tplLabel(id) { var t = ONB_T.filter(function (x) { return x.id === id; })[0]; return t ? t.label : id; }
+  /** Last time any onboarding/check-in email went to them. */
+  function lastMail(p) {
+    var h = (p.onb && p.onb.history) || [], best = '';
+    h.forEach(function (x) { if (x.action === 'sent' && x.at > best) best = x.at; });
+    return best;
+  }
 
   function build() {
     var map = {}, order = [];
@@ -202,6 +226,7 @@
       +   '<div><h2 class="text-lg font-black text-white">People</h2>'
       +   '<div id="pp-sub" class="text-[11px] text-zinc-600 mt-0.5">Whop + site accounts + NinjaTrader, one row per person</div></div>'
       +   '<div class="flex items-center gap-2 flex-wrap">'
+      +     '<button class="ntx-btn" data-pbulk="open" title="Send a check-in to everyone in the list you have filtered" style="border-color:rgba(255,107,31,.6);color:#FF8A4C">Check in this list</button>'
       +     '<button class="ntx-btn" onclick="peopleSync()">&#10227; Sync Whop now</button>'
       +     '<span class="text-[10.5px] text-zinc-600">Classic:</span>'
       +     '<button class="ntx-btn" onclick="switchTab(\'members\')">Site accounts</button>'
@@ -300,22 +325,30 @@
   function onbBlock(p) {
     if (!p.email) return '';
     var o = p.onb;
-    var def = p.returning ? 'back' : 'setup';
-    var opts = (ONB_T.length ? ONB_T : [{ id: 'setup', label: 'New member · Setup call (30m)' }, { id: 'back', label: 'Returning member · Walkthrough (30m)' }, { id: 'checkin', label: 'Quick check-in (15m)' }])
-      .map(function (t) { return '<option value="' + esc(t.id) + '"' + (t.id === def ? ' selected' : '') + '>' + esc(t.label) + '</option>'; }).join('');
-    var lbl = function (id) { var t = ONB_T.filter(function (x) { return x.id === id; })[0]; return t ? t.label : id; };
+    var def = o ? 'checkin' : p.returning ? 'back' : 'setup';
+    var opts = tplOpts(def);
+    var lbl = tplLabel;
+    var fBoxes = focusOpts().map(function (f) {
+      return '<label class="flex items-center gap-2 text-[12px] text-zinc-300" style="cursor:pointer"><input type="checkbox" class="pp-onb-f" value="' + esc(f.id) + '"> ' + esc(f.label) + '</label>';
+    }).join('');
+    var focusUi = '<div class="flex items-center justify-between gap-2 mt-3"><div class="pp-sub">Help with <span class="text-zinc-600">(none ticked = general)</span></div>'
+      + '<button class="ntx-btn" data-ponb="match" title="Tick boxes from their plan name">Match plan</button></div>'
+      + '<div class="pp-sub" style="margin:2px 0 6px">They have: <span class="text-zinc-300">' + esc(p.product || '—') + '</span></div>'
+      + '<div style="display:grid;gap:4px">' + fBoxes + '</div>';
     var status = !o ? '<div class="text-[12.5px] text-white font-bold">' + (p.toOnboard ? 'Not onboarded yet' : 'No onboarding sent') + '</div>'
-      : o.state === 'sent' ? '<div class="text-[12.5px] text-white font-bold">Sent · ' + esc(lbl(o.template)) + '</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>'
+      : o.state === 'sent' ? '<div class="text-[12.5px] text-white font-bold">Sent · ' + esc(lbl(o.template)) + '</div><div class="pp-sub">' + fmtD(o.at, true) + (o.lastCheckin ? ' · checked in ' + fmtD(o.lastCheckin, true) : '') + '</div>'
       : o.state === 'booked' ? '<div class="text-[12.5px] text-white font-bold">Booked a call · ' + esc(o.call || '') + '</div><div class="pp-sub">' + (o.callStart ? 'Call ' + fmtD(o.callStart, true) : fmtD(o.at, true)) + '</div>'
-      : '<div class="text-[12.5px] text-white font-bold">' + (o.state === 'not_needed' ? 'Marked not needed' : 'Marked already onboarded') + '</div><div class="pp-sub">' + fmtD(o.at, true) + '</div>';
+      : '<div class="text-[12.5px] text-white font-bold">' + (o.state === 'not_needed' ? 'Marked not needed' : 'Marked already onboarded') + '</div><div class="pp-sub">' + fmtD(o.at, true) + (o.lastCheckin ? ' · checked in ' + fmtD(o.lastCheckin, true) : '') + '</div>';
+    if (o && o.state === 'booked' && o.lastCheckin) status += '<div class="pp-sub">Checked in ' + fmtD(o.lastCheckin, true) + '</div>';
     var hist = o && o.history && o.history.length > 1 ? '<div class="pp-sub mt-2">' + o.history.slice(1, 6).map(function (h) {
-      return fmtD(h.at, true) + ' · ' + (h.action === 'sent' ? esc(lbl(h.template)) : h.action === 'booked' ? 'booked ' + esc(h.template || 'a call') : h.action === 'not_needed' ? 'not needed' : 'already onboarded');
+      return fmtD(h.at, true) + ' · ' + (h.action === 'sent' ? esc(lbl(h.template)) + (h.bulk ? ' (bulk)' : '') : h.action === 'booked' ? 'booked ' + esc(h.template || 'a call') : h.action === 'not_needed' ? 'not needed' : 'already onboarded');
     }).join('<br>') + '</div>' : '';
     return '<div class="pp-sec">Onboarding</div><div class="ntx-card" style="padding:12px">'
       + '<div class="flex items-start justify-between gap-2"><div>' + status + '</div>'
       + (o ? '<button class="ntx-btn" data-ponb="clear" title="Put them back in the queue">Reset</button>' : '') + '</div>'
       + hist
       + '<select id="pp-onb-t" class="ntx-in" style="width:100%;margin-top:10px">' + opts + '</select>'
+      + focusUi
       + '<textarea id="pp-onb-note" class="ntx-in" rows="2" placeholder="Optional personal line (added above your sign-off)" style="width:100%;margin-top:6px;resize:vertical"></textarea>'
       + '<div class="flex gap-2 flex-wrap mt-2">'
       +   '<button class="ntx-btn" data-ponb="preview">Preview</button>'
@@ -339,13 +372,17 @@
     return REV ? out.reverse() : out;
   }
 
-  function renderTable() {
+  function visible() {
     var fn = chipFn();
-    var list = sorted(PEOPLE.filter(fn).filter(function (p) {
+    return sorted(PEOPLE.filter(fn).filter(function (p) {
       if (!QUERY) return true;
       var r = p.r || {};
       return [p.name, p.email, r.discordName, r.tvUsername, r.whopUsername, p.nt && p.nt.ntEmail, p.product].join(' ').toLowerCase().indexOf(QUERY) !== -1;
     }));
+  }
+  function renderTable() {
+    var list = visible();
+    if (OPEN === '__bulk' && !BULK.running) renderSide();
     var th = function (k, l) { return '<th data-psort="' + k + '" class="' + (SORT === k ? 'on' : '') + '" title="Click again to reverse">' + l + (SORT === k && REV ? ' ↑' : '') + '</th>'; };
     if (!list.length) { $('pp-table').innerHTML = '<div class="text-[12px] text-zinc-500 p-4">' + (PEOPLE.length ? 'No one matches.' : 'No data yet. Press Sync Whop now.') + '</div>'; return; }
     $('pp-table').innerHTML = '<table class="pp-t"><tr>' + th('status', 'Member') + '<th>Plan</th>' + th('joined', 'Joined') + th('next', 'Next') + '<th>Access</th>' + th('seen', 'Site') + th('paid', 'Paid') + '</tr>'
@@ -408,6 +445,7 @@
 
   function renderSide() {
     var side = $('pp-side'), wrap = $('pp-wrap');
+    if (OPEN === '__bulk') { side.style.display = ''; wrap.classList.add('open'); side.innerHTML = bulkBlock(); return; }
     var p = OPEN && PEOPLE.filter(function (x) { return x.key === OPEN; })[0];
     if (!p) { side.style.display = 'none'; wrap.classList.remove('open'); return; }
     side.style.display = ''; wrap.classList.add('open');
@@ -495,19 +533,27 @@
     if (!tok()) return Promise.resolve();
     return fetch(API + '/api/admin/onboard', { headers: { 'Authorization': 'Bearer ' + tok() } })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d) { ONB = d.records || {}; ONB_T = d.templates || []; } }).catch(function () {});
+      .then(function (d) { if (d) { ONB = d.records || {}; ONB_T = d.templates || []; ONB_F = d.focus || []; } }).catch(function () {});
   }
   function onbAction(kind) {
     var p = OPEN && PEOPLE.filter(function (x) { return x.key === OPEN; })[0]; if (!p || !p.email) return;
     var tSel = $('pp-onb-t'), nEl = $('pp-onb-note');
     var template = tSel ? tSel.value : 'setup', note = nEl ? nEl.value.trim() : '';
+    var boxes = [].slice.call(document.querySelectorAll('#pp-side .pp-onb-f'));
+    if (kind === 'match') {
+      var want = focusOf(p);
+      boxes.forEach(function (b) { b.checked = want.indexOf(b.value) !== -1; });
+      toast(want.length ? 'Ticked from plan — check it before sending' : 'Plan name didn\'t match anything — pick by hand', !want.length);
+      return;
+    }
+    var focus = boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; });
     var post = function (path, body) {
       return fetch(API + path, { method: 'POST', headers: { 'Authorization': 'Bearer ' + tok(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
         .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.success) throw new Error(d.error || 'Failed'); return d; }); });
     };
     if (kind === 'preview') {
       var w = window.open('', '_blank');
-      return post('/api/admin/onboard', { email: p.email, name: p.name, template: template, note: note, preview: true })
+      return post('/api/admin/onboard', { email: p.email, name: p.name, template: template, focus: focus, note: note, preview: true })
         .then(function (d) { if (w) { w.document.title = d.subject; w.document.body.style.margin = '0'; w.document.body.innerHTML = '<div style="font:13px Arial;padding:10px 28px;background:#111;color:#aaa">Subject: <b style="color:#fff">' + esc(d.subject) + '</b> · To: ' + esc(p.email) + '</div>' + d.html; } })
         .catch(function (e) { if (w) w.close(); toast(e.message, true); });
     }
@@ -515,7 +561,7 @@
       var tl = (ONB_T.filter(function (x) { return x.id === template; })[0] || {}).label || template;
       if (!window.confirm('Send "' + tl + '" to ' + p.email + '?')) return;
       toast('Sending…');
-      return post('/api/admin/onboard', { email: p.email, name: p.name, template: template, note: note })
+      return post('/api/admin/onboard', { email: p.email, name: p.name, template: template, focus: focus, note: note })
         .then(function (d) { ONB[p.email] = d.record; renderAll(); toast('Sent to ' + p.email); })
         .catch(function (e) { toast(e.message, true); });
     }
@@ -525,6 +571,94 @@
         .catch(function (e) { toast(e.message, true); });
     }
   }
+  /* ── Bulk check-in ─────────────────────────────────────────────────── */
+  // Recipients = whatever list is showing (chip + search), minus anyone emailed
+  // in the last N days, minus anyone Danny unticks. Sends one at a time.
+  function bulkList() {
+    var cut = BULK.days > 0 ? Date.now() - BULK.days * 864e5 : 0;
+    return visible().filter(function (p) { return !!p.email; }).map(function (p) {
+      var lm = lastMail(p), recent = cut && lm && new Date(lm).getTime() > cut;
+      var noneFlag = p.onb && p.onb.state === 'not_needed';
+      return { p: p, lm: lm, skip: recent ? 'emailed ' + ago(lm) : noneFlag ? 'marked not needed' : '' };
+    });
+  }
+  function bulkFocus(p) { return BULK.mode === 'match' ? focusOf(p) : BULK.mode === 'pick' ? BULK.focus.slice() : []; }
+  function bulkTargets() { return bulkList().filter(function (x) { return !x.skip && !BULK.off[x.p.email]; }); }
+  function bulkBlock() {
+    var chip = (CHIPS.filter(function (c) { return c[0] === CHIP; })[0] || CHIPS[0])[1];
+    var rows = bulkList(), go = bulkTargets();
+    var fl = focusOpts().map(function (f) {
+      return '<label class="flex items-center gap-2 text-[12px] text-zinc-300" style="cursor:pointer"><input type="checkbox" data-pbf="' + esc(f.id) + '"' + (BULK.focus.indexOf(f.id) !== -1 ? ' checked' : '') + (BULK.mode !== 'pick' ? ' disabled' : '') + '> ' + esc(f.label) + '</label>';
+    }).join('');
+    var list = rows.map(function (x) {
+      var p = x.p, f = bulkFocus(p);
+      return '<label class="flex items-start gap-2" style="padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);cursor:' + (x.skip ? 'default' : 'pointer') + ';opacity:' + (x.skip ? '.45' : '1') + '">'
+        + '<input type="checkbox" data-pbo="' + esc(p.email) + '"' + (!x.skip && !BULK.off[p.email] ? ' checked' : '') + (x.skip ? ' disabled' : '') + ' style="margin-top:3px">'
+        + '<div style="min-width:0"><div class="text-[12px] text-white font-bold">' + esc(p.name) + ' <span class="pp-sub">' + esc(p.email) + '</span></div>'
+        + '<div class="pp-sub">' + esc(p.product || '—') + (x.skip ? ' · <span class="text-yellow-400">skipped: ' + esc(x.skip) + '</span>' : BULK.mode === 'match' ? ' · <span class="text-zinc-400">' + (f.length ? f.join(' + ') : 'general') + '</span>' : '') + '</div></div></label>';
+    }).join('') || '<div class="pp-sub">No one with an email in this list.</div>';
+    var prog = BULK.running ? '<div class="text-[12px] text-white font-bold mt-2">Sending ' + BULK.done + ' / ' + BULK.total + '…</div>' : '';
+    return '<div class="ntx-card" style="padding:16px">'
+      + '<div class="flex items-center justify-between gap-2"><div><div class="text-white font-black">Check in this list</div><div class="pp-sub">List: <span class="text-zinc-300">' + esc(chip) + '</span>' + (QUERY ? ' · search “' + esc(QUERY) + '”' : '') + '</div></div>'
+      + '<button class="ntx-btn" data-pclose="1">×</button></div>'
+      + '<div class="pp-sub mt-2">Change the chip or search on the left to change who\'s in it.</div>'
+      + '<div class="pp-sec">Email</div><select class="ntx-in" data-pbset="tpl" style="width:100%">' + tplOpts(BULK.tpl) + '</select>'
+      + '<div class="pp-sec">Help with</div>'
+      + '<select class="ntx-in" data-pbset="mode" style="width:100%">'
+      +   '<option value="general"' + (BULK.mode === 'general' ? ' selected' : '') + '>General — no product list</option>'
+      +   '<option value="match"' + (BULK.mode === 'match' ? ' selected' : '') + '>Match each person\'s plan</option>'
+      +   '<option value="pick"' + (BULK.mode === 'pick' ? ' selected' : '') + '>Same for everyone (tick below)</option>'
+      + '</select><div style="display:grid;gap:4px;margin-top:6px">' + fl + '</div>'
+      + '<textarea id="pp-bulk-note" class="ntx-in" rows="2" placeholder="Optional line for everyone (added above your sign-off)" style="width:100%;margin-top:10px;resize:vertical">' + esc(BULK.note || '') + '</textarea>'
+      + '<div class="flex items-center gap-2 mt-2 text-[12px] text-zinc-400">Skip anyone emailed in the last <input class="ntx-in" data-pbset="days" type="number" min="0" max="90" value="' + BULK.days + '" style="width:60px"> days</div>'
+      + '<div class="flex gap-2 flex-wrap mt-3">'
+      +   '<button class="ntx-btn" data-pbulk="preview"' + (go.length && !BULK.running ? '' : ' disabled') + '>Preview first</button>'
+      +   (BULK.running ? '<button class="ntx-btn" data-pbulk="stop">Stop</button>'
+          : '<button class="ntx-btn" data-pbulk="send"' + (go.length ? '' : ' disabled') + ' style="border-color:rgba(255,107,31,.6);color:#FF8A4C">Send to ' + go.length + '</button>')
+      +   '<button class="ntx-btn" data-pbulk="none">Untick all</button><button class="ntx-btn" data-pbulk="all">Tick all</button>'
+      + '</div>' + prog
+      + '<div class="pp-sec">Recipients · ' + go.length + ' of ' + rows.length + '</div><div>' + list + '</div></div>';
+  }
+  function bulkPost(body) {
+    return fetch(API + '/api/admin/onboard', { method: 'POST', headers: { 'Authorization': 'Bearer ' + tok(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.success) throw new Error(d.error || 'Failed'); return d; }); });
+  }
+  function bulkAction(kind) {
+    var n = $('pp-bulk-note'); if (n) BULK.note = n.value;
+    if (kind === 'open') { BULK.off = {}; OPEN = '__bulk'; renderTable(); renderSide(); return; }
+    if (kind === 'stop') { BULK.stop = true; return; }
+    if (kind === 'none') { bulkList().forEach(function (x) { BULK.off[x.p.email] = true; }); renderSide(); return; }
+    if (kind === 'all') { BULK.off = {}; renderSide(); return; }
+    var go = bulkTargets(); if (!go.length) return;
+    var note = (BULK.note || '').trim();
+    if (kind === 'preview') {
+      var p = go[0].p, w = window.open('', '_blank');
+      return bulkPost({ email: p.email, name: p.name, template: BULK.tpl, focus: bulkFocus(p), note: note, preview: true })
+        .then(function (d) { if (w) { w.document.title = d.subject; w.document.body.style.margin = '0'; w.document.body.innerHTML = '<div style="font:13px Arial;padding:10px 28px;background:#111;color:#aaa">Preview for ' + esc(p.name) + ' · Subject: <b style="color:#fff">' + esc(d.subject) + '</b></div>' + d.html; } })
+        .catch(function (e) { if (w) w.close(); toast(e.message, true); });
+    }
+    if (kind === 'send') {
+      if (!window.confirm('Send "' + tplLabel(BULK.tpl) + '" to ' + go.length + ' people?\n\nOne at a time, about a second apart. You can stop it.')) return;
+      BULK.running = true; BULK.stop = false; BULK.done = 0; BULK.total = go.length;
+      var fails = [];
+      renderSide();
+      var i = 0;
+      (function next() {
+        if (BULK.stop || i >= go.length) {
+          BULK.running = false; renderAll();
+          toast('Sent ' + (BULK.done - fails.length) + (fails.length ? ' · ' + fails.length + ' failed' : '') + (BULK.stop ? ' · stopped' : ''), !!fails.length);
+          if (fails.length) console.warn('[people] bulk check-in failed for', fails);
+          return;
+        }
+        var p = go[i++].p;
+        bulkPost({ email: p.email, name: p.name, template: BULK.tpl, focus: bulkFocus(p), note: note, bulk: true })
+          .then(function (d) { ONB[p.email] = d.record; })
+          .catch(function (e) { fails.push(p.email + ': ' + e.message); })
+          .then(function () { BULK.done++; renderSide(); setTimeout(next, 1100); });
+      })();
+    }
+  }
+
   function renderAll() {
     PEOPLE = build();
     renderStats(); renderChips(); renderTable(); renderSide();
@@ -566,11 +700,25 @@
     if (t.closest('[data-pmore]')) { SHOW += 100; renderTable(); return; }
     if (t.closest('[data-pclose]') || t.id === 'pp-side') { OPEN = null; renderTable(); renderSide(); return; }
     var ob = t.closest('[data-ponb]'); if (ob) { onbAction(ob.getAttribute('data-ponb')); return; }
+    var bk = t.closest('[data-pbulk]'); if (bk) { if (!bk.disabled) bulkAction(bk.getAttribute('data-pbulk')); return; }
+    if (t.closest('label') && t.closest('#pp-side') && OPEN === '__bulk') return;
     var rd = t.closest('[data-prtdismiss]'); if (rd) { dismissRepeat(rd.getAttribute('data-prtdismiss')); return; }
     var cp = t.closest('[data-pcopy]');
     if (cp) { var v = cp.getAttribute('data-pcopy'); (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(function () { toast('Copied ' + v); }).catch(function () { window.prompt('Copy:', v); }); return; }
     var ed = t.closest('[data-pedit]'); if (ed) { try { openEditMemberModal(ed.getAttribute('data-pedit')); } catch (x) { toast('Edit opens in Roster', true); } return; }
     var row = t.closest('[data-pk]'); if (row) { OPEN = row.getAttribute('data-pk'); renderTable(); renderSide(); }
+  });
+  document.addEventListener('change', function (e) {
+    var t = e.target; if (OPEN !== '__bulk' || !t.closest || !t.closest('#pp-side')) return;
+    var n = $('pp-bulk-note'); if (n) BULK.note = n.value;
+    var k = t.getAttribute('data-pbset');
+    if (k === 'tpl') BULK.tpl = t.value;
+    else if (k === 'mode') BULK.mode = t.value;
+    else if (k === 'days') BULK.days = Math.max(0, Math.min(90, parseInt(t.value, 10) || 0));
+    else if (t.hasAttribute('data-pbf')) { var id = t.getAttribute('data-pbf'); BULK.focus = BULK.focus.filter(function (x) { return x !== id; }); if (t.checked) BULK.focus.push(id); }
+    else if (t.hasAttribute('data-pbo')) { var em = t.getAttribute('data-pbo'); if (t.checked) delete BULK.off[em]; else BULK.off[em] = true; }
+    else return;
+    renderSide();
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && OPEN && $('panel-people') && $('panel-people').classList.contains('active')) { OPEN = null; renderTable(); renderSide(); } });
 
