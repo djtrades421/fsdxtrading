@@ -5,14 +5,14 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Prop Firm Discounts — FSD-X Trading Partners</title>
-  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
+  <meta name="description" content="Filter and compare prop firms by fee type, deadline, drawdown and activation fee. Discounts side by side — Apex, Vest Markets, My Funded Perps, Top One Futures, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
-  <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
+  <meta property="og:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Top One Futures, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Prop Firm Discounts — FSD-X Trading Partners" />
-  <meta name="twitter:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
+  <meta name="twitter:description" content="Compare prop firm discounts side by side — Apex, Vest Markets, My Funded Perps, Top One Futures, Bulenox, TradeDay, E8 Markets and more, plus non-partner firms like Lucid, Take Profit Trader, Tradeify, My Funded Futures and FTMO for comparison. Use code DJFSDX." />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
@@ -458,7 +458,7 @@
 
     /* ══════════════════════════════════════════════════════════════════════
        PARTNERS — edit here, the tables, filters and compare cards build themselves.
-       Last full check: October 8, 2026. Non-partner firms (partner:false) added October 31, 2026. Vest added October 20, 2026. My Funded Perps added October 21, 2026. Re-verify every field when you update.
+       Last full check: October 8, 2026. Non-partner firms (partner:false) added October 31, 2026. Vest added October 20, 2026. My Funded Perps added October 21, 2026. Top One Futures added November 4, 2026. Re-verify every field when you update.
        k.*  = filter keys:  fee one|monthly · clock none|limit · dd [EOD,Intraday]
               act no|yes|mixed · auto yes|own|limited|no · mind none|some
        plat = platforms the firm supports (used by the Platform filter)
@@ -520,6 +520,28 @@
         pts:['Four 1-Step models','Static drawdown, no trailing','No deadline, no minimum days','Payouts through Rise'],
         rules:['No consistency rule','No minimum days','Copier for your own accounts','API bots allowed'],
         note:'Use the link and code DJFSDX at checkout. Targets and drawdown differ by model (Select, Prime, Signature, Elite), so check the one you pick.' },
+
+      { n:'Top One Futures', ty:'Futures prop firm', pct:0, pctLabel:'Varies', code:'DJFSDX', verify:true,
+        url:'https://toponefutures.com/?linkId=lp_707970&sourceId=djfsdx&tenantId=toponefutures',
+        dd:'EOD', fee:'One-time or monthly', clock:'Depends on plan',
+        act:'Elite Daily, Instant Sim Funded and Ignite: none. Elite Access: yes, after you pass',
+        dll:'Yes on all plans, sized by account. Elite Access eval: none. Paid No-DLL add-on available on some plans',
+        cons:'Elite Daily: 40% in eval, none funded. Elite Access: none in eval, 40% funded. Instant Sim Funded: 20%. Ignite: 15%',
+        mind:'1 day to pass (Elite Daily, Elite Access). Instant plans skip the eval',
+        plat:['NinjaTrader','Tradovate','TradingView'], platTxt:'Tradovate, NinjaTrader, TradingView',
+        auto:'Not allowed. Bots, EAs and automated tools are banned on all plans. Copying is allowed only across your own accounts of the same plan and size',
+        maxf:'Elite Daily: 5. Elite Access and Ignite: 10. Instant Sim Funded: 3 to 5 by size', split:'90/10 sim funded (80/20 once live)',
+        hold:'Funded Elite plans: no trades within 2 minutes of high-impact news. No overnight holds on any plan',
+        k:{fee:'one', clock:'none', dd:['EOD'], act:'mixed', auto:'no', mind:'none'},
+        fit:'You want a choice between an eval and instant funding in one firm, with EOD drawdown and daily payout options, and you trade by hand.',
+        watch:'Four account types with very different rules, so read the one you buy. Elite Daily has been billed monthly (a one-time option was offered in November 2026). Elite Access has a 30-day deadline and an activation fee. No automation of any kind. Accounts breach after 14 days with no trades.',
+        why:'Futures prop firm with four paths: Elite Daily (daily payouts), Elite Access (one-time eval), Instant Sim Funded and Ignite Instant Funding (both skip the eval).',
+        pts:['Eval or instant funding paths','EOD trailing drawdown on every plan','Daily payout path (Elite Daily)','Supports TradingView and NinjaTrader'],
+        rules:['90/10 split','No bots','Same-plan copying only','No overnight'],
+        tiers:['New to Top One: discount on Elite Daily and Ignite for your first 5 purchases',
+               'Discounts differ by account type and change with each promo',
+               'November 2026: Black November sale, up to 65% off'],
+        note:'Use the link and code DJFSDX at checkout. The current discount for your account shows on the payment screen. Rules added November 4, 2026 from third-party summaries. Verify on Top One\'s help center before buying.' },
 
       { n:'Bulenox', ty:'Futures prop firm', pct:83, std:45, stdCode:'DJFSDX21', code:'DJFSDX',
         url:'https://tinyurl.com/bulenox21',
