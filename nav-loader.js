@@ -1303,8 +1303,15 @@ function prepareNavLabels(root) {
            Refer & Earn is NOT hidden — a Nightwing or Raven subscriber can
            still promote the $129 membership; only the tier itself pays
            nothing. */
-        if (plan === 'site' || plan === 'raven') {
+        if (plan === 'site') {
           document.querySelectorAll('#nav-content a[href="alerts.html"], #nav-content a[href="ninjatrader-members.html"], #nav-content a[href="variant-settings.html"]')
+            .forEach(el => el.classList.add('hidden'));
+        }
+        /* Raven: Raven is live on NinjaTrader 8 (Nov 3 2026), so the
+           NinjaTrader Hub stays visible. Scout and Variant Settings are
+           Knightfall-only and stay hidden. */
+        if (plan === 'raven') {
+          document.querySelectorAll('#nav-content a[href="alerts.html"], #nav-content a[href="variant-settings.html"]')
             .forEach(el => el.classList.add('hidden'));
         }
         /* Knightfall NT8 standalone: same platform as Nightwing, plus the
@@ -1338,8 +1345,11 @@ function prepareNavLabels(root) {
         // Same tools-tier rule as the real nav above.
         try {
           var fbPlan = localStorage.getItem('fsdx_plan');
-          if (fbPlan === 'site' || fbPlan === 'raven') {
+          if (fbPlan === 'site') {
             vip = vip.filter(function (l) { return l[0] !== 'alerts.html' && l[0] !== 'ninjatrader-members.html' && l[0] !== 'variant-settings.html'; });
+          }
+          if (fbPlan === 'raven') {
+            vip = vip.filter(function (l) { return l[0] !== 'alerts.html' && l[0] !== 'variant-settings.html'; });
           }
           if (fbPlan === 'ntsolo') {
             vip = vip.filter(function (l) { return l[0] !== 'alerts.html'; });
