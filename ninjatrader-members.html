@@ -168,6 +168,7 @@
           <button type="button" role="tab" data-tab="settings">Knightfall settings</button>
           <button type="button" role="tab" data-tab="dashboard">Knightfall dashboard</button>
           <button type="button" role="tab" data-tab="volume">Volume</button>
+          <button type="button" role="tab" data-tab="raven">Raven</button>
           <button type="button" role="tab" data-tab="help">Troubleshooting</button>
           <button type="button" role="tab" data-tab="updates">Updates</button>
         </div>
@@ -274,6 +275,7 @@
                   <li><b>Save your workspace</b>: Control Center → Workspaces → Save Workspace. The chart, its data settings and the strategy reload together next time.</li>
                 </ol>
                 <p class="nt-p">Changing settings restarts the strategy. If the chart markings disappear, open Strategies and check <b>Enabled</b> is still ticked.</p>
+                <p class="nt-p mt-2"><b>Want alerts on your phone?</b> Optional: <a href="#discord" class="text-green-400 font-bold">set up Discord alerts &rarr;</a></p>
                 <p class="nt-p mt-2"><b>One strategy per account.</b> Don't place manual trades on an account it's trading. For several accounts, enable it on each one or use a trade copier.</p>
               </div>
 
@@ -381,6 +383,33 @@
                     <tr><td>Trail Distance</td><td>30</td><td>How far behind price the trailing stop sits</td></tr>
                   </table>
                 </div>
+              </div>
+
+              <div class="nt-card" id="discord">
+                <h3 class="text-base font-black text-white mb-2">Discord alerts (optional, v1.4.6+)</h3>
+                <p class="nt-p mb-3">Knightfall can post to <b>your own</b> Discord server so you can follow along away from your computer. It's off until you paste a webhook URL. Leave it blank and Knightfall runs exactly as before. It never changes how trades are taken or managed.</p>
+                <ol class="nt-steps">
+                  <li><b>Make a webhook.</b> In your Discord server, open the channel's settings (gear icon) &rarr; <b>Integrations &rarr; Webhooks &rarr; New Webhook</b> &rarr; <b>Copy Webhook URL</b>.</li>
+                  <li><b>Paste it.</b> In NinjaTrader, open Strategies, select KnightfallORB, scroll to <b>11. Discord Alerts</b> and paste it into <b>Discord Webhook URL</b>.</li>
+                  <li><b>Enable the strategy.</b> When it goes live you get a <b>Knightfall connected</b> message with your variant, risk, account and AUTO or MANUAL. That confirms it works.</li>
+                </ol>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>Setting</th><th>Default</th><th>What it sends</th></tr>
+                    <tr><td>Discord Webhook URL</td><td>Blank (off)</td><td>Where to post. Blank = nothing is sent</td></tr>
+                    <tr><td>Send Breakouts</td><td>On</td><td>Each breakout with its grade, TAKE or SIGNAL, and the levels</td></tr>
+                    <tr><td>Include NO TRADE Breakouts</td><td>Off</td><td>On = also breakouts it skipped, with the reason</td></tr>
+                    <tr><td>Send Entries and Exits</td><td>On</td><td>Entry fills, partial exits, and the final exit with gross P&amp;L (before commission)</td></tr>
+                    <tr><td>Send Daily Loss Limit Hit</td><td>On</td><td>When the Daily Loss Limit stops new entries for the day</td></tr>
+                  </table>
+                </div>
+                <ul class="nt-steps" style="margin-top:16px">
+                  <li><b>Live only.</b> Nothing is sent for historical bars or chart reloads.</li>
+                  <li><b>Playback and replay count as live.</b> Clear the URL before you replay, or it will post the replay trades.</li>
+                  <li><b>Keep the URL private.</b> Anyone with it can post in that channel. Don't share templates or workspaces that contain it.</li>
+                  <li><b>Discord down?</b> Messages run in the background. A Discord outage never affects a trade.</li>
+                  <li><b>Several accounts?</b> Each enabled copy posts its own messages. Use one channel per account, or paste the URL on one copy only.</li>
+                </ul>
               </div>
           </div>
         </div>
@@ -492,6 +521,78 @@
         </div>
       </section>
 
+      <section id="raven" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="raven">
+        <div class="max-w-5xl mx-auto">
+          <h2 class="text-lg md:text-xl font-black text-white">FSD-X // ORB Raven</h2>
+          <p class="text-xs text-zinc-500 mt-1">Install it, set up the chart, read the dashboard. Indicator only: it never places orders.</p>
+          <div class="space-y-5 mt-6">
+              <div class="nt-card" id="rv-install">
+                <h3 class="text-base font-black text-white mb-3">1. Install and add it</h3>
+                <ol class="nt-steps">
+                  <li>Download the Raven <span class="nt-code">.zip</span> from your tools above. <b>Don't unzip it.</b></li>
+                  <li>Control Center &rarr; <b>Tools &rarr; Import &rarr; NinjaScript Add-On</b>. Pick the zip, confirm, then <b>restart NinjaTrader</b>.</li>
+                  <li>On your MNQ or NQ chart, right-click &rarr; <b>Indicators…</b> (<span class="nt-code">Ctrl+I</span>). Double-click <b>RavenORB</b>. It draws on the price panel.</li>
+                  <li>Set <b>Risk Per Trade ($)</b> to the dollar risk you want sized. It loads at $400.</li>
+                  <li>Click <b>OK</b>, then save your workspace (<b>Workspaces &rarr; Save Workspace</b>).</li>
+                </ol>
+                <p class="nt-p">Raven runs only on a NinjaTrader account licensed for Raven. Import works without a license, but nothing draws until your license is active. Raven can sit on the same chart as Knightfall.</p>
+              </div>
+
+              <div class="nt-card" id="rv-chart">
+                <h3 class="text-base font-black text-white mb-2">2. Chart settings</h3>
+                <p class="nt-p mb-3">Same as Knightfall. <a href="#s2" class="text-green-400 font-bold">Full chart settings &rarr;</a></p>
+                <ul class="nt-steps">
+                  <li><b>5-minute bars</b>, price based on <b>Last</b>.</li>
+                  <li>Trading hours: <b>CME US Index Futures ETH</b>.</li>
+                  <li><b>Days to load: 365.</b> The stop and range averages need the history. Until it's loaded, the dashboard shows a red <b>WARMING UP</b> row.</li>
+                  <li>Merge policy: <b>Merge non back adjusted</b>.</li>
+                </ul>
+                <p class="nt-p mt-1">If the chart is wrong, Raven tells you: red rows for <b>Built for 5-minute bars</b>, <b>Use ETH trading hours</b>, or a <b>ROLLOVER</b> warning near contract expiry. Levels won't match TradingView until those are fixed.</p>
+              </div>
+
+              <div class="nt-card" id="rv-reading">
+                <h3 class="text-base font-black text-white mb-2">3. What it draws</h3>
+                <p class="nt-p mb-3">Every opening range breakout, both directions. No grading and no filters. Which ones to take is your call.</p>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>On the chart</th><th>What it is</th></tr>
+                    <tr><td>ORB box, lines and midline</td><td>The opening range (8:30&ndash;8:45 CT by default)</td></tr>
+                    <tr><td>Entry, Stop</td><td>Drawn when a breakout bar closes. Same stop engine as Knightfall, including the No-Hedge ORB Cap</td></tr>
+                    <tr><td>TP1, TP2</td><td>Targets from Smart TP, tagged with the level they came from (PDH/PDL, weekly, S/R, FVG, round number)</td></tr>
+                    <tr><td>50% line</td><td>Halfway from entry to TP1</td></tr>
+                    <tr><td>Watch level</td><td>A significant nearby reference level</td></tr>
+                    <tr><td>Ghost lines</td><td>Faded levels from the previous breakout on the same side, so a setup you're already in stays readable</td></tr>
+                    <tr><td>Purple line</td><td>VWAP</td></tr>
+                  </table>
+                </div>
+                <p class="nt-p mt-3">The dashboard shows the version and your risk / $ per point in the header, then trend and ORB vs average, then each breakout with entry, stop, TP1, TP2 and contracts. $ per point is read from the instrument (MNQ 2, NQ 20). Contracts = risk &divide; (stop distance &times; $ per point), minimum 1.</p>
+                <p class="nt-p mt-2"><b>Layout: Compact</b> shows only the header, trend, ORB vs average, and entry, stop, TP1, TP2 and size. Use it on small screens. Setup warnings always show in both layouts.</p>
+              </div>
+
+              <div class="nt-card" id="rv-settings">
+                <h3 class="text-base font-black text-white mb-2">4. Settings worth knowing</h3>
+                <p class="nt-p mb-3">The defaults match Raven on TradingView. Change the levels settings only if you know why.</p>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+                    <tr><td>Risk Per Trade ($)</td><td>400</td><td>Dollar risk used to size contracts</td></tr>
+                    <tr><td>ORB Start Time / Duration</td><td>830 / 15</td><td>Opening range, Chicago time</td></tr>
+                    <tr><td>Session End (HHMM CT)</td><td>1530</td><td>No new breakouts after this time</td></tr>
+                    <tr><td>Minimum / Maximum SL (points)</td><td>75 / 175</td><td>Limits on how close or far the stop can sit</td></tr>
+                    <tr><td>No-Hedge ORB Cap</td><td>On</td><td>The stop never sits past the other side of the range. Matches Knightfall</td></tr>
+                    <tr><td>Show ORB Lines / Setup Lines</td><td>On</td><td>Turn the range or the entry/stop/target lines off to declutter</td></tr>
+                    <tr><td>Light Mode (dark text)</td><td>Off</td><td>For light chart backgrounds: light dashboard, dark text</td></tr>
+                    <tr><td>Layout (Full / Compact)</td><td>Full</td><td>Compact for phones and small panes</td></tr>
+                    <tr><td>Background Transparency %</td><td>0</td><td>0 = solid. 40&ndash;60 lets the chart show through and stays readable</td></tr>
+                    <tr><td>Font Size</td><td>12</td><td>Dashboard text size</td></tr>
+                    <tr><td>Alert on Breakout</td><td>Off</td><td>On = an alert in the Alerts window when a breakout bar closes, with entry, stop, TP1, TP2 and contracts. Live only. Raven alerts on every breakout</td></tr>
+                  </table>
+                </div>
+              </div>
+          </div>
+        </div>
+      </section>
+
       <section id="help" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="help">
         <div class="max-w-5xl mx-auto">
           <h2 class="text-lg md:text-xl font-black text-white">Troubleshooting</h2>
@@ -531,7 +632,7 @@
                   <li>When a new version is out, you'll see <b>Update available</b> at the top of this page and on that tool's card.</li>
                   <li>Download it, then <b>Tools → Import → NinjaScript Add-On</b> and pick the new zip. Say yes to replace.</li>
                   <li>Restart NinjaTrader. Your license carries over.</li>
-                  <li><b>Knightfall:</b> remove the strategy from the chart and add it again so the new defaults load. Check <b>Variant</b>, <b>Risk Profile</b> and <b>Daily Loss Limit</b> before you enable it. <b>Indicators</b> like Volume pick up the update after the restart.</li>
+                  <li><b>Knightfall:</b> remove the strategy from the chart and add it again so the new defaults load. Check <b>Variant</b>, <b>Risk Profile</b> and <b>Daily Loss Limit</b> before you enable it. <b>Indicators</b> like Volume and Raven pick up the update after the restart. Raven: if the dashboard looks off, remove it and add it again.</li>
                   <li>Save the workspace again (<b>Workspaces → Save Workspace</b>).</li>
                 </ol>
               </div>
@@ -817,6 +918,16 @@
      'The last 40 trades won less often than the normal 52–72% range. It\'s information only: it never changes size or pauses trading. Cold runs happen in the backtest too. Check the results page before changing anything.'],
     ['Can I run it on more than one account?',
      'Yes. Enable it on each account, or run it on one account and use a trade copier. Different variants on different accounts are fine: the No-Hedge ORB Cap means they can never be long and short at the same time. Don\'t place manual trades on an account it\'s trading.'],
+    ['Discord alerts: nothing arrives',
+     'Check the URL starts with https://discord.com/api/webhooks/ and was pasted into <b>11. Discord Alerts</b>. Messages only send live, so the strategy has to be enabled on a live or Sim connection, not just loaded on old bars. Open New &rarr; NinjaScript Output: "not a Discord webhook URL" means the URL is wrong, and "send failed" means Discord rejected it (often a deleted webhook). Make a new webhook and paste it again.'],
+    ['Discord posted trades I didn\'t take',
+     'You ran Playback or Market Replay with the URL still in. Replay counts as live. Clear the URL before replaying.'],
+    ['Raven: nothing draws',
+     'Raven needs its own license on the same email you log into NinjaTrader with. Check Raven shows Licensed on your tools above, then restart NinjaTrader. Then check RavenORB is in the chart\'s Indicators list.'],
+    ['Raven: red WARMING UP row',
+     'Set Days to load to 365 in Data Series and reload the chart. Raven needs the history for its stop and range averages.'],
+    ['Raven: levels differ from TradingView',
+     'Same fixes as Knightfall: 5-minute bars, CME US Index Futures ETH, 365 days loaded, Merge non back adjusted. Then right-click the chart &rarr; Reload All Historical Data.'],
     ['Do I need a paid NinjaTrader license?',
      'No. A free NinjaTrader account can run it in simulation and with supported brokers. Your NinjaTrader platform license is separate from your FSD-X strategy license.']
   ];
@@ -832,6 +943,9 @@
   function render(d) {
     STATE = d;
     renderLicense(d); renderTools(d); renderBanner(d); renderNotes(d);
+    // Raven-only plan: open on the Raven tab instead of Knightfall setup.
+    var ent = (d.products || []).filter(function (p) { return p.entitled; }).map(function (p) { return p.id; });
+    if (!location.hash && ent.indexOf('raven') !== -1 && ent.indexOf('knightfall') === -1 && window.ntShowTab) window.ntShowTab('raven');
     $('loading-screen').classList.add('hidden');
     $('nt-content').classList.remove('hidden');
   }
@@ -852,11 +966,11 @@
   document.addEventListener('DOMContentLoaded', function () { buildFaq(); load(); });
 })();
 
-/* ── Tabs: Knightfall setup · settings · dashboard · Volume · Troubleshooting · Updates ──
+/* ── Tabs: Knightfall setup · settings · dashboard · Volume · Raven · Troubleshooting · Updates ──
    Any #anchor on the page opens the tab that holds it, then scrolls to it. */
 (function () {
   'use strict';
-  var TABS = ['setup', 'settings', 'dashboard', 'volume', 'help', 'updates'];
+  var TABS = ['setup', 'settings', 'dashboard', 'volume', 'raven', 'help', 'updates'];
   function panels() { return document.querySelectorAll('.nt-panel'); }
   function show(tab) {
     Array.prototype.forEach.call(panels(), function (p) { p.hidden = p.getAttribute('data-panel') !== tab; });
@@ -893,6 +1007,7 @@
     }
   });
   window.addEventListener('hashchange', function () { go(location.hash.slice(1), true); });
+  window.ntShowTab = function (tab) { if (TABS.indexOf(tab) !== -1) show(tab); };
   function init() {
     var id = location.hash.slice(1);
     if (!go(id, false)) show(TABS[0]);
