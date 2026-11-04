@@ -10,8 +10,48 @@
   {
    "status": "planned",
    "product": "NinjaTrader 8",
-   "title": "Raven, Volume Engine and Stack V1 on NinjaTrader 8",
-   "body": "Native NinjaTrader 8 versions of Raven, Volume Engine and Stack V1, coming after Knightfall's NinjaTrader release."
+   "title": "Volume Engine and Stack V1 on NinjaTrader 8",
+   "body": "Native NinjaTrader 8 versions of Volume Engine and Stack V1, coming after Raven's NinjaTrader release."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-03",
+   "type": "new",
+   "product": "Raven",
+   "title": "Raven v1.1.0: now on NinjaTrader 8",
+   "body": "Raven is now on NinjaTrader 8, matching the TradingView version. It shows every ORB breakout with entry, stop, TP1, TP2, 50%, watch level and size. Same stop and target engine as Knightfall. Indicator only: no grading, no filters, never places orders. Breakout alerts are off by default. Download it from the <a href=\"ninjatrader-members.html\">NinjaTrader members page</a>, then Tools → Import → NinjaScript Add-On, and add <b>RavenORB</b> from Indicators to a 5-minute ETH chart with about 365 days of history. Your NinjaTrader email must be licensed for Raven."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-03",
+   "type": "update",
+   "product": "Raven",
+   "title": "Raven v1.1.0: Compact dashboard and auto $ per point",
+   "body": "On TradingView and NinjaTrader 8. <b>$ per point</b> is now read from the symbol (the manual input is removed). New <b>Layout</b> setting with a <b>Compact</b> option for phones and small panes. New <b>Background Transparency %</b>. <b>Light Mode</b> fixed: light backgrounds with dark text. The header shows the version and your risk / $ per point. Warnings if the chart is not on 5-minute bars or the ETH session. Levels are unchanged. TradingView users: open Raven's settings and click <b>Reset Settings</b> (or remove and re-add Raven), since one input was removed."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-03",
+   "type": "update",
+   "product": "NinjaTrader 8",
+   "title": "Knightfall NT8 v1.4.6: optional Discord alerts",
+   "body": "New settings group <b>11. Discord Alerts</b>. Paste a webhook URL from your own Discord server to get breakouts, entries, exits (P&amp;L before commission) and daily loss limit notices. Off until you add a URL. Sends live only, never on historical bars or chart reloads, and a Discord outage never affects a trade. Playback/replay counts as live, so clear the URL before replaying. Anyone with your webhook URL can post in that channel: don't share templates or workspaces that contain it. No change to how trades are taken or managed. Download v1.4.6 from the <a href=\"ninjatrader-members.html\">NinjaTrader members page</a> and re-import."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-03",
+   "type": "fix",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall v1.4.6: TP2 label fix",
+   "body": "On TradingView. Fixes the TP2 label on some short setups. Display only: entries, exits, levels and settings are unchanged. Nothing to do. TradingView updates on its own."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-03",
+   "type": "fix",
+   "product": "Auto-Trader",
+   "title": "Auto-Trader v1.4.6",
+   "body": "Matches Knightfall v1.4.6. Internal TP2 label fix only. Orders, levels and alerts are unchanged, so you do <b>not</b> need to re-create your alert. No settings change. <a href=\"autotrader.html\">ORB Auto-Trader</a>."
   },
   {
    "status": "shipped",
