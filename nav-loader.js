@@ -1,6 +1,24 @@
 // nav-loader.js — Universal nav loader
 // Handles logged-in and logged-out states automatically
 
+// ── Scout switch (retired for members Nov 2026) ──
+// false = Scout is hidden for everyone: no nav link, no search entry, no feed
+// polling, and alerts.html sends visitors to the dashboard. Nothing is deleted:
+// alerts.html, alerts.js and the worker's /api/scout routes are all still in
+// place. Set this to true to bring every piece back at once.
+window.FSDX_SCOUT_ENABLED = false;
+(function () {
+  if (window.FSDX_SCOUT_ENABLED === true) return;
+  // CSS, not JS toggles: it applies the moment the nav is injected and can't be
+  // undone by a page script that later flips a "hidden" class back off.
+  try {
+    var st = document.createElement('style');
+    st.id = 'fsdx-scout-off';
+    st.textContent = 'a[href^="alerts.html"],[data-scout]{display:none!important}';
+    (document.head || document.documentElement).appendChild(st);
+  } catch (e) {}
+})();
+
 // ── Mobile menu toggle ──
 // The hamburger in the mobile header calls toggleMobileMenu() inline, but the
 // function itself was pasted into each page's own <script> block. Five pages

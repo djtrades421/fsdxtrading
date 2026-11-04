@@ -468,6 +468,9 @@
   // Auto-start for logged-in members. Pages that shouldn't poll can call
   // FSDXAlerts.stop() after load.
   function autoStart() {
+    // Scout is switched off site-wide (nav-loader.js → FSDX_SCOUT_ENABLED).
+    // Off unless explicitly true, so a page without nav-loader never polls.
+    if (window.FSDX_SCOUT_ENABLED !== true) return;
     var token = null;
     try { token = localStorage.getItem('fsdx_token'); } catch (e) {}
     if (token && isEnabled()) start();

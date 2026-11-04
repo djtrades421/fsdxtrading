@@ -8,6 +8,8 @@
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <script src="nav-loader.js?v=20261025c"></script>
+  <script>/* Scout retired for members — see FSDX_SCOUT_ENABLED in nav-loader.js */
+    if (window.FSDX_SCOUT_ENABLED !== true) location.replace('dashboard.html');</script>
   <script src="filters.js?v=20260901"></script>
   <script src="alerts.js?v=20260901"></script>
   <style>

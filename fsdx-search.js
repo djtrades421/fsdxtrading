@@ -121,7 +121,10 @@
   function pool() {
     var vip = false;
     try { vip = !!localStorage.getItem('fsdx_token'); } catch (e) {}
-    return PAGES.filter(function (p) { return vip || !p.vip; });
+    return PAGES.filter(function (p) {
+      if (p.u === 'alerts.html' && window.FSDX_SCOUT_ENABLED !== true) return false;   // Scout retired
+      return vip || !p.vip;
+    });
   }
 
   function score(p, q) {
