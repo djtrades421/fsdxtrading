@@ -222,8 +222,8 @@ var FSDX_MENU = [
     items: [
       ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, Auto Trader, journal and the live room', '$129/mo', 'layers', 'orange'],
       ['ninjatrader.html', 'Knightfall NT8', 'Knightfall on NinjaTrader 8, on its own', '$59.99/mo', 'terminal', 'orange'],
-      ['raven.html', 'Raven', 'Standalone TradingView indicator', '$29.99/mo', 'trend', 'blue'],
-      ['nightwing.html', 'Nightwing', 'Standalone TradingView indicator', '$9.99/mo', 'moon', 'purple'],
+      ['raven.html', 'Raven', 'ORB levels on TradingView + NinjaTrader 8', '$29.99/mo', 'trend', 'blue'],
+      ['nightwing.html', 'Nightwing', 'Member platform + Nexus 2.0', '$9.99/mo', 'moon', 'purple'],
       ['free-indicators.html', 'Free Indicators', 'Free tools anyone can add to a chart', 'Free', 'star', 'green']
   ]},
   { id: 'platform', label: 'Platform', w: 680, eyebrow: 'Explore',
