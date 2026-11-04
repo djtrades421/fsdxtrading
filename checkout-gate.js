@@ -90,7 +90,7 @@
   };
 
   /* ---- Nightwing — the entry tier, and a genuinely different product ----
-     Site access + Nexus. No indicator suite, no Auto-Trader, no Scout, no
+     Site access + Nexus. No indicator suite, no Auto-Trader, no
      live room. Showing a Nightwing buyer the UNIFIED terms above would have
      them agree to an Auto-Trader Addendum for software they are not being
      sold — which is worse than no terms at all, because it misdescribes the
@@ -101,7 +101,7 @@
     title: "FSD-X Nightwing — Terms of Service",
     points: [
       "Nightwing is <strong>site access and the Nexus 2.0 extension</strong> — the member dashboard, trade journal, backtest workspace, playbook, trade importer and account tracker. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
-      "Nightwing <strong>does not include</strong> the FSD-X indicator suite (ORB PRO / Knightfall MK2, Stack V1, Volume Engine), the Auto-Trader, SCOUT live alerts, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
+      "Nightwing <strong>does not include</strong> the FSD-X indicator suite (ORB PRO / Knightfall MK2, Stack V1, Volume Engine), the Auto-Trader, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed — these tools record and analyse your own trading, they do not produce performance.",
       "Any figures, backtests, or historical results shown on this site are <strong>hypothetical</strong> and are not a representation that any account will achieve similar results.",
       "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in the platform places, sizes, or manages an order for you.",
@@ -127,7 +127,7 @@
       "Raven is the <strong>ORB Raven indicator</strong> plus the Nexus 2.0 extension and the member platform. The indicator marks opening range breakouts and draws the levels; it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
       "Raven <strong>applies no grading and no filtering</strong>. It marks every breakout and does not tell you which are worth taking. It does not know whether a level was hit, does not track trades, and reports <strong>no win rate and no performance of any kind</strong>.",
       "<strong>Raven has no backtest and no track record.</strong> Any backtest, figures or historical results shown elsewhere on this site belong to ORB PRO (Knightfall), a different product with grading and filtering that Raven does not have. They are <strong>hypothetical</strong> and are not a representation that any account will achieve similar results.",
-      "Raven <strong>does not include</strong> ORB PRO (Knightfall), the Auto-Trader, Stack V1, the Volume Engine, SCOUT live alerts, the live trade room, or the VIP Discord channels. Those are part of the full FSD-X membership.",
+      "Raven <strong>does not include</strong> ORB PRO (Knightfall), the Auto-Trader, Stack V1, the Volume Engine, the live trade room, or the VIP Discord channels. Those are part of the full FSD-X membership.",
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed.",
       "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in Raven places, sizes, or manages an order for you, and it does not connect to a broker.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
@@ -148,7 +148,7 @@
     title: "Knightfall for NinjaTrader 8 — Terms of Service",
     points: [
       "Knightfall for NinjaTrader 8 is the <strong>ORB PRO (Knightfall) strategy for NinjaTrader 8</strong>, plus the Nexus 2.0 extension and the member platform. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
-      "It <strong>does not include</strong> the TradingView scripts, the TradingView Auto-Trader, Stack V1, the Volume Engine, SCOUT live alerts, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
+      "It <strong>does not include</strong> the TradingView scripts, the TradingView Auto-Trader, Stack V1, the Volume Engine, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
       "With <strong>Auto Trade on, the strategy places and manages orders</strong> in the NinjaTrader account you select. <strong>You</strong> choose that account, the risk setting and the daily loss limit, and you are responsible for monitoring it. Run it on a sim account first.",
       "<strong>You</strong> are responsible for confirming that automated trading is allowed by your broker and prop firm. Rules vary and change.",
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed. Software, data feeds, connections and platforms can fail.",
@@ -170,7 +170,7 @@
     title: "FSD-X Lifetime Access — Terms of Service",
     points: [
       "Lifetime Access is a <strong>one-time payment of $399</strong>. There is <strong>no free trial</strong> and the payment is <strong>non-refundable</strong>.",
-      "It covers <strong>everything in the FSD-X Pro membership as it exists today</strong> — the indicator suite on TradingView, the Auto-Trader, Nexus 2.0, the member platform, SCOUT alerts, the VIP Discord and live room, and the monthly one-on-one call — for as long as FSD-X offers it.",
+      "It covers <strong>everything in the FSD-X Pro membership as it exists today</strong> — the indicator suite on TradingView, the Auto-Trader, Nexus 2.0, the member platform, the VIP Discord and live room, and the monthly one-on-one call — for as long as FSD-X offers it.",
       "It also includes the <strong>NinjaTrader version of Knightfall when it launches</strong>. It has been approved by NinjaTrader and is <strong>scheduled for release on October 23, 2026</strong>. If that date moves, we'll post the new one.",
       "It <strong>does not include</strong> new products or tools released after your purchase.",
       "TradingView access is granted to the <strong>one TradingView username</strong> you enter at checkout. Access is limited to <strong>one person</strong>; sharing, reselling, or redistributing it ends access without refund.",
