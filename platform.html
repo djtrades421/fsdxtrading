@@ -110,54 +110,177 @@
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
     <div class="w-full flex-1">
 
-      <!-- ═══ HERO ═══ -->
-      <section class="pt-12 pb-10 md:pt-20 md:pb-14 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// The Member Platform</div>
-          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
-            Your journal, your backtests and every prop account.<br class="hidden md:block" />
-            One login.
-          </h1>
-          <p class="mt-5 text-zinc-400 text-sm md:text-base max-w-3xl leading-relaxed">
-            Behind the login at fsdxtrading.com there's a full trader workspace: a dashboard, a trade
-            journal, a broker importer, a backtest workspace, and a Fleet manager built for traders running
-            many prop accounts at once. Connect Tradovate and your accounts and trades fill in on their own.
-          </p>
-          <div class="mt-5 border border-green-500/20 bg-green-500/[0.04] rounded-xl px-4 py-3 max-w-3xl">
-            <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">From $9.99/month with Nightwing.</span> Also included at no extra cost in Raven and the full membership. You don't need the membership to use it. <a href="compare.html" class="text-green-400 hover:underline font-semibold">See what else each one includes &rarr;</a></p>
+            <!-- ═══ HERO — leads with the Fleet manager ═══ -->
+      <style>
+        .pf-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+        .pf-chip{font-family:ui-monospace,monospace;font-size:11px;color:#a1a1aa;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.02);padding:5px 10px;border-radius:999px}
+        .pf-chip b{color:#4ade80;font-weight:700}
+        .pf-frame{border-radius:18px;border:1px solid rgba(74,222,128,.2);background:linear-gradient(160deg,rgba(74,222,128,.08),rgba(0,0,0,0) 50%),#050505;padding:12px;box-shadow:0 30px 60px -20px rgba(0,0,0,.8)}
+        .pf-frame .bar{display:flex;justify-content:space-between;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#71717a;padding:2px 4px 10px}
+        .pf-frame .bar b{color:#4ade80}
+        .pf-frame img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid rgba(255,255,255,.07)}
+        .pf-grid{display:grid;gap:18px;grid-template-columns:1fr}
+        @media(min-width:768px){.pf-grid{grid-template-columns:repeat(2,1fr)}}
+        @media(min-width:1180px){.pf-grid{grid-template-columns:repeat(3,1fr)}}
+        .pf-card{display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.09);background:rgba(9,9,11,.7);border-radius:18px;padding:14px;transition:border-color .15s,transform .15s;color:inherit;text-decoration:none}
+        .pf-card:hover{border-color:rgba(74,222,128,.4);transform:translateY(-2px)}
+        .pf-thumb{aspect-ratio:16/10;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.07);background:#000;position:relative}
+        .pf-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+        .pf-thumb .live{position:absolute;top:8px;left:8px;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.12em;color:#4ade80;background:rgba(0,0,0,.75);border:1px solid rgba(74,222,128,.3);padding:3px 7px;border-radius:6px}
+        .pf-body{padding:14px 6px 4px;display:flex;flex-direction:column;flex:1}
+        .pf-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+        .pf-tag{font-family:ui-monospace,monospace;font-size:10px;color:#a1a1aa;border:1px solid rgba(255,255,255,.1);padding:3px 8px;border-radius:999px}
+        .pf-k{font-family:ui-monospace,monospace;font-size:10px;font-weight:700;letter-spacing:.16em;color:#fb923c;text-transform:uppercase;margin-bottom:6px}
+        .pf-card h3{font-size:20px;font-weight:900;color:#fff;line-height:1.2}
+        .pf-card p{margin-top:8px;font-size:13.5px;color:#a1a1aa;line-height:1.6}
+        .pf-ul{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);display:grid;gap:7px}
+        .pf-ul li{display:flex;gap:8px;font-size:12.5px;color:#d4d4d8;line-height:1.45}
+        .pf-ul li:before{content:"✓";color:#4ade80;flex:none}
+        .pf-go{margin-top:auto;padding-top:16px;font-size:12.5px;font-weight:800;color:#4ade80}
+        .pf-feat{border-color:rgba(74,222,128,.3);background:linear-gradient(160deg,rgba(74,222,128,.06),rgba(9,9,11,.7) 40%)}
+        @media(min-width:1024px){.pf-feat{display:grid;grid-template-columns:7fr 5fr;gap:8px;align-items:center}.pf-feat .pf-thumb{aspect-ratio:auto}.pf-feat .pf-body{padding:10px 18px}}
+        .pf-sync{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:16px;height:100%;font-family:ui-monospace,monospace;font-size:11px;color:#a1a1aa;background:radial-gradient(circle at 80% 0,rgba(74,222,128,.12),transparent 60%),#000}
+        .pf-sync .row{display:flex;justify-content:space-between;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:7px 10px}
+        .pf-sync .ok{color:#4ade80}
+        .pf-sync .warn{color:#fbbf24}
+      </style>
+      <section class="pt-12 pb-12 md:pt-20 md:pb-14 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-10 items-center">
+          <div>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// The Member Platform</div>
+            <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+              Run every prop account <span class="text-green-400">from one screen.</span>
+            </h1>
+            <p class="mt-5 text-zinc-400 text-sm md:text-base leading-relaxed">
+              Set each account's rules once. The Fleet manager warns you before the firm's limits, flags accounts
+              that need a trade, and tracks every target and payout line. Your journal, imports and backtests
+              live in the same login.
+            </p>
+            <div class="pf-chips">
+              <span class="pf-chip"><b>●</b> Fleet manager</span>
+              <span class="pf-chip">Tradovate auto-sync</span>
+              <span class="pf-chip">Journal</span>
+              <span class="pf-chip">Importer</span>
+              <span class="pf-chip">Backtests</span>
+              <span class="pf-chip">Playbook</span>
+            </div>
+            <div class="mt-7 flex flex-wrap gap-3">
+              <a href="nightwing.html" class="px-6 py-3.5 bg-green-500 hover:bg-green-400 text-black font-black text-sm rounded-xl transition">Get the platform &mdash; $9.99 →</a>
+              <a href="#tools" class="px-6 py-3.5 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-sm rounded-xl transition">See every tool ↓</a>
+            </div>
+            <p class="mt-4 text-[12.5px] text-zinc-500 leading-relaxed max-w-xl">
+              Nightwing is this platform plus Nexus 2.0, with a 7-day free trial on monthly. Also included in Raven and
+              <a href="memberships.html" class="text-green-400 hover:underline font-semibold">the full membership</a>.
+            </p>
+          </div>
+          <div class="pf-frame">
+            <div class="bar"><span>Fleet · Accounts</span><b>● Synced</b></div>
+            <img src="shot-accounts.png" width="1400" height="620" alt="The Fleet manager in the member platform, showing a prop account with its firm rules, personal rules and status." loading="eager" decoding="async">
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ THE TOOLS — product-card grid ═══ -->
+      <section id="tools" class="py-16 md:py-20 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-10">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// What's behind the login</div>
+            <h2 class="text-2xl md:text-4xl font-black text-white">Seven tools, one login</h2>
+            <p class="text-zinc-400 text-sm mt-3 max-w-2xl mx-auto leading-relaxed">All in the browser at fsdxtrading.com. Nothing to install. Bring your own strategy, or run it alongside Knightfall.</p>
           </div>
 
-          <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
-              <div class="text-2xl font-black text-white">7</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Member tools on this site</div>
+          <a href="#fleet" class="pf-card pf-feat" style="margin-bottom:18px">
+            <div class="pf-thumb"><span class="live">● FLEET</span><img src="shot-accounts.png" alt="Fleet manager account view" loading="lazy"></div>
+            <div class="pf-body">
+              <div class="pf-tags"><span class="pf-tag">Eval &amp; funded</span><span class="pf-tag">Warning lines</span><span class="pf-tag">Payouts</span></div>
+              <div class="pf-k">The headline tool</div>
+              <h3>Fleet Manager</h3>
+              <p>Built for traders copy-trading five, ten or more prop accounts. Set stage, drawdown, target, payout line, minimum days and inactivity once per account, then set your own warning lines ahead of the firm's.</p>
+              <ul class="pf-ul">
+                <li>Warnings before the firm's limits, not after</li>
+                <li>Inactivity counted from each account's last trade</li>
+                <li>Copy one account's setup to the rest in one save</li>
+                <li>Trailing and end-of-day drawdown rules</li>
+              </ul>
+              <div class="pf-go">See the Fleet manager ↓</div>
             </div>
-            <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
-              <div class="text-2xl font-black text-white">2</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Broker export formats read</div>
-            </div>
-            <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
-              <div class="text-2xl font-black text-white">30 min</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">Tradovate auto-sync</div>
-            </div>
-            <div class="border border-white/10 bg-zinc-950/60 rounded-xl p-4">
-              <div class="text-2xl font-black text-white">$9.99</div>
-              <div class="text-[10px] text-zinc-500 uppercase tracking-wider mt-1">A month, with Nightwing</div>
-            </div>
-          </div>
+          </a>
 
-          <div class="mt-7 flex flex-wrap gap-3">
-            <a href="nightwing.html" class="px-5 py-3 bg-green-500 hover:bg-green-400 text-black font-black text-xs rounded-xl transition">Get the platform &mdash; $9.99 →</a>
-            <a href="compare.html" class="px-5 py-3 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-white font-bold text-xs rounded-xl transition">Compare all plans</a>
+          <div class="pf-grid">
+            <a href="#fleet" class="pf-card">
+              <div class="pf-thumb">
+                <div class="pf-sync">
+                  <div class="row"><span>Tradovate · read-only</span><span class="ok">● connected</span></div>
+                  <div class="row"><span>Accounts</span><span>synced</span></div>
+                  <div class="row"><span>Balances &amp; fills</span><span>every 30 min</span></div>
+                  <div class="row"><span>Orders</span><span class="warn">can't place / cancel</span></div>
+                </div>
+              </div>
+              <div class="pf-body">
+                <div class="pf-tags"><span class="pf-tag">Read-only</span><span class="pf-tag">No CSVs</span></div>
+                <div class="pf-k">Auto-sync</div>
+                <h3>Tradovate Sync</h3>
+                <p>Connect your Tradovate logins once. Accounts, balances and fills fill in on their own.</p>
+                <ul class="pf-ul"><li>Syncs every 30 minutes</li><li>Read-only: can't touch your orders</li><li>Not on Tradovate? The importer still works</li></ul>
+                <div class="pf-go">How sync works ↓</div>
+              </div>
+            </a>
+            <a href="#dashboard" class="pf-card">
+              <div class="pf-thumb"><img src="shot-dashboard.png" alt="Member dashboard" loading="lazy"></div>
+              <div class="pf-body">
+                <div class="pf-tags"><span class="pf-tag">P&amp;L</span><span class="pf-tag">Equity curve</span><span class="pf-tag">Sessions</span></div>
+                <div class="pf-k">Morning view</div>
+                <h3>Dashboard</h3>
+                <p>Your own numbers at a glance, plus the economic calendar and session clocks for the day.</p>
+                <ul class="pf-ul"><li>Filter by account</li><li>7D / 30D / 90D / all-time curve</li><li>Works on mobile</li></ul>
+                <div class="pf-go">See the dashboard ↓</div>
+              </div>
+            </a>
+            <a href="#journal" class="pf-card">
+              <div class="pf-thumb"><img src="shot-journal.png" alt="Trade journal calendar" loading="lazy"></div>
+              <div class="pf-body">
+                <div class="pf-tags"><span class="pf-tag">Calendar</span><span class="pf-tag">By grade</span><span class="pf-tag">Tags</span></div>
+                <div class="pf-k">Record</div>
+                <h3>Trade Journal</h3>
+                <p>Every trade on a calendar, filed by the grade the setup carried. Find out which grades pay in your own account.</p>
+                <ul class="pf-ul"><li>A+ / A / B+ / B / C breakdown</li><li>Multi-account</li><li>CSV export</li></ul>
+                <div class="pf-go">See the journal ↓</div>
+              </div>
+            </a>
+            <a href="#importer" class="pf-card">
+              <div class="pf-thumb"><img src="shot-importer.png" alt="Trade importer" loading="lazy"></div>
+              <div class="pf-body">
+                <div class="pf-tags"><span class="pf-tag">Tradovate</span><span class="pf-tag">TradingView</span></div>
+                <div class="pf-k">Import</div>
+                <h3>Trade Importer</h3>
+                <p>Drop in ten accounts' exports. It rebuilds each position flat-to-flat and applies real commissions.</p>
+                <ul class="pf-ul"><li>Overlapping files add only new trades</li><li>Per-account commission rates</li><li>Undo a batch in one click</li></ul>
+                <div class="pf-go">See the importer ↓</div>
+              </div>
+            </a>
+            <a href="#backtests" class="pf-card">
+              <div class="pf-thumb"><img src="shot-backtest-sessions.png" alt="Backtest workspace sessions" loading="lazy"></div>
+              <div class="pf-body">
+                <div class="pf-tags"><span class="pf-tag">Sessions</span><span class="pf-tag">Stats</span><span class="pf-tag">Calendar</span></div>
+                <div class="pf-k">Research</div>
+                <h3>Backtest Workspace</h3>
+                <p>Import a backtest CSV and get stats, a curve and a calendar. Kept apart from your live journal.</p>
+                <ul class="pf-ul"><li>Named, saved sessions</li><li>Compare a setting change side by side</li><li>Never mixes with live trades</li></ul>
+                <div class="pf-go">See backtests ↓</div>
+              </div>
+            </a>
+            <a href="#playbook" class="pf-card">
+              <div class="pf-thumb"><img src="shot-playbook.png" alt="Playbook pre-session checklist" loading="lazy"></div>
+              <div class="pf-body">
+                <div class="pf-tags"><span class="pf-tag">Rules</span><span class="pf-tag">Checklist</span></div>
+                <div class="pf-k">Reference</div>
+                <h3>The Playbook</h3>
+                <p>The written rule set and a pre-session checklist that resets at the open.</p>
+                <ul class="pf-ul"><li>Entry, stop and target rules</li><li>What separates an A+ from a C</li><li>Daily pre-session check</li></ul>
+                <div class="pf-go">See the playbook ↓</div>
+              </div>
+            </a>
           </div>
-
-          <!-- This page describes the platform, which is exactly what Nightwing
-               sells on its own. Sending every reader to the $129 page was the
-               single worst mis-route on the site. -->
-          <p class="mt-4 text-[12.5px] text-zinc-500 leading-relaxed max-w-xl">
-            Nightwing is this workspace plus the Nexus extension, with a 7-day free trial on monthly. Want the graded system,
-            the Auto Trader and the live room too? <a href="memberships.html" class="text-green-400 hover:underline font-semibold">The full membership</a> includes all of it.
-          </p>
         </div>
       </section>
 
@@ -166,130 +289,18 @@
         <div class="max-w-5xl mx-auto space-y-6">
 
           <div>
-            <div class="text-[10px] text-green-400 uppercase tracking-widest mb-3">// What's behind the login</div>
-            <h2 class="text-2xl md:text-3xl font-black text-white">Seven tools, one login</h2>
+            <div class="text-[10px] text-green-400 uppercase tracking-widest mb-3">// Inside each tool</div>
+            <h2 class="text-2xl md:text-3xl font-black text-white">How each tool works</h2>
             <p class="text-zinc-400 text-sm mt-3 max-w-2xl leading-relaxed">
               These live at fsdxtrading.com and open in a browser. Nothing to install. Member pages are behind a login, which is why they don't show up in a
               search result — this page is the public description of them.
             </p>
           </div>
 
-          <!-- Dashboard -->
-          <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
-            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">01 — Dashboard</span>
-            </div>
-            <figure class="m-0 border-b border-white/5 bg-black">
-              <img src="shot-dashboard.png" width="1400" height="752" loading="lazy" alt="The member dashboard: account selector, trade and win-rate tiles, equity curve, market session clocks and economic calendar." class="block w-full h-auto">
-            </figure>
-            <div class="p-6 md:p-8">
-              <h3 class="text-xl font-black text-white mb-3">Where the morning starts</h3>
-              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
-                One glance surface for your own numbers. Net P&amp;L, win rate and an equity curve you can
-                scope to 7, 30 or 90 days or all time, drawn from the trades in your journal — not from
-                anyone else's results. Alongside it, an economic calendar for the day and a session strip
-                showing London, New York and Tokyo in each city's own local time, so you know what's open
-                before the 8:30 bell.
-              </p>
-              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Net P&amp;L, win rate and trade count, filtered by account</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Equity curve with All-Time / 90D / 30D / 7D range pills</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Economic calendar for the session ahead</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> London / New York / Tokyo session clocks with open-close countdowns</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Mini trade calendar for the month</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Works on mobile</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Journal -->
-          <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
-            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">02 — Trade Journal</span>
-            </div>
-            <figure class="m-0 border-b border-white/5 bg-black">
-              <img src="shot-journal.png" width="1400" height="796" loading="lazy" alt="The trade journal calendar view with per-day results, weekly totals, and filters for time, result, account, grade and direction." class="block w-full h-auto">
-            </figure>
-            <div class="p-6 md:p-8">
-              <h3 class="text-xl font-black text-white mb-3">Every trade on a calendar, filed by grade</h3>
-              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
-                Log trades by hand or let the importer fill them in. Each one carries its date, direction,
-                entry, exit, contracts, account and P&amp;L, and — because this is an ORB system — the grade
-                the setup carried. Filtering by grade is the point: it's how you find out whether your B and
-                C mornings are actually paying for themselves in your own account, rather than in a backtest.
-              </p>
-              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Calendar view with per-day P&amp;L</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Per-trade detail with notes and tags</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Grade breakdown — see your own results by A+ / A / B+ / B / C</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Multi-account support</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Duplicate warning before a trade is saved twice</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> CSV export</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Importer -->
-          <div class="border border-green-500/20 bg-zinc-950/60 rounded-2xl overflow-hidden shadow-lg shadow-green-500/5">
-            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0"></span>
-              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">03 — Trade Importer</span>
-            </div>
-            <figure class="m-0 border-b border-white/5 bg-black">
-              <img src="shot-importer.png" width="1645" height="545" loading="lazy" alt="The universal trade importer, listing supported export formats and a drag-and-drop area for CSV files." class="block w-full h-auto">
-            </figure>
-            <div class="p-6 md:p-8">
-              <h3 class="text-xl font-black text-white mb-3">Upload your broker CSV. It does the accounting.</h3>
-              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
-                Copy-trading five or ten prop accounts means five or ten separate logins and five or ten
-                separate order exports. Drop the files in and the importer does the rest: it rebuilds each
-                position flat-to-flat, applies your real per-contract commission for that account, and works
-                out the net. Upload overlapping files — a week that partly covers last week — and only the
-                new trades are added. Duplicates are matched on fill timestamps down to the second, so two
-                scalps that opened and closed inside the same minute are correctly counted as two trades,
-                not one.
-              </p>
-              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Reads Tradovate order exports</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Reads TradingView strategy exports</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Flat-to-flat position accounting, not raw fills</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Per-account commission rates applied automatically</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Overlapping uploads add only what's new</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Batch imports can be removed again in one click</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Backtest workspace -->
-          <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
-            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">04 — Backtest Workspace</span>
-            </div>
-            <figure class="m-0 border-b border-white/5 bg-black">
-              <img src="shot-backtest-sessions.png" width="1633" height="914" loading="lazy" alt="The backtest workspace session list, showing saved sessions with trade counts, win rate, dollars per trade and net result." class="block w-full h-auto">
-            </figure>
-            <div class="p-6 md:p-8">
-              <h3 class="text-xl font-black text-white mb-3">Your own backtests, logged and kept</h3>
-              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
-                Deliberately separate from your live journal, so testing never contaminates your real
-                numbers. Start a session, import a backtest CSV from TradingView, and the workspace turns it
-                into stats, an equity curve and a calendar automatically. Sessions are saved, named and
-                comparable — which is what you need if you're going to change a setting and find out whether
-                it actually helped, rather than remembering that it felt better.
-              </p>
-              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Named, saved backtest sessions</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Import any backtest CSV — stats generated for you</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Equity curve and calendar per session</div>
-                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Kept entirely apart from your live trade journal</div>
-              </div>
-            </div>
-          </div>
-
           <!-- Accounts -->
-          <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+          <div id="fleet" class="scroll-mt-24 border border-green-500/25 bg-zinc-950/60 rounded-2xl overflow-hidden shadow-lg shadow-green-500/5">
             <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
-              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">05 — Fleet Manager &amp; Tradovate Sync</span>
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">01 — Fleet Manager &amp; Tradovate Sync</span>
             </div>
             <figure class="m-0 border-b border-white/5 bg-black">
               <img src="shot-accounts.png" width="1400" height="620" loading="lazy" alt="The accounts page on the Trackers tab: a funded prop account with total and daily P&amp;L, win rate, days traded, firm rules, personal rules with a discipline score, and loss-streak counters." class="block w-full h-auto">
@@ -321,10 +332,122 @@
             </div>
           </div>
 
+          <!-- Dashboard -->
+          <div id="dashboard" class="scroll-mt-24 border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">02 — Dashboard</span>
+            </div>
+            <figure class="m-0 border-b border-white/5 bg-black">
+              <img src="shot-dashboard.png" width="1400" height="752" loading="lazy" alt="The member dashboard: account selector, trade and win-rate tiles, equity curve, market session clocks and economic calendar." class="block w-full h-auto">
+            </figure>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Where the morning starts</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                One glance surface for your own numbers. Net P&amp;L, win rate and an equity curve you can
+                scope to 7, 30 or 90 days or all time, drawn from the trades in your journal — not from
+                anyone else's results. Alongside it, an economic calendar for the day and a session strip
+                showing London, New York and Tokyo in each city's own local time, so you know what's open
+                before the 8:30 bell.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Net P&amp;L, win rate and trade count, filtered by account</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Equity curve with All-Time / 90D / 30D / 7D range pills</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Economic calendar for the session ahead</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> London / New York / Tokyo session clocks with open-close countdowns</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Mini trade calendar for the month</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Works on mobile</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Journal -->
+          <div id="journal" class="scroll-mt-24 border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">03 — Trade Journal</span>
+            </div>
+            <figure class="m-0 border-b border-white/5 bg-black">
+              <img src="shot-journal.png" width="1400" height="796" loading="lazy" alt="The trade journal calendar view with per-day results, weekly totals, and filters for time, result, account, grade and direction." class="block w-full h-auto">
+            </figure>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Every trade on a calendar, filed by grade</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                Log trades by hand or let the importer fill them in. Each one carries its date, direction,
+                entry, exit, contracts, account and P&amp;L, and — because this is an ORB system — the grade
+                the setup carried. Filtering by grade is the point: it's how you find out whether your B and
+                C mornings are actually paying for themselves in your own account, rather than in a backtest.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Calendar view with per-day P&amp;L</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Per-trade detail with notes and tags</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Grade breakdown — see your own results by A+ / A / B+ / B / C</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Multi-account support</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Duplicate warning before a trade is saved twice</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> CSV export</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Importer -->
+          <div id="importer" class="scroll-mt-24 border border-green-500/20 bg-zinc-950/60 rounded-2xl overflow-hidden shadow-lg shadow-green-500/5">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="w-2.5 h-2.5 rounded-full bg-green-500 shrink-0"></span>
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">04 — Trade Importer</span>
+            </div>
+            <figure class="m-0 border-b border-white/5 bg-black">
+              <img src="shot-importer.png" width="1645" height="545" loading="lazy" alt="The universal trade importer, listing supported export formats and a drag-and-drop area for CSV files." class="block w-full h-auto">
+            </figure>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Upload your broker CSV. It does the accounting.</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                Copy-trading five or ten prop accounts means five or ten separate logins and five or ten
+                separate order exports. Drop the files in and the importer does the rest: it rebuilds each
+                position flat-to-flat, applies your real per-contract commission for that account, and works
+                out the net. Upload overlapping files — a week that partly covers last week — and only the
+                new trades are added. Duplicates are matched on fill timestamps down to the second, so two
+                scalps that opened and closed inside the same minute are correctly counted as two trades,
+                not one.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Reads Tradovate order exports</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Reads TradingView strategy exports</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Flat-to-flat position accounting, not raw fills</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Per-account commission rates applied automatically</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Overlapping uploads add only what's new</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Batch imports can be removed again in one click</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Backtest workspace -->
+          <div id="backtests" class="scroll-mt-24 border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+            <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
+              <span class="text-xs font-bold text-green-400 uppercase tracking-widest">05 — Backtest Workspace</span>
+            </div>
+            <figure class="m-0 border-b border-white/5 bg-black">
+              <img src="shot-backtest-sessions.png" width="1633" height="914" loading="lazy" alt="The backtest workspace session list, showing saved sessions with trade counts, win rate, dollars per trade and net result." class="block w-full h-auto">
+            </figure>
+            <div class="p-6 md:p-8">
+              <h3 class="text-xl font-black text-white mb-3">Your own backtests, logged and kept</h3>
+              <p class="text-zinc-400 text-sm leading-relaxed mb-5">
+                Deliberately separate from your live journal, so testing never contaminates your real
+                numbers. Start a session, import a backtest CSV from TradingView, and the workspace turns it
+                into stats, an equity curve and a calendar automatically. Sessions are saved, named and
+                comparable — which is what you need if you're going to change a setting and find out whether
+                it actually helped, rather than remembering that it felt better.
+              </p>
+              <div class="grid sm:grid-cols-2 gap-2 text-xs text-zinc-400">
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Named, saved backtest sessions</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Import any backtest CSV — stats generated for you</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Equity curve and calendar per session</div>
+                <div class="flex items-start gap-2"><span class="text-green-400 shrink-0">✓</span> Kept entirely apart from your live trade journal</div>
+              </div>
+            </div>
+          </div>
+
           <!-- Playbook -->
           <div class="grid gap-6">
 
-            <div class="border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
+            <div id="playbook" class="scroll-mt-24 border border-white/10 bg-zinc-950/50 rounded-2xl overflow-hidden">
               <div class="flex items-center gap-3 px-6 py-4 border-b border-white/5 bg-zinc-950/60">
                 <span class="text-xs font-bold text-green-400 uppercase tracking-widest">06 — The Playbook</span>
               </div>

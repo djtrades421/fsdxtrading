@@ -368,7 +368,7 @@
       <section id="hero" class="min-h-screen flex items-center justify-center px-6 md:px-12 border-b border-white/10 py-16 lg:py-20">
         <div class="max-w-7xl w-full grid lg:grid-cols-2 gap-12 items-start lg:items-center">
           <div>
-            <a href="#coming-soon" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 hover:border-green-500/40 hover:bg-green-500/20 transition text-green-400 text-xs font-semibold tracking-wide mb-6">
+            <a href="#ninjatrader" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 hover:border-green-500/40 hover:bg-green-500/20 transition text-green-400 text-xs font-semibold tracking-wide mb-6">
               <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
               <span>Knightfall, Volume &amp; Raven are live on NinjaTrader® 8 &middot; Stack V1 next &rarr;</span>
             </a>
@@ -386,18 +386,7 @@
               Built for the prop-firm trader. Most traders fail evals on one bad morning — this is a system built around not having one.
             </p>
 
-            <!-- What the membership covers, at a glance — detail in #what-you-get -->
-            <div class="vs-chips" aria-label="Included in the full membership">
-              <span class="vs-chip">Knightfall + 3 indicators</span>
-              <span class="vs-chip">Auto Trader</span>
-              <span class="vs-chip">Fleet account manager</span>
-              <span class="vs-chip">Tradovate auto-sync</span>
-              <span class="vs-chip">Journal &amp; backtests</span>
-              <span class="vs-chip">Nexus 2.0</span>
-              <span class="vs-chip">Live room every weekday</span>
-              <span class="vs-chip s">NinjaTrader 8 &middot; Live</span>
-            </div>
-            <a href="#what-you-get" class="inline-block mt-3 text-green-400 hover:text-green-300 text-xs font-semibold transition">Everything in the full membership &darr;</a>
+            
 
 
 
@@ -411,10 +400,7 @@
                   Watch the Demo
                 </a>
               </div>
-              <a href="ninjatrader.html" class="flex items-center justify-between gap-3 border border-green-500/25 bg-green-500/[0.05] hover:bg-green-500/[0.09] hover:border-green-500/45 transition rounded-2xl px-4 py-3 text-left">
-                <span class="text-[13px] text-zinc-300 leading-snug"><span class="text-[10px] font-black uppercase tracking-widest text-green-400 block mb-0.5">New &middot; Standalone</span>Just want Knightfall on NinjaTrader 8? Get it on its own &mdash; <b class="text-white">$59.99/mo</b>, 30-day free trial.</span>
-                <span class="text-green-400 font-extrabold text-sm whitespace-nowrap">See it &rarr;</span>
-              </a>
+              
 
               <div class="flex flex-wrap gap-4">
                 <!-- Lifetime and sales now live in the site ticker (admin → Sales). -->
@@ -491,30 +477,156 @@
         </div>
       </section>
 
-      <!-- ═══ PROBLEM → MECHANISM ═══ -->
-      <section class="py-24 px-6 md:px-12 border-b border-white/10">
-        <div class="max-w-3xl mx-auto text-center">
-          <h2 class="text-3xl md:text-4xl font-black leading-tight">You don't need another strategy. You need to know <span class="text-green-400">which trade to take.</span></h2>
-          <p class="mt-6 text-zinc-400 text-base leading-relaxed">If you're new or still fighting for consistency, most mornings come down to three questions: Which trade do I take? When do I get in? Where do my stop and target go? Guess wrong on any of them and the account pays for it. FSD-X answers all three with rules — and you don't figure it out alone.</p>
-        </div>
-        <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-5 mt-14">
-          <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
-            <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">Which trade to take</div>
-            <p class="text-zinc-400 text-sm leading-relaxed">Every setup is graded A+ down to C as it forms. You take the strong ones and skip the weak ones — instead of taking every breakout and hoping.</p>
+            <!-- ═══ SEE IT ON THE CHART — tabbed, annotated screenshots ═══
+           Placeholder images are MK1 course shots (ch-*.png). Swap for MK2 captures;
+           if the new shots frame differently, nudge each .oc-pin's left/top %. -->
+      <style>
+        .oc-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:36px}
+        .oc-tab{padding:9px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.02);color:#a1a1aa;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+        .oc-tab:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+        .oc-tab[aria-selected="true"]{color:#4ade80;border-color:rgba(74,222,128,.55);background:rgba(74,222,128,.08)}
+        .oc-tab .n{font-family:ui-monospace,monospace;opacity:.6;margin-right:6px}
+        .oc-panel{display:none;margin-top:32px;grid-template-columns:1fr;gap:32px;align-items:center}
+        .oc-panel.on{display:grid}
+        @media(min-width:1024px){.oc-panel{grid-template-columns:5fr 7fr;gap:48px}}
+        .oc-k{color:#4ade80;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.2em;margin-bottom:10px}
+        .oc-h{font-size:clamp(24px,3vw,32px);font-weight:900;line-height:1.15;color:#fff}
+        .oc-p{margin-top:14px;color:#a1a1aa;font-size:15px;line-height:1.7}
+        .oc-list{margin-top:18px;display:grid;gap:10px}
+        .oc-list li{display:flex;gap:10px;font-size:14px;color:#d4d4d8;line-height:1.5}
+        .oc-list .d{flex:none;width:20px;height:20px;border-radius:50%;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.5);color:#4ade80;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace}
+        .oc-frame{border-radius:20px;border:1px solid rgba(74,222,128,.18);background:linear-gradient(160deg,rgba(74,222,128,.07),rgba(0,0,0,0) 45%),#050505;padding:14px;box-shadow:0 30px 60px -20px rgba(0,0,0,.7)}
+        .oc-bar{display:flex;justify-content:space-between;align-items:center;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:#71717a;padding:2px 4px 10px}
+        .oc-bar b{color:#4ade80;font-weight:800}
+        .oc-img{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#000}
+        .oc-img img{display:block;width:100%;height:auto}
+        .oc-img.narrow{max-width:300px;margin:0 auto}
+        .oc-pin{position:absolute;transform:translate(-11px,-50%);display:flex;align-items:center;gap:6px;pointer-events:none}
+        .oc-pin .d{width:22px;height:22px;border-radius:50%;background:#4ade80;color:#000;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;box-shadow:0 0 0 4px rgba(74,222,128,.22)}
+        .oc-pin .t{white-space:nowrap;background:rgba(5,5,5,.92);border:1px solid rgba(74,222,128,.6);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px}
+        .oc-pin.l{flex-direction:row-reverse;transform:translate(calc(-100% + 11px),-50%)}
+        @media(max-width:767px){.oc-pin .t{display:none}}
+        .oc-cap{margin-top:10px;font-size:11px;color:#52525b;line-height:1.5}
+      </style>
+      <section id="on-the-chart" class="py-24 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-6xl mx-auto">
+          <div class="max-w-3xl mx-auto text-center">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">// See it on the chart</div>
+            <h2 class="text-3xl md:text-4xl font-black leading-tight">You don't need another strategy. You need to know <span class="text-green-400">which trade to take.</span></h2>
+            <p class="mt-5 text-zinc-400 text-base leading-relaxed">Most mornings come down to four questions. Here's how Knightfall answers each one, on a real chart.</p>
           </div>
-          <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
-            <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">When to get in</div>
-            <p class="text-zinc-400 text-sm leading-relaxed">The tool marks the exact entry when the breakout confirms — so you're not jumping in early on a fake move or missing it entirely.</p>
+
+          <div class="oc-tabs" role="tablist" aria-label="How Knightfall reads the open">
+            <button class="oc-tab" role="tab" aria-selected="true" data-oc="0"><span class="n">01</span>Which trade</button>
+            <button class="oc-tab" role="tab" aria-selected="false" data-oc="1"><span class="n">02</span>When to get in</button>
+            <button class="oc-tab" role="tab" aria-selected="false" data-oc="2"><span class="n">03</span>Stop &amp; target</button>
+            <button class="oc-tab" role="tab" aria-selected="false" data-oc="3"><span class="n">04</span>When to sit out</button>
           </div>
-          <div class="border border-white/10 bg-zinc-950/60 rounded-2xl p-6">
-            <div class="text-green-400 text-xs font-bold uppercase tracking-wider mb-2">Where your stop &amp; target go</div>
-            <p class="text-zinc-400 text-sm leading-relaxed">Both are set by the setup before you enter — decided by the rules, not by nerves once you're in the trade.</p>
+
+          <!-- 01 WHICH TRADE -->
+          <div class="oc-panel on" role="tabpanel" data-ocp="0">
+            <div>
+              <div class="oc-k">01 · The grade</div>
+              <h3 class="oc-h">Every breakout gets a grade before you click.</h3>
+              <p class="oc-p">Setups are graded A+ down to C as they form. You take the strong ones and skip the rest, instead of taking every breakout and hoping.</p>
+              <ul class="oc-list">
+                <li><span class="d">1</span>The opening range, drawn for you</li>
+                <li><span class="d">2</span>Grade and score, live as the setup builds</li>
+                <li><span class="d">3</span>One verdict in plain words: take it or don't</li>
+              </ul>
+            </div>
+            <div class="oc-frame">
+              <div class="oc-bar"><span>Knightfall · MNQ 5m</span><b>01 / 04</b></div>
+              <div class="oc-img">
+                <img src="ch-reading-grade-aplus-all-solid.png" alt="Knightfall grading a bear breakout A+ with the Take Trade verdict" width="725" height="641" loading="lazy" decoding="async">
+                <div class="oc-pin" style="left:28.5%;top:44%"><span class="d">1</span><span class="t">Opening range</span></div>
+                <div class="oc-pin l" style="left:63%;top:35.3%"><span class="d">2</span><span class="t">Grade, as it forms</span></div>
+                <div class="oc-pin l" style="left:63%;top:69%"><span class="d">3</span><span class="t">The verdict</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 02 WHEN TO GET IN -->
+          <div class="oc-panel" role="tabpanel" data-ocp="1">
+            <div>
+              <div class="oc-k">02 · The entry</div>
+              <h3 class="oc-h">No entry until the break confirms.</h3>
+              <p class="oc-p">Price near the range isn't a signal. Knightfall waits for a confirmed close outside it, so you're not jumping in early on a fake move or chasing one you missed.</p>
+              <ul class="oc-list">
+                <li><span class="d">1</span>Range high and low, locked after the open</li>
+                <li><span class="d">2</span>Market context: range size, volume, trend</li>
+                <li><span class="d">3</span>"Waiting for breakout" until it's real</li>
+              </ul>
+            </div>
+            <div class="oc-frame">
+              <div class="oc-bar"><span>Knightfall · MNQ 5m</span><b>02 / 04</b></div>
+              <div class="oc-img">
+                <img src="ch-breakout-waiting.png" alt="Knightfall waiting for a confirmed breakout above the opening range" width="898" height="560" loading="lazy" decoding="async">
+                <div class="oc-pin" style="left:9%;top:69%"><span class="d">1</span><span class="t">Range high</span></div>
+                <div class="oc-pin l" style="left:71%;top:18%"><span class="d">2</span><span class="t">Market context</span></div>
+                <div class="oc-pin l" style="left:71%;top:40%"><span class="d">3</span><span class="t">Not yet</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 03 STOP & TARGET -->
+          <div class="oc-panel" role="tabpanel" data-ocp="2">
+            <div>
+              <div class="oc-k">03 · The plan</div>
+              <h3 class="oc-h">Stop and targets are set before you're in.</h3>
+              <p class="oc-p">The setup decides the stop and both targets, then shows the risk and reward at your size. The plan is fixed by the rules, not by nerves once the trade is on.</p>
+              <ul class="oc-list">
+                <li><span class="d">1</span>Two targets, built from the range</li>
+                <li><span class="d">2</span>Entry marked where the break confirms</li>
+                <li><span class="d">3</span>Stop placed on structure</li>
+                <li><span class="d">4</span>Risk and reward sized to your account</li>
+              </ul>
+            </div>
+            <div class="oc-frame">
+              <div class="oc-bar"><span>Knightfall · MNQ 5m</span><b>03 / 04</b></div>
+              <div class="oc-img">
+                <img src="ch-stop-target-struct.png" alt="Knightfall drawing entry, structural stop and two targets with the trade plan panel" width="818" height="608" loading="lazy" decoding="async">
+                <div class="oc-pin" style="left:41%;top:29%"><span class="d">1</span><span class="t">Targets</span></div>
+                <div class="oc-pin" style="left:46%;top:57.5%"><span class="d">2</span><span class="t">Entry</span></div>
+                <div class="oc-pin" style="left:47%;top:83.5%"><span class="d">3</span><span class="t">Stop</span></div>
+                <div class="oc-pin l" style="left:68%;top:66%"><span class="d">4</span><span class="t">Risk / reward</span></div>
+              </div>
+              <p class="oc-cap">Illustrative screenshot. Dollar figures are position sizing for one setup, not a performance result.</p>
+            </div>
+          </div>
+
+          <!-- 04 WHEN TO SIT OUT -->
+          <div class="oc-panel" role="tabpanel" data-ocp="3">
+            <div>
+              <div class="oc-k">04 · The filter</div>
+              <h3 class="oc-h">Some mornings the answer is no trade.</h3>
+              <p class="oc-p">When a breakout doesn't clear the quality bar, Knightfall says so. It's a filter first and a signal second, and skipping the weak mornings is the point.</p>
+              <ul class="oc-list">
+                <li><span class="d">1</span>Low grade, flagged before entry</li>
+                <li><span class="d">2</span>NO TRADE, with the reason</li>
+              </ul>
+              <a href="suite.html#philosophy" class="inline-block mt-6 text-green-400 hover:text-green-300 text-sm font-semibold transition">Why we trade it this way &rarr;</a>
+            </div>
+            <div class="oc-frame">
+              <div class="oc-bar"><span>Knightfall · MNQ 5m</span><b>04 / 04</b></div>
+              <div class="oc-img narrow">
+                <img src="ch-dashboard-no-trade.png" alt="Knightfall panel showing a low-grade breakout marked No Trade, below the quality bar" width="265" height="515" loading="lazy" decoding="async">
+                <div class="oc-pin" style="left:68%;top:42.5%"><span class="d">1</span></div>
+                <div class="oc-pin" style="left:12%;top:84.5%"><span class="d">2</span></div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="max-w-3xl mx-auto mt-10 text-center">
-          <p class="text-zinc-400 text-sm leading-relaxed">On plenty of mornings the answer is to stand down. The system is a filter first and a signal second.</p>
-          <a href="suite.html#philosophy" class="inline-block mt-3 text-green-400 hover:text-green-300 text-sm font-semibold transition">Why we trade it this way &rarr;</a>
-        </div>
+        <script>
+          (function(){
+            var tabs=document.querySelectorAll('.oc-tab'),panels=document.querySelectorAll('.oc-panel');
+            tabs.forEach(function(t){t.addEventListener('click',function(){
+              var i=t.getAttribute('data-oc');
+              tabs.forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false')});
+              panels.forEach(function(p){p.classList.toggle('on',p.getAttribute('data-ocp')===i)});
+            })});
+          })();
+        </script>
       </section>
 
       <!-- ═══ WHAT YOU GET — the full membership, not just Knightfall ═══
@@ -577,29 +689,53 @@
             </a>
           </div>
 
-          <!-- Coming soon — kept prominent on purpose -->
-          <div id="coming-soon" class="vs-soonband">
-            <div class="vs-soonc">
-              <div class="vs-k">Live now &middot; approved by NinjaTrader</div>
-              <h3>Knightfall on NinjaTrader 8</h3>
-              <p>The same graded system, native on NinjaTrader 8, with automation built in.</p>
-              <div class="inc">Included in the membership &mdash; or on its own as Knightfall NT8, from $59.99/mo with a 30-day free trial.</div>
-              <div style="margin-top:10px"><a href="ninjatrader.html">See Knightfall NT8 &rarr;</a></div>
-            </div>
-            <div class="vs-soonc">
-              <div class="vs-k">Live now &middot; NinjaTrader 8</div>
-              <h3>Raven on NinjaTrader 8</h3>
-              <p>Every breakout with entry, stop, both targets and your size, now native on NinjaTrader 8. Volume is live there too. Next up: Stack V1.</p>
-              <div style="margin-top:10px"><a href="raven.html">See Raven &rarr;</a></div>
-            </div>
-          </div>
-
-          <div class="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+                    <div class="text-center mt-10 flex flex-col sm:flex-row gap-3 justify-center">
             <a href="#pricing" class="inline-block bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl shadow-lg shadow-green-500/10">Start 30-Day Free Trial</a>
             <a href="compare.html" class="inline-block border border-white/15 hover:bg-white/[0.06] transition px-8 py-4 rounded-2xl font-bold text-white">Compare all plans</a>
           </div>
         </div>
       </section>
+
+      <!-- ═══ KNIGHTFALL FOR NINJATRADER — LIVE ═══ -->
+      <section id="ninjatrader" class="px-6 md:px-12 py-24 border-b border-white/10">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div>
+            <div class="inline-flex items-center gap-2 mb-5 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/[0.06]">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-green-400">Live now · Approved by NinjaTrader</span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-black leading-tight">Knightfall is live on <span class="text-green-400">NinjaTrader&nbsp;8.</span></h2>
+            <p class="mt-5 text-zinc-400 text-base leading-relaxed max-w-xl">
+              The same graded ORB engine, native on NinjaTrader. Let it trade hands-free or take the trades yourself &mdash; one strategy, one chart.
+            </p>
+            <ul class="mt-6 space-y-2.5 text-sm text-zinc-300 max-w-xl">
+              <li class="flex gap-2.5"><span class="text-green-400 shrink-0">·</span>Hands-free or manual, all in one</li>
+              <li class="flex gap-2.5"><span class="text-green-400 shrink-0">·</span>No webhooks, alert setup or bridge service</li>
+              <li class="flex gap-2.5"><span class="text-green-400 shrink-0">·</span>Stop and target live on your chart as working orders</li>
+              <li class="flex gap-2.5"><span class="text-green-400 shrink-0">·</span>The full Market Context dashboard, rebuilt for NinjaTrader</li>
+            </ul>
+            <p class="mt-5 text-zinc-500 text-sm leading-relaxed max-w-xl">Approved by NinjaTrader. Included in the full membership, or on its own as <span class="text-white font-semibold">Knightfall NT8</span> from $59.99/mo with a 30-day free trial.</p>
+            <div class="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg">
+              <a href="ninjatrader.html#pricing" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-6 py-3.5 rounded-2xl text-center flex-1 whitespace-nowrap">Get Knightfall NT8 &mdash; $59.99</a>
+              <a href="#pricing" class="border border-white/20 hover:bg-white/10 transition px-6 py-3.5 rounded-2xl text-center font-medium whitespace-nowrap">Or the full membership</a>
+            </div>
+          </div>
+          <figure class="min-w-0 w-full max-w-md mx-auto">
+            <a href="ninjatrader.html" class="block rounded-2xl overflow-hidden border border-white/10 hover:border-green-500/30 transition bg-black shadow-2xl shadow-black/60">
+              <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold flex items-center justify-between gap-3">
+                <span>// NinjaTrader 8 · MNQ 5m</span>
+                <span class="text-green-400 whitespace-nowrap">● Live</span>
+              </div>
+              <picture>
+                <source srcset="nt8-knightfall-live.webp" type="image/webp">
+                <img src="nt8-knightfall-live.png" alt="Knightfall MK2 running natively in NinjaTrader 8 — ORB box, on-chart stop and target orders, and the Market Context dashboard" class="w-full h-auto block" width="716" height="883" loading="lazy" decoding="async">
+              </picture>
+            </a>
+            <figcaption class="mt-3 text-[11px] text-zinc-600 leading-relaxed">Illustrative screenshot. Dollar figures shown are one open position &mdash; not a performance result.</figcaption>
+          </figure>
+        </div>
+      </section>
+
 
       <!-- ═══ PROOF ═══ -->
       <section id="proof" class="py-24 px-6 md:px-12 border-b border-white/10">
@@ -719,8 +855,7 @@
             <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">The membership · everything in it</div>
             <h2 class="text-4xl font-black">Start your 30-day free trial</h2>
             <p class="text-zinc-400 text-sm mt-3 max-w-lg mx-auto">The full suite, the Auto-Trader, the live room, and the community — all at one price. Monthly includes a 30-day free trial. No charge until day 31.</p>
-            <p class="text-zinc-500 text-[13px] mt-4 max-w-lg mx-auto">Not what you need? <a href="free-indicators.html" class="text-green-400 hover:underline font-semibold">Arkham is free</a>, <a href="nightwing.html" class="text-green-400 hover:underline font-semibold">Nightwing is $9.99</a> for the platform and Nexus on their own, and <a href="raven.html" class="text-green-400 hover:underline font-semibold">Raven is $29.99</a> for stop, targets and sizing on every ORB break. <a href="ninjatrader.html" class="text-green-400 hover:underline font-semibold">Knightfall NT8 is $59.99</a> for just Knightfall on NinjaTrader 8. <a href="compare.html" class="text-green-400 hover:underline font-semibold">Compare all five &rarr;</a></p>
-            <div data-tv-notice class="mt-6 text-left"></div>
+                        <div data-tv-notice class="mt-6 text-left"></div>
           </div>
 
           <div class="grid md:grid-cols-3 gap-6 items-stretch pt-6 max-w-7xl mx-auto">
@@ -773,6 +908,7 @@
             <div class="flex items-center gap-3 shrink-0"><span class="text-white font-black text-lg">$59.99<span class="text-zinc-500 text-xs font-medium">/mo</span></span><span class="text-green-400 font-extrabold text-sm">See plans &rarr;</span></div>
           </a>
 
+          <p class="text-zinc-500 text-[13px] mt-8 max-w-2xl mx-auto text-center">Want just one piece? <a href="free-indicators.html" class="text-green-400 hover:underline font-semibold">Arkham is free</a>, <a href="nightwing.html" class="text-green-400 hover:underline font-semibold">Nightwing is $9.99</a> for the platform and Nexus on their own, and <a href="raven.html" class="text-green-400 hover:underline font-semibold">Raven is $29.99</a> for stop, targets and sizing on every ORB break. <a href="ninjatrader.html" class="text-green-400 hover:underline font-semibold">Knightfall NT8 is $59.99</a> for just Knightfall on NinjaTrader 8. <a href="compare.html" class="text-green-400 hover:underline font-semibold">Compare all five &rarr;</a></p>
           <div class="mt-8 text-center text-[12px] text-zinc-600 tracking-wide max-w-3xl mx-auto leading-relaxed">
             The membership includes the full FSD-X Suite plus hands-off Auto-Trader execution. Monthly includes a 30-day free trial (new members only). The Auto-Trader currently runs on <span class="text-zinc-400 font-semibold">TradingView</span>; a native NinjaTrader® 8 version is live as of October 23, 2026. Nightwing ($9.99/month) is a separate, lower-priced product covering the member platform and Nexus only, and Knightfall NT8 ($59.99/month) is Knightfall on NinjaTrader 8 with the platform and Nexus — neither is a tier of this membership.
           </div>
@@ -784,69 +920,21 @@
       <section id="talk" class="px-6 md:px-12 py-16 border-b border-white/10">
         <div class="max-w-5xl mx-auto border border-green-500/25 bg-zinc-950/60 rounded-3xl p-7 md:p-10 grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Start here</div>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Not ready yet?</div>
             <h2 class="text-3xl md:text-4xl font-black leading-tight">Have questions? Talk to the person who built it.</h2>
             <p class="text-zinc-400 text-sm leading-relaxed mt-4">Not sure which product fits you, or want help setting it up? Book a quick 1-on-1 call with me, or message me on Discord. No membership needed to ask.</p>
+            <p class="text-zinc-500 text-sm leading-relaxed mt-3">Or just look around first. The Discord is free: market talk, our <a href="free-indicators.html" class="text-green-400 hover:underline">free Arkham indicator</a>, and traders working on the same thing. <a href="schedule.html#discord" class="text-green-400 hover:underline">What's free vs. members &rarr;</a></p>
           </div>
           <div class="flex flex-col gap-3">
             <a href="https://cal.com/fsdxtrading/questions" target="_blank" rel="noopener noreferrer" class="block w-full py-4 bg-green-500 hover:bg-green-400 text-black font-extrabold text-center rounded-2xl transition">Book a quick call &rarr;</a>
-            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="block w-full py-4 border border-white/15 hover:bg-white/[0.06] text-white font-bold text-center rounded-2xl transition">Message me on Discord</a>
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="block w-full py-4 border border-white/15 hover:bg-white/[0.06] text-white font-bold text-center rounded-2xl transition">Join the free Discord</a>
             <a href="start-here.html" class="text-center text-xs text-zinc-500 hover:text-green-400 transition mt-1">Members get 30-min setup calls and strategy walkthroughs &rarr;</a>
           </div>
         </div>
       </section>
 
-      <!-- ═══ FREE DISCORD STRIP (free vs members detail lives on schedule.html) ═══ -->
-      <section class="px-6 md:px-12 py-12 border-b border-white/10 bg-zinc-950/40">
-        <div class="max-w-5xl mx-auto border border-white/10 bg-zinc-950/60 rounded-2xl p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div class="text-center sm:text-left">
-            <h3 class="text-base sm:text-lg font-black text-white mb-1.5">Not ready yet? The Discord is free.</h3>
-            <p class="text-zinc-400 text-sm leading-relaxed">Market talk, our <a href="free-indicators.html" class="text-green-400 hover:underline">free Arkham indicator</a>, and traders working on the same thing. Members get the live room every morning at 8:30 AM CT. <a href="schedule.html#discord" class="text-green-400 hover:underline">What's free vs. members &rarr;</a></p>
-          </div>
-          <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="px-6 py-3 border border-white/15 hover:bg-white/[0.06] transition rounded-2xl font-bold text-white text-sm whitespace-nowrap shrink-0">Join free →</a>
-        </div>
-      </section>
-
-      <!-- ═══ KNIGHTFALL FOR NINJATRADER — LIVE ═══ -->
-      <section id="ninjatrader" class="px-6 md:px-12 pt-16 pb-4">
-        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          <div>
-            <div class="inline-flex items-center gap-2 mb-5 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/[0.06]">
-              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-              <span class="text-[10px] font-bold uppercase tracking-widest text-green-400">Live now · Approved by NinjaTrader</span>
-            </div>
-            <h2 class="text-3xl md:text-4xl font-black leading-tight">Knightfall is live on <span class="text-green-400">NinjaTrader&nbsp;8.</span></h2>
-            <p class="mt-5 text-zinc-400 text-base leading-relaxed max-w-xl">
-              The same graded ORB engine, native on NinjaTrader. Let it trade hands-free or take the trades yourself &mdash; one strategy, one chart.
-            </p>
-            <ul class="mt-6 space-y-2.5 text-sm text-zinc-300 max-w-xl">
-              <li class="flex gap-2.5"><span class="text-green-400 shrink-0">·</span>Hands-free or manual, all in one</li>
-              <li class="flex gap-2.5"><span class="text-green-400 shrink-0">·</span>No webhooks, alert setup or bridge service</li>
-              <li class="flex gap-2.5"><span class="text-green-400 shrink-0">·</span>Stop and target live on your chart as working orders</li>
-              <li class="flex gap-2.5"><span class="text-green-400 shrink-0">·</span>The full Market Context dashboard, rebuilt for NinjaTrader</li>
-            </ul>
-            <p class="mt-5 text-zinc-500 text-sm leading-relaxed max-w-xl">Approved by NinjaTrader. Included in the full membership, or on its own as <span class="text-white font-semibold">Knightfall NT8</span> from $59.99/mo with a 30-day free trial.</p>
-            <div class="mt-7 flex flex-col sm:flex-row gap-3 max-w-lg">
-              <a href="ninjatrader.html#pricing" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-6 py-3.5 rounded-2xl text-center flex-1 whitespace-nowrap">Get Knightfall NT8 &mdash; $59.99</a>
-              <a href="#pricing" class="border border-white/20 hover:bg-white/10 transition px-6 py-3.5 rounded-2xl text-center font-medium whitespace-nowrap">Or the full membership</a>
-            </div>
-          </div>
-          <figure class="min-w-0 w-full max-w-md mx-auto">
-            <a href="ninjatrader.html" class="block rounded-2xl overflow-hidden border border-white/10 hover:border-green-500/30 transition bg-black shadow-2xl shadow-black/60">
-              <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold flex items-center justify-between gap-3">
-                <span>// NinjaTrader 8 · MNQ 5m</span>
-                <span class="text-green-400 whitespace-nowrap">● Live</span>
-              </div>
-              <picture>
-                <source srcset="nt8-knightfall-live.webp" type="image/webp">
-                <img src="nt8-knightfall-live.png" alt="Knightfall MK2 running natively in NinjaTrader 8 — ORB box, on-chart stop and target orders, and the Market Context dashboard" class="w-full h-auto block" width="716" height="883" loading="lazy" decoding="async">
-              </picture>
-            </a>
-            <figcaption class="mt-3 text-[11px] text-zinc-600 leading-relaxed">Illustrative screenshot. Dollar figures shown are one open position &mdash; not a performance result.</figcaption>
-          </figure>
-        </div>
-      </section>
-
+      
+      
       <!-- ═══ NINJATRADER VENDOR ═══ -->
       <section class="px-6 md:px-12 pt-8 pb-16">
         <div class="max-w-7xl mx-auto border border-white/10 bg-zinc-950 rounded-3xl p-8 flex flex-col xl:flex-row items-center justify-between gap-12">
