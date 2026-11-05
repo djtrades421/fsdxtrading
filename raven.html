@@ -121,31 +121,77 @@
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
     <div class="w-full flex-1">
 
-      <!-- ══════════════ HERO ══════════════ -->
-      <section class="pt-12 pb-10 md:pt-20 md:pb-12 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
-        <div class="max-w-5xl mx-auto">
-          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Raven · The Levels Tier</div>
-          <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">Every breakout. All the levels.</h1>
-          <p class="mt-4 text-zinc-400 text-sm md:text-base max-w-2xl leading-relaxed">
-            FSD-X ORB Raven marks every opening range breakout on the chart, in both directions, and
-            draws the entry, the stop, both targets and your position size for each one.
-            <span class="text-white font-semibold">It doesn't decide which ones are worth taking.</span>
-            That part stays yours.
-          </p>
-          <p class="mt-3 text-[13px] text-zinc-400"><span class="text-white font-semibold">On TradingView and NinjaTrader 8.</span> One subscription covers both.</p>
-
-          <div class="mt-6 flex items-baseline gap-2">
-            <span class="text-4xl font-black text-white">$29.99</span>
-            <span class="text-zinc-500 text-sm font-medium">/ month</span>
-            <span class="ml-2 text-[11px] font-bold text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-0.5 rounded-md">7-day free trial</span>
+      <!-- ══════════════ HERO + SEE IT ON THE CHART ══════════════ -->
+      <style>
+        .rv-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center;margin-top:40px}
+        @media(min-width:1024px){.rv-grid{grid-template-columns:5fr 7fr;gap:48px}}
+        .rv-list{display:grid;gap:12px}
+        .rv-list li{display:flex;gap:10px;font-size:14px;color:#d4d4d8;line-height:1.5}
+        .rv-list .d{flex:none;width:20px;height:20px;border-radius:50%;background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.5);color:#4ade80;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace}
+        .rv-frame{border-radius:20px;border:1px solid rgba(74,222,128,.18);background:linear-gradient(160deg,rgba(74,222,128,.07),rgba(0,0,0,0) 45%),#050505;padding:14px;box-shadow:0 30px 60px -20px rgba(0,0,0,.7)}
+        .rv-bar{display:flex;justify-content:space-between;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:#71717a;padding:2px 4px 10px}
+        .rv-bar b{color:#4ade80}
+        .rv-img{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#000}
+        .rv-img img{display:block;width:100%;height:auto}
+        .rv-pin{position:absolute;transform:translate(-11px,-50%);display:flex;align-items:center;gap:6px;pointer-events:none}
+        .rv-pin .d{width:22px;height:22px;border-radius:50%;background:#4ade80;color:#000;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,monospace;box-shadow:0 0 0 4px rgba(74,222,128,.22)}
+        .rv-pin .t{white-space:nowrap;background:rgba(5,5,5,.92);border:1px solid rgba(74,222,128,.6);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px}
+        .rv-pin.l{flex-direction:row-reverse;transform:translate(calc(-100% + 11px),-50%)}
+        @media(max-width:767px){.rv-pin .t{display:none}}
+      </style>
+      <section class="pt-14 pb-16 md:pt-20 px-6 md:px-12 border-b border-white/10 bg-gradient-to-b from-zinc-950 to-black">
+        <div class="max-w-6xl mx-auto">
+          <div class="max-w-3xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/[0.06]">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-green-400">Raven &middot; TradingView + NinjaTrader 8</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-[1.1]">Every breakout. <span class="text-green-400">All the levels.</span></h1>
+            <p class="mt-5 text-zinc-400 text-base md:text-lg leading-relaxed">
+              Raven marks every opening range breakout, in both directions, and draws the entry, the stop, both targets and your position size for each one.
+              <span class="text-white font-semibold">It doesn&rsquo;t decide which ones are worth taking.</span> That part stays yours.
+            </p>
           </div>
-          <p class="mt-2 text-[12px] text-zinc-500">Includes Nexus 2.0 and the full member platform. Longer terms work out to $23.33/month. Cancel anytime.</p>
 
-          <div class="mt-7 flex flex-wrap gap-3">
-            <a href="#plans" class="inline-block px-6 py-3 bg-green-500 hover:bg-green-400 text-black font-extrabold rounded-xl transition text-sm">See plans</a>
-            <a href="memberships.html" class="inline-block px-6 py-3 border border-white/20 hover:border-green-500/50 hover:text-green-400 text-zinc-300 font-bold rounded-xl transition text-sm">Want the graded system instead?</a>
+          <div class="rv-grid">
+            <div>
+              <div class="text-green-400 text-[11px] font-extrabold uppercase tracking-[0.2em] mb-3">// See it on the chart</div>
+              <h2 class="text-2xl md:text-3xl font-black leading-tight">The levels, drawn the moment it breaks.</h2>
+              <ul class="rv-list mt-5">
+                <li><span class="d">1</span>The opening range, locked to the cash open</li>
+                <li><span class="d">2</span>Entry, marked where the break happens</li>
+                <li><span class="d">3</span>Stop, from structure and volatility</li>
+                <li><span class="d">4</span>Two targets, each tagged with where it came from</li>
+                <li><span class="d">5</span>Market context: range size vs. its 5-day average, trend state</li>
+                <li><span class="d">6</span>Contracts from your risk, and the real dollar risk of that size</li>
+              </ul>
+            </div>
+            <div>
+              <div class="rv-frame">
+                <div class="rv-bar"><span>FSD-X ORB Raven &middot; v1.1.0</span><b>NQ</b></div>
+                <div class="rv-img">
+                  <img src="raven-v110.png" alt="FSD-X ORB Raven v1.1.0 marking a bull breakout of the opening range, with entry, stop, TP1 and TP2 drawn and each target tagged, a watch level, and the panel showing market context, the level stack and position size" width="864" height="552" decoding="async">
+                  <div class="rv-pin" style="left:19%;top:76%"><span class="d">1</span><span class="t">Opening range</span></div>
+                  <div class="rv-pin" style="left:31%;top:60.5%"><span class="d">2</span><span class="t">Entry</span></div>
+                  <div class="rv-pin" style="left:29.5%;top:69.7%"><span class="d">3</span><span class="t">Stop</span></div>
+                  <div class="rv-pin" style="left:32.5%;top:5.6%"><span class="d">4</span><span class="t">Tagged targets</span></div>
+                  <div class="rv-pin l" style="left:67.8%;top:15.5%"><span class="d">5</span><span class="t">Market context</span></div>
+                  <div class="rv-pin l" style="left:67.8%;top:50.7%"><span class="d">6</span><span class="t">Size &amp; real risk</span></div>
+                </div>
+              </div>
+              <p class="mt-3 text-[11px] text-zinc-600 leading-relaxed">Illustrative screenshot. Dollar figures are position sizing for one breakout, not a performance result. Raven doesn&rsquo;t track outcomes.</p>
+            </div>
           </div>
-          <p data-sale-for="raven" class="mt-4 text-sm text-zinc-300 border border-red-500/40 bg-red-950/20 rounded-xl px-4 py-3 max-w-xl" hidden></p>
+
+          <div class="mt-14 text-center">
+            <p class="text-white font-black text-xl md:text-2xl">Your read. Levels drawn properly.</p>
+            <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center max-w-xl mx-auto">
+              <a href="#plans" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center flex-1 whitespace-nowrap">Start 7-Day Free Trial</a>
+              <a href="memberships.html" class="border border-white/15 hover:bg-white/[0.06] transition px-6 py-4 rounded-2xl text-center font-bold text-white whitespace-nowrap">Want the graded system?</a>
+            </div>
+            <p class="mt-3 text-[12px] text-zinc-500">$29.99/mo &middot; 7-day free trial on monthly &middot; includes Nexus 2.0 and the member platform &middot; one subscription covers TradingView and NinjaTrader 8.</p>
+            <p data-sale-for="raven" class="mt-4 text-sm text-zinc-300 border border-red-500/40 bg-red-950/20 rounded-xl px-4 py-3 max-w-xl mx-auto" hidden></p>
+          </div>
         </div>
       </section>
       <!-- TradingView Nov 1 notice — wording lives in tv-notice.js -->
@@ -260,11 +306,6 @@
             <p class="text-[13px] text-zinc-400 leading-relaxed">VWAP as context · higher-timeframe trend state · prior day and prior week levels · fair value gap boxes · Full or Compact dashboard layout · adjustable background transparency · Light Mode for light-background charts.</p>
           </div>
 
-          <div class="rounded-2xl overflow-hidden border border-white/5 bg-black mt-5">
-            <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold">// Raven — MNQ 5m</div>
-            <img src="screenshot-raven.png" alt="FSD-X ORB Raven marking a bear breakout of the opening range on an MNQ 5-minute chart, with the entry, stop, TP1 and TP2 zones, the 50% level and a watch level drawn, and the dashboard showing range width, trend state, the level stack and position size" class="w-full h-auto" width="874" height="663" loading="lazy" decoding="async">
-          </div>
-          <p class="mt-3 text-[12px] text-zinc-500 leading-relaxed">A bear breakout, marked. Entry, stop and both target zones drawn, each target tagged with the kind of level it came from &mdash; TP1 a round number, TP2 higher-timeframe S/R. The panel carries the range width against its recent average, the trend state, the level stack by distance, and the contracts your risk allows with the real dollar figure beside it.</p>
         </div>
       </section>
 
@@ -320,179 +361,15 @@
             </div>
           </div>
 
-
-
-      <!-- ══════════════ NEXUS IN DETAIL ══════════════
-           Every claim here is checked against the extension source
-           (fsdx-nexus 2.0.47): the tab names are its own, the prop-firm
-           presets are the ones in its dropdown, and the Optimizer really does
-           read whatever strategy settings dialog is open rather than only ours.
-           If the extension changes, re-check this section and the matching one
-           on the other tier page before editing either. -->
-      <section class="py-12 px-6 md:px-12 border-t border-white/10">
-        <div class="max-w-5xl mx-auto">
-
-          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-4 font-bold">// Nexus 2.0, in detail</div>
-          <h2 class="text-2xl md:text-3xl font-black tracking-tight mb-3">The other half of what you're buying</h2>
-          <p class="text-sm md:text-base text-zinc-400 leading-relaxed max-w-2xl mb-8">
-            Raven draws the levels. Nexus is what sits beside them &mdash; five tools in a side panel docked to
-            the TradingView chart, most of which work on whatever you happen to be trading.
-          </p>
-
-          <div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
-              <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold">// Nexus 2.0 &mdash; the Optimizer, mid-sweep</div>
-              <img src="screenshot-nexus-panel.png" alt="The FSD-X Nexus 2.0 side panel with its five main tabs — Tools, Analysis, Journal, Backtest and Playbook — and the Optimizer running a sweep: combination 2 of 32 at 6 percent, an estimated time remaining, elapsed time, the parameter combination currently being tested, and an export button." class="block w-full h-auto" width="699" height="368" loading="lazy" decoding="async">
-            </div>
-          <p class="mt-3 text-[12px] text-zinc-500 leading-relaxed">The panel docks to the right of the TradingView chart and stays there while you work. Above, the Optimizer part-way through a sweep &mdash; it reports the combination it is on, how far through it is and how long is left, and can be stopped at any point.</p>
-
-          <div class="mt-8 grid md:grid-cols-3 gap-4 items-start">
-<div class="border border-green-500/25 bg-green-500/[0.04] rounded-2xl p-5">
-                <div class="text-[10px] font-black text-green-400 uppercase tracking-widest mb-1.5">Tools &middot; Optimizer</div>
-                <div class="text-white font-bold text-[15px] mb-2">Sweep a strategy's settings instead of guessing them</div>
-                <p class="text-[13px] text-zinc-400 leading-relaxed">Open any TradingView strategy's settings dialog and Nexus reads its inputs straight off the screen. Give each one a minimum, a maximum and a step, run the sweep, and read the combinations back ranked. <span class="text-zinc-300">It is not limited to our scripts</span> &mdash; it optimises whatever strategy is on your chart.</p>
-              </div>
-
-              <div class="border border-white/10 bg-zinc-950/50 rounded-2xl p-5">
-                <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Tools &middot; Eval Sim</div>
-                <div class="text-white font-bold text-[15px] mb-2">Run your own history against a prop firm's rules</div>
-                <p class="text-[13px] text-zinc-400 leading-relaxed">Presets for <span class="text-white font-semibold">Apex, TopStep, MFF and E8</span>, or set your own account size, daily drawdown, trailing or end-of-day drawdown and profit target. Feed it your journal and it simulates the evaluation, including how the result changes with contract count.</p>
-                <p class="text-[11.5px] text-zinc-600 leading-relaxed mt-2">Simulated outcomes from your own past trades. Hypothetical, and not a prediction that any evaluation will pass.</p>
-              </div>
-
-              <div class="border border-white/10 bg-zinc-950/50 rounded-2xl p-5">
-                <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Analysis</div>
-                <div class="text-white font-bold text-[15px] mb-2">Three timeframes read together</div>
-                <p class="text-[13px] text-zinc-400 leading-relaxed">Drop in your entry, confirmation and trend charts and get them read as one picture, with your ticker, strategy and maximum risk as context. It is AI-assisted and it says so in the panel &mdash; a second opinion to argue with, not an instruction.</p>
-              </div>
-          </div>
-
-          <div class="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-              <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Tools</div>
-              <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Position calculator</span> for futures and forex, micro or standard, sized off your stop to a target R:R. Plus a <span class="text-white font-semibold">watchlist scanner</span>, <span class="text-white font-semibold">news headlines</span>, an <span class="text-white font-semibold">economic calendar</span> and an options <span class="text-white font-semibold">flow</span> reader.</p>
-            </div>
-            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-              <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Journal</div>
-              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Log a trade without leaving the chart &mdash; entry, exit, stop, both targets, tags, notes and a screenshot. Then history and stats: win rate, net P&amp;L, long versus short, performance by day, drawdown from peak. Export to <span class="text-white font-semibold">CSV or PDF</span>.</p>
-            </div>
-            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-              <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Backtest</div>
-              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Upload a CSV, keep each run as its own session, and read the results back the same way you read your live record. Sessions sync with the backtest workspace on this site.</p>
-            </div>
-            <div class="border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
-              <div class="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">Playbook</div>
-              <p class="text-[12.5px] text-zinc-400 leading-relaxed">Your rules, setups and goals, plus a pre-trade checklist you tick off before entering. Daily rules and drawdown-protection rules live here too, and all of it syncs with the playbook on this site.</p>
-            </div>
-          </div>
-
-          <!-- The sync is the actual differentiator and it is easy to bury. Every
-               item below is a real two-way call in popup.js (action 'get' and
-               'save' against the shared journal and playbook endpoints), not a
-               marketing paraphrase. -->
-          <div class="mt-8 border border-green-500/25 bg-green-500/[0.05] rounded-2xl p-6">
-            <div class="text-[10px] font-black text-green-400 uppercase tracking-widest mb-2">The part that matters</div>
-            <h3 class="text-xl md:text-2xl font-black tracking-tight mb-3">The panel and the site are one account, not two</h3>
-            <p class="text-[13.5px] text-zinc-400 leading-relaxed max-w-3xl mb-5">
-              This is the difference between Nexus and every other browser extension you have tried.
-              It is not a standalone tool that happens to share a login &mdash; it reads and writes the
-              same data as the platform on this site, both directions, automatically.
-            </p>
-            <div class="grid sm:grid-cols-2 gap-3">
-              <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
-                <span class="text-green-400 shrink-0 mt-0.5 font-black">&rarr;</span>
-                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Log a trade in the panel</span> while the chart is still in front of you, and it is in your journal on this site before you have closed the tab.</p>
-              </div>
-              <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
-                <span class="text-green-400 shrink-0 mt-0.5 font-black">&larr;</span>
-                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Upload a backtest CSV on the site</span> and the session is there in the panel's Backtest tab, ready to read against the chart.</p>
-              </div>
-              <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
-                <span class="text-green-400 shrink-0 mt-0.5 font-black">&harr;</span>
-                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Your playbook is one list.</span> Rules, setups, goals and the pre-session checklist &mdash; tick something off in the panel and the site knows.</p>
-              </div>
-              <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
-                <span class="text-green-400 shrink-0 mt-0.5 font-black">&harr;</span>
-                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Accounts and defaults follow you.</span> Tracked accounts, your usual ticker, timeframe and contract count are set once and apply in both places.</p>
-              </div>
-            </div>
-            <p class="text-[12.5px] text-zinc-500 leading-relaxed mt-4">Which is why buying one without the other would not make sense &mdash; and why they are never sold apart.</p>
-          </div>
-
-        </div>
-      </section>
-
-          <!-- ═══ PLATFORM TOUR ═══════════════════════════════════════════
-               Same component and the same captures as nightwing.html, because
-               it is the same software. If these shots are re-taken, replace
-               them on both pages or the two tiers will look like different
-               products.
-
-               These are platform and Nexus shots only. Nothing here shows a
-               chart tool, which is correct: Raven's own capture is further up
-               the page, and Knightfall's grading must never appear on this
-               page at all.
-               ═══════════════════════════════════════════════════════════ -->
-          <div class="mt-8">
-            <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-4 font-bold">// Inside the platform</div>
-            <p class="text-sm text-zinc-400 leading-relaxed max-w-2xl mb-7">
-              This is the actual workspace, not a mockup. Pick a tool to see it.
-            </p>
-
-            <div class="flex flex-wrap gap-2 mb-5" role="tablist" aria-label="Platform screenshots">
-              <button role="tab" id="tourtab-dashboard" aria-controls="tourpanel-dashboard" aria-selected="true"  class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Dashboard</button>
-              <button role="tab" id="tourtab-journal"   aria-controls="tourpanel-journal"   aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Journal</button>
-              <button role="tab" id="tourtab-sessions"  aria-controls="tourpanel-sessions"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Backtest</button>
-              <button role="tab" id="tourtab-calendar"  aria-controls="tourpanel-calendar"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Backtest detail</button>
-              <button role="tab" id="tourtab-accounts"  aria-controls="tourpanel-accounts"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Account tracker</button>
-              <button role="tab" id="tourtab-importer"  aria-controls="tourpanel-importer"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Trade importer</button>
-              <button role="tab" id="tourtab-playbook"  aria-controls="tourpanel-playbook"  aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">Playbook</button>
-              <button role="tab" id="tourtab-howto"     aria-controls="tourpanel-howto"     aria-selected="false" class="tour-tab text-[12.5px] font-bold px-3.5 py-2 rounded-xl border transition">How-to guide</button>
-            </div>
-
-            <div class="border border-white/10 rounded-2xl overflow-hidden bg-black">
-
-              <figure role="tabpanel" id="tourpanel-dashboard" aria-labelledby="tourtab-dashboard" class="tour-panel m-0">
-                <img src="shot-dashboard.png" width="1400" height="752" alt="The member dashboard: account selector, trade and win-rate tiles, equity curve, market session clocks and economic calendar." class="block w-full h-auto">
-                <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Dashboard.</span> Where you land. Switch between tracked accounts, read the equity curve, check session clocks and the economic calendar without leaving the page.</figcaption>
-              </figure>
-
-              <figure role="tabpanel" id="tourpanel-journal" aria-labelledby="tourtab-journal" class="tour-panel m-0" hidden>
-                <img src="shot-journal.png" width="1400" height="796" loading="lazy" alt="The trade journal calendar view with per-day results, weekly totals and filters for time, result, account, grade and direction." class="block w-full h-auto">
-                <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Journal.</span> Every trade on a month grid with weekly roll-ups. Filter by account, direction or result, then switch to history and stats views. Raven doesn't log trades for you &mdash; this is where your own record lives.</figcaption>
-              </figure>
-
-              <figure role="tabpanel" id="tourpanel-sessions" aria-labelledby="tourtab-sessions" class="tour-panel m-0" hidden>
-                <img src="shot-backtest-sessions.png" width="1633" height="914" loading="lazy" alt="The backtest workspace session list, showing saved sessions with trade counts, win rate, dollars per trade and net result." class="block w-full h-auto">
-                <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Backtest workspace.</span> Keep every test you run as its own session and compare them side by side. It takes any backtest CSV &mdash; it isn't tied to our scripts.</figcaption>
-              </figure>
-
-              <figure role="tabpanel" id="tourpanel-calendar" aria-labelledby="tourtab-calendar" class="tour-panel m-0" hidden>
-                <img src="shot-backtest-calendar.png" width="1400" height="796" loading="lazy" alt="A single backtest session opened to its calendar tab, with per-day and per-week results and trade/stats/calendar tabs." class="block w-full h-auto">
-                <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Backtest detail.</span> Open any session into trades, stats or calendar. The same filters as the journal, so you read a backtest the way you read your live record.</figcaption>
-              </figure>
-
-              <figure role="tabpanel" id="tourpanel-accounts" aria-labelledby="tourtab-accounts" class="tour-panel m-0" hidden>
-                <img src="shot-accounts.png" width="1400" height="620" loading="lazy" alt="The accounts page on the Trackers tab: a funded prop account with total and daily P&amp;L, win rate, days traded, firm rules, personal rules with a discipline score, and loss-streak counters." class="block w-full h-auto">
-                <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Account tracker.</span> One card per prop account with the firm's own rules alongside the ones you set for yourself. Discipline score, loss streaks and daily totals, so a rule break shows up before the firm's dashboard tells you.</figcaption>
-              </figure>
-
-              <figure role="tabpanel" id="tourpanel-importer" aria-labelledby="tourtab-importer" class="tour-panel m-0" hidden>
-                <img src="shot-importer.png" width="1645" height="545" loading="lazy" alt="The universal trade importer, listing supported formats and a drag-and-drop area for CSV files." class="block w-full h-auto">
-                <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Trade importer.</span> Drop in Tradovate order exports or TradingView strategy exports. Format is auto-detected, entries and exits are paired, duplicates are skipped, and multiple files route to their own accounts.</figcaption>
-              </figure>
-
-              <figure role="tabpanel" id="tourpanel-playbook" aria-labelledby="tourtab-playbook" class="tour-panel m-0" hidden>
-                <img src="shot-playbook.png" width="1400" height="809" loading="lazy" alt="The playbook Today tab: pre-session check counter, risk per trade, session countdown, and the pre-session checklist that resets at the open." class="block w-full h-auto">
-                <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Playbook.</span> Your rules, checklist, setups and goals in one place, synced with Nexus. The pre-session checklist resets at the open, so every morning starts from the same list rather than from memory. It matters more here than anywhere: Raven won't stop you taking a bad breakout, so your own rules are the filter.</figcaption>
-              </figure>
-
-              <figure role="tabpanel" id="tourpanel-howto" aria-labelledby="tourtab-howto" class="tour-panel m-0" hidden>
-                <img src="shot-howto.png" width="1637" height="710" loading="lazy" alt="The how-to guide contents page, linking to a section for each tool in the workspace." class="block w-full h-auto">
-                <figcaption class="px-5 py-4 border-t border-white/10 text-[13px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">How-to guide.</span> Every tool documented end to end &mdash; what it does, how to run it, and the parts people miss. Included, not an upsell.</figcaption>
-              </figure>
-
-            </div>
-            <p class="mt-4 max-w-3xl text-[12px] text-zinc-500 leading-relaxed">Real screenshots of the live workspace. Figures shown in them are illustrative and are not a representation that any account will perform similarly.</p>
+          <div class="mt-5 grid sm:grid-cols-2 gap-4">
+            <a href="nightwing.html" class="border border-white/10 bg-zinc-950/40 hover:border-green-500/40 rounded-2xl p-5 transition">
+              <div class="text-white font-bold text-sm">See Nexus 2.0 in detail &rarr;</div>
+              <p class="text-[12.5px] text-zinc-500 mt-1 leading-relaxed">Optimizer, eval simulator, multi-timeframe analysis, journal and playbook, synced with the site.</p>
+            </a>
+            <a href="platform.html" class="border border-white/10 bg-zinc-950/40 hover:border-green-500/40 rounded-2xl p-5 transition">
+              <div class="text-white font-bold text-sm">See the member platform &rarr;</div>
+              <p class="text-[12.5px] text-zinc-500 mt-1 leading-relaxed">Fleet manager, Tradovate sync, journal, importer, backtests and playbook.</p>
+            </a>
           </div>
 
           <div class="mt-6 border border-white/10 bg-zinc-950/40 rounded-2xl p-5">
@@ -504,7 +381,7 @@
         </div>
       </section>
 
-      <!-- ══════════════ PLANS ══════════════ -->
+<!-- ══════════════ PLANS ══════════════ -->
       <section id="plans" class="py-12 px-6 md:px-12 border-b border-white/10">
         <div class="max-w-5xl mx-auto">
           <div class="mb-6 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500">
@@ -701,6 +578,21 @@
               <div class="text-white font-bold text-sm mb-1.5">Can I upgrade to the full membership later?</div>
               <p class="text-[13px] text-zinc-400 leading-relaxed">Any time, through Whop. Your journal entries, tracked accounts and backtest history stay attached to your site account, so nothing is lost when you move up.</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════ NOT READY YET ══════════════ -->
+      <section class="py-14 px-6 md:px-12">
+        <div class="max-w-5xl mx-auto border border-green-500/25 bg-zinc-950/60 rounded-3xl p-7 md:p-10 grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Not ready yet?</div>
+            <h2 class="text-2xl md:text-3xl font-black leading-tight">Read the Raven channel first.</h2>
+            <p class="text-zinc-400 text-sm leading-relaxed mt-4"><span class="text-white font-semibold">#fsd-x-orb-raven</span> is on the free side of the Discord. See how people use it before you buy, or book a quick call with me.</p>
+          </div>
+          <div class="flex flex-col gap-3">
+            <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="block w-full py-4 bg-green-500 hover:bg-green-400 text-black font-extrabold text-center rounded-2xl transition">Join the free Discord &rarr;</a>
+            <a href="https://cal.com/fsdxtrading/questions" target="_blank" rel="noopener noreferrer" class="block w-full py-4 border border-white/15 hover:bg-white/[0.06] text-white font-bold text-center rounded-2xl transition">Book a quick call</a>
           </div>
         </div>
       </section>
