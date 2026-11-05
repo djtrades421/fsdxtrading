@@ -747,6 +747,7 @@ function fsdxSaleNotice() {
       var sale = sales.filter(function (s) { return prods(s).indexOf(p) !== -1; })[0];
       if (!sale) return;
       document.querySelectorAll('#nav-content a[href="' + PRODUCT_PAGE[p] + '"]').forEach(function (link) {
+        if (link.closest('#fxn-mob')) return;   // phone menu lives inside #nav-content; it gets its tag below
         if (link.querySelector('.fx-sale-tag')) return;
         var price = link.querySelector('span.shrink-0');
         var tag = document.createElement('span');
