@@ -233,7 +233,7 @@ window.toggleMobileMenu = function () {
 // ONE list drives the desktop dropdowns AND the phone menu. Add a page here.
 // [href, title, one-line description, price or tag]
 var FSDX_MENU = [
-  { id: 'products', label: 'Products', w: 860, eyebrow: 'Or pick one tool', foot: ['compare.html', 'Compare all plans side by side →'],
+  { id: 'products', label: 'Memberships', w: 860, eyebrow: 'Or pick one membership', foot: ['compare.html', 'Compare all memberships side by side →'],
     feature: { kind: 'plan', kicker: 'Most complete', title: 'Full Membership', href: 'memberships.html', price: '$129', per: '/mo',
       checks: ['Knightfall on TradingView + NinjaTrader 8', '3 indicators + Auto Trader', 'Journal, accounts & backtests', 'Live room every weekday'],
       cta: 'Start 30-Day Free Trial', ctaMember: 'See the membership →' },
@@ -244,15 +244,17 @@ var FSDX_MENU = [
       ['nightwing.html', 'Nightwing', 'Member platform + Nexus 2.0', '$9.99/mo', 'moon', 'purple'],
       ['free-indicators.html', 'Free Indicators', 'Free tools anyone can add to a chart', 'Free', 'star', 'green']
   ]},
-  { id: 'platform', label: 'Platform', w: 680, eyebrow: 'Explore',
-    feature: { kind: 'link', kicker: 'Start here', title: "What's in the Membership", href: 'suite.html',
-      text: 'Every tool in the full package, and how they fit together each morning.', cta: 'See the full package →' },
+  { id: 'platform', label: 'Products', w: 720, eyebrow: 'Explore',
+    feature: { kind: 'link', kicker: 'Start here', title: 'Every product, one page', href: 'suite.html',
+      text: 'All 11 products side by side, filtered by TradingView or NinjaTrader 8.', cta: 'See every product →' },
     items: [
-      ['suite.html', "What's in the Membership", 'Every tool in the full package', '', 'layers', 'orange'],
-      ['platform.html', 'The Platform', 'Dashboard, journal, accounts and backtests', '', 'monitor', 'blue'],
-      ['autotrader.html', 'ORB Auto-Trader', 'How the automation works', '', 'bolt', 'orange'],
+      ['suite.html', 'Every product', 'All 11 products side by side', '', 'layers', 'orange'],
+      ['suite.html#tool-orbpro', 'Knightfall MK2', 'The graded system, TradingView + NT8', '', 'target', 'orange'],
+      ['autotrader.html', 'Auto Trader', 'How the automation works', '', 'bolt', 'orange'],
+      ['platform.html', 'The Platform', 'Fleet, journal, imports and backtests', '', 'monitor', 'blue'],
+      ['nightwing.html#nexus', 'Nexus 2.0', 'Optimizer, eval sim and journal beside your chart', '', 'list', 'purple'],
       ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
-      ['tradingview-update.html', 'TradingView Update', 'Nothing changes Nov 1 — no action needed', '', 'info', 'gray']
+      ['tradingview-update.html', 'TradingView Update', 'Nothing changes for you — no action needed', '', 'info', 'gray']
   ]},
   { id: 'results', label: 'Results', w: 680, eyebrow: 'The proof',
     note: 'Backtests are hypothetical. Past performance doesn’t guarantee future results.',
@@ -1381,7 +1383,7 @@ function prepareNavLabels(root) {
            and that page answers the question they are most likely stuck on. */
         var site = [
           ['index.html', 'Home'], ['compare.html', 'Compare Plans'],
-          ['suite.html', "What's in the Membership"],
+          ['suite.html', 'Every product'],
           ['platform.html', 'The Platform'],
           ['autotrader.html', 'ORB Auto-Trader'], ['ninjatrader.html', 'Knightfall NT8'],
           ['releases.html', 'Releases'],

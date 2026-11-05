@@ -29,7 +29,7 @@
     {t:'My Profile',      u:'profile.html',   g:'Workspace', vip:1, kw:'account password email settings'},
 
     // products — these used to be the ↳ sub-links
-    {t:"What's in the Membership", u:'suite.html',             g:'Products', kw:'suite the system tools overview indicators included membership'},
+    {t:'Every product', u:'suite.html',             g:'Products', kw:'suite the system tools overview indicators included membership'},
     {t:'Giveaways', u:'giveaways.html', g:'Community', kw:'giveaway giveaways free eval evaluation prize contest enter win follow socials instagram youtube x discord'},
     {t:'ORB PRO — Knightfall MK2', u:'suite.html#tool-orbpro', g:'Products', kw:'signal engine indicator grading breakout main'},
     {t:'Stack V1',              u:'suite.html#tool-stack',     g:'Products', kw:'trend mtf timeframe confirmation'},
