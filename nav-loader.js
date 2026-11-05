@@ -235,7 +235,7 @@ window.toggleMobileMenu = function () {
 var FSDX_MENU = [
   { id: 'products', label: 'Products', w: 860, eyebrow: 'Or pick one tool', foot: ['compare.html', 'Compare all plans side by side →'],
     feature: { kind: 'plan', kicker: 'Most complete', title: 'Full Membership', href: 'memberships.html', price: '$129', per: '/mo',
-      checks: ['Knightfall + 3 indicators', 'Auto Trader', 'Journal, accounts & backtests', 'Live room every weekday'],
+      checks: ['Knightfall on TradingView + NinjaTrader 8', '3 indicators + Auto Trader', 'Journal, accounts & backtests', 'Live room every weekday'],
       cta: 'Start 30-Day Free Trial', ctaMember: 'See the membership →' },
     items: [
       ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, Auto Trader, journal and the live room', '$129/mo', 'layers', 'orange'],
