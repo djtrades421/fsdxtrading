@@ -126,7 +126,7 @@
         .pf-card:hover{border-color:rgba(74,222,128,.4);transform:translateY(-2px)}
         .pf-thumb{aspect-ratio:16/10;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.07);background:#000;position:relative}
         .pf-thumb img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
-        .pf-thumb .live{position:absolute;top:8px;left:8px;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.12em;color:#4ade80;background:rgba(0,0,0,.75);border:1px solid rgba(74,222,128,.3);padding:3px 7px;border-radius:6px}
+        .pf-thumb .live{position:absolute;top:8px;right:8px;font-family:ui-monospace,monospace;font-size:9px;font-weight:700;letter-spacing:.12em;color:#4ade80;background:rgba(0,0,0,.75);border:1px solid rgba(74,222,128,.3);padding:3px 7px;border-radius:6px}
         .pf-body{padding:14px 6px 4px;display:flex;flex-direction:column;flex:1}
         .pf-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
         .pf-tag{font-family:ui-monospace,monospace;font-size:10px;color:#a1a1aa;border:1px solid rgba(255,255,255,.1);padding:3px 8px;border-radius:999px}
@@ -175,7 +175,7 @@
           </div>
           <div class="pf-frame">
             <div class="bar"><span>Fleet · Accounts</span><b>● Synced</b></div>
-            <img src="shot-accounts.png" width="1400" height="620" alt="The Fleet manager in the member platform, showing a prop account with its firm rules, personal rules and status." loading="eager" decoding="async">
+            <img src="shot-fleet.png" width="1068" height="771" alt="The Fleet manager: setup prompt, warnings to review, account counts by status, and a Needs Attention list with an inactivity warning and a profit target reached." loading="eager" decoding="async">
           </div>
         </div>
       </section>
@@ -190,7 +190,7 @@
           </div>
 
           <a href="#fleet" class="pf-card pf-feat" style="margin-bottom:18px">
-            <div class="pf-thumb"><span class="live">● FLEET</span><img src="shot-accounts.png" alt="Fleet manager account view" loading="lazy"></div>
+            <div class="pf-thumb"><span class="live">● FLEET</span><img src="shot-fleet.png" alt="Fleet manager overview with warnings and account status counts" loading="lazy"></div>
             <div class="pf-body">
               <div class="pf-tags"><span class="pf-tag">Eval &amp; funded</span><span class="pf-tag">Warning lines</span><span class="pf-tag">Payouts</span></div>
               <div class="pf-k">The headline tool</div>
@@ -303,7 +303,7 @@
               <span class="text-xs font-bold text-green-400 uppercase tracking-widest">01 — Fleet Manager &amp; Tradovate Sync</span>
             </div>
             <figure class="m-0 border-b border-white/5 bg-black">
-              <img src="shot-accounts.png" width="1400" height="620" loading="lazy" alt="The accounts page on the Trackers tab: a funded prop account with total and daily P&amp;L, win rate, days traded, firm rules, personal rules with a discipline score, and loss-streak counters." class="block w-full h-auto">
+              <img src="shot-fleet-table.png" width="1068" height="783" loading="lazy" alt="The Fleet tab: status counts, Needs Attention list, accounts grouped by firm, and an account table with stage, P&amp;L, cushion to floor, target progress, last trade and flags." class="block w-full h-auto">
             </figure>
             <div class="p-6 md:p-8">
               <h3 class="text-xl font-black text-white mb-3">Built for traders running a fleet of prop accounts</h3>
@@ -500,8 +500,8 @@
                are disclosed separately — do not collapse these into one line. -->
           <p class="text-[11px] text-zinc-500 leading-relaxed max-w-3xl">
             <span class="text-zinc-400 font-semibold">About the screenshots.</span>
-            The dashboard and journal screens show a demo account with placeholder trades entered by hand,
-            so the tools have wins and losses to display — they are not real trades and not anyone's account.
+            The dashboard, journal and Fleet screens show demo accounts with placeholder trades,
+            so the tools have wins, losses and warnings to display — they are not real trades and not anyone's account.
             The backtest screens show a backtest CSV imported into the workspace. Backtested results are
             hypothetical, carry no risk, and do not reflect commissions, fees or slippage. Past performance
             is not indicative of future results.
