@@ -120,6 +120,13 @@
     + '.ntx .ntx-alert{border:1px solid rgba(226,83,75,.5);background:rgba(226,83,75,.08);border-radius:14px;padding:14px 16px;display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap}'
     + '.ntx .ntx-prod{border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;margin-top:12px}'
     + '.ntx .ntx-prod.live{border-color:rgba(255,107,31,.3)}'
+    + '.ntx .ntx-mailbox{margin-top:12px;border:1px solid rgba(255,107,31,.35);background:rgba(255,107,31,.04);border-radius:12px;padding:14px}'
+    + '.ntx .ntx-mailgrid{display:grid;gap:14px;grid-template-columns:1fr} @media(min-width:900px){.ntx .ntx-mailgrid{grid-template-columns:1.4fr 1fr}}'
+    + '.ntx .ntx-mlist{max-height:260px;overflow:auto;border:1px solid rgba(255,255,255,.08);border-radius:10px}'
+    + '.ntx .ntx-mrow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;font-size:12.5px}'
+    + '.ntx .ntx-mrow:last-child{border-bottom:0} .ntx .ntx-mrow b{display:block;color:#fff} .ntx .ntx-mrow small{display:block;color:#71717a;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+    + '.ntx .ntx-mrow input{width:16px;height:16px;accent-color:#FF6B1F} .ntx .ntx-mrow.dis{opacity:.6;cursor:default}'
+    + '.ntx .ntx-mprev{width:100%;height:560px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:#0A0F16}'
     + '.ntx-toast{position:fixed;bottom:20px;right:20px;z-index:9999;background:#18181b;border:1px solid rgba(255,255,255,.15);color:#fff;font-size:12px;'
     +   'padding:10px 14px;border-radius:10px;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none}'
     + '.ntx-toast.show{opacity:1;transform:none} .ntx-toast.bad{border-color:rgba(226,83,75,.5);color:#E2534B}'
@@ -620,6 +627,7 @@
   }
   function renderProducts() {
     var g = (D && D.planGroups) || {};
+    mailSave();
     $('ntx-products').innerHTML = prods().map(function (p) {
       var pid = esc(p.id);
       var rels = p.releases || [];
@@ -630,9 +638,11 @@
           + '<div style="flex:1 1 160px"><span class="text-white font-black text-sm">v' + esc(r.version) + '</span> '
           + (isCur ? '<span class="ntx-tag t-active">Current</span>' : '')
           + '<div class="text-[10.5px] text-zinc-600">' + fmt(r.uploadedAt) + ' · ' + Math.round(r.size / 1024) + ' KB · '
-          + '<b class="text-zinc-300">' + (r.downloads || 0) + '</b> downloads (' + (r.uniqueDownloads || 0) + ' members) · ' + onIt + ' on it now</div>'
+          + '<b class="text-zinc-300">' + (r.downloads || 0) + '</b> downloads (' + (r.uniqueDownloads || 0) + ' members) · ' + onIt + ' on it now'
+          + (r.mailed ? ' · <span class="text-green-400">emailed ' + r.mailed.count + ' · ' + fmt(r.mailed.lastAt) + '</span>' : '') + '</div>'
           + (r.notes ? '<div class="text-[11px] text-zinc-500 mt-1" style="white-space:pre-line">' + esc(r.notes) + '</div>' : '') + '</div>'
           + '<button class="ntx-btn" data-rel="dl" data-p="' + pid + '" data-v="' + esc(r.version) + '">Download</button>'
+          + (isCur && p.live ? '<button class="ntx-btn pri" data-rel="mail" data-p="' + pid + '" data-v="' + esc(r.version) + '" title="Email members who hold this license">Email members</button>' : '')
           + (isCur ? '' : '<button class="ntx-btn" data-rel="cur" data-p="' + pid + '" data-v="' + esc(r.version) + '">Make current</button>'
                         + '<button class="ntx-btn bad" data-rel="del" data-p="' + pid + '" data-v="' + esc(r.version) + '">Delete</button>')
           + '</div>';
@@ -669,8 +679,128 @@
         +   '</div><div class="flex gap-2 mt-2"><button class="ntx-btn pri" data-prod="saveplans" data-p="' + pid + '">Save plans</button>'
         +   '<span class="text-[11px] text-zinc-500 self-center">If it\'s live, members on a newly ticked plan get an Add task.</span></div></div>'
         + '<details class="mt-3"' + (rels.length && rels.length < 4 ? ' open' : '') + '><summary class="text-[11px] text-zinc-400 cursor-pointer font-bold">Releases (' + rels.length + ')</summary>' + relHtml + '</details>'
+        + '<div id="ntx-mail-' + pid + '"></div>'
         + '</div>';
     }).join('');
+    if (MAIL && MAIL.data) renderMail();
+  }
+
+  /* ── Release update email ─────────────────────────────────────────────
+     Last step after a release is up and checked. Only members who hold the
+     product's license are listed. Sends one at a time; a resend skips
+     anyone already emailed for this version. */
+  var MAIL = null;   // { pid, v, data, sel: { email: bool }, subject, notes, busy, stop, log }
+  function mailEl() { return MAIL ? $('ntx-mail-' + MAIL.pid) : null; }
+  function mailSave() {
+    if (!MAIL) return;
+    var s1 = $('ntx-m-subj'), n1 = $('ntx-m-notes');
+    if (s1) MAIL.subject = s1.value; if (n1) MAIL.notes = n1.value;
+  }
+  function mailPicked() {
+    return MAIL.data.recipients.filter(function (x) { return MAIL.sel[x.email] && !x.optedOut && !x.sentAt; });
+  }
+  function mailCount() {
+    var n = mailPicked().length, b = $('ntx-m-send');
+    if (b) { b.textContent = 'Send to ' + n + ' member' + (n === 1 ? '' : 's'); b.disabled = !n || MAIL.busy || !MAIL.data.current; }
+  }
+  function openMail(pid, v) {
+    if (MAIL && MAIL.busy) return toast('Still sending…', true);
+    var prev = MAIL && $('ntx-mail-' + MAIL.pid); if (prev) prev.innerHTML = '';
+    MAIL = { pid: pid, v: v, data: null, sel: {}, busy: false, stop: false, log: '' };
+    var el = mailEl(); if (el) el.innerHTML = '<div class="ntx-mailbox">Loading…</div>';
+    api('/api/admin/nt/release/mail?p=' + encodeURIComponent(pid) + '&v=' + encodeURIComponent(v)).then(function (d) {
+      MAIL.data = d; MAIL.subject = d.subject; MAIL.notes = d.notes;
+      d.recipients.forEach(function (x) { MAIL.sel[x.email] = !x.optedOut && !x.sentAt && !x.owner; });
+      renderMail();
+    }).catch(function (x) { MAIL = null; if (el) el.innerHTML = ''; toast(x.message, true); });
+  }
+  function renderMail() {
+    var el = mailEl(); if (!el) return;
+    var d = MAIL.data, rs = d.recipients;
+    var sent = rs.filter(function (x) { return x.sentAt; }).length;
+    var rows = rs.length ? rs.map(function (x) {
+      var dis = x.optedOut || x.sentAt || MAIL.busy;
+      var tag = x.sentAt ? '<span class="ntx-tag t-active">Sent ' + esc(fmt(x.sentAt)) + '</span>'
+        : x.optedOut ? '<span class="ntx-tag t-dim">Opted out</span>'
+        : x.owner ? '<span class="ntx-tag t-early">You</span>' : '';
+      return '<label class="ntx-mrow' + (dis ? ' dis' : '') + '"><input type="checkbox" data-mailck="' + esc(x.email) + '"'
+        + (MAIL.sel[x.email] && !x.optedOut && !x.sentAt ? ' checked' : '') + (dis ? ' disabled' : '') + '>'
+        + '<span style="min-width:0;flex:1"><b>' + esc(x.name || x.email) + '</b><small>' + esc(x.email) + '</small></span>' + tag + '</label>';
+    }).join('') : '<div class="text-[12px] text-zinc-500 py-2">Nobody holds this license yet.</div>';
+    el.innerHTML = '<div class="ntx-mailbox">'
+      + '<div class="flex items-center justify-between gap-2 flex-wrap"><div class="text-[13px] font-black text-white">Email members · ' + esc(d.name) + ' v' + esc(d.version) + '</div>'
+      + '<button class="ntx-btn" data-mail="close">Close</button></div>'
+      + '<div class="text-[11.5px] text-zinc-400 mt-1">Goes only to members who hold the ' + esc(d.name) + ' license. ' + rs.length + ' hold it' + (sent ? ', ' + sent + ' already emailed for v' + esc(d.version) : '') + '. Nothing sends until you press Send.</div>'
+      + (d.current ? '' : '<div class="text-[12px] mt-2" style="color:#F5A524">v' + esc(d.version) + ' is not the current release. Make it current before emailing.</div>')
+      + '<div class="ntx-mailgrid mt-3"><div>'
+      +   '<div class="text-[11px] text-zinc-400 font-bold mb-1">Subject</div><input id="ntx-m-subj" class="ntx-in" style="width:100%" value="' + esc(MAIL.subject) + '">'
+      +   '<div class="text-[11px] text-zinc-400 font-bold mt-3 mb-1">What changed <span class="text-zinc-600 font-normal">(from the release notes; edits only change this email)</span></div>'
+      +   '<textarea id="ntx-m-notes" class="ntx-in" style="width:100%;min-height:150px">' + esc(MAIL.notes) + '</textarea>'
+      +   '<div class="flex gap-2 mt-2 flex-wrap"><button class="ntx-btn" data-mail="preview">Preview</button><button class="ntx-btn" data-mail="test">Send test to me</button></div>'
+      + '</div><div>'
+      +   '<div class="flex items-center justify-between mb-1"><span class="text-[11px] text-zinc-400 font-bold">Recipients</span>'
+      +   '<span class="text-[11px]"><a href="#" data-mail="all" class="text-zinc-400">All</a> · <a href="#" data-mail="none" class="text-zinc-400">None</a></span></div>'
+      +   '<div class="ntx-mlist">' + rows + '</div>'
+      + '</div></div>'
+      + '<div class="flex items-center justify-between gap-2 mt-3 flex-wrap"><div id="ntx-m-log" class="text-[11.5px] text-zinc-400">' + MAIL.log + '</div>'
+      +   '<div class="flex gap-2">' + (MAIL.busy ? '<button class="ntx-btn bad" data-mail="stop">Stop</button>' : '')
+      +   '<button id="ntx-m-send" class="ntx-btn pri" data-mail="send">Send</button></div></div>'
+      + '<div id="ntx-m-prev"></div>'
+      + '</div>';
+    mailCount();
+  }
+  function mailBody(mode, to) {
+    mailSave();
+    return { product: MAIL.pid, version: MAIL.v, subject: MAIL.subject, notes: MAIL.notes, mode: mode, to: to };
+  }
+  function mailAction(a, el) {
+    if (!MAIL || !MAIL.data) return;
+    if (a === 'close') { if (MAIL.busy) return toast('Stop the send first', true); var e0 = mailEl(); if (e0) e0.innerHTML = ''; MAIL = null; return; }
+    if (a === 'all' || a === 'none') { mailSave(); MAIL.data.recipients.forEach(function (x) { MAIL.sel[x.email] = a === 'all' && !x.owner; }); renderMail(); return; }
+    if (a === 'stop') { MAIL.stop = true; el.disabled = true; return; }
+    if (a === 'preview') {
+      return post('/api/admin/nt/release/mail', mailBody('preview')).then(function (d) {
+        var box = $('ntx-m-prev'); if (!box) return;
+        box.innerHTML = '<div class="text-[11px] text-zinc-400 font-bold mt-3 mb-1">Preview · ' + esc(d.subject) + '</div><iframe class="ntx-mprev" sandbox=""></iframe>';
+        box.querySelector('iframe').srcdoc = d.html;
+      }).catch(function (x) { toast(x.message, true); });
+    }
+    if (a === 'test') {
+      el.disabled = true;
+      return post('/api/admin/nt/release/mail', mailBody('test')).then(function (d) { el.disabled = false; toast('Test sent to ' + d.to); })
+        .catch(function (x) { el.disabled = false; toast(x.message, true); });
+    }
+    if (a === 'send') {
+      var list = mailPicked();
+      if (!list.length) return;
+      if (!window.confirm('Email ' + list.length + ' member' + (list.length === 1 ? '' : 's') + ' about ' + MAIL.data.name + ' v' + MAIL.v + '?\n\nSubject: ' + ($('ntx-m-subj') || {}).value)) return;
+      mailSave(); MAIL.busy = true; MAIL.stop = false;
+      var ok = 0, skip = 0, fail = 0, i = 0, cur = MAIL;
+      renderMail();
+      (function next() {
+        if (MAIL !== cur) return;
+        if (cur.stop || i >= list.length) {
+          cur.busy = false;
+          cur.log = 'Sent ' + ok + (skip ? ' · skipped ' + skip : '') + (fail ? ' · <span style="color:#E2534B">failed ' + fail + '</span>' : '') + (cur.stop ? ' · stopped' : '');
+          toast('Sent ' + ok + ' update email' + (ok === 1 ? '' : 's'), !!fail);
+          ntLoad(); openMailKeep(cur);
+          return;
+        }
+        var x = list[i++];
+        var lg = $('ntx-m-log'); if (lg) lg.textContent = 'Sending ' + i + ' of ' + list.length + ' · ' + (x.name || x.email);
+        post('/api/admin/nt/release/mail', mailBody('send', x.email)).then(function (d) {
+          if (d.skipped) skip++; else { ok++; x.sentAt = d.sentAt; }
+        }).catch(function () { fail++; }).then(function () { setTimeout(next, 600); });
+      })();
+    }
+  }
+  // Reload the recipient list after a send, keeping subject, notes and the log.
+  function openMailKeep(prev) {
+    api('/api/admin/nt/release/mail?p=' + encodeURIComponent(prev.pid) + '&v=' + encodeURIComponent(prev.v)).then(function (d) {
+      if (MAIL !== prev) return;
+      MAIL.data = d; MAIL.data.recipients.forEach(function (x) { if (x.sentAt || x.optedOut) MAIL.sel[x.email] = false; });
+      renderMail();
+    }).catch(function () { renderMail(); });
   }
 
   window.ntToggleNewProduct = function () {
@@ -767,6 +897,7 @@
   function onChange(e) {
     var el = e.target;
     if (!el || !el.getAttribute) return;
+    if (el.hasAttribute('data-mailck') && MAIL) { MAIL.sel[el.getAttribute('data-mailck')] = el.checked; mailCount(); return; }
     var k = el.getAttribute('data-tick');
     if (k) {
       var em = el.getAttribute('data-e');
@@ -781,11 +912,12 @@
   }
 
   function onClick(e) {
-    var el = e.target.closest ? e.target.closest('[data-copy],[data-act],[data-rel],[data-filter],[data-bulk],[data-prod]') : null;
+    var el = e.target.closest ? e.target.closest('[data-copy],[data-act],[data-rel],[data-filter],[data-bulk],[data-prod],[data-mail]') : null;
     if (!el) return;
     var inNt = $('panel-nt') && $('panel-nt').contains(el), inToday = $('panel-today') && $('panel-today').contains(el);
     if (!inNt && !inToday) return;
     if (el.hasAttribute('data-copy')) { copy(el.getAttribute('data-copy')); return; }
+    if (el.hasAttribute('data-mail')) { e.preventDefault(); mailAction(el.getAttribute('data-mail'), el); return; }
     if (el.hasAttribute('data-bulk')) {
       var cnt = D.records.filter(isWaiting).length;
       if (!window.confirm('Mark all ' + cnt + ' waiting members as "Not using NinjaTrader"?\nAnyone who adds their NT email on the site later goes straight to To do.')) return;
@@ -801,6 +933,7 @@
     if (el.hasAttribute('data-rel')) {
       var v = el.getAttribute('data-v'), k = el.getAttribute('data-rel');
       if (k === 'dl') return adminDownload(pid, v);
+      if (k === 'mail') return openMail(pid, v);
       if (k === 'cur') return post('/api/admin/nt/release/current', { product: pid, version: v }).then(function () { toast(pname(pid) + ' v' + v + ' is current'); ntLoad(); }).catch(function (x) { toast(x.message, true); });
       if (k === 'del') {
         if (!window.confirm('Delete ' + pname(pid) + ' v' + v + '? Members can no longer download it.')) return;
@@ -947,7 +1080,7 @@
 
   // Runs on its own: refresh the badge + panel every 2 minutes while admin is open.
   // Skips the panel refresh while you're mid-task so ticks and open rows stay put.
-  function busy() { return Object.keys(OPEN).length > 0 || Object.keys(TICKS).some(function (k) { return Object.keys(TICKS[k]).some(function (x) { return TICKS[k][x]; }); }); }
+  function busy() { return !!MAIL || Object.keys(OPEN).length > 0 || Object.keys(TICKS).some(function (k) { return Object.keys(TICKS[k]).some(function (x) { return TICKS[k][x]; }); }); }
   function startAuto() {
     if (TIMER) return;
     TIMER = setInterval(function () {
