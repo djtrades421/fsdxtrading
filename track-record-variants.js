@@ -28,7 +28,8 @@ window.TR_VARIANTS = {
       files: { '400': 'track-record.json', '250': 'track-record-250.json' },
       versions: [
         { label: 'v5',  start: '2025-12-16', note: 'Indicator version.' },
-        { label: 'MK2', start: '2026-05-01', note: 'Rebuilt as a strategy.', build: 'v1.4.5' }
+        { label: 'MK2', start: '2026-05-01', note: 'Rebuilt as a strategy.', build: 'v1.4.6' },
+        { label: 'MK2', start: '2026-11-06', note: 'Take-profit fix. Trades through Nov 5 ran v1.4.6.', build: 'v1.4.7' }
       ],
       history: 'Knightfall is updated over time. Each trade is recorded on the version running that day, so older trades may not match a backtest of the current version.',
       runner: false,
@@ -46,7 +47,8 @@ window.TR_VARIANTS = {
       since: '2026-10-09',
       files: { '400': 'track-record-v2.json', '250': 'track-record-v2-250.json' },
       versions: [
-        { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.', build: 'v1.4.5' }
+        { label: 'MK2', start: '2026-10-09', note: 'Runner variant goes live.', build: 'v1.4.6' },
+        { label: 'MK2', start: '2026-11-06', note: 'Take-profit fix. Trades through Nov 5 ran v1.4.6.', build: 'v1.4.7' }
       ],
       history: 'Knightfall is updated over time. Each trade is recorded on the version running that day, so older trades may not match a backtest of the current version.',
       runner: true,
