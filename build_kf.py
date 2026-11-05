@@ -38,6 +38,84 @@ def summary(T, risk=None):
     return s
 
 
+
+def _nth_weekday(y, m, wd, n):
+    import datetime as _dt
+    d = _dt.date(y, m, 1)
+    d += _dt.timedelta((wd - d.weekday()) % 7)
+    return d + _dt.timedelta(7 * (n - 1))
+
+
+def _last_weekday(y, m, wd):
+    import datetime as _dt
+    d = _dt.date(y, m + 1, 1) - _dt.timedelta(1) if m < 12 else _dt.date(y, 12, 31)
+    return d - _dt.timedelta((d.weekday() - wd) % 7)
+
+
+def _observed(d):
+    import datetime as _dt
+    return d - _dt.timedelta(1) if d.weekday() == 5 else d + _dt.timedelta(1) if d.weekday() == 6 else d
+
+
+def _easter(y):
+    import datetime as _dt
+    a, b_, c = y % 19, y // 100, y % 100
+    d, e = b_ // 4, b_ % 4
+    f = (b_ + 8) // 25; g = (b_ - f + 1) // 3
+    h = (19 * a + b_ - d - g + 15) % 30
+    i, k = c // 4, c % 4
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    mo = (h + l - 7 * m + 114) // 31; dy = ((h + l - 7 * m + 114) % 31) + 1
+    return _dt.date(y, mo, dy)
+
+
+def nyse_holidays(y):
+    """Full-day NYSE closures: no cash open, so no opening range. Early-close days still count as sessions."""
+    import datetime as _dt
+    H = {_observed(_dt.date(y, 1, 1)), _nth_weekday(y, 1, 0, 3), _nth_weekday(y, 2, 0, 3),
+         _easter(y) - _dt.timedelta(2), _last_weekday(y, 5, 0), _observed(_dt.date(y, 7, 4)),
+         _nth_weekday(y, 9, 0, 1), _nth_weekday(y, 11, 3, 4), _observed(_dt.date(y, 12, 25))}
+    if y >= 2022:
+        H.add(_observed(_dt.date(y, 6, 19)))
+    H |= {d for d in (_dt.date(2025, 1, 9),) if d.year == y}   # National Day of Mourning (Carter)
+    return H
+
+
+def frequency(E):
+    """How often the engine trades, counted against regular sessions (weekdays minus full NYSE closures)
+    between the first and last trade. Entry times are as exported by NinjaTrader (Central Time)."""
+    import datetime as _dt, statistics as _st
+    # Same rule as the profit-factor-by-year bars: start at the first year with 30+ trades, so a thin
+    # warm-up year (2019: 8 trades) doesn't distort every frequency figure.
+    yrs = {}
+    for t in E:
+        yrs[t['et'].year] = yrs.get(t['et'].year, 0) + 1
+    y0 = min((y for y, n in yrs.items() if n >= 30), default=E[0]['et'].year)
+    E = [t for t in E if t['et'].year >= y0]
+    d0, d1 = _dt.date(y0, 1, 1), E[-1]['et'].date()
+    hol = set().union(*(nyse_holidays(y) for y in range(d0.year, d1.year + 1)))
+    sess = [d0 + _dt.timedelta(i) for i in range((d1 - d0).days + 1)]
+    sess = [d for d in sess if d.weekday() < 5 and d not in hol]
+    idx = {d: i for i, d in enumerate(sess)}
+    per = {}
+    for t in E:
+        per[t['et'].date()] = per.get(t['et'].date(), 0) + 1
+    days = sorted(d for d in per if d in idx)
+    gaps = [idx[b_] - idx[a] - 1 for a, b_ in zip(days, days[1:])] or [0]
+    mins = sorted(t['et'].hour * 60 + t['et'].minute for t in E)
+    hold = sorted((t['xt'] - t['et']).total_seconds() / 60 for t in E)
+    tpd = len(E) / len(sess)
+    med = int(_st.median(mins))
+    return OrderedDict(sessions=len(sess), trade_days=len(per), pct_days=round(len(per) / len(sess) * 100),
+                       double_days=sum(1 for v in per.values() if v >= 2),
+                       tpd=round(tpd, 2), per_week=round(tpd * 5, 1), per_month=round(tpd * 21),
+                       max_gap=max(gaps), entry_med=f"{med // 60}:{med % 60:02d}",
+                       by10=round(sum(m <= 600 for m in mins) / len(mins) * 100),
+                       hold_med=round(_st.median(hold)), overnight=sum(t['xt'].date() != t['et'].date() for t in E),
+                       since=d0.strftime('%b %Y'))
+
+
 def curve_r(E):
     """Engine equity curve for the results page: cumulative R, one [date, R] point per trading day.
     Sizing-independent, so it is the same at any risk setting."""
@@ -152,9 +230,8 @@ def variant_block(cfg, vk, base, root):
     data = OrderedDict(id=vk, label=vcfg['label'], tag=vcfg.get('tag', ''), desc=vcfg.get('desc', ''),
                        version=vcfg.get('version', ''),
                        first=E[0]['et'].strftime('%b %-d, %Y'), last=E[-1]['et'].strftime('%b %-d, %Y'))
-    d0, d1 = E[0]['et'].date(), E[-1]['et'].date()
-    wd = sum(1 for i in range((d1 - d0).days + 1) if (d0 + _dt.timedelta(i)).weekday() < 5)
-    data['tpd'] = round(len(E) / wd, 2)
+    data['freq'] = frequency(E)
+    data['tpd'] = data['freq']['tpd']   # one rule for every frequency figure on the page: regular sessions only
     data['engine'] = eng
     data['sides'] = {d: rgroup([t for t in E if t['dir'] == d]) for d in ('Long', 'Short')}
     years = sorted({t['et'].year for t in E})

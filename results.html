@@ -124,6 +124,24 @@
       .kf-mini.g4, .kf-mini.g3 { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .kf-tile .v { font-size:28px; } .kf-out .v { font-size:24px; } .kf-calc, .kf-now { padding:22px; }
     }
+      /* How often it trades (kf-data.js variants.<v>.freq, built by build_kf.py) */
+    .kf-fq{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:24px}
+    @media(max-width:900px){.kf-fq{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    .kf-fq>div{padding:20px 22px}
+    .kf-fq .k{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--lab)}
+    .kf-fq .v{display:block;font-size:34px;font-weight:900;color:var(--ink);margin-top:8px;line-height:1}
+    .kf-fq .v small{font-size:16px;color:var(--mute);font-weight:800}
+    .kf-fq .s{display:block;font-size:13px;color:var(--mute);margin-top:8px;line-height:1.5}
+    .kf-fq2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+    @media(max-width:900px){.kf-fq2{grid-template-columns:1fr}}
+    .kf-week{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:6px;margin-top:16px}
+    .kf-week span{aspect-ratio:1;border-radius:6px;border:1px solid var(--line);background:rgba(255,255,255,.02)}
+    .kf-week span.on{background:var(--acc);border-color:var(--acc)}
+    .kf-tbars{display:flex;align-items:flex-end;gap:10px;height:150px;border-bottom:1px solid var(--line)}
+    .kf-tbars div{flex:1;background:rgba(255,107,31,.75);border-radius:6px 6px 0 0;position:relative}
+    .kf-tbars div.thin{background:rgba(255,255,255,.12)}
+    .kf-tbars div b{position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:12px;color:var(--sub)}
+    .kf-tlab{display:flex;gap:10px;margin-top:8px}.kf-tlab span{flex:1;text-align:center;font-size:12px;color:var(--mute)}
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/results.html" />
   <meta property="og:url" content="https://www.fsdxtrading.com/results.html" />
@@ -263,10 +281,32 @@
         </div>
       </section>
 
-      <!-- ═══ 01 ENGINE ═══ -->
+      <!-- ═══ 01 HOW OFTEN ═══ -->
+      <section class="kf-sec" id="frequency">
+        <div class="kf-wrap">
+          <h2><span class="kf-num">01</span>How often it trades · <span class="kf-vname" data-vname></span></h2>
+          <p class="kf-lead">Most of the job is waiting. Knightfall takes a trade on a little over half of all sessions and sits the rest out. When it does trade, it&rsquo;s usually early and done by lunch.</p>
+          <div class="kf-fq" id="kf-fq"></div>
+          <div class="kf-fq2">
+            <div class="kf-card" style="padding:22px">
+              <h3 style="margin:0">Ten sessions, as it usually goes</h3>
+              <div class="kf-week" id="kf-week"></div>
+              <p class="kf-small" style="margin:12px 0 0" id="kf-week-note"></p>
+            </div>
+            <div class="kf-card" style="padding:22px">
+              <h3 style="margin:0 0 26px">Trades per year</h3>
+              <div class="kf-tbars" id="kf-tbars" role="img"></div><div class="kf-tlab" id="kf-tlab"></div>
+              <p class="kf-small" style="margin:10px 0 0" id="kf-tnote"></p>
+            </div>
+          </div>
+          <p class="kf-small" style="margin-top:14px" id="kf-fq-note"></p>
+        </div>
+      </section>
+
+      <!-- ═══ 02 ENGINE ═══ -->
       <section class="kf-sec" id="engine">
         <div class="kf-wrap">
-          <h2><span class="kf-num">01</span>The engine · <span class="kf-vname" data-vname></span></h2>
+          <h2><span class="kf-num">02</span>The engine · <span class="kf-vname" data-vname></span></h2>
           <p class="kf-lead">Every trade is measured in R: its result divided by that trade's own stop. That keeps these numbers the same at any risk setting. Risk and Flag Sizing change position size, not which trades fire or how they end.</p>
           <div class="kf-tiles" id="kf-tiles"></div>
           <!-- Engine equity curve in R (kf-data.js variants.<v>.curveR, built by build_kf.py).
@@ -300,22 +340,10 @@
         </div>
       </section>
 
-      <!-- ═══ WHERE IT STANDS ═══ -->
-      <section class="kf-sec" id="kf-now-sec" hidden>
-        <div class="kf-wrap">
-          <div class="kf-now">
-            <div class="kf-eyebrow">Where it stands now · <span data-vname></span> backtest</div>
-            <h2 id="kf-now-h"></h2>
-            <div class="kf-now-grid" id="kf-now-grid"></div>
-            <p class="kf-small" style="margin:18px 0 0">These are backtest trades, not live ones. A run like this is part of trading an edge. It isn't a forecast in either direction. <span id="kf-now-live"></span></p>
-          </div>
-        </div>
-      </section>
-
-      <!-- ═══ 02 WHAT WE RUN ═══ -->
+            <!-- ═══ 03 WHAT WE RUN ═══ -->
       <section class="kf-sec" id="setups">
         <div class="kf-wrap">
-          <h2><span class="kf-num">02</span><span id="kf-setups-h">What we run</span></h2>
+          <h2><span class="kf-num">03</span><span id="kf-setups-h">What we run</span></h2>
           <p class="kf-lead" id="kf-setups-lead"></p>
           <div class="kf-card kf-tablebox">
             <table class="kf-table">
@@ -327,10 +355,10 @@
         </div>
       </section>
 
-      <!-- ═══ 03 SIZE IT ═══ -->
+      <!-- ═══ 04 SIZE IT ═══ -->
       <section class="kf-sec" id="risk-profiles" style="scroll-margin-top:72px">
         <div class="kf-wrap">
-          <h2><span class="kf-num">03</span>Size it to your account · <span class="kf-vname" data-vname></span></h2>
+          <h2><span class="kf-num">04</span>Size it to your account · <span class="kf-vname" data-vname></span></h2>
           <p class="kf-lead" id="kf-rule"></p>
           <div class="kf-card kf-calc">
             <div class="kf-chips" role="group" aria-label="Risk per trade" id="kf-chips"></div>
@@ -348,6 +376,18 @@
             <div><span class="n">Risk per trade</span><span class="d">Sets position size. Same trades at every setting. More risk means bigger swings, not a better edge.</span><span class="o">Size so the "plan for" figure fits your account.</span></div>
             <div><span class="n">Flag Sizing</span><span class="d">Halves size when 2 or more warning flags show on a breakout, never below 1 contract. Never skips a trade.</span><span class="o">On from $400 risk: about 20% less drawdown, about 10% less net. Little effect at $250, where most trades are already 1 contract.</span></div>
             <div><span class="n">Daily loss limit</span><span class="d">Stops new entries for the day once closed losses reach your number. Never closes an open trade.</span><span class="o">About 1.5–2× your risk. A safety rail for a bad day, not an edge.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ WHERE IT STANDS ═══ -->
+      <section class="kf-sec" id="kf-now-sec" hidden>
+        <div class="kf-wrap">
+          <div class="kf-now">
+            <div class="kf-eyebrow">Where it stands now · <span data-vname></span> backtest</div>
+            <h2 id="kf-now-h"></h2>
+            <div class="kf-now-grid" id="kf-now-grid"></div>
+            <p class="kf-small" style="margin:18px 0 0">These are backtest trades, not live ones. A run like this is part of trading an edge. It isn't a forecast in either direction. <span id="kf-now-live"></span></p>
           </div>
         </div>
       </section>
@@ -407,6 +447,7 @@
             </a>
           </div>
           <p class="text-[11px] text-zinc-500 mt-4">$129/mo after trial · Cancel anytime in one click via Whop</p>
+          <p class="text-sm text-zinc-400 mt-5">Not ready yet? <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline font-semibold">Join the free Discord &rarr;</a> or <a href="https://cal.com/fsdxtrading/questions" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline font-semibold">book a quick call</a>.</p>
           <p class="text-[11px] text-zinc-400 mt-3 max-w-xl mx-auto leading-relaxed">
             Trading futures involves substantial risk of loss and is not suitable for every investor. Past performance is not necessarily indicative of future results.
           </p>
@@ -414,18 +455,7 @@
       </section>
 
 
-      <!-- ═══ FREE DISCORD STRIP ═══ -->
-      <section class="px-6 md:px-12 py-12 border-t border-white/10 bg-zinc-950/40">
-        <div class="max-w-4xl mx-auto border border-white/10 bg-zinc-950/60 rounded-2xl p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div class="text-center sm:text-left">
-            <h3 class="text-base sm:text-lg font-black text-white mb-1.5">Not ready to join? The Discord is free.</h3>
-            <p class="text-zinc-400 text-sm leading-relaxed">Market talk, our free indicator, and traders working on the same thing. Look around before you decide.</p>
-          </div>
-          <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="px-6 py-3 border border-white/15 hover:bg-white/[0.06] transition rounded-2xl font-bold text-white text-sm whitespace-nowrap shrink-0">
-            Join free →
-          </a>
-        </div>
-      </section>
+      
 
     <footer class="bg-zinc-950 border-t border-white/10 px-6 md:px-12 py-12 w-full mt-auto">
       <div class="max-w-5xl mx-auto space-y-6">
@@ -474,7 +504,7 @@
     }
   </script>
   <script src="nav-loader.js?v=20261025c"></script>
-  <script src="kf-data.js?v=20261020b"></script>
+  <script src="kf-data.js?v=20261105a"></script>
   <script>
   // Knightfall results — everything below reads window.FSDX_KF (build_kf.py, from NinjaTrader exports).
   (function () {
@@ -548,6 +578,30 @@
       $('kf-flags').innerHTML = K.flags.map(function (f) {
         return '<div><span class="t">' + f.f + (f.f === 1 ? ' flag' : ' flags') + '</span><span class="p' + (f.pf < 1.2 ? ' w' : '') + '">' + f2(f.pf) + '</span><span class="m">' + Math.round(f.win) + '% win · ' + f.n + ' trades</span></div>';
       }).join('');
+
+      // How often it trades — counted by build_kf.py against regular sessions (weekdays minus full NYSE closures).
+      var F = K.freq;
+      $('frequency').hidden = !F;
+      if (F) {
+        $('kf-fq').innerHTML = [
+          ['Per week', F.per_week.toFixed(1), '', 'About ' + F.per_month + ' trades a month'],
+          ['Sessions with a trade', F.pct_days + '%', '', 'Sits out about ' + Math.round((100 - F.pct_days) / 10) + ' in 10 mornings'],
+          ['Typical entry', F.entry_med, ' CT', F.by10 + '% of entries by 10:00 CT'],
+          ['Typical hold', F.hold_med >= 90 ? '~' + Math.round(F.hold_med / 60) + 'h' : F.hold_med + 'm', '', 'Median ' + F.hold_med + ' minutes. ' + (F.overnight ? F.overnight + ' held overnight.' : 'Never held overnight.')]
+        ].map(function (t) {
+          return '<div class="kf-card"><span class="k">' + t[0] + '</span><span class="v">' + t[1] + (t[2] ? '<small>' + t[2] + '</small>' : '') + '</span><span class="s">' + t[3] + '</span></div>';
+        }).join('');
+        var on = Math.round(F.pct_days / 10), pat = [0, 2, 3, 5, 7, 9, 1, 6, 8, 4].slice(0, on);
+        $('kf-week').innerHTML = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (i) { return '<span' + (pat.indexOf(i) > -1 ? ' class="on"' : '') + '></span>'; }).join('');
+        $('kf-week-note').textContent = 'Filled = a session with a trade. About 1 in ' + Math.round(F.trade_days / F.double_days) + ' trading days has two. Longest stretch without a trade: ' + F.max_gap + ' sessions.';
+        var mx = Math.max.apply(null, K.years.map(function (y) { return y.n; }));
+        $('kf-tbars').setAttribute('aria-label', 'Trades per year: ' + K.years.map(function (y) { return y.yr + ' ' + y.n; }).join(', '));
+        $('kf-tbars').innerHTML = K.years.map(function (y) { return '<div' + (y.n < 30 ? ' class="thin"' : '') + ' style="height:' + Math.max(3, y.n / mx * 100) + '%"><b>' + y.n + '</b></div>'; }).join('');
+        $('kf-tlab').innerHTML = K.years.map(function (y) { return '<span>' + y.yr + '</span>'; }).join('');
+        var thin = K.years.filter(function (y) { return y.n < 30; });
+        $('kf-tnote').textContent = K.years[K.years.length - 1].yr + ' runs through ' + K.last + '.' + (thin.length ? ' ' + thin.map(function (y) { return y.yr; }).join(', ') + ' is a partial warm-up year, left out of the figures above.' : '');
+        $('kf-fq-note').textContent = 'Counted from the ' + K.label + ' NinjaTrader export, ' + F.since + ' to ' + K.last + ', against regular trading sessions (' + F.sessions.toLocaleString('en-US') + ' of them). Entry times in Central Time. Hypothetical backtest.';
+      }
 
       // Where it stands now — wording follows the data, so it can't go stale.
       var N = K.now;
