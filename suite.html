@@ -230,7 +230,7 @@
             <span class="sg-bd"><span class="sg-eb">Indicator</span><span class="sg-tags"><span class="sg-tag">Every breakout</span><span class="sg-tag">Sizing</span></span><span class="sg-n">ORB Raven</span><span class="sg-d">Every breakout marked with entry, stop, both targets and your size. No grading. Also sold on its own.</span><span class="sg-pls"><div class="sg-pl" data-cell="tv"><span class="sg-pk">TradingView</span><span class="sg-st inc" title="Invite-only script.">Included</span></div><div class="sg-pl" data-cell="nt"><span class="sg-pk">NinjaTrader 8</span><span class="sg-st new" title="Out now in the NinjaTrader Hub.">New</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           <a href="#tool-volume" class="sg-card suite-row">
-            <span class="sg-th"><img src="screenshot-volume.png" alt="" loading="lazy" decoding="async"></span>
+            <span class="sg-th"><img src="screenshot-volume.png" data-src-tv="screenshot-volume.png" data-src-nt="nt8-volume.png" alt="" loading="lazy" decoding="async"></span>
             <span class="sg-bd"><span class="sg-eb">Indicator</span><span class="sg-tags"><span class="sg-tag">Breakout volume</span><span class="sg-tag">Sessions</span></span><span class="sg-n">Volume</span><span class="sg-d">Marks every ORB breakout bar in the volume pane and colors bars by session.</span><span class="sg-pls"><div class="sg-pl" data-cell="tv"><span class="sg-pk">TradingView</span><span class="sg-st inc" title="Invite-only script.">Included</span></div><div class="sg-pl" data-cell="nt"><span class="sg-pk">NinjaTrader 8</span><span class="sg-st new" title="Out now in the NinjaTrader Hub.">New</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           <a href="#tool-stack" class="sg-card suite-row" data-ntsoon>
@@ -1151,6 +1151,7 @@
     document.querySelectorAll('#suite-plat [data-plat]').forEach(function (b) { b.setAttribute('aria-selected', b.getAttribute('data-plat') === v ? 'true' : 'false'); });
     document.querySelectorAll('#by-platform [data-cell]').forEach(function (c) { c.hidden = v !== 'both' && c.getAttribute('data-cell') !== v; });
     document.querySelectorAll('#by-platform .suite-row').forEach(function (r) { r.classList.toggle('dim', v === 'nt' && r.hasAttribute('data-ntsoon')); });
+    document.querySelectorAll('#by-platform img[data-src-nt]').forEach(function (i) { i.src = v === 'nt' ? i.getAttribute('data-src-nt') : i.getAttribute('data-src-tv'); });
     try { localStorage.setItem('fsdx_suite_plat', v); } catch (e) {}
   }
   document.addEventListener('click', function (e) {
