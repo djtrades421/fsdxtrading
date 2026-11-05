@@ -144,6 +144,85 @@
     #af-finder .pf-card h3{font-size:16.5px}
     #af-finder .pf-note b{font-size:11px}
     #af-finder .pf-warn-sm{font-size:12.5px}
+    /* ── prop firm grid (Nov 2026 rework) ── */
+.afx{--card:rgba(9,11,15,.85);--line:rgba(255,255,255,.09);--ink:#fff;--sub:#a1a1aa;--mute:#71717a;--g:#4ade80;--o:#fb923c}
+.afx .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.afx .hero{padding:72px 0 28px;text-align:center;background:radial-gradient(60% 80% at 50% 0,rgba(251,146,60,.09),transparent 70%)}
+.afx .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(74,222,128,.3);background:rgba(74,222,128,.06);color:var(--g);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;padding:6px 12px;border-radius:999px}
+.afx .hero h1{font-size:clamp(36px,5vw,54px);font-weight:900;letter-spacing:-.02em;margin:18px 0 0;line-height:1.08}
+.afx .hero h1 span{color:var(--g)}
+.afx .hero p{color:var(--sub);font-size:17px;line-height:1.6;max-width:640px;margin:16px auto 0}
+.afx .code{display:inline-flex;align-items:center;gap:10px;margin-top:22px;font-size:14px;color:var(--sub)}
+.afx .code b{font-family:ui-monospace,monospace;color:var(--g);border:1px dashed rgba(74,222,128,.5);padding:8px 12px;border-radius:10px;cursor:pointer}
+.afx /* toolbar */
+.bar{position:relative;top:0;z-index:20;background:rgba(6,9,14,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:34px}
+.afx .bar .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:12px;padding-bottom:12px}
+.afx .tabs{display:inline-flex;gap:4px;border:1px solid var(--line);border-radius:12px;padding:3px}
+.afx .tabs button{background:none;border:0;color:var(--sub);font:inherit;font-weight:800;font-size:13.5px;padding:9px 14px;border-radius:9px;cursor:pointer}
+.afx .tabs button small{opacity:.55;margin-left:5px;font-weight:700}
+.afx .tabs button.on{background:rgba(251,146,60,.15);color:#fdba74}
+.afx select{appearance:none;background:#0b1017 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23a1a1aa' fill='none' stroke-width='1.5'/%3E%3C/svg%3E") no-repeat right 12px center;border:1px solid var(--line);color:#e4e4e7;font:inherit;font-size:13px;font-weight:700;padding:9px 32px 9px 12px;border-radius:10px;cursor:pointer}
+.afx select.set{border-color:rgba(74,222,128,.55);color:var(--g)}
+.afx .tog{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--sub);cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.afx .tog input{accent-color:#22c55e}
+.afx .sp{flex:1}
+.afx .count{font-size:12.5px;color:var(--mute);padding:14px 0 0}
+.afx .clear{background:none;border:0;color:var(--g);font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;margin-left:8px}
+.afx /* grid */
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:14px;align-items:stretch}
+@media(max-width:1000px){.afx .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.afx .grid{grid-template-columns:1fr}.afx .bar select{flex:1 1 45%}}
+.afx .cd{border:1px solid var(--line);background:var(--card);border-radius:18px;padding:18px;display:flex;flex-direction:column;transition:border-color .15s,transform .15s}
+.afx .cd:hover{border-color:rgba(74,222,128,.4);transform:translateY(-2px)}
+.afx .cd.feat{border-color:rgba(251,146,60,.4);background:linear-gradient(160deg,rgba(251,146,60,.08),var(--card) 45%)}
+.afx .cd.np{opacity:.85}
+.afx .top{display:flex;gap:12px;align-items:flex-start}
+.afx .lg{width:42px;height:42px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;color:var(--o);border:1px solid rgba(251,146,60,.35);background:rgba(251,146,60,.08)}
+.afx .cd.np .lg{color:var(--sub);border-color:var(--line);background:#0b1017}
+.afx .nm{font-size:17px;font-weight:900;line-height:1.2}
+.afx .ty{font-size:12px;color:var(--mute);margin-top:3px}
+.afx .badge{display:inline-block;font-family:ui-monospace,monospace;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:2px 6px;border-radius:5px;margin-left:6px;vertical-align:2px}
+.afx .b-big{color:var(--g);border:1px solid rgba(74,222,128,.45)}
+.afx .b-np{color:var(--mute);border:1px solid var(--line)}
+.afx .pct{margin-left:auto;text-align:right}
+.afx .pct b{display:block;font-size:28px;font-weight:900;color:var(--g);line-height:1}
+.afx .pct small{font-size:10px;letter-spacing:.14em;color:var(--mute);font-weight:800}
+.afx .pct.alt b{font-size:17px;color:#e4e4e7}
+.afx .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:16px}
+.afx .stats div{background:#0b1017;border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:9px 10px}
+.afx .stats span{display:block;font-size:9.5px;font-weight:800;letter-spacing:.12em;color:var(--mute);text-transform:uppercase}
+.afx .stats b{display:block;font-size:12.5px;margin-top:4px;line-height:1.35}
+.afx .chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.afx .chip{font-family:ui-monospace,monospace;font-size:10.5px;color:var(--sub);border:1px solid var(--line);padding:3px 7px;border-radius:999px}
+.afx .chip.ok{color:var(--g);border-color:rgba(74,222,128,.35)}
+.afx .chip.no{color:#fca5a5;border-color:rgba(248,113,113,.35)}
+.afx .fit{font-size:13px;color:var(--sub);line-height:1.55;margin:14px 0 0}
+.afx .fit b{color:#e4e4e7}
+.afx .act{margin-top:auto;padding-top:16px;display:flex;gap:8px}
+.afx .cp{flex:1;font-family:ui-monospace,monospace;font-weight:800;font-size:13px;color:var(--g);border:1px dashed rgba(74,222,128,.45);background:none;border-radius:11px;padding:11px;cursor:pointer}
+.afx .go{flex:1.2;text-align:center;background:var(--o);color:#000;font-weight:900;font-size:13.5px;border-radius:11px;padding:11px;text-decoration:none}
+.afx .go.ghost{background:none;color:#e4e4e7;border:1px solid var(--line)}
+.afx .more{background:none;border:0;color:var(--sub);font:inherit;font-size:12.5px;font-weight:700;margin-top:12px;cursor:pointer;text-align:left;padding:0}
+.afx .more:hover{color:var(--g)}
+.afx .dd{display:none;margin-top:12px;border-top:1px solid var(--line);padding-top:12px;font-size:12.5px;color:var(--sub);line-height:1.55}
+.afx .cd.open{border-color:rgba(74,222,128,.6);box-shadow:0 0 0 1px rgba(74,222,128,.3)}
+.afx .fit{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.afx .drow{grid-column:1/-1;border:1px solid rgba(74,222,128,.35);background:rgba(9,11,15,.95);border-radius:18px;padding:20px 22px;position:relative}
+.afx .drow h4{margin:0 0 4px;font-size:16px;font-weight:900}
+.afx .drow .x{position:absolute;top:14px;right:16px;background:none;border:1px solid var(--line);color:var(--sub);border-radius:8px;padding:5px 10px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+.afx .drow dl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 26px;margin:6px 0 0;font-size:12.5px;color:var(--sub);line-height:1.55}
+@media(max-width:1000px){.afx .drow dl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.afx .drow dl{grid-template-columns:1fr}}
+.afx .drow dt{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--mute);text-transform:uppercase;margin-top:12px}
+.afx .drow dd{margin:3px 0 0}
+.afx .drow .w{color:#fcd34d}
+.afx .drow .wide{grid-column:1/-1}
+.afx .dd dt{font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--mute);text-transform:uppercase;margin-top:10px}
+.afx .dd dd{margin:3px 0 0}
+.afx .dd .w{color:#fcd34d}
+.afx .empty{display:none;text-align:center;color:var(--sub);padding:40px 0}
+.afx .note{font-size:11.5px;color:var(--mute);line-height:1.6;margin:22px 0 60px}
+.afx .lab{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);font-weight:800;margin:40px 0 0}
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/affiliates.html" />
   <meta property="og:url" content="https://www.fsdxtrading.com/affiliates.html" />
@@ -165,217 +244,37 @@
   <main class="flex-1 md:pl-64 w-full flex flex-col justify-between min-h-screen h-auto">
     <div class="w-full flex-1">
 
-      <!-- PAGE HEADER -->
-      <section class="af-hero px-6 md:px-12">
-        <div class="max-w-3xl mx-auto text-center pt-14 pb-12 md:pt-20 md:pb-12 flex flex-col items-center">
-          <span class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold tracking-wide mb-6">
-            <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-            <span><span id="af-count">12</span> prop firms &middot; <span id="af-count3">11</span> partners &middot; Rules checked October 2026</span>
-          </span>
-          <h1 class="text-4xl md:text-5xl lg:text-[3.5rem] font-black leading-[1.1]">
-            <span class="block">Prop firm discounts.</span>
-            <span class="block text-green-400">Picked for traders.</span>
-          </h1>
-          <p class="mt-5 text-zinc-400 text-base md:text-lg max-w-xl leading-relaxed">
-            Every FSD-X partner code in one place, plus well-known firms we don't partner with, so you can compare them all. Drawdown, fees and automation rules side by side. We list the downsides too.
-          </p>
-          <div class="mt-8 flex flex-col sm:flex-row items-stretch gap-4 w-full sm:w-auto">
-            <button type="button" onclick="afFind()" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold px-8 py-4 rounded-2xl text-center shadow-lg shadow-green-500/10 whitespace-nowrap">Find my firm</button>
-            <button type="button" onclick="afJump('af-table')" class="border border-white/15 hover:bg-white/[0.06] transition px-6 py-4 rounded-2xl text-center font-bold text-white whitespace-nowrap">Compare all firms</button>
-          </div>
-          <div class="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm text-zinc-400">
-            Most partners take code
-            <button type="button" class="af-code" onclick="copyCode('DJFSDX', this)" title="Tap to copy">DJFSDX
-              <svg aria-hidden="true" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
-            </button>
-          </div>
-        </div>
-      </section>
+      <div class="afx">
+<section class="hero"><div class="wrap">
+  <span class="pill">● <span id="af-nf">13</span> prop firms · <span id="af-np">12</span> partners · Rules checked Oct 2026</span>
+  <h1>Prop firm discounts.<br><span>Picked for traders.</span></h1>
+  <p>Every FSD-X partner code in one place, plus well-known firms we don't partner with. Filter by drawdown, platform and automation rules. We list the downsides too.</p>
+  <div class="code">Most partners take code <b onclick="navigator.clipboard&&navigator.clipboard.writeText('DJFSDX')">DJFSDX ⧉</b></div>
+</div></section>
 
-      <!-- STAT STRIP -->
-      <section class="px-6 md:px-12">
-        <div class="max-w-5xl mx-auto af-stats" style="border-left:0;border-right:0;background:none">
-          <div><b id="af-count2">12</b><span>Firms compared</span></div>
-          <div><b>Futures + perps</b><span>Both covered</span></div>
-          <div><b>Pros &amp; cons</b><span>On every firm</span></div>
-          <div><b>Oct 2026</b><span>Rules last checked</span></div>
-        </div>
-      </section>
+<div class="bar"><div class="wrap">
+  <div class="tabs" id="tabs">
+    <button data-t="futures" class="on">Futures<small id="n-futures"></small></button>
+    <button data-t="perps">Perps<small id="n-perps"></small></button>
+    <button data-t="tools">Tools<small id="n-tools"></small></button>
+  </div>
+  <select id="f-dd" data-f="dd"><option value="">Drawdown: any</option><option>EOD</option><option>Intraday</option><option>Static</option></select>
+  <select id="f-plat" data-f="plat"><option value="">Platform: any</option><option>NinjaTrader</option><option>Tradovate</option><option>TradingView</option><option>Rithmic</option></select>
+  <select id="f-auto" data-f="auto"><option value="">Automation: any</option><option value="allow">Your own bot allowed</option><option value="limited">Limited</option><option value="no">Not allowed</option></select>
+  <select id="f-clock" data-f="clock"><option value="">Deadline: any</option><option value="none">No deadline</option><option value="limit">Has a deadline</option></select>
+  <label class="tog"><input type="checkbox" id="f-partner"> Partners only</label>
+  <span class="sp"></span>
+  <select id="sort"><option value="disc">Sort: biggest discount</option><option value="az">Sort: A to Z</option><option value="nodl">Sort: no deadline first</option></select>
+</div></div>
 
-      <!-- ═══ PARTNER CARDS ═══ -->
-      <section class="pt-12 md:pt-16 px-6 md:px-12">
-        <div class="max-w-5xl mx-auto">
-          <div class="flex items-end justify-between gap-4 flex-wrap mb-6">
-            <div>
-              <h2 class="text-2xl md:text-3xl font-black text-white leading-tight">Prop firms</h2>
-              <p class="text-sm text-zinc-500 mt-1">Partners have a code. Firms marked <b class="text-zinc-300">Not a partner</b> are here for comparison only. Confirm the rules on the firm's site before you buy.</p>
-            </div>
-            <div class="af-tabs" role="tablist" aria-label="Firm type">
-              <button type="button" class="af-tab" role="tab" data-af="futures" aria-selected="true">Futures<small id="af-n-futures"></small></button>
-              <button type="button" class="af-tab" role="tab" data-af="perps" aria-selected="false">Perps<small id="af-n-perps"></small></button>
-              <button type="button" class="af-tab" role="tab" data-af="tools" aria-selected="false">Tools<small id="af-n-tools"></small></button>
-            </div>
-          </div>
-          <div id="af-cards" class="af-grid" role="tabpanel"></div>
-        </div>
-      </section>
+<div class="wrap">
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty">No firm matches every filter. <button class="clear" id="clear2">Clear filters</button></div>
+  <p class="note" style="margin-bottom:24px">Partners have a code and we earn a commission if you use it. Firms marked "Not a partner" are here for comparison only, and we earn nothing from them. Rules change often; confirm on the firm's site before you buy. Not financial advice.</p>
+</div>
 
-      <section id="af-finder" class="py-12 md:py-16 px-6 md:px-12 scroll-mt-24">
-        <div class="max-w-5xl mx-auto">
-
-          <!-- ═══ FIND YOUR FIT ═══ -->
-          <div class="mb-8">
-            <div class="pf-head">
-              <div>
-                <h2 class="text-sm font-black text-white">Prop firm finder</h2>
-                <p class="text-xs text-zinc-500 mt-0.5">Match, filter or compare. We list the downsides too.</p>
-              </div>
-              <div class="pf-tabs" role="tablist">
-                <button class="pf-tab" type="button" data-tab="engine" aria-expanded="false">&#9889; Quick match</button>
-                <button class="pf-tab" type="button" data-tab="filters" aria-expanded="false">Filters<span id="pf-fcount" class="pf-badge" style="display:none"></span></button>
-              </div>
-            </div>
-            <p class="pf-warn-sm"><strong>Partner rules checked Oct 8, 2026. Non-partner firms added Oct 31, 2026.</strong> Prop firm rules change often and may differ by the time you read this.
-              We update as often as we can. Always confirm on the firm's own site before you buy. Not financial advice.</p>
-
-            <!-- QUICK MATCH -->
-            <div class="pf-panel" id="pf-panel-engine" hidden>
-              <p class="pf-hint">Answer what applies. Pick more than one where it fits. We'll rank the firms on this page and show why.</p>
-              <div class="pf-qrow"><div class="pf-qlabel">How long to pass?</div><div class="pf-chips" data-q="pace">
-                <button class="pf-chip" aria-pressed="false" data-val="fast">Under 2 weeks</button>
-                <button class="pf-chip" aria-pressed="true" data-val="unsure">Not sure</button>
-                <button class="pf-chip" aria-pressed="false" data-val="slow">Taking my time</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Platforms you use <span>pick all</span></div><div class="pf-chips" data-q="plat" data-multi>
-                <button class="pf-chip" aria-pressed="false" data-val="NinjaTrader">NinjaTrader</button>
-                <button class="pf-chip" aria-pressed="false" data-val="TradingView">TradingView</button>
-                <button class="pf-chip" aria-pressed="false" data-val="Tradovate">Tradovate</button>
-                <button class="pf-chip" aria-pressed="false" data-val="Rithmic">Rithmic</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Automation <span>pick all, or none</span></div><div class="pf-chips" data-q="auto" data-multi>
-                <button class="pf-chip" aria-pressed="false" data-val="own">My own bot / strategy</button>
-                <button class="pf-chip" aria-pressed="false" data-val="third">Third-party tool / copier</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Drawdown</div><div class="pf-chips" data-q="dd">
-                <button class="pf-chip" aria-pressed="false" data-val="EOD">End of day</button>
-                <button class="pf-chip" aria-pressed="false" data-val="Intraday">Intraday trailing</button>
-                <button class="pf-chip" aria-pressed="true" data-val="">No preference</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Pricing</div><div class="pf-chips" data-q="pay">
-                <button class="pf-chip" aria-pressed="false" data-val="allin">One price, no extra fees</button>
-                <button class="pf-chip" aria-pressed="true" data-val="">Doesn't matter</button></div></div>
-              <div class="pf-bar">
-                <span>Ranks only the firms on this page. Others may suit you better.</span>
-                <button class="pf-btn" id="pf-run" type="button">Show my matches &rarr;</button>
-              </div>
-              <div id="pf-results"></div>
-            </div>
-
-            <!-- FILTERS -->
-            <div class="pf-panel" id="pf-panel-filters" hidden>
-              <div class="pf-qrow"><div class="pf-qlabel">Eval fee</div><div class="pf-chips" data-group="fee">
-                <button class="pf-chip" aria-pressed="false" data-val="one">One-time</button>
-                <button class="pf-chip" aria-pressed="false" data-val="monthly">Monthly</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Deadline</div><div class="pf-chips" data-group="clock">
-                <button class="pf-chip" aria-pressed="false" data-val="none">No deadline</button>
-                <button class="pf-chip" aria-pressed="false" data-val="limit">Has deadline</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Drawdown <span>offers all picked</span></div><div class="pf-chips" data-group="dd" data-multi>
-                <button class="pf-chip" aria-pressed="false" data-val="EOD">EOD</button>
-                <button class="pf-chip" aria-pressed="false" data-val="Intraday">Intraday</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Platforms <span>works with all picked</span></div><div class="pf-chips" data-group="plat" data-multi>
-                <button class="pf-chip" aria-pressed="false" data-val="NinjaTrader">NinjaTrader</button>
-                <button class="pf-chip" aria-pressed="false" data-val="TradingView">TradingView</button>
-                <button class="pf-chip" aria-pressed="false" data-val="Tradovate">Tradovate</button>
-                <button class="pf-chip" aria-pressed="false" data-val="Rithmic">Rithmic</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Automation <span>allows all picked</span></div><div class="pf-chips" data-group="auto" data-multi>
-                <button class="pf-chip" aria-pressed="false" data-val="own">Own bots</button>
-                <button class="pf-chip" aria-pressed="false" data-val="yes">Third-party bots</button></div></div>
-              <div class="pf-qrow"><div class="pf-qlabel">Other</div><div class="pf-chips" data-group="misc" data-multi>
-                <button class="pf-chip" aria-pressed="false" data-val="noact">No activation fee</button>
-                <button class="pf-chip" aria-pressed="false" data-val="nomind">No minimum days</button></div></div>
-              <div class="pf-bar">
-                <span id="pf-count">Showing all firms</span>
-                <span style="display:flex;gap:16px">
-                  <button class="pf-link" id="pf-reset" type="button">Clear filters</button>
-                  <button class="pf-link" id="pf-compare-top" type="button">Compare selected &rarr;</button>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- ═══ PROP FIRMS ═══ -->
-          <div id="af-table" class="flex items-end justify-between gap-4 flex-wrap mb-4 scroll-mt-24">
-            <div>
-              <h2 class="text-sm font-black text-white">Prop firms</h2>
-              <p class="text-xs text-zinc-600 mt-0.5">Click any row for the full breakdown</p>
-            </div>
-            <div class="text-[10px] text-zinc-600 uppercase tracking-widest font-bold">Tap a code to copy</div>
-          </div>
-          <div class="overflow-x-auto -mx-1 px-1">
-            <table class="w-full text-sm" style="border-collapse:collapse">
-              <thead><tr>
-                <th class="text-left text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 pl-3 border-b border-white/10 w-8" title="Tick to compare">Cmp</th>
-                <th class="text-left text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 pl-3 pr-2.5 border-b border-white/10">Firm</th>
-                <th class="text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Discount</th>
-                <th class="hidden sm:table-cell text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Drawdown</th>
-                <th class="hidden sm:table-cell text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Eval fee</th>
-                <th class="hidden sm:table-cell text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Time limit</th>
-                <th class="text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Code</th>
-                <th class="hidden sm:table-cell border-b border-white/10 w-24"></th>
-              </tr></thead>
-              <tbody id="firm-rows"></tbody>
-            </table>
-            <div id="pf-empty" class="pf-empty" style="display:none">No firm matches every filter. Try loosening one, or <button class="pf-link" type="button" onclick="pfReset()">reset filters</button>.</div>
-          </div>
-
-          <!-- ═══ COMPARE PANEL ═══ -->
-          <div id="pf-compare" class="mt-8 scroll-mt-24" style="display:none">
-            <div class="flex items-end justify-between gap-4 flex-wrap mb-3">
-              <div>
-                <h2 class="text-sm font-black text-white">Side by side</h2>
-                <p class="text-xs text-zinc-600 mt-0.5">Partners as of October 8, 2026. Non-partners as of October 31, 2026. Verify on each firm's site before buying.</p>
-              </div>
-              <button class="pf-link" type="button" onclick="pfClear()">Clear comparison</button>
-            </div>
-            <div id="pf-cmp-grid" class="pf-cmp"></div>
-          </div>
-          <p class="text-[11px] text-zinc-600 mt-3 leading-relaxed">
-            <span class="text-zinc-400 font-bold">EOD drawdown</span> recalculates once per day from the closing
-            balance instead of tracking your intraday peak — the rule set the FSD-X eval simulations on
-            <a href="results.html#risk-profiles" class="text-green-400 hover:text-green-300">the results page</a> are modelled on.
-          </p>
-          <p class="text-[11px] text-zinc-600 mt-2 leading-relaxed">
-            <span class="text-zinc-400 font-bold">Eval fee</span> — one-time means you pay once for the evaluation; monthly means it rebills until you pass or cancel.
-            <span class="text-zinc-400 font-bold">Time limit</span> — how long you have to pass. Some firms also charge an activation fee once you pass; that's listed in each firm's breakdown.
-          </p>
-          <p class="text-[11px] text-amber-400/80 mt-2 leading-relaxed">
-            Last checked October 2026. Prop firms change fees, time limits and rules often, sometimes without notice.
-            Treat this table as a starting point and confirm everything on the firm's own site before you buy.
-          </p>
-
-          <!-- ═══ PLATFORM & AUTOMATION ═══ -->
-          <div class="mt-12 mb-4">
-            <h2 class="text-sm font-black text-white">Platform &amp; automation</h2>
-            <p class="text-xs text-zinc-600 mt-0.5">What the suite runs on, and what executes the Auto Trader</p>
-            <p class="text-[11px] text-amber-400/80 mt-2 leading-relaxed">Before you automate a prop firm account, check that firm's automation rules.
-              Several firms limit or ban third-party automation. Use the Automation filter above.</p>
-          </div>
-          <div class="overflow-x-auto -mx-1 px-1">
-            <table class="w-full text-sm" style="border-collapse:collapse">
-              <thead><tr>
-                <th class="text-left text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 pl-3 pr-2.5 border-b border-white/10">Tool</th>
-                <th class="text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Discount</th>
-                <th class="text-right text-[10px] font-bold tracking-widest uppercase text-zinc-600 pb-2.5 px-2.5 border-b border-white/10 whitespace-nowrap">Code</th>
-                <th class="hidden sm:table-cell border-b border-white/10 w-24"></th>
-              </tr></thead>
-              <tbody id="tool-rows"></tbody>
-            </table>
-          </div>
-
-          <p class="text-[10px] text-zinc-600 leading-relaxed mt-6 border-t border-white/5 pt-4">
-            NinjaTrader&reg; is a registered trademark of NinjaTrader Group, LLC. No NinjaTrader company has any
-            affiliation with the owner, developer, or provider of the products or services described herein, or any
-            interest, ownership or otherwise, in any such product or service, or endorses, recommends or approves any
-            such product or service.
-          </p>
-        </div>
-      </section>
+      </div>
 
       <section class="pb-16 px-6 md:px-12">
         <div class="max-w-5xl mx-auto border border-white/5 bg-zinc-950/30 rounded-2xl p-6 text-xs text-zinc-500 space-y-3 leading-relaxed">
@@ -424,7 +323,7 @@
         <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
           <a href="index.html" class="hover:text-green-400 transition">Home</a>
           <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
-          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="suite.html#tool-autotrader" class="hover:text-green-400 transition">Automation</a>
           <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
           <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
           <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
@@ -448,21 +347,16 @@
   <script>
     function toggleMobileMenu() {
       const sidebar = document.getElementById('sidebar-panel');
-      if (sidebar.classList.contains('-translate-x-full')) {
-        sidebar.classList.remove('-translate-x-full');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-      }
+      sidebar.classList.toggle('-translate-x-full');
     }
 
-
-    /* ══════════════════════════════════════════════════════════════════════
-       PARTNERS — edit here, the tables, filters and compare cards build themselves.
-       Last full check: October 8, 2026. Non-partner firms (partner:false) added October 31, 2026. Vest added October 20, 2026. My Funded Perps added October 21, 2026. Top One Futures added November 4, 2026. Re-verify every field when you update.
-       k.*  = filter keys:  fee one|monthly · clock none|limit · dd [EOD,Intraday]
+    /* ═══════════════════════════════════════════════════
+       PARTNERS — edit the lists below; the cards, filters and details build themselves.
+       k.*  = filter keys:  fee one|monthly · clock none|limit · dd [EOD,Intraday,Static]
               act no|yes|mixed · auto yes|own|limited|no · mind none|some
        plat = platforms the firm supports (used by the Platform filter)
-       ════════════════════════════════════════════════════════════════════ */
+       partner:false = listed for comparison only (no code, no commission)
+       ═══════════════════════════════════════════════════ */
     const FIRMS = [
       { n:'Apex Trader Funding', ty:'Futures prop firm', pct:90, std:20, code:'DJFSDX', feat:true,
         url:'https://apextraderfunding.com/member/aff/go/johnnyutah421',
@@ -738,509 +632,86 @@
         pts:['Multi-account sync','Automated journaling','Risk & performance analytics'] },
     ];
 
-    const slug = n => n.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-    const escA = v => String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    const TD  = 'py-3 px-2.5 border-b border-white/5 align-top';
 
-    function codeCell(code) {
-      if (!code) return '<span class="text-zinc-700">&mdash;</span>';
-      return '<button onclick="event.stopPropagation();copyCode(\'' + code + '\', this)"'
-        + ' class="font-mono text-xs font-black text-green-400 bg-zinc-900 border border-green-500/25'
-        + ' hover:border-green-500/60 rounded-lg px-2.5 py-1.5 transition cursor-copy" title="Tap to copy">'
-        + code + '</button>';
-    }
+    (function () {
+var F=FIRMS,T=TOOLS,TAB='futures',S={dd:'',plat:'',auto:'',clock:'',partner:false,sort:'disc'};
+function cat(f){return /Perpetuals/.test(f.ty)?'perps':'futures'}
+function isNP(f){return f.partner===false}
+function ini(n){return n.replace(/[^A-Za-z ]/g,'').split(' ').filter(Boolean).slice(0,2).map(function(w){return w[0]}).join('').toUpperCase()}
+function autoK(f){return f.k.auto==='yes'||f.k.auto==='own'?'allow':f.k.auto}
+function autoChip(f){var a=autoK(f);return a==='allow'?'<span class="chip ok">Own bot OK</span>':a==='limited'?'<span class="chip">Bots limited</span>':'<span class="chip no">No bots</span>'}
+function pct(f){
+  if(f.pct>0)return '<div class="pct"><b>'+f.pct+'%</b><small>OFF</small></div>';
+  if(isNP(f))return '';
+  return '<div class="pct alt"><b>'+(f.pctLabel||'Link')+'</b><small>'+(f.pctLabel==='Varies'?'BY PLAN':'DISCOUNT')+'</small></div>';
+}
+function card(f,i){
+  var np=isNP(f);
+  var act=np?'<a class="go ghost" href="'+f.url+'" target="_blank" rel="noopener">Visit site →</a>'
+    :(f.code?'<button class="cp" onclick="cp(this,\''+f.code+'\')">'+f.code+'</button>':'')+'<a class="go" href="'+f.url+'" target="_blank" rel="noopener">Get discount →</a>';
+  return '<div class="cd'+(f.feat?' feat':'')+(np?' np':'')+'" data-i="'+i+'">'
+   +'<div class="top"><div class="lg">'+ini(f.n)+'</div><div><div class="nm">'+f.n+(f.feat?'<span class="badge b-big">Biggest</span>':'')+(np?'<span class="badge b-np">Not a partner</span>':'')+'</div><div class="ty">'+f.ty+'</div></div>'+pct(f)+'</div>'
+   +'<div class="stats"><div><span>Drawdown</span><b>'+f.dd+'</b></div><div><span>Eval fee</span><b>'+f.fee+'</b></div><div><span>Deadline</span><b>'+f.clock+'</b></div></div>'
+   +'<div class="chips">'+autoChip(f)+(f.plat.length?f.plat.map(function(p){return '<span class="chip">'+p+'</span>'}).join(''):'<span class="chip">Own platform</span>')+'</div>'
+   +'<p class="fit"><b>Best if:</b> '+f.fit+'</p>'
+   +'<div class="act">'+act+'</div>'
+   +'<button class="more" onclick="openD('+i+',this)">Rules &amp; downsides ↓</button>'
+   +'</div>';
+}
+function toolCard(t){
+  return '<div class="cd"><div class="top"><div class="lg">'+ini(t.n)+'</div><div><div class="nm">'+t.n+'</div><div class="ty">'+t.ty+'</div></div>'+(t.pct?'<div class="pct"><b>'+t.pct+'%</b><small>OFF</small></div>':'')+'</div>'
+   +'<p class="fit">'+t.why+'</p><div class="chips">'+t.pts.map(function(p){return '<span class="chip">'+p+'</span>'}).join('')+'</div>'
+   +'<div class="act">'+(t.code?'<button class="cp" onclick="cp(this,\''+t.code+'\')">'+t.code+'</button>':'')+'<a class="go" href="'+t.url+'" target="_blank" rel="noopener">'+(t.code?'Get discount →':'Visit →')+'</a></div></div>';
+}
+function detail(f){return '<div class="drow" id="drow"><button class="x" onclick="closeD()">Close ✕</button><h4>'+f.n+': rules &amp; downsides</h4><dl><dt class="wide">Watch out for</dt><dd class="w wide">'+f.watch+'</dd><div><dt>Activation fee</dt><dd>'+f.act+'</dd></div><div><dt>Daily loss limit</dt><dd>'+f.dll+'</dd></div><div><dt>Consistency</dt><dd>'+f.cons+'</dd></div><div><dt>Automation</dt><dd>'+f.auto+'</dd></div><div><dt>Platforms</dt><dd>'+f.platTxt+'</dd></div><div><dt>Payout split</dt><dd>'+f.split+'</dd></div><div><dt>Min days to pass</dt><dd>'+f.mind+'</dd></div><div><dt>Funded accounts</dt><dd>'+f.maxf+'</dd></div><div><dt>News &amp; holds</dt><dd>'+f.hold+'</dd></div>'+(f.note?'<div class="wide"><dt>Note</dt><dd>'+f.note+'</dd></div>':'')+'</dl></div>'}
+var OPEN=-1;
+function closeD(){var d=document.getElementById('drow');if(d)d.remove();document.querySelectorAll('.cd.open').forEach(function(c){c.classList.remove('open');c.querySelector('.more').textContent='Rules & downsides ↓'});OPEN=-1}
+function openD(i,btn){
+  var was=OPEN;closeD();if(was===i)return;OPEN=i;
+  var card=btn.closest('.cd'),g=document.getElementById('grid'),cards=[].slice.call(g.querySelectorAll('.cd'));
+  var cols=getComputedStyle(g).gridTemplateColumns.split(' ').length,pos=cards.indexOf(card),end=Math.min(cards.length-1,Math.floor(pos/cols)*cols+cols-1);
+  cards[end].insertAdjacentHTML('afterend',detail(F[i]));
+  card.classList.add('open');btn.textContent='Hide details ↑';
+  var d=document.getElementById('drow');var r=d.getBoundingClientRect();if(r.bottom>innerHeight)d.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function cp(b,c){try{navigator.clipboard.writeText(c)}catch(e){}var o=b.textContent;b.textContent='Copied ✓';setTimeout(function(){b.textContent=o},1200)}
+function draw(){OPEN=-1;
+  var tools=TAB==='tools';
+  document.querySelectorAll('.bar select[data-f], .tog').forEach(function(e){e.style.display=tools?'none':''});
+  if(tools){document.getElementById('grid').innerHTML=T.map(toolCard).join('');document.getElementById('count').textContent=T.length+' tools';document.getElementById('empty').style.display='none';return;}
+  var L=F.map(function(f,i){return [f,i]}).filter(function(x){var f=x[0];
+    if(cat(f)!==TAB)return false;
+    if(S.dd&&f.k.dd.indexOf(S.dd)<0)return false;
+    if(S.plat&&f.plat.indexOf(S.plat)<0)return false;
+    if(S.auto&&autoK(f)!==S.auto)return false;
+    if(S.clock&&f.k.clock!==S.clock)return false;
+    if(S.partner&&isNP(f))return false;
+    return true;});
+  L.sort(function(a,b){a=a[0];b=b[0];
+    if(S.sort==='az')return a.n.localeCompare(b.n);
+    if(S.sort==='nodl'&&a.k.clock!==b.k.clock)return a.k.clock==='none'?-1:1;
+    var np=(isNP(a)?1:0)-(isNP(b)?1:0);if(np)return np;
+    return (b.feat?1:0)-(a.feat?1:0)||b.pct-a.pct;});
+  document.getElementById('grid').innerHTML=L.map(function(x){return card(x[0],x[1])}).join('');
+  var tot=F.filter(function(f){return cat(f)===TAB}).length,active=['dd','plat','auto','clock'].some(function(k){return S[k]})||S.partner;
+  document.getElementById('count').innerHTML='Showing '+L.length+' of '+tot+' firms'+(active?'<button class="clear" id="clear">Clear filters</button>':'');
+  document.getElementById('empty').style.display=L.length?'none':'block';
+  var c=document.getElementById('clear');if(c)c.onclick=clear;
+}
+function clear(){S.dd=S.plat=S.auto=S.clock='';S.partner=false;document.querySelectorAll('select[data-f]').forEach(function(s){s.value='';s.classList.remove('set')});document.getElementById('f-partner').checked=false;draw()}
+document.getElementById('clear2').onclick=clear;
+document.querySelectorAll('select[data-f]').forEach(function(s){s.onchange=function(){S[s.dataset.f]=s.value;s.classList.toggle('set',!!s.value);draw()}});
+document.getElementById('f-partner').onchange=function(){S.partner=this.checked;draw()};
+document.getElementById('sort').onchange=function(){S.sort=this.value;draw()};
+document.getElementById('tabs').onclick=function(e){var b=e.target.closest('button');if(!b)return;TAB=b.dataset.t;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});draw()};
+['futures','perps'].forEach(function(t){document.getElementById('n-'+t).textContent=F.filter(function(f){return cat(f)===t}).length});
+document.getElementById('n-tools').textContent=T.length;
+document.getElementById('af-nf').textContent=F.length;document.getElementById('af-np').textContent=F.filter(function(f){return f.partner!==false}).length+T.length;
+draw();
 
-    function detailRow(p, cols) {
-      return '<tr class="detail hidden"><td colspan="' + cols + '" class="px-3 pb-5 pt-0 border-b border-white/5">'
-        + '<div class="bg-zinc-950/60 border border-white/5 rounded-xl p-4">'
-        +   '<p class="text-xs text-zinc-400 leading-relaxed">' + escA(p.why) + '</p>'
-        +   (p.pts && p.pts.length
-              ? '<div class="grid sm:grid-cols-2 gap-x-5 gap-y-1.5 mt-3">' + p.pts.map(function (x) {
-                  return '<div class="flex items-start gap-2 text-xs text-zinc-400">'
-                    + '<span class="text-green-400 shrink-0">&check;</span>' + escA(x) + '</div>'; }).join('') + '</div>'
-              : '')
-        +   (p.rules && p.rules.length
-              ? '<div class="flex flex-wrap gap-1.5 mt-3.5">' + p.rules.map(function (r) {
-                  return '<span class="text-[10px] font-bold tracking-wide text-zinc-300 bg-zinc-900 border border-white/10 rounded-md px-2 py-1">'
-                    + escA(r) + '</span>'; }).join('') + '</div>'
-              : '')
-        +   (p.tiers && p.tiers.length
-              ? '<div class="mt-3.5 bg-zinc-900/60 border border-white/5 rounded-lg p-3">'
-                + '<div class="text-[10px] font-black uppercase tracking-wider text-zinc-500 mb-2">How the discount is applied</div>'
-                + p.tiers.map(function (t) {
-                    return '<div class="flex items-start gap-2 text-[11px] text-zinc-400 leading-relaxed mb-1">'
-                      + '<span class="text-green-400 shrink-0">&bull;</span>' + escA(t) + '</div>'; }).join('')
-                + '</div>'
-              : '')
-        +   (p.stdCode
-              ? '<div class="text-[11px] text-zinc-500 mt-3">Standard code (' + p.std + '% off): '
-                + '<span class="font-mono text-zinc-300 bg-zinc-900 border border-white/5 rounded px-1.5 py-0.5">'
-                + escA(p.stdCode) + '</span></div>'
-              : '')
-        +   (p.fit ? '<div class="pf-note"><b class="pf-good">Good fit if</b>' + escA(p.fit) + '</div>' : '')
-        +   (p.watch ? '<div class="pf-note"><b class="pf-bad">Watch out for</b>' + escA(p.watch) + '</div>' : '')
-        +   (p.act ? '<div class="pf-note"><b style="color:#a1a1aa">Activation fee</b>' + escA(p.act) + '</div>' : '')
-        +   (p.auto ? '<div class="pf-note"><b style="color:#a1a1aa">Automation</b>' + escA(p.auto) + '</div>' : '')
-        +   (p.platTxt ? '<div class="pf-note"><b style="color:#a1a1aa">Platforms</b>' + escA(p.platTxt) + '</div>' : '')
-        +   (p.note ? '<div class="text-[11px] text-zinc-600 mt-3">' + escA(p.note) + '</div>' : '')
-        +   (!isPartner(p) ? '<div class="text-[11px] text-zinc-500 mt-3">' + escA(NP_NOTE) + '</div>' : '')
-        +   '<a href="' + p.url + '" target="_blank" rel="' + (isPartner(p) ? 'noopener noreferrer' : 'nofollow noopener noreferrer') + '"'
-        +     ' class="sm:hidden mt-4 block w-full text-center py-2.5 bg-green-500 hover:bg-green-400'
-        +     ' text-black text-xs font-black uppercase tracking-wider rounded-xl transition">Open ' + escA(p.n) + ' &rarr;</a>'
-        + '</div></td></tr>';
-    }
-
-    function renderPartners() {
-      var fr = document.getElementById('firm-rows');
-      var tr = document.getElementById('tool-rows');
-      if (fr) fr.innerHTML = FIRMS.map(function (p, i) {
-        return '<tr id="' + slug(p.n) + '" data-firm="' + i + '" onclick="togglePartner(this)" class="cursor-pointer hover:bg-white/[0.025] transition scroll-mt-24">'
-          + '<td class="' + TD + ' pl-3" onclick="event.stopPropagation()">'
-          +   '<input type="checkbox" class="pf-cb" aria-label="Compare ' + escA(p.n) + '" onchange="pfToggle(' + i + ', this)"></td>'
-          + '<td class="' + TD + ' pl-3">'
-          +   '<div class="font-bold text-white flex items-center gap-2">' + escA(p.n)
-          +     (p.feat ? '<span class="text-[9px] font-black tracking-wider text-green-400 bg-green-500/10 border border-green-500/20 rounded px-1.5 py-0.5">BIGGEST</span>' : '')
-          +     (!isPartner(p) ? '<span class="af-np">NOT A PARTNER</span>' : '')
-          +   '</div><div class="text-[10.5px] text-zinc-600 mt-0.5">' + escA(p.ty) + '</div></td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap">'
-          +   (!isPartner(p) ? '<span class="text-[10px] font-bold text-zinc-500 bg-zinc-900 border border-white/10 rounded px-2 py-1">No code</span>'
-                    : p.pct ? '<span class="font-black tabular-nums text-green-400">' + p.pct + '% off</span>'
-                    : p.pctLabel
-                      ? '<span class="text-[10px] font-black tracking-wide text-green-400 bg-green-500/10 border border-green-500/20 rounded px-2 py-1">' + escA(p.pctLabel) + '</span>'
-                    : '<span class="text-[10px] font-bold text-zinc-500 bg-zinc-900 border border-white/10 rounded px-2 py-1">Standard</span>') + '</td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell">'
-          +   (p.dd ? '<span class="text-[10px] font-black tracking-wide text-green-400 bg-green-500/10 border border-green-500/20 rounded px-2 py-1">' + escA(p.dd) + '</span>'
-                    : '<span class="text-zinc-700">&mdash;</span>') + '</td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell text-xs text-zinc-300">'
-          +   (p.fee ? escA(p.fee) + (p.verify ? '<span class="pf-tag">VERIFY</span>' : '') : '<span class="text-zinc-700">&mdash;</span>') + '</td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell text-xs">'
-          +   (p.clock ? (/^none/i.test(p.clock)
-                  ? '<span class="text-[10px] font-black tracking-wide text-green-400 bg-green-500/10 border border-green-500/20 rounded px-2 py-1">' + escA(p.clock) + '</span>'
-                  : '<span class="text-zinc-300">' + escA(p.clock) + '</span>')
-                    : '<span class="text-zinc-700">&mdash;</span>') + '</td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap">' + codeCell(p.code) + '</td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell">'
-          +   '<a href="' + p.url + '" target="_blank" rel="' + (isPartner(p) ? 'noopener noreferrer' : 'nofollow noopener noreferrer') + '" onclick="event.stopPropagation()"'
-          +     ' class="text-xs font-bold ' + (isPartner(p) ? 'text-green-400 hover:text-green-300' : 'text-zinc-400 hover:text-white') + ' transition">' + (isPartner(p) ? 'Open' : 'Visit') + ' &rarr;</a></td>'
-          + '</tr>' + detailRow(p, 8);
-      }).join('');
-
-      if (tr) tr.innerHTML = TOOLS.map(function (p) {
-        return '<tr id="' + slug(p.n) + '" onclick="togglePartner(this)" class="cursor-pointer hover:bg-white/[0.025] transition scroll-mt-24">'
-          + '<td class="' + TD + ' pl-3"><div class="font-bold text-white">' + escA(p.n) + '</div>'
-          +   '<div class="text-[10.5px] text-zinc-600 mt-0.5">' + escA(p.ty) + '</div></td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap">'
-          +   (p.pct ? '<span class="font-black tabular-nums text-green-400">' + p.pct + '% off</span>'
-                    : '<span class="text-zinc-700">&mdash;</span>') + '</td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap">' + codeCell(p.code) + '</td>'
-          + '<td class="' + TD + ' text-right whitespace-nowrap hidden sm:table-cell">'
-          +   '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()"'
-          +     ' class="text-xs font-bold text-green-400 hover:text-green-300 transition">Open &rarr;</a></td>'
-          + '</tr>' + detailRow(p, 4);
-      }).join('');
-    }
-
-    /* ── FINDER: filters + compare ─────────────────────────────────────── */
-    function pfEmpty() { return { fee:'', clock:'', dd:[], plat:[], auto:[], misc:[] }; }
-    var PF = pfEmpty();
-    var PF_SEL = [];
-
-    function pfMatch(p) {
-      var k = p.k || {};
-      function all(want, have) { return want.every(function (w) { return (have || []).indexOf(w) >= 0; }); }
-      if (PF.fee && k.fee !== PF.fee) return false;
-      if (PF.clock && k.clock !== PF.clock) return false;
-      if (!all(PF.dd, k.dd)) return false;
-      if (!all(PF.plat, p.plat)) return false;
-      if (PF.auto.indexOf('own') >= 0 && !(k.auto === 'own' || k.auto === 'yes')) return false;
-      if (PF.auto.indexOf('yes') >= 0 && k.auto !== 'yes') return false;
-      if (PF.misc.indexOf('noact') >= 0 && k.act === 'yes') return false;   // 'mixed' stays: some plans have none
-      if (PF.misc.indexOf('nomind') >= 0 && k.mind !== 'none') return false;
-      return true;
-    }
-
-    function pfApply() {
-      var shown = 0;
-      FIRMS.forEach(function (p, i) {
-        var row = document.querySelector('#firm-rows tr[data-firm="' + i + '"]');
-        if (!row) return;
-        var ok = pfMatch(p);
-        row.style.display = ok ? '' : 'none';
-        var d = row.nextElementSibling;
-        if (d && d.classList.contains('detail') && !ok) d.classList.add('hidden');
-        if (ok) shown++;
-      });
-      var n = Object.keys(PF).reduce(function (t, x) { return t + (Array.isArray(PF[x]) ? PF[x].length : (PF[x] ? 1 : 0)); }, 0);
-      var any = n > 0;
-      var badge = document.getElementById('pf-fcount');
-      badge.style.display = n ? '' : 'none'; badge.textContent = n;
-      document.getElementById('pf-count').textContent = any
-        ? shown + ' of ' + FIRMS.length + ' firms match'
-        : 'Showing all ' + FIRMS.length + ' firms';
-      document.getElementById('pf-empty').style.display = shown ? 'none' : 'block';
-    }
-
-    function pfReset() {
-      var e = pfEmpty(); Object.keys(e).forEach(function (x) { PF[x] = e[x]; });   // mutate in place: chip handlers hold this object
-      document.querySelectorAll('.pf-chips[data-group] .pf-chip').forEach(function (b) { b.setAttribute('aria-pressed', 'false'); });
-      pfApply();
-    }
-
-    function pfToggle(i, cb) {
-      var at = PF_SEL.indexOf(i);
-      if (cb.checked && at < 0) {
-        if (PF_SEL.length >= 3) { cb.checked = false; pfFlash('Compare up to 3 firms at a time'); return; }
-        PF_SEL.push(i);
-      } else if (!cb.checked && at >= 0) PF_SEL.splice(at, 1);
-      pfTray();
-      if (document.getElementById('pf-compare').style.display !== 'none') pfRender(false);
-    }
-
-    function pfTray() {
-      var t = document.getElementById('pf-tray');
-      var n = PF_SEL.length;
-      t.classList.toggle('on', n > 0);
-      document.getElementById('pf-tray-txt').textContent = n === 1 ? '1 firm selected, pick one more' : n + ' firms selected';
-      document.getElementById('pf-tray-btn').disabled = n < 2;
-    }
-
-    var pfFlashT;
-    function pfFlash(msg) {
-      var el = document.getElementById('pf-tray-txt');
-      document.getElementById('pf-tray').classList.add('on');
-      el.textContent = msg;
-      clearTimeout(pfFlashT); pfFlashT = setTimeout(pfTray, 1800);
-    }
-
-    function pfClear() {
-      PF_SEL = [];
-      document.querySelectorAll('#firm-rows .pf-cb').forEach(function (c) { c.checked = false; });
-      document.getElementById('pf-compare').style.display = 'none';
-      pfTray();
-    }
-
-    function pfCell(label, val, cls) {
-      return '<div class="pf-row"><span>' + label + '</span><span class="' + (cls || '') + '">' + val + '</span></div>';
-    }
-
-    function pfRender(scroll) {
-      var box = document.getElementById('pf-compare');
-      if (PF_SEL.length < 2) { box.style.display = 'none'; return; }
-      var grid = document.getElementById('pf-cmp-grid');
-      grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(220px, 1fr))';
-      grid.innerHTML = PF_SEL.map(function (i) {
-        var p = FIRMS[i], k = p.k || {};
-        var disc = !isPartner(p) ? 'None. Not a partner' : p.pct ? p.pct + '% off' : (p.pctLabel || 'Standard');
-        return '<div class="pf-card">'
-          + '<h3>' + escA(p.n) + '</h3><div class="text-[10.5px] text-zinc-600 mb-2">' + escA(p.ty) + '</div>'
-          + pfCell('Discount', escA(disc), isPartner(p) ? 'pf-good' : '')
-          + pfCell('Code', escA(p.code || 'n/a'))
-          + pfCell('Eval fee', escA(p.fee || 'n/a') + (p.verify ? '<span class="pf-tag">VERIFY</span>' : ''), k.fee === 'one' ? 'pf-good' : 'pf-bad')
-          + pfCell('Deadline to pass', escA(p.clock || 'n/a'), k.clock === 'none' ? 'pf-good' : 'pf-bad')
-          + pfCell('Activation fee', escA(p.act || 'n/a'), k.act === 'no' ? 'pf-good' : (k.act === 'yes' ? 'pf-bad' : ''))
-          + pfCell('Drawdown', escA(p.dd || 'n/a'))
-          + pfCell('Daily loss limit', escA(p.dll || 'n/a'))
-          + pfCell('Consistency rule', escA(p.cons || 'n/a'))
-          + pfCell('Min. days to pass', escA(p.mind || 'n/a'), k.mind === 'none' ? 'pf-good' : 'pf-bad')
-          + pfCell('Platforms', escA(p.platTxt || 'n/a'))
-          + pfCell('Automation', escA(p.auto || 'n/a'), k.auto === 'yes' ? 'pf-good' : (k.auto === 'no' ? 'pf-bad' : ''))
-          + pfCell('Funded accounts', escA(p.maxf || 'n/a'))
-          + pfCell('Profit split', escA(p.split || 'n/a'))
-          + pfCell('News / overnight', escA(p.hold || 'n/a'))
-          + (p.fit ? '<div class="pf-note"><b class="pf-good">Good fit if</b>' + escA(p.fit) + '</div>' : '')
-          + (p.watch ? '<div class="pf-note"><b class="pf-bad">Watch out for</b>' + escA(p.watch) + '</div>' : '')
-          + (!isPartner(p) ? '<div class="pf-note">' + escA(NP_NOTE) + '</div>' : '')
-          + '<div style="flex:1"></div>'
-          + '<a href="' + p.url + '" target="_blank" rel="' + (isPartner(p) ? 'noopener noreferrer' : 'nofollow noopener noreferrer') + '" class="pf-btn' + (isPartner(p) ? '' : ' pf-btn-np') + '" style="display:block;text-align:center;margin-top:14px;text-decoration:none">' + (isPartner(p) ? 'Open ' : 'Visit ') + escA(p.n) + ' &rarr;</a>'
-          + '</div>';
-      }).join('');
-      box.style.display = 'block';
-      if (scroll) { try { box.scrollIntoView({ behavior:'smooth', block:'start' }); } catch (e) { box.scrollIntoView(); } }
-    }
-
-    /* ── QUICK MATCH ENGINE ─────────────────────────────────────────────
-       Scores each firm against the answers. Hard mismatches (wrong platform,
-       automation banned) knock a firm to the bottom; soft ones cost points.
-       Every point change writes a plain-English reason shown to the member. */
-    var PQ = { pace:'unsure', plat:[], auto:[], dd:'', pay:'' };
-
-    function pfScore(p) {
-      var k = p.k || {}, sc = 100, why = [], hard = false;
-      function ok(t){ why.push(['ok', t]); }
-      function no(t, n){ sc -= n; why.push(['no', t]); }
-      function x(t){ hard = true; why.push(['x', t]); }
-
-      // pace vs deadline + billing
-      if (PQ.pace === 'slow') {
-        if (k.clock === 'limit') no('Has a ' + p.clock + ' deadline to pass', 30); else ok('No deadline to pass');
-        if (k.fee === 'monthly') no('Billed monthly, so taking your time costs more', 20); else ok('One-time fee, no monthly rebill');
-      } else if (PQ.pace === 'unsure') {
-        if (k.clock === 'limit') no(p.clock + ' deadline to pass', 10); else ok('No deadline to pass');
-        if (k.fee === 'monthly') no('Billed monthly until you pass', 8);
-      } else {
-        if (k.mind === 'some') no('Minimum ' + p.mind.split(',')[0].toLowerCase() + ' before you can pass', 8);
-        else ok('No minimum days. Can pass quickly');
-      }
-      // platform
-      if (PQ.plat.length) {
-        var has = PQ.plat.filter(function (v) { return (p.plat || []).indexOf(v) >= 0; });
-        var miss = PQ.plat.filter(function (v) { return has.indexOf(v) < 0; });
-        if (!has.length) x('Doesn\'t support ' + miss.join(', '));
-        else {
-          ok('Works with ' + has.join(', '));
-          if (miss.length) no('Doesn\'t support ' + miss.join(', '), 6 * miss.length);
-        }
-      }
-      // automation
-      var wOwn = PQ.auto.indexOf('own') >= 0, wThird = PQ.auto.indexOf('third') >= 0;
-      if ((wOwn || wThird) && k.auto === 'no') x('Bans automated trading');
-      else {
-        if (wOwn) {
-          if (k.auto === 'limited') no('Own bot: restricted. Fully automated not allowed on funded', 25);
-          else ok('Allows your own automated strategy');
-        }
-        if (wThird) {
-          if (k.auto === 'own') x('Third-party tools and copiers not allowed. Self-built only');
-          else if (k.auto === 'limited') no('Third-party tool: restricted. Ask the firm first', 35);
-          else ok('Allows third-party bots and EAs');
-        }
-      }
-      // drawdown
-      if (PQ.dd) {
-        if ((k.dd || []).indexOf(PQ.dd) < 0) no('No ' + (PQ.dd === 'EOD' ? 'end-of-day' : 'intraday trailing') + ' drawdown option', 25);
-        else ok((PQ.dd === 'EOD' ? 'End-of-day' : 'Intraday trailing') + ' drawdown available');
-      }
-      // all-in price
-      if (PQ.pay === 'allin') {
-        if (k.act === 'yes') no('Activation fee after you pass', 20);
-        else if (k.act === 'mixed') no('Activation fee on some plans. Pick the no-fee plan', 6);
-        else ok('No activation fee');
-        if (k.fee === 'monthly' && PQ.pace !== 'slow') no('Monthly billing, so the total isn\'t fixed', 12);
-      }
-      return { p:p, sc:Math.max(0, sc), why:why, hard:hard };
-    }
-
-    function pfRun() {
-      var res = FIRMS.map(pfScore).sort(function (a, b) { return b.sc - a.sc; });
-      var good = res.filter(function (r) { return !r.hard && r.sc >= 40; });
-      var out = document.getElementById('pf-results');
-      if (!good.length) {
-        out.innerHTML = '<div class="pf-empty">None of the firms on this page fit those answers. Another prop firm may suit you better, and that\'s fine.</div>';
-        return;
-      }
-      out.innerHTML = '<div class="pf-res">' + good.slice(0, 3).map(function (r, i) {
-        var p = r.p;
-        var lis = r.why.map(function (w) { return '<li class="' + w[0] + '">' + escA(w[1]) + '</li>'; }).join('');
-        return '<div class="pf-card">'
-          + '<div class="pf-rank">' + (i === 0 ? 'Best match' : '#' + (i + 1)) + '</div>'
-          + '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-top:4px">'
-          +   '<h3>' + escA(p.n) + (isPartner(p) ? '' : ' <span class="af-np">NOT A PARTNER</span>') + '</h3><span class="pf-score">' + r.sc + '<span style="font-size:11px;color:#71717a">/100</span></span></div>'
-          + '<ul class="pf-why">' + lis + '</ul>'
-          + (p.watch ? '<div class="pf-note"><b class="pf-bad">Also watch for</b>' + escA(p.watch) + '</div>' : '')
-          + '<div style="flex:1"></div>'
-          + '<button type="button" class="pf-link" style="margin-top:12px;text-align:left" onclick="pfJump(' + FIRMS.indexOf(p) + ')">See full details in the table &darr;</button>'
-          + '</div>';
-      }).join('') + '</div>'
-        + (good.length > 1 ? '<div class="pf-bar"><span>Scores reflect your answers only, as of the date above. Confirm on each firm\'s site.</span>'
-          + '<button class="pf-btn" type="button" onclick="pfCompareTop(' + JSON.stringify(good.slice(0, 3).map(function (r) { return FIRMS.indexOf(r.p); })) + ')">Compare these side by side &rarr;</button></div>' : '');
-    }
-
-    function pfJump(i) {
-      var row = document.querySelector('#firm-rows tr[data-firm="' + i + '"]');
-      if (!row) return;
-      pfReset();
-      var d = row.nextElementSibling;
-      if (d && d.classList.contains('detail')) d.classList.remove('hidden');
-      try { row.scrollIntoView({ block:'center', behavior:'smooth' }); } catch (e) { row.scrollIntoView(); }
-    }
-
-    function pfCompareTop(ids) {
-      PF_SEL = ids.slice(0, 3);
-      document.querySelectorAll('#firm-rows .pf-cb').forEach(function (c, i) { c.checked = PF_SEL.indexOf(i) >= 0; });
-      pfTray(); pfRender(true);
-    }
-
-    function pfInit() {
-      // chip click: multi groups toggle into an array; single groups toggle one value.
-      // Filter singles can be clicked off (back to "any"); quiz singles always keep one picked.
-      function chipClick(g, store, key, canClear, after) {
-        g.addEventListener('click', function (e) {
-          var b = e.target.closest('.pf-chip'); if (!b) return;
-          var v = b.getAttribute('data-val');
-          if (g.hasAttribute('data-multi')) {
-            var on = b.getAttribute('aria-pressed') !== 'true';
-            b.setAttribute('aria-pressed', on ? 'true' : 'false');
-            store[key] = Array.prototype.filter.call(g.querySelectorAll('.pf-chip'), function (x) {
-              return x.getAttribute('aria-pressed') === 'true'; }).map(function (x) { return x.getAttribute('data-val'); });
-          } else {
-            var was = b.getAttribute('aria-pressed') === 'true';
-            g.querySelectorAll('.pf-chip').forEach(function (x) { x.setAttribute('aria-pressed', 'false'); });
-            if (was && canClear) { store[key] = ''; }
-            else { b.setAttribute('aria-pressed', 'true'); store[key] = v; }
-          }
-          after();
-        });
-      }
-      document.querySelectorAll('.pf-chips[data-q]').forEach(function (g) {
-        chipClick(g, PQ, g.getAttribute('data-q'), false, function () {
-          if (document.getElementById('pf-results').innerHTML) pfRun();
-        });
-      });
-      document.querySelectorAll('.pf-tab').forEach(function (t) {
-        t.addEventListener('click', function () {
-          var open = t.getAttribute('aria-expanded') !== 'true';
-          document.querySelectorAll('.pf-tab').forEach(function (o) {
-            o.setAttribute('aria-expanded', 'false');
-            document.getElementById('pf-panel-' + o.getAttribute('data-tab')).hidden = true;
-          });
-          if (open) { t.setAttribute('aria-expanded', 'true'); document.getElementById('pf-panel-' + t.getAttribute('data-tab')).hidden = false; }
-        });
-      });
-      document.getElementById('pf-run').addEventListener('click', pfRun);
-      document.querySelectorAll('.pf-chips[data-group]').forEach(function (g) {
-        chipClick(g, PF, g.getAttribute('data-group'), true, pfApply);
-      });
-      document.getElementById('pf-reset').addEventListener('click', pfReset);
-      document.getElementById('pf-compare-top').addEventListener('click', function () {
-        if (PF_SEL.length < 2) pfFlash('Tick 2 or 3 firms in the table to compare'); else pfRender(true);
-      });
-      document.getElementById('pf-tray-btn').addEventListener('click', function () { pfRender(true); });
-      pfApply();
-    }
-
-    function togglePartner(row) {
-      var d = row.nextElementSibling;
-      if (d && d.classList.contains('detail')) d.classList.toggle('hidden');
-    }
-
-    function openFromHash() {
-      var h = (location.hash || '').replace('#','');
-      if (!h) return;
-      var row = document.getElementById(h);
-      if (!row) return;
-      togglePartner(row);
-      try { row.scrollIntoView({ block:'center', behavior:'smooth' }); } catch (e) { row.scrollIntoView(); }
-      row.classList.add('ring-1','ring-green-500/40');
-      setTimeout(function(){ row.classList.remove('ring-1','ring-green-500/40'); }, 2600);
-    }
-    window.addEventListener('hashchange', function(){ openFromHash(); });
-    /* ── PARTNER CARDS (built from FIRMS / TOOLS above — edit the data, not this) ── */
-    var AF_TAB = 'futures';
-    function afIsPerp(p) { return /perpetual/i.test(p.ty || ''); }
-    function afMono(n) {
-      var w = String(n).replace(/[®™]/g, '').split(/\s+/).filter(Boolean);
-      return (w.length > 1 ? w[0][0] + w[1][0] : w[0].slice(0, 2)).toUpperCase();
-    }
-    function afList(tab) {
-      if (tab === 'tools') return TOOLS;
-      return FIRMS.filter(function (p) { return tab === 'perps' ? afIsPerp(p) : !afIsPerp(p); });
-    }
-    function afCard(p) {
-      var np = !isPartner(p);
-      var disc = np
-        ? '<div class="af-disc lbl af-disc-np">No code</div><div class="af-disc-sub">NOT A PARTNER</div>'
-        : p.pct
-        ? '<div class="af-disc">' + p.pct + '%</div><div class="af-disc-sub">OFF</div>'
-        : p.pctLabel
-          ? '<div class="af-disc lbl">' + escA(p.pctLabel) + '</div><div class="af-disc-sub">' + (/varies/i.test(p.pctLabel) ? 'BY PLAN' : 'EXCLUSIVE') + '</div>'
-          : '<div class="af-disc lbl">Link</div><div class="af-disc-sub">NO CODE NEEDED</div>';
-      var specs = p.dd
-        ? '<div class="af-specs">'
-          + '<div><span>Drawdown</span><b>' + escA(p.dd) + '</b></div>'
-          + '<div><span>Eval fee</span><b>' + escA(p.fee || '—') + '</b></div>'
-          + '<div><span>Deadline</span><b>' + escA(p.clock || '—') + '</b></div></div>'
-        : '';
-      var fit = p.fit
-        ? '<p class="af-fit"><b>Best if:</b> ' + escA(p.fit) + '</p>'
-        : '<p class="af-fit">' + escA(p.why || '') + '</p>';
-      var code = p.code
-        ? '<button type="button" class="af-code" onclick="copyCode(\'' + p.code + '\', this)" title="Tap to copy">' + escA(p.code) + '</button>'
-        : '';
-      if (np) return '<article class="af-card af-card-np">'
-        + '<div class="flex items-center gap-3">'
-        +   '<div class="af-mono" aria-hidden="true">' + escA(afMono(p.n)) + '</div>'
-        +   '<div class="flex-1 min-w-0"><div class="font-bold text-white leading-snug">' + escA(p.n) + '</div>'
-        +     '<div class="text-xs text-zinc-500 mt-0.5">' + escA(p.ty) + '</div></div>'
-        +   '<div>' + disc + '</div>'
-        + '</div>'
-        + specs + fit
-        + '<div class="af-actions">'
-        +   '<a href="' + p.url + '" target="_blank" rel="nofollow noopener noreferrer" class="af-visit">Visit ' + escA(p.n) + ' &rarr;</a>'
-        + '</div>'
-        + '<button type="button" class="af-more" onclick="afOpen(\'' + slug(p.n) + '\')">Full breakdown, rules &amp; downsides &rarr;</button>'
-        + '</article>';
-      return '<article class="af-card">'
-        + '<div class="flex items-center gap-3">'
-        +   '<div class="af-mono" aria-hidden="true">' + escA(afMono(p.n)) + '</div>'
-        +   '<div class="flex-1 min-w-0"><div class="font-bold text-white leading-snug">' + escA(p.n)
-        +     (p.feat ? '<span class="af-badge">BIGGEST</span>' : '') + '</div>'
-        +     '<div class="text-xs text-zinc-500 mt-0.5">' + escA(p.ty) + '</div></div>'
-        +   '<div>' + disc + '</div>'
-        + '</div>'
-        + specs + fit
-        + '<div class="af-actions">' + code
-        +   '<a href="' + p.url + '" target="_blank" rel="noopener noreferrer" class="bg-green-500 hover:bg-green-400 transition text-black font-extrabold text-sm px-5 py-3 rounded-xl text-center whitespace-nowrap' + (code ? '' : ' flex-1') + '">'
-        +     (p.code ? 'Get discount' : 'Open ' + escA(p.n.replace('®', ''))) + ' &rarr;</a>'
-        + '</div>'
-        + '<button type="button" class="af-more" onclick="afOpen(\'' + slug(p.n) + '\')">Full breakdown, rules &amp; downsides &rarr;</button>'
-        + '</article>';
-    }
-    function renderCards() {
-      var box = document.getElementById('af-cards');
-      if (!box) return;
-      box.innerHTML = afList(AF_TAB).map(afCard).join('');
-      ['futures', 'perps', 'tools'].forEach(function (t) {
-        var el = document.getElementById('af-n-' + t);
-        if (el) el.textContent = afList(t).length;
-      });
-      var partners = FIRMS.filter(isPartner).length + TOOLS.length;
-      var el1 = document.getElementById('af-count');  if (el1) el1.textContent = FIRMS.length;
-      var el2 = document.getElementById('af-count3'); if (el2) el2.textContent = partners;
-      var el3 = document.getElementById('af-count2'); if (el3) el3.textContent = FIRMS.length;
-    }
-    function afInit() {
-      document.querySelectorAll('.af-tab').forEach(function (t) {
-        t.addEventListener('click', function () {
-          AF_TAB = t.getAttribute('data-af');
-          document.querySelectorAll('.af-tab').forEach(function (o) { o.setAttribute('aria-selected', o === t ? 'true' : 'false'); });
-          renderCards();
-        });
-      });
-      renderCards();
-    }
-    function afJump(id) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      try { el.scrollIntoView({ block:'start', behavior:'smooth' }); } catch (e) { el.scrollIntoView(); }
-    }
-    function afFind() {
-      var t = document.querySelector('.pf-tab[data-tab="engine"]');
-      if (t && t.getAttribute('aria-expanded') !== 'true') t.click();
-      afJump('af-finder');
-    }
-    function afOpen(id) {
-      try { history.replaceState(null, '', '#' + id); } catch (e) {}
-      var row = document.getElementById(id);
-      if (row) { var d = row.nextElementSibling; if (d && d.classList.contains('detail')) d.classList.add('hidden'); }
-      openFromHash();
-    }
-
-    document.addEventListener('DOMContentLoaded', function(){ renderPartners(); pfInit(); afInit(); openFromHash(); });
-
-    function copyCode(code, btn) {
-      navigator.clipboard.writeText(code).then(() => {
-        const original = btn.innerHTML;
-        btn.innerHTML = '<span class="text-green-300">Copied!</span>';
-        setTimeout(() => { btn.innerHTML = original; }, 1500);
-      });
-    }
+    window.openD=openD; window.closeD=closeD; window.cp=cp;
+    })();
   </script>
-
-
-  <div id="pf-tray" class="pf-tray" role="status">
-    <span id="pf-tray-txt"></span>
-    <button id="pf-tray-btn" class="pf-btn" type="button" disabled>Compare &rarr;</button>
-  </div>
 
   <script src="nav-loader.js?v=20261105a"></script>
 </body>
