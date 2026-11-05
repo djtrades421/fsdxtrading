@@ -118,10 +118,10 @@
         <div class="max-w-5xl mx-auto">
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// See It Run</div>
           <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">Watch it trade on NinjaTrader.</h2>
-          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">One full trade with Variant 2 Runner on MNQ: the opening range, the breakout grade, the entry, the stop and targets placed as working orders, the stop trailing after TP1, and the exit at TP2.</p>
+          <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">Knightfall running hands-free on NinjaTrader 8: the opening range, the breakout grade, and the entry, stop and targets placed and managed as working orders.</p>
           <div class="mt-8 border border-white/10 bg-zinc-950/40 rounded-2xl overflow-hidden">
             <div id="nt-demo-player" class="aspect-video bg-black flex items-center justify-center relative group cursor-pointer" role="button" tabindex="0" aria-label="Play the Knightfall NinjaTrader 8 demo" onclick="ntPlayDemo()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();ntPlayDemo();}">
-              <img src="https://img.youtube.com/vi/mVMjYlCy8UI/maxresdefault.jpg" alt="Knightfall running on NinjaTrader 8 — demo video" data-step="0"
+              <img src="https://img.youtube.com/vi/ushn9_Zw4Fg/maxresdefault.jpg" alt="Knightfall running on NinjaTrader 8 — demo video" data-step="0"
                    onload="if(this.naturalWidth&&this.naturalWidth<=120)ntThumbNext(this)" onerror="ntThumbNext(this)"
                    class="absolute inset-0 w-full h-full object-cover" loading="lazy" decoding="async">
               <div class="absolute inset-0 flex items-center justify-center z-20">
@@ -161,12 +161,12 @@
       <script>
         function ntThumbNext(img) {
           var r = ['maxresdefault', 'sddefault', 'hqdefault', 'mqdefault'], i = (+img.dataset.step || 0) + 1;
-          if (i < r.length) { img.dataset.step = i; img.src = 'https://img.youtube.com/vi/mVMjYlCy8UI/' + r[i] + '.jpg'; }
+          if (i < r.length) { img.dataset.step = i; img.src = 'https://img.youtube.com/vi/ushn9_Zw4Fg/' + r[i] + '.jpg'; }
         }
         function ntPlayDemo() {
           var el = document.getElementById('nt-demo-player'); if (!el || el.dataset.playing) return;
           el.dataset.playing = '1';
-          el.innerHTML = '<iframe class="absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/mVMjYlCy8UI?autoplay=1&rel=0" title="Knightfall on NinjaTrader 8 demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
+          el.innerHTML = '<iframe class="absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/ushn9_Zw4Fg?autoplay=1&rel=0" title="Knightfall on NinjaTrader 8 demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>';
           el.removeAttribute('onclick'); el.removeAttribute('role'); el.removeAttribute('tabindex'); el.classList.remove('cursor-pointer');
         }
         (function(){var t=document.querySelectorAll('.nf-tab'),p=document.querySelectorAll('.nf-panel');t.forEach(function(b){b.addEventListener('click',function(){var i=b.getAttribute('data-nf');t.forEach(function(x){x.setAttribute('aria-selected',x===b?'true':'false')});p.forEach(function(x){x.classList.toggle('on',x.getAttribute('data-nfp')===i)})})})})();
