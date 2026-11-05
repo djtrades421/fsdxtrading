@@ -252,7 +252,7 @@ var FSDX_MENU = [
       ['suite.html#tool-orbpro', 'Knightfall MK2', 'The graded system, TradingView + NT8', '', 'target', 'orange'],
       ['suite.html#tool-autotrader', 'Automation', 'Built into Knightfall on NT8 · Auto Trader script on TradingView', '', 'bolt', 'orange'],
       ['platform.html', 'The Platform', 'Fleet, journal, imports and backtests', '', 'monitor', 'blue'],
-      ['nightwing.html#nexus', 'Nexus 2.0', 'Optimizer, eval sim and journal beside your chart', '', 'list', 'purple'],
+      ['nightwing.html#nexus', 'Nexus 2.0', 'TradingView optimizer, eval sim and journal beside your chart', '', 'list', 'purple'],
       ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
       ['tradingview-update.html', 'TradingView Update', 'Nothing changes for you — no action needed', '', 'info', 'gray']
   ]},
