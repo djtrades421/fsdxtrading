@@ -250,7 +250,7 @@ var FSDX_MENU = [
     items: [
       ['suite.html', 'Every product', 'All 11 products side by side', '', 'layers', 'orange'],
       ['suite.html#tool-orbpro', 'Knightfall MK2', 'The graded system, TradingView + NT8', '', 'target', 'orange'],
-      ['autotrader.html', 'Auto Trader', 'How the automation works', '', 'bolt', 'orange'],
+      ['suite.html#tool-autotrader', 'Auto Trader', 'How the automation works', '', 'bolt', 'orange'],
       ['platform.html', 'The Platform', 'Fleet, journal, imports and backtests', '', 'monitor', 'blue'],
       ['nightwing.html#nexus', 'Nexus 2.0', 'Optimizer, eval sim and journal beside your chart', '', 'list', 'purple'],
       ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
@@ -1385,7 +1385,7 @@ function prepareNavLabels(root) {
           ['index.html', 'Home'], ['compare.html', 'Compare Plans'],
           ['suite.html', 'Every product'],
           ['platform.html', 'The Platform'],
-          ['autotrader.html', 'ORB Auto-Trader'], ['ninjatrader.html', 'Knightfall NT8'],
+          ['suite.html#tool-autotrader', 'Auto Trader'], ['ninjatrader.html', 'Knightfall NT8'],
           ['releases.html', 'Releases'],
           ['results.html', 'Backtest Results'],
           ['nightwing.html', 'Nightwing'], ['raven.html', 'Raven'],
