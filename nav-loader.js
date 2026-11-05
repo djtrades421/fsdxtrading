@@ -235,10 +235,10 @@ window.toggleMobileMenu = function () {
 var FSDX_MENU = [
   { id: 'products', label: 'Memberships', w: 860, eyebrow: 'Or pick one membership', foot: ['compare.html', 'Compare all memberships side by side →'],
     feature: { kind: 'plan', kicker: 'Most complete', title: 'Full Membership', href: 'memberships.html', price: '$129', per: '/mo',
-      checks: ['Knightfall on TradingView + NinjaTrader 8', '3 indicators + Auto Trader', 'Journal, accounts & backtests', 'Live room every weekday'],
+      checks: ['Knightfall on TradingView + NinjaTrader 8', '3 indicators + automation', 'Journal, accounts & backtests', 'Live room every weekday'],
       cta: 'Start 30-Day Free Trial', ctaMember: 'See the membership →' },
     items: [
-      ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, Auto Trader, journal and the live room', '$129/mo', 'layers', 'orange'],
+      ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, automation, journal and the live room', '$129/mo', 'layers', 'orange'],
       ['ninjatrader.html', 'Knightfall NT8', 'Knightfall on NinjaTrader 8, on its own', '$59.99/mo', 'terminal', 'orange'],
       ['raven.html', 'Raven', 'ORB levels on TradingView + NinjaTrader 8', '$29.99/mo', 'trend', 'blue'],
       ['nightwing.html', 'Nightwing', 'Member platform + Nexus 2.0', '$9.99/mo', 'moon', 'purple'],
@@ -250,7 +250,7 @@ var FSDX_MENU = [
     items: [
       ['suite.html', 'Every product', 'All 11 products side by side', '', 'layers', 'orange'],
       ['suite.html#tool-orbpro', 'Knightfall MK2', 'The graded system, TradingView + NT8', '', 'target', 'orange'],
-      ['suite.html#tool-autotrader', 'Auto Trader', 'How the automation works', '', 'bolt', 'orange'],
+      ['suite.html#tool-autotrader', 'Automation', 'Built into Knightfall on NT8 · Auto Trader script on TradingView', '', 'bolt', 'orange'],
       ['platform.html', 'The Platform', 'Fleet, journal, imports and backtests', '', 'monitor', 'blue'],
       ['nightwing.html#nexus', 'Nexus 2.0', 'Optimizer, eval sim and journal beside your chart', '', 'list', 'purple'],
       ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
@@ -1385,7 +1385,7 @@ function prepareNavLabels(root) {
           ['index.html', 'Home'], ['compare.html', 'Compare Plans'],
           ['suite.html', 'Every product'],
           ['platform.html', 'The Platform'],
-          ['suite.html#tool-autotrader', 'Auto Trader'], ['ninjatrader.html', 'Knightfall NT8'],
+          ['suite.html#tool-autotrader', 'Automation'], ['ninjatrader.html', 'Knightfall NT8'],
           ['releases.html', 'Releases'],
           ['results.html', 'Backtest Results'],
           ['nightwing.html', 'Nightwing'], ['raven.html', 'Raven'],

@@ -36,7 +36,7 @@
     {t:'Volume Indicator',      u:'suite.html#tool-volume',    g:'Products', kw:'volume engine breakout companion'},
     {t:'Nexus 2.0',             u:'suite.html#tool-nexus',     g:'Products', kw:'chrome extension journal optimizer sidepanel'},
     {t:'The Platform',          u:'platform.html',             g:'Products', kw:'member platform dashboard journal importer csv import backtest workspace tracker accounts playbook workspace included'},
-    {t:'ORB Auto-Trader',       u:'suite.html#tool-autotrader',           g:'Products', kw:'automation pickmytrade tradovate hands off at'},
+    {t:'Automation (Auto Trader)', u:'suite.html#tool-autotrader',         g:'Products', kw:'automation auto trader autotrader pickmytrade traderspost tradovate hands off hands-free ninjatrader built in at'},
     {t:'Knightfall for NinjaTrader 8 (Live)', u:'ninjatrader.html', g:'Products', kw:'ninjatrader nt8 ninja native automated hands free manual release october 23 launch'},
     {t:'Releases',              u:'releases.html',             g:'Products', kw:'releases updates changelog new what changed roadmap coming next in the works version'},
     {t:'Raven',                 u:'raven.html',                g:'Products', kw:'orb raven levels indicator breakout no grading stop target position size'},
