@@ -1298,6 +1298,37 @@
           <a href="track-record.html" target="_blank" class="px-4 py-2 bg-zinc-900 hover:bg-zinc-800 border border-white/10 text-zinc-300 font-bold text-xs rounded-xl transition">View Page ↗</a>
         </div>
 
+        <!-- Quick update: drop every export at once, publish straight to the site -->
+        <div id="trb" class="bg-zinc-950 border border-green-500/20 rounded-2xl p-4 sm:p-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div class="text-[10px] uppercase tracking-widest text-green-500/70 font-bold">// Quick Update &middot; All Records</div>
+            <span class="text-[10px] text-zinc-600">Merge only &middot; new days are added, published days never change</span>
+          </div>
+          <label for="trb-file" id="trb-drop" class="block border-2 border-dashed border-white/10 hover:border-green-500/40 rounded-2xl px-6 py-8 text-center cursor-pointer transition">
+            <div class="text-3xl mb-2">📦</div>
+            <div class="text-xs font-bold text-white mb-1">Drop all your exports here at once (V1 &amp; V2, $400 &amp; $250)</div>
+            <div class="text-[11px] text-zinc-600">Each file is matched to its record by the trades already published. Anything unclear is held for you to pick.</div>
+          </label>
+          <input type="file" id="trb-file" accept=".csv" multiple class="hidden" onchange="trbHandle(event)"/>
+          <div id="trb-msg" class="hidden mt-4 text-xs"></div>
+          <div id="trb-wrap" class="hidden mt-4">
+            <div class="overflow-x-auto border border-white/5 rounded-xl">
+              <table class="w-full text-[11px]">
+                <thead class="bg-zinc-950"><tr class="text-zinc-600 uppercase tracking-wider text-[10px]">
+                  <th class="text-left px-3 py-2">File</th><th class="text-left px-2 py-2">Goes to</th><th class="text-left px-2 py-2">Matched on</th>
+                  <th class="text-right px-2 py-2">New trades</th><th class="text-right px-2 py-2">Net (new)</th><th class="text-left px-3 py-2">Status</th>
+                </tr></thead>
+                <tbody id="trb-body"></tbody>
+              </table>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 mt-4">
+              <button id="trb-publish" onclick="trbPublish()" class="px-5 py-2.5 bg-green-500 hover:bg-green-400 disabled:opacity-40 disabled:cursor-not-allowed text-black font-black text-xs uppercase tracking-wider rounded-xl transition">Publish all to site</button>
+              <button onclick="trbReset()" class="px-4 py-2.5 border border-white/10 text-zinc-500 hover:text-white font-bold text-xs rounded-xl transition">Clear</button>
+              <span id="trb-note" class="text-[11px] text-zinc-500"></span>
+            </div>
+          </div>
+        </div>
+
         <!-- Which record: variant + risk profile (variants live in track-record-variants.js) -->
         <div class="bg-zinc-950 border border-white/10 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-zinc-600 font-bold mb-3">// Which Record</div>
@@ -1418,12 +1449,18 @@
         <div id="tr-publish" class="hidden bg-zinc-950 border border-green-500/20 rounded-2xl p-4 sm:p-5">
           <div class="text-[10px] uppercase tracking-widest text-green-500/70 font-bold mb-3">// Ready to Publish</div>
           <div id="tr-publish-summary" class="text-xs text-zinc-400 mb-4"></div>
-          <button onclick="trDownload()" class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
-            ↓ Download <span id="tr-dl-name">track-record.json</span>
-          </button>
+          <div class="flex flex-wrap items-center gap-3">
+            <button onclick="trPublishSite()" class="px-5 py-2.5 bg-green-500 hover:bg-green-400 text-black font-black text-xs uppercase tracking-wider rounded-xl transition">
+              Publish to site
+            </button>
+            <button onclick="trDownload()" class="px-4 py-2.5 border border-white/10 text-zinc-400 hover:text-white font-bold text-xs rounded-xl transition">
+              ↓ Download <span id="tr-dl-name">track-record.json</span>
+            </button>
+            <span id="tr-pub-msg" class="text-[11px]"></span>
+          </div>
           <p class="text-[11px] text-zinc-600 mt-3 leading-relaxed">
-            Drop this file in the site root (next to <span class="font-mono text-zinc-500">track-record.html</span>), replacing the old one with the same name, and push.
-            The public page reads it directly — no worker changes, and nobody but you can publish because publishing means committing to the repo.
+            Publish saves it to the site right away. Only an admin login can publish. The JSON files in the repo are only a fallback now,
+            so Download is just for keeping a backup copy.
           </p>
         </div>
 
@@ -7599,10 +7636,17 @@
       trFetch(p);
     }
 
+    // Published records live on the worker. The repo JSON is only a fallback
+    // (first run, or worker unreachable) so a merge never starts from a stale copy.
+    function trLoadFile(file) {
+      return fetch(API + '/api/track-record?file=' + encodeURIComponent(file) + '&t=' + Date.now(), { cache: 'no-store' })
+        .then(r => r.ok ? r.json() : Promise.reject())
+        .catch(() => fetch(file + '?v=' + Date.now()).then(r => r.ok ? r.json() : Promise.reject()));
+    }
+
     function trFetch(p) {
       const file = trFile(p), key = trKey(p);
-      fetch(file + '?v=' + Date.now())
-        .then(r => r.ok ? r.json() : Promise.reject())
+      trLoadFile(file)
         .then(d => { if (key !== trKey()) return; TR_CACHE[key] = TR_PUBLISHED = d; trRenderCurrent(); })
         .catch(() => {
           if (key !== trKey()) return;
@@ -7761,7 +7805,8 @@
     }
     const trNum = (r, ...keys) => { for (const k of keys) if (r[k] != null && r[k] !== '') return parseFloat(r[k]); return null; };
 
-    function trConvert(rows, inception, comm) {
+    function trConvert(rows, inception, comm, runnerOpt) {
+      const runner = runnerOpt != null ? runnerOpt : !!trVar().runner;
       const pairs = {};
       rows.forEach(r => {
         const n = r['Trade number'];
@@ -7791,7 +7836,7 @@
           entry: parseFloat(p.entry['Price USD']) || 0,
           exit: parseFloat(p.exit['Price USD']) || 0,
           exit_reason: p.exit['Signal'] || '',
-          exit_type: trExitType(p.exit['Signal'], gross, mfe, !!trVar().runner),
+          exit_type: trExitType(p.exit['Signal'], gross, mfe, runner),
           gross: +gross.toFixed(2),
           commission: +c.toFixed(2),
           pnl: +(gross - c).toFixed(2),
@@ -7840,8 +7885,8 @@
       if (gross > 0) return runner ? 'TRAIL' : 'TP1';
       return 'STOP';
     }
-    function trConvertNT(rows, inception, comm) {
-      const runner = !!trVar().runner;
+    function trConvertNT(rows, inception, comm, runnerOpt) {
+      const runner = runnerOpt != null ? runnerOpt : !!trVar().runner;
       const out = [];
       rows.forEach(r => {
         const n = r['Trade number'];
@@ -8089,6 +8134,234 @@
       URL.revokeObjectURL(a.href);
       TR_PUBLISHED = TR_CACHE[trKey()] = TR_RESULT;
       trRenderCurrent();
+    }
+
+    async function trPostRecords(files) {
+      const token = localStorage.getItem('fsdx_token') || '';
+      const res = await fetch(API + '/api/admin/track-record', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ files })
+      });
+      let data = {}; try { data = await res.json(); } catch (e) {}
+      if (!res.ok || !data.success) throw new Error(data.error || ('HTTP ' + res.status));
+      return data;
+    }
+
+    async function trPublishSite() {
+      if (!TR_RESULT) return;
+      const msg = document.getElementById('tr-pub-msg');
+      msg.className = 'text-[11px] text-zinc-500'; msg.textContent = 'Publishing…';
+      try {
+        await trPostRecords({ [trFile()]: TR_RESULT });
+        TR_PUBLISHED = TR_CACHE[trKey()] = TR_RESULT;
+        trRenderCurrent();
+        msg.className = 'text-[11px] text-green-400 font-bold'; msg.textContent = '✓ Live on the site';
+      } catch (err) {
+        msg.className = 'text-[11px] text-red-400'; msg.textContent = 'Not published: ' + err.message + '. Nothing changed. You can still Download.';
+      }
+    }
+
+    // ── Quick update: several exports in, every record out ──
+    let TRB = [];   // { name, rows, isNT, slot, auto, why, scores, res }
+    const trbSlots = () => TR_REG.flatMap(v => Object.keys(v.files || {}).map(p => ({ v, p, key: v.id + ':' + p, file: v.files[p],
+      label: v.label + ' · $' + p })));
+    const trbSlot = key => trbSlots().find(s => s.key === key);
+
+    async function trbPub(slot) {
+      if (TR_CACHE[slot.key]) return TR_CACHE[slot.key];
+      const d = await trLoadFile(slot.file).catch(() => ({ meta: {}, trades: [] }));
+      return (TR_CACHE[slot.key] = d);
+    }
+    function trbSettings(slot, pub) {
+      const m = (pub && pub.meta) || {};
+      return {
+        inception: m.inception || slot.v.since,
+        comm: m.commission_rt != null ? m.commission_rt : (parseFloat(document.getElementById('tr-comm').value) || 0),
+        release: m.public_release || document.getElementById('tr-release').value
+      };
+    }
+    function trbConvert(f, slot, pub) {
+      const st = trbSettings(slot, pub);
+      return f.isNT ? trConvertNT(f.rows, st.inception, st.comm, !!slot.v.runner)
+                    : trConvert(f.rows, st.inception, st.comm, !!slot.v.runner);
+    }
+    // How well does this export line up with what is already published in a record?
+    // Compared on the record's NinjaTrader rows (TradingView rows ran a different build).
+    // Same day, side and entry price = a hit. Same contracts and exit price too = exact.
+    function trbScore(parsed, pub) {
+      const k = t => [t.date, t.dir, Number(t.entry).toFixed(2)].join('|');
+      const m = new Map(parsed.map(t => [k(t), t]));
+      const all = pub.trades || [];
+      const nt = all.filter(t => t.source === 'nt8');
+      let hit = 0, exact = 0;
+      (nt.length ? nt : all).forEach(t => {
+        const x = m.get(k(t)); if (!x) return;
+        hit++;
+        if (Number(x.contracts) === Number(t.contracts) && Math.abs(Number(x.exit) - Number(t.exit)) < 0.01) exact++;
+      });
+      return { hit, exact, agree: hit ? exact / hit : 0 };
+    }
+    function trbHint(name) {
+      const n = name.toLowerCase();
+      const v = /v\s*2|runner/.test(n) ? 'v2' : /v\s*1|stock/.test(n) ? 'v1' : '';
+      const r = (n.match(/(?:^|[^0-9])(250|400)(?:[^0-9]|$)/) || [])[1] || '';
+      return { v, r };
+    }
+    function trbMerge(f, slot, pub) {
+      const st = trbSettings(slot, pub);
+      const all = trbConvert(f, slot, pub);
+      const pubT = pub.trades || [];
+      const pubLast = pubT.reduce((m, t) => t.date > m ? t.date : m, '');
+      let parsed = all;
+      if (f.isNT && pubLast) parsed = parsed.filter(t => t.date > pubLast);   // never slot NT trades into older gaps
+      const pubDates = new Set(pubT.map(t => t.date));
+      const key = t => [t.date, t.entry_time, t.dir, Number(t.entry)].join('|');
+      const fromExport = new Map(parsed.map(t => [key(t), t]));
+      const kept = pubT.map(t => {
+        const m = fromExport.get(key(t)); const o = Object.assign({}, t);
+        if (!o.exit_type) o.exit_type = trExitType(o.exit_reason, o.gross, o.mfe, !!slot.v.runner);
+        if (m && o.mfe == null && m.mfe != null) { o.mfe = m.mfe; o.mae = m.mae; }
+        return o;
+      });
+      const fresh = parsed.filter(t => !pubDates.has(t.date));
+      const trades = kept.concat(fresh).sort((a, b) => (a.date + a.entry_time).localeCompare(b.date + b.entry_time));
+      const pm = pub.meta || {};
+      const worst = Math.max(0, ...all.map(t => -t.gross));
+      const ratio = worst / parseFloat(slot.p);
+      return {
+        fresh, all,
+        sizeOff: worst > 0 && (ratio < 0.8 || ratio > 1.4), worst,
+        result: { meta: {
+          product: 'FSD-X ORB Pro', variant: slot.v.id, execution: 'unmanaged',
+          versions: pm.versions || [], events: pm.events || {},
+          inception: st.inception, public_release: st.release, instrument: 'MNQ',
+          risk_profile: parseFloat(slot.p), session: 'New York open (8:30 AM CT)',
+          commission_rt: st.comm, generated: new Date().toISOString().slice(0, 10),
+          last_trade_date: trades.length ? trades[trades.length - 1].date : null
+        }, trades }
+      };
+    }
+
+    function trbMsg(t, cls) {
+      const el = document.getElementById('trb-msg');
+      el.className = 'mt-4 text-xs ' + (cls || 'text-zinc-400'); el.innerHTML = t; el.classList.remove('hidden');
+    }
+    function trbReset() {
+      TRB = [];
+      document.getElementById('trb-wrap').classList.add('hidden');
+      document.getElementById('trb-msg').classList.add('hidden');
+      document.getElementById('trb-note').textContent = '';
+    }
+
+    async function trbHandle(ev) {
+      const list = Array.from(ev.target.files || []);
+      ev.target.value = '';
+      if (!list.length) return;
+      trbReset();
+      trbMsg('Reading ' + list.length + ' file' + (list.length !== 1 ? 's' : '') + ' and loading the published records…', 'text-zinc-500');
+      const slots = trbSlots();
+      const pubs = {};
+      for (const s of slots) pubs[s.key] = await trbPub(s);
+      const bad = [];
+      for (const file of list) {
+        const text = await file.text();
+        let rows;
+        try { rows = trParseCSV(text); } catch (e) { bad.push(file.name); continue; }
+        const head = Object.keys(rows[0] || {});
+        const isNT = trIsNT(head);
+        const isTV = head.includes('Trade number') && head.some(h => /Net PnL/.test(h));
+        if (!isNT && !isTV) { bad.push(file.name); continue; }
+        const f = { name: file.name, rows, isNT, slot: '', auto: false, why: '', scores: {} };
+        slots.forEach(s => { f.scores[s.key] = trbScore(trbConvert(f, s, pubs[s.key]), pubs[s.key]); });
+        // A "Trail" exit only exists on runner variants, so it rules the others out.
+        const trails = isNT && rows.some(r => /trail/i.test(r['Exit name'] || ''));
+        const ok = slots.filter(s => (!trails || s.v.runner) && f.scores[s.key].exact > 0 && f.scores[s.key].agree >= 0.8);
+        const ranked = ok.sort((a, b) =>
+          (f.scores[b.key].exact - f.scores[a.key].exact) || (f.scores[b.key].agree - f.scores[a.key].agree));
+        const best = ranked[0], second = ranked[1];
+        const bs = best && f.scores[best.key], ss = second && f.scores[second.key];
+        if (bs && (!ss || bs.exact > ss.exact || bs.agree > ss.agree)) {
+          f.slot = best.key; f.auto = true;
+          f.why = bs.exact + ' of ' + bs.hit + ' published trade' + (bs.hit !== 1 ? 's' : '') + ' matched exactly';
+        } else {
+          const h = trbHint(file.name);
+          const hs = slots.find(s => s.v.id === h.v && s.p === h.r);
+          if (hs) { f.slot = hs.key; f.why = 'File name only. Check it'; }
+          else f.why = 'No published trades to match. Pick one';
+        }
+        TRB.push(f);
+      }
+      // Two files on one record = something is mislabeled. Hold both.
+      const count = {};
+      TRB.forEach(f => { if (f.slot) count[f.slot] = (count[f.slot] || 0) + 1; });
+      TRB.forEach(f => { if (f.slot && count[f.slot] > 1) { f.why = 'Two files matched this record. Pick the right one'; f.auto = false; f.dup = true; } });
+      if (bad.length) trbMsg('Skipped (not a TradingView or NinjaTrader 8 trades export): ' + bad.map(esc).join(', '), 'text-red-400');
+      else document.getElementById('trb-msg').classList.add('hidden');
+      if (TRB.length) trbRender();
+    }
+
+    function trbSet(i, key) {
+      TRB[i].slot = key; TRB[i].auto = false; TRB[i].dup = false; TRB[i].why = key ? 'Picked by you' : 'Pick one';
+      trbRender();
+    }
+
+    function trbRender() {
+      const slots = trbSlots();
+      const used = {};
+      TRB.forEach(f => { if (f.slot) used[f.slot] = (used[f.slot] || 0) + 1; });
+      let ready = TRB.length > 0, fresh = 0;
+      document.getElementById('trb-body').innerHTML = TRB.map((f, i) => {
+        const slot = f.slot && trbSlot(f.slot);
+        const clash = f.slot && used[f.slot] > 1;
+        f.res = slot ? trbMerge(f, slot, TR_CACHE[slot.key] || { meta: {}, trades: [] }) : null;
+        if (!slot || clash) ready = false;
+        if (f.res) fresh += f.res.fresh.length;
+        const s = f.res ? trStats(f.res.fresh) : null;
+        const opts = '<option value="">Pick a record…</option>' + slots.map(x =>
+          `<option value="${esc(x.key)}"${x.key === f.slot ? ' selected' : ''}>${esc(x.label)} → ${esc(x.file)}</option>`).join('');
+        let status;
+        if (!slot) status = '<span class="text-yellow-400 font-bold">Pick a record</span>';
+        else if (clash) status = '<span class="text-red-400 font-bold">Two files on one record</span>';
+        else if (f.res.sizeOff) status = '<span class="text-yellow-400 font-bold">⚠ Largest loss $' + f.res.worst.toFixed(0) + ' doesn\'t look like $' + esc(slot.p) + '</span>';
+        else status = f.auto ? '<span class="text-green-400 font-bold">✓ Matched</span>' : '<span class="text-zinc-300 font-bold">Set</span>';
+        return `<tr class="border-t border-white/5 align-top">
+          <td class="px-3 py-2 text-zinc-300 font-mono break-all">${esc(f.name)}<div class="text-zinc-600 font-sans">${f.isNT ? 'NinjaTrader 8' : 'TradingView'}</div></td>
+          <td class="px-2 py-2"><select onchange="trbSet(${i}, this.value)" class="bg-black border ${slot && !clash ? 'border-white/10' : 'border-yellow-500/40'} rounded-lg px-2 py-1.5 text-[11px] text-white">${opts}</select></td>
+          <td class="px-2 py-2 text-zinc-500">${esc(f.why)}</td>
+          <td class="px-2 py-2 text-right font-bold ${s && s.n ? 'text-green-400' : 'text-zinc-600'}">${s ? s.n : '—'}</td>
+          <td class="px-2 py-2 text-right font-bold ${s && s.net < 0 ? 'text-red-400' : 'text-emerald-400'}">${s && s.n ? trMoney(s.net) : '—'}</td>
+          <td class="px-3 py-2">${status}</td>
+        </tr>`;
+      }).join('');
+      const missing = slots.filter(s => !used[s.key]).map(s => s.label);
+      document.getElementById('trb-note').innerHTML = !ready ? 'Fix the highlighted rows to publish.'
+        : (fresh ? fresh + ' new trade' + (fresh !== 1 ? 's' : '') + ' across ' + TRB.length + ' record' + (TRB.length !== 1 ? 's' : '') + '.' : 'No new trades in these files.')
+          + (missing.length ? ' <span class="text-zinc-600">Not in this batch: ' + missing.map(esc).join(', ') + ' (left as is).</span>' : '');
+      document.getElementById('trb-publish').disabled = !ready || !fresh;
+      document.getElementById('trb-wrap').classList.remove('hidden');
+    }
+
+    async function trbPublish() {
+      const btn = document.getElementById('trb-publish');
+      const files = {};
+      TRB.forEach(f => { const s = trbSlot(f.slot); if (s && f.res && f.res.fresh.length) files[s.file] = f.res.result; });
+      const names = Object.keys(files);
+      if (!names.length) return;
+      if (!confirm('Publish ' + names.length + ' record' + (names.length !== 1 ? 's' : '') + ' to the site?\n\n' + names.join('\n') +
+                   '\n\nOnly new days are added. Published trades are not changed.')) return;
+      btn.disabled = true; btn.textContent = 'Publishing…';
+      try {
+        await trPostRecords(files);
+        TRB.forEach(f => { const s = trbSlot(f.slot); if (s && files[s.file]) TR_CACHE[s.key] = files[s.file]; });
+        if (TR_CACHE[trKey()]) { TR_PUBLISHED = TR_CACHE[trKey()]; trRenderCurrent(); }
+        trbReset();
+        trbMsg('✓ Published ' + names.map(esc).join(', ') + '. Live on the site now.', 'text-green-400 font-bold');
+      } catch (err) {
+        trbMsg('Not published: ' + esc(err.message) + '. Nothing changed on the site.', 'text-red-400');
+      } finally {
+        btn.textContent = 'Publish all to site';
+      }
     }
   </script>
 

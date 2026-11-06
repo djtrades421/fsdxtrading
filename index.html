@@ -1054,8 +1054,9 @@
   <script src="checkout-gate.js?v=20261025a"></script>
 
   <script>
-    fetch('track-record.json?v=' + Date.now())
-      .then(function(r){ return r.json(); })
+    fetch('https://nexus-validator.dfuentes4211.workers.dev/api/track-record?file=track-record.json&t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r){ return r.ok ? r.json() : Promise.reject(); })
+      .catch(function(){ return fetch('track-record.json?v=' + Date.now()).then(function(r){ return r.json(); }); })
       .then(function(d){
         var t = d.trades || [];
         if (!t.length) return;

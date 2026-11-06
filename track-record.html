@@ -369,8 +369,10 @@
       if (CACHE[key]) return Promise.resolve(CACHE[key]);
       const file = v.files[rp];
       if (!file) return Promise.resolve(CACHE[key] = { meta: {}, trades: [], missing: true });
-      return fetch(file + '?v=' + Date.now())
+      // Published records live on the worker; the repo JSON is the fallback.
+      return fetch('https://nexus-validator.dfuentes4211.workers.dev/api/track-record?file=' + encodeURIComponent(file) + '&t=' + Date.now(), { cache: 'no-store' })
         .then(r => r.ok ? r.json() : Promise.reject())
+        .catch(() => fetch(file + '?v=' + Date.now()).then(r => r.ok ? r.json() : Promise.reject()))
         .then(d => (CACHE[key] = d))
         .catch(() => (CACHE[key] = { meta: {}, trades: [], missing: true }));
     }
