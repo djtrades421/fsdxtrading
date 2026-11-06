@@ -4,17 +4,17 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FSD-X Trading — ORB PRO | Rules-Based NQ/MNQ Framework | DJ Trades</title>
-  <meta name="description" content="A rules-based opening range breakout system for NQ/MNQ futures, built for prop traders working through evals. Every setup graded A+ through C. Check the eval pass rate for your account size, then run it free for 30 days." />
+  <title>FSD-X | Systematic Futures Trading — Knightfall ORB for NQ/MNQ</title>
+  <meta name="description" content="A systematic futures trading method built on the NQ/MNQ opening range breakout: identify, evaluate, grade, size, execute and measure, the same way every session. Trade it yourself or automate it on TradingView and NinjaTrader 8. 30-day free trial." />
   <meta name="author" content="DJ Trades" />
   <meta name="keywords" content="FSD-X Trading, FSDX Trading, DJ Trades, ORB PRO, NQ futures, MNQ futures, opening range breakout, futures trading" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="FSD-X Trading — ORB PRO | Rules-Based NQ/MNQ Framework | DJ Trades" />
-  <meta property="og:description" content="A rules-based opening range breakout system for NQ/MNQ futures, built for prop traders working through evals. Every setup graded A+ through C. Check the eval pass rate for your account size, then run it free for 30 days." />
+  <meta property="og:title" content="FSD-X | Systematic Futures Trading — Knightfall ORB for NQ/MNQ" />
+  <meta property="og:description" content="A systematic futures trading method built on the NQ/MNQ opening range breakout: identify, evaluate, grade, size, execute and measure, the same way every session. Trade it yourself or automate it on TradingView and NinjaTrader 8. 30-day free trial." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="FSD-X Trading — ORB PRO | Rules-Based NQ/MNQ Framework | DJ Trades" />
-  <meta name="twitter:description" content="A rules-based opening range breakout system for NQ/MNQ futures, built for prop traders working through evals. Every setup graded A+ through C. Check the eval pass rate for your account size, then run it free for 30 days." />
+  <meta name="twitter:title" content="FSD-X | Systematic Futures Trading — Knightfall ORB for NQ/MNQ" />
+  <meta name="twitter:description" content="A systematic futures trading method built on the NQ/MNQ opening range breakout: identify, evaluate, grade, size, execute and measure, the same way every session. Trade it yourself or automate it on TradingView and NinjaTrader 8. 30-day free trial." />
   <link rel="stylesheet" href="tailwind.css">
   <link rel="stylesheet" href="lifetime.css?v=20261003b">
   <script src="lifetime.js?v=20261003" defer></script>
@@ -404,6 +404,7 @@
               <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
               <span>Knightfall, Volume &amp; Raven are live on NinjaTrader® 8 &middot; Stack V1 next &rarr;</span>
             </a>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-4">FSD-X &middot; Systematic futures trading</div>
             <h1 class="text-4xl md:text-5xl font-black leading-[1.1]">
               <span class="block">You don't need another strategy.</span>
               <span class="block">You need to know <span class="text-green-400" style="white-space:nowrap">which trade to take.</span></span>
@@ -604,6 +605,76 @@
         </script>
       </section>
 
+<!-- ═══ THE METHOD — six steps, same order, every session ═══ -->
+      <style>
+        .ms-flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-top:40px;counter-reset:s}
+        @media(max-width:1100px){.ms-flow{grid-template-columns:repeat(3,minmax(0,1fr))}}
+        @media(max-width:640px){.ms-flow{grid-template-columns:1fr}}
+        .ms-step{position:relative;display:flex;flex-direction:column;gap:8px;padding:18px 16px;border:1px solid rgba(255,255,255,.09);background:rgba(9,9,11,.75);border-radius:16px;text-decoration:none;color:inherit;transition:border-color .15s,transform .15s}
+        .ms-step:hover{border-color:rgba(74,222,128,.45);transform:translateY(-2px)}
+        @media(min-width:1101px){.ms-step:not(:last-child):after{content:"";position:absolute;top:30px;right:-12px;width:12px;height:2px;background:linear-gradient(90deg,rgba(74,222,128,.6),rgba(74,222,128,.15))}}
+        .ms-n{font-family:ui-monospace,monospace;font-size:11px;font-weight:800;color:#4ade80;width:28px;height:28px;border-radius:50%;border:1px solid rgba(74,222,128,.5);background:rgba(74,222,128,.08);display:flex;align-items:center;justify-content:center}
+        .ms-t{font-size:18px;font-weight:900;color:#fff}
+        .ms-d{font-size:13px;line-height:1.55;color:#a1a1aa;flex:1}
+        .ms-l{font-size:12px;font-weight:800;color:#4ade80}
+        .ms-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+        @media(max-width:768px){.ms-split{grid-template-columns:1fr}}
+        .ms-split div{border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:16px 18px;background:rgba(9,9,11,.6)}
+        .ms-split b{display:block;color:#fff;font-size:14px;margin-bottom:4px}
+        .ms-split span{font-size:13px;color:#a1a1aa;line-height:1.55}
+      </style>
+      <section id="method" class="py-24 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-6xl mx-auto">
+          <div class="max-w-3xl mx-auto text-center">
+            <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">// The method</div>
+            <h2 class="text-3xl md:text-4xl font-black leading-tight">The same six steps, <span class="text-green-400">every morning.</span></h2>
+            <p class="mt-5 text-zinc-400 text-base leading-relaxed">Most traders don&rsquo;t struggle for setups. They struggle to run the same process twice. FSD-X takes a simple idea, the 15-minute opening range breakout, and turns it into a rules-based routine you can repeat, start to finish.</p>
+          </div>
+          <div class="ms-flow">
+            <a href="#on-the-chart" class="ms-step">
+              <span class="ms-n">01</span>
+              <span class="ms-t">Identify</span>
+              <span class="ms-d">The opening range, locked to the cash open. Same window, same rules, every session.</span>
+              <span class="ms-l">See it on the chart &rarr;</span>
+            </a>
+            <a href="#on-the-chart" class="ms-step">
+              <span class="ms-n">02</span>
+              <span class="ms-t">Evaluate</span>
+              <span class="ms-d">Range size against its 5-day average, volume, trend and warning flags. Read before anything fires.</span>
+              <span class="ms-l">The market context &rarr;</span>
+            </a>
+            <a href="suite.html#tool-orbpro" class="ms-step">
+              <span class="ms-n">03</span>
+              <span class="ms-t">Grade</span>
+              <span class="ms-d">Every breakout scored A+ to F. Only A+ through C are taken. The rest are skipped, on purpose.</span>
+              <span class="ms-l">How grading works &rarr;</span>
+            </a>
+            <a href="results.html#risk-profiles" class="ms-step">
+              <span class="ms-n">04</span>
+              <span class="ms-t">Allocate</span>
+              <span class="ms-d">The grade sets the size. Warning flags cut it. A daily loss limit caps the day.</span>
+              <span class="ms-l">Size it to your account &rarr;</span>
+            </a>
+            <a href="suite.html#tool-autotrader" class="ms-step">
+              <span class="ms-n">05</span>
+              <span class="ms-t">Execute</span>
+              <span class="ms-d">Entry, stop and both targets set before you&rsquo;re in. Trade it yourself or let it run.</span>
+              <span class="ms-l">Trade it or automate it &rarr;</span>
+            </a>
+            <a href="results.html" class="ms-step">
+              <span class="ms-n">06</span>
+              <span class="ms-t">Measure</span>
+              <span class="ms-d">A 7-year backtest after costs, a live record kept apart, and your own journal and accounts.</span>
+              <span class="ms-l">See the numbers &rarr;</span>
+            </a>
+          </div>
+          <div class="ms-split">
+            <div><b>Finding the trade and sizing it are two decisions.</b><span>Most tools stop at the entry. Knightfall also decides how much the setup deserves, from the grade and the flags, before you&rsquo;re in.</span></div>
+            <div><b>Rules first, so it&rsquo;s repeatable.</b><span>The same inputs give the same read. That&rsquo;s what lets the backtest, the live record and your own journal measure the same thing.</span></div>
+          </div>
+        </div>
+      </section>
+
       <!-- ═══ WHAT YOU GET — the full membership, not just Knightfall ═══
            Five groups, then a coming-soon band. Detail pages: suite, autotrader,
            platform, nightwing (Nexus), schedule. Styles: .vs-* in <head>. -->
@@ -611,8 +682,8 @@
         <div class="max-w-6xl mx-auto">
           <div class="text-center mb-4">
             <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">The full membership &middot; $129/mo</div>
-            <h2 class="text-3xl md:text-4xl font-black">More than Knightfall. A lot more.</h2>
-            <p class="text-zinc-400 text-sm mt-3 max-w-2xl mx-auto leading-relaxed">Knightfall is the core, but the full membership comes with everything we&rsquo;ve built around it: the indicators, the automation, a platform for your accounts and backtests, a side panel for your chart, and people to trade the open with. Only want part of it? <a href="compare.html" class="text-green-400 hover:underline font-semibold">Compare plans</a>.</p>
+            <h2 class="text-3xl md:text-4xl font-black">More than Knightfall. <span class="text-green-400">A whole system.</span></h2>
+            <p class="text-zinc-400 text-sm mt-3 max-w-2xl mx-auto leading-relaxed">Knightfall runs the method. Everything around it covers the rest of the routine: indicators for context, automation to execute, a platform to track your accounts and backtests, a side panel for your chart, and people to trade the open with. Only want part of it? <a href="compare.html" class="text-green-400 hover:underline font-semibold">Compare plans</a>.</p>
           </div>
 
           <a href="suite.html#tool-orbpro" class="mt-12 grid lg:grid-cols-2 gap-8 items-center border border-green-500/20 hover:border-green-500/45 bg-green-500/[0.04] hover:bg-green-500/[0.07] rounded-3xl p-8 transition group">
