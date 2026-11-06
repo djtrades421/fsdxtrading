@@ -35,6 +35,9 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
+    {"@type": "Question", "name": "Is FSD-X just an indicator?", "acceptedAnswer": {"@type": "Answer", "text": "No. FSD-X is a systematic futures trading method built on the NQ/MNQ opening range breakout. Knightfall runs six steps in the same order every session: it identifies the range, evaluates the context, grades the breakout A+ to F, sizes the trade by grade, sets the entry, stop and targets, and every trade is measured in the backtest, the live record and your own journal. The other products support those steps."}},
+    {"@type": "Question", "name": "What does “systematic” mean here?", "acceptedAnswer": {"@type": "Answer", "text": "The same inputs give the same read. The grade, the size, the stop and the targets come from fixed rules, not from how the morning feels, so the process is repeatable. It still doesn't mean every trade wins: losing trades and losing stretches are part of it, and the Results page shows them."}},
+    {"@type": "Question", "name": "Is it the same if I trade it by hand or automate it?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The method is identical either way. On NinjaTrader 8, automation is a switch inside Knightfall. On TradingView, the Auto Trader script executes the same setups through a bridge service. Manual or automated, the grade, size, stop and targets are the same."}},
     {
       "@type": "Question",
       "name": "What is the FSD-X Auto Trader?",
@@ -288,7 +291,7 @@
   "url": "https://www.fsdxtrading.com/",
   "logo": "https://www.fsdxtrading.com/logo.png",
   "image": "https://www.fsdxtrading.com/og-image-v2.png",
-  "description": "Independent trading software provider. Rules-based opening range breakout (ORB) tools for NQ and MNQ futures traders, sold as one membership that includes the indicator suite, a hands-off auto trader, a member web platform with journaling and backtest logging, a daily live trade room and the VIP community.",
+  "description": "Independent trading software provider. FSD-X is a systematic futures trading method for NQ and MNQ, built on the opening range breakout: every setup identified, evaluated, graded, sized, executed and measured by the same rules. Sold as one membership with the Knightfall strategy on TradingView and NinjaTrader 8, automation, a member web platform with journaling and backtest logging, a daily live trade room and the VIP community.",
   "founder": { "@type": "Person", "name": "DJ Trades" },
   "email": "fsdxteam@gmail.com",
   "sameAs": [
@@ -320,6 +323,44 @@
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
             Answers to the most common questions about the FSD-X suite, the Auto Trader, Nexus, and membership. Can't find what you need? Jump into Discord — we're active daily.
           </p>
+        </div>
+      </section>
+
+      <!-- ===================== THE METHOD ===================== -->
+      <section class="py-10 md:py-12 px-6 md:px-12 border-b border-white/10">
+        <div class="max-w-5xl mx-auto">
+          <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// The method</div>
+          <h2 class="text-2xl md:text-3xl font-black tracking-tight mb-2">A system, not just an indicator</h2>
+          <p class="text-zinc-400 text-sm max-w-2xl leading-relaxed mb-6">What FSD-X actually is, in plain terms. <a href="index.html#method" class="text-green-400 hover:underline font-semibold">See the six steps &rarr;</a></p>
+          <div class="grid md:grid-cols-2 gap-4 items-start">
+              <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+                <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                  <span class="text-sm font-bold text-white leading-snug">Is FSD-X just an indicator?</span>
+                  <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+                </button>
+                <div class="faq-answer">
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">No. FSD-X is a systematic futures trading method built on the NQ/MNQ opening range breakout. Knightfall runs six steps in the same order every session: it identifies the range, evaluates the context, grades the breakout A+ to F, sizes the trade by grade, sets the entry, stop and targets, and every trade is measured in the backtest, the live record and your own journal. The other products support those steps.</p>
+                </div>
+              </div>
+              <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+                <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                  <span class="text-sm font-bold text-white leading-snug">What does “systematic” mean here?</span>
+                  <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+                </button>
+                <div class="faq-answer">
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The same inputs give the same read. The grade, the size, the stop and the targets come from fixed rules, not from how the morning feels, so the process is repeatable. It still doesn't mean every trade wins: losing trades and losing stretches are part of it, and the Results page shows them.</p>
+                </div>
+              </div>
+              <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+                <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                  <span class="text-sm font-bold text-white leading-snug">Is it the same if I trade it by hand or automate it?</span>
+                  <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+                </button>
+                <div class="faq-answer">
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Yes. The method is identical either way. On NinjaTrader 8, automation is a switch inside Knightfall. On TradingView, the Auto Trader script executes the same setups through a bridge service. Manual or automated, the grade, size, stop and targets are the same.</p>
+                </div>
+              </div>
+          </div>
         </div>
       </section>
 
@@ -732,8 +773,8 @@
         </div>
         <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
           <a href="index.html" class="hover:text-green-400 transition">Home</a>
-          <a href="suite.html" class="hover:text-green-400 transition">The Suite</a>
-          <a href="autotrader.html" class="hover:text-green-400 transition">Auto-Trader</a>
+          <a href="suite.html" class="hover:text-green-400 transition">The System</a>
+          <a href="suite.html#tool-autotrader" class="hover:text-green-400 transition">Automation</a>
           <a href="results.html" class="hover:text-green-400 transition">Backtest Data</a>
           <a href="memberships.html" class="hover:text-green-400 transition">Membership</a>
           <a href="schedule.html" class="hover:text-green-400 transition">Live Sessions</a>
@@ -746,7 +787,7 @@
         </nav>
 
         <div class="mt-8 pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center text-xs text-zinc-500 gap-4 text-center sm:text-left">
-          <div>FSD-X Trading Ecosystem • NinjaTrader® Ecosystem Vendor</div>
+          <div>FSD-X · Systematic Futures Trading • NinjaTrader® Ecosystem Vendor</div>
           <div>&copy; 2026 FSD-X Trading. All rights reserved.</div>
         </div>
       </div>
