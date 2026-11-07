@@ -8323,7 +8323,7 @@
         let status;
         if (!slot) status = '<span class="text-yellow-400 font-bold">Pick a record</span>';
         else if (clash) status = '<span class="text-red-400 font-bold">Two files on one record</span>';
-        else if (f.res.sizeOff) status = '<span class="text-yellow-400 font-bold">⚠ Largest loss $' + f.res.worst.toFixed(0) + ' doesn\'t look like $' + esc(slot.p) + '</span>';
+        else if (f.res.sizeOff && !f.auto) status = '<span class="text-yellow-400 font-bold">⚠ Largest loss $' + f.res.worst.toFixed(0) + ' doesn\'t look like $' + esc(slot.p) + '</span>';
         else status = f.auto ? '<span class="text-green-400 font-bold">✓ Matched</span>' : '<span class="text-zinc-300 font-bold">Set</span>';
         return `<tr class="border-t border-white/5 align-top">
           <td class="px-3 py-2 text-zinc-300 font-mono break-all">${esc(f.name)}<div class="text-zinc-600 font-sans">${f.isNT ? 'NinjaTrader 8' : 'TradingView'}</div></td>
@@ -8358,7 +8358,9 @@
         trbReset();
         trbMsg('✓ Published ' + names.map(esc).join(', ') + '. Live on the site now.', 'text-green-400 font-bold');
       } catch (err) {
-        trbMsg('Not published: ' + esc(err.message) + '. Nothing changed on the site.', 'text-red-400');
+        trbMsg('Not published: ' + esc(err.message) + '. Nothing changed on the site.' +
+          (/not found/i.test(err.message) ? ' The worker update isn\'t live yet. Deploy the new worker.js, then try again.' : ''), 'text-red-400');
+        btn.disabled = false;
       } finally {
         btn.textContent = 'Publish all to site';
       }
