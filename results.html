@@ -142,6 +142,26 @@
     .kf-tbars div.thin{background:rgba(255,255,255,.12)}
     .kf-tbars div b{position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:12px;color:var(--sub)}
     .kf-tlab{display:flex;gap:10px;margin-top:8px}.kf-tlab span{flex:1;text-align:center;font-size:12px;color:var(--mute)}
+    /* Walk-forward (static, V2 only — data: walkforward-v2-windows.csv) */
+    .kf-wfchart{padding:22px;margin-top:14px}
+    .kf-wflegend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:var(--sub)}
+    .kf-wflegend span{display:flex;align-items:center;gap:7px}
+    .kf-wflegend em{display:inline-block;width:11px;height:11px;border-radius:3px;background:var(--acc)}
+    .kf-wflegend em.l{width:14px;height:3px;border-radius:2px;background:#E6EDF5}
+    .kf-wfbars{display:flex;align-items:flex-end;gap:10px;height:180px;border-bottom:1px solid var(--line);margin-top:18px}
+    .kf-wfb{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;height:100%}
+    .kf-wfb b{font-size:12px;color:var(--sub)}
+    .kf-wfb i{position:relative;display:block;width:100%;max-width:56px;border-radius:5px 5px 0 0;background:rgba(255,107,31,.8)}
+    .kf-wfb s{position:absolute;left:-4px;right:-4px;height:3px;border-radius:2px;background:#E6EDF5}
+    .kf-wflab{display:flex;gap:10px;margin-top:8px}.kf-wflab span{flex:1;text-align:center;font-size:11.5px;color:var(--mute)}
+    .kf-wfmore{margin-top:14px}
+    .kf-wfmore summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-weight:800;font-size:14px;color:var(--ink)}
+    .kf-wfmore summary::-webkit-details-marker{display:none}
+    .kf-wfmore summary:hover{border-color:rgba(255,107,31,.55);color:#FFA057}
+    .kf-wfmore[open] summary .o{display:none}.kf-wfmore:not([open]) summary .c{display:none}
+    .kf-wfmore .kf-table td{font-size:14px;padding:12px 16px;white-space:nowrap}.kf-wfmore .kf-table th{padding:12px 16px}
+    .kf-wfmore tr.tot td{border-top:1px solid rgba(255,255,255,.22);font-weight:800}
+    @media(max-width:560px){.kf-wfb b{font-size:10px}.kf-wfbars,.kf-wflab{gap:4px}.kf-wflab span{font-size:10px}}
   </style>
   <link rel="canonical" href="https://www.fsdxtrading.com/results.html" />
   <meta property="og:url" content="https://www.fsdxtrading.com/results.html" />
@@ -407,7 +427,7 @@
             <div class="kf-card">
               <div class="kf-tagline">2 · Walk-forward tested</div>
               <h3>How the settings were chosen</h3>
-              <p class="kf-small" style="margin:0">Before release, the trend and swing settings were re-picked using only the prior 2 years of data, then checked on the next 6 months that data never saw. Repeated window by window from 2021 to 2026. Grading, stops, exits and the entry filters were held fixed across every window.</p>
+              <p class="kf-small" style="margin:0">Before release, the trend and swing settings were re-picked using only the prior 2 years of data, then checked on the next 6 months that data never saw. Repeated window by window from 2021 to 2026. Grading, stops, exits and the entry filters were held fixed across every window. <a class="kf-link" href="#walkforward">See every window →</a></p>
             </div>
             <div class="kf-card">
               <div class="kf-tagline">3 · Live tracked</div>
@@ -422,12 +442,46 @@
         </div>
       </section>
 
+      <!-- ═══ WALK-FORWARD (V2) ═══ -->
+      <section class="kf-sec" id="walkforward" style="scroll-margin-top:72px">
+        <div class="kf-wrap">
+          <h2>Walk-forward test · <span class="kf-vname">V2 Runner</span></h2>
+          <p class="kf-lead">Every 6 months, the trend and swing settings were re-picked using only the 2 years before, then traded on the next 6 months they had never seen. Grading, stops, exits and entry filters stayed fixed. These are the unseen results, window by window.</p>
+          <div class="kf-tiles">
+            <div class="kf-card kf-tile"><span class="k">Windows profitable</span><span class="v">11 of 11</span><span class="s">Every 6-month window on unseen data</span></div>
+            <div class="kf-card kf-tile"><span class="k">Per trade, unseen vs locked</span><span class="v">$82.47 <span style="font-size:18px;color:var(--mute)">vs $81.72</span></span><span class="s">Locked V2 settings over the same dates</span></div>
+            <div class="kf-card kf-tile"><span class="k">Largest single window</span><span class="v">14%</span><span class="s">Share of the total. No window carries it.</span></div>
+            <div class="kf-card kf-tile"><span class="k">Max drawdown, unseen</span><span class="v" style="color:var(--neg)">−$2,408</span><span class="s">Locked V2 backtest: −$2,268</span></div>
+          </div>
+          <div class="kf-card kf-wfchart">
+            <div class="kf-eq-top"><h3 style="margin:0;font-size:15px;font-weight:800">Net profit per 6-month window</h3>
+              <div class="kf-wflegend"><span><em></em>Unseen (walk-forward)</span><span><em class="l"></em>Locked V2, same dates</span></div></div>
+            <div class="kf-wfbars" role="img" aria-label="Unseen net profit for each of 11 six-month windows, all positive, from $2,322 to $8,482"><div class="kf-wfb" title="May 21 – Oct 21: unseen $5,177, locked same dates $5,341"><b>$5.2k</b><i style="height:79px"><s style="bottom:80px"></s></i></div><div class="kf-wfb" title="Nov 21 – Apr 22: unseen $4,350, locked same dates $3,858"><b>$4.3k</b><i style="height:66px"><s style="bottom:57px"></s></i></div><div class="kf-wfb" title="Apr 22 – Oct 22: unseen $5,991, locked same dates $6,165"><b>$6.0k</b><i style="height:91px"><s style="bottom:93px"></s></i></div><div class="kf-wfb" title="Oct 22 – Apr 23: unseen $6,713, locked same dates $6,476"><b>$6.7k</b><i style="height:102px"><s style="bottom:97px"></s></i></div><div class="kf-wfb" title="Apr 23 – Oct 23: unseen $4,105, locked same dates $4,105"><b>$4.1k</b><i style="height:63px"><s style="bottom:61px"></s></i></div><div class="kf-wfb" title="Oct 23 – Apr 24: unseen $3,020, locked same dates $3,470"><b>$3.0k</b><i style="height:46px"><s style="bottom:51px"></s></i></div><div class="kf-wfb" title="Apr 24 – Oct 24: unseen $7,786, locked same dates $5,928"><b>$7.8k</b><i style="height:119px"><s style="bottom:89px"></s></i></div><div class="kf-wfb" title="Oct 24 – Apr 25: unseen $6,483, locked same dates $5,918"><b>$6.5k</b><i style="height:99px"><s style="bottom:89px"></s></i></div><div class="kf-wfb" title="Apr 25 – Oct 25: unseen $4,952, locked same dates $5,874"><b>$5.0k</b><i style="height:76px"><s style="bottom:88px"></s></i></div><div class="kf-wfb" title="Oct 25 – Apr 26: unseen $8,482, locked same dates $9,825"><b>$8.5k</b><i style="height:129px"><s style="bottom:148px"></s></i></div><div class="kf-wfb" title="Apr 26 – Oct 26: unseen $2,322, locked same dates $2,613"><b>$2.3k</b><i style="height:35px"><s style="bottom:38px"></s></i></div></div>
+            <div class="kf-wflab" aria-hidden="true"><span>May 21</span><span>Nov 21</span><span>Apr 22</span><span>Oct 22</span><span>Apr 23</span><span>Oct 23</span><span>Apr 24</span><span>Oct 24</span><span>Apr 25</span><span>Oct 25</span><span>Apr 26</span></div>
+          </div>
+          <details class="kf-wfmore">
+            <summary><span class="o">Show every window and the settings it picked</span><span class="c">Hide the window table</span></summary>
+            <div class="kf-card kf-tablebox">
+              <table class="kf-table">
+                <thead><tr><th>Window</th><th>Trades</th><th>Unseen net</th><th>PF</th><th>Max DD</th><th>Locked, same dates</th><th>Diff</th><th>Picked · EMA fast / slow · swing / HTF swing</th></tr></thead>
+                <tbody><tr><td class="nm">May 21 – Oct 21</td><td>57</td><td class="kf-pos">$5,177</td><td>1.80</td><td class="kf-neg">−$1,621</td><td class="kf-dim">$5,341</td><td class="kf-neg">−$164</td><td class="st">25 / 180 · 40 / 30</td></tr><tr><td class="nm">Nov 21 – Apr 22</td><td>79</td><td class="kf-pos">$4,350</td><td>1.47</td><td class="kf-neg">−$1,281</td><td class="kf-dim">$3,858</td><td class="kf-pos">+$491</td><td class="st">30 / 120 · 40 / 30</td></tr><tr><td class="nm">Apr 22 – Oct 22</td><td>72</td><td class="kf-pos">$5,991</td><td>1.61</td><td class="kf-neg">−$2,124</td><td class="kf-dim">$6,165</td><td class="kf-neg">−$174</td><td class="st">30 / 120 · 40 / 40</td></tr><tr><td class="nm">Oct 22 – Apr 23</td><td>63</td><td class="kf-pos">$6,713</td><td>1.76</td><td class="kf-neg">−$1,878</td><td class="kf-dim">$6,476</td><td class="kf-pos">+$237</td><td class="st">35 / 200 · 40 / 30</td></tr><tr><td class="nm">Apr 23 – Oct 23</td><td>66</td><td class="kf-pos">$4,105</td><td>1.57</td><td class="kf-neg">−$1,687</td><td class="kf-dim">$4,105</td><td class="kf-dim">$0</td><td class="st">35 / 200 · 10 / 10</td></tr><tr><td class="nm">Oct 23 – Apr 24</td><td>62</td><td class="kf-pos">$3,020</td><td>1.40</td><td class="kf-neg">−$1,230</td><td class="kf-dim">$3,470</td><td class="kf-neg">−$450</td><td class="st">25 / 200 · 40 / 10</td></tr><tr><td class="nm">Apr 24 – Oct 24</td><td>82</td><td class="kf-pos">$7,786</td><td>1.90</td><td class="kf-neg">−$1,577</td><td class="kf-dim">$5,928</td><td class="kf-pos">+$1,858</td><td class="st">15 / 120 · 10 / 10</td></tr><tr><td class="nm">Oct 24 – Apr 25</td><td>66</td><td class="kf-pos">$6,483</td><td>2.03</td><td class="kf-neg">−$766</td><td class="kf-dim">$5,918</td><td class="kf-pos">+$565</td><td class="st">35 / 140 · 20 / 20</td></tr><tr><td class="nm">Apr 25 – Oct 25</td><td>76</td><td class="kf-pos">$4,952</td><td>1.56</td><td class="kf-neg">−$1,546</td><td class="kf-dim">$5,874</td><td class="kf-neg">−$922</td><td class="st">35 / 140 · 10 / 40</td></tr><tr><td class="nm">Oct 25 – Apr 26</td><td>45</td><td class="kf-pos">$8,482</td><td>3.25</td><td class="kf-neg">−$897</td><td class="kf-dim">$9,825</td><td class="kf-neg">−$1,343</td><td class="st">40 / 140 · 10 / 40</td></tr><tr><td class="nm">Apr 26 – Oct 26</td><td>52</td><td class="kf-pos">$2,322</td><td>1.30</td><td class="kf-neg">−$1,722</td><td class="kf-dim">$2,613</td><td class="kf-neg">−$291</td><td class="st">40 / 140 · 10 / 40</td></tr>
+                  <tr class="tot"><td class="nm">All windows</td><td>720</td><td class="kf-pos">$59,380</td><td>1.70</td><td class="kf-neg">−$2,408</td><td class="kf-dim">$59,573</td><td class="kf-neg">−$193</td><td class="st">Locked V2: 32 / 200 · 10 / 10</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+          <div class="kf-dl"><a href="walkforward-v2-windows.csv" download>Walk-forward windows (CSV)</a><a href="walkforward-v2-trades.csv" download>Walk-forward trades (CSV)</a></div>
+          <p class="kf-small" style="margin-top:14px">MNQ 5-minute, test windows May 5, 2021 – Oct 5, 2026, $400 risk, Flag Sizing on, daily loss limit $700, commission and 1-tick slippage. Each window sits out its first ~30 sessions as warm-up, so it has fewer trades than the backtest. "Locked, same dates" is the released V2 settings over the same trading days. Window drawdown is that window alone; the all-windows drawdown runs across the joined unseen trades. The trades file loads into the <a class="kf-link" href="converter.html">Trade Importer</a>. Hypothetical results. Past performance does not guarantee future results.</p>
+        </div>
+      </section>
+
       <!-- ═══ DATA ═══ -->
       <section class="kf-sec" id="data">
         <div class="kf-wrap">
           <h2>Check the numbers yourself · <span class="kf-vname" data-vname></span></h2>
           <p class="kf-lead">Every trade, every setup, in NinjaTrader's Trades format, so a file loads straight into the <a class="kf-link" href="converter.html">Trade Importer</a>. Each entry name carries the grade, flag count and stop in points: <code style="color:var(--ink)">L1-A+-F2-S45.25</code> is a long, grade A+, 2 flags, 45.25-point stop.</p>
           <div class="kf-dl" id="kf-dl"></div>
+          <p class="kf-small" style="margin-top:12px">Walk-forward test (V2): <a class="kf-link" href="walkforward-v2-windows.csv" download>windows CSV</a> · <a class="kf-link" href="walkforward-v2-trades.csv" download>trades CSV</a> · <a class="kf-link" href="#walkforward">see the windows →</a></p>
           <p class="kf-small" style="margin-top:16px">Every setup and calculator row above is rebuilt from the raw export using the strategy's own sizing rules, and checked trade for trade against separate NinjaTrader runs. Commission and slippage vary by broker. <a class="kf-link" href="disclosures.html#backtest-method">How these figures are produced →</a></p>
         </div>
       </section>
