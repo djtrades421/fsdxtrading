@@ -1,7 +1,7 @@
 {
   "_how": "Knightfall results from NinjaTrader. One Strategy Analyzer Trades-grid export per variant (v1.3.0+ tagged entry names, commission on, slippage 1, any Flag Sizing setting; DLL must not have skipped a trade). Each variant gets its own tab on results.html: engine stats, setups, calculator and downloads, all rebuilt from that variant's one file. Run from the site root: python3 build_kf.py --config results-nt.json. It verifies the rebuild against the NT check exports first and stops if any trade differs.",
-  "updated": "Oct 19, 2026",
-  "version": "Knightfall MK2 · NinjaTrader build 1.4.4",
+  "updated": "Nov 8, 2026",
+  "version": "Knightfall MK2 · NinjaTrader build 1.4.7",
   "variants": {
     "v2": {
       "label": "V2 Runner",
@@ -117,14 +117,14 @@
   },
   "checks": [
     {
-      "file": "nt-checks/v2-400-flagson-dll700-v144.csv",
+      "file": "nt-checks/v2-400-flagson-dll700-v147.csv",
       "variant": "v2",
       "risk": 400,
       "flags": true,
       "dll": 700
     },
     {
-      "file": "nt-checks/v2-250-flagsauto-dll500-v144.csv",
+      "file": "nt-checks/v2-250-flagsauto-dll500-v147.csv",
       "variant": "v2",
       "risk": 250,
       "flags": false,
