@@ -15,6 +15,22 @@
   },
   {
    "status": "shipped",
+   "date": "2026-11-08",
+   "type": "fix",
+   "product": "Raven",
+   "title": "Raven v1.1.1: take-profit fix",
+   "body": "On TradingView. Same fix as Knightfall v1.4.7. On days with an unusually large opening range and no level within reach, the TP1 fallback could place the target far beyond the normal range. It now respects <b>Max TP Distance</b> in every case, and round-number targets cover the full range, so a real level is chosen first. Normal days are unchanged. Stops and sizing are unchanged. No settings to update. TradingView updates on its own."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-08",
+   "type": "fix",
+   "product": "NinjaTrader 8",
+   "title": "Raven NT8 v1.1.1: take-profit fix",
+   "body": "Same fix as TradingView Raven v1.1.1. TP1 now always respects <b>Max TP Distance</b> on days with an unusually large opening range, and round-number targets cover the full range. Normal days are unchanged. Stops and sizing are unchanged. No settings were added or renamed. Download v1.1.1 from the <a href=\"ninjatrader-members.html\">NinjaTrader members page</a> and re-import. The dashboard header should read v1.1.1."
+  },
+  {
+   "status": "shipped",
    "date": "2026-11-05",
    "type": "fix",
    "product": "ORB Pro Knightfall",
