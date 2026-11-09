@@ -3,6 +3,7 @@
    One entry per variant that is live as a product. Read by track-record.html
    (public page) and admin.html (Track Record importer).
 
+   Order:           the first variant is the page default. Keep the one we run first.
    Add a variant:   copy an entry, give it a new id + files, set "since".
    Update a variant: add a line to its "versions" list. The last entry is what
                      the page shows as "Now running". The trade list keeps going.
@@ -20,29 +21,9 @@ window.TR_VARIANTS = {
   recent: 50,
   variants: [
     {
-      id: 'v1',
-      label: 'Variant 1',
-      tag: 'Stock',
-      desc: 'Stock settings. One target, fixed stop. The longest live history. The results page backtest is V2.',
-      since: '2025-12-16',
-      files: { '400': 'track-record.json', '250': 'track-record-250.json' },
-      versions: [
-        { label: 'v5',  start: '2025-12-16', note: 'Indicator version.' },
-        { label: 'MK2', start: '2026-05-01', note: 'Rebuilt as a strategy.', build: 'v1.4.6' },
-        { label: 'MK2', start: '2026-11-06', note: 'Take-profit fix. Trades through Nov 5 ran v1.4.6.', build: 'v1.4.7' }
-      ],
-      history: 'Knightfall is updated over time. Each trade is recorded on the version running that day, so older trades may not match a backtest of the current version.',
-      runner: false,
-      exits: [
-        ['TP1',  'Target',     'Price reaches TP1.'],
-        ['STOP', 'Stop',       'Price reaches the stop loss.'],
-        ['EOD',  'End of day', 'Neither hit. Closed at the session close.']
-      ]
-    },
-    {
       id: 'v2',
       label: 'Variant 2',
-      tag: 'Runner',
+      tag: 'Runner · Current',
       desc: 'Holds past TP1 for TP2, trailing the stop once TP1 is reached. What we run, and the variant the results page backtests.',
       since: '2026-10-09',
       files: { '400': 'track-record-v2.json', '250': 'track-record-v2-250.json' },
@@ -57,6 +38,26 @@ window.TR_VARIANTS = {
         ['TRAIL', 'Trailed stop', 'Reached TP1, then the trailing stop closed it. Shows the points it locked in.'],
         ['TP2',   'TP2',          'Ran all the way to TP2.'],
         ['EOD',   'End of day',   'Still open at the session close.']
+      ]
+    },
+    {
+      id: 'v1',
+      label: 'Variant 1',
+      tag: 'Stock · Older',
+      desc: 'Our earlier setup. One target, fixed stop. Still tracked every session, with the longest live history. We now run Variant 2, and the results page backtests V2.',
+      since: '2025-12-16',
+      files: { '400': 'track-record.json', '250': 'track-record-250.json' },
+      versions: [
+        { label: 'v5',  start: '2025-12-16', note: 'Indicator version.' },
+        { label: 'MK2', start: '2026-05-01', note: 'Rebuilt as a strategy.', build: 'v1.4.6' },
+        { label: 'MK2', start: '2026-11-06', note: 'Take-profit fix. Trades through Nov 5 ran v1.4.6.', build: 'v1.4.7' }
+      ],
+      history: 'Knightfall is updated over time. Each trade is recorded on the version running that day, so older trades may not match a backtest of the current version.',
+      runner: false,
+      exits: [
+        ['TP1',  'Target',     'Price reaches TP1.'],
+        ['STOP', 'Stop',       'Price reaches the stop loss.'],
+        ['EOD',  'End of day', 'Neither hit. Closed at the session close.']
       ]
     }
   ]
