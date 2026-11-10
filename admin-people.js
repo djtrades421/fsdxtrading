@@ -20,6 +20,11 @@
   var ONB_F = []; // focus options from the worker (strategy / indicators / tools)
   var BULK = { tpl: 'checkin', mode: 'general', focus: [], days: 7, off: {}, running: false, stop: false, done: 0, total: 0 };
   var ONB_WINDOW = 21; // days after joining that someone sits in the onboarding queue
+  // TradingView seats (TradingView terms from Feb 1, 2027). Settings + per-person
+  // overrides live on the worker (/api/admin/tv-seats). Rules match tvSeatState()
+  // in the worker, which sends the email alert — keep the two in step.
+  var TVS = { threshold: 85, cap: 100, overrides: {} };
+  var PROBE = {};  // membershipId -> last "Check Whop" result
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -87,6 +92,29 @@
   }
   /** Families whose membership includes a NinjaTrader 8 license. */
   function hasNt(fam) { return fam === 'pro' || fam === 'ntsolo'; }
+  var TV_LIVE = ['active', 'trialing', 'canceling', 'trial_cancelled', 'yearly', 'legacy'];
+  function tvFamily(product) {
+    var x = low(product);
+    if (/ninja/.test(x) && /standalone/.test(x)) return false;
+    if (/nightwing|nexus/.test(x)) return false;
+    return /raven|pro|plus|vip|lifetime|knightfall|orb/.test(x);
+  }
+  /** seat | unknown | lifetime | exempt | no | nt | '' — one seat per PERSON with live TradingView access.
+      Past due is not a seat: a failed payment revokes TradingView right away. */
+  function tvState(p) {
+    var r = p.r || {}, ov = TVS.overrides[p.email] || '';
+    if (ov === 'no') return 'no';
+    if (ov === 'exempt') return 'exempt';
+    var life = p.status === 'lifetime';
+    if (!life && TV_LIVE.indexOf(p.status) === -1) return '';
+    if (ov === 'yes') return 'seat';
+    if (!tvFamily(p.product)) return '';
+    if (life) return r.tvUsername ? 'lifetime' : '';
+    if (r.tvUsername) return 'seat';
+    // No TradingView username, but they gave a NinjaTrader email → NinjaTrader user.
+    if (p.nt && p.nt.ntEmail && p.nt.status !== 'removed') return 'nt';
+    return 'unknown';
+  }
   /** Onboarding focus guess from the plan name. Only used when Danny clicks "Match plan". */
   function focusOf(p) {
     var s = low(p.product), f = [];
@@ -171,6 +199,7 @@
         : p.status === 'trialing' ? { k: 'Converts', d: r.renewal }
         : r.renewal && p.live && p.status !== 'lifetime' ? { k: 'Renews', d: r.renewal } : null;
       p.lastLogin = s.lastLogin || '';
+      p.tv = tvState(p);
       p.onb = ONB[p.email] || null;
       var jd = dayOf(r.joined);
       p.daysIn = jd ? Math.round((Date.now() - new Date(jd + 'T12:00:00')) / 864e5) : null;
@@ -234,6 +263,7 @@
       +     '<button class="ntx-btn" onclick="switchTab(\'activity\')">Activity</button>'
       +   '</div>'
       + '</div>'
+      + '<div id="pp-tv" class="mb-4"></div>'
       + '<div id="pp-stats" class="ntx-grid mb-4"></div>'
       + '<div class="ntx-card mb-4"><div class="flex gap-1 flex-wrap items-center" id="pp-chips"></div></div>'
       + '<div class="pp-wrap" id="pp-wrap">'
@@ -249,6 +279,8 @@
     ['needs', 'Needs action', function (p) { return p.needs; }],
     ['pro', 'Pro / NinjaTrader', function (p) { return p.live && p.fam === 'pro'; }],
     ['ntsolo', 'Knightfall NT8', function (p) { return p.live && p.fam === 'ntsolo'; }],
+    ['tv', 'TV seats', function (p) { return p.tv === 'seat'; }],
+    ['tvunknown', 'TV · unknown', function (p) { return p.tv === 'unknown'; }],
     ['raven', 'Raven', function (p) { return p.live && p.fam === 'raven'; }],
     ['nightwing', 'Nightwing', function (p) { return p.live && p.fam === 'nightwing'; }],
     ['nexus', 'Nexus', function (p) { return p.live && p.fam === 'nexus'; }],
@@ -275,6 +307,107 @@
       + card(live.filter(function (p) { return p.fam === 'pro'; }).length, 'Pro / NinjaTrader', '', 'pro')
       + card(live.filter(function (p) { return p.status === 'canceling' || p.status === 'trial_cancelled'; }).length, 'Cancelling', 'amber', 'cancel')
       + card(needs, 'Need action', needs ? 'red' : '', 'needs');
+    renderTv();
+  }
+
+  function tvCounts() {
+    var c = { seat: 0, unknown: 0, lifetime: 0, exempt: 0, nt: 0, pastdue: 0 };
+    PEOPLE.forEach(function (p) {
+      if (c[p.tv] !== undefined) c[p.tv]++;
+      if (p.status === 'past_due' && p.r && p.r.tvUsername && !TVS.overrides[p.email]) c.pastdue++;
+    });
+    return c;
+  }
+  function renderTv() {
+    var el = $('pp-tv'); if (!el) return;
+    var c = tvCounts(), cap = TVS.cap || 100, warn = TVS.threshold || 85;
+    var lvl = c.seat >= cap ? 'red' : c.seat >= warn ? 'amber' : (c.seat + c.unknown >= warn ? 'maybe' : '');
+    var col = lvl === 'red' ? '#E2534B' : lvl === 'amber' ? '#F5A524' : '#7FB2FF';
+    var pct = Math.min(100, Math.round(c.seat / cap * 100)), pctU = Math.min(100 - pct, Math.round(c.unknown / cap * 100));
+    var msg = lvl === 'red' ? 'TradingView seats are full. New TradingView users can\'t be added or extended. Buy an extension, or point new checkouts to the product without the TradingView Pro app.'
+      : lvl === 'amber' ? 'Past your ' + warn + '-seat warning. Decide now: buy an extension, or close TradingView to new members for a while.'
+      : lvl === 'maybe' ? 'Under ' + warn + ' confirmed, but the unknowns could push it over. Open “TV · unknown” and sort them out.'
+      : '';
+    function bit(n, l, chip, tip) { return '<button class="ntx-chip" data-pchip="' + chip + '" title="' + esc(tip || '') + '">' + l + ' <span class="text-zinc-400">' + n + '</span></button>'; }
+    el.innerHTML = '<div class="ntx-card" style="padding:14px 16px' + (lvl === 'red' ? ';border-color:rgba(226,83,75,.5)' : lvl === 'amber' ? ';border-color:rgba(245,165,36,.5)' : '') + '">'
+      + '<div class="flex items-center justify-between gap-3 flex-wrap">'
+      +   '<div><div class="pp-sub" style="letter-spacing:.14em;text-transform:uppercase;font-weight:900;font-size:10px">TradingView seats</div>'
+      +   '<div class="text-white font-black" style="font-size:26px;font-variant-numeric:tabular-nums;color:' + (lvl === 'red' || lvl === 'amber' ? col : '#fff') + '">' + c.seat + ' <span class="text-zinc-500" style="font-size:15px">/ ' + cap + '</span></div></div>'
+      +   '<div class="flex items-center gap-2 flex-wrap text-[11.5px] text-zinc-400">Warn at <input id="pp-tv-warn" class="ntx-in" type="number" min="1" value="' + warn + '" style="width:64px">'
+      +   ' Limit <input id="pp-tv-cap" class="ntx-in" type="number" min="1" value="' + cap + '" style="width:64px">'
+      +   '<button class="ntx-btn" data-ptv="save">Save</button></div>'
+      + '</div>'
+      + '<div style="height:8px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden;margin:10px 0 4px;display:flex">'
+      +   '<div style="width:' + pct + '%;background:' + col + '"></div><div style="width:' + pctU + '%;background:repeating-linear-gradient(45deg,rgba(245,165,36,.5) 0 4px,transparent 4px 8px)"></div></div>'
+      + '<div class="pp-sub" style="position:relative;height:12px"><span style="position:absolute;left:' + Math.min(100, warn / cap * 100) + '%;transform:translateX(-50%)">▲ ' + warn + '</span></div>'
+      + (msg ? '<div class="text-[12.5px] font-bold mt-2" style="color:' + (lvl === 'maybe' ? '#F5A524' : col) + '">' + msg + '</div>' : '')
+      + '<div class="flex gap-1 flex-wrap mt-2">'
+      +   bit(c.seat, 'Counted', 'tv', 'Live, TradingView username on file (or marked as a seat)')
+      +   bit(c.unknown, 'Unknown', 'tvunknown', 'Live Pro/Raven with no TradingView username and no NinjaTrader email — could be a seat')
+      +   '<span class="ntx-chip" style="cursor:default" title="Lifetime before Feb 1, 2027 takes no seat unless extended or a script is added">Lifetime <span class="text-zinc-400">' + c.lifetime + '</span></span>'
+      +   '<span class="ntx-chip" style="cursor:default" title="Marked exempt (comp, test account)">Exempt <span class="text-zinc-400">' + c.exempt + '</span></span>'
+      +   '<span class="ntx-chip" style="cursor:default" title="Past due — TradingView access is revoked, no seat">Past due <span class="text-zinc-400">' + c.pastdue + '</span></span>'
+      + '</div></div>';
+  }
+  function loadTvSeats() {
+    if (!tok()) return Promise.resolve();
+    return fetch(API + '/api/admin/tv-seats', { headers: { 'Authorization': 'Bearer ' + tok() } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.success) TVS = { threshold: d.threshold, cap: d.cap, overrides: d.overrides || {} }; }).catch(function () {});
+  }
+  function tvPost(body, okMsg) {
+    return fetch(API + '/api/admin/tv-seats', { method: 'POST', headers: { 'Authorization': 'Bearer ' + tok(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.success) throw new Error(d.error || 'Save failed'); return d; }); })
+      .then(function (d) { TVS = { threshold: d.threshold, cap: d.cap, overrides: d.overrides || {} }; renderAll(); toast(okMsg); })
+      .catch(function (e) { toast(e.message, true); });
+  }
+  function tvProbe(p) {
+    var id = p.r && p.r.membershipId; if (!id) { toast('No Whop membership id on this record', true); return; }
+    PROBE[id] = { loading: true }; renderSide();
+    fetch(API + '/api/admin/whop-probe', { method: 'POST', headers: { 'Authorization': 'Bearer ' + tok(), 'Content-Type': 'application/json' }, body: JSON.stringify({ membershipId: id }) })
+      .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.success) throw new Error(d.error || 'Check failed'); return d; }); })
+      .then(function (d) {
+        PROBE[id] = d;
+        var f = d.found || {};
+        if (p.r) {
+          if (f.tv && !p.r.tvUsername) p.r.tvUsername = f.tv;
+          if (f.discordName && !p.r.discordName) p.r.discordName = f.discordName;
+          if (f.discordId && !p.r.discordId) p.r.discordId = f.discordId;
+        }
+        renderAll();
+        toast(f.tv || f.discordName ? 'Found on Whop — saved' : 'Whop returned nothing for this member', !(f.tv || f.discordName));
+      })
+      .catch(function (e) { PROBE[id] = { error: e.message }; renderSide(); toast(e.message, true); });
+  }
+  function tvBlock(p) {
+    if (!p.email || !(p.live || TVS.overrides[p.email])) return '';
+    var ov = TVS.overrides[p.email] || 'auto';
+    var lbl = { seat: 'Takes a TradingView seat', unknown: 'Unknown — no TradingView username or NT email', lifetime: 'Lifetime — no seat (before Feb 1, 2027)',
+      exempt: 'Exempt — not counted', no: 'Not on TradingView', nt: 'NinjaTrader user — no seat', '': 'Not a TradingView plan' }[p.tv] || '—';
+    var id = p.r && p.r.membershipId, pr = id && PROBE[id];
+    var probe = '';
+    if (pr && pr.loading) probe = '<div class="pp-sub mt-2">Asking Whop…</div>';
+    else if (pr && pr.error) probe = '<div class="text-[12px] text-red-400 mt-2">' + esc(pr.error) + '</div>';
+    else if (pr) {
+      probe = '<div class="mt-2 text-[11.5px] text-zinc-400" style="border-top:1px solid rgba(255,255,255,.06);padding-top:8px">'
+        + '<div><b class="text-white">Whop says:</b> TV ' + (pr.found && pr.found.tv ? '<span class="text-white">' + esc(pr.found.tv) + '</span>' : '—')
+        + ' · Discord ' + (pr.found && pr.found.discordName ? '<span class="text-white">' + esc(pr.found.discordName) + '</span>' : '—') + '</div>'
+        + Object.keys(pr.sources || {}).map(function (k) {
+            var x = pr.sources[k] || {};
+            return '<div class="pp-sub">' + esc(k) + ': ' + (x.error ? esc(x.error) : 'HTTP ' + esc(x.status) + (x.answers ? ' · ' + x.answers.length + ' answer(s)' : '') + (x.discord ? ' · discord ✓' : '')) + '</div>';
+          }).join('')
+        + (pr.lastWebhook ? '<div class="pp-sub">Last webhook (' + fmtD(pr.lastWebhook.at, true) + '): ' + ((pr.lastWebhook.questions || []).length ? 'carried ' + esc(pr.lastWebhook.questions.join(' / ')) : 'no checkout answers') + (pr.lastWebhook.hasDiscord ? ' · discord ✓' : '') + '</div>' : '')
+        + '</div>';
+    }
+    return '<div class="pp-sec">TradingView seat</div><div class="ntx-card" style="padding:12px">'
+      + '<div class="text-[12.5px] text-white font-bold">' + lbl + '</div>'
+      + '<div class="flex gap-2 flex-wrap items-center mt-2">'
+      +   '<select class="ntx-in" data-ptvmode="1" style="flex:1 1 180px">'
+      +     [['auto', 'Auto (from Whop)'], ['yes', 'Counts as a seat'], ['no', 'Not on TradingView'], ['exempt', 'Exempt (comp / test)']].map(function (o) {
+              return '<option value="' + o[0] + '"' + (ov === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('')
+      +   '</select>'
+      +   (id ? '<button class="ntx-btn" data-ptv="probe" title="Ask Whop for this member\'s TradingView username and Discord">Check Whop</button>' : '')
+      + '</div>' + probe + '</div>';
   }
 
   function renderChips() {
@@ -286,7 +419,9 @@
   }
 
   function ntCell(p) {
-    var tv = p.r && p.r.tvUsername ? '<span class="mn-pill p-blu" title="TradingView: ' + esc(p.r.tvUsername) + '">TV</span> ' : '';
+    var tvn = p.r && p.r.tvUsername ? 'TradingView: ' + p.r.tvUsername : 'No TradingView username on file';
+    var tvm = { seat: ['p-blu', 'TV'], unknown: ['p-amb', 'TV ?'], lifetime: ['p-pur', 'TV · life'], exempt: ['p-mut', 'TV · exempt'] }[p.tv];
+    var tv = tvm ? '<span class="mn-pill ' + tvm[0] + '" title="' + esc(tvn) + '">' + tvm[1] + '</span> ' : '';
     var m = { active: ['p-nt', 'NT ✓'], add: ['p-amb', 'NT · to add'], remove: ['p-red', 'NT · remove'],
       waiting: ['p-amb', 'NT · no email'], declined: ['p-mut', 'NT · not using'], removed: ['p-mut', 'NT · removed'], none: ['p-mut', 'NT · —'] }[p.ntState];
     return tv + (m ? '<span class="mn-pill ' + m[0] + '">' + m[1] + '</span>' : '') || '<span class="text-zinc-700">—</span>';
@@ -502,7 +637,7 @@
       +   kv('Site account', p.site ? (s.createdAt ? 'Since ' + fmtD(s.createdAt, true) : 'Yes') : 'None')
       +   kv('Last on site', p.lastLogin ? ago(p.lastLogin) : '')
       + '</div>'
-      + callsBlock(p) + onbBlock(p) + ntBlock + flags + notes
+      + callsBlock(p) + onbBlock(p) + tvBlock(p) + ntBlock + flags + notes
       + '<div class="pp-sec">History</div>' + timeline(p)
       + '<div class="flex gap-2 flex-wrap mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,.06)">'
       +   (p.r && p.r.id ? '<button class="ntx-btn" data-pedit="' + esc(p.r.id) + '">Edit record</button>' : '')
@@ -667,7 +802,7 @@
     skeleton(); if (!$('panel-people')) return;
     renderAll();
     var nt = window.ntLoad ? window.ntLoad().catch(function () {}) : Promise.resolve();
-    Promise.all([loadServerEvents(), loadRepeatTrials(), loadOnboard(), nt]).then(renderAll);
+    Promise.all([loadServerEvents(), loadRepeatTrials(), loadOnboard(), loadTvSeats(), nt]).then(renderAll);
   };
   // Used by admin-bookings.js: match a Cal.com booking email to a person.
   window.peopleLookup = function (email) {
@@ -702,6 +837,12 @@
     var ob = t.closest('[data-ponb]'); if (ob) { onbAction(ob.getAttribute('data-ponb')); return; }
     var bk = t.closest('[data-pbulk]'); if (bk) { if (!bk.disabled) bulkAction(bk.getAttribute('data-pbulk')); return; }
     if (t.closest('label') && t.closest('#pp-side') && OPEN === '__bulk') return;
+    var tvb = t.closest('[data-ptv]');
+    if (tvb) {
+      var act = tvb.getAttribute('data-ptv');
+      if (act === 'save') return tvPost({ threshold: parseInt(($('pp-tv-warn') || {}).value, 10), cap: parseInt(($('pp-tv-cap') || {}).value, 10) }, 'Seat settings saved');
+      if (act === 'probe') { var pp = PEOPLE.filter(function (x) { return x.key === OPEN; })[0]; if (pp) tvProbe(pp); return; }
+    }
     var rd = t.closest('[data-prtdismiss]'); if (rd) { dismissRepeat(rd.getAttribute('data-prtdismiss')); return; }
     var cp = t.closest('[data-pcopy]');
     if (cp) { var v = cp.getAttribute('data-pcopy'); (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(function () { toast('Copied ' + v); }).catch(function () { window.prompt('Copy:', v); }); return; }
@@ -709,7 +850,13 @@
     var row = t.closest('[data-pk]'); if (row) { OPEN = row.getAttribute('data-pk'); renderTable(); renderSide(); }
   });
   document.addEventListener('change', function (e) {
-    var t = e.target; if (OPEN !== '__bulk' || !t.closest || !t.closest('#pp-side')) return;
+    var t = e.target;
+    if (t && t.getAttribute && t.getAttribute('data-ptvmode') && OPEN && OPEN !== '__bulk') {
+      var who = PEOPLE.filter(function (x) { return x.key === OPEN; })[0];
+      if (who && who.email) tvPost({ email: who.email, mode: t.value }, t.value === 'auto' ? 'Back to auto' : 'Saved');
+      return;
+    }
+    if (OPEN !== '__bulk' || !t.closest || !t.closest('#pp-side')) return;
     var n = $('pp-bulk-note'); if (n) BULK.note = n.value;
     var k = t.getAttribute('data-pbset');
     if (k === 'tpl') BULK.tpl = t.value;
