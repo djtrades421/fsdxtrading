@@ -394,7 +394,8 @@
         + ' · Discord ' + (pr.found && pr.found.discordName ? '<span class="text-white">' + esc(pr.found.discordName) + '</span>' : '—') + '</div>'
         + Object.keys(pr.sources || {}).map(function (k) {
             var x = pr.sources[k] || {};
-            return '<div class="pp-sub">' + esc(k) + ': ' + (x.error ? esc(x.error) : 'HTTP ' + esc(x.status) + (x.answers ? ' · ' + x.answers.length + ' answer(s)' : '') + (x.discord ? ' · discord ✓' : '')) + '</div>';
+            var hits = (x.hits || []).slice(0, 10).map(function (h) { return '<div class="pp-sub" style="padding-left:10px;font-family:ui-monospace,monospace;font-size:10.5px">' + esc(h.path) + ' = ' + esc(h.value) + '</div>'; }).join('');
+            return '<div class="pp-sub">' + esc(k) + ': ' + (x.error ? esc(x.error) : 'HTTP ' + esc(x.status) + (x.answers ? ' · ' + x.answers.length + ' answer(s)' : '') + (x.tv ? ' · TV ✓' : '') + (x.discord ? ' · discord ✓' : '')) + '</div>' + hits;
           }).join('')
         + (pr.lastWebhook ? '<div class="pp-sub">Last webhook (' + fmtD(pr.lastWebhook.at, true) + '): ' + ((pr.lastWebhook.questions || []).length ? 'carried ' + esc(pr.lastWebhook.questions.join(' / ')) : 'no checkout answers') + (pr.lastWebhook.hasDiscord ? ' · discord ✓' : '') + '</div>' : '')
         + '</div>';
