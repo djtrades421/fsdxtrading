@@ -235,7 +235,7 @@ window.toggleMobileMenu = function () {
 var FSDX_MENU = [
   { id: 'products', label: 'Memberships', w: 860, eyebrow: 'Or pick one membership', foot: ['compare.html', 'Compare all memberships side by side →'],
     feature: { kind: 'plan', kicker: 'Most complete', title: 'Full Membership', href: 'memberships.html', price: '$129', per: '/mo',
-      checks: ['Knightfall on TradingView + NinjaTrader 8', '3 indicators + automation', 'Journal, accounts & backtests', 'Live room every weekday'],
+      checks: ['Knightfall on TradingView or NinjaTrader 8', '3 indicators + automation', 'Journal, accounts & backtests', 'Live room every weekday'],
       cta: 'Start 30-Day Free Trial', ctaMember: 'See the membership →' },
     items: [
       ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, automation, journal and the live room', '$129/mo', 'layers', 'orange'],
@@ -254,7 +254,7 @@ var FSDX_MENU = [
       ['platform.html', 'The Platform', 'Fleet, journal, imports and backtests', '', 'monitor', 'blue'],
       ['nightwing.html#nexus', 'Nexus 2.0', 'TradingView optimizer, eval sim and journal beside your chart', '', 'list', 'purple'],
       ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
-      ['tradingview-update.html', 'TradingView Update', 'Nothing changes for you — no action needed', '', 'info', 'gray']
+      ['tradingview-update.html', 'TradingView Update', 'Final terms are out — nothing changes for members', '', 'info', 'gray']
   ]},
   { id: 'results', label: 'Results', w: 680, eyebrow: 'The proof',
     note: 'Backtests are hypothetical. Past performance doesn’t guarantee future results.',

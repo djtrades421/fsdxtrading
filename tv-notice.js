@@ -1,4 +1,4 @@
-/* FSD-X — TradingView Nov 1 notice
+/* FSD-X — TradingView notice (final terms, Nov 2026)
  *
  * One short notice, shown on every page that sells or sets up our TradingView
  * scripts. Pages opt in with an empty <div data-tv-notice></div>; the wording
@@ -7,14 +7,14 @@
  * Inline styles on purpose: tailwind.css is a compiled build, so utility
  * classes that aren't already used somewhere on the site would not exist.
  *
- * When TradingView answers (Marketplace approved or not), edit TEXT below and
- * the full explainer page, tradingview-update.html. Nothing else.
+ * Updated Nov 9, 2026 for TradingView's final terms. To change the wording,
+ * edit TEXT below and the full explainer page, tradingview-update.html.
  */
 (function () {
   var TEXT =
-    '<b style="color:#fde68a">TradingView update:</b> TradingView has paused its Nov 1 Marketplace change. ' +
-    '<b style="color:#fff">Nothing changes for you right now</b> — TradingView access works the same way through your membership. ' +
-    'We’ll update this once TradingView publishes its new terms.';
+    '<b style="color:#fde68a">TradingView update:</b> TradingView has published its final terms. ' +
+    '<b style="color:#fff">Nothing changes for current members</b>, including lifetime. ' +
+    'On Nov 15 our scripts move from private to public invite-only. New members choose their platform: TradingView or NinjaTrader 8.';
 
   function render(el) {
     if (el.dataset.tvNoticeDone) return;

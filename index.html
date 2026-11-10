@@ -878,7 +878,7 @@
             </div>
             <div class="flex items-start gap-5 border border-white/10 bg-black/40 rounded-2xl p-6">
               <div class="w-9 h-9 rounded-xl bg-green-500 text-black font-black flex items-center justify-center shrink-0">2</div>
-              <div><div class="font-bold text-white mb-1">Load the tools · follow Getting Started</div><p class="text-zinc-400 text-sm leading-relaxed">Add the indicators to TradingView, claim your Discord access, set up Nexus. The guide walks you through it.</p></div>
+              <div><div class="font-bold text-white mb-1">Load the tools · follow Getting Started</div><p class="text-zinc-400 text-sm leading-relaxed">Claim your indicators on TradingView or download Knightfall for NinjaTrader, claim your Discord access, set up Nexus. The guide walks you through it.</p></div>
             </div>
             <div class="flex items-start gap-5 border border-white/10 bg-black/40 rounded-2xl p-6">
               <div class="w-9 h-9 rounded-xl bg-green-500 text-black font-black flex items-center justify-center shrink-0">3</div>
@@ -900,6 +900,9 @@
             <p class="text-zinc-400 text-sm mt-3 max-w-lg mx-auto">The full suite, the Auto-Trader, the live room, and the community — all at one price. Monthly includes a 30-day free trial. No charge until day 31.</p>
                         <div data-tv-notice class="mt-6 text-left"></div>
           </div>
+
+          <!-- CHOOSE YOUR PLATFORM — wording lives in platform-pick.js -->
+          <div data-platform-pick class="max-w-5xl mx-auto mb-4 text-left"></div>
 
           <div class="grid md:grid-cols-3 gap-6 items-stretch pt-6 max-w-7xl mx-auto">
             <div class="border border-white/10 bg-zinc-950/40 rounded-3xl p-8 flex flex-col justify-between hover:border-white/20 transition">
@@ -953,7 +956,7 @@
 
           <p class="text-zinc-500 text-[13px] mt-8 max-w-2xl mx-auto text-center">Want just one piece? <a href="free-indicators.html" class="text-green-400 hover:underline font-semibold">Arkham is free</a>, <a href="nightwing.html" class="text-green-400 hover:underline font-semibold">Nightwing is $9.99</a> for the platform and Nexus on their own, and <a href="raven.html" class="text-green-400 hover:underline font-semibold">Raven is $29.99</a> for stop, targets and sizing on every ORB break. <a href="ninjatrader.html" class="text-green-400 hover:underline font-semibold">Knightfall NT8 is $59.99</a> for just Knightfall on NinjaTrader 8. <a href="compare.html" class="text-green-400 hover:underline font-semibold">Compare all five &rarr;</a></p>
           <div class="mt-8 text-center text-[12px] text-zinc-600 tracking-wide max-w-3xl mx-auto leading-relaxed">
-            The membership includes the full FSD-X Suite plus hands-off Auto-Trader execution. Monthly includes a 30-day free trial (new members only). The Auto-Trader currently runs on <span class="text-zinc-400 font-semibold">TradingView</span>; a native NinjaTrader® 8 version is live as of October 23, 2026. Nightwing ($9.99/month) is a separate, lower-priced product covering the member platform and Nexus only, and Knightfall NT8 ($59.99/month) is Knightfall on NinjaTrader 8 with the platform and Nexus — neither is a tier of this membership.
+            The membership includes the full FSD-X Suite plus hands-off Auto-Trader execution. Monthly includes a 30-day free trial (new members only). Choose your platform: <span class="text-zinc-400 font-semibold">TradingView</span> or <span class="text-zinc-400 font-semibold">NinjaTrader® 8</span>. Want both? DM us first. Nightwing ($9.99/month) is a separate, lower-priced product covering the member platform and Nexus only, and Knightfall NT8 ($59.99/month) is Knightfall on NinjaTrader 8 with the platform and Nexus — neither is a tier of this membership.
           </div>
           <div class="mt-3 text-center text-[12px] text-zinc-600">By signing up, you agree to the Whop Terms of Service and FSD-X internal guide provisions.</div>
         </div>
@@ -1068,5 +1071,6 @@
       .catch(function(){});
   </script>
   <script src="tv-notice.js"></script>
+  <script src="platform-pick.js"></script>
 </body>
 </html>

@@ -81,7 +81,8 @@
       "FSD-X is <strong>not responsible</strong> for those third parties — their reliability, fills, latency, or outages — or for any activity once the Auto-Trader is running on your account. A missed, delayed, or failed alert can leave unintended open positions, so <strong>you are responsible for your own safeguards</strong> (broker-side stop, end-of-day flatten, risk limits) and for monitoring your account.",
       "<strong>You</strong> are responsible for confirming automated trading is permitted by your broker and prop firm and for complying with their rules. Validate on a <strong>demo/paper account</strong> before any live use.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. Cancel during any free trial to avoid being charged.",
-      "Access is limited to <strong>one Discord and one TradingView account</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
+      "<strong>Choose your platform: TradingView or NinjaTrader 8.</strong> Enter your TradingView username for TradingView, or the email you log into NinjaTrader with for NinjaTrader. Want both? DM us on Discord first.",
+      "Access is limited to <strong>one person, one Discord account and one TradingView username</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
       "<strong>By purchasing and accepting these terms, you take full responsibility for all trades, positions, losses, and outcomes on your account.</strong> Once accepted, that responsibility is yours — FSD-X has no liability for any result.",
       "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Auto-Trader Addendum."
     ],
