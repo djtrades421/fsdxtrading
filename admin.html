@@ -333,6 +333,11 @@
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
             <span class="nav-label">Calls</span><span id="calls-nav-n" style="display:none;margin-left:auto;font:800 10px/1 Inter,system-ui,sans-serif;padding:3px 6px;border-radius:99px;background:#FF6B1F;color:#0b0b0b"></span>
           </button>
+          <button onclick="switchTab('messages')" id="tab-messages"
+            class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+            <span class="nav-label">Messages</span><span id="msgs-nav-n" style="display:none;margin-left:auto;font:800 10px/1 Inter,system-ui,sans-serif;padding:3px 6px;border-radius:99px;background:#FF6B1F;color:#0b0b0b"></span>
+          </button>
           <button onclick="switchTab('alerts')" id="tab-alerts"
             class="nav-btn w-full flex items-center gap-2.5 px-3 py-2.5 md:py-2 rounded-lg text-xs font-semibold text-zinc-400 hover:text-white hover:bg-white/5 transition text-left">
             <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
@@ -454,6 +459,7 @@
       <div id="panel-people" class="tab-panel ntx"></div>
       <div id="panel-alerts" class="tab-panel ntx"></div>
       <div id="panel-calls" class="tab-panel ntx"></div>
+      <div id="panel-messages" class="tab-panel ntx"></div>
 
       <div id="panel-members" class="tab-panel">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2.5 mb-4">
@@ -1794,7 +1800,7 @@
     let allMembers = [];
 
     function switchTab(tab) {
-      ['members','activity','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history','traffic','trackrec','course','nt','today','alerts','money','people','calls'].forEach(t => {
+      ['members','activity','announce','schedule','sales','updates','migrate','roster','payments','flags','analytics','history','traffic','trackrec','course','nt','today','alerts','money','people','calls','messages'].forEach(t => {
         document.getElementById('panel-' + t).classList.remove('active');
         const btn = document.getElementById('tab-' + t);
         if (btn) btn.classList.remove('active-nav');
@@ -1825,6 +1831,7 @@
       if (tab === 'money' && window.moneyRender) moneyRender();
       if (tab === 'people' && window.peopleRender) peopleRender();
       if (tab === 'calls' && window.callsRender) callsRender();
+      if (tab === 'messages' && window.messagesRender) messagesRender();
       if (tab === 'history') { dedupeHistory(); renderHistory2(); }
       if (tab === 'trackrec') trInit();
 
@@ -8373,6 +8380,7 @@
   <script src="admin-today.js?v=20261025b"></script>
   <script src="admin-money.js?v=20261101a"></script>
   <script src="admin-traffic.js?v=20261018a"></script>
-  <script src="admin-people.js?v=20261102a"></script>
+  <script src="admin-people.js?v=20261109a"></script>
   <script src="admin-bookings.js?v=20261101a"></script>
+  <script src="admin-messages.js?v=20261109a"></script>
 </html>

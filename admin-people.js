@@ -673,6 +673,7 @@
       + '<div class="pp-sec">History</div>' + timeline(p)
       + '<div class="flex gap-2 flex-wrap mt-4 pt-3" style="border-top:1px solid rgba(255,255,255,.06)">'
       +   (p.r && p.r.id ? '<button class="ntx-btn" data-pedit="' + esc(p.r.id) + '">Edit record</button>' : '')
+      +   (p.email && window.messagesOpen ? '<button class="ntx-btn pri" data-pmsg="' + esc(p.email) + '">Message</button>' : '')
       +   (p.email ? '<button class="ntx-btn" data-pcopy="' + esc(p.email) + '">Copy email</button>' : '')
       + '</div></div>';
   }
@@ -883,6 +884,7 @@
         return tvPost({ email: pn.email, tvName: val }, val ? 'TradingView name saved' : 'Typed name cleared');
       }
     }
+    var pm = t.closest('[data-pmsg]'); if (pm) { window.messagesOpen && window.messagesOpen(pm.getAttribute('data-pmsg')); return; }
     var rd = t.closest('[data-prtdismiss]'); if (rd) { dismissRepeat(rd.getAttribute('data-prtdismiss')); return; }
     var cp = t.closest('[data-pcopy]');
     if (cp) { var v = cp.getAttribute('data-pcopy'); (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(function () { toast('Copied ' + v); }).catch(function () { window.prompt('Copy:', v); }); return; }

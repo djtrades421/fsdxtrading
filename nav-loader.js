@@ -1287,6 +1287,15 @@ function prepareNavLabels(root) {
           // their display, so restore it rather than leaving them inline.
           if (el.tagName === 'BUTTON') el.classList.add('flex');
         });
+        // Site messages: unread count on Support + Danny's "show on login" pop-up.
+        try {
+          if (!window.__fsdxMsg && !document.querySelector('script[src^="messages.js"]')) {
+            var msgJs = document.createElement('script');
+            msgJs.src = 'messages.js';
+            msgJs.defer = true;
+            document.body.appendChild(msgJs);
+          }
+        } catch (e) {}
         // Hide member login button
         const loginBtn = document.getElementById('nav-login-btn');
         if (loginBtn) loginBtn.classList.add('hidden');
@@ -1355,7 +1364,7 @@ function prepareNavLabels(root) {
         if (!mount) return;
         var vip = [];
         try { if (localStorage.getItem('fsdx_token')) vip = [
-          ['dashboard.html', 'Dashboard'], ['journal.html', 'Journal'],
+          ['dashboard.html', 'Dashboard'], ['messages.html', 'Support'], ['journal.html', 'Journal'],
           ['accounts.html', 'Accounts'], ['playbook.html', 'Playbook'],
           ['backtest.html', 'Backtest'], ['alerts.html', 'Scout Alerts'],
           ['converter.html', 'Trade Importer'], ['ninjatrader-members.html', 'NinjaTrader Hub'],
