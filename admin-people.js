@@ -23,7 +23,7 @@
   // TradingView seats (TradingView terms from Feb 1, 2027). Settings + per-person
   // overrides live on the worker (/api/admin/tv-seats). Rules match tvSeatState()
   // in the worker, which sends the email alert — keep the two in step.
-  var TVS = { threshold: 85, cap: 100, overrides: {}, names: {}, fields: {} };
+  var TVS = { threshold: 85, cap: 100, start: '2027-02-01', overrides: {}, names: {}, fields: {} };
   var PROBE = {};  // membershipId -> last "Check Whop" result
 
   function $(id) { return document.getElementById(id); }
@@ -99,8 +99,11 @@
     if (/nightwing|nexus/.test(x)) return false;
     return /raven|pro|plus|vip|lifetime|knightfall|orb/.test(x);
   }
-  /** seat | unknown | lifetime | exempt | no | nt | '' — one seat per PERSON with live TradingView access.
-      Past due is not a seat: a failed payment revokes TradingView right away. */
+  /** seat | grand | lifetime | unknown | unknown_old | exempt | no | nt | ''
+      One seat per PERSON. Whop grants TradingView with no expiry, so renewals never
+      extend a grant: anyone who joined before TVS.start (Feb 1, 2027) is grandfathered.
+      Seats = TradingView users who joined on/after it, plus "Counts as a seat".
+      Past due is never a seat: a failed payment revokes TradingView right away. */
   function tvState(p) {
     var r = p.r || {}, ov = TVS.overrides[p.email] || '';
     if (ov === 'no') return 'no';
@@ -109,11 +112,12 @@
     if (!life && TV_LIVE.indexOf(p.status) === -1) return '';
     if (ov === 'yes') return 'seat';
     if (!tvFamily(p.product)) return '';
-    if (life) return r.tvUsername ? 'lifetime' : '';
-    if (r.tvUsername) return 'seat';
+    var after = dayOf(r.joined) >= (TVS.start || '2027-02-01');
+    if (r.tvUsername) return after ? 'seat' : life ? 'lifetime' : 'grand';
+    if (life) return '';
     // No TradingView username, but they gave a NinjaTrader email → NinjaTrader user.
     if (p.nt && p.nt.ntEmail && p.nt.status !== 'removed') return 'nt';
-    return 'unknown';
+    return after ? 'unknown' : 'unknown_old';
   }
   /** Onboarding focus guess from the plan name. Only used when Danny clicks "Match plan". */
   function focusOf(p) {
@@ -290,8 +294,9 @@
     ['needs', 'Needs action', function (p) { return p.needs; }],
     ['pro', 'Pro / NinjaTrader', function (p) { return p.live && p.fam === 'pro'; }],
     ['ntsolo', 'Knightfall NT8', function (p) { return p.live && p.fam === 'ntsolo'; }],
+    ['tvusers', 'TradingView users', function (p) { return p.tv === 'seat' || p.tv === 'grand' || p.tv === 'lifetime'; }],
     ['tv', 'TV seats', function (p) { return p.tv === 'seat'; }],
-    ['tvunknown', 'TV · unknown', function (p) { return p.tv === 'unknown'; }],
+    ['tvunknown', 'TV · unknown', function (p) { return p.tv === 'unknown' || p.tv === 'unknown_old'; }],
     ['raven', 'Raven', function (p) { return p.live && p.fam === 'raven'; }],
     ['nightwing', 'Nightwing', function (p) { return p.live && p.fam === 'nightwing'; }],
     ['nexus', 'Nexus', function (p) { return p.live && p.fam === 'nexus'; }],
@@ -322,7 +327,7 @@
   }
 
   function tvCounts() {
-    var c = { seat: 0, unknown: 0, lifetime: 0, exempt: 0, nt: 0, pastdue: 0 };
+    var c = { seat: 0, grand: 0, unknown: 0, unknown_old: 0, lifetime: 0, exempt: 0, nt: 0, pastdue: 0 };
     PEOPLE.forEach(function (p) {
       if (c[p.tv] !== undefined) c[p.tv]++;
       if (p.status === 'past_due' && p.r && p.r.tvUsername && !TVS.overrides[p.email]) c.pastdue++;
@@ -332,18 +337,22 @@
   function renderTv() {
     var el = $('pp-tv'); if (!el) return;
     var c = tvCounts(), cap = TVS.cap || 100, warn = TVS.threshold || 85;
+    var startIn = Math.ceil((new Date((TVS.start || '2027-02-01') + 'T00:00:00') - Date.now()) / 864e5);
     var lvl = c.seat >= cap ? 'red' : c.seat >= warn ? 'amber' : (c.seat + c.unknown >= warn ? 'maybe' : '');
     var col = lvl === 'red' ? '#E2534B' : lvl === 'amber' ? '#F5A524' : '#7FB2FF';
     var pct = Math.min(100, Math.round(c.seat / cap * 100)), pctU = Math.min(100 - pct, Math.round(c.unknown / cap * 100));
-    var msg = lvl === 'red' ? 'TradingView seats are full. New TradingView users can\'t be added or extended. Buy an extension, or point new checkouts to the product without the TradingView Pro app.'
-      : lvl === 'amber' ? 'Past your ' + warn + '-seat warning. Decide now: buy an extension, or close TradingView to new members for a while.'
+    var shut = 'duplicate the Pro product WITHOUT the TradingView Pro app and point new checkouts there (don\'t untick the app on the current product).';
+    var msg = lvl === 'red' ? 'TradingView seats are full. New TradingView users can\'t be added. Buy an extension, or close TradingView now: ' + shut
+      : lvl === 'amber' ? 'Past your ' + warn + '-seat warning. Decide now: buy an extension, or close TradingView to new members: ' + shut
       : lvl === 'maybe' ? 'Under ' + warn + ' confirmed, but the unknowns could push it over. Open “TV · unknown” and sort them out.'
       : '';
     function bit(n, l, chip, tip) { return '<button class="ntx-chip" data-pchip="' + chip + '" title="' + esc(tip || '') + '">' + l + ' <span class="text-zinc-400">' + n + '</span></button>'; }
     el.innerHTML = '<div class="ntx-card" style="padding:14px 16px' + (lvl === 'red' ? ';border-color:rgba(226,83,75,.5)' : lvl === 'amber' ? ';border-color:rgba(245,165,36,.5)' : '') + '">'
       + '<div class="flex items-center justify-between gap-3 flex-wrap">'
       +   '<div><div class="pp-sub" style="letter-spacing:.14em;text-transform:uppercase;font-weight:900;font-size:10px">TradingView seats</div>'
-      +   '<div class="text-white font-black" style="font-size:26px;font-variant-numeric:tabular-nums;color:' + (lvl === 'red' || lvl === 'amber' ? col : '#fff') + '">' + c.seat + ' <span class="text-zinc-500" style="font-size:15px">/ ' + cap + '</span></div></div>'
+      +   '<div class="text-white font-black" style="font-size:26px;font-variant-numeric:tabular-nums;color:' + (lvl === 'red' || lvl === 'amber' ? col : '#fff') + '">' + c.seat + ' <span class="text-zinc-500" style="font-size:15px">/ ' + cap + '</span></div>'
+      +   '<div class="pp-sub">' + (c.seat + c.grand + c.lifetime) + ' TradingView users · ' + (c.grand + c.lifetime) + ' grandfathered'
+      +     (startIn > 0 ? ' · counting starts ' + fmtD(TVS.start, true) + ' (' + startIn + ' days)' : ' · counting since ' + fmtD(TVS.start, true)) + '</div></div>'
       +   '<div class="flex items-center gap-2 flex-wrap text-[11.5px] text-zinc-400">Warn at <input id="pp-tv-warn" class="ntx-in" type="number" min="1" value="' + warn + '" style="width:64px">'
       +   ' Limit <input id="pp-tv-cap" class="ntx-in" type="number" min="1" value="' + cap + '" style="width:64px">'
       +   '<button class="ntx-btn" data-ptv="save">Save</button></div>'
@@ -353,9 +362,9 @@
       + '<div class="pp-sub" style="position:relative;height:12px"><span style="position:absolute;left:' + Math.min(100, warn / cap * 100) + '%;transform:translateX(-50%)">▲ ' + warn + '</span></div>'
       + (msg ? '<div class="text-[12.5px] font-bold mt-2" style="color:' + (lvl === 'maybe' ? '#F5A524' : col) + '">' + msg + '</div>' : '')
       + '<div class="flex gap-1 flex-wrap mt-2">'
-      +   bit(c.seat, 'Counted', 'tv', 'Live, TradingView username on file (or marked as a seat)')
-      +   bit(c.unknown, 'Unknown', 'tvunknown', 'Live Pro/Raven with no TradingView username and no NinjaTrader email — could be a seat')
-      +   '<span class="ntx-chip" style="cursor:default" title="Lifetime before Feb 1, 2027 takes no seat unless extended or a script is added">Lifetime <span class="text-zinc-400">' + c.lifetime + '</span></span>'
+      +   bit(c.seat, 'Seats', 'tv', 'TradingView users who joined on/after ' + TVS.start + ', or marked as a seat')
+      +   bit(c.grand + c.lifetime, 'Grandfathered', 'tvusers', 'Joined before ' + TVS.start + '. No seat while their access stays untouched (' + c.lifetime + ' lifetime)')
+      +   bit(c.unknown + c.unknown_old, 'Unknown', 'tvunknown', 'Live Pro/Raven with no TradingView username and no NinjaTrader email. Only the ' + c.unknown + ' who joined on/after ' + TVS.start + ' could be seats')
       +   '<span class="ntx-chip" style="cursor:default" title="Marked exempt (comp, test account)">Exempt <span class="text-zinc-400">' + c.exempt + '</span></span>'
       +   '<span class="ntx-chip" style="cursor:default" title="Past due — TradingView access is revoked, no seat">Past due <span class="text-zinc-400">' + c.pastdue + '</span></span>'
       + '</div></div>';
@@ -364,12 +373,12 @@
     if (!tok()) return Promise.resolve();
     return fetch(API + '/api/admin/tv-seats', { headers: { 'Authorization': 'Bearer ' + tok() } })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d && d.success) TVS = { threshold: d.threshold, cap: d.cap, overrides: d.overrides || {}, names: d.names || {}, fields: d.fields || {} }; }).catch(function () {});
+      .then(function (d) { if (d && d.success) TVS = { threshold: d.threshold, cap: d.cap, start: d.start || '2027-02-01', overrides: d.overrides || {}, names: d.names || {}, fields: d.fields || {} }; }).catch(function () {});
   }
   function tvPost(body, okMsg) {
     return fetch(API + '/api/admin/tv-seats', { method: 'POST', headers: { 'Authorization': 'Bearer ' + tok(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.success) throw new Error(d.error || 'Save failed'); return d; }); })
-      .then(function (d) { TVS = { threshold: d.threshold, cap: d.cap, overrides: d.overrides || {}, names: d.names || {}, fields: d.fields || TVS.fields }; renderAll(); toast(okMsg); })
+      .then(function (d) { TVS = { threshold: d.threshold, cap: d.cap, start: d.start || '2027-02-01', overrides: d.overrides || {}, names: d.names || {}, fields: d.fields || TVS.fields }; renderAll(); toast(okMsg); })
       .catch(function (e) { toast(e.message, true); });
   }
   function tvProbe(p) {
@@ -397,7 +406,7 @@
   function tvBlock(p) {
     if (!p.email || !(p.live || TVS.overrides[p.email])) return '';
     var ov = TVS.overrides[p.email] || 'auto';
-    var lbl = { seat: 'Takes a TradingView seat', unknown: 'Unknown — no TradingView username or NT email', lifetime: 'Lifetime — no seat (before Feb 1, 2027)',
+    var lbl = { seat: 'Takes a TradingView seat', grand: 'Grandfathered — joined before ' + fmtD(TVS.start, true) + ', no seat', unknown: 'Unknown — no TradingView username or NT email', unknown_old: 'Unknown — no TradingView name or NT email (grandfathered either way)', lifetime: 'Lifetime — grandfathered, no seat',
       exempt: 'Exempt — not counted', no: 'Not on TradingView', nt: 'NinjaTrader user — no seat', '': 'Not a TradingView plan' }[p.tv] || '—';
     var id = p.r && p.r.membershipId, pr = id && PROBE[id];
     var probe = '';
@@ -443,7 +452,7 @@
 
   function ntCell(p) {
     var tvn = p.r && p.r.tvUsername ? 'TradingView: ' + p.r.tvUsername : 'No TradingView username on file';
-    var tvm = { seat: ['p-blu', 'TV'], unknown: ['p-amb', 'TV ?'], lifetime: ['p-pur', 'TV · life'], exempt: ['p-mut', 'TV · exempt'] }[p.tv];
+    var tvm = { seat: ['p-blu', 'TV · seat'], grand: ['p-blu', 'TV'], unknown: ['p-amb', 'TV ?'], unknown_old: ['p-amb', 'TV ?'], lifetime: ['p-pur', 'TV · life'], exempt: ['p-mut', 'TV · exempt'] }[p.tv];
     var tv = tvm ? '<span class="mn-pill ' + tvm[0] + '" title="' + esc(tvn) + '">' + tvm[1] + '</span> ' : '';
     var m = { active: ['p-nt', 'NT ✓'], add: ['p-amb', 'NT · to add'], remove: ['p-red', 'NT · remove'],
       waiting: ['p-amb', 'NT · no email'], declined: ['p-mut', 'NT · not using'], removed: ['p-mut', 'NT · removed'], none: ['p-mut', 'NT · —'] }[p.ntState];
