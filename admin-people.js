@@ -23,7 +23,7 @@
   // TradingView seats (TradingView terms from Feb 1, 2027). Settings + per-person
   // overrides live on the worker (/api/admin/tv-seats). Rules match tvSeatState()
   // in the worker, which sends the email alert — keep the two in step.
-  var TVS = { threshold: 85, cap: 100, overrides: {} };
+  var TVS = { threshold: 85, cap: 100, overrides: {}, names: {}, fields: {} };
   var PROBE = {};  // membershipId -> last "Check Whop" result
 
   function $(id) { return document.getElementById(id); }
@@ -199,6 +199,17 @@
         : p.status === 'trialing' ? { k: 'Converts', d: r.renewal }
         : r.renewal && p.live && p.status !== 'lifetime' ? { k: 'Renews', d: r.renewal } : null;
       p.lastLogin = s.lastLogin || '';
+      // Names found on Whop (sync lookups, webhooks, "Check Whop") live on the worker,
+      // not in the saved roster — lay them on so a refresh doesn't drop them.
+      // A hand-entered TradingView name always wins.
+      if (p.r && p.email) {
+        var wf = TVS.fields[p.email] || {}, man = TVS.names[p.email];
+        p.tvSrc = man ? 'manual' : r.tvUsername ? 'whop' : wf.tv ? 'whop' : '';
+        if (man) r.tvUsername = man;
+        else if (!r.tvUsername && wf.tv) r.tvUsername = wf.tv;
+        if (!r.discordName && wf.dn) r.discordName = wf.dn;
+        if (!r.discordId && wf.did) r.discordId = wf.did;
+      }
       p.tv = tvState(p);
       p.onb = ONB[p.email] || null;
       var jd = dayOf(r.joined);
@@ -353,12 +364,12 @@
     if (!tok()) return Promise.resolve();
     return fetch(API + '/api/admin/tv-seats', { headers: { 'Authorization': 'Bearer ' + tok() } })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (d) { if (d && d.success) TVS = { threshold: d.threshold, cap: d.cap, overrides: d.overrides || {} }; }).catch(function () {});
+      .then(function (d) { if (d && d.success) TVS = { threshold: d.threshold, cap: d.cap, overrides: d.overrides || {}, names: d.names || {}, fields: d.fields || {} }; }).catch(function () {});
   }
   function tvPost(body, okMsg) {
     return fetch(API + '/api/admin/tv-seats', { method: 'POST', headers: { 'Authorization': 'Bearer ' + tok(), 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
       .then(function (r) { return r.json().then(function (d) { if (!r.ok || !d.success) throw new Error(d.error || 'Save failed'); return d; }); })
-      .then(function (d) { TVS = { threshold: d.threshold, cap: d.cap, overrides: d.overrides || {} }; renderAll(); toast(okMsg); })
+      .then(function (d) { TVS = { threshold: d.threshold, cap: d.cap, overrides: d.overrides || {}, names: d.names || {}, fields: d.fields || TVS.fields }; renderAll(); toast(okMsg); })
       .catch(function (e) { toast(e.message, true); });
   }
   function tvProbe(p) {
@@ -369,6 +380,10 @@
       .then(function (d) {
         PROBE[id] = d;
         var f = d.found || {};
+        if (p.email && (f.tv || f.discordName)) {
+          var cur = TVS.fields[p.email] || {};
+          TVS.fields[p.email] = { tv: f.tv || cur.tv || '', dn: f.discordName || cur.dn || '', did: f.discordId || cur.did || '', src: 'probe' };
+        }
         if (p.r) {
           if (f.tv && !p.r.tvUsername) p.r.tvUsername = f.tv;
           if (f.discordName && !p.r.discordName) p.r.discordName = f.discordName;
@@ -408,7 +423,14 @@
               return '<option value="' + o[0] + '"' + (ov === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('')
       +   '</select>'
       +   (id ? '<button class="ntx-btn" data-ptv="probe" title="Ask Whop for this member\'s TradingView username and Discord">Check Whop</button>' : '')
-      + '</div>' + probe + '</div>';
+      + '</div>'
+      + '<div class="flex gap-2 flex-wrap items-center mt-2">'
+      +   '<input id="pp-tv-name" class="ntx-in" placeholder="TradingView username (type it in)" value="' + esc(TVS.names[p.email] || '') + '" style="flex:1 1 180px">'
+      +   '<button class="ntx-btn" data-ptv="name">Save</button>'
+      +   (TVS.names[p.email] ? '<button class="ntx-btn" data-ptv="clearname" title="Remove the typed name and go back to what Whop has">Clear</button>' : '')
+      + '</div>'
+      + '<div class="pp-sub mt-1">' + (p.tvSrc === 'manual' ? 'Using the name you typed. It wins over Whop.' : p.r && p.r.tvUsername ? 'From Whop: ' + esc(p.r.tvUsername) + '. Type a name to override.' : 'Whop has no TradingView name. Copy it from their Whop profile.') + '</div>'
+      + probe + '</div>';
   }
 
   function renderChips() {
@@ -843,6 +865,14 @@
       var act = tvb.getAttribute('data-ptv');
       if (act === 'save') return tvPost({ threshold: parseInt(($('pp-tv-warn') || {}).value, 10), cap: parseInt(($('pp-tv-cap') || {}).value, 10) }, 'Seat settings saved');
       if (act === 'probe') { var pp = PEOPLE.filter(function (x) { return x.key === OPEN; })[0]; if (pp) tvProbe(pp); return; }
+      if (act === 'name' || act === 'clearname') {
+        var pn = PEOPLE.filter(function (x) { return x.key === OPEN; })[0]; if (!pn || !pn.email) return;
+        var val = act === 'clearname' ? '' : (($('pp-tv-name') || {}).value || '').trim();
+        if (act === 'name' && !val) { toast('Type a TradingView username first', true); return; }
+        // Clearing: drop the typed name from the roster row too, so Whop's value (if any) shows again.
+        if (act === 'clearname' && pn.r && pn.r.tvUsername === TVS.names[pn.email]) pn.r.tvUsername = (TVS.fields[pn.email] || {}).tv || '';
+        return tvPost({ email: pn.email, tvName: val }, val ? 'TradingView name saved' : 'Typed name cleared');
+      }
     }
     var rd = t.closest('[data-prtdismiss]'); if (rd) { dismissRepeat(rd.getAttribute('data-prtdismiss')); return; }
     var cp = t.closest('[data-pcopy]');
@@ -867,6 +897,9 @@
     else if (t.hasAttribute('data-pbo')) { var em = t.getAttribute('data-pbo'); if (t.checked) delete BULK.off[em]; else BULK.off[em] = true; }
     else return;
     renderSide();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && e.target && e.target.id === 'pp-tv-name') { var b = document.querySelector('#pp-side [data-ptv="name"]'); if (b) b.click(); return; }
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && OPEN && $('panel-people') && $('panel-people').classList.contains('active')) { OPEN = null; renderTable(); renderSide(); } });
 
