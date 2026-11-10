@@ -132,7 +132,8 @@
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed.",
       "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in Raven places, sizes, or manages an order for you, and it does not connect to a broker.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
-      "Access is limited to <strong>one account</strong>, and the TradingView script is granted to <strong>one TradingView username</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
+      "<strong>Choose your platform: TradingView or NinjaTrader 8.</strong> On TradingView, the script is granted to the TradingView username you enter. On NinjaTrader 8, it's licensed to the NinjaTrader email you add in the NinjaTrader Hub. Want both? DM us on Discord first.",
+      "Access is limited to <strong>one person and one account</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
       "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
     ],
     agree: "I accept the FSD-X Raven Terms and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
