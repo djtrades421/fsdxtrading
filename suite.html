@@ -235,7 +235,7 @@
           </a>
           <a href="#tool-volume" class="sg-card suite-row">
             <span class="sg-th"><img src="screenshot-volume.png" data-src-tv="screenshot-volume.png" data-src-nt="nt8-volume.png" alt="" onerror="if(this.getAttribute('src')!==this.dataset.srcTv)this.src=this.dataset.srcTv" loading="lazy" decoding="async"></span>
-            <span class="sg-bd"><span class="sg-eb">Evaluate</span><span class="sg-tags"><span class="sg-tag">Breakout volume</span><span class="sg-tag">Sessions</span></span><span class="sg-n">Volume</span><span class="sg-d">Marks every ORB breakout bar in the volume pane and colors bars by session.</span><span class="sg-pls"><div class="sg-pl" data-cell="tv"><span class="sg-pk">TradingView</span><span class="sg-st inc" title="Invite-only script.">Included</span></div><div class="sg-pl" data-cell="nt"><span class="sg-pk">NinjaTrader 8</span><span class="sg-st new" title="Out now in the NinjaTrader Hub.">New</span></div></span><span class="sg-go">Details &rarr;</span></span>
+            <span class="sg-bd"><span class="sg-eb">Evaluate</span><span class="sg-tags"><span class="sg-tag">Breakout volume</span><span class="sg-tag">Profile + POC</span></span><span class="sg-n">Volume</span><span class="sg-d">Marks every ORB breakout bar and shows volume at price with a POC, right on your price chart.</span><span class="sg-pls"><div class="sg-pl" data-cell="tv"><span class="sg-pk">TradingView</span><span class="sg-st inc" title="Invite-only script.">Included</span></div><div class="sg-pl" data-cell="nt"><span class="sg-pk">NinjaTrader 8</span><span class="sg-st new" title="Out now in the NinjaTrader Hub.">New</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           <a href="#tool-stack" class="sg-card suite-row" data-ntsoon>
             <span class="sg-th"><img src="screenshot-stack.png" alt="" loading="lazy" decoding="async"></span>
@@ -561,7 +561,7 @@
               <div class="xl:col-span-2 space-y-6">
                 <div>
                   <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-2">What it does</h4>
-                  <p class="text-zinc-400 text-sm leading-relaxed">Shows whether real volume is behind the breakout. It marks the exact breakout candle in your volume pane and colors it green or red, so you can see at a glance if the move has strength — no guessing whether it's the real thing.</p>
+                  <p class="text-zinc-400 text-sm leading-relaxed">Shows whether real volume is behind the breakout. It marks the exact breakout candle and colors it green or red, so you can see at a glance if the move has strength. A volume profile on the side of the chart shows where the volume traded, with the point of control (POC) marked.</p>
                 </div>
                 <div>
                   <h4 class="text-xs uppercase text-zinc-500 font-bold tracking-wider mb-3">System Color Key Architecture</h4>
@@ -600,7 +600,7 @@
                 </div>
                 <!-- Screenshot -->
                 <div class="rounded-2xl overflow-hidden border border-white/5 bg-black">
-                  <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold">// Volume Pane — ORB Session</div>
+                  <div class="px-3 py-1.5 bg-zinc-900/80 border-b border-white/5 text-[10px] text-zinc-500 uppercase tracking-wider font-bold">// Volume — ORB Session</div>
                   <img src="screenshot-volume.png" alt="FSD-X Volume Indicator showing ORB breakout candles" class="w-full object-cover" / width="1085" height="205" loading="lazy" decoding="async">
                 </div>
               </div>
@@ -608,12 +608,11 @@
                 <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
                 <div>
                   <div class="text-[10px] text-green-500 uppercase tracking-widest mb-3">// CONFIGURATION COMPATIBILITY</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">Runs in the lower pane under your price chart and lines up with the ORB window the main indicator draws, so the volume bars and the breakout candle read together.</p>
-                  <p class="text-zinc-400 text-xs leading-relaxed mt-2">On NinjaTrader 8 (v2.0) it draws on the price chart instead: breakout bars along the bottom, plus a volume profile with a point of control (POC) on the side.</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Lines up with the ORB window the main indicator draws, so the volume and the breakout candle read together. A volume profile with a point of control (POC) sits on the left or right of your price chart. On TradingView the breakout bars stay in their own pane under the chart; on NinjaTrader 8 they draw along the bottom of the price chart.</p>
                 </div>
                 <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
                   <div class="flex justify-between text-xs"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">TradingView, NinjaTrader 8</span></div>
-                  <div class="flex justify-between text-xs"><span class="text-zinc-500">Execution Layout</span><span class="text-zinc-300">Lower Pane Overlay</span></div>
+                  <div class="flex justify-between text-xs"><span class="text-zinc-500">Execution Layout</span><span class="text-zinc-300">Lower Pane + Price Chart Profile</span></div>
                   <div class="flex justify-between text-xs"><span class="text-green-400 font-bold text-right">VIP Membership Only</span></div>
                 </div>
               </div>
