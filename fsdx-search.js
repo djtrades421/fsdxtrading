@@ -34,7 +34,7 @@
     {t:'ORB PRO — Knightfall MK2', u:'suite.html#tool-orbpro', g:'Products', kw:'signal engine indicator grading breakout main'},
     {t:'Stack V1',              u:'suite.html#tool-stack',     g:'Products', kw:'trend mtf timeframe confirmation'},
     {t:'Volume Indicator',      u:'suite.html#tool-volume',    g:'Products', kw:'volume engine breakout companion'},
-    {t:'Nexus 2.0',             u:'suite.html#tool-nexus',     g:'Products', kw:'chrome extension journal optimizer sidepanel'},
+    {t:'Nexus 3.0',             u:'suite.html#tool-nexus',     g:'Products', kw:'chrome extension journal optimizer sidepanel dashboard fleet nexus guide'},
     {t:'The Platform',          u:'platform.html',             g:'Products', kw:'member platform dashboard journal importer csv import backtest workspace tracker accounts playbook workspace included'},
     {t:'Automation (Auto Trader)', u:'suite.html#tool-autotrader',         g:'Products', kw:'automation auto trader autotrader pickmytrade traderspost tradovate hands off hands-free ninjatrader built in at'},
     {t:'Knightfall for NinjaTrader 8 (Live)', u:'ninjatrader.html', g:'Products', kw:'ninjatrader nt8 ninja native automated hands free manual release october 23 launch'},

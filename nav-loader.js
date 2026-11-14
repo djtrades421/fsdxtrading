@@ -241,7 +241,7 @@ var FSDX_MENU = [
       ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, automation, journal and the live room', '$129/mo', 'layers', 'orange'],
       ['ninjatrader.html', 'Knightfall NT8', 'Knightfall on NinjaTrader 8, on its own', '$59.99/mo', 'terminal', 'orange'],
       ['raven.html', 'Raven', 'ORB levels on TradingView or NinjaTrader 8', '$29.99/mo', 'trend', 'blue'],
-      ['nightwing.html', 'Nightwing', 'Member platform + Nexus 2.0', '$9.99/mo', 'moon', 'purple'],
+      ['nightwing.html', 'Nightwing', 'Member platform + Nexus 3.0', '$9.99/mo', 'moon', 'purple'],
       ['free-indicators.html', 'Free Indicators', 'Free tools anyone can add to a chart', 'Free', 'star', 'green']
   ]},
   { id: 'platform', label: 'Products', w: 720, eyebrow: 'Explore',
@@ -252,7 +252,7 @@ var FSDX_MENU = [
       ['suite.html#tool-orbpro', 'Knightfall MK2', 'The graded system, TradingView + NT8', '', 'target', 'orange'],
       ['suite.html#tool-autotrader', 'Automation', 'Built into Knightfall on NT8 · Auto Trader script on TradingView', '', 'bolt', 'orange'],
       ['platform.html', 'The Platform', 'Fleet, journal, imports and backtests', '', 'monitor', 'blue'],
-      ['nightwing.html#nexus', 'Nexus 2.0', 'TradingView optimizer, eval sim and journal beside your chart', '', 'list', 'purple'],
+      ['nightwing.html#nexus', 'Nexus 3.0', 'Dashboard, Fleet and optimizer beside your chart', '', 'list', 'purple'],
       ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
       ['tradingview-update.html', 'TradingView Update', 'Final terms are out — nothing changes for members', '', 'info', 'gray']
   ]},
