@@ -5,15 +5,15 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Nightwing — FSD-X Platform + Nexus from $9.99/month</title>
-  <meta name="description" content="Nightwing is the FSD-X tools tier: the Nexus 2.0 Chrome side panel plus the member web platform, from $9.99/month. Position sizing, economic calendar and multi-timeframe chart analysis on the chart; trade journal, backtest workspace, broker importer, prop-account tracker, eval simulator and strategy optimizer off it. No indicator suite, no Auto Trader." />
+  <meta name="description" content="Nightwing is the FSD-X tools tier: the Nexus Chrome side panel plus the member web platform, from $9.99/month. Position sizing, economic calendar and multi-timeframe chart analysis on the chart; trade journal, backtest workspace, broker importer, prop-account tracker, eval simulator and strategy optimizer off it. No indicator suite, no Auto Trader." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Nightwing — FSD-X Platform + Nexus from $9.99/month" />
-  <meta property="og:description" content="The FSD-X member platform and Nexus 2.0 on their own, from $9.99/month. Journal, backtester, playbook, importer, account tracker." />
+  <meta property="og:description" content="The FSD-X member platform and Nexus on their own, from $9.99/month. Journal, backtester, playbook, importer, account tracker." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <meta property="og:url" content="https://www.fsdxtrading.com/nightwing.html" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Nightwing — FSD-X Platform + Nexus from $9.99/month" />
-  <meta name="twitter:description" content="The FSD-X member platform and Nexus 2.0 on their own, from $9.99/month. Journal, backtester, playbook, importer, account tracker." />
+  <meta name="twitter:description" content="The FSD-X member platform and Nexus on their own, from $9.99/month. Journal, backtester, playbook, importer, account tracker." />
   <meta name="twitter:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <link rel="canonical" href="https://www.fsdxtrading.com/nightwing.html" />
   <link rel="stylesheet" href="tailwind.css">
@@ -28,7 +28,7 @@
   "@id": "https://www.fsdxtrading.com/nightwing.html#nightwing",
   "name": "FSD-X Nightwing",
   "alternateName": ["Nightwing", "FSD-X Site Access + Nexus"],
-  "description": "The FSD-X tools tier. Nightwing provides the FSD-X member web platform and the Nexus 2.0 Chrome extension on their own. The Nexus side panel sits beside the TradingView chart and provides a position size calculator for futures and forex, an economic calendar and news feed, multi-timeframe chart analysis, a watchlist scanner, trade logging with saved defaults, and the playbook with checklists. The member web platform provides the dashboard, a full trade journal, a backtest workspace with saved sessions, a universal broker trade importer, prop-firm account trackers, and the knowledge base. Both include an eval simulator that runs a trader's own history against a prop firm's drawdown rules, and a strategy optimizer that breaks trades down by grade, direction and opening range size. It is a separate, lower-priced product from the FSD-X membership, not a tier of it. Nightwing does NOT include the FSD-X indicator suite (ORB PRO / Knightfall MK2, Stack V1, Volume Engine), the Auto Trader, the live trade room, the VIP Discord channels, or the monthly one-on-one call.",
+  "description": "The FSD-X tools tier. Nightwing provides the FSD-X member web platform and the Nexus Chrome extension on their own. The Nexus side panel sits beside the TradingView chart and provides a position size calculator for futures and forex, an economic calendar and news feed, multi-timeframe chart analysis, a watchlist scanner, trade logging with saved defaults, and the playbook with checklists. The member web platform provides the dashboard, a full trade journal, a backtest workspace with saved sessions, a universal broker trade importer, prop-firm account trackers, and the knowledge base. Both include an eval simulator that runs a trader's own history against a prop firm's drawdown rules, and a strategy optimizer that breaks trades down by grade, direction and opening range size. It is a separate, lower-priced product from the FSD-X membership, not a tier of it. Nightwing does NOT include the FSD-X indicator suite (ORB PRO / Knightfall MK2, Stack V1, Volume Engine), the Auto Trader, the live trade room, the VIP Discord channels, or the monthly one-on-one call.",
   "brand": { "@id": "https://www.fsdxtrading.com/#organization" },
   "category": "Trading software",
   "url": "https://www.fsdxtrading.com/nightwing.html",
@@ -46,7 +46,7 @@
     {
       "@type": "PropertyValue",
       "name": "Relationship to the FSD-X membership",
-      "value": "Nightwing is a separate product, not a tier of the FSD-X membership. The membership continues to include everything it always has, the Nexus 2.0 extension and the member platform among them. Nightwing simply makes those two available on their own at a lower price for traders who do not want the indicator suite."
+      "value": "Nightwing is a separate product, not a tier of the FSD-X membership. The membership continues to include everything it always has, the Nexus extension and the member platform among them. Nightwing simply makes those two available on their own at a lower price for traders who do not want the indicator suite."
     },
     {
       "@type": "PropertyValue",
@@ -89,6 +89,7 @@
         .nw-list li{display:flex;gap:10px;font-size:14px;color:#d4d4d8;line-height:1.5}
         .nw-list .d{flex:none;color:#4ade80;font-weight:800}
         .nw-frame{border-radius:20px;border:1px solid rgba(74,222,128,.18);background:linear-gradient(160deg,rgba(74,222,128,.07),rgba(0,0,0,0) 45%),#050505;padding:12px;box-shadow:0 30px 60px -20px rgba(0,0,0,.7);max-width:460px;width:100%;justify-self:center}
+        .nw-frame.nw-wide{max-width:640px}
         .nw-frame img{display:block;width:100%;height:auto;border-radius:10px;border:1px solid rgba(255,255,255,.08)}
         .nw-pf{display:grid;gap:14px;grid-template-columns:1fr}
         @media(min-width:640px){.nw-pf{grid-template-columns:repeat(2,1fr)}}
@@ -106,48 +107,68 @@
           <div class="max-w-3xl mx-auto text-center">
             <div class="inline-flex items-center gap-2 mb-6 px-3 py-1 rounded-full border border-green-500/30 bg-green-500/[0.06]">
               <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-              <span class="text-[10px] font-bold uppercase tracking-widest text-green-400">Nightwing &middot; Nexus 2.0 + the member platform</span>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-green-400">Nightwing &middot; Nexus + the member platform</span>
             </div>
             <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-[1.1]">The tools, <span class="text-green-400">without the system.</span></h1>
             <p class="mt-5 text-zinc-400 text-base md:text-lg leading-relaxed">
-              Nexus docks beside your TradingView chart: a strategy optimizer that runs on <span class="text-white font-semibold">any</span> strategy, an eval simulator, position sizing and a journal. It&rsquo;s connected to the member platform, so your journal and synced Tradovate accounts show up in both places. You bring the strategy.
+              Nexus sits beside your TradingView chart: a dashboard of your trading, every prop account in one list, a strategy optimizer that runs on <span class="text-white font-semibold">any</span> strategy, an eval simulator, position sizing and a journal. It&rsquo;s connected to the member platform, so your journal, Fleet and synced Tradovate accounts show up in both places. You bring the strategy.
             </p>
             <p class="mt-3 text-[13px] text-zinc-500">These are the tools for the last step of the FSD-X method, measuring. <a href="index.html#method" class="text-green-400 hover:underline font-semibold">See the full method &rarr;</a></p>
           </div>
 
-          <div class="nw-tabs" role="tablist" aria-label="Nexus 2.0">
-            <button class="nw-tab" role="tab" aria-selected="true" data-nw="0"><span class="n">01</span>Set up a sweep</button>
-            <button class="nw-tab" role="tab" aria-selected="false" data-nw="1"><span class="n">02</span>Read the results</button>
-            <button class="nw-tab" role="tab" aria-selected="false" data-nw="2"><span class="n">03</span>Journal</button>
+          <div class="nw-tabs" role="tablist" aria-label="Nexus">
+            <button class="nw-tab" role="tab" aria-selected="true" data-nw="0"><span class="n">01</span>Dashboard</button>
+            <button class="nw-tab" role="tab" aria-selected="false" data-nw="1"><span class="n">02</span>Fleet</button>
+            <button class="nw-tab" role="tab" aria-selected="false" data-nw="2"><span class="n">03</span>Optimizer</button>
+            <button class="nw-tab" role="tab" aria-selected="false" data-nw="3"><span class="n">04</span>Journal</button>
+            <button class="nw-tab" role="tab" aria-selected="false" data-nw="4"><span class="n">05</span>AI &amp; calculators</button>
           </div>
           <div class="nw-panel on" data-nwp="0">
             <div>
-              <div class="nw-k">01 · Optimizer</div>
-              <h3 class="nw-h">Sweep any strategy&rsquo;s settings instead of guessing them.</h3>
-              <p class="nw-p">Open a TradingView strategy&rsquo;s settings and Nexus reads its inputs off the screen. Give each one a minimum, maximum and step, and run it. Shown here on Knightfall, but it works on whatever strategy is on your chart.</p>
-              <ul class="nw-list"><li><span class="d">&#10003;</span>Reads the inputs of any TradingView strategy</li><li><span class="d">&#10003;</span>Min / max / step per setting, with a combo count and ETA</li><li><span class="d">&#10003;</span>Short, medium or long wait per combo</li></ul>
+              <div class="nw-k">01 · Dashboard</div>
+              <h3 class="nw-h">Your trading day at a glance.</h3>
+              <p class="nw-p">Net P&amp;L, win rate, profit factor and an equity curve from your journal, with market session clocks and this week&rsquo;s economic calendar in your own time zone.</p>
+              <ul class="nw-list"><li><span class="d">&#10003;</span>All accounts, or one at a time</li><li><span class="d">&#10003;</span>Fleet warnings right on the dashboard</li><li><span class="d">&#10003;</span>Economic calendar with impact filters</li></ul>
             </div>
-            <div class="nw-frame"><img src="nexus-optimizer-setup.png" alt="Nexus 2.0 Optimizer setup tab listing a strategy&rsquo;s inputs with minimum, maximum and step values, a combo count, an ETA and a Run Optimizer button" width="729" height="867" loading="lazy" decoding="async"></div>
+            <div class="nw-frame nw-wide"><img src="nexus3-dashboard.webp" alt="Nexus Dashboard with net P&amp;L, win rate, total trades, profit factor, fleet warnings, equity curve and economic calendar" width="1280" height="800" loading="lazy" decoding="async"></div>
           </div>
           <div class="nw-panel" data-nwp="1">
             <div>
-              <div class="nw-k">02 · Results</div>
-              <h3 class="nw-h">Every combination tested, then ranked.</h3>
-              <p class="nw-p">It works through each combination on your chart and ranks them. Click a row to apply those settings. Export the lot to CSV.</p>
-              <ul class="nw-list"><li><span class="d">&#10003;</span>Live progress: combo count, ETA and elapsed time</li><li><span class="d">&#10003;</span>Ranked results table</li><li><span class="d">&#10003;</span>One click applies a row to your chart</li></ul>
+              <div class="nw-k">02 · Fleet</div>
+              <h3 class="nw-h">Every prop account in one list.</h3>
+              <p class="nw-p">Balance, the cushion left above your drawdown floor, and a status for each account, based on the warning lines you set yourself on the site.</p>
+              <ul class="nw-list"><li><span class="d">&#10003;</span>Filter by attention, evals or funded</li><li><span class="d">&#10003;</span>Tap an account for floor, cushion and today</li><li><span class="d">&#10003;</span>Same warning math as the site</li></ul>
             </div>
-            <div class="nw-frame"><img src="nexus-optimizer-results.png" alt="Nexus 2.0 Optimizer results tab mid-sweep: combo 2 of 15, ETA, elapsed time, the combination being tested and a ranked results table" width="730" height="505" loading="lazy" decoding="async"></div>
+            <div class="nw-frame nw-wide"><img src="nexus3-fleet.webp" alt="Nexus Fleet listing prop accounts with balance, cushion bar and status" width="1280" height="800" loading="lazy" decoding="async"></div>
           </div>
           <div class="nw-panel" data-nwp="2">
             <div>
-              <div class="nw-k">03 · Journal</div>
-              <h3 class="nw-h">Your trades on a calendar, from the panel.</h3>
-              <p class="nw-p">Log a trade without leaving the chart. It lands in the site journal too. Filter by account, grade, result or tag.</p>
-              <ul class="nw-list"><li><span class="d">&#10003;</span>Monthly calendar with weekly totals</li><li><span class="d">&#10003;</span>Log trades from the panel</li><li><span class="d">&#10003;</span>Synced with the journal on the site</li></ul>
+              <div class="nw-k">03 · Optimizer</div>
+              <h3 class="nw-h">Sweep any strategy&rsquo;s settings instead of guessing them.</h3>
+              <p class="nw-p">Open a TradingView strategy&rsquo;s settings and Nexus reads its inputs. Tick the ones to test, give each a range, and run. Shown here on Knightfall, but it works on whatever strategy is on your chart.</p>
+              <ul class="nw-list"><li><span class="d">&#10003;</span>Reads the inputs of any TradingView strategy</li><li><span class="d">&#10003;</span>From / to / step, with a combo count and run time</li><li><span class="d">&#10003;</span>Best result on top, one tap applies it to your chart</li></ul>
             </div>
-            <div class="nw-frame"><img src="nexus-journal.png" alt="Nexus 2.0 Journal tab: a monthly calendar with per-day results, weekly totals and filters for result, account, type, grade and tag" width="732" height="867" loading="lazy" decoding="async"></div>
+            <div class="nw-frame nw-wide"><img src="nexus3-optimizer.webp" alt="Nexus Optimizer with a strategy&rsquo;s inputs, two selected with from, to and step ranges" width="1280" height="800" loading="lazy" decoding="async"></div>
           </div>
-          <p class="mt-4 text-[11px] text-zinc-600 leading-relaxed max-w-3xl">Screenshots from a demo account. Optimizer results are hypothetical backtests of the strategy on your chart and are not a performance result; the net P&amp;L column is blurred here on purpose.</p>
+          <div class="nw-panel" data-nwp="3">
+            <div>
+              <div class="nw-k">04 · Journal</div>
+              <h3 class="nw-h">Your trades on a calendar, from the panel.</h3>
+              <p class="nw-p">Log a trade without leaving the chart, or let connected Tradovate accounts fill it in every 30 minutes. It&rsquo;s the same journal as the site.</p>
+              <ul class="nw-list"><li><span class="d">&#10003;</span>Monthly calendar with weekly totals</li><li><span class="d">&#10003;</span>Filter by account, grade, result or tag</li><li><span class="d">&#10003;</span>Synced with the journal on the site</li></ul>
+            </div>
+            <div class="nw-frame nw-wide"><img src="nexus3-journal.webp" alt="Nexus Journal calendar with daily P&amp;L and weekly totals" width="1280" height="800" loading="lazy" decoding="async"></div>
+          </div>
+          <div class="nw-panel" data-nwp="4">
+            <div>
+              <div class="nw-k">05 · Tools</div>
+              <h3 class="nw-h">Read the chart. Size the trade.</h3>
+              <p class="nw-p">Upload up to three timeframes for an AI read, then size the position, plan your risk or simulate an evaluation with your own trades.</p>
+              <ul class="nw-list"><li><span class="d">&#10003;</span>AI chart, flow and news reads</li><li><span class="d">&#10003;</span>Position size for futures and forex</li><li><span class="d">&#10003;</span>Eval sim and risk planner</li></ul>
+            </div>
+            <div class="nw-frame nw-wide"><img src="nexus3-calculators.webp" alt="Nexus Calculators with position size, eval sim, strategy and risk tools" width="1280" height="800" loading="lazy" decoding="async"></div>
+          </div>
+          <p class="mt-4 text-[11px] text-zinc-600 leading-relaxed max-w-3xl">Screenshots from the extension. Dollar figures are journal and backtest entries shown to illustrate the layout, not a performance claim. Optimizer results are hypothetical backtests of the strategy on your chart.</p>
 
           <div class="mt-14 text-center">
             <p class="text-white font-black text-xl md:text-2xl">Your strategy. Better tools around it.</p>
@@ -163,7 +184,7 @@
 
       <!-- ══════════════ NEXUS IN DETAIL ══════════════
            Every claim here is checked against the extension source
-           (fsdx-nexus 2.0.47): the tab names are its own, the prop-firm
+           (fsdx-nexus 3.0.0): the section names are its own, the prop-firm
            presets are the ones in its dropdown, and the Optimizer really does
            read whatever strategy settings dialog is open rather than only ours.
            If the extension changes, re-check this section and the matching one
@@ -171,16 +192,23 @@
       <section id="nexus" class="py-12 px-6 md:px-12 border-t border-white/10">
         <div class="max-w-5xl mx-auto">
 
-          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-4 font-bold">// Nexus 2.0, in detail</div>
+          <div class="text-[11px] text-zinc-500 uppercase tracking-widest mb-4 font-bold">// Nexus, in detail</div>
           <h2 class="text-2xl md:text-3xl font-black tracking-tight mb-3">It is not a position size calculator with extras</h2>
           <p class="text-sm md:text-base text-zinc-400 leading-relaxed max-w-2xl mb-8">
-            Nexus is five tools in a side panel that sits against the TradingView chart. Most of it has
+            Nexus is a dashboard, a prop account tracker and a set of trading tools in a side panel that sits
+            against the TradingView chart &mdash; or in its own window, pinned on top of everything. Most of it has
             nothing to do with our indicators &mdash; it works on whatever you happen to be trading.
           </p>
 
           
 
           <div class="mt-8 grid md:grid-cols-3 gap-4 items-start">
+              <div class="border border-green-500/25 bg-green-500/[0.04] rounded-2xl p-5 md:col-span-3">
+                <div class="text-[10px] font-black text-green-400 uppercase tracking-widest mb-1.5">Dashboard &middot; Fleet</div>
+                <div class="text-white font-bold text-[15px] mb-2">Your trading and every prop account, without opening the site</div>
+                <p class="text-[13px] text-zinc-400 leading-relaxed">Nexus opens on a dashboard of your journal &mdash; net P&amp;L, win rate, profit factor, an equity curve, market session clocks and this week&rsquo;s economic calendar. Fleet lists every prop account with its balance, the cushion left above your drawdown floor and a status from the warning lines you set on the site. Tradovate trades import every 30 minutes, so both stay current on their own.</p>
+              </div>
+
 <div class="border border-green-500/25 bg-green-500/[0.04] rounded-2xl p-5">
                 <div class="text-[10px] font-black text-green-400 uppercase tracking-widest mb-1.5">Tools &middot; Optimizer</div>
                 <div class="text-white font-bold text-[15px] mb-2">Sweep a strategy's settings instead of guessing them</div>
@@ -247,7 +275,7 @@
               </div>
               <div class="flex items-start gap-2.5 border border-white/10 bg-black/40 rounded-xl px-4 py-3">
                 <span class="text-green-400 shrink-0 mt-0.5 font-black">&harr;</span>
-                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Accounts and defaults follow you.</span> Tracked accounts, your usual ticker, timeframe and contract count are set once and apply in both places.</p>
+                <p class="text-[12.5px] text-zinc-400 leading-relaxed"><span class="text-white font-semibold">Accounts, Fleet and defaults follow you.</span> Tracked accounts, your Fleet warning lines, your usual ticker, timeframe and contract count are set once and apply in both places.</p>
               </div>
               <div class="flex items-start gap-2.5 border border-green-500/30 bg-green-500/[0.06] rounded-xl px-4 py-3 sm:col-span-2">
                 <span class="text-green-400 shrink-0 mt-0.5 font-black">&harr;</span>
