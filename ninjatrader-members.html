@@ -467,24 +467,25 @@
 
       <section id="volume" class="nt-panel py-10 md:py-12 px-6 md:px-12" data-panel="volume">
         <div class="max-w-5xl mx-auto">
-          <h2 class="text-lg md:text-xl font-black text-white">FSD-X // Volume</h2>
-          <p class="text-xs text-zinc-500 mt-1">Install it, add it to the chart, read the colors.</p>
+          <h2 class="text-lg md:text-xl font-black text-white">FSD-X // Volume <span class="text-xs font-bold text-green-400 align-middle">v2.0</span></h2>
+          <p class="text-xs text-zinc-500 mt-1">Install it, add it to the chart, read the bars and the profile.</p>
           <div class="space-y-5 mt-6">
               <div class="nt-card" id="vol-install">
                 <h3 class="text-base font-black text-white mb-3">1. Install and add it</h3>
                 <ol class="nt-steps">
                   <li>Download the Volume <span class="nt-code">.zip</span> from your tools above. <b>Don't unzip it.</b></li>
                   <li>Control Center &rarr; <b>Tools &rarr; Import &rarr; NinjaScript Add-On</b>. Pick the zip, confirm, then <b>restart NinjaTrader</b>.</li>
-                  <li>On your MNQ or NQ chart, right-click &rarr; <b>Indicators…</b> (<span class="nt-code">Ctrl+I</span>). Double-click <b>FSDXVolume</b>. It opens in its own panel under the price chart.</li>
+                  <li>On your MNQ or NQ chart, right-click &rarr; <b>Indicators…</b> (<span class="nt-code">Ctrl+I</span>). Double-click <b>FSDXVolume</b>. It draws on the price panel: volume bars along the bottom, the profile on the left.</li>
                   <li>Use the same chart settings as Knightfall: 5-minute bars, <b>CME US Index Futures ETH</b> trading hours. <a href="#s2" class="text-green-400 font-bold">Chart settings &rarr;</a></li>
                   <li>Click <b>OK</b>, then save your workspace.</li>
                 </ol>
+                <p class="nt-p"><b>Updating from v1.0?</b> After the import and restart, remove FSD-X // Volume from your chart and add it again. v1 sat in its own panel; v2.0 draws on the price chart. Your ORB settings carry over.</p>
                 <p class="nt-p">Volume works on its own, or alongside Knightfall on the same chart.</p>
               </div>
 
               <div class="nt-card" id="vol-colors">
-                <h3 class="text-base font-black text-white mb-2">2. Reading the bars</h3>
-                <p class="nt-p mb-3">Every bar is volume. The color tells you what part of the session it's in, and whether it was a breakout bar. Brighter = at or above the average line. Faded = below it.</p>
+                <h3 class="text-base font-black text-white mb-2">2. Reading the bottom bars</h3>
+                <p class="nt-p mb-3">Every bar is volume, drawn see-through along the bottom of the price chart. The color tells you what part of the session it's in, and whether it was a breakout bar. Brighter = at or above the average line. Faded = below it.</p>
                 <div class="nt-scroll">
                   <table class="nt-table">
                     <tr><th>Color</th><th>Meaning</th></tr>
@@ -499,16 +500,46 @@
                 <p class="nt-p mt-3">Only the first breakout on each side is marked. A side re-arms after price closes back inside the range. Breakout marking runs for 6 hours after the opening range ends. The live bar can change color until it closes, same as TradingView. Closed bars never repaint.</p>
               </div>
 
+              <div class="nt-card" id="vol-profile">
+                <h3 class="text-base font-black text-white mb-2">3. Reading the profile</h3>
+                <p class="nt-p mb-3">The profile shows how much volume traded at each price, docked to the edge of the chart. Longer row = more volume at that price.</p>
+                <div class="nt-scroll">
+                  <table class="nt-table">
+                    <tr><th>Part</th><th>Meaning</th></tr>
+                    <tr><td><span style="color:#00E5B0">Teal rows</span></td><td>Volume at each price over the profile range (the current session by default)</td></tr>
+                    <tr><td><span style="color:#FFEB3B">Yellow layer</span></td><td>The part of that volume that traded during the opening range</td></tr>
+                    <tr><td><span style="color:#FF6A1F">Orange row and line</span></td><td>Point of control (POC): the price with the most volume in the range</td></tr>
+                  </table>
+                </div>
+                <p class="nt-p mt-3">The profile is built from the chart's bars, with each bar's volume spread across its high and low. On 1&ndash;5 minute charts it's close to a tick profile.</p>
+              </div>
+
               <div class="nt-card" id="vol-settings">
-                <h3 class="text-base font-black text-white mb-2">3. Settings</h3>
+                <h3 class="text-base font-black text-white mb-2">4. Settings</h3>
                 <p class="nt-p mb-3">The defaults match Knightfall on the New York open. If you change your opening range in Knightfall, change it here too.</p>
                 <div class="nt-scroll">
                   <table class="nt-table">
                     <tr><th>Setting</th><th>Default</th><th>What it does</th></tr>
+                    <tr><td colspan="3"><b>Profile</b></td></tr>
+                    <tr><td>Profile side</td><td>Left</td><td>Left, Right, or Off</td></tr>
+                    <tr><td>Profile range</td><td>Session</td><td>Session = current session. ORB onward = from the opening range. Visible bars = what's on screen</td></tr>
+                    <tr><td>Width (% of chart)</td><td>18</td><td>How far the longest row reaches into the chart</td></tr>
+                    <tr><td>Row height (px)</td><td>3</td><td>Smaller = more detail</td></tr>
+                    <tr><td>Opacity %</td><td>40</td><td>How see-through the profile is</td></tr>
+                    <tr><td>Show ORB-window layer</td><td>On</td><td>Yellow layer for opening range volume</td></tr>
+                    <tr><td colspan="3"><b>Point of control</b></td></tr>
+                    <tr><td>Show POC</td><td>On</td><td>Marks the price with the most volume</td></tr>
+                    <tr><td>Extend POC line across chart</td><td>On</td><td>Off = the line stays under the profile</td></tr>
+                    <tr><td>Show POC price label</td><td>On</td><td>Shows the POC price next to the profile</td></tr>
+                    <tr><td colspan="3"><b>Bottom bars</b></td></tr>
+                    <tr><td>Show volume bars along the bottom</td><td>On</td><td>The breakout / session volume bars</td></tr>
+                    <tr><td>Height (% of chart)</td><td>18</td><td>How tall the tallest bar gets</td></tr>
+                    <tr><td>Opacity %</td><td>55</td><td>How see-through the bars are</td></tr>
+                    <tr><td colspan="3"><b>ORB settings</b> (same as v1.0)</td></tr>
                     <tr><td>ORB Start Time (HHMM CT)</td><td>830</td><td>Start of the opening range, Chicago time</td></tr>
                     <tr><td>ORB Duration (Minutes)</td><td>15</td><td>Length of the opening range</td></tr>
                     <tr><td>Volume Average Length</td><td>20</td><td>Bars used for the average line, and for bright vs faded</td></tr>
-                    <tr><td>Show Average Line</td><td>On</td><td>Draws the average volume line</td></tr>
+                    <tr><td>Show Average Line</td><td>On</td><td>Draws the average volume line over the bottom bars</td></tr>
                     <tr><td>Show Session Zone Colors</td><td>On</td><td>Off = every non-breakout bar is teal</td></tr>
                     <tr><td>Breakout Close Override</td><td>On</td><td>Only marks a breakout when the close lands inside the min/max distance below</td></tr>
                     <tr><td>Min Close Outside ORB (pts)</td><td>0</td><td>How far past the range edge the bar must close. 0 = any close outside</td></tr>
