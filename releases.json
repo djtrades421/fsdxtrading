@@ -17,6 +17,30 @@
    "status": "shipped",
    "date": "2026-11-14",
    "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall v1.4.8: optional $ exits",
+   "body": "On TradingView. Two new settings, both off by default (0). With them off, every trade is identical to v1.4.7. <b>Daily Profit Cap ($)</b>: no new entries once the day&rsquo;s realized profit reaches your number, and a trade taken below it has its final target pulled in so the day can&rsquo;t go past it. Set it under your prop firm&rsquo;s consistency limit. <b>Trade Profit Target ($)</b>: replaces the trade&rsquo;s final target (TP2 in V2, TP1 in V1) with the price that makes that dollar amount at your size. It can be closer or farther than the normal target. TP1, partials and the trail trigger are unchanged. The dashboard shows the moved exit as an orange <b>$tgt</b> or <b>cap</b> row with its own R:R and $, the DLL row adds <b>CAP</b>, and an orange line marks the exit while the trade is open. Fills can slip past a target, so keep a buffer under your firm&rsquo;s limits. Both settings are under <b>Risk Management</b>, lower in the list. Saved settings carry over. TradingView updates on its own."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-14",
+   "type": "update",
+   "product": "NinjaTrader 8",
+   "title": "Knightfall NT8 v1.4.8: $ exits and a Discord heartbeat",
+   "body": "Same <b>Daily Profit Cap ($)</b> and <b>Trade Profit Target ($)</b> as TradingView, under <b>1. Risk Management</b>, both off by default (0). With them off, trades are identical to v1.4.7. When either setting moves the exit, the dashboard shows the real exit price in place of the target it replaced. New in <b>11. Discord Alerts</b>: a <b>Heartbeat</b> that posts &ldquo;Knightfall running&rdquo; every 30 minutes during the trading day (adjustable, 0 = off), with flat or in-trade status and a warning if market data stops. If the pings stop, check your PC. Knightfall also posts <b>Knightfall stopped</b> if the strategy is disabled or NinjaTrader closes. Fills can slip past a target, so keep a buffer under your firm&rsquo;s limits. Download v1.4.8 from the <a href=\"ninjatrader-members.html\">NinjaTrader members page</a> and re-import. Your templates carry over."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-14",
+   "type": "update",
+   "product": "Auto-Trader",
+   "title": "Auto-Trader v1.4.8: $ exits, trail line and compact panel",
+   "body": "Matches Knightfall v1.4.8. Same optional <b>Daily Profit Cap ($)</b> and <b>Trade Profit Target ($)</b>, both off by default (0). With them off, every order and webhook is identical to v1.4.7. When on, the $ price goes into the webhook, so in Bracket mode your broker target sits there. New <b>Trail starts</b> line shows where the trailing stop arms (TP1 in V2), and the SL line follows the trailed stop on the chart. The broker bracket still keeps the original stop. The target tag now reads TP1, TP2, $ TGT or DAY CAP. Status panel: new <b>Panel Layout</b> with a <b>Compact</b> option for phones, plus Target, Trail and Profit cap rows. After updating, re-check the Status Panel settings and <b>re-create your alert</b> to run on v1.4.8. <a href=\"autotrader.html\">ORB Auto-Trader</a>."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-14",
+   "type": "update",
    "product": "Volume",
    "title": "Volume v2.0: volume profile and POC on the price chart",
    "body": "On TradingView. The volume pane is unchanged: same breakout bars, session colors and average line, tuned to your ORB settings. New: a <b>volume profile</b> drawn on the price chart, on the left or right edge, showing how much traded at each price, with the opening range&rsquo;s volume as a yellow layer. The <b>point of control (POC)</b>, the price with the most volume, is marked in orange with an optional line across the chart and a price label. Profile and POC each turn on or off under <b>Volume Profile</b> and <b>Point of Control</b> in the settings. Breakout logic and ORB settings are unchanged. TradingView updates on its own."

@@ -282,7 +282,7 @@
               <div class="nt-card" id="s7">
                 <h3 class="text-base font-black text-white mb-3">4. Check and go live</h3>
                 <ul class="nt-steps">
-                  <li><b>Check the dashboard:</b> v1.4.7 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
+                  <li><b>Check the dashboard:</b> v1.4.8 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
                   <li><b>Run it on Sim101 first</b> for at least a few sessions. Check entries, stops, targets and the 3:30 PM flatten.</li>
                   <li><b>Keep NinjaTrader running and connected</b> during the session. It only manages trades while it's running. A VPS is recommended.</li>
                   <li><b>Built-in safety:</b> flattens at 3:30 PM CT (and before half-day closes), NinjaTrader's session-close exit runs as a backup, and if an order is rejected it cancels, flattens, turns itself off and alerts you.</li>
@@ -353,6 +353,8 @@
                     <tr><td>Auto Trade</td><td>On</td><td>On = places live orders. Off = signals only: a popup and sound with direction, grade, contracts, entry, stop and TP1. You place the trade yourself.</td></tr>
                     <tr><td>Risk Profile ($, full-size trade)</td><td>250</td><td>Dollar risk on a full-size trade. Used to size each trade. Contract value is read from the instrument: MNQ or NQ, nothing to set.</td></tr>
                     <tr><td>Daily Loss Limit ($)</td><td>0 (off)</td><td>Set your own. Stops new entries for the rest of the day once closed losses reach this amount. Never closes an open trade. We use about 1.5&ndash;2&times; risk.</td></tr>
+                    <tr><td>Daily Profit Cap ($)</td><td>0 (off)</td><td>Optional (v1.4.8+). Stops new entries once the day&rsquo;s realized profit reaches this, and pulls an open trade&rsquo;s final target in so the day can&rsquo;t go past it. For prop consistency rules, set it under the firm&rsquo;s limit. The account row shows <span class="nt-code">CAP $made/$cap</span>.</td></tr>
+                    <tr><td>Trade Profit Target ($)</td><td>0 (off)</td><td>Optional (v1.4.8+). Replaces the trade&rsquo;s final target (TP2 in V2, TP1 in V1) with the price that makes this many dollars at the trade&rsquo;s size. Can be closer or farther than the normal target. The dashboard shows it in orange as <b class="text-white">$tgt</b>. Fills can slip past a target, so keep a buffer under your firm&rsquo;s limits.</td></tr>
                     <tr><td>Flag Sizing</td><td>Auto</td><td>Halves size when 2 or more warning flags show on a breakout, never below 1 contract. Never skips a trade. <b class="text-white">Auto</b> = on in V1 and V2 when Risk Profile is $400 or more, off below $400, always off in V3 and Custom. <b class="text-white">Off</b> and <b class="text-white">Half At 2 Flags</b> force it either way.</td></tr>
                     <tr><td>Lock Side If First Breakout Fails Gate</td><td>On (every variant)</td><td>If the first breakout of the day on a side fails the evidence gate, that side is done for the session. The dashboard shows the reason. Variants never lock this one, so you can turn it off in any variant.</td></tr>
                     <tr><td>Static Sizing</td><td>Off</td><td>On = every valid trade gets full size regardless of grade</td></tr>
@@ -400,13 +402,15 @@
                     <tr><td>Send Breakouts</td><td>On</td><td>Each breakout with its grade, TAKE or SIGNAL, and the levels</td></tr>
                     <tr><td>Include NO TRADE Breakouts</td><td>Off</td><td>On = also breakouts it skipped, with the reason</td></tr>
                     <tr><td>Send Entries and Exits</td><td>On</td><td>Entry fills, partial exits, and the final exit with gross P&amp;L (before commission)</td></tr>
-                    <tr><td>Send Daily Loss Limit Hit</td><td>On</td><td>When the Daily Loss Limit stops new entries for the day</td></tr>
+                    <tr><td>Send Daily Loss Limit Hit</td><td>On</td><td>When the Daily Loss Limit (or the Daily Profit Cap) stops new entries for the day</td></tr>
+                    <tr><td>Heartbeat (minutes, 0 = off)</td><td>30</td><td>v1.4.8+. &ldquo;Knightfall running&rdquo; every 30 minutes from the ORB start to the flatten time on weekdays, with flat or in-trade status. Turns yellow if no market data has come in for 5+ minutes. If the pings stop, check your PC.</td></tr>
                   </table>
                 </div>
                 <ul class="nt-steps" style="margin-top:16px">
                   <li><b>Live only.</b> Nothing is sent for historical bars or chart reloads.</li>
                   <li><b>Playback and replay count as live.</b> Clear the URL before you replay, or it will post the replay trades.</li>
                   <li><b>Keep the URL private.</b> Anyone with it can post in that channel. Don't share templates or workspaces that contain it.</li>
+                  <li><b>Knightfall stopped</b> (v1.4.8+) posts when the strategy is disabled, removed or NinjaTrader closes, with the order error if NinjaTrader turned it off. A crash or power cut can&rsquo;t send anything, which is what the heartbeat is for.</li>
                   <li><b>Discord down?</b> Messages run in the background. A Discord outage never affects a trade.</li>
                   <li><b>Several accounts?</b> Each enabled copy posts its own messages. Use one channel per account, or paste the URL on one copy only.</li>
                 </ul>
@@ -428,7 +432,7 @@
                 <div class="nt-scroll mt-3">
                   <table class="nt-table">
                     <tr><th>Row</th><th>What it shows</th></tr>
-                    <tr><td>Header</td><td>Strategy name and version (v1.4.7). Match it to the version on this page.</td></tr>
+                    <tr><td>Header</td><td>Strategy name and version (v1.4.8). Match it to the version on this page.</td></tr>
                     <tr><td>Config strip</td><td>Variant (with <b class="text-white">locked</b>, or <b class="text-white">exits live</b> in V3) · Risk Profile · $/pt · <b class="text-white">FS</b> when Flag Sizing is on · <b class="text-white">GL off</b> when the side lock is turned off</td></tr>
                     <tr><td>Account row</td><td>The account it's trading (check it's the right one) · <b class="text-white">DLL</b> closed loss today / your limit, e.g. <span class="nt-code">DLL $0/$700</span> · AUTO or MANUAL · trades today out of the session max (2 in V2, 3 in V1 and V3). The DLL turns <b class="text-white">yellow</b> with <b class="text-white">low</b> or <b class="text-white">high</b> when the limit is under 1.5&times; or over 2.5&times; your Risk Profile. A sizing hint, not an error.</td></tr>
                     <tr><td>Status</td><td>Win rate of the last 40 trades against the normal 52&ndash;72% band: <b class="text-white">Normal</b>, <b class="text-white">Cold run</b> or <b class="text-white">Hot run</b>. Information only. It never changes size or stops trading.</td></tr>
