@@ -69,7 +69,7 @@
       <div class="max-w-5xl mx-auto">
         <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// NT8 &amp; TradingView v1.4.8</div>
         <h1 class="text-3xl md:text-5xl font-black tracking-tight">Variant settings</h1>
-        <p class="mt-4 vs-p max-w-2xl">Every value each variant locks, on NinjaTrader 8 and TradingView. All three variants run the New York open: 8:30 CT, 15-minute ORB. Use this to set up <b>Custom</b> from a tested starting point.</p>
+        <p class="mt-4 vs-p max-w-2xl">How to set up each platform, and every value each variant locks, on NinjaTrader 8 and TradingView. All three variants run the New York open: 8:30 CT, 15-minute ORB. Use this to set up <b>Custom</b> from a tested starting point.</p>
       </div>
     </section>
 
@@ -79,6 +79,29 @@
           <button type="button" role="tab" data-p="nt">NinjaTrader 8</button>
           <button type="button" role="tab" data-p="tv">TradingView: Knightfall</button>
           <button type="button" role="tab" data-p="at">TradingView: Auto-Trader</button>
+        </div>
+
+        <div class="vs-card vs-use" data-p="tv">
+          <h2 class="text-base font-black text-white mb-2">Using Knightfall on TradingView</h2>
+          <ol class="vs-steps">
+            <li><b>Chart:</b> MNQ1!, 5-minute, session <b>ETH</b>, B-ADJ <b>off</b>. Same as the backtest.</li>
+            <li><b>Variant:</b> V2 Runner is the default. V1 Stock exits the full position at TP1.</li>
+            <li><b>Risk Profile ($):</b> the most an A+ / A / B+ trade risks. Lower grades size down from it. Default $250.</li>
+            <li><b>Daily Loss Limit ($):</b> loads at 0 (off). Set it: $500 at $250 risk, $700 at $400. No new entries once it&rsquo;s hit.</li>
+            <li><b>Optional, both 0 = off:</b> <b>Daily Profit Cap ($)</b> stops new entries once today&rsquo;s closed profit reaches it and pulls a trade&rsquo;s target in so the day can&rsquo;t go past it. <b>Trade Profit Target ($)</b> replaces the final target (TP2 in V2, TP1 in V1) with the price that makes that amount at your size. Both sit under Risk Management, lower in the list. Fills can slip past a target, so keep a buffer under your firm&rsquo;s limits.</li>
+            <li><b>Phone:</b> Dashboard → Layout <b>Compact</b> cuts it to about 8 rows. Settings sync across devices on the same layout, so save a separate layout for your phone.</li>
+          </ol>
+          <h3 class="text-sm font-black text-white mt-5 mb-2">Reading the dashboard</h3>
+          <div class="vs-scroll"><table class="vs-table"><tr><td>Header</td><td style="white-space:normal"><b>FSD-X // KNIGHTFALL MK2 · v1.4.8</b>. Match the version to the release notes.</td></tr><tr><td>Config strip</td><td style="white-space:normal">Variant (<b>locked</b>, or <b>exits live</b> in V3) · Risk $ · $/pt · <b>FS</b> when Flag Sizing is on · <b>GL off</b> when the gate side lock is off.</td></tr><tr><td>Locked edits (yellow)</td><td style="white-space:normal">You changed a locked setting. It has no effect in V1, V2 or V3. Switch to Custom to use it.</td></tr><tr><td>DLL row</td><td style="white-space:normal">Closed loss today vs your limit, e.g. <b>DLL $0/$700</b>. Yellow <b>low</b> / <b>high</b> when the limit is under 1.5× or over 2.5× your Risk Profile. With a cap set it adds <b>CAP $made/$cap</b>. Right side: trades today out of the max, or <b>done today</b> once the limit or the cap is hit.</td></tr><tr><td>Status</td><td style="white-space:normal">Win rate of the last 40 trades vs the normal 52–72% band: Normal, Cold run or Hot run. Information only.</td></tr><tr><td>Market context</td><td style="white-space:normal">ORB range · 5D avg (green = ideal, yellow = outside, red = extreme) · Vol · the 4H trend (<b>[shift?]</b> = the live 4H bar is leaning to a new state) · flips.</td></tr><tr><td>Breakout header</td><td style="white-space:normal">BULL or BEAR BREAKOUT, the grade, the score and contracts at your risk.</td></tr><tr><td>Level ladder</td><td style="white-space:normal">TP2, watch level, TP1, 50%, entry and stop, with what set each one and its distance in points. When a $ setting moves the final exit, an orange <b>$tgt</b> or <b>cap</b> row replaces the target it moved.</td></tr><tr><td>R:R rows</td><td style="white-space:normal">Dollars at risk and each target&rsquo;s R and dollars at your size.</td></tr><tr><td>Exit strip</td><td style="white-space:normal">How it exits, e.g. <b>Exit: full → TP2</b> and <b>Stop: trail 100%/60</b> in V2. Adds <b>· $ tgt</b> or <b>· day cap</b> when a $ setting moved the exit.</td></tr><tr><td>Verdict and reason</td><td style="white-space:normal"><b>TAKE TRADE</b> or <b>NO TRADE</b>, then why: side locked, ORB too small, counter-trend, below the quality bar, or the weak factors.</td></tr><tr><td>Flags</td><td style="white-space:normal"><b>STOP</b> (a prior day/week level inside the stop) · <b>O/N</b> (overnight move against the 4H trend) · <b>TIME</b> (entry 15–60 min after the ORB), the count out of 3 and the size result.</td></tr></table></div>
+          <p class="vs-p mt-3">While a trade is open, an orange <b>$ TGT</b> or <b>DAY CAP</b> line marks the exit a $ setting moved. The table below is what each variant locks, if you want to run Custom.</p>
+        </div>
+        <div class="vs-card vs-use" data-p="nt">
+          <h2 class="text-base font-black text-white mb-2">Using Knightfall on NinjaTrader</h2>
+          <p class="vs-p">Setup, every setting, the dashboard row by row, Discord alerts and the heartbeat are in the <a href="ninjatrader-members.html#settings">NinjaTrader setup guide &rarr;</a>. The values below are what each variant locks, if you want to run Custom.</p>
+        </div>
+        <div class="vs-card vs-use" data-p="at">
+          <h2 class="text-base font-black text-white mb-2">Using the Auto-Trader</h2>
+          <p class="vs-p">Same engine as Knightfall, automated. Variants, Risk Profile, the Daily Loss Limit, the $ settings, PickMyTrade, the trade lines and the status panel are in the <a href="auto-trader-guide.html">Auto-Trader setup guide &rarr;</a>. The values below are what each variant locks, if you want to run Custom.</p>
         </div>
 
         <div class="vs-card">
@@ -102,7 +125,7 @@
           <h2 class="text-base font-black text-white mb-2">Always yours, in every variant</h2>
           <p class="vs-p" id="vs-yours"></p>
           <p class="vs-p mt-3">Changing a locked setting while V1, V2 or V3 is selected has no effect. Locked settings are tagged · Custom only or · Custom / V3 in their name on both platforms. On TradingView the dashboard also shows a yellow warning.</p>
-          <p class="vs-p mt-3"><a href="ninjatrader-members.html#settings">NinjaTrader setup guide &rarr;</a> &nbsp; <a href="releases.html">Release notes &rarr;</a></p>
+          <p class="vs-p mt-3"><a href="ninjatrader-members.html#settings">NinjaTrader setup guide &rarr;</a> &nbsp; <a href="auto-trader-guide.html">Auto-Trader guide &rarr;</a> &nbsp; <a href="releases.html">Release notes &rarr;</a></p>
         </div>
       </div>
     </section>
@@ -134,6 +157,7 @@
       document.getElementById('vs-table').innerHTML = html;
       document.getElementById('vs-pick').innerHTML = d.pick;
       document.getElementById('vs-yours').textContent = d.yours;
+      Array.prototype.forEach.call(document.querySelectorAll('.vs-use'), function (u) { u.style.display = u.getAttribute('data-p') === k ? '' : 'none'; });
       Array.prototype.forEach.call(document.querySelectorAll('#vs-tabs button'), function (b) {
         b.setAttribute('aria-selected', b.getAttribute('data-p') === k ? 'true' : 'false');
       });
