@@ -184,6 +184,14 @@
     },
     {
       "@type": "Question",
+      "name": "Can it stop for the day at a profit target?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, as of v1.4.8, on NinjaTrader, TradingView and the Auto-Trader. Two optional settings under Risk Management, both off (0) by default. Daily Profit Cap ($) stops new entries once the day’s realized profit reaches your number, and pulls a trade’s final target in so the day can’t go past it. Trade Profit Target ($) replaces the trade’s final target (TP2 in V2, TP1 in V1) with the price that makes that dollar amount at your size. Set them to whatever fits your account, or leave them off. With both off, every trade is identical to v1.4.7, and the results on this site are run with both off. For prop consistency rules, set the cap under your firm’s limit: fills can slip past a target."
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Does a different risk setting change the win rate?",
       "acceptedAnswer": {
         "@type": "Answer",
@@ -604,6 +612,16 @@
               </button>
               <div class="faq-answer">
                 <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">We run V2 Runner with a daily loss limit of about 1.5–2× risk per trade, and Flag Sizing on from $400 risk up. Our two setups are $250 risk with a $500 limit, and $400 risk with Flag Sizing on and a $700 limit. Risk per trade is your call: the <a href="results.html" class="text-green-400 hover:underline">results page</a> shows the drawdown to plan for at each size.</p>
+              </div>
+            </div>
+
+            <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+              <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                <span class="text-sm font-bold text-white leading-snug">Can it stop for the day at a profit target?</span>
+                <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+              </button>
+              <div class="faq-answer">
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Yes, as of <a href="releases.html" class="text-green-400 hover:underline">v1.4.8</a>, on NinjaTrader, TradingView and the Auto-Trader. Two optional settings under Risk Management, both off (0) by default. <span class="text-white font-semibold">Daily Profit Cap ($)</span> stops new entries once the day&rsquo;s realized profit reaches your number, and pulls a trade&rsquo;s final target in so the day can&rsquo;t go past it. <span class="text-white font-semibold">Trade Profit Target ($)</span> replaces the trade&rsquo;s final target (TP2 in V2, TP1 in V1) with the price that makes that dollar amount at your size. Set them to whatever fits your account, or leave them off. With both off, every trade is identical to v1.4.7, and the results on this site are run with both off. For prop consistency rules, set the cap under your firm&rsquo;s limit: fills can slip past a target.</p>
               </div>
             </div>
 
