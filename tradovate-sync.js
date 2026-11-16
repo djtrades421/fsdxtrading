@@ -193,7 +193,10 @@
     running = (async function () {
       var res = { added: 0, held: {}, unknown: {}, newAccounts: [], connected: false };
       if (!whopKey || !localStorage.getItem('fsdx_token')) return res;
-      var st = await authed('/status');
+      // Sends this browser's timezone so the server's 30-minute import writes
+      // trade times the same way this page does (and the duplicate check holds).
+      var tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+      var st = await authed('/status' + (tz ? '?tz=' + encodeURIComponent(tz) : ''));
       if (!st.ok || !st.data || !st.data.connections || !st.data.connections.length) return res;
       res.connected = true;
 
