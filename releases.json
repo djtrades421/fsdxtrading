@@ -15,6 +15,14 @@
   },
   {
    "status": "shipped",
+   "date": "2026-11-19",
+   "type": "update",
+   "product": "NinjaTrader 8",
+   "title": "Knightfall NT8 v1.4.9: ORB size on every trade",
+   "body": "Every trade now carries the ORB size and its 5-day average at the moment of entry. They&rsquo;re at the end of the <b>Entry name</b> in the Strategy Analyzer <b>Trades</b> tab and in the trade export: <b>L1-A-F1-S92-ORB190-AVG159</b> is a 190-point ORB against a 159-point average. The average includes that day&rsquo;s ORB, the same number the grading uses. To check one trade on the chart, put the breakout candle&rsquo;s open time in <b>Dashboard Snapshot</b> under <b>9. Dashboard</b> (e.g. 20261118 0850). No change to entries, stops, targets or settings. Download v1.4.9 from the <a href=\"ninjatrader-members.html\">NinjaTrader members page</a> and re-import. Your templates carry over."
+  },
+  {
+   "status": "shipped",
    "date": "2026-11-14",
    "type": "update",
    "product": "ORB Pro Knightfall",
