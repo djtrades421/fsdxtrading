@@ -50,6 +50,7 @@
     .sg-st.new{color:#fdba74;border-color:rgba(251,146,60,.5)}.sg-st.soon{color:#71717a;border-color:rgba(255,255,255,.12)}
     .sg-go{font-size:12.5px;font-weight:800;color:#4ade80;margin-top:12px}
     .sg-cta{margin-top:20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:18px 20px;background:rgba(9,9,11,.75)}
+    .sg-cta[hidden]{display:none}
     .sg-cta-t{font-size:17px;font-weight:900;color:#fff}.sg-cta-s{color:#a1a1aa;font-size:14px}
     .sg-cta-b{margin-left:auto;background:#22c55e;color:#000;font-weight:900;padding:12px 20px;border-radius:12px;text-decoration:none}
     .sg-cta-b:hover{background:#4ade80}
@@ -205,12 +206,11 @@
           <div class="text-green-400 uppercase tracking-[0.3em] text-xs font-bold mb-3">// The FSD-X system</div>
           <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight">Every tool. <span class="text-green-400">Your platform.</span></h1>
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
-            Knightfall runs the method. Every other product supports a step of it: context, execution, tracking, and people to trade it with. Run it on TradingView, NinjaTrader&reg; 8, or both. Pick a platform to see exactly what you get there.
+            Knightfall runs the method. Every other product supports a step of it: context, execution, tracking, and people to trade it with. Each membership runs on one platform: NinjaTrader&reg; 8 or TradingView. Pick yours to see exactly what you get.
           </p>
           <div role="tablist" aria-label="Platform" id="suite-plat" class="mt-7 inline-flex flex-wrap gap-1 p-1 rounded-xl border border-white/10 bg-zinc-950/70">
-            <button type="button" role="tab" data-plat="both" aria-selected="true" class="suite-plat-btn">Both platforms</button>
+            <button type="button" role="tab" data-plat="nt" aria-selected="true" class="suite-plat-btn">NinjaTrader 8</button>
             <button type="button" role="tab" data-plat="tv" aria-selected="false" class="suite-plat-btn">TradingView</button>
-            <button type="button" role="tab" data-plat="nt" aria-selected="false" class="suite-plat-btn">NinjaTrader 8</button>
           </div>
         </div>
       </section>
@@ -243,33 +243,38 @@
           </a>
           <a href="platform.html" class="sg-card suite-row">
             <span class="sg-th"><img src="shot-fleet.png" alt="" loading="lazy" decoding="async"></span>
-            <span class="sg-bd"><span class="sg-eb">Measure</span><span class="sg-tags"><span class="sg-tag">Fleet</span><span class="sg-tag">Journal</span><span class="sg-tag">Backtests</span></span><span class="sg-n">Member platform</span><span class="sg-d">Fleet manager, journal, Tradovate sync, importer and backtest workspace, on this site.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Both platforms</span><span class="sg-st inc" title="On this website. Works with either platform.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
+            <span class="sg-bd"><span class="sg-eb">Measure</span><span class="sg-tags"><span class="sg-tag">Fleet</span><span class="sg-tag">Journal</span><span class="sg-tag">Backtests</span></span><span class="sg-n">Member platform</span><span class="sg-d">Fleet manager, journal, Tradovate sync, importer and backtest workspace, on this site.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Either platform</span><span class="sg-st inc" title="On this website. Works with either platform.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           <a href="#tool-nexus" class="sg-card suite-row">
             <span class="sg-th"><img src="nexus3-dashboard.webp" alt="" loading="lazy" decoding="async"></span>
-            <span class="sg-bd"><span class="sg-eb">Measure</span><span class="sg-tags"><span class="sg-tag">Optimizer</span><span class="sg-tag">Eval sim</span></span><span class="sg-n">Nexus 3.0</span><span class="sg-d">Chrome side panel: a strategy optimizer that runs on any strategy, eval sim, sizing and journal.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Both platforms</span><span class="sg-st inc" title="Chrome extension. Membership unlocks Premium.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
+            <span class="sg-bd"><span class="sg-eb">Measure</span><span class="sg-tags"><span class="sg-tag">Optimizer</span><span class="sg-tag">Eval sim</span></span><span class="sg-n">Nexus 3.0</span><span class="sg-d">Chrome side panel: a strategy optimizer that runs on any strategy, eval sim, sizing and journal.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Either platform</span><span class="sg-st inc" title="Chrome extension. Membership unlocks Premium.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           <a href="schedule.html" class="sg-card suite-row">
             <span class="sg-th"><span class="sg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M5 5a10 10 0 0 0 0 14M19 5a10 10 0 0 1 0 14"/></svg></span></span>
-            <span class="sg-bd"><span class="sg-eb">Repeat</span><span class="sg-tags"><span class="sg-tag">8:30 CT</span><span class="sg-tag">Weekdays</span></span><span class="sg-n">Live trade room</span><span class="sg-d">Knightfall traded live with the grades called in real time.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Both platforms</span><span class="sg-st inc" title="In Discord.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
+            <span class="sg-bd"><span class="sg-eb">Repeat</span><span class="sg-tags"><span class="sg-tag">8:30 CT</span><span class="sg-tag">Weekdays</span></span><span class="sg-n">Live trade room</span><span class="sg-d">Knightfall traded live with the grades called in real time.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Either platform</span><span class="sg-st inc" title="In Discord.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           <a href="schedule.html#discord" class="sg-card suite-row">
             <span class="sg-th"><span class="sg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg></span></span>
-            <span class="sg-bd"><span class="sg-eb">Repeat</span><span class="sg-tags"><span class="sg-tag">Members only</span></span><span class="sg-n">VIP Discord</span><span class="sg-d">Members-only channels, including setup talk after the session.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Both platforms</span><span class="sg-st inc" title="Discord.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
+            <span class="sg-bd"><span class="sg-eb">Repeat</span><span class="sg-tags"><span class="sg-tag">Members only</span></span><span class="sg-n">VIP Discord</span><span class="sg-d">Members-only channels, including setup talk after the session.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Either platform</span><span class="sg-st inc" title="Discord.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           <a href="start-here.html" class="sg-card suite-row">
             <span class="sg-th"><span class="sg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg></span></span>
-            <span class="sg-bd"><span class="sg-eb">Repeat</span><span class="sg-tags"><span class="sg-tag">Video call</span></span><span class="sg-n">Monthly 1-on-1</span><span class="sg-d">A call each month to go over your setup and your trading.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Both platforms</span><span class="sg-st inc" title="Video call.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
+            <span class="sg-bd"><span class="sg-eb">Repeat</span><span class="sg-tags"><span class="sg-tag">Video call</span></span><span class="sg-n">Monthly 1-on-1</span><span class="sg-d">A call each month to go over your setup and your trading.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Either platform</span><span class="sg-st inc" title="Video call.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           <a href="course.html" class="sg-card suite-row">
             <span class="sg-th"><span class="sg-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/></svg></span></span>
-            <span class="sg-bd"><span class="sg-eb">Learn the method</span><span class="sg-tags"><span class="sg-tag">Course</span><span class="sg-tag">Knowledge base</span></span><span class="sg-n">Course &amp; training library</span><span class="sg-d">The VIP course and every walkthrough, from setup to reading the grade.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Both platforms</span><span class="sg-st inc" title="On this website.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
+            <span class="sg-bd"><span class="sg-eb">Learn the method</span><span class="sg-tags"><span class="sg-tag">Course</span><span class="sg-tag">Knowledge base</span></span><span class="sg-n">Course &amp; training library</span><span class="sg-d">The VIP course and every walkthrough, from setup to reading the grade.</span><span class="sg-pls"><div class="sg-pl"><span class="sg-pk">Either platform</span><span class="sg-st inc" title="On this website.">Included</span></div></span><span class="sg-go">Details &rarr;</span></span>
           </a>
           </div>
-          <div class="sg-cta">
+          <div class="sg-cta" data-cell="nt">
+            <span class="sg-cta-t">Everything above. One payment.</span>
+            <span class="sg-cta-s">Full membership on NinjaTrader 8: $499.99 once, or $129.99/mo with a 30-day free trial</span>
+            <a href="memberships.html#ninjatrader" class="sg-cta-b">See NinjaTrader 8 pricing</a>
+          </div>
+          <div class="sg-cta" data-cell="tv">
             <span class="sg-cta-t">Everything above. One membership.</span>
-            <span class="sg-cta-s">$129/mo &middot; 30-day free trial &middot; cancel anytime</span>
-            <a href="memberships.html" class="sg-cta-b">Start 30-Day Free Trial</a>
+            <span class="sg-cta-s">Full membership on TradingView: $129.99/mo with a 30-day free trial &middot; quarterly or annual</span>
+            <a href="memberships.html#tradingview" class="sg-cta-b">See TradingView pricing</a>
           </div>
           <p class="text-[11px] text-zinc-600 mt-4 leading-relaxed">NinjaTrader&reg; is a registered trademark of NinjaTrader Group, LLC. TradingView is a trademark of TradingView, Inc. Educational software, not financial advice. Futures trading involves substantial risk of loss. Chart screenshots are illustrative; dollar figures on them are position sizing, not results.</p>
         </div>
@@ -379,7 +384,7 @@
                 <div class="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent"></div>
                 <div>
                   <div class="text-[10px] text-green-500 uppercase tracking-widest mb-3">// How you get it</div>
-                  <p class="text-zinc-400 text-xs leading-relaxed">Knightfall MK2 puts the live signals, the grading, and the full backtest in one script, so what you see on the chart and what you see in the backtest always match. Both platforms come with the full membership, along with the live trading room, the companion tools and the VIP Discord channels. On NinjaTrader 8 it's also sold on its own as <a href="ninjatrader.html" class="text-green-400 hover:underline">Knightfall NT8</a>.</p>
+                  <p class="text-zinc-400 text-xs leading-relaxed">Knightfall MK2 puts the live signals, the grading, and the full backtest in one script, so what you see on the chart and what you see in the backtest always match. Each platform has its own full membership, with the live trading room, the companion tools and the VIP Discord channels; on NinjaTrader 8 it can be paid once. On NinjaTrader 8 Knightfall is also sold on its own as <a href="ninjatrader.html" class="text-green-400 hover:underline">Knightfall NT8</a>.</p>
                 </div>
                 <div class="space-y-1.5 pt-4 border-t border-white/5 mt-4">
                   <div class="flex justify-between text-xs"><span class="text-zinc-500">Supported Platforms</span><span class="text-zinc-300">TradingView, NinjaTrader 8</span></div>
@@ -1066,7 +1071,7 @@
     })();
   </script>
 
-  <script src="nav-loader.js?v=20261105a"></script>
+  <script src="nav-loader.js?v=20261122a"></script>
   <script src="checkout-gate.js?v=20261025a"></script>
   <script src="tv-notice.js"></script>
 <script>
@@ -1077,13 +1082,23 @@
     document.querySelectorAll('#by-platform [data-cell]').forEach(function (c) { c.hidden = v !== 'both' && c.getAttribute('data-cell') !== v; });
     document.querySelectorAll('#by-platform .suite-row').forEach(function (r) { r.classList.toggle('dim', v === 'nt' && r.hasAttribute('data-ntsoon')); });
     document.querySelectorAll('#by-platform img[data-src-nt]').forEach(function (i) { i.src = v === 'nt' ? i.getAttribute('data-src-nt') : i.getAttribute('data-src-tv'); });
-    try { localStorage.setItem('fsdx_suite_plat', v); } catch (e) {}
+    try { localStorage.setItem('fsdx_suite_plat', v); localStorage.setItem('fsdx_platform', v === 'nt' ? 'nt8' : 'tv'); } catch (e) {}
   }
+  /* Nov 22 2026: no "both" view. One platform at a time, shared with the
+     pricing picker (fsdx_platform): #ninjatrader / #tradingview in the URL
+     win, then the visitor's saved pick, then NinjaTrader 8. */
+  function fromHash() { var h = (location.hash || '').toLowerCase(); return /ninja|^#nt\b|^#nt8/.test(h) ? 'nt' : /tradingview|^#tv\b/.test(h) ? 'tv' : ''; }
+  window.addEventListener('hashchange', function () { var h = fromHash(); if (h) set(h); });
   document.addEventListener('click', function (e) {
     var b = e.target.closest && e.target.closest('#suite-plat [data-plat]');
     if (b) set(b.getAttribute('data-plat'));
   });
-  function init() { var v = 'both'; try { v = localStorage.getItem('fsdx_suite_plat') || 'both'; } catch (e) {} if (['both', 'tv', 'nt'].indexOf(v) === -1) v = 'both'; set(v); }
+  function init() {
+    var v = fromHash();
+    if (!v) { try { var p = localStorage.getItem('fsdx_platform'); v = p === 'nt8' ? 'nt' : p === 'tv' ? 'tv' : (localStorage.getItem('fsdx_suite_plat') || ''); } catch (e) {} }
+    if (v !== 'tv' && v !== 'nt') v = 'nt';
+    set(v);
+  }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
 </script>

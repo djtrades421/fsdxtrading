@@ -233,29 +233,33 @@ window.toggleMobileMenu = function () {
 // ONE list drives the desktop dropdowns AND the phone menu. Add a page here.
 // [href, title, one-line description, price or tag]
 var FSDX_MENU = [
-  { id: 'products', label: 'Memberships', w: 860, eyebrow: 'Or pick one membership', foot: ['compare.html', 'Compare all memberships side by side →'],
-    feature: { kind: 'plan', kicker: 'Most complete', title: 'Full Membership', href: 'memberships.html', price: '$129', per: '/mo',
-      checks: ['Knightfall on TradingView or NinjaTrader 8', '3 indicators + automation', 'Journal, accounts & backtests', 'Live room every weekday'],
-      cta: 'Start 30-Day Free Trial', ctaMember: 'See the membership →' },
+  /* Nov 22 2026 — platform first. Each platform is its own store: the full
+     membership for that platform, then every product built for it. Nothing
+     is listed as "both". Platform-agnostic products sit in the "either" row. */
+  { id: 'nt', label: 'NinjaTrader', w: 880, eyebrow: 'Built for NinjaTrader 8',
+    feature: { kind: 'plan', kicker: 'One-time payment', title: 'Full membership on NinjaTrader 8', href: 'memberships.html#ninjatrader', price: '$499.99', per: 'one time',
+      checks: ['Knightfall, automation built in', 'Volume, Raven, Nexus and the platform', 'Live room + VIP Discord', 'Or monthly: $129.99 with a 30-day free trial'],
+      cta: 'See NinjaTrader 8 pricing', ctaMember: 'See NinjaTrader 8 pricing →' },
     items: [
-      ['memberships.html', 'Full Membership', 'Knightfall, 3 indicators, automation, journal and the live room', '$129/mo', 'layers', 'orange'],
-      ['ninjatrader.html', 'Knightfall NT8', 'Knightfall on NinjaTrader 8, on its own', '$59.99/mo', 'terminal', 'orange'],
-      ['raven.html', 'Raven', 'ORB levels on TradingView or NinjaTrader 8', '$29.99/mo', 'trend', 'blue'],
-      ['nightwing.html', 'Nightwing', 'Member platform + Nexus 3.0', '$9.99/mo', 'moon', 'purple'],
-      ['free-indicators.html', 'Free Indicators', 'Free tools anyone can add to a chart', 'Free', 'star', 'green']
-  ]},
-  { id: 'platform', label: 'Products', w: 720, eyebrow: 'Explore',
-    feature: { kind: 'link', kicker: 'Start here', title: 'Every product, one page', href: 'suite.html',
-      text: 'All 11 products side by side, filtered by TradingView or NinjaTrader 8.', cta: 'See every product →' },
+      ['ninjatrader.html', 'Knightfall NT8 Standalone', 'Just Knightfall, the platform and Nexus. No live room', '$59.99/mo', 'terminal', 'orange'],
+      ['raven.html', 'Raven for NinjaTrader 8', 'ORB levels, entry, stop and targets drawn. No grading', '$29.99/mo', 'trend', 'blue'],
+      ['suite.html#ninjatrader', 'Everything on NinjaTrader 8', 'Every tool you get on NT8', '', 'layers', 'green'],
+      ['suite.html#tool-autotrader', 'Automation', 'Built into Knightfall. Turn Auto Trade on', '', 'bolt', 'orange'],
+      ['ninjatrader-members.html', 'NinjaTrader setup hub', 'Install, settings and downloads', '', 'monitor', 'gray']
+    ],
+    either: [['nightwing.html', 'Nightwing $9.99/mo'], ['free-indicators.html', 'Free indicators'], ['nightwing.html#nexus', 'Nexus 3.0'], ['releases.html', 'Releases'], ['compare.html', 'Compare plans']] },
+  { id: 'tv', label: 'TradingView', w: 880, eyebrow: 'Built for TradingView',
+    feature: { kind: 'plan', kicker: '30-day free trial', title: 'Full membership on TradingView', href: 'memberships.html#tradingview', price: '$129.99', per: '/ month',
+      checks: ['Knightfall + the Auto Trader script', 'Stack, Volume, Raven and the optimizer', 'Live room + VIP Discord', 'Or quarterly $349.99 · annual $1,299.99'],
+      cta: 'See TradingView pricing', ctaMember: 'See TradingView pricing →' },
     items: [
-      ['suite.html', 'Every product', 'All 11 products side by side', '', 'layers', 'orange'],
-      ['suite.html#tool-orbpro', 'Knightfall MK2', 'The graded system, TradingView + NT8', '', 'target', 'orange'],
-      ['suite.html#tool-autotrader', 'Automation', 'Built into Knightfall on NT8 · Auto Trader script on TradingView', '', 'bolt', 'orange'],
-      ['platform.html', 'The Platform', 'Fleet, journal, imports and backtests', '', 'monitor', 'blue'],
-      ['nightwing.html#nexus', 'Nexus 3.0', 'Dashboard, Fleet and optimizer beside your chart', '', 'list', 'purple'],
-      ['releases.html', 'Releases', "What shipped and what's next", 'rel', 'clock', 'green'],
-      ['tradingview-update.html', 'TradingView Update', 'Final terms are out — nothing changes for members', '', 'info', 'gray']
-  ]},
+      ['raven.html', 'Raven for TradingView', 'ORB levels on your TradingView username. No grading', '$29.99/mo', 'trend', 'blue'],
+      ['suite.html#tradingview', 'Everything on TradingView', 'Every tool you get on TradingView', '', 'layers', 'green'],
+      ['auto-trader-guide.html', 'Auto Trader', 'The script plus your bridge (PickMyTrade, TradersPost)', '', 'bolt', 'orange'],
+      ['nightwing.html#nexus', 'Strategy optimizer', 'Inside Nexus, for TradingView strategies', '', 'list', 'purple'],
+      ['tradingview-update.html', 'TradingView update', 'Seat terms and what changed for members', '', 'info', 'gray']
+    ],
+    either: [['nightwing.html', 'Nightwing $9.99/mo'], ['free-indicators.html', 'Free indicators'], ['nightwing.html#nexus', 'Nexus 3.0'], ['releases.html', 'Releases'], ['compare.html', 'Compare plans']] },
   { id: 'results', label: 'Results', w: 680, eyebrow: 'The proof',
     note: 'Backtests are hypothetical. Past performance doesn’t guarantee future results.',
     feature: { kind: 'chart', kicker: 'See the data', title: "Don't take our word for it",
@@ -431,6 +435,9 @@ var FSDX_DISCORD = 'https://discord.gg/RePdHESvSx';
     '.fxn-live{width:7px;height:7px;border-radius:50%;background:#4ade80}',
     '.fxn-note{margin-top:auto;padding:12px;border-top:1px solid rgba(120,160,210,.13);font-size:11.5px;line-height:1.5;color:#7D8B9E}',
     '.fxn-r .fxn-foot{margin-top:6px}',
+    '.fxn-either{margin-top:8px;padding:12px 13px 4px;border-top:1px solid rgba(120,160,210,.13);display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;font-size:12.5px}',
+    '.fxn-either span{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7D8B9E}',
+    '.fxn-either a{color:#e4e4e7;font-weight:700;text-decoration:none}.fxn-either a:hover{color:#4ade80}',
     /* phone: same menu inside the slide-out sidebar */
     '#fxn-mob{margin-top:18px}',
     '@media (min-width:768px){#fxn-mob{display:none}}',
@@ -526,6 +533,7 @@ function fsdxMountTopNav() {
       + '<div class="fxn-rl' + (m.cols === 2 ? ' c2' : '') + '">' + rows + '</div>'
       + (m.foot ? '<a role="menuitem" href="' + m.foot[0] + '" class="fxn-foot">' + fsdxNavEsc(m.foot[1]) + '</a>' : '')
       + (m.note ? '<span class="fxn-note">' + fsdxNavEsc(m.note) + '</span>' : '')
+      + (m.either ? '<div class="fxn-either"><span>Works with either</span>' + m.either.map(function (e) { return '<a role="menuitem" href="' + e[0] + '">' + fsdxNavEsc(e[1]) + '</a>'; }).join('') + '</div>' : '')
       + '</div>';
     return '<div class="fxn-m' + (isHere ? ' here' : '') + '" data-m="' + m.id + '">'
       + '<button type="button" class="fxn-b" aria-haspopup="true" aria-expanded="false" aria-controls="fxn-p-' + m.id + '">' + fsdxNavEsc(m.label) + FSDX_CHEV + '</button>'
@@ -616,13 +624,15 @@ function fsdxMountMobileMenu(mount) {
   var here = fsdxNavPage();
   var html = FSDX_MENU.map(function (m) {
     var isHere = m.items.some(function (it) { return it[0] === here; }) || (m.foot && m.foot[0] === here);
-    var openIt = isHere || (guest && m.id === 'products' && !FSDX_MENU.some(function (x) { return x.items.some(function (it) { return it[0] === here; }); }));
+    var openIt = isHere || (guest && m.id === 'nt' && !FSDX_MENU.some(function (x) { return x.items.some(function (it) { return it[0] === here; }); }));
     var links = m.items.map(function (it) {
       var price = it[3] && (it[3] === 'Free' || it[3].charAt(0) === '$') ? '<span class="fxn-pr" style="margin-left:auto">' + fsdxNavEsc(it[3]) + '</span>' : '';
       return '<a href="' + it[0] + '" class="fxn-ml' + (it[0] === here ? ' cur' : '') + '">' + fsdxNavEsc(it[1])
         + '<span class="fxn-tags">' + fsdxNavTag(it[3]) + '</span>' + price + '</a>';
     }).join('');
     var foot = m.foot ? '<a href="' + m.foot[0] + '" class="fxn-mfoot">' + fsdxNavEsc(m.foot[1]) + '</a>' : '';
+    if (m.feature && m.feature.kind === 'plan') links = '<a href="' + m.feature.href + '" class="fxn-ml">' + fsdxNavEsc(m.feature.title) + '<span class="fxn-pr" style="margin-left:auto">' + fsdxNavEsc(m.feature.price) + '</span></a>' + links;
+    if (m.either) foot += '<div class="fxn-mfoot" style="color:#7D8B9E;font-weight:600">Works with either: ' + m.either.map(function (e) { return '<a href="' + e[0] + '" style="color:#e4e4e7">' + fsdxNavEsc(e[1]) + '</a>'; }).join(' · ') + '</div>';
     return '<div class="fxn-mg' + (openIt ? ' open' : '') + '">'
       + '<button type="button" class="fxn-mh" aria-expanded="' + (openIt ? 'true' : 'false') + '">' + fsdxNavEsc(m.label) + FSDX_CHEV + '</button>'
       + '<div class="fxn-mb">' + links + foot + '</div></div>';
