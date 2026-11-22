@@ -747,8 +747,8 @@ function fsdxSaleNotice() {
   if (SKIP.indexOf(page) !== -1) return;
   var API = 'https://nexus-validator.dfuentes4211.workers.dev/api/ticker';
   var esc = function (x) { return String(x == null ? '' : x).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
-  var PRODUCT_PAGE = { membership: 'memberships.html', ntsolo: 'ninjatrader.html', raven: 'raven.html', nightwing: 'nightwing.html' };
-  var PRODUCT_NAME = { membership: 'the membership', ntsolo: 'Knightfall NT8', raven: 'Raven', nightwing: 'Nightwing' };
+  var PRODUCT_PAGE = { membership: 'memberships.html#tradingview', ntpro: 'memberships.html#ninjatrader', ntsolo: 'ninjatrader.html', raven: 'raven.html#tradingview', ravennt: 'raven.html#ninjatrader', nightwing: 'nightwing.html' };
+  var PRODUCT_NAME = { membership: 'the TradingView membership', ntpro: 'the NinjaTrader 8 membership', ntsolo: 'Knightfall NT8', raven: 'Raven', ravennt: 'Raven for NinjaTrader 8', nightwing: 'Nightwing' };
   function prods(s) { return (s.products && s.products.length) ? s.products : ['membership']; }
   function live(s) { var e = s && (s.expiresAt || s.endsAt); return !(e && new Date(e).getTime() < Date.now()); }
 

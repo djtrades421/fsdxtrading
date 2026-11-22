@@ -598,11 +598,11 @@
               </div>
               <div>
                 <label class="block text-xs text-zinc-500 uppercase tracking-wider mb-1.5">Products</label>
-                <div class="flex flex-wrap gap-x-5 gap-y-2" id="sale-products-input">
-                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="membership" class="accent-green-500 w-4 h-4" checked> Membership</label>
-                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="ntsolo" class="accent-green-500 w-4 h-4"> Knightfall NT8</label>
-                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="raven" class="accent-green-500 w-4 h-4"> Raven</label>
-                  <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="nightwing" class="accent-green-500 w-4 h-4"> Nightwing</label>
+                <div id="sale-products-input" style="display:flex;flex-direction:column;gap:10px">
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px"><span style="width:110px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#71717a">NinjaTrader 8</span><label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="ntpro" class="accent-green-500 w-4 h-4"> Membership (one-time + plans)</label><label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="ntsolo" class="accent-green-500 w-4 h-4"> Knightfall Standalone</label><label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="ravennt" class="accent-green-500 w-4 h-4"> Raven</label></div>
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px"><span style="width:110px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#71717a">TradingView</span><label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="membership" class="accent-green-500 w-4 h-4"> Membership</label><label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="raven" class="accent-green-500 w-4 h-4"> Raven</label></div>
+                  <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px"><span style="width:110px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#71717a">Either</span><label class="flex items-center gap-2 cursor-pointer select-none text-sm text-zinc-300"><input type="checkbox" value="nightwing" class="accent-green-500 w-4 h-4"> Nightwing</label></div>
+                  <p style="font-size:11px;color:#71717a;margin:0">The ticker link goes to the first product you tick. Tick both memberships and it goes to the platform picker.</p>
                 </div>
               </div>
               <label class="flex items-start gap-2.5 cursor-pointer select-none">
@@ -2768,7 +2768,7 @@
     }
 
 
-    const SALE_PRODUCT_NAMES = { membership: 'Membership', ntsolo: 'Knightfall NT8', raven: 'Raven', nightwing: 'Nightwing' };
+    const SALE_PRODUCT_NAMES = { membership: 'Membership · TradingView', ntpro: 'Membership · NinjaTrader 8', ntsolo: 'Knightfall NT8 Standalone', raven: 'Raven · TradingView', ravennt: 'Raven · NinjaTrader 8', nightwing: 'Nightwing' };
     let _sales = [], _editSaleId = null;
     function saleEsc(x) { return String(x == null ? '' : x).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c])); }
 
