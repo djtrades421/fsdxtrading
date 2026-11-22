@@ -43,6 +43,12 @@
     endsText: 'Nov 30, 11:59 PM CT',
     ends: Date.UTC(2026, 11, 1, 5, 59, 59)   // Nov 30 2026 11:59:59 PM CT
   }; */
+  /* FSD-X Trading Pro — TradingView (prod_oMd0Gd3AhJ3FP). */
+  var TV = {
+    monthly:   { plan: 'plan_l0KkbipfcgnAp', price: '$129.99',   per: '/ month' },
+    quarterly: { plan: 'plan_RYMEBnqYNmFEZ', price: '$349.99',   per: '/ 3 months' },
+    annual:    { plan: 'plan_1CAj5BxdzpT1W', price: '$1,299.99', per: '/ year' }
+  };
   var STANDALONE = { price: '$59.99', per: '/ month', href: 'ninjatrader.html#pricing' };
   var DM = 'https://discord.gg/RePdHESvSx';
   var KEY = 'fsdx_platform';
@@ -210,6 +216,53 @@
       '<div class="pp-row" style="--n:' + row.length + '">' + row.join('') + '</div></div>';
   }
 
+  /* ── TradingView membership cards — same layout as NT8 ─────────────────── */
+  function tv() {
+    var m = TV.monthly;
+    var inc = [
+      ['Knightfall MK2', 'Invite-only strategy with the on-chart backtester, on your TradingView username.'],
+      ['Auto Trader script', 'Sends Knightfall\u2019s trades to your bridge (PickMyTrade, TradersPost) and broker.'],
+      ['Stack, Volume and Raven', 'The FSD-X TradingView indicators that come with the membership.'],
+      ['Member platform, Nexus and the optimizer', 'Journal, backtest workspace, importer, account tracker and the strategy optimizer.'],
+      ['Live trade room and VIP Discord', 'Trade the open with us every market morning.'],
+      ['Setup and training library', 'Walkthroughs, the Auto Trader guide and default settings.']
+    ];
+    var feat =
+      '<div class="pp-feat">' +
+        '<div class="pp-feat-l">' +
+          '<div class="pp-badges"><span class="pp-b g">30-day free trial</span></div>' +
+          '<div class="pp-eyebrow">FSD-X Trading Pro &middot; TradingView &middot; Monthly</div>' +
+          '<h3 class="pp-h">Try it free<br>for 30 days.</h3>' +
+          '<div class="pp-price"><b>' + m.price + '</b><span>' + m.per + ' after the trial</span></div>' +
+          '<p class="pp-p">The full FSD-X membership on TradingView. No charge until day 31. Cancel anytime.</p>' +
+          btn(m, 'Start 30-day free trial', 'autotrader') +
+          '<div class="pp-small">New members only &middot; TradingView username asked at checkout</div>' +
+          '<div class="pp-small"><b>One trial per person</b> &middot; <a href="disclosures.html" style="color:#4ade80">Terms</a></div>' +
+        '</div>' +
+        '<div class="pp-feat-r">' +
+          '<div class="pp-inc">What&rsquo;s included</div>' +
+          '<ul class="pp-ul">' + inc.map(function (i) { return '<li>' + TICK + '<div><b>' + i[0] + '</b><span>' + i[1] + '</span></div></li>'; }).join('') + '</ul>' +
+          '<p class="pp-note">TradingView only. The NinjaTrader&nbsp;8 version is its own membership. <a href="suite.html#tradingview" style="color:#4ade80">Full breakdown &rarr;</a></p>' +
+        '</div>' +
+      '</div>';
+    var cards = [
+      { tag: 'Season pass', n: 'Quarterly', p: TV.quarterly, d: 'Full membership. Billed at checkout, no trial.', b: 'Get quarterly' },
+      { tag: 'Best value', n: 'Annual', p: TV.annual, d: 'Full membership. Your rate is locked while you stay subscribed.', b: 'Get annual' }
+    ];
+    var row = cards.map(function (c) {
+      return '<div class="pp-card"><div><div class="pp-tag">' + c.tag + '</div><div class="pp-n">' + c.n + '</div>' +
+        '<div class="pp-amt">' + c.p.price + '<span>' + c.p.per + '</span></div><div class="pp-d">' + c.d + '</div></div>' +
+        btn(c.p, c.b, 'autotrader', 'ghost') + '</div>';
+    });
+    row.push('<div class="pp-card alt"><div><div class="pp-tag">On NinjaTrader 8?</div><div class="pp-n">Pay once instead</div>' +
+      '<div class="pp-amt">' + NT8.onetime.price + '<span>one time</span></div>' +
+      '<div class="pp-d">The one-time payment is for the NinjaTrader&nbsp;8 membership only.</div></div>' +
+      '<a class="pp-cta ghost" href="#ninjatrader" data-pick="nt8">See NinjaTrader 8 options &rarr;</a></div>');
+    return '<div class="pp-wrap">' + feat +
+      '<div class="pp-row-h"><b>Ready to commit?</b><span>Longer terms bill at checkout.</span></div>' +
+      '<div class="pp-row" style="--n:' + row.length + '">' + row.join('') + '</div></div>';
+  }
+
   /* ── Picking ───────────────────────────────────────────────────────────── */
   function fromHash() {
     var h = (location.hash || '').toLowerCase();
@@ -237,6 +290,10 @@
       if (el.dataset.ppDone) return; el.dataset.ppDone = '1';
       if (el.hasAttribute('data-compact')) { el.innerHTML = COMPACT; return; }
       el.innerHTML = tiles(); hasTiles = true;
+    });
+    document.querySelectorAll('[data-tv-pricing]').forEach(function (el) {
+      if (el.dataset.ppDone) return; el.dataset.ppDone = '1';
+      el.innerHTML = tv();
     });
     document.querySelectorAll('[data-nt8-pricing]').forEach(function (el) {
       if (el.dataset.ppDone) return; el.dataset.ppDone = '1';
