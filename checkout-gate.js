@@ -73,7 +73,7 @@
   // so no link can surface mismatched or legacy ("Plus") terms.
   var UNIFIED = {
     eyebrow: "Before You Continue",
-    title: "FSD-X Membership — Terms of Service",
+    title: "FSD-X Trading Pro — TradingView — Terms of Service",
     points: [
       "This is one FSD-X membership covering everything — the full indicator suite, Strategy Optimizer, Nexus, alerts, the live trade room, and the ORB Auto-Trader. All of it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed — the tools assist your process, they do not guarantee performance.",
@@ -81,12 +81,12 @@
       "FSD-X is <strong>not responsible</strong> for those third parties — their reliability, fills, latency, or outages — or for any activity once the Auto-Trader is running on your account. A missed, delayed, or failed alert can leave unintended open positions, so <strong>you are responsible for your own safeguards</strong> (broker-side stop, end-of-day flatten, risk limits) and for monitoring your account.",
       "<strong>You</strong> are responsible for confirming automated trading is permitted by your broker and prop firm and for complying with their rules. Validate on a <strong>demo/paper account</strong> before any live use.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. Cancel during any free trial to avoid being charged.",
-      "<strong>Choose your platform: TradingView or NinjaTrader 8.</strong> Enter your TradingView username for TradingView, or the email you log into NinjaTrader with for NinjaTrader. Want both? DM us on Discord first.",
+      "<strong>This membership is for TradingView.</strong> Enter your TradingView username at checkout. It does not include the NinjaTrader 8 version, which is sold as its own membership (FSD-X Trading Pro — NinjaTrader 8). Need both platforms? DM us on Discord first.",
       "Access is limited to <strong>one person, one Discord account and one TradingView username</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
       "<strong>By purchasing and accepting these terms, you take full responsibility for all trades, positions, losses, and outcomes on your account.</strong> Once accepted, that responsibility is yours — FSD-X has no liability for any result.",
       "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Auto-Trader Addendum."
     ],
-    agree: "I accept the FSD-X Membership Terms — including the Auto-Trader Addendum — and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
+    agree: "I accept the FSD-X Trading Pro — TradingView Terms — including the Auto-Trader Addendum — and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
     proceed: "Proceed to Checkout"
   };
 
@@ -163,6 +163,46 @@
     proceed: "Continue to Checkout"
   };
 
+
+  /* ---- FSD-X Trading Pro — NinjaTrader 8 (Nov 22 2026) ----
+     The full membership, sold NinjaTrader-only (prod_zFDnU37z8a40i). Same
+     automation language as the standalone — on NT8 the strategy itself
+     places the order — plus the live room and VIP Discord. NTPRO is the
+     recurring plans; NTONETIME is the one-time payment and adds the money
+     terms: no trial, final sale, what one payment does and does not cover. */
+  var NT_COMMON = [
+    "FSD-X Trading Pro — NinjaTrader 8 is the <strong>full FSD-X membership on NinjaTrader 8</strong>: Knightfall with automation built in, the FSD-X NinjaTrader indicators (Volume and Raven), the member platform, Nexus, the live trade room and the VIP Discord. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
+    "It is <strong>NinjaTrader 8 only</strong>. It does not include the TradingView scripts, the TradingView Auto-Trader, Stack V1 or the Strategy Optimizer. Need both platforms? DM us on Discord first.",
+    "With <strong>Auto Trade on, the strategy places and manages orders</strong> in the NinjaTrader account you select. <strong>You</strong> choose that account, the risk setting and the daily loss limit, and you are responsible for monitoring it. Run it on a sim account first.",
+    "<strong>You</strong> are responsible for confirming that automated trading is allowed by your broker and prop firm. Rules vary and change.",
+    "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed. Software, data feeds, connections and platforms can fail. Any backtest or historical figures on this site are <strong>hypothetical</strong>.",
+    "Your license is tied to the <strong>email you log into NinjaTrader with</strong>, entered at checkout. Access is limited to <strong>one person and one Discord account</strong>; sharing, reselling, or redistributing it ends access without refund."
+  ];
+  var NTPRO = {
+    eyebrow: "Before You Continue",
+    title: "FSD-X Trading Pro — NinjaTrader 8 — Terms of Service",
+    points: NT_COMMON.concat([
+      "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
+      "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
+    ]),
+    agree: "I accept the FSD-X Trading Pro — NinjaTrader 8 Terms and take full responsibility for all activity, losses, and outcomes on my own account, including any orders the strategy places. FSD-X is not liable for any result.",
+    proceed: "Continue to Checkout"
+  };
+  var NTONETIME = {
+    eyebrow: "Before You Continue",
+    title: "One-Time Payment — FSD-X Trading Pro — NinjaTrader 8",
+    points: [
+      "This is a <strong>one-time payment</strong> for FSD-X Trading Pro on NinjaTrader 8. There is <strong>no free trial</strong>, no subscription and no renewal. <strong>All sales are final and the payment is non-refundable.</strong>",
+      "It covers the NinjaTrader 8 license for Knightfall, the FSD-X NinjaTrader indicators available today, the member platform, Nexus, the live trade room and the VIP Discord. Updates and new versions are released at FSD-X's discretion.",
+      "It does <strong>not</strong> include future paid products, paid coaching, or the TradingView version, unless FSD-X says so in writing.",
+      "Access continues for as long as FSD-X offers this membership and <strong>NinjaTrader 8 and NinjaTrader's vendor licensing support it</strong>. Access may be revoked if these terms are broken."
+    ].concat(NT_COMMON.slice(1), [
+      "I have read and agree to the full <a href='disclosures.html#one-time' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the One-Time Payment terms."
+    ]),
+    agree: "I understand this is a one-time, non-refundable payment with no trial, I accept the One-Time Payment Terms, and I take full responsibility for all activity, losses, and outcomes on my own account, including any orders the strategy places.",
+    proceed: "Continue to Checkout"
+  };
+
   /* ---- Lifetime — one-time, capped, TradingView transition (Oct 2026) ----
      Same product as the membership, so the Auto-Trader language stays. What
      changes is the money: one payment, no trial, no refund, and a plain
@@ -189,7 +229,8 @@
   // different, and each needs its own terms for the same reason.
   var TERMS = {
     membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED,
-    nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME, ntsolo: NTSOLO
+    nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME, ntsolo: NTSOLO,
+    ntpro: NTPRO, ntonetime: NTONETIME
   };
 
   var pendingUrl = null;

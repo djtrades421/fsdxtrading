@@ -71,13 +71,14 @@
     canceling:       { l: 'Cancelling',   c: 'p-amb', rank: 4 },
     trial_cancelled: { l: 'Trial cancel', c: 'p-amb', rank: 4 },
     lifetime:        { l: 'Lifetime',     c: 'p-pur', rank: 5 },
+    onetime:         { l: 'One-Time',     c: 'p-pur', rank: 5 },   // NT8 One-Time Payment (Nov 2026)
     yearly:          { l: 'Yearly',       c: 'p-grn', rank: 2 },
     legacy:          { l: 'Legacy',       c: 'p-pur', rank: 5 },
     inactive:        { l: 'Inactive',     c: 'p-mut', rank: 7 },
     cancelled:       { l: 'Ended',        c: 'p-mut', rank: 8 },
     site_only:       { l: 'Site only',    c: 'p-mut', rank: 6 },
   };
-  var LIVE = ['active', 'trialing', 'canceling', 'trial_cancelled', 'past_due', 'lifetime', 'yearly', 'legacy'];
+  var LIVE = ['active', 'trialing', 'canceling', 'trial_cancelled', 'past_due', 'lifetime', 'onetime', 'yearly', 'legacy'];
 
   function productOf(r) { return r.productName || r.planName || r.accessType || ''; }
   function family(p) {
@@ -95,7 +96,7 @@
   var TV_LIVE = ['active', 'trialing', 'canceling', 'trial_cancelled', 'yearly', 'legacy'];
   function tvFamily(product) {
     var x = low(product);
-    if (/ninja/.test(x) && /standalone/.test(x)) return false;
+    if (/ninja/.test(x)) return false;   // NT8 standalone and Pro — NinjaTrader 8: never a TradingView seat
     if (/nightwing|nexus/.test(x)) return false;
     return /raven|pro|plus|vip|lifetime|knightfall|orb/.test(x);
   }
@@ -182,8 +183,10 @@
       var p = map[k], r = p.r || {}, s = p.site || {};
       p.name = r.name || [s.firstName, s.lastName].filter(Boolean).join(' ') || (p.nt && p.nt.name) || r.whopUsername || p.email || '—';
       p.status = p.r ? (r.status || 'inactive') : (p.site ? 'site_only' : 'inactive');
-      p.live = LIVE.indexOf(p.status) !== -1;
       p.product = productOf(r) || (s.tier ? 'Site · ' + s.tier : '');
+      // A completed one-time purchase of Pro — NinjaTrader 8 is the One-Time Payment, not the old Lifetime offer.
+      if (p.status === 'lifetime' && /ninja/.test(low(p.product))) p.status = 'onetime';
+      p.live = LIVE.indexOf(p.status) !== -1;
       p.fam = family(p.product);
       p.paid = p.pays.filter(function (x) { return x.status === 'paid'; })
         .reduce(function (t, x) { return t + (x.amount || 0) - (x.refundedAmount || 0); }, 0);
@@ -306,6 +309,7 @@
     ['cancel', 'Cancelling', function (p) { return p.status === 'canceling' || p.status === 'trial_cancelled'; }],
     ['pastdue', 'Past due', function (p) { return p.status === 'past_due' || p.failedOpen; }],
     ['lifetime', 'Lifetime', function (p) { return p.status === 'lifetime'; }],
+    ['onetime', 'One-Time', function (p) { return p.status === 'onetime'; }],
     ['nosite', 'No site account', function (p) { return p.live && !p.site; }],
     ['ended', 'Ended', function (p) { return p.status === 'cancelled' || p.status === 'inactive'; }],
     ['all', 'Everyone', function () { return true; }],

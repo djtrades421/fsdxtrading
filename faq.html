@@ -35,9 +35,30 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    {"@type": "Question", "name": "Is FSD-X just an indicator?", "acceptedAnswer": {"@type": "Answer", "text": "No. FSD-X is a systematic futures trading method built on the NQ/MNQ opening range breakout. Knightfall runs six steps in the same order every session: it identifies the range, evaluates the context, grades the breakout A+ to F, sizes the trade by grade, sets the entry, stop and targets, and every trade is measured in the backtest, the live record and your own journal. The other products support those steps."}},
-    {"@type": "Question", "name": "What does “systematic” mean here?", "acceptedAnswer": {"@type": "Answer", "text": "The same inputs give the same read. The grade, the size, the stop and the targets come from fixed rules, not from how the morning feels, so the process is repeatable. It still doesn't mean every trade wins: losing trades and losing stretches are part of it, and the Results page shows them."}},
-    {"@type": "Question", "name": "Is it the same if I trade it by hand or automate it?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The method is identical either way. On NinjaTrader 8, automation is a switch inside Knightfall. On TradingView, the Auto Trader script executes the same setups through a bridge service. Manual or automated, the grade, size, stop and targets are the same."}},
+    {
+      "@type": "Question",
+      "name": "Is FSD-X just an indicator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. FSD-X is a systematic futures trading method built on the NQ/MNQ opening range breakout. Knightfall runs six steps in the same order every session: it identifies the range, evaluates the context, grades the breakout A+ to F, sizes the trade by grade, sets the entry, stop and targets, and every trade is measured in the backtest, the live record and your own journal. The other products support those steps."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does “systematic” mean here?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The same inputs give the same read. The grade, the size, the stop and the targets come from fixed rules, not from how the morning feels, so the process is repeatable. It still doesn't mean every trade wins: losing trades and losing stretches are part of it, and the Results page shows them."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it the same if I trade it by hand or automate it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The method is identical either way. On NinjaTrader 8, automation is a switch inside Knightfall. On TradingView, the Auto Trader script executes the same setups through a bridge service. Manual or automated, the grade, size, stop and targets are the same."
+      }
+    },
     {
       "@type": "Question",
       "name": "What is the FSD-X Auto Trader?",
@@ -67,7 +88,7 @@
       "name": "Which plan includes it, and is there a trial?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The Auto Trader is included with your membership. The Monthly plan comes with a 30-day free trial for new members, so you can test your demo connection before going live. Quarterly and Annual have no trial."
+        "text": "The Auto Trader is included with your membership. The Monthly plan comes with a 30-day free trial for new members, so you can test your demo connection before going live. Quarterly, Annual and the NinjaTrader 8 One-Time Payment have no trial."
       }
     },
     {
@@ -107,7 +128,7 @@
       "name": "What do I get with my membership?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "One membership includes everything — the full FSD-X indicator suite plus the hands-off Auto Trader: Choose your platform. On TradingView: ✓ ORB PRO Knightfall MK2 (strategy + backtester, one script) ✓ Auto Trader script ✓ FSD-X // Stack V1 ✓ FSD-X // Volume Indicator ✓ ORB Raven levels indicator. On NinjaTrader 8: ✓ Knightfall with automation built in ✓ Volume ✓ Raven. On either platform: ✓ FSD-X Nexus (Chrome extension) ✓ Nexus strategy optimizer ✓ Live trade room — every weekday at 8:30 AM CT (schedule can vary) ✓ VIP Discord channels. Want both platforms? DM us first."
+        "text": "The membership includes everything on the platform you pick: there is one for TradingView and one for NinjaTrader 8. On TradingView: ✓ ORB PRO Knightfall MK2 (strategy + backtester, one script) ✓ Auto Trader script ✓ FSD-X // Stack V1 ✓ FSD-X // Volume Indicator ✓ ORB Raven levels indicator ✓ Nexus strategy optimizer. On NinjaTrader 8: ✓ Knightfall with automation built in ✓ Volume ✓ Raven. On either platform: ✓ FSD-X Nexus (Chrome extension) ✓ Live trade room — every weekday at 8:30 AM CT (schedule can vary) ✓ VIP Discord channels. Need both platforms? DM us first."
       }
     },
     {
@@ -115,7 +136,7 @@
       "name": "Do I get TradingView and NinjaTrader?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Choose your platform: TradingView or NinjaTrader 8. The method, grading and rules are the same on both. Pick the one you trade on and enter your TradingView username or your NinjaTrader email at checkout. Want both? DM us on Discord first and we'll sort it out with you. Already a member? Nothing changes for you."
+        "text": "Each membership runs on one platform. FSD-X Trading Pro — TradingView is for TradingView (enter your TradingView username at checkout). FSD-X Trading Pro — NinjaTrader 8 is for NinjaTrader 8 (enter your NinjaTrader email at checkout) and is the only one with a one-time payment option. The method, grading and rules are the same on both. Need both? DM us on Discord first and we'll sort it out with you. Already a member? Nothing changes for you."
       }
     },
     {
@@ -251,7 +272,7 @@
       "name": "How do the free trials work?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The Monthly plan comes with a 30-day free trial — full access to everything; cancel through your Whop dashboard before day 31 and you won't be charged. Quarterly and Annual don't include a trial and bill at checkout."
+        "text": "The Monthly plan comes with a 30-day free trial on either platform — full access to everything; cancel through your Whop dashboard before day 31 and you won't be charged. Quarterly, Annual and the NinjaTrader 8 One-Time Payment don't include a trial and bill at checkout."
       }
     },
     {
@@ -259,7 +280,15 @@
       "name": "How much is it and what are the plan options?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "There's one membership with everything included — the full suite plus the Auto Trader. Monthly — $129/mo, with a 30-day free trial for new members. Quarterly — $349/qtr (save ~10% vs monthly), no trial. Annual — $1,299/yr (≈$108/mo), no trial. Cancel anytime through your Whop dashboard. Only want one piece? Nightwing (platform + Nexus) is $9.99/mo, Raven is $29.99/mo, and Knightfall NT8 is $59.99/mo."
+        "text": "One membership with everything included, on the platform you pick. TradingView: Monthly $129.99/mo with a 30-day free trial for new members, Quarterly $349, Annual $1,299.99, no trial on either. NinjaTrader 8: a One-Time Payment of $499.99 (no subscription, no trial, final sale), or Monthly $129.99/mo with a 30-day free trial, Quarterly $349.99, Annual $1,299.99. Cancel subscriptions anytime through your Whop dashboard. Only want one piece? Nightwing (platform + Nexus) is $9.99/mo, Raven is $29.99/mo, and Knightfall NT8 is $59.99/mo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the one-time payment?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On NinjaTrader 8 you can buy the full membership with one payment instead of a subscription: no renewals, no free trial, and all sales are final. It covers Knightfall for NinjaTrader 8, the FSD-X NinjaTrader indicators available today, the member platform, Nexus, the live trade room and the VIP Discord. Updates are released at FSD-X's discretion, and it does not include future paid products or paid coaching. It's NinjaTrader 8 only: TradingView is sold by subscription."
       }
     },
     {
@@ -283,7 +312,7 @@
       "name": "Are refunds available?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Once a billing cycle begins, fees are non-refundable — that's why we offer a 30-day free trial on the Monthly plan so you can try everything before being charged. Forgetting to cancel before a trial ends or a renewal date does not qualify. If something isn't working or you have a billing issue, contact us at fsdxteam@gmail.com so we can fix it."
+        "text": "Once a billing cycle begins, fees are non-refundable — that's why we offer a 30-day free trial on the Monthly plan so you can try everything before being charged. The NinjaTrader 8 One-Time Payment has no trial and is a final sale. Forgetting to cancel before a trial ends or a renewal date does not qualify. If something isn't working or you have a billing issue, contact us at fsdxteam@gmail.com so we can fix it."
       }
     },
     {
@@ -426,7 +455,7 @@
                   <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
                 </button>
                 <div class="faq-answer">
-                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The Auto Trader is included with your membership. The Monthly plan comes with a 30-day free trial for new members, so you can test your demo connection before going live. Quarterly and Annual have no trial.</p>
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The Auto Trader is included with your membership. The Monthly plan comes with a 30-day free trial for new members, so you can test your demo connection before going live. Quarterly, Annual and the NinjaTrader 8 One-Time Payment have no trial.</p>
                 </div>
               </div>
 
@@ -506,7 +535,7 @@
               </button>
               <div class="faq-answer">
                 <div class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4 space-y-2">
-                  <p>One membership includes <span class="text-white font-semibold">everything</span> on your platform of choice. <span class="text-white font-semibold">Choose your platform: TradingView or NinjaTrader® 8.</span></p>
+                  <p>The membership includes <span class="text-white font-semibold">everything</span> on the platform you pick. <span class="text-white font-semibold">There is one for TradingView and one for NinjaTrader® 8.</span></p>
                   <p class="text-white font-semibold pt-1">On TradingView</p>
                   <ul class="space-y-1 pl-2">
                     <li>✓ ORB PRO Knightfall MK2 (strategy + backtester, one script)</li>
@@ -514,6 +543,7 @@
                     <li>✓ FSD-X // Stack V1</li>
                     <li>✓ FSD-X // Volume Indicator</li>
                     <li>✓ ORB Raven levels indicator</li>
+                    <li>✓ Strategy optimizer (inside Nexus)</li>
                   </ul>
                   <p class="text-white font-semibold pt-1">On NinjaTrader® 8</p>
                   <ul class="space-y-1 pl-2">
@@ -522,11 +552,11 @@
                   </ul>
                   <p class="text-white font-semibold pt-1">On either platform</p>
                   <ul class="space-y-1 pl-2">
-                    <li>✓ FSD-X Nexus (Chrome extension) and the strategy optimizer</li>
+                    <li>✓ FSD-X Nexus (Chrome extension)</li>
                     <li>✓ Live trade room — every weekday at 8:30 AM CT (schedule can vary)</li>
                     <li>✓ VIP Discord channels</li>
                   </ul>
-                  <p>Want both platforms? <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">DM us on Discord</a> first.</p>
+                  <p>Need both platforms? <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">DM us on Discord</a> first.</p>
                 </div>
               </div>
             </div>
@@ -537,7 +567,7 @@
                 <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
               </button>
               <div class="faq-answer">
-                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4"><span class="text-white font-semibold">Choose your platform: TradingView or NinjaTrader® 8.</span> The method, grading and rules are the same on both. Pick the one you trade on and enter your TradingView username or your NinjaTrader email at checkout. Want both? <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">DM us on Discord</a> first and we'll sort it out with you. Already a member? Nothing changes for you. <a href="tradingview-update.html" class="text-green-400 hover:underline">TradingView update &rarr;</a></p>
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4"><span class="text-white font-semibold">Each membership runs on one platform.</span> FSD-X Trading Pro &mdash; TradingView is for TradingView (enter your TradingView username at checkout). FSD-X Trading Pro &mdash; NinjaTrader® 8 is for NinjaTrader 8 (enter your NinjaTrader email at checkout) and is the only one with a <a href="memberships.html#ninjatrader" class="text-green-400 hover:underline">one-time payment</a> option. The method, grading and rules are the same on both. Need both? <a href="https://discord.gg/RePdHESvSx" target="_blank" rel="noopener noreferrer" class="text-green-400 hover:underline">DM us on Discord</a> first and we'll sort it out with you. Already a member? Nothing changes for you. <a href="tradingview-update.html" class="text-green-400 hover:underline">TradingView update &rarr;</a></p>
               </div>
             </div>
 
@@ -722,7 +752,7 @@
                 <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
               </button>
               <div class="faq-answer">
-                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The <span class="text-white font-semibold">Monthly</span> plan comes with a 30-day free trial — full access to everything; cancel through your Whop dashboard before day 31 and you won't be charged. <span class="text-white font-semibold">Quarterly</span> and Annual don't include a trial and bill at checkout.</p>
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The <span class="text-white font-semibold">Monthly</span> plan comes with a 30-day free trial on either platform — full access to everything; cancel through your Whop dashboard before day 31 and you won't be charged. <span class="text-white font-semibold">Quarterly</span>, Annual and the NinjaTrader 8 <span class="text-white font-semibold">One-Time Payment</span> don't include a trial and bill at checkout.</p>
               </div>
             </div>
 
@@ -733,10 +763,21 @@
               </button>
               <div class="faq-answer">
                 <div class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4 space-y-2">
-                  <p>There's <span class="text-white font-semibold">one membership</span> with everything included — the full suite plus the Auto Trader.</p>
-                  <p><span class="text-white font-semibold">Monthly</span> — $129/mo, with a 30-day free trial for new members. <span class="text-white font-semibold">Quarterly</span> — $349/qtr (save ~10% vs monthly), no trial. <span class="text-white font-semibold">Annual</span> — $1,299/yr (≈$108/mo), no trial. Cancel anytime through your Whop dashboard.</p>
-                  <p>Only want one piece? <span class="text-white font-semibold">Nightwing</span> (platform + Nexus) is $9.99/mo, <span class="text-white font-semibold">Raven</span> is $29.99/mo, and <span class="text-white font-semibold">Knightfall NT8</span> is $59.99/mo. <a href="compare.html" class="text-green-400 hover:underline">Compare all plans &rarr;</a></p>
+                  <p><span class="text-white font-semibold">One membership</span> with everything included, on the platform you pick.</p>
+                  <p><span class="text-white font-semibold">TradingView</span> &mdash; Monthly $129.99/mo with a 30-day free trial for new members, Quarterly $349, Annual $1,299.99 (no trial on either).</p>
+                  <p><span class="text-white font-semibold">NinjaTrader® 8</span> &mdash; a <span class="text-white font-semibold">One-Time Payment</span> of $499.99 (no subscription, no trial, final sale), or Monthly $129.99/mo with a 30-day free trial, Quarterly $349.99, Annual $1,299.99. Cancel subscriptions anytime through your Whop dashboard.</p>
+                  <p>Only want one piece? <span class="text-white font-semibold">Nightwing</span> (platform + Nexus) is $9.99/mo, <span class="text-white font-semibold">Raven</span> is $29.99/mo, and <span class="text-white font-semibold">Knightfall NT8</span> is $59.99/mo. <a href="compare.html" class="text-green-400 hover:underline">Compare all plans &rarr;</a> &middot; <a href="memberships.html#pick" class="text-green-400 hover:underline">See pricing &rarr;</a></p>
                 </div>
+              </div>
+            </div>
+
+            <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
+              <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
+                <span class="text-sm font-bold text-white leading-snug">What is the one-time payment?</span>
+                <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
+              </button>
+              <div class="faq-answer">
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">On <span class="text-white font-semibold">NinjaTrader® 8</span> you can buy the full membership with one payment instead of a subscription: no renewals, no free trial, and <span class="text-white font-semibold">all sales are final</span>. It covers Knightfall for NinjaTrader 8, the FSD-X NinjaTrader indicators available today, the member platform, Nexus, the live trade room and the VIP Discord. Updates are released at FSD-X's discretion, and it does not include future paid products or paid coaching. It's NinjaTrader 8 only: TradingView is sold by subscription. <a href="disclosures.html#one-time" class="text-green-400 hover:underline">One-Time Payment terms &rarr;</a></p>
               </div>
             </div>
 
@@ -766,7 +807,7 @@
                 <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
               </button>
               <div class="faq-answer">
-                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Once a billing cycle begins, fees are non-refundable — that's why we offer a 30-day free trial on the Monthly plan so you can try everything before being charged. Forgetting to cancel before a trial ends or a renewal date does not qualify. If something isn't working or you have a billing issue, contact us at <span class="text-white font-semibold">fsdxteam@gmail.com</span> so we can fix it.</p>
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Once a billing cycle begins, fees are non-refundable — that's why we offer a 30-day free trial on the Monthly plan so you can try everything before being charged. The NinjaTrader 8 <span class="text-white font-semibold">One-Time Payment</span> has no trial and is a final sale. Forgetting to cancel before a trial ends or a renewal date does not qualify. If something isn't working or you have a billing issue, contact us at <span class="text-white font-semibold">fsdxteam@gmail.com</span> so we can fix it.</p>
               </div>
             </div>
 
@@ -851,6 +892,6 @@
   </script>
 
 
-  <script src="nav-loader.js?v=20261105a"></script>
+  <script src="nav-loader.js?v=20261122a"></script>
 </body>
 </html>

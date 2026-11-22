@@ -547,7 +547,7 @@ function fsdxMountTopNav() {
     +   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>'
     + (guest ? '<a href="login.html" class="fxn-login">Member Login</a>' : '')
     + '<a href="' + FSDX_DISCORD + '" target="_blank" rel="noopener noreferrer" class="fxn-dc">Join Discord</a>'
-    + (guest ? '<a href="memberships.html" class="fxn-cta">Start Free Trial</a>' : '')
+    + (guest ? '<a href="memberships.html#pick" class="fxn-cta">See Pricing</a>' : '')
     + '</div>';
   main.insertBefore(bar, main.firstChild);
 
@@ -632,7 +632,7 @@ function fsdxMountMobileMenu(mount) {
   box.innerHTML = '<a href="index.html" class="fxn-mhome' + (here === 'index.html' ? ' cur' : '') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">' + FSDX_ICONS.home + '</svg>Home</a>'
     + '<a href="' + FSDX_START[0] + '" class="fxn-mhome' + (here === FSDX_START[0] ? ' cur' : '') + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">' + FSDX_ICONS.chat + '</svg>' + FSDX_START[1] + '</a>'
     + html
-    + (guest ? '<a href="memberships.html" class="fxn-mcta">Start Free Trial</a>' : '')
+    + (guest ? '<a href="memberships.html#pick" class="fxn-mcta">See Pricing</a>' : '')
     + '<a href="' + FSDX_DISCORD + '" target="_blank" rel="noopener noreferrer" class="fxn-mdc">Join Discord</a>';
   var nav = mount.querySelector('nav');
   (nav || mount).appendChild(box);
@@ -1461,7 +1461,8 @@ function fsdxPlanCtas() {
     if (g === 'ntsolo') return 'ntsolo';
     if (g === 'raven') return 'raven';
     if (g === 'nightwing') return 'nightwing';
-    if (g === 'autotrader' || g === 'membership' || g === 'lifetime') return 'membership';
+    // ntpro / ntonetime = FSD-X Trading Pro — NinjaTrader 8 (same membership, NT8 only).
+    if (g === 'autotrader' || g === 'membership' || g === 'lifetime' || g === 'ntpro' || g === 'ntonetime') return 'membership';
     for (var i = 0; i < MEMBERSHIP_PLANS.length; i++) if (href.indexOf(MEMBERSHIP_PLANS[i]) !== -1) return 'membership';
     return '';
   }
@@ -1489,7 +1490,7 @@ function fsdxPlanCtas() {
       a.removeAttribute('target'); a.removeAttribute('data-gate');
       a.textContent = 'Included · ' + GO[fam][1] + ' →';
       a.title = 'You already have this on your current plan.';
-    } else if (fam === 'membership' && a.getAttribute('data-gate') !== 'lifetime') {
+    } else if (fam === 'membership' && a.getAttribute('data-gate') !== 'lifetime' && a.getAttribute('data-gate') !== 'ntonetime') {
       a.textContent = 'Upgrade to the membership';
     }
   });
