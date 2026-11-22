@@ -242,7 +242,7 @@ var FSDX_MENU = [
       cta: 'See NinjaTrader 8 pricing', ctaMember: 'See NinjaTrader 8 pricing →' },
     items: [
       ['ninjatrader.html', 'Knightfall NT8 Standalone', 'Just Knightfall, the platform and Nexus. No live room', '$59.99/mo', 'terminal', 'orange'],
-      ['raven.html', 'Raven for NinjaTrader 8', 'ORB levels, entry, stop and targets drawn. No grading', '$29.99/mo', 'trend', 'blue'],
+      ['raven.html#ninjatrader', 'Raven for NinjaTrader 8', 'ORB levels, entry, stop and targets drawn. No grading', '$29.99/mo', 'trend', 'blue'],
       ['suite.html#ninjatrader', 'Everything on NinjaTrader 8', 'Every tool you get on NT8', '', 'layers', 'green'],
       ['suite.html#tool-autotrader', 'Automation', 'Built into Knightfall. Turn Auto Trade on', '', 'bolt', 'orange'],
       ['ninjatrader-members.html', 'NinjaTrader setup hub', 'Install, settings and downloads', '', 'monitor', 'gray']
@@ -253,7 +253,7 @@ var FSDX_MENU = [
       checks: ['Knightfall + the Auto Trader script', 'Stack, Volume, Raven and the optimizer', 'Live room + VIP Discord', 'Or quarterly $349.99 · annual $1,299.99'],
       cta: 'See TradingView pricing', ctaMember: 'See TradingView pricing →' },
     items: [
-      ['raven.html', 'Raven for TradingView', 'ORB levels on your TradingView username. No grading', '$29.99/mo', 'trend', 'blue'],
+      ['raven.html#tradingview', 'Raven for TradingView', 'ORB levels on your TradingView username. No grading', '$29.99/mo', 'trend', 'blue'],
       ['suite.html#tradingview', 'Everything on TradingView', 'Every tool you get on TradingView', '', 'layers', 'green'],
       ['auto-trader-guide.html', 'Auto Trader', 'The script plus your bridge (PickMyTrade, TradersPost)', '', 'bolt', 'orange'],
       ['nightwing.html#nexus', 'Strategy optimizer', 'Inside Nexus, for TradingView strategies', '', 'list', 'purple'],
@@ -1469,7 +1469,7 @@ function fsdxPlanCtas() {
     var g = a.getAttribute('data-gate') || '';
     var href = a.getAttribute('href') || '';
     if (g === 'ntsolo') return 'ntsolo';
-    if (g === 'raven') return 'raven';
+    if (g === 'raven' || g === 'ravennt') return 'raven';
     if (g === 'nightwing') return 'nightwing';
     // ntpro / ntonetime = FSD-X Trading Pro — NinjaTrader 8 (same membership, NT8 only).
     if (g === 'autotrader' || g === 'membership' || g === 'lifetime' || g === 'ntpro' || g === 'ntonetime') return 'membership';

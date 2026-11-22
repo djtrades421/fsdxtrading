@@ -123,7 +123,7 @@
      sale is the cheapest protection against a "but the site said" dispute. */
   var RAVEN = {
     eyebrow: "Before You Continue",
-    title: "FSD-X Raven — Terms of Service",
+    title: "FSD-X Raven — TradingView — Terms of Service",
     points: [
       "Raven is the <strong>ORB Raven indicator</strong> plus the Nexus extension and the member platform. The indicator marks opening range breakouts and draws the levels; it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
       "Raven <strong>applies no grading and no filtering</strong>. It marks every breakout and does not tell you which are worth taking. It does not know whether a level was hit, does not track trades, and reports <strong>no win rate and no performance of any kind</strong>.",
@@ -132,12 +132,27 @@
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed.",
       "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in Raven places, sizes, or manages an order for you, and it does not connect to a broker.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
-      "<strong>Choose your platform: TradingView or NinjaTrader 8.</strong> On TradingView, the script is granted to the TradingView username you enter. On NinjaTrader 8, it's licensed to the NinjaTrader email you add in the NinjaTrader Hub. Want both? DM us on Discord first.",
+      "<strong>This is the TradingView version.</strong> The script is granted to the TradingView username you enter at checkout. Raven for NinjaTrader 8 is its own product (FSD-X Raven — NinjaTrader 8). Need both? DM us on Discord first.",
       "Access is limited to <strong>one person and one account</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
       "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
     ],
     agree: "I accept the FSD-X Raven Terms and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
     proceed: "Continue to Checkout"
+  };
+
+  /* ---- Raven — NinjaTrader 8 (Nov 22 2026) ----
+     Same terms as RAVEN, with the platform point flipped: licensed to the
+     NinjaTrader email entered at checkout, never places orders. */
+  var RAVENNT = {
+    eyebrow: RAVEN.eyebrow,
+    title: "FSD-X Raven — NinjaTrader 8 — Terms of Service",
+    points: RAVEN.points.map(function (p) {
+      return p.indexOf("This is the TradingView version") !== -1
+        ? "<strong>This is the NinjaTrader 8 version.</strong> Raven is licensed to the NinjaTrader account email you enter at checkout. It is an indicator only and never places orders. Raven for TradingView is its own product (FSD-X Raven — TradingView). Need both? DM us on Discord first."
+        : p;
+    }),
+    agree: "I accept the FSD-X Raven — NinjaTrader 8 Terms and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
+    proceed: RAVEN.proceed
   };
 
   /* ---- Knightfall NT8 standalone ----
@@ -230,7 +245,7 @@
   var TERMS = {
     membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED,
     nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME, ntsolo: NTSOLO,
-    ntpro: NTPRO, ntonetime: NTONETIME
+    ntpro: NTPRO, ntonetime: NTONETIME, ravennt: RAVENNT
   };
 
   var pendingUrl = null;
