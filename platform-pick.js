@@ -26,21 +26,23 @@
  * ─────────────────────────────────────────────────────────────────────────── */
 (function () {
   var NT8 = {
-    onetime:   { plan: 'plan_PASTE_ONETIME',   price: '$499.99',   per: 'one time' },
-    monthly:   { plan: 'plan_PASTE_MONTHLY',   price: '$129.99',   per: '/ month' },
-    quarterly: { plan: 'plan_PASTE_QUARTERLY', price: '$349.99',   per: '/ 3 months' },
-    annual:    { plan: 'plan_PASTE_ANNUAL',    price: '$1,299.99', per: '/ year' }
+    onetime:   { plan: 'plan_a9fI5Tt1ovrTM',   price: '$499.99',   per: 'one time' },
+    monthly:   { plan: 'plan_Kfbxc8XnIyR8F',   price: '$129.99',   per: '/ month' },
+    quarterly: { plan: 'plan_qUR3sFurgMydb', price: '$349.99',   per: '/ 3 months' },
+    annual:    { plan: 'plan_l7dou09quUFPB',    price: '$1,299.99', per: '/ year' }
   };
-  /* Black Friday on the one-time plan. Shows the crossed-out price until
-     `ends`, then the page goes back to the list price by itself. Set
-     ONETIME_SALE = null to turn it off early. */
+  /* Optional sale on the one-time plan. Off (null) by default: sales run
+     through Admin → Promotions and the ticker. If set, the card shows the
+     crossed-out price until `ends`, then goes back to the list price. */
+  var ONETIME_SALE = null;
+  /* Example, for a future sale:
   var ONETIME_SALE = {
     label: 'Black Friday',
     price: '$399.99',
-    code:  'BFNT8',
+    code:  'CODE',
     endsText: 'Nov 30, 11:59 PM CT',
     ends: Date.UTC(2026, 11, 1, 5, 59, 59)   // Nov 30 2026 11:59:59 PM CT
-  };
+  }; */
   var STANDALONE = { price: '$59.99', per: '/ month', href: 'ninjatrader.html#pricing' };
   var DM = 'https://discord.gg/RePdHESvSx';
   var KEY = 'fsdx_platform';
