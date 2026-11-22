@@ -4,7 +4,6 @@
  *   · FSD-X Trading Pro — TradingView    Monthly / Quarterly / Annual
  *   · FSD-X Trading Pro — NinjaTrader 8  One-Time Payment / Monthly / Quarterly / Annual
  *   · Knightfall NT8 Standalone          Knightfall only (ninjatrader.html)
- * Anyone who needs both platforms DMs first.
  *
  * Page hooks (all optional, any page):
  *   <div data-platform-pick></div>         the two platform tiles
@@ -156,14 +155,13 @@
           '<span class="pp-go">See TradingView options &rarr;</span>' +
         '</button>' +
       '</div>' +
-      '<p class="pp-hint">Need both platforms? <a href="' + DM + '" target="_blank" rel="noopener noreferrer">DM us on Discord</a> first.</p>' +
     '</div>';
   }
 
   var COMPACT =
     '<div style="font-family:Inter,system-ui,sans-serif;font-size:12.5px;line-height:1.55;color:#a1a1aa;border:1px solid rgba(255,255,255,.1);background:rgba(9,9,11,.5);border-radius:12px;padding:10px 14px">' +
       '<b style="color:#fff">Pick your platform:</b> each membership runs on TradingView or NinjaTrader&nbsp;8. ' +
-      'The one-time payment is NinjaTrader&nbsp;8 only. <b style="color:#fff">Need both?</b> <a href="' + DM + '" target="_blank" rel="noopener noreferrer" style="color:#4ade80;text-decoration:underline">DM us first</a>.' +
+      'The one-time payment is NinjaTrader&nbsp;8 only.' +
     '</div>';
 
   /* ── NT8 membership cards ──────────────────────────────────────────────── */

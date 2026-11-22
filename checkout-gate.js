@@ -81,7 +81,7 @@
       "FSD-X is <strong>not responsible</strong> for those third parties — their reliability, fills, latency, or outages — or for any activity once the Auto-Trader is running on your account. A missed, delayed, or failed alert can leave unintended open positions, so <strong>you are responsible for your own safeguards</strong> (broker-side stop, end-of-day flatten, risk limits) and for monitoring your account.",
       "<strong>You</strong> are responsible for confirming automated trading is permitted by your broker and prop firm and for complying with their rules. Validate on a <strong>demo/paper account</strong> before any live use.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. Cancel during any free trial to avoid being charged.",
-      "<strong>This membership is for TradingView.</strong> Enter your TradingView username at checkout. It does not include the NinjaTrader 8 version, which is sold as its own membership (FSD-X Trading Pro — NinjaTrader 8). Need both platforms? DM us on Discord first.",
+      "<strong>This membership is for TradingView.</strong> Enter your TradingView username at checkout. It does not include the NinjaTrader 8 version, which is sold as its own membership (FSD-X Trading Pro — NinjaTrader 8).",
       "Access is limited to <strong>one person, one Discord account and one TradingView username</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
       "<strong>By purchasing and accepting these terms, you take full responsibility for all trades, positions, losses, and outcomes on your account.</strong> Once accepted, that responsibility is yours — FSD-X has no liability for any result.",
       "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Auto-Trader Addendum."
@@ -132,7 +132,7 @@
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed.",
       "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in Raven places, sizes, or manages an order for you, and it does not connect to a broker.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
-      "<strong>This is the TradingView version.</strong> The script is granted to the TradingView username you enter at checkout. Raven for NinjaTrader 8 is its own product (FSD-X Raven — NinjaTrader 8). Need both? DM us on Discord first.",
+      "<strong>This is the TradingView version.</strong> The script is granted to the TradingView username you enter at checkout. Raven for NinjaTrader 8 is its own product (FSD-X Raven — NinjaTrader 8).",
       "Access is limited to <strong>one person and one account</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
       "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>."
     ],
@@ -148,7 +148,7 @@
     title: "FSD-X Raven — NinjaTrader 8 — Terms of Service",
     points: RAVEN.points.map(function (p) {
       return p.indexOf("This is the TradingView version") !== -1
-        ? "<strong>This is the NinjaTrader 8 version.</strong> Raven is licensed to the NinjaTrader account email you enter at checkout. It is an indicator only and never places orders. Raven for TradingView is its own product (FSD-X Raven — TradingView). Need both? DM us on Discord first."
+        ? "<strong>This is the NinjaTrader 8 version.</strong> Raven is licensed to the NinjaTrader account email you enter at checkout. It is an indicator only and never places orders. Raven for TradingView is its own product (FSD-X Raven — TradingView)."
         : p;
     }),
     agree: "I accept the FSD-X Raven — NinjaTrader 8 Terms and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
@@ -187,7 +187,7 @@
      terms: no trial, final sale, what one payment does and does not cover. */
   var NT_COMMON = [
     "FSD-X Trading Pro — NinjaTrader 8 is the <strong>full FSD-X membership on NinjaTrader 8</strong>: Knightfall with automation built in, the FSD-X NinjaTrader indicators (Volume and Raven), the member platform, Nexus, the live trade room and the VIP Discord. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
-    "It is <strong>NinjaTrader 8 only</strong>. It does not include the TradingView scripts, the TradingView Auto-Trader, Stack V1 or the Strategy Optimizer. Need both platforms? DM us on Discord first.",
+    "It is <strong>NinjaTrader 8 only</strong>. It does not include the TradingView scripts, the TradingView Auto-Trader, Stack V1 or the Strategy Optimizer.",
     "With <strong>Auto Trade on, the strategy places and manages orders</strong> in the NinjaTrader account you select. <strong>You</strong> choose that account, the risk setting and the daily loss limit, and you are responsible for monitoring it. Run it on a sim account first.",
     "<strong>You</strong> are responsible for confirming that automated trading is allowed by your broker and prop firm. Rules vary and change.",
     "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed. Software, data feeds, connections and platforms can fail. Any backtest or historical figures on this site are <strong>hypothetical</strong>.",
