@@ -34,7 +34,13 @@
   /* Optional sale on the one-time plan. Off (null) by default: sales run
      through Admin → Promotions and the ticker. If set, the card shows the
      crossed-out price until `ends`, then goes back to the list price. */
-  var ONETIME_SALE = null;
+  var ONETIME_SALE = {
+    label: 'Black Friday',
+    price: '$399.99',
+    code:  'BFNT8',
+    endsText: '',     // '' = no end date shown
+    ends: null        // null = runs until you set ONETIME_SALE back to null
+  };
   /* Example, for a future sale:
   var ONETIME_SALE = {
     label: 'Black Friday',
@@ -120,7 +126,7 @@
     document.head.appendChild(s);
   }
 
-  function saleOn() { return !!(ONETIME_SALE && Date.now() < ONETIME_SALE.ends); }
+  function saleOn() { return !!(ONETIME_SALE && (ONETIME_SALE.ends == null || Date.now() < ONETIME_SALE.ends)); }
   function live(p) { return p && p.plan && p.plan.indexOf('plan_PASTE') !== 0; }
   function btn(p, label, gate, cls) {
     if (!live(p)) return '<span class="pp-cta ' + (cls || '') + ' off" aria-disabled="true">Checkout opens soon</span>';
@@ -166,7 +172,7 @@
     var price = s
       ? '<div class="pp-price"><b>' + ONETIME_SALE.price + '</b><s>' + o.price + '</s><span>one time</span></div>'
       : '<div class="pp-price"><b>' + o.price + '</b><span>one time</span></div>';
-    var code = s ? '<div class="pp-code"><b>' + ONETIME_SALE.label + ':</b> use code <b>' + ONETIME_SALE.code + '</b> at checkout. Ends ' + ONETIME_SALE.endsText + '.</div>' : '';
+    var code = s ? '<div class="pp-code"><b>' + ONETIME_SALE.label + ':</b> use code <b>' + ONETIME_SALE.code + '</b> at checkout.' + (ONETIME_SALE.endsText ? ' Ends ' + ONETIME_SALE.endsText + '.' : '') + '</div>' : '';
     var inc = [
       ['Knightfall for NinjaTrader 8', 'Approved by NinjaTrader. Licensed to the email you log into NinjaTrader with.'],
       ['Automation built in', 'Runs inside NinjaTrader. No webhook or bridge to set up.'],
