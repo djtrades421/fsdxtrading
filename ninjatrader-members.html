@@ -282,7 +282,7 @@
               <div class="nt-card" id="s7">
                 <h3 class="text-base font-black text-white mb-3">4. Check and go live</h3>
                 <ul class="nt-steps">
-                  <li><b>Check the dashboard:</b> v1.4.10 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
+                  <li><b>Check the dashboard:</b> v1.4.11 in the header, your variant and risk in the config strip, the right account, and no red warning rows. <a href="#dashboard" class="text-green-400 font-bold">Reading the dashboard &rarr;</a></li>
                   <li><b>Run it on Sim101 first</b> for at least a few sessions. Check entries, stops, targets and the 3:30 PM flatten.</li>
                   <li><b>Keep NinjaTrader running and connected</b> during the session. It only manages trades while it's running. A VPS is recommended.</li>
                   <li><b>Built-in safety:</b> flattens at 3:30 PM CT (and before half-day closes), NinjaTrader's session-close exit runs as a backup, and if an order is rejected it cancels, flattens, turns itself off and alerts you.</li>
@@ -432,7 +432,7 @@
                 <div class="nt-scroll mt-3">
                   <table class="nt-table">
                     <tr><th>Row</th><th>What it shows</th></tr>
-                    <tr><td>Header</td><td>Strategy name and version (v1.4.10). Match it to the version on this page.</td></tr>
+                    <tr><td>Header</td><td>Strategy name and version (v1.4.11). Match it to the version on this page.</td></tr>
                     <tr><td>Config strip</td><td>Variant (with <b class="text-white">locked</b>, or <b class="text-white">exits live</b> in V3) · Risk Profile · $/pt · <b class="text-white">FS</b> when Flag Sizing is on · <b class="text-white">GL off</b> when the side lock is turned off</td></tr>
                     <tr><td>Account row</td><td>The account it's trading (check it's the right one) · <b class="text-white">DLL</b> closed loss today / your limit, e.g. <span class="nt-code">DLL $0/$700</span> · AUTO or MANUAL · trades today out of the session max (2 in V2, 3 in V1 and V3). The DLL turns <b class="text-white">yellow</b> with <b class="text-white">low</b> or <b class="text-white">high</b> when the limit is under 1.5&times; or over 2.5&times; your Risk Profile. A sizing hint, not an error. With a Daily Profit Cap set, the row adds <span class="nt-code">CAP $made/$cap</span> (yellow <b class="text-white">low</b> when the cap is under 2&times; your Risk Profile). Once the loss limit or the cap is hit, it reads <b class="text-white">AUTO · done today</b>.</td></tr>
                     <tr><td>Status</td><td>Win rate of the last 40 trades against the normal 52&ndash;72% band: <b class="text-white">Normal</b>, <b class="text-white">Cold run</b> or <b class="text-white">Hot run</b>. Information only. It never changes size or stops trading.</td></tr>
@@ -463,6 +463,7 @@
                     <tr><td>Yellow dashed</td><td>50% of the way to TP1</td></tr>
                     <tr><td>Orange dashed</td><td>Watch level</td></tr>
                     <tr><td>Faded short stubs</td><td>Levels of your open trade after a newer breakout moved the main lines</td></tr>
+                    <tr><td>Small boxed pill</td><td>v1.4.11+. A completed trade: number, side, grade and result. Click it for the recap. <a href="#recap" class="text-green-400 font-bold">More &rarr;</a></td></tr>
                   </table>
                 </div>
                 <p class="nt-p mt-3">One setup is drawn at a time. Setup lines clear at the 5 PM CT session roll.</p>
@@ -503,6 +504,38 @@
                 <div class="nt-shot" data-shot="nt-bias-done"><img src="nt-bias-done.webp" alt="Compact dashboard after the session's second trade: LOOKING FOR DONE, max trades" loading="lazy" width="1037" height="640"></div>
                 <p class="text-xs text-zinc-500 mt-1">Demo account (Playback). After the second trade of the day, V2 is done: LOOKING FOR reads DONE &middot; max trades.</p>
                 <p class="nt-p mt-3"><b>Settings</b> (8. Visuals): <b>Bias Shading</b> on/off (default on), <b>Bias Shading Opacity %</b> (default 15). The LOOKING FOR row is always on.</p>
+              </div>
+
+              <div class="nt-card" id="recap">
+                <h3 class="text-base font-black text-white mb-2">Trade Recap (v1.4.11+)</h3>
+                <p class="nt-p mb-3">See what happened on a recent trade without opening playback. Display only. It never changes a trade.</p>
+                <div class="nt-shot" data-shot="nt-recap-pills"><img src="nt-recap-pills.webp" alt="Chart with two closed recap pills: #1 L B -$349 and #2 S A +$178, each with a thin line to its exit" loading="lazy" width="450" height="626" style="max-width:min(100%,450px);width:100%"></div>
+                <p class="text-xs text-zinc-500 mt-1">Closed view. One pill per completed trade, placed in clear space beside price.</p>
+                <p class="nt-p mt-3"><b>The pill.</b> Every completed trade gets one, near its exit bar: trade number, side (L or S), grade and result, e.g. <span class="nt-code">#2 S · A · +$178</span>. Green for a win, red for a loss. A thin dotted line runs to the exit. Pills sit above or below price, away from the candles and the dashboard. Trade numbers reset every session, so with 2 trades a day you see #1, #2, then #1, #2 the next day. A trade that&rsquo;s still open has no pill yet. Its live lines already show it.</p>
+                <p class="nt-p mt-3"><b>Click a pill</b> to open the recap card and that trade&rsquo;s levels. One trade opens at a time. Click the pill again, click empty chart space or press <b>Esc</b> to close.</p>
+                <div class="nt-shot" data-shot="nt-recap-tp2"><img src="nt-recap-tp2.webp" alt="Open recap of a short graded B+: TP1 and TP2 hit, exit at TP2, trail line drawn, card showing result in points, R and dollars" loading="lazy" width="504" height="709" style="max-width:min(100%,504px);width:100%"></div>
+                <p class="text-xs text-zinc-500 mt-1">Chart simulation. A short that hit TP1 and TP2.</p>
+                <div class="nt-scroll mt-3">
+                  <table class="nt-table">
+                    <tr><th>Card row</th><th>What it shows</th></tr>
+                    <tr><td>Header</td><td>Trade number, side, contracts, grade and score</td></tr>
+                    <tr><td>Date</td><td>Day, entry time and exit time (CT)</td></tr>
+                    <tr><td>Entry / Stop / Risk</td><td>Fill price, the stop and its distance in points, and dollars at risk at that size</td></tr>
+                    <tr><td>TP1 / TP2</td><td>Each target, <b class="text-white">hit</b> or <b class="text-white">not hit</b>. TP2 only shows in modes that use it (V2, or TP1 then TP2). A $ target or day cap row shows when one moved the exit</td></tr>
+                    <tr><td>Exit</td><td>Why it closed and where: <b class="text-white">TP1</b>, <b class="text-white">TP2</b>, <b class="text-white">Trail</b>, <b class="text-white">Breakeven</b>, <b class="text-white">Stop</b>, <b class="text-white">EOD flatten</b>. Partials list both, e.g. TP1 + Trail</td></tr>
+                    <tr><td>Result</td><td>Points, R and dollars</td></tr>
+                    <tr><td>Best / worst</td><td>Furthest the trade went in your favour and against you, in points</td></tr>
+                    <tr><td>Flags · ORB</td><td>Flag count out of 3 and the ORB against its 5-day average</td></tr>
+                    <tr><td>Held</td><td>Time in the trade</td></tr>
+                  </table>
+                </div>
+                <p class="nt-p mt-3"><b>The lines</b> run from the entry bar to the exit bar: entry, stop, TP1 and TP2, with a check mark on any target that was hit. The orange stepped line marked <b class="text-white">TRAIL</b> (or <b class="text-white">BE</b>) is the stop moving after the trail armed. It only shows when the stop actually moved, so a trade stopped out before TP1 has none.</p>
+                <div class="nt-shot" data-shot="nt-recap-trail"><img src="nt-recap-trail.webp" alt="Open recap of trade #2, a short graded A: TP1 hit, then the trailing stop closed it, with the stepped TRAIL line drawn" loading="lazy" width="655" height="724" style="max-width:min(100%,655px);width:100%"></div>
+                <p class="text-xs text-zinc-500 mt-1">Chart simulation. TP1 hit, then the V2 trail closed it.</p>
+                <div class="nt-shot" data-shot="nt-recap-stop"><img src="nt-recap-stop.webp" alt="Open recap of a short graded B+ that hit its stop: TP1 and TP2 not hit, -1.0R" loading="lazy" width="661" height="628" style="max-width:min(100%,661px);width:100%"></div>
+                <p class="text-xs text-zinc-500 mt-1">Chart simulation. A full stop: neither target hit.</p>
+                <p class="nt-p mt-3"><b>Good to know.</b> After a chart reload, past trades are the strategy&rsquo;s re-run of those days, marked <b class="text-white">chart sim</b> on the card. Usually within a tick of what filled, but it can differ from your account. Trades taken while the strategy is running live are marked <b class="text-white">live fills</b>. Dollars are gross, before commission. It&rsquo;s for a quick look at recent trades. To replay a trade bar by bar, use Playback.</p>
+                <p class="nt-p mt-3"><b>Settings</b> (8. Visuals): <b>Show Trade Recap</b> on/off (default on), <b>Trade Recap Lookback</b> in trading days (default 3, max 60). 3 always reaches the last trade over a weekend. More days means more pills on the chart.</p>
               </div>
           </div>
         </div>
