@@ -238,10 +238,9 @@ var FSDX_MENU = [
      is listed as "both". Platform-agnostic products sit in the "either" row. */
   { id: 'nt', label: 'NinjaTrader', w: 880, eyebrow: 'Built for NinjaTrader 8',
     feature: { kind: 'plan', kicker: 'One-time payment', title: 'Full membership on NinjaTrader 8', href: 'memberships.html#ninjatrader', price: '$499.99', per: 'one time',
-      checks: ['Knightfall, automation built in', 'Volume, Raven, Nexus and the platform', 'Live room + VIP Discord', 'Or monthly: $129.99 with a 30-day free trial'],
+      checks: ['Knightfall, automation built in', 'Volume, Raven, Nexus and the platform', 'Live room + VIP Discord', 'No subscription, no renewals'],
       cta: 'See NinjaTrader 8 pricing', ctaMember: 'See NinjaTrader 8 pricing →' },
     items: [
-      ['ninjatrader.html', 'Knightfall NT8 Standalone', 'Just Knightfall, the platform and Nexus. No live room', '$59.99/mo', 'terminal', 'orange'],
       ['raven.html#ninjatrader', 'Raven for NinjaTrader 8', 'ORB levels, entry, stop and targets drawn. No grading', '$29.99/mo', 'trend', 'blue'],
       ['suite.html#ninjatrader', 'Everything on NinjaTrader 8', 'Every tool you get on NT8', '', 'layers', 'green'],
       ['suite.html#tool-autotrader', 'Automation', 'Built into Knightfall. Turn Auto Trade on', '', 'bolt', 'orange'],
@@ -249,8 +248,8 @@ var FSDX_MENU = [
     ],
     either: [['nightwing.html', 'Nightwing $9.99/mo'], ['free-indicators.html', 'Free indicators'], ['nightwing.html#nexus', 'Nexus 3.0'], ['releases.html', 'Releases'], ['compare.html', 'Compare plans']] },
   { id: 'tv', label: 'TradingView', w: 880, eyebrow: 'Built for TradingView',
-    feature: { kind: 'plan', kicker: '30-day free trial', title: 'Full membership on TradingView', href: 'memberships.html#tradingview', price: '$129.99', per: '/ month',
-      checks: ['Knightfall + the Auto Trader script', 'Stack, Volume, Raven and the optimizer', 'Live room + VIP Discord', 'Or quarterly $349.99 · annual $1,299.99'],
+    feature: { kind: 'plan', kicker: 'One-time payment', title: 'Full membership on TradingView', href: 'memberships.html#tradingview', price: '$499.99', per: 'one time',
+      checks: ['Knightfall, Auto Trade built in', 'Stack, Volume, Raven and the optimizer', 'Live room + VIP Discord', 'No subscription, no renewals'],
       cta: 'See TradingView pricing', ctaMember: 'See TradingView pricing →' },
     items: [
       ['raven.html#tradingview', 'Raven for TradingView', 'ORB levels on your TradingView username. No grading', '$29.99/mo', 'trend', 'blue'],
@@ -1405,7 +1404,7 @@ function prepareNavLabels(root) {
           ['index.html', 'Home'], ['compare.html', 'Compare Plans'],
           ['suite.html', 'Every product'],
           ['platform.html', 'The Platform'],
-          ['suite.html#tool-autotrader', 'Automation'], ['ninjatrader.html', 'Knightfall NT8'],
+          ['suite.html#tool-autotrader', 'Automation'], ['ninjatrader.html', 'Knightfall on NinjaTrader 8'],
           ['releases.html', 'Releases'],
           ['results.html', 'Backtest Results'],
           ['nightwing.html', 'Nightwing'], ['raven.html', 'Raven'],
@@ -1464,15 +1463,15 @@ function fsdxPlanCtas() {
   try { plan = localStorage.getItem('fsdx_plan') || ''; token = localStorage.getItem('fsdx_token') || ''; } catch (e) { return; }
   if (!token || !plan) return;
 
-  var MEMBERSHIP_PLANS = ['plan_l0KkbipfcgnAp', 'plan_RYMEBnqYNmFEZ', 'plan_1CAj5BxdzpT1W', 'plan_SNuUJU8GaJk5N'];
+  var MEMBERSHIP_PLANS = ['plan_l0KkbipfcgnAp', 'plan_RYMEBnqYNmFEZ', 'plan_1CAj5BxdzpT1W', 'plan_SNuUJU8GaJk5N', 'plan_folxGFxXHw39y'];
   function family(a) {
     var g = a.getAttribute('data-gate') || '';
     var href = a.getAttribute('href') || '';
     if (g === 'ntsolo') return 'ntsolo';
     if (g === 'raven' || g === 'ravennt') return 'raven';
     if (g === 'nightwing') return 'nightwing';
-    // ntpro / ntonetime = FSD-X Trading Pro — NinjaTrader 8 (same membership, NT8 only).
-    if (g === 'autotrader' || g === 'membership' || g === 'lifetime' || g === 'ntpro' || g === 'ntonetime') return 'membership';
+    // ntpro / ntonetime = FSD-X Trading Pro — NinjaTrader 8; tvonetime = the TradingView one-time.
+    if (g === 'autotrader' || g === 'membership' || g === 'lifetime' || g === 'ntpro' || g === 'ntonetime' || g === 'tvonetime') return 'membership';
     for (var i = 0; i < MEMBERSHIP_PLANS.length; i++) if (href.indexOf(MEMBERSHIP_PLANS[i]) !== -1) return 'membership';
     return '';
   }
@@ -1500,7 +1499,7 @@ function fsdxPlanCtas() {
       a.removeAttribute('target'); a.removeAttribute('data-gate');
       a.textContent = 'Included · ' + GO[fam][1] + ' →';
       a.title = 'You already have this on your current plan.';
-    } else if (fam === 'membership' && a.getAttribute('data-gate') !== 'lifetime' && a.getAttribute('data-gate') !== 'ntonetime') {
+    } else if (fam === 'membership' && a.getAttribute('data-gate') !== 'lifetime' && a.getAttribute('data-gate') !== 'ntonetime' && a.getAttribute('data-gate') !== 'tvonetime') {
       a.textContent = 'Upgrade to the membership';
     }
   });

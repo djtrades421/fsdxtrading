@@ -7,7 +7,7 @@
   <title>FSD-X — Admin Panel</title>
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
-  <script src="nav-loader.js?v=20261105a"></script>
+  <script src="nav-loader.js?v=20261126a"></script>
   <style>
     body { background-color: #000; overflow-x: hidden; }
     .tab-panel { display: none !important; }
@@ -2198,6 +2198,7 @@
       'plan_yO1Ma62pSUYFu': 'Plus Lifetime',   // $1,499
       'plan_mhrt4tqPQYjNH': 'Plus Lifetime',   // $209 (legacy lifetime price)
       // ── FSD-X Trading Pro  (Pro has no lifetime) ──
+      'plan_folxGFxXHw39y': 'Pro TV One-Time',  // $499.99 one time (Nov 26 2026)
       'plan_l0KkbipfcgnAp': 'Pro Monthly',     // $129.99
       'plan_RYMEBnqYNmFEZ': 'Pro Quarterly',   // $349 (no trial since Nov 1 2026)
       'plan_1CAj5BxdzpT1W': 'Pro Yearly',      // $1,299 — live plan ID from the Annual checkout button (verify in Whop)
@@ -6723,7 +6724,7 @@
       // Fallback when CSV price data is missing (manual adds, trials with $0
       // initial price). Keep in sync with PLAN_MAP.
       const PLAN_PRICE = {
-        // FSD-X Trading Pro
+        // FSD-X Trading Pro (the TV one-time plan never renews, so it has no recurring price)
         'plan_l0KkbipfcgnAp': 129.99,   // Pro Monthly
         'plan_RYMEBnqYNmFEZ': 349.00,   // Pro Quarterly
         'plan_1CAj5BxdzpT1W': 1299.00,  // Pro Yearly — verify ID in Whop

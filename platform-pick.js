@@ -1,16 +1,17 @@
 /* FSD-X — Pick your platform + NinjaTrader 8 pricing (Nov 22, 2026)
  *
  * Every membership is now sold per platform, and the two never overlap:
- *   · FSD-X Trading Pro — TradingView    Monthly / Quarterly / Annual
+ *   · FSD-X Trading Pro — TradingView    One-Time Payment / Monthly / Quarterly / Annual
  *   · FSD-X Trading Pro — NinjaTrader 8  One-Time Payment / Monthly / Quarterly / Annual
- *   · Knightfall NT8 Standalone          Knightfall only (ninjatrader.html)
+ *   (Nov 26 2026: the Knightfall NT8 Standalone is no longer sold. Existing
+ *    standalone members keep their access; data-standalone is ignored.)
  *
  * Page hooks (all optional, any page):
  *   <div data-platform-pick></div>         the two platform tiles
  *   <div data-plat="tv"> … </div>          shown when TradingView is picked
  *   <div data-plat="nt8"> … </div>         shown when NinjaTrader 8 is picked
  *   <div data-nt8-pricing></div>           the NT8 membership cards (one-time featured)
- *       add data-standalone to also show the Knightfall-only card
+ *   <div data-tv-pricing></div>            the TradingView cards (one-time featured)
  *   <a data-plat-link="nt8|tv" href="#pricing">   picks that platform, then scrolls
  *   <div data-platform-pick data-compact>  the old one-line note (no tiles)
  *
@@ -30,13 +31,15 @@
     quarterly: { plan: 'plan_qUR3sFurgMydb', price: '$349.99',   per: '/ 3 months' },
     annual:    { plan: 'plan_l7dou09quUFPB',    price: '$1,299.99', per: '/ year' }
   };
-  /* Optional sale on the one-time plan. Off (null) by default: sales run
+  /* Optional sale on the one-time plans (both platforms).
+     codes: the Whop promo code per platform. A platform with no code ('')
+     shows no sale. Off (null) by default: sales run
      through Admin → Promotions and the ticker. If set, the card shows the
      crossed-out price until `ends`, then goes back to the list price. */
   var ONETIME_SALE = {
     label: 'Black Friday',
     price: '$399.99',
-    code:  'BFNT8',
+    codes: { nt8: 'BFNT8', tv: '' },
     endsText: '',     // '' = no end date shown
     ends: null        // null = runs until you set ONETIME_SALE back to null
   };
@@ -44,17 +47,17 @@
   var ONETIME_SALE = {
     label: 'Black Friday',
     price: '$399.99',
-    code:  'CODE',
+    codes: { nt8: 'CODE', tv: 'CODE' },
     endsText: 'Nov 30, 11:59 PM CT',
     ends: Date.UTC(2026, 11, 1, 5, 59, 59)   // Nov 30 2026 11:59:59 PM CT
   }; */
   /* FSD-X Trading Pro — TradingView (prod_oMd0Gd3AhJ3FP). */
   var TV = {
+    onetime:   { plan: 'plan_folxGFxXHw39y', price: '$499.99',   per: 'one time' },
     monthly:   { plan: 'plan_l0KkbipfcgnAp', price: '$129.99',   per: '/ month' },
     quarterly: { plan: 'plan_RYMEBnqYNmFEZ', price: '$349.99',   per: '/ 3 months' },
     annual:    { plan: 'plan_1CAj5BxdzpT1W', price: '$1,299.99', per: '/ year' }
   };
-  var STANDALONE = { price: '$59.99', per: '/ month', href: 'ninjatrader.html#pricing' };
   var DM = 'https://discord.gg/RePdHESvSx';
   var KEY = 'fsdx_platform';
   /* ────────────────────────────────────────────────────────────────────── */
@@ -125,7 +128,10 @@
     document.head.appendChild(s);
   }
 
-  function saleOn() { return !!(ONETIME_SALE && (ONETIME_SALE.ends == null || Date.now() < ONETIME_SALE.ends)); }
+  function saleOn(plat) {
+    var S = ONETIME_SALE;
+    return !!(S && S.codes && S.codes[plat] && (S.ends == null || Date.now() < S.ends));
+  }
   function live(p) { return p && p.plan && p.plan.indexOf('plan_PASTE') !== 0; }
   function btn(p, label, gate, cls) {
     if (!live(p)) return '<span class="pp-cta ' + (cls || '') + ' off" aria-disabled="true">Checkout opens soon</span>';
@@ -149,9 +155,10 @@
           '<span class="pp-go">See NinjaTrader 8 options &rarr;</span>' +
         '</button>' +
         '<button type="button" class="pp-tile" data-pick="tv" aria-pressed="false">' +
+          '<span class="pp-flag">One-time payment available</span>' +
           '<span class="pp-plat">TradingView</span>' +
           '<span class="pp-t">Knightfall on TradingView</span>' +
-          '<span class="pp-d">Invite-only scripts on your TradingView username. Monthly, quarterly or annual.</span>' +
+          '<span class="pp-d">Invite-only scripts on your TradingView username. Pay once, or go month to month.</span>' +
           '<span class="pp-go">See TradingView options &rarr;</span>' +
         '</button>' +
       '</div>' +
@@ -161,16 +168,23 @@
   var COMPACT =
     '<div style="font-family:Inter,system-ui,sans-serif;font-size:12.5px;line-height:1.55;color:#a1a1aa;border:1px solid rgba(255,255,255,.1);background:rgba(9,9,11,.5);border-radius:12px;padding:10px 14px">' +
       '<b style="color:#fff">Pick your platform:</b> each membership runs on TradingView or NinjaTrader&nbsp;8. ' +
-      'The one-time payment is NinjaTrader&nbsp;8 only.' +
+      'Both offer a one-time payment.' +
     '</div>';
 
   /* ── NT8 membership cards ──────────────────────────────────────────────── */
-  function nt8(withStandalone) {
-    var s = saleOn(), o = NT8.onetime;
-    var price = s
+  function priceHtml(o, s) {
+    return s
       ? '<div class="pp-price"><b>' + ONETIME_SALE.price + '</b><s>' + o.price + '</s><span>one time</span></div>'
       : '<div class="pp-price"><b>' + o.price + '</b><span>one time</span></div>';
-    var code = s ? '<div class="pp-code"><b>' + ONETIME_SALE.label + ':</b> use code <b>' + ONETIME_SALE.code + '</b> at checkout.' + (ONETIME_SALE.endsText ? ' Ends ' + ONETIME_SALE.endsText + '.' : '') + '</div>' : '';
+  }
+  function codeHtml(plat, s) {
+    return s ? '<div class="pp-code"><b>' + ONETIME_SALE.label + ':</b> use code <b>' + ONETIME_SALE.codes[plat] + '</b> at checkout.' + (ONETIME_SALE.endsText ? ' Ends ' + ONETIME_SALE.endsText + '.' : '') + '</div>' : '';
+  }
+
+  function nt8() {
+    var s = saleOn('nt8'), o = NT8.onetime;
+    var price = priceHtml(o, s);
+    var code = codeHtml('nt8', s);
     var inc = [
       ['Knightfall for NinjaTrader 8', 'Approved by NinjaTrader. Licensed to the email you log into NinjaTrader with.'],
       ['Automation built in', 'Runs inside NinjaTrader. No webhook or bridge to set up.'],
@@ -209,12 +223,6 @@
         '<div class="pp-amt">' + c.p.price + '<span>' + c.p.per + '</span></div><div class="pp-d">' + c.d + '</div></div>' +
         btn(c.p, c.b, 'ntpro', 'ghost') + '</div>';
     });
-    if (withStandalone) {
-      row.push('<div class="pp-card alt"><div><div class="pp-tag">Knightfall only</div><div class="pp-n">Knightfall NT8 Standalone</div>' +
-        '<div class="pp-amt">' + STANDALONE.price + '<span>' + STANDALONE.per + '</span></div>' +
-        '<div class="pp-d">Knightfall, the member platform and Nexus. Free Discord only, no live room. 30-day free trial.</div></div>' +
-        '<a class="pp-cta ghost" href="' + STANDALONE.href + '">See standalone plans &rarr;</a></div>');
-    }
     return '<div class="pp-wrap">' + feat +
       '<div class="pp-row-h"><b>Rather pay as you go?</b><span>Subscriptions renew until you cancel.</span></div>' +
       '<div class="pp-row" style="--n:' + row.length + '">' + row.join('') + '</div></div>';
@@ -222,48 +230,48 @@
 
   /* ── TradingView membership cards — same layout as NT8 ─────────────────── */
   function tv() {
-    var m = TV.monthly;
+    var s = saleOn('tv'), o = TV.onetime;
+    var price = priceHtml(o, s);
+    var code = codeHtml('tv', s);
     var inc = [
       ['Knightfall MK2', 'Invite-only strategy with the on-chart backtester, on your TradingView username.'],
-      ['Auto Trader script', 'Sends Knightfall\u2019s trades to your bridge (PickMyTrade, TradersPost) and broker.'],
+      ['Auto Trade built in', 'Turn it on in Knightfall to send its trades to your bridge (PickMyTrade, TradersPost) and broker.'],
       ['Stack, Volume and Raven', 'The FSD-X TradingView indicators that come with the membership.'],
       ['Member platform, Nexus and the optimizer', 'Journal, backtest workspace, importer, account tracker and the strategy optimizer.'],
       ['Live trade room and VIP Discord', 'Trade the open with us every market morning.'],
-      ['Setup and training library', 'Walkthroughs, the Auto Trader guide and default settings.']
+      ['Setup and training library', 'Walkthroughs, automation setup and default settings.']
     ];
     var feat =
       '<div class="pp-feat">' +
         '<div class="pp-feat-l">' +
-          '<div class="pp-badges"><span class="pp-b g">30-day free trial</span></div>' +
-          '<div class="pp-eyebrow">FSD-X Trading Pro &middot; TradingView &middot; Monthly</div>' +
-          '<h3 class="pp-h">Try it free<br>for 30 days.</h3>' +
-          '<div class="pp-price"><b>' + m.price + '</b><span>' + m.per + ' after the trial</span></div>' +
-          '<p class="pp-p">The full FSD-X membership on TradingView. No charge until day 31. Cancel anytime.</p>' +
-          btn(m, 'Start 30-day free trial', 'autotrader') +
-          '<div class="pp-small">New members only &middot; TradingView username asked at checkout</div>' +
-          '<div class="pp-small"><b>One trial per person</b> &middot; <a href="disclosures.html" style="color:#4ade80">Terms</a></div>' +
+          '<div class="pp-badges"><span class="pp-b g">Best value</span>' + (s ? '<span class="pp-b r">' + ONETIME_SALE.label + '</span>' : '') + '</div>' +
+          '<div class="pp-eyebrow">FSD-X Trading Pro &middot; TradingView &middot; One-Time Payment</div>' +
+          '<h3 class="pp-h">Pay once.<br>No subscription.</h3>' +
+          price +
+          '<p class="pp-p">The full FSD-X membership on TradingView for one payment. No renewals.</p>' +
+          code +
+          btn(o, 'Pay once &mdash; ' + (s ? ONETIME_SALE.price : o.price), 'tvonetime') +
+          '<div class="pp-small">Instant access &middot; TradingView username asked at checkout</div>' +
+          '<div class="pp-small"><b>No free trial &middot; All sales final, no refunds</b> &middot; <a href="disclosures.html#one-time" style="color:#4ade80">Terms</a></div>' +
         '</div>' +
         '<div class="pp-feat-r">' +
           '<div class="pp-inc">What&rsquo;s included</div>' +
           '<ul class="pp-ul">' + inc.map(function (i) { return '<li>' + TICK + '<div><b>' + i[0] + '</b><span>' + i[1] + '</span></div></li>'; }).join('') + '</ul>' +
-          '<p class="pp-note">TradingView only. The NinjaTrader&nbsp;8 version is its own membership. <a href="suite.html#tradingview" style="color:#4ade80">Full breakdown &rarr;</a></p>' +
+          '<p class="pp-note">TradingView only. The NinjaTrader&nbsp;8 version is its own membership. Updates at FSD-X&rsquo;s discretion. <a href="suite.html#tradingview" style="color:#4ade80">Full breakdown &rarr;</a></p>' +
         '</div>' +
       '</div>';
     var cards = [
+      { tag: 'Try it first', n: 'Monthly', p: TV.monthly, d: 'Full membership. 30-day free trial for new members, then billed monthly.', b: 'Start free trial' },
       { tag: 'Season pass', n: 'Quarterly', p: TV.quarterly, d: 'Full membership. Billed at checkout, no trial.', b: 'Get quarterly' },
-      { tag: 'Best value', n: 'Annual', p: TV.annual, d: 'Full membership. Your rate is locked while you stay subscribed.', b: 'Get annual' }
+      { tag: 'Committed', n: 'Annual', p: TV.annual, d: 'Full membership. Billed at checkout, no trial.', b: 'Get annual' }
     ];
     var row = cards.map(function (c) {
       return '<div class="pp-card"><div><div class="pp-tag">' + c.tag + '</div><div class="pp-n">' + c.n + '</div>' +
         '<div class="pp-amt">' + c.p.price + '<span>' + c.p.per + '</span></div><div class="pp-d">' + c.d + '</div></div>' +
         btn(c.p, c.b, 'autotrader', 'ghost') + '</div>';
     });
-    row.push('<div class="pp-card alt"><div><div class="pp-tag">On NinjaTrader 8?</div><div class="pp-n">Pay once instead</div>' +
-      '<div class="pp-amt">' + NT8.onetime.price + '<span>one time</span></div>' +
-      '<div class="pp-d">The one-time payment is for the NinjaTrader&nbsp;8 membership only.</div></div>' +
-      '<a class="pp-cta ghost" href="#ninjatrader" data-pick="nt8">See NinjaTrader 8 options &rarr;</a></div>');
     return '<div class="pp-wrap">' + feat +
-      '<div class="pp-row-h"><b>Ready to commit?</b><span>Longer terms bill at checkout.</span></div>' +
+      '<div class="pp-row-h"><b>Rather pay as you go?</b><span>Subscriptions renew until you cancel.</span></div>' +
       '<div class="pp-row" style="--n:' + row.length + '">' + row.join('') + '</div></div>';
   }
 
@@ -301,7 +309,7 @@
     });
     document.querySelectorAll('[data-nt8-pricing]').forEach(function (el) {
       if (el.dataset.ppDone) return; el.dataset.ppDone = '1';
-      el.innerHTML = nt8(el.hasAttribute('data-standalone'));
+      el.innerHTML = nt8();
     });
     if (hasTiles) pick(fromHash() || saved(), false);
 

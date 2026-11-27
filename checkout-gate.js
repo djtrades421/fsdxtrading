@@ -218,6 +218,27 @@
     proceed: "Continue to Checkout"
   };
 
+  /* ---- One-Time Payment — FSD-X Trading Pro — TradingView (Nov 26 2026) ----
+     Same membership as UNIFIED, paid once. Money terms first (no trial,
+     final sale, what it does and does not cover), then the TradingView
+     automation language: Auto Trade in Knightfall sends alerts only. */
+  var TVONETIME = {
+    eyebrow: "Before You Continue",
+    title: "One-Time Payment — FSD-X Trading Pro — TradingView",
+    points: [
+      "This is a <strong>one-time payment</strong> for FSD-X Trading Pro on TradingView. There is <strong>no free trial</strong>, no subscription and no renewal. <strong>All sales are final and the payment is non-refundable.</strong>",
+      "It covers invite-only access to Knightfall and the FSD-X TradingView indicators available today, the Strategy Optimizer, the member platform, Nexus, the live trade room and the VIP Discord. Updates and new versions are released at FSD-X's discretion.",
+      "It does <strong>not</strong> include future paid products, paid coaching, or the NinjaTrader 8 version, unless FSD-X says so in writing.",
+      "Access continues for as long as FSD-X offers this membership and <strong>TradingView supports invite-only script access</strong>. Access may be revoked if these terms are broken.",
+      "All of it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service. Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No result is guaranteed. Any backtest or historical figures on this site are <strong>hypothetical</strong>.",
+      "Auto Trade in Knightfall <strong>sends automation alerts only — it does not place or guarantee any order</strong>. Execution runs through third-party services and brokers <strong>you</strong> choose and control. You are responsible for your own safeguards and for confirming automation is allowed by your broker and prop firm. Validate on a <strong>demo/paper account</strong> first.",
+      "<strong>This membership is for TradingView.</strong> Enter your TradingView username at checkout. Access is limited to <strong>one person, one Discord account and one TradingView username</strong>; sharing, reselling, or redistributing it ends access without refund.",
+      "I have read and agree to the full <a href='disclosures.html#one-time' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the One-Time Payment terms and the Auto-Trader Addendum."
+    ],
+    agree: "I understand this is a one-time, non-refundable payment with no trial, I accept the One-Time Payment Terms, and I take full responsibility for all activity, losses, and outcomes on my own account.",
+    proceed: "Continue to Checkout"
+  };
+
   /* ---- Lifetime — one-time, capped, TradingView transition (Oct 2026) ----
      Same product as the membership, so the Auto-Trader language stays. What
      changes is the money: one payment, no trial, no refund, and a plain
@@ -245,7 +266,7 @@
   var TERMS = {
     membership: UNIFIED, tools: UNIFIED, autotrader: UNIFIED,
     nightwing: NIGHTWING, raven: RAVEN, lifetime: LIFETIME, ntsolo: NTSOLO,
-    ntpro: NTPRO, ntonetime: NTONETIME, ravennt: RAVENNT
+    ntpro: NTPRO, ntonetime: NTONETIME, tvonetime: TVONETIME, ravennt: RAVENNT
   };
 
   var pendingUrl = null;

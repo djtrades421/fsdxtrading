@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
-  <script src="nav-loader.js?v=20261105a"></script>
+  <script src="nav-loader.js?v=20261126a"></script>
   <script src="fsdx-account.js?v=20261025a"></script>
   <style>
     body { background-color: #000; }
@@ -844,7 +844,7 @@
         body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') includes a NinjaTrader 8 tool that isn\'t released yet. It shows up here when it ships, and you can confirm your NinjaTrader email then.</p>';
       } else {
         setPill('none', 'Not included');
-        body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') doesn\'t include the NinjaTrader 8 tools. Knightfall on NinjaTrader 8 comes with the full FSD-X membership, or on its own as Knightfall NT8.</p>'
+        body = '<p class="nt-p">Your plan (' + esc(d.planLabel) + ') doesn\'t include the NinjaTrader 8 tools. Knightfall on NinjaTrader 8 comes with the FSD-X Trading Pro — NinjaTrader 8 membership.</p>'
           + '<div class="mt-4"><a href="ninjatrader.html" class="nt-btn">See your options &rarr;</a></div>';
       }
     } else if (!L || !L.ntEmail || L.status === 'declined') {
