@@ -12,9 +12,9 @@
  */
 (function () {
   var TEXT =
-    '<b style="color:#fde68a">TradingView update:</b> TradingView has published its final terms. ' +
+    '<b style="color:#fde68a">TradingView update:</b> our scripts are now public invite-only, as TradingView requires. ' +
     '<b style="color:#fff">Nothing changes for current members</b>, including lifetime. ' +
-    'On Nov 15 our scripts move from private to public invite-only. New members choose their platform: TradingView or NinjaTrader 8.';
+    'Automation is now built into Knightfall, and the separate Auto Trader is being retired.';
 
   function render(el) {
     if (el.dataset.tvNoticeDone) return;
