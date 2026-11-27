@@ -5,14 +5,14 @@
   <link rel="icon" type="image/png" href="logo.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FSD-X FAQ — Frequently Asked Questions</title>
-  <meta name="description" content="Answers to common questions about the FSD-X membership, the Auto Trader, ORB PRO, Nexus, and billing." />
+  <meta name="description" content="Answers to common questions about the FSD-X membership, Knightfall and automation, ORB PRO, Nexus, and billing." />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="FSD-X FAQ — Frequently Asked Questions" />
-  <meta property="og:description" content="Answers to common questions about the FSD-X membership, the Auto Trader, ORB PRO, Nexus, and billing." />
+  <meta property="og:description" content="Answers to common questions about the FSD-X membership, Knightfall and automation, ORB PRO, Nexus, and billing." />
   <meta property="og:image" content="https://www.fsdxtrading.com/og-image-v2.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="FSD-X FAQ — Frequently Asked Questions" />
-  <meta name="twitter:description" content="Answers to common questions about the FSD-X membership, the Auto Trader, ORB PRO, Nexus, and billing." />
+  <meta name="twitter:description" content="Answers to common questions about the FSD-X membership, Knightfall and automation, ORB PRO, Nexus, and billing." />
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
   <style>
@@ -56,15 +56,15 @@
       "name": "Is it the same if I trade it by hand or automate it?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. The method is identical either way. On NinjaTrader 8, automation is a switch inside Knightfall. On TradingView, the Auto Trader script executes the same setups through a bridge service. Manual or automated, the grade, size, stop and targets are the same."
+        "text": "Yes. The method is identical either way. On NinjaTrader 8, automation is a switch inside Knightfall. On TradingView, Auto Trade inside Knightfall sends the same setups through a bridge service. Manual or automated, the grade, size, stop and targets are the same."
       }
     },
     {
       "@type": "Question",
-      "name": "What is the FSD-X Auto Trader?",
+      "name": "How does automation work?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "It's the hands-off version of our ORB PRO engine (Knightfall MK2). Instead of you clicking each entry and exit, the strategy fires its signals automatically to your broker through an automation service you connect. Same system, same trades — it just places them for you. The Auto Trader runs on TradingView. On NinjaTrader 8, automation is built into Knightfall itself, with no bridge service needed."
+        "text": "It's built into Knightfall MK2. Turn on Auto Trade and, instead of you clicking each entry and exit, Knightfall sends its trades automatically to your broker. Same system, same trades — it just places them for you. On TradingView it goes through an automation service you connect. On NinjaTrader 8 it places the orders itself, with no bridge service needed. The separate Auto Trader script is retired."
       }
     },
     {
@@ -88,7 +88,7 @@
       "name": "Which plan includes it, and is there a trial?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The Auto Trader is included with your membership. The Monthly plan comes with a 30-day free trial for new members, so you can test your demo connection before going live. Quarterly, Annual and the One-Time Payment have no trial."
+        "text": "Automation is part of Knightfall, so it comes with the membership on either platform. The Monthly plan comes with a 30-day free trial for new members, so you can test your demo connection before going live. Quarterly, Annual and the One-Time Payment have no trial."
       }
     },
     {
@@ -112,7 +112,7 @@
       "name": "Does it only work with PickMyTrade?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. Our setup guide is written for PickMyTrade, but the Auto Trader follows the same flow with other bridges like TradersPost. If you use a different service, a few details differ — the alert format, how the stop/target bracket is placed, and how the contract symbol is handled — so check that service's own docs."
+        "text": "No. Our setup guide is written for PickMyTrade, but Auto Trade follows the same flow with other bridges like TradersPost. If you use a different service, a few details differ — the alert format, how the stop/target bracket is placed, and how the contract symbol is handled — so check that service's own docs."
       }
     },
     {
@@ -128,7 +128,7 @@
       "name": "What do I get with my membership?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The membership includes everything on the platform you pick: there is one for TradingView and one for NinjaTrader 8. On TradingView: ✓ ORB PRO Knightfall MK2 (strategy + backtester, one script) ✓ Auto Trader script ✓ FSD-X // Stack V1 ✓ FSD-X // Volume Indicator ✓ ORB Raven levels indicator ✓ Nexus strategy optimizer. On NinjaTrader 8: ✓ Knightfall with automation built in ✓ Volume ✓ Raven. On either platform: ✓ FSD-X Nexus (Chrome extension) ✓ Live trade room — every weekday at 8:30 AM CT (schedule can vary) ✓ VIP Discord channels."
+        "text": "The membership includes everything on the platform you pick: there is one for TradingView and one for NinjaTrader 8. On TradingView: ✓ ORB PRO Knightfall MK2 (strategy, backtester and Auto Trade, one script) ✓ FSD-X // Stack V1 ✓ FSD-X // Volume Indicator ✓ ORB Raven levels indicator ✓ Nexus strategy optimizer. On NinjaTrader 8: ✓ Knightfall with automation built in ✓ Volume ✓ Raven. On either platform: ✓ FSD-X Nexus (Chrome extension) ✓ Live trade room — every weekday at 8:30 AM CT (schedule can vary) ✓ VIP Discord channels."
       }
     },
     {
@@ -152,7 +152,7 @@
       "name": "Is this a trading bot that places trades for me?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "The indicators themselves (ORB PRO, Stack, and the rest of the suite) are a discretionary framework — they grade breakouts, plot SL/TP levels, and give you the data, while you control every entry and exit. If you want hands-off execution, that's the Auto Trader , included with your membership (see the Auto Trader section above). It runs a rules-based strategy on your own account — it is not copy trading and not a managed account."
+        "text": "The indicators themselves (ORB PRO, Stack, and the rest of the suite) are a discretionary framework — they grade breakouts, plot SL/TP levels, and give you the data, while you control every entry and exit. If you want hands-off execution, turn on Auto Trade in Knightfall (see the automation section above). It runs a rules-based strategy on your own account — it is not copy trading and not a managed account."
       }
     },
     {
@@ -165,10 +165,10 @@
     },
     {
       "@type": "Question",
-      "name": "Does the trailing stop work on the Auto Trader?",
+      "name": "Does the trailing stop work with Auto Trade?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. The Auto Trader runs the same trailing stop as Knightfall, with the same Variant settings, and it is included in the Auto Trader's Strategy Tester results. The difference is how the exit reaches your broker. In Bracket mode, the bracket sent at entry stays at the original stop and target. The trail runs in TradingView, and when it closes the trade the Auto Trader sends an exit alert to your execution service to flatten. That alert goes out at the close of the 5-minute bar, so a live trail exit can fill at a different price than the chart shows. If TradingView or the alert drops, the original stop still protects the trade. On NinjaTrader, the trail moves the actual stop order at your broker."
+        "text": "Yes. Auto Trade uses the same trailing stop and Variant settings, and the trades match Knightfall's Strategy Tester results. The difference is how the exit reaches your broker. In Bracket mode, the bracket sent at entry stays at the original stop and target. The trail runs in TradingView, and when it closes the trade Knightfall sends an exit alert to your execution service to flatten. That alert goes out at the close of the 5-minute bar, so a live trail exit can fill at a different price than the chart shows. If TradingView or the alert drops, the original stop still protects the trade. On NinjaTrader, the trail moves the actual stop order at your broker."
       }
     },
     {
@@ -208,7 +208,7 @@
       "name": "Can it stop for the day at a profit target?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes, as of v1.4.8, on NinjaTrader, TradingView and the Auto-Trader. Two optional settings under Risk Management, both off (0) by default. Daily Profit Cap ($) stops new entries once the day’s realized profit reaches your number, and pulls a trade’s final target in so the day can’t go past it. Trade Profit Target ($) replaces the trade’s final target (TP2 in V2, TP1 in V1) with the price that makes that dollar amount at your size. Set them to whatever fits your account, or leave them off. With both off, every trade is identical to v1.4.7, and the results on this site are run with both off. For prop consistency rules, set the cap under your firm’s limit: fills can slip past a target."
+        "text": "Yes, as of v1.4.8, on NinjaTrader and TradingView. Two optional settings under Risk Management, both off (0) by default. Daily Profit Cap ($) stops new entries once the day’s realized profit reaches your number, and pulls a trade’s final target in so the day can’t go past it. Trade Profit Target ($) replaces the trade’s final target (TP2 in V2, TP1 in V1) with the price that makes that dollar amount at your size. Set them to whatever fits your account, or leave them off. With both off, every trade is identical to v1.4.7, and the results on this site are run with both off. For prop consistency rules, set the cap under your firm’s limit: fills can slip past a target."
       }
     },
     {
@@ -366,7 +366,7 @@
           <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-3">// Frequently Asked Questions</div>
           <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">FAQ</h1>
           <p class="mt-4 text-zinc-400 text-sm max-w-2xl leading-relaxed">
-            Answers to the most common questions about the FSD-X suite, the Auto Trader, Nexus, and membership. Can't find what you need? Jump into Discord — we're active daily.
+            Answers to the most common questions about the FSD-X suite, automation, Nexus, and membership. Can't find what you need? Jump into Discord — we're active daily.
           </p>
         </div>
       </section>
@@ -402,30 +402,30 @@
                   <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
                 </button>
                 <div class="faq-answer">
-                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Yes. The method is identical either way. On NinjaTrader 8, automation is a switch inside Knightfall. On TradingView, the Auto Trader script executes the same setups through a bridge service. Manual or automated, the grade, size, stop and targets are the same.</p>
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Yes. The method is identical either way. On NinjaTrader 8, automation is a switch inside Knightfall. On TradingView, Auto Trade inside Knightfall sends the same setups through a bridge service. Manual or automated, the grade, size, stop and targets are the same.</p>
                 </div>
               </div>
           </div>
         </div>
       </section>
 
-      <!-- ===================== AUTO TRADER (PRO) ===================== -->
+      <!-- ===================== AUTOMATION (Auto Trade in Knightfall) ===================== -->
       <section class="py-10 md:py-12 px-6 md:px-12 border-b border-white/10">
         <div class="max-w-5xl mx-auto">
           <div class="rounded-2xl border border-green-500/20 bg-green-500/[0.03] p-6 md:p-8">
-            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// Auto Trader — Included</div>
-            <h2 class="text-2xl md:text-3xl font-black tracking-tight mb-2">The FSD-X Auto Trader</h2>
-            <p class="text-zinc-400 text-sm max-w-2xl leading-relaxed mb-6">Knightfall MK2, automated — the hands-off version of our ORB PRO engine, included in your membership. Here's how it works and what you need to run it.</p>
+            <div class="text-green-400 uppercase tracking-[0.3em] text-[10px] font-bold mb-2">// Automation &mdash; Included</div>
+            <h2 class="text-2xl md:text-3xl font-black tracking-tight mb-2">Auto Trade, built into Knightfall</h2>
+            <p class="text-zinc-400 text-sm max-w-2xl leading-relaxed mb-6">One script does it all: Knightfall MK2 grades the setups, draws the trade and, with Auto Trade on, sends it to your broker. Included in your membership. Here's how it works and what you need to run it.</p>
 
             <div class="grid md:grid-cols-2 gap-4 items-start">
 
               <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
                 <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
-                  <span class="text-sm font-bold text-white leading-snug">What is the FSD-X Auto Trader?</span>
+                  <span class="text-sm font-bold text-white leading-snug">How does automation work?</span>
                   <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
                 </button>
                 <div class="faq-answer">
-                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">It's the hands-off version of our ORB PRO engine (Knightfall MK2). Instead of you clicking each entry and exit, the strategy fires its signals automatically to your broker through an automation service you connect. Same system, same trades — it just places them for you. The Auto Trader runs on <span class="text-white font-semibold">TradingView</span>. On <span class="text-white font-semibold">NinjaTrader® 8</span>, automation is built into Knightfall itself, with no bridge service needed &mdash; <a href="ninjatrader.html" class="text-green-400 hover:underline">see the NinjaTrader version</a>.</p>
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">It's built into Knightfall MK2. Turn on Auto Trade and, instead of you clicking each entry and exit, Knightfall sends its trades automatically to your broker. Same system, same trades — it just places them for you. On <span class="text-white font-semibold">TradingView</span> it goes through an automation service you connect. On <span class="text-white font-semibold">NinjaTrader® 8</span> it places the orders itself, with no bridge service needed &mdash; <a href="ninjatrader.html" class="text-green-400 hover:underline">see the NinjaTrader version</a>.</p>
                 </div>
               </div>
 
@@ -455,7 +455,7 @@
                   <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
                 </button>
                 <div class="faq-answer">
-                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The Auto Trader is included with your membership. The Monthly plan comes with a 30-day free trial for new members, so you can test your demo connection before going live. Quarterly, Annual and the One-Time Payment have no trial.</p>
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Automation is part of Knightfall, so it comes with the membership on either platform. The Monthly plan comes with a 30-day free trial for new members, so you can test your demo connection before going live. Quarterly, Annual and the One-Time Payment have no trial.</p>
                 </div>
               </div>
 
@@ -493,7 +493,7 @@
                   <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
                 </button>
                 <div class="faq-answer">
-                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">No. Our setup guide is written for PickMyTrade, but the Auto Trader follows the same flow with other bridges like TradersPost. If you use a different service, a few details differ — the alert format, how the stop/target bracket is placed, and how the contract symbol is handled — so check that service's own docs.</p>
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">No. Our setup guide is written for PickMyTrade, but Auto Trade follows the same flow with other bridges like TradersPost. If you use a different service, a few details differ — the alert format, how the stop/target bracket is placed, and how the contract symbol is handled — so check that service's own docs.</p>
                 </div>
               </div>
 
@@ -509,11 +509,11 @@
 
               <div class="faq-item border border-white/10 bg-zinc-950/40 rounded-xl overflow-hidden hover:border-zinc-700 transition">
                 <button onclick="toggleFaq(this)" class="w-full px-5 py-4 text-left flex justify-between items-center gap-4 focus:outline-none">
-                  <span class="text-sm font-bold text-white leading-snug">Does the trailing stop work on the Auto Trader?</span>
+                  <span class="text-sm font-bold text-white leading-snug">Does the trailing stop work with Auto Trade?</span>
                   <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
                 </button>
                 <div class="faq-answer">
-                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4"><span class="text-white font-semibold">Yes.</span> The Auto Trader runs the same trailing stop as Knightfall, with the same Variant settings, and it is included in the Auto Trader's Strategy Tester results. The difference is how the exit reaches your broker. In <span class="text-white font-semibold">Bracket mode</span>, the bracket sent at entry stays at the original stop and target. The trail runs in TradingView, and when it closes the trade the Auto Trader sends an exit alert to your execution service to flatten. That alert goes out at the close of the 5-minute bar, so <span class="text-white font-semibold">a live trail exit can fill at a different price than the chart shows</span>. If TradingView or the alert drops, the original stop still protects the trade. On NinjaTrader, the trail moves the actual stop order at your broker.</p>
+                  <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4"><span class="text-white font-semibold">Yes.</span> Auto Trade uses the same trailing stop and Variant settings, and the trades match Knightfall's Strategy Tester results. The difference is how the exit reaches your broker. In <span class="text-white font-semibold">Bracket mode</span>, the bracket sent at entry stays at the original stop and target. The trail runs in TradingView, and when it closes the trade Knightfall sends an exit alert to your execution service to flatten. That alert goes out at the close of the 5-minute bar, so <span class="text-white font-semibold">a live trail exit can fill at a different price than the chart shows</span>. If TradingView or the alert drops, the original stop still protects the trade. On NinjaTrader, the trail moves the actual stop order at your broker.</p>
                 </div>
               </div>
 
@@ -538,8 +538,7 @@
                   <p>The membership includes <span class="text-white font-semibold">everything</span> on the platform you pick. <span class="text-white font-semibold">There is one for TradingView and one for NinjaTrader® 8.</span></p>
                   <p class="text-white font-semibold pt-1">On TradingView</p>
                   <ul class="space-y-1 pl-2">
-                    <li>✓ ORB PRO Knightfall MK2 (strategy + backtester, one script)</li>
-                    <li>✓ Auto Trader script — hands-off execution through your bridge</li>
+                    <li>✓ ORB PRO Knightfall MK2 (strategy, backtester and Auto Trade, one script)</li>
                     <li>✓ FSD-X // Stack V1</li>
                     <li>✓ FSD-X // Volume Indicator</li>
                     <li>✓ ORB Raven levels indicator</li>
@@ -586,7 +585,7 @@
                 <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
               </button>
               <div class="faq-answer">
-                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The indicators themselves (ORB PRO, Stack, and the rest of the suite) are a discretionary framework — they grade breakouts, plot SL/TP levels, and give you the data, while you control every entry and exit. If you want hands-off execution, that's the <span class="text-white font-semibold">Auto Trader</span>, included with your membership (see the Auto Trader section above). It runs a rules-based strategy on your own account — it is not copy trading and not a managed account.</p>
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">The indicators themselves (ORB PRO, Stack, and the rest of the suite) are a discretionary framework — they grade breakouts, plot SL/TP levels, and give you the data, while you control every entry and exit. If you want hands-off execution, turn on <span class="text-white font-semibold">Auto Trade</span> in Knightfall (see the automation section above). It runs a rules-based strategy on your own account — it is not copy trading and not a managed account.</p>
               </div>
             </div>
 
@@ -650,7 +649,7 @@
                 <span class="faq-icon text-zinc-400 text-xl font-light shrink-0">+</span>
               </button>
               <div class="faq-answer">
-                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Yes, as of <a href="releases.html" class="text-green-400 hover:underline">v1.4.8</a>, on NinjaTrader, TradingView and the Auto-Trader. Two optional settings under Risk Management, both off (0) by default. <span class="text-white font-semibold">Daily Profit Cap ($)</span> stops new entries once the day&rsquo;s realized profit reaches your number, and pulls a trade&rsquo;s final target in so the day can&rsquo;t go past it. <span class="text-white font-semibold">Trade Profit Target ($)</span> replaces the trade&rsquo;s final target (TP2 in V2, TP1 in V1) with the price that makes that dollar amount at your size. Set them to whatever fits your account, or leave them off. With both off, every trade is identical to v1.4.7, and the results on this site are run with both off. For prop consistency rules, set the cap under your firm&rsquo;s limit: fills can slip past a target.</p>
+                <p class="px-5 pb-5 text-zinc-400 text-xs leading-relaxed border-t border-white/5 pt-4">Yes, as of <a href="releases.html" class="text-green-400 hover:underline">v1.4.8</a>, on NinjaTrader and TradingView. Two optional settings under Risk Management, both off (0) by default. <span class="text-white font-semibold">Daily Profit Cap ($)</span> stops new entries once the day&rsquo;s realized profit reaches your number, and pulls a trade&rsquo;s final target in so the day can&rsquo;t go past it. <span class="text-white font-semibold">Trade Profit Target ($)</span> replaces the trade&rsquo;s final target (TP2 in V2, TP1 in V1) with the price that makes that dollar amount at your size. Set them to whatever fits your account, or leave them off. With both off, every trade is identical to v1.4.7, and the results on this site are run with both off. For prop consistency rules, set the cap under your firm&rsquo;s limit: fills can slip past a target.</p>
               </div>
             </div>
 

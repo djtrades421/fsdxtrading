@@ -8,8 +8,7 @@
      <script src="checkout-gate.js?v=20260913b"></script>
    Per-product terms:
      Default = membership terms.
-     Add data-gate="autotrader" to a checkout link for the
-     heavier Auto-Trader terms.
+     data-gate="autotrader" is kept as an alias of the TradingView membership terms (UNIFIED).
    ============================================================ */
 (function () {
   "use strict";
@@ -67,33 +66,30 @@
 
   // ---- ONE membership, ONE gate ----
   // Everything is now a single FSD-X membership — the full indicator suite,
-  // Strategy Optimizer, Nexus, alerts, the live trade room, and the ORB
-  // Auto-Trader — so every checkout shows the SAME unified terms. All
+  // Strategy Optimizer, Nexus, alerts, the live trade room, and Auto Trade in Knightfall — so every checkout shows the SAME unified terms. All
   // data-gate values (membership / tools / autotrader) alias to UNIFIED,
   // so no link can surface mismatched or legacy ("Plus") terms.
   var UNIFIED = {
     eyebrow: "Before You Continue",
     title: "FSD-X Trading Pro — TradingView — Terms of Service",
     points: [
-      "This is one FSD-X membership covering everything — the full indicator suite, Strategy Optimizer, Nexus, alerts, the live trade room, and the ORB Auto-Trader. All of it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
+      "This is one FSD-X membership covering everything — the full indicator suite with Auto Trade built into Knightfall, Strategy Optimizer, Nexus, alerts and the live trade room. All of it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed — the tools assist your process, they do not guarantee performance.",
-      "The Auto-Trader <strong>emits automation alerts only — it does not place or guarantee any order</strong>. All execution happens through third-party services and brokers <strong>you</strong> select, configure, and control.",
-      "FSD-X is <strong>not responsible</strong> for those third parties — their reliability, fills, latency, or outages — or for any activity once the Auto-Trader is running on your account. A missed, delayed, or failed alert can leave unintended open positions, so <strong>you are responsible for your own safeguards</strong> (broker-side stop, end-of-day flatten, risk limits) and for monitoring your account.",
+      "Auto Trade in Knightfall <strong>emits automation alerts only — it does not place or guarantee any order</strong>. All execution happens through third-party services and brokers <strong>you</strong> select, configure, and control.",
+      "FSD-X is <strong>not responsible</strong> for those third parties — their reliability, fills, latency, or outages — or for any activity once Auto Trade is running on your account. A missed, delayed, or failed alert can leave unintended open positions, so <strong>you are responsible for your own safeguards</strong> (broker-side stop, end-of-day flatten, risk limits) and for monitoring your account.",
       "<strong>You</strong> are responsible for confirming automated trading is permitted by your broker and prop firm and for complying with their rules. Validate on a <strong>demo/paper account</strong> before any live use.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. Cancel during any free trial to avoid being charged.",
       "<strong>This membership is for TradingView.</strong> Enter your TradingView username at checkout. It does not include the NinjaTrader 8 version, which is sold as its own membership (FSD-X Trading Pro — NinjaTrader 8).",
       "Access is limited to <strong>one person, one Discord account and one TradingView username</strong>. Sharing, reselling, or redistributing access is prohibited and may end access without refund.",
       "<strong>By purchasing and accepting these terms, you take full responsibility for all trades, positions, losses, and outcomes on your account.</strong> Once accepted, that responsibility is yours — FSD-X has no liability for any result.",
-      "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Auto-Trader Addendum."
+      "I have read and agree to the full <a href='disclosures.html' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the Automation Addendum."
     ],
-    agree: "I accept the FSD-X Trading Pro — TradingView Terms — including the Auto-Trader Addendum — and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
+    agree: "I accept the FSD-X Trading Pro — TradingView Terms — including the Automation Addendum — and take full responsibility for all activity, losses, and outcomes on my own account. FSD-X is not liable for any result.",
     proceed: "Proceed to Checkout"
   };
 
   /* ---- Nightwing — the entry tier, and a genuinely different product ----
-     Site access + Nexus. No indicator suite, no Auto-Trader, no
-     live room. Showing a Nightwing buyer the UNIFIED terms above would have
-     them agree to an Auto-Trader Addendum for software they are not being
+     Site access + Nexus. No indicator suite, no automation, no live room. Showing a Nightwing buyer the UNIFIED terms above would have them agree to an Automation Addendum for software they are not being
      sold — which is worse than no terms at all, because it misdescribes the
      purchase at the point of sale. So it gets its own set: same risk,
      refund, and one-account language, nothing about automation. */
@@ -102,7 +98,7 @@
     title: "FSD-X Nightwing — Terms of Service",
     points: [
       "Nightwing is <strong>site access and the Nexus extension</strong> — the member dashboard, trade journal, backtest workspace, playbook, trade importer and account tracker. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
-      "Nightwing <strong>does not include</strong> the FSD-X indicator suite (ORB PRO / Knightfall MK2, Stack V1, Volume Engine), the Auto-Trader, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
+      "Nightwing <strong>does not include</strong> the FSD-X indicator suite (ORB PRO / Knightfall MK2, Stack V1, Volume Engine), Knightfall automation, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed — these tools record and analyse your own trading, they do not produce performance.",
       "Any figures, backtests, or historical results shown on this site are <strong>hypothetical</strong> and are not a representation that any account will achieve similar results.",
       "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in the platform places, sizes, or manages an order for you.",
@@ -116,8 +112,7 @@
 
   /* ---- Raven — the middle tier ----
      Raven, Nexus and the platform. Same reasoning as Nightwing: showing a
-     Raven buyer the UNIFIED terms would have them accept an Auto-Trader
-     Addendum for software they are not being sold. It also needs one point
+     Raven buyer the UNIFIED terms would have them accept an Automation Addendum for software they are not being sold. It also needs one point
      Nightwing does not — Raven produces no performance data of any kind, and
      the Knightfall backtest is not its backtest. Saying so at the point of
      sale is the cheapest protection against a "but the site said" dispute. */
@@ -128,7 +123,7 @@
       "Raven is the <strong>ORB Raven indicator</strong> plus the Nexus extension and the member platform. The indicator marks opening range breakouts and draws the levels; it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
       "Raven <strong>applies no grading and no filtering</strong>. It marks every breakout and does not tell you which are worth taking. It does not know whether a level was hit, does not track trades, and reports <strong>no win rate and no performance of any kind</strong>.",
       "<strong>Raven has no backtest and no track record.</strong> Any backtest, figures or historical results shown elsewhere on this site belong to ORB PRO (Knightfall), a different product with grading and filtering that Raven does not have. They are <strong>hypothetical</strong> and are not a representation that any account will achieve similar results.",
-      "Raven <strong>does not include</strong> ORB PRO (Knightfall), the Auto-Trader, Stack V1, the Volume Engine, the live trade room, or the VIP Discord channels. Those are part of the full FSD-X membership.",
+      "Raven <strong>does not include</strong> ORB PRO (Knightfall) and its automation, Stack V1, the Volume Engine, the live trade room, or the VIP Discord channels. Those are part of the full FSD-X membership.",
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed.",
       "<strong>You</strong> remain responsible for every trade, position, loss, and outcome on your own account. Nothing in Raven places, sizes, or manages an order for you, and it does not connect to a broker.",
       "Once a billing cycle begins, <strong>all fees are non-refundable</strong>. If your plan includes a free trial, cancel before it ends to avoid being charged; plans without a trial bill immediately.",
@@ -165,7 +160,7 @@
     title: "Knightfall for NinjaTrader 8 — Terms of Service",
     points: [
       "Knightfall for NinjaTrader 8 is the <strong>ORB PRO (Knightfall) strategy for NinjaTrader 8</strong>, plus the Nexus extension and the member platform. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
-      "It <strong>does not include</strong> the TradingView scripts, the TradingView Auto-Trader, Stack V1, the Volume Engine, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
+      "It <strong>does not include</strong> the TradingView scripts, Stack V1, the Volume Engine, the live trade room, the VIP Discord channels, or the monthly one-on-one call. Those are part of the full FSD-X membership.",
       "With <strong>Auto Trade on, the strategy places and manages orders</strong> in the NinjaTrader account you select. <strong>You</strong> choose that account, the risk setting and the daily loss limit, and you are responsible for monitoring it. Run it on a sim account first.",
       "<strong>You</strong> are responsible for confirming that automated trading is allowed by your broker and prop firm. Rules vary and change.",
       "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed. Software, data feeds, connections and platforms can fail.",
@@ -187,7 +182,7 @@
      terms: no trial, final sale, what one payment does and does not cover. */
   var NT_COMMON = [
     "FSD-X Trading Pro — NinjaTrader 8 is the <strong>full FSD-X membership on NinjaTrader 8</strong>: Knightfall with automation built in, the FSD-X NinjaTrader indicators (Volume and Raven), the member platform, Nexus, the live trade room and the VIP Discord. It is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service.",
-    "It is <strong>NinjaTrader 8 only</strong>. It does not include the TradingView scripts, the TradingView Auto-Trader, Stack V1 or the Strategy Optimizer.",
+    "It is <strong>NinjaTrader 8 only</strong>. It does not include the TradingView scripts, Stack V1 or the Strategy Optimizer.",
     "With <strong>Auto Trade on, the strategy places and manages orders</strong> in the NinjaTrader account you select. <strong>You</strong> choose that account, the risk setting and the daily loss limit, and you are responsible for monitoring it. Run it on a sim account first.",
     "<strong>You</strong> are responsible for confirming that automated trading is allowed by your broker and prop firm. Rules vary and change.",
     "Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No profit, outcome, or result is guaranteed. Software, data feeds, connections and platforms can fail. Any backtest or historical figures on this site are <strong>hypothetical</strong>.",
@@ -233,7 +228,7 @@
       "All of it is <strong>educational, rules-based software — not financial advice</strong> and not a trade-signal service. Trading involves <strong>substantial risk</strong>; you can lose some or all of your capital. No result is guaranteed. Any backtest or historical figures on this site are <strong>hypothetical</strong>.",
       "Auto Trade in Knightfall <strong>sends automation alerts only — it does not place or guarantee any order</strong>. Execution runs through third-party services and brokers <strong>you</strong> choose and control. You are responsible for your own safeguards and for confirming automation is allowed by your broker and prop firm. Validate on a <strong>demo/paper account</strong> first.",
       "<strong>This membership is for TradingView.</strong> Enter your TradingView username at checkout. Access is limited to <strong>one person, one Discord account and one TradingView username</strong>; sharing, reselling, or redistributing it ends access without refund.",
-      "I have read and agree to the full <a href='disclosures.html#one-time' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the One-Time Payment terms and the Auto-Trader Addendum."
+      "I have read and agree to the full <a href='disclosures.html#one-time' target='_blank' rel='noopener' class='text-green-400 underline hover:text-green-300'>Disclosures &amp; Terms of Service</a>, including the One-Time Payment terms and the Automation Addendum."
     ],
     agree: "I understand this is a one-time, non-refundable payment with no trial, I accept the One-Time Payment Terms, and I take full responsibility for all activity, losses, and outcomes on my own account.",
     proceed: "Continue to Checkout"

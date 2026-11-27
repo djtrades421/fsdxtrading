@@ -254,7 +254,7 @@ var FSDX_MENU = [
     items: [
       ['raven.html#tradingview', 'Raven for TradingView', 'ORB levels on your TradingView username. No grading', '$29.99/mo', 'trend', 'blue'],
       ['suite.html#tradingview', 'Everything on TradingView', 'Every tool you get on TradingView', '', 'layers', 'green'],
-      ['auto-trader-guide.html', 'Auto Trader', 'The script plus your bridge (PickMyTrade, TradersPost)', '', 'bolt', 'orange'],
+      ['suite.html#tool-autotrader', 'Automation', 'Built into Knightfall. Turn Auto Trade on', '', 'bolt', 'orange'],
       ['nightwing.html#nexus', 'Strategy optimizer', 'Inside Nexus, for TradingView strategies', '', 'list', 'purple'],
       ['tradingview-update.html', 'TradingView update', 'Seat terms and what changed for members', '', 'info', 'gray']
     ],

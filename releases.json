@@ -16,6 +16,22 @@
   {
    "status": "shipped",
    "date": "2026-11-26",
+   "type": "update",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall v1.4.12: Auto Trade built in, Thanksgiving fix, trend shading",
+   "body": "On TradingView. Catches up to NinjaTrader v1.4.12. <b>Auto Trade</b> is back inside Knightfall: a new <b>Auto Trade (webhook)</b> group, off by default. Turn it on and Knightfall sends your trades to PickMyTrade or another bridge, the same way the Auto Trader did: same variants, same settings, same <b>SL_value</b> / <b>TP_value</b>, same JSON. With it on, every trade exits in full at one target (TP1 in V1, TP2 with the trail in V2), so your chart and broker match. Setup is in the <a href=\"auto-trader-guide.html\">automation guide</a>. <b>Thanksgiving fix</b>: Thanksgiving Thursday is now on the half-day calendar through 2036 (no entries after 11:45 AM CT, flatten 11:50 AM CT). Also new: <b>trend shading</b> and the <b>LOOKING FOR</b> dashboard row from NinjaTrader v1.4.10. Strategy properties now include commission and slippage, so Strategy Tester P&amp;L is net of costs; the trades are the same. Saved settings carry over. TradingView updates on its own: the dashboard header should read v1.4.12."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-26",
+   "type": "update",
+   "product": "Auto-Trader",
+   "title": "Auto-Trader retired: automation now lives in Knightfall",
+   "body": "The separate Auto Trader script is being retired now that Auto Trade is built into Knightfall v1.4.12. Same trades, same settings, same PickMyTrade JSON, one script. To move over: delete your Auto Trader alert, add Knightfall to the same chart, enter your settings, turn on <b>Auto Trade</b>, and create one alert on Knightfall. Step by step in the <a href=\"auto-trader-guide.html#move\">automation guide</a>. Never run both alerts at once, or every trade is sent twice."
+  },
+  {
+   "status": "shipped",
+   "date": "2026-11-26",
    "type": "fix",
    "product": "NinjaTrader 8",
    "title": "Knightfall NT8 v1.4.12: Thanksgiving half-day fix",

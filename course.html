@@ -26,7 +26,7 @@
   </script>
   <link rel="stylesheet" href="tailwind.css">
   <script src="fsdx-theme.js?v=20260830"></script>
-  <script src="nav-loader.js?v=20261105a"></script>
+  <script src="nav-loader.js?v=20261126a"></script>
   <script src="fsdx-account.js?v=20261025a"></script>
   <script src="alerts.js?v=20260901"></script>
   <style>
@@ -296,7 +296,7 @@ const COURSE = [
     id: 'chart-setup', section: 'system', title: 'Get the chart right', mins: 2,
     body: `
       <p>Four settings. Wrong on any one and your levels won't match the backtest or anyone else in the room.
-      These are the same settings the Auto-Trader needs — same logic underneath, same chart required.</p>
+      These are the same settings Auto Trade needs — same script, same chart required.</p>
       <ul>
         <li><strong>Symbol — <span class="text-white">MNQ1!</span></strong> The continuous front month. Not
         MNQU6, not plain MNQ. It carries full price history and follows the roll on its own.</li>
@@ -848,12 +848,11 @@ const COURSE = [
       <p>In V2 the trail only starts once the trade reaches TP1. Before that, the original stop holds. After
       that, the stop follows 60 points behind the best price while the trade works toward TP2.</p>
 
-      <h4>On the Auto Trader</h4>
-      <p>The Auto Trader runs the same trailing stop with the same variant settings, and it's in the Auto
-      Trader's Strategy Tester results. <strong>The difference is how the exit reaches your broker.</strong></p>
+      <h4>With Auto Trade on</h4>
+      <p>Auto Trade uses the same trailing stop and variant settings, and the trades match the Strategy Tester results. <strong>The difference is how the exit reaches your broker.</strong></p>
       <ul>
         <li><strong>Bracket mode</strong> &mdash; the bracket sent at entry stays at the original stop and
-        target. The trail runs in TradingView. When it closes the trade, the Auto Trader sends an exit alert
+        target. The trail runs in TradingView. When it closes the trade, Knightfall sends an exit alert
         and your execution service flattens.</li>
         <li><strong>That alert goes out at the close of the 5-minute bar.</strong> A live trail exit can fill
         at a different price than the chart shows.</li>

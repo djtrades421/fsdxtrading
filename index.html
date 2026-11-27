@@ -111,7 +111,7 @@
     "FSD-X Full Membership",
     "FSD-X Membership: Systematic Futures Trading"
   ],
-  "description": "One membership that covers the entire FSD-X system at a single price. It is not a single indicator. Included: the ORB PRO (Knightfall MK2) signal engine, the Knightfall Auto Trader for hands-off execution, the Stack V1 multi-timeframe trend filter, the ORB Volume engine, the Nexus Chrome side-panel journal and TradingView strategy optimizer, the FSD-X member web platform (dashboard, trade journal, broker CSV importer, backtest workspace, prop-account tracker, written playbook), the daily live trade room at 8:30 AM CT with a weekly Monday gameplan session, a monthly 30-minute one-on-one call, the full setup and training video library, and the VIP Discord channels. There are no tiers and no upsells inside the membership — every component below is included in every plan.",
+  "description": "One membership that covers the entire FSD-X system at a single price. It is not a single indicator. Included: the ORB PRO (Knightfall MK2) signal engine, Auto Trade built into Knightfall for hands-off execution, the Stack V1 multi-timeframe trend filter, the ORB Volume engine, the Nexus Chrome side-panel journal and TradingView strategy optimizer, the FSD-X member web platform (dashboard, trade journal, broker CSV importer, backtest workspace, prop-account tracker, written playbook), the daily live trade room at 8:30 AM CT with a weekly Monday gameplan session, a monthly 30-minute one-on-one call, the full setup and training video library, and the VIP Discord channels. There are no tiers and no upsells inside the membership — every component below is included in every plan.",
   "brand": {
     "@id": "https://www.fsdxtrading.com/#organization"
   },
@@ -123,7 +123,7 @@
     {
       "@type": "PropertyValue",
       "name": "What the price covers",
-      "value": "The subscription price covers the complete membership — all five TradingView indicators, the Auto Trader, the member web platform, the live trade room, the monthly one-on-one call, the training library and the VIP Discord. No component listed is sold or priced separately, and none is an add-on."
+      "value": "The subscription price covers the complete membership — all five TradingView indicators with automation built into Knightfall, the member web platform, the live trade room, the monthly one-on-one call, the training library and the VIP Discord. No component listed is sold or priced separately, and none is an add-on."
     },
     {
       "@type": "PropertyValue",
@@ -150,14 +150,13 @@
     },
     {
       "@type": "SoftwareApplication",
-      "name": "FSD-X Knightfall Auto Trader",
+      "name": "Knightfall Auto Trade",
       "applicationCategory": "FinanceApplication",
-      "operatingSystem": "Web (TradingView)",
-      "description": "Hands-off execution layer running the identical signals and trades as the manual Knightfall MK2 script. Routes each signal to the member's own broker through a third-party automation bridge the member configures and controls. A native NinjaTrader 8 version, approved by NinjaTrader, released October 23, 2026, is included with the FSD-X Trading Pro — NinjaTrader 8 membership.",
+      "operatingSystem": "Web (TradingView), NinjaTrader 8", "description": "Hands-off execution built into Knightfall MK2: one switch, same signals and trades as the chart. On TradingView it routes each trade to the member's own broker through a third-party automation bridge the member configures and controls. On NinjaTrader 8 the strategy places the orders itself.",
       "isPartOf": {
         "@id": "https://www.fsdxtrading.com/#membership"
       },
-      "url": "https://www.fsdxtrading.com/autotrader.html"
+      "url": "https://www.fsdxtrading.com/suite.html#tool-autotrader"
     },
     {
       "@type": "WebApplication",
@@ -253,7 +252,7 @@
     {
       "@type": "CreativeWorkSeries",
       "name": "FSD-X Setup & Training Library",
-      "description": "Video walkthroughs covering installation, calibration and live usage of the FSD-X suite, the Auto Trader setup guide, the default settings reference table, and the ORB playbook cheat sheet. Educational content only. Included with the membership.",
+      "description": "Video walkthroughs covering installation, calibration and live usage of the FSD-X suite, the automation setup guide, the default settings reference table, and the ORB playbook cheat sheet. Educational content only. Included with the membership.",
       "isPartOf": {
         "@id": "https://www.fsdxtrading.com/#membership"
       },
@@ -263,7 +262,7 @@
       "@type": "Service",
       "name": "FSD-X VIP Discord Channels",
       "serviceType": "Trading community",
-      "description": "Member-only Discord channels — the ORB PRO room, daily graded signals, setup walkthroughs, Auto Trader support and funded-trader channels. Included with the membership; not sold separately.",
+      "description": "Member-only Discord channels — the ORB PRO room, daily graded signals, setup walkthroughs, automation support and funded-trader channels. Included with the membership; not sold separately.",
       "provider": {
         "@id": "https://www.fsdxtrading.com/#organization"
       },
@@ -304,7 +303,7 @@
         "itemOffered": {
           "@id": "https://www.fsdxtrading.com/#membership"
         },
-        "description": "$129 per month for the complete membership — every indicator, the Auto Trader, the member platform, the live trade room, the monthly one-on-one call, the training library and the VIP Discord. It is not the price of a single indicator."
+        "description": "$129 per month for the complete membership — every indicator with automation built in, the member platform, the live trade room, the monthly one-on-one call, the training library and the VIP Discord. It is not the price of a single indicator."
       },
       {
         "@type": "Offer",
@@ -477,7 +476,7 @@
                 <li><span class="d">1</span>Two targets, built from the range</li>
                 <li><span class="d">2</span>Entry marked where the break confirms</li>
                 <li><span class="d">3</span>Stop placed by the rules, before entry</li>
-                <li><span class="d">4</span>With the Auto Trader, both go in as working orders</li>
+                <li><span class="d">4</span>With Auto Trade on, both go in as working orders</li>
               </ul>
             </div>
             <div class="oc-frame">
@@ -705,12 +704,12 @@
               <div class="vs-tags"><span class="vs-tag">Fleet manager</span><span class="vs-tag">Tradovate auto-sync</span><span class="vs-tag">Trade journal</span><span class="vs-tag">Backtest workspace</span><span class="vs-tag">Playbook</span></div>
               <div class="vs-foot"><span>See the platform &rarr;</span></div>
             </a>
-            <a href="autotrader.html" class="vs-card vs-a">
+            <a href="suite.html#tool-autotrader" class="vs-card vs-a">
               <div class="vs-k">Automation</div>
               <h3>Trade it, or let it run</h3>
               <p class="vs-p">Knightfall placed for you through the broker you connect.</p>
-              <div class="vs-tags"><span class="vs-tag">Auto Trader</span><span class="vs-tag s">NinjaTrader 8 · Live</span></div>
-              <div class="vs-foot"><span>How the Auto Trader works &rarr;</span></div>
+              <div class="vs-tags"><span class="vs-tag">Built into Knightfall</span><span class="vs-tag s">TradingView &middot; NinjaTrader 8</span></div>
+              <div class="vs-foot"><span>How automation works &rarr;</span></div>
             </a>
             <a href="suite.html" class="vs-card vs-a">
               <div class="vs-k">On your chart</div>
@@ -977,7 +976,7 @@
         </div>
         <div>
           <span class="text-[10px] bg-zinc-900 border border-white/10 text-zinc-400 font-bold px-2 py-0.5 rounded uppercase tracking-wider inline-block">Vendor Verification Disclosure</span>
-          <p class="text-xs text-zinc-400 leading-relaxed mt-2">FSD-X is an independent software provider. Our tools generate algorithmic chart signals for educational and analytical purposes, and the optional Auto-Trader routes those signals to your own broker through a third-party automation service that you configure and control. FSD-X is not a broker, futures commission merchant, commodity trading advisor, or investment adviser. We do not manage accounts, place trades on your behalf, hold customer funds, or provide personalized investment or financial advice. Performance metrics, system evaluations, and user results posted within community channels are illustrative and educational only. You are solely responsible for every order placed in your account.</p>
+          <p class="text-xs text-zinc-400 leading-relaxed mt-2">FSD-X is an independent software provider. Our tools generate algorithmic chart signals for educational and analytical purposes, and the optional Auto Trade feature routes those signals to your own broker through a third-party automation service that you configure and control. FSD-X is not a broker, futures commission merchant, commodity trading advisor, or investment adviser. We do not manage accounts, place trades on your behalf, hold customer funds, or provide personalized investment or financial advice. Performance metrics, system evaluations, and user results posted within community channels are illustrative and educational only. You are solely responsible for every order placed in your account.</p>
         </div>
         <nav class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs text-zinc-400">
           <a href="index.html" class="hover:text-green-400 transition">Home</a>
