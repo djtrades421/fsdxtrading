@@ -15,6 +15,14 @@
   },
   {
    "status": "shipped",
+   "date": "2026-11-27",
+   "type": "fix",
+   "product": "ORB Pro Knightfall",
+   "title": "Knightfall v1.4.13: VWAP fix after holiday sessions",
+   "body": "On TradingView. The VWAP now resets at every Globex reopen, the same as NinjaTrader. Before, after a holiday where Globex halts at midday and reopens that evening (MLK, Presidents Day, Memorial Day, Juneteenth, Labor Day, Thanksgiving Thursday), the TradingView VWAP carried the prior session into the next day and could sit well away from NinjaTrader&rsquo;s. The overnight context flag now measures from the same session open as NinjaTrader too. Only those ~6 days a year change: the VWAP filter and the overnight flag now match NinjaTrader. No change to the ORB, grading, stops, targets or sizing. Saved settings carry over. TradingView updates on its own: the dashboard header should read v1.4.13. NinjaTrader stays on v1.4.12 (it already worked this way). Thanks to the member who spotted it."
+  },
+  {
+   "status": "shipped",
    "date": "2026-11-26",
    "type": "update",
    "product": "ORB Pro Knightfall",
