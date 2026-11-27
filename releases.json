@@ -15,6 +15,14 @@
   },
   {
    "status": "shipped",
+   "date": "2026-11-26",
+   "type": "fix",
+   "product": "NinjaTrader 8",
+   "title": "Knightfall NT8 v1.4.12: Thanksgiving half-day fix",
+   "body": "Thanksgiving Thursday was missing from the half-day calendar, so on that day the strategy used the normal 3:30 PM CT flatten instead of the half-day one. It&rsquo;s now on the calendar through 2036. On half days there are no new entries after 11:45 AM CT and everything flattens by 11:50 AM CT. NinjaTrader&rsquo;s session-close exit stays on as a backup. No change to entries, stops, targets or sizing on any other day. Download v1.4.12 from the <a href=\"ninjatrader-members.html\">NinjaTrader members page</a> and re-import. Your templates carry over."
+  },
+  {
+   "status": "shipped",
    "date": "2026-11-25",
    "type": "update",
    "product": "NinjaTrader 8",
