@@ -39,7 +39,7 @@
   var ONETIME_SALE = {
     label: 'Black Friday',
     price: '$399.99',
-    codes: { nt8: 'BFNT8', tv: '' },
+    codes: { nt8: 'BFNT8', tv: 'BFTV' },
     endsText: '',     // '' = no end date shown
     ends: null        // null = runs until you set ONETIME_SALE back to null
   };
